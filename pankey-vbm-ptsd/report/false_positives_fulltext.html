@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Positives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        /* Accordion styles */
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC'; /* Down arrow */
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2'; /* Up arrow */
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+</script>
+<h1>False Positives Papers at Fulltext Stage</h1>
+<p>Total papers: 8</p>
+<div class='study-list'>
+<div class='study' id='study-1'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/20673548/' target='_blank'>20673548</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included</p>
+<p><strong>Fulltext Reasoning:</strong> The study used voxel-based morphometry (VBM) on 1.5T MRI to compare adults with child abuse–related complex PTSD (n=31) to matched healthy nontraumatized controls (n=28). It reports whole-brain VBM group differences (reduced GM in hippocampus, ACC, OFC and other cortical regions) with coordinates and statistical thresholds (including SVC for a priori ROIs and whole-brain exploratory results). Participants are adults (female) and the paper provides between-group voxelwise coordinate-based results comparing PTSD patients to trauma-unexposed healthy controls. No exclusion criteria are violated. Therefore the study meets all inclusion criteria for the meta-analysis.</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-2'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25206550/' target='_blank'>25206550</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Brain structure in post-traumatic stress disorder: A voxel-based morphometry analysis</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Neural Regen Res</p>
+<p><strong>Publication Year:</strong> 2013</p>
+<p><strong>DOI:</strong> 10.3969/j.issn.1673-5374.2013.26.001</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/4146106/' target='_blank'>4146106</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included</p>
+<p><strong>Fulltext Reasoning:</strong> This study reports whole-brain voxel-based morphometry (VBM) using MRI and compares a chronic PTSD group (n=12) to a trauma-exposed control group (miners without PTSD, n=14). Adults only (males 18–49) were included. The paper presents whole-brain VBM results (between-group ANOVAs and post-hoc two-sample t-tests with Alphasim correction) describing regional gray matter volume differences for PTSD vs. trauma-exposed controls and PTSD vs. symptoms-improved survivors. It is not an ROI-only study, does not focus solely on treatment/longitudinal effects, and provides between-group voxel-based comparisons relevant to the review objective. Therefore it meets the inclusion criteria (VBM whole-brain results, PTSD group plus trauma-exposed comparison, adult sample) and does not violate exclusion criteria.</p>
+<p><strong>Fulltext Confidence:</strong> 0.92</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+
+  
+This study compared the difference in brain structure in 12 mine disaster survivors with chronic post-traumatic stress disorder, 7 cases of improved post-traumatic stress disorder symptoms, and 14 controls who experienced the same mine disaster but did not suffer post-traumatic stress disorder, using the voxel-based morphometry method. The correlation between differences in brain structure and post-traumatic stress disorder symptoms was also investigated. Results showed that the gray matter volume was the highest in the trauma control group, followed by the symptoms-improved group, and the lowest in the chronic post-traumatic stress disorder group. Compared with the symptoms-improved group, the gray matter volume in the lingual gyrus of the right occipital lobe was reduced in the chronic post-traumatic stress disorder group. Compared with the trauma control group, the gray matter volume in the right middle occipital gyrus and left middle frontal gyrus was reduced in the symptoms-improved group. Compared with the trauma control group, the gray matter volume in the left superior parietal lobule and right superior frontal gyrus was reduced in the chronic post-traumatic stress disorder group. The gray matter volume in the left superior parietal lobule was significantly positively correlated with the State-Trait Anxiety Inventory subscale score in the symptoms-improved group and chronic post-traumatic stress disorder group (  r   = 0.477,   P   = 0.039). Our findings indicate that (1) chronic post-traumatic stress disorder patients have gray matter structural damage in the prefrontal lobe, occipital lobe, and parietal lobe, (2) after post-traumatic stress, the disorder symptoms are improved and gray matter structural damage is reduced, but cannot recover to the trauma-control level, and (3) the superior parietal lobule is possibly associated with chronic post-traumatic stress disorder. Post-traumatic stress disorder patients exhibit gray matter abnormalities. 
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (28978 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## INTRODUCTION 
+  
+What kinds of psychological trauma occur when humans experience huge disasters? Is the psychological trauma associated with changes in brain structure? Can brain structural damage alter as symptoms improve? Which neuroimaging technology can assist the diagnosis? 
+
+Wars, earthquakes, major traffic accidents, and terrorist attacks may bring about profound spiritual pains, and even cause extreme fear and helplessness for people that have experienced or witnessed these unusual threats or disasters. This persistent and constant mental disorder caused by psychological trauma is termed post-traumatic stress disorder (PTSD). PTSD is characterized by re-experiencing, avoidance, and high vigilance symptoms[ ]. There is increasing interest in PTSD due to its high incidence and serious consequences. In the United States, the PTSD lifetime prevalence rate is 7.8%, with females showing higher prevalence (10.4%) than males (5%)[ ]. PTSD may lead to severe social dysfunction, and at least 1/3 of affected patients lose their working and living ability[ ]. PTSD patients are at high risk for suicide[ ], which is six times higher than the normal population[ ]. Therefore, the mechanisms underlying PTSD are a hot topic in psychiatry research. 
+
+The advent of brain imaging technology raises the possibility of studying the brain mechanisms of PTSD   in vivo  . Currently, brain imaging studies can be roughly divided into functional imaging and structural imaging[ ]. Existing studies examining PTSD brain structures have focused on the hippocampus, prefrontal cortex, amygdala, temporal lobe, anterior cingulate cortex, and other brain areas[ ]. Using magnetic resonance technology, Bremner   et al  [ ] found that the right hippocampus volume decreased by 8% in Vietnam veterans with PTSD, which was correlated with deficits in verbal declarative memory. Patients with PTSD after a motorcycle accident were also reported to have decreased thickness of the triangular area in the left medial frontal lobe and left inferior frontal gyrus, and reduced thickness in the right superior temporal gyrus cortex[ ]. Furthermore, compared with normal miners, PTSD patients who experienced a mine disaster presented cortical thinning in the right inferior temporal gyrus, and the cortical thickness was negatively correlated with Clinical Administrated PTSD Scale scores[ ]. The gray matter volume in the bilateral superior and interior frontal lobe, as well as the right anterior cingulate, in PTSD patients had a negative correlation with Clinical Administrate PTSD Scale scores[ ]. Lyoo   et al  [ ] also found that PTSD rehabilitee patients exhibited increased dorsolateral prefrontal cortical thickness at 1.42 years after a subway accident in South Korea, and cortical thickness was highly correlated with the decrease of PTSD symptoms. Diffusion tensor imaging, another method for assessing brain structure, also revealed that the fractional anisotropy value of the left superior frontal gyrus was higher in PTSD patients than healthy controls[ ]. Furthermore, in PTSD patients who had experienced the Vietnam and Persian Gulf wars, the size and thickness of the parahippocampal gyrus, superior temporal cortex, lateral orbitofrontal cortex, and inferior frontal orbital cortex were reduced[ ]. Additionally, the bilateral superior, bilateral middle and left inferior frontal gyrus, and left superior temporal gyrus were thinner[ ]. Rauch   et al  [ ] further demonstrated that PTSD female patients had a significantly lower anterior cingulate cortex volume than female controls who experienced trauma but did not suffer from PTSD. Similar findings have been reported in other studies[ ]. Overall, these data indicate that PTSD brain structure results are not consistent, although a recent meta-analysis of PTSD whole-brain structure supports that the PTSD is highly correlated with the reduction of gray matter volume in the anterior cingulate, prefrontal cortex, left temporal pole/middle temporal gyrus, and left hippocampus[ ]. Therefore, brain structural damage is definitely detectable in PTSD patients. 
+
+The imaging performance of PTSD patients has been frequently reported during follow-ups[ ]. Hakamata   et al  [ ] performed a longitudinal follow-up study on changes in brain structure of cancer-related PTSD patients, and reported that the right orbitofrontal cortex gray matter volume in patients was significantly lower than the trauma control and healthy control groups, while the PTSD diagnosis had no interaction with the determination time of right orbitofrontal cortex gray matter volume. As cancer-related PTSD progresses, it is hypothesized that orbitofrontal cortex gray matter volume remains unchanged. De Bellis   et al  [ ] found no changes in temporal lobe, amygdala, or hippocampus volume between adolescent children with abuse-caused PTSD and healthy controls during a 2-year follow-up; these negative results may be explained by the small sample size. The hippocampal volume of a PTSD candidate was also reported to remain unchanged at six months after trauma[ ]. As PTSD progresses, brain structure inevitably changes, however, no PTSD symptoms have been clearly described in previous PTSD imaging studies. 
+
+Understanding the brain areas highly involved in the improvement of PTSD symptoms will assist the judgment of PTSD patient prognosis. Growing evidence shows that PTSD clinical symptoms were improved after treatment[ ]. For example, after 6–9 months of psychotherapy, the right subgenual anterior cingulate cortex thickness can predict the degree of PTSD symptom improvement[ ]. When memory tasks are performed, the activity of the hippocampus and subgenual anterior cingulate cortex reflects the improvement of PTSD symptoms, suggesting that the right subgenual anterior cingulate cortex is a neuroimaging indicator for PTSD symptom improvement[ ]. Although the aforementioned studies have attempted to explore the potential neuroimaging mechanisms of PTSD rehabilitation, they cannot eliminate the impacts of treatment (medication and/or psychotherapy) on brain structure/function. Only one study[ ] has examined the brain structure changes of PTSD patients during its natural course (without any treatment), with a 2-year follow-up on 25 soldiers with PTSD and 22 controls. In that study, the degree of brain atrophy in PTSD patients was similar to controls. Furthermore, PTSD patients were divided into subgroups of improved symptoms and decreased symptoms, with only a small portion of the left parietal lobe in the symptoms-decreased group exhibiting loss of more nerve fibers than the control group, while whole brain atrophy in the symptoms-improved group was significantly more prevalent compared with the control group, especially in the brain stem and frontal and temporal lobe[ ]. 
+
+Voxel-based morphometry is a potential method to investigate the brain structure factors leading to chronic PTSD. With the development of MRI technology and computer image processing, the use of voxel in MRI analysis of brain structure was first proposed in 1995[ ], which can detect differences in brain gray matter and white matter on MRI scanning. In 2000, Ashburner and Friston[ ] formally introduced the concept of voxel-based morphometry, a quantitative method to compare the volume of brain areas through calculating gray matter, white matter, and cerebrospinal fluid, thus accurately displaying morphological changes of brain tissue. 
+
+Thus, in the present study, we proposed the hypothesis that brain structural damage in the symptoms-improved group lies between the PTSD patient group and the trauma control group. To verify this hypothesis, we investigated the brain structure of mine disaster survivors in the Hunan Province of China with PTSD symptoms-improved or persistent within the recent two years, and mine disaster survivors without PTSD, using the voxel-based morphometry method. 
+
+
+## RESULTS 
+  
+### Quantitative analysis of participants 
+  
+Eighteen patients with chronic PTSD were included in this study. Three cases were excluded on survey according to the exclusion criteria and seven cases were transferred to symptoms-improved group. Thus, five PTSD patients were included. Additionally one chronic PTSD patient was excluded due to imaging data mirror caused by head movement. Finally, 12 cases in the patient group and 7 cases in the symptoms-improved group were included in our analyses. Fourteen miners who also experienced the same trauma, but did not suffer from PTSD, were included in the trauma control group. 
+
+
+### Demographic and psychological assessment 
+  
+The baseline data and psychological assessment results of all subjects in three groups are shown in  . 
+  
+General conditions and psychological assessment results of the post-traumatic stress disorder (PTSD) group, trauma control group, and symptoms-improved group. 
+  
+A logistic regression analysis was conducted taking Clinical Administrated PTSD Scale (CAPS) total score as the independent variable, and the age, downhole length of service, years of education, STAI-s, and STAI-t as the dependent variables. STAI-t was introduced into the regression equation (  R   = 0.45,   R   = 0.216, adjusted   R   = 0.191) and regression model analysis of variance (  F   = 8.562,   P   = 0.006). The STAI-t is regarded as the only predictive factor for CAPS total scores. 
+
+
+### Radiological changes of PTSD brain structures 
+  
+The gray matter volume in the right occipital lingual gyrus (Brodmann 18 area) of PTSD patients was decreased compared with the symptoms-improved group, and no brain areas showed a larger gray matter volume than the symptoms-improved group. The gray matter volume in the left superior parietal lobule (Brodmann 7 area) and the right superior frontal gyrus (Brodmann 8 area) of PTSD patients was decreased compared with the trauma control group, while no brain areas showed larger gray matter volumes than the trauma control group. The gray matter volume in the right middle occipital gyrus (Brodmann 19 area) and left middle frontal gyrus (Brodmann 11 area) of the symptoms-improved group was also reduced compared with trauma control group, and no brain areas showed larger gray matter volumes than the trauma control group ( ,  ). The gray matter volume was the smallest in PTSD patients, followed by the symptoms-improved group, but was largest in the trauma control group. 
+  
+Comparison of gray matter volume change in brain areas 
+    
+Comparison of gray matter volume in brain areas using voxel-based morphometry analysis. 
+
+(a) The left superior parietal lobule (post-traumatic stress disorder patients group < trauma control group); (b) the right superior frontal gyrus (post-traumatic stress disorder patients group < trauma control group); (c) the right lingual gyrus (post-traumatic stress disorder patients group < symptoms-improved group); (d) the right middle occipital gyrus (symptoms-improved group < trauma control group); (e) the left middle frontal gyrus (symptoms-improved group < trauma control group). A: Anterior; P: posterior; L: left; R: right. Data were analyzed using one-way analysis of covariance and adjusted with Alphasim. The color bar in each image represents the   T   value, and the higher   T   values indicate greater differences. 
+  
+
+### Correlation between brain structural damage and psychological assessment indicators 
+  
+There was no correlation in the left superior parietal lobule, the right superior frontal gyrus, and the right lingual gyrus with the scale scores (CAPS total scores and STAI-s, STAI-t subscale scores) in the PTSD patients ( ). In the trauma control group, the gray matter volume in the right middle occipital gyrus was negatively correlated with STAI-t scores (  r   = –0.669,   P   = 0.009;  ,  ); the left superior parietal lobule, the right superior frontal gyrus, and the left middle frontal gyrus had no correlation with the scale scores (CAPS total score and STAI-s, STAI-t subscale scores) ( ). 
+  
+Correlation between gray matter volume changes and psychological assessment in post-traumatic stress disorder (PTSD) patients 
+    
+Scatter plot for correlation analysis between gray matter volume changes and psychological assessment in post-traumatic stress disorder (PTSD) patients. 
+
+(A) In the trauma control group, the right middle occipital gyrus gray matter volume was negatively correlated with State-Trait Anxiety Inventory-trait subscale (STAI-t) scores (  r   = –0.669,   P   = 0.009). (B) While the PTSD patients group and the symptoms-improved group were joined into the PTSD symptoms group, the left superior parietal lobule gray matter volume was positively correlated with STAI-t (  r   = 0.477,   P   = 0.039). 
+  
+In the symptoms-improved group, the right lingual gyrus, the right middle occipital gyrus, and the left middle frontal gyrus were not correlated with the scale scores (CAPS total score and STAI-s, STAI-t subscale scores;  ). While the patients group and the symptoms-improved group were joined into the PTSD symptoms group for correlation analysis between brain areas and psychological assessment, and the left superior parietal lobule gray matter volume was positively correlated with STAI-t (  r   = 0.477,   P   = 0.039;  ,  ). 
+
+
+
+## DISCUSSION 
+  
+PTSD is accompanied by advanced neurological impairment and abnormalities in cerebral blood flow and metabolism[ ]. PTSD patients present brain gray matter and white matter abnormalities, which are the basis for functional abnormalities. Using the voxel-based morphometry method, MRI examination found that the gray matter volume in the superior parietal lobule, frontal lobe, and occipital lobe of PTSD patients was reduced, suggesting that gray matter abnormalities are present in PTSD patients. 
+
+Previous structural imaging studies found that the volumes of the bilateral orbitofrontal cortex, left rostral middle frontal lobe[ ], and the prefrontal cortex, hippocampus, and lingual gyrus volume were decreased[ ] in adult PTSD patients compared with a trauma control group. Chronic PTSD patients present thinner prefrontal cortex[ ] and a decline in the prefrontal lobe volume, including the orbitofrontal cortex, compared with normal people[ ]. The whole brain volume and the left ventral prefrontal volume were also markedly decreased in PTSD symptoms group compared with a normal control group[ ]. Veterans with PTSD show a reduced volume in the left occipital lobe gray matter compared with normal veterans, and the volume was negatively correlated with the severity of PTSD symptoms[ ]. As for untreated PTSD patients who were all drug-naive, had experienced traumas during adulthood, and had a single diagnosis of PTSD without any other current or lifetime diagnosis, whole brain gray matter volume was reduced, especially in the frontal and occipital lobe, compared with normal controls[ ]. A reduced volume was also observed in the occipital and frontal lobe of female PTSD patients who suffered from partner violence[ ]. Overall, these studies support our experimental findings, although we did not detect changes in hippocampal volume. 
+
+The majority of PTSD symptoms may be improved over time, although a small portion of PTSD patients exhibit chronic progression and the symptoms cannot be alleviated[ ]. The pathogenesis of chronic PTSD can be explained by a strong response to traumatic events such that these patients cannot recover[ ]. Therefore, targeting the rehabilitation of PTSD disease and exploring the neuropathological mechanisms of PTSD rehabilitation are of great clinical significance, which is why we included the PTSD symptoms group. 
+
+In the present study, gray matter volume in the trauma control group was higher than that in the symptoms-improved group and the PTSD patients group, while the symptoms-improved group was also higher than the PTSD patients group. As the PTSD symptoms improved, the partial occipital lobe (lingual gyrus) gray matter volume began to increase, while the gray matter volumes in the left frontal lobe and the right middle occipital gyrus were significantly decreased compared with the trauma control group. We speculate that PTSD patients still exhibited abnormal brain structures, despite an improvement in PTSD symptoms, although structural brain damage can be reduced, and was lower than normal levels. Changes in brain structure may be highly involved in the PTSD symptoms. For example, in 15 policemen who experienced trauma, the high re-experiencing scores were associated with smaller volumes in the amygdala, thalamus, hippocampus, and globus pallidus, while the high vigilance and avoidance symptoms were not associated with gray matter volume[ ]. Furthermore, the higher scores of re-experience symptoms were attributed to reduced hippocampal volume[ ]. In this study, no correlation between gray matter volume and PTSD symptoms was observed, possibly due to our relatively small sample size. 
+
+Although our experimental findings did not identify the brain area associated with key PTSD symptoms, we detected a trait anxiety-related brain area, the superior parietal lobule, while trait anxiety in this study was regarded as the only predictor of CAPS total scores. Therefore, the superior parietal lobule was associated with PTSD symptoms. A pairwise comparison among the PTSD patients group, the symptoms-improved group, and the trauma control group revealed that damage to the frontal structures was present in both the PTSD patients group and the symptoms-improved group, while changes in the superior parietal lobule volume was visible in only PTSD patients. Thus, the superior parietal lobule may be related to chronic PTSD. 
+
+Cardenas   et al  [ ] found that the parietal lobe was involved in the improvement of PTSD symptoms, although the improvement was not evident. Trait anxiety may act as a personality trait to predict the severity of PTSD symptoms[ ], which was consistent with our findings. Some authors have also reported that the superior parietal lobule is associated with the PTSD symptom severity. For example, the volume of the superior parietal lobule was negatively correlated with the flashback symptoms in PTSD[ ]. Therefore, we speculate that abnormalities in the prefrontal lobe, occipital lobe, and superior parietal lobule structure may participate in the neural network mechanism for PTSD. 
+
+Some limitations of our study should be noted. (1) This study failed to capture brain structural data of subjects on the first survey due to technical difficulty. Thus, a longitudinal comparison of brain structures is missing. (2) The sample size for brain structure research is relatively small. (3) All mine survivors tested were males, so the results should be interpreted with caution. 
+
+In summary, structural damage occurs in the prefrontal lobe, occipital lobe, parietal lobule, and other brain areas in patients with PTSD, and the severity of damage may reduce as the PTSD symptoms improve. However, brain structural damage cannot be restored to normal levels in the trauma control group. Further studies with larger sample sizes or more follow-up data are needed to explore the changes in brain structure associated with improvement of PTSD symptoms, thus providing further evidence for the prevention and treatment of chronic PTSD. 
+
+
+## SUBJECTS AND METHODS 
+  
+### Design 
+  
+A case-control study. 
+
+
+### Time and setting 
+  
+Experiments were performed from June 2007 to January 2008 in the Second Xiangya Hospital, Central South University, China. 
+
+
+### Subjects 
+  
+Survivors from a terrible mine accident that occurred at Hunan Province of China in June 2005 were selected for epidemiological and radiological survey in August 2005 and April 2006, respectively[ ]. This study reports the results of the third survey. 
+
+#### Inclusion criteria for PTSD patients 
+  
+(1) PTSD patients met the criteria in the Diagnostic and Statistical Manual of Mental Disorders, Version IV, issued by American Psychiatric Association[ ]; (2) aged 18–49 years; (3) males, right-handed; (4) all subjects volunteered to participate in this study, were informed of the experimental objects, methods, processes, possible discomfort and risks, and gave informed consent. 
+
+
+#### Exclusion criteria for PTSD patients 
+  
+(1) Patients with or previous history of severe physical or nervous system disease; (2) patients with or previous history of drug abuse and dependence, mental retardation, schizophrenia, bipolar disorder, and other mental illness; (3) first-degree relatives have severe mental or nervous system disease; (4) patients with metal implants. 
+
+
+#### Inclusion criteria for control group 
+  
+(1) Cases did not meet the criteria in the Diagnostic and Statistical Manual of Mental Disorders, Version IV, and received no medication within one month prior to survey; (2) aged 18–49 years; (3) males, right-handed; (4) all subjects volunteered to participate in this study, were informed of experimental objects, methods, processes, possible discomfort and risks, and gave informed consent. 
+
+
+#### Exclusion criteria for control group 
+  
+(1) Cases with or previous history of severe physical or nervous system disease; (2) cases with or previous history of mental disorder according to the Diagnostic and Statistical Manual of Mental Disorders, Version IV; (3) first-degree relatives have severe mental or nervous system disease; (4) patients with metal implants. 
+
+During the first survey in 2005, patients definitely diagnosed with PTSD received amitriptyline (25 mg/tablet, 100 tablets) from our research group as a gift, but they cannot recall the accurate period and time of administering drugs. In the subsequent follow-ups, subjects refused medication. According to the Treatment Guidelines for PTSD Veterans formulated by the United States Department of Veterans Affairs and the Department of Defense, the drug treatment effect of PTSD is very limited. Furthermore, the drug must be given in the maximum dose that can be tolerated, and last for at least 12 weeks. For example, the amitriptyline therapeutic dose ranged from 150–300 mg per day for 12 successive weeks[ ]. In the present study, the effect of drug treatment can be ignored after 2-year follow-up if amitriptyline was given at the minimum therapeutic dose (150 mg per day) for 16 days. Therefore, all the subjects involved in this study are considered at the natural course of 2 years. 
+
+
+
+### Methods 
+  
+#### Demographic and psychological assessment 
+  
+General information: name, gender, age, education level, marital status, downhole length of service, underground location when mine disaster occurred, past medical history, personal history, family history, and presence or absence of metal implants and dentures. All information were inquired and filled in by the investigators. 
+
+Structural Clinical Interview for the Diagnostic and Statistical Manual of Mental Disorders, Version IV, Axis I Disorders[ ]: the screening was performed by two psychiatrists. The tested survivors were included in the imaging data research if they met the diagnostic criteria for PTSD and inclusion criteria. 
+
+State-Trait Anxiety Inventory consisted of the Instruction and two subscales[ ]. Items 1–20 are State-Trait Anxiety Inventory-states, and are used to assess the fear, tension, anxiety, and neurotic experiences or feelings immediately or within recent period. Items 21–40 are State-Trait Anxiety Inventory-traits, and are used to assess regular emotional experience. The subjects chose the scores based on their own experiences or feelings. The subscale score has a range from 20–80 points, and reflects the severity of state or trait anxiety[ ]; higher scores indicate a more severe anxiety condition. The accumulated scores of each subscale in State-Trait Anxiety Inventory were calculated. 
+
+The CAPS[ ], developed by the U.S. National Research Center for PTSD in 1990, can be used to assess PTSD symptoms severity through interviews and questionnaires[ ]. This scale comprises three groups of symptoms: re-experience symptoms, avoidance and numbing symptoms, and high vigilance symptoms. PTSD can be clearly diagnosed upon one item in re-experience symptoms, three items in avoidance and numbing symptoms, and two items in high vigilance symptoms[ ]. The CAPS total score ranges from 0–136 points in five levels: 0–19, asymptomatic/few symptoms; 20–39, mild PTSD symptom/minimum (subthreshold); 40–59, moderate PTSD symptom/beginning; 60–79, severe PTSD symptom; > 80, extremely severe PTSD symptom. The higher scores indicate more severe symptoms[ ]. 
+
+
+#### Brain imaging assessment 
+  
+MRI data were collected using Signa 1.5 T TwinSpeed Magnetic Resonance System (GE, Milwaukee, WI, USA) in the MRI Room, Department of Radiology, the Second Xiangya Hospital, Central South University, China. The subjects were forced to maintain their body stationary in the supine position during scanning, and the head was fixed in a foam pad. 
+
+Three-dimensional scanning parameters: Images were collected based on the T1-weighted image using a three-dimensional gradient echo imaging sequence. Scanning parameters: repetition time = 12 ms, echo time = 4.2 ms, flip angle 15°, field of view = 24 × 24 cm, matrix = 512 × 512, slice thickness = 1.8 mm, no intervals. Scanning layer: 172 layers, scanning time: 16 minutes. 
+
+Three-dimensional data processing: The brain structure data obtained were converted into img format using the MRIconvert software (  http://lcni.uoregon.edu/~jolinda/MRIConvert/  ), and processed using voxel-based morphometry software in SPM8 (Wellcome Trust Center for Neuroimaging, University College London, UK) on Matlab7.6 (R 2008a), to perform data standardization, segmentation, and smoothing. The resulting images in img format were normalized to 1 × 1 × 1 mm voxels, according to the standard template in SPM8 software package (Montreal Neurological Institute, Canada). The images were then divided into segments and each voxel was classified into gray matter, white matter, and cerebrospinal fluid using segmentation algorithm in cluster analysis. Finally, the divided images were subject to space smoothing with full width at half maximum Gaussian filter (8 mm) to improve the signal-to-noise ratio. 
+
+
+#### Statistical analysis 
+  
+Data were analyzed using SPSS 13.0 (SPSS, Chicago, IL, USA). Demographic and psychological assessment data among three groups were compared using one-way analysis of variance and   post-hoc   test. The predictors of the CAPS total scores were analyzed using a logistic regression. Image data comparisons were carried out with a one-way analysis of variance and   post-hoc   test to compare the difference between two groups. The results of analysis of variance were preserved to restrict two-sample   t  -test results. The brain areas with differences were subject to Alphasim correction. The brain areas with significant differences were regarded as the region of interest. The signal in the region of interest was extracted using REST software (  http://resting-fmri.sourceforge.net  ), and analyzed by Pearson correlation with psychological assessment data.   P   < 0.05 was considered statistically significant. 
+
+ Research background:   The published data on the alterations in brain structures in patients with post-traumatic stress disorder over the course of the disease remain contradictory. 
+
+ Research frontiers:   There is no description of the post-traumatic stress disorder symptoms with respect to brain imaging of post-traumatic stress disorder patients. Understanding the brain area that is responsible for the improvement of post-traumatic stress disorder symptoms will guide the prognosis of patients. 
+
+ Clinical significance:   Voxel-based morphometry can be used to analyze brain structural characteristics of post-traumatic stress disorder patients over different periods. We explored the correlation between brain structure and post-traumatic stress disorder pathogenesis to examine the pathophysiological mechanism underlying post-traumatic stress disorder. 
+
+ Academic terminology:   Voxel-based morphometry, a measurement method for brain morphometry in neuropsychiatric diseases, can normalize brain MRI gradient echo T1-weighted images to an identical three-dimensional space, obtain brain structure images with high resolution, high definition and high gray matter-white matter contrast, and measure gray matter, white matter, and cerebrospinal fluid with the voxel as the basic unit. Additionally, each voxel in the structural image is compared to determine the difference between gray matter, white matter, and cerebrospinal fluid. 
+
+ Peer review:   The changes in the morphology of brain areas associated with post-traumatic stress disorder were investigated using the voxel-based morphometry method. This is the first morphological analysis of post-traumatic stress disorder. 
+
+
+
+ </div>
+</div>
+</div>
+</div>
+</div>
+<div class='study' id='study-3'>
+<h2>3. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23551879/' target='_blank'>23551879</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Using structural neuroanatomy to identify trauma survivors with and without post-traumatic stress disorder at the individual level</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Psychol Med</p>
+<p><strong>Publication Year:</strong> 2013</p>
+<p><strong>DOI:</strong> 10.1017/S0033291713000561</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/3854554/' target='_blank'>3854554</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included</p>
+<p><strong>Fulltext Reasoning:</strong> The study uses voxel-based morphometry methods (SPM8 segmentation, modulation, smoothing of GM and WM) on structural MRI and reports whole-brain voxel-wise mass-univariate results and multivariate SVM results. Sample includes adults: 50 PTSD, 50 trauma-exposed without PTSD, and 40 trauma-unexposed healthy controls. The paper reports whole-brain VBM comparisons (PTSD vs healthy controls; PTSD vs trauma-exposed without PTSD; trauma-exposed without PTSD vs healthy controls) with FWE-corrected findings and supplementary tables of regions/coordinates (Tables S3–S9). Thus it meets all inclusion criteria (VBM measurement, appropriate groups, whole-brain voxel-based results). No exclusion criteria are met.</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+## Background 
+  
+At present there are no objective, biological markers that can be used to reliably identify individuals with post-traumatic stress disorder (PTSD). This study assessed the diagnostic potential of structural magnetic resonance imaging (sMRI) for identifying trauma-exposed individuals with and without PTSD. 
+
+
+## Method 
+  
+sMRI scans were acquired from 50 survivors of the Sichuan earthquake of 2008 who had developed PTSD, 50 survivors who had not developed PTSD and 40 healthy controls who had not been exposed to the earthquake. Support vector machine (SVM), a multivariate pattern recognition technique, was used to develop an algorithm that distinguished between the three groups at an individual level. The accuracy of the algorithm and its statistical significance were estimated using leave-one-out cross-validation and permutation testing. 
+
+
+## Results 
+  
+When survivors with PTSD were compared against healthy controls, both grey and white matter allowed discrimination with an accuracy of 91% (  p   < 0.001). When survivors without PTSD were compared against healthy controls, the two groups could be discriminated with accuracies of 76% (  p   < 0.001) and 85% (  p   < 0.001) based on grey and white matter, respectively. Finally, when survivors with and without PTSD were compared directly, grey matter allowed discrimination with an accuracy of 67% (  p   < 0.001); in contrast the two groups could not be distinguished based on white matter. 
+
+
+## Conclusions 
+  
+These results reveal patterns of neuroanatomical alterations that could be used to inform the identification of trauma survivors with and without PTSD at the individual level, and provide preliminary support to the development of SVM as a clinically useful diagnostic aid. 
+
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (27708 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## Introduction 
+  
+Post-traumatic stress disorder (PTSD) is an anxiety disorder that may develop in individuals who have experienced or witnessed severe traumatic events and is characterized by persistent re-experience of the traumatic event, avoidance of trauma-related stimuli and hypervigilance (Yehuda & Flory,  ). Individuals with PTSD are known to have high rates of co-morbidity with other Axis I psychiatric disorders, somatic disorders and mild cognitive impairment (Lanius   et al.  ; Pace & Heim,  ). Therefore, it can be difficult to discern the symptoms and obtain an accurate diagnosis. In addition, cases of pseudo-PTSD, in which a patient's presentation is but a simulation of the actual syndrome, can be particularly difficult to identify due to the traditional assumption that a patient's reported symptoms can be accepted as valid (Rosen & Taylor,  ; Sartori   et al.  ). A number of neuroimaging studies have therefore compared individuals who did and did not develop PTSD following exposure to a traumatic event, in order to identify possible diagnostic biomarkers (Shin   et al.  ; Nardo   et al.  ; Robinson & Shergill,  ). The results have revealed volumetric reductions in those who had become ill, relative to those who had not, within a distributed fronto-limbic network which includes the dorsolateral and ventromedial prefrontal cortices, amygdala and hippocampus (Shin   et al.  ; Nardo   et al.  ; Robinson & Shergill,  ). However, the neuroimaging studies published so far have used standard mass-univariate analytical methods and therefore have only been able to report differences at the group level, which is of little use in clinical practice where doctors need to make clinical decisions about individuals. At present, there are no reliable biomarkers that can be used to identify trauma-exposed individuals with and without PTSD, and the diagnosis of this disorder is still entirely reliant on clinical presentation and psychometric measures (Regier   et al.  ). 
+
+In order to enhance the translational impact of the results, there has been a recent shift toward the use of multivariate pattern recognition techniques, such as support vector machine (SVM). This technique has two main advantages compared with standard mass-univariate analytical methods that are typically used in neuroimaging (Lao   et al.  ; Norman   et al.  ; Brammer,  ; Pereira   et al.  ; Orrù   et al.  ). First, it allows inferences to be made at the level of the individual and therefore yields results with high translational potential in everyday clinical practice. Second, it takes inter-regional correlations into account and therefore is sensitive to differences that are subtle and spatially distributed; as such, it provides an ideal framework for investigating psychiatric disorders that affect a distributed network of regions. More specifically, SVM is a technique for classifying individual observations into distinct groups or classes based on high-dimensional data and consists of a training phase and a testing phase (Vapnik,  ). In the training phase, a ‘decision function’ or ‘hyperplane’ is developed which best distinguishes between the two experimental groups of interest (e.g. patients   versus   controls). In the testing phase, this decision function is used to predict the group to which a new observation belongs. The overall accuracy of the algorithm depends on its sensitivity (i.e. the proportion of patients identified as having the disorder) and specificity (i.e. the proportion of controls identified as not having the disorder), and provides an estimate of how well it can be expected to generalize to future cases. 
+
+In recent years, a growing number of studies have applied SVM to neuroimaging data to examine a range of psychiatric and neurological conditions including schizophrenia, depression, Alzheimer's disease and autistic spectrum disorder (e.g. Davatzikos   et al.  ; Fan   et al.  ; Fu   et al.   2008; Klöppel   et al.  ; Costafreda   et al.  ; Koutsouleris   et al.  ; Ecker   et al.  ; Gong   et al.  ). The results of these studies have been promising, indicating good diagnostic and prognostic accuracies and a high level of generalizability across research centres. However, none of the studies published so far has used SVM to examine neuroanatomical alterations in PTSD; thus, it remains unclear whether those with PTSD can be accurately identified at the level of the individual. 
+
+The aim of the current investigation was therefore to assess the diagnostic potential of structural magnetic resonance imaging (MRI) for identifying trauma-exposed individuals with and without PTSD. We acquired structural MRI data from a total of 150 volunteers including 50 survivors of the Sichuan earthquake of 2008 who had developed PTSD, 50 survivors who had not developed PTSD and 40 healthy controls who had not been exposed to the earthquake. We then analysed the data using SVM in order to make inferences at the level of the individual. Based on animal models suggesting that exposure to a brief period of intense stress is sufficient to cause significant neuroanatomical changes (Holmes & Wellman,  ) and recent evidence that stressful life events lead to longitudinal changes in the human brain (Papagni   et al.  ), we expected that both groups of survivors could be discriminated from healthy controls with statistically significant accuracy. Furthermore, based on the results of previous neuroimaging studies of PTSD (Shin   et al.  ; Nardo   et al.  ; Robinson & Shergill,  ), we hypothesized that the direct comparison between trauma-exposed individuals with and without PTSD would allow accurate discrimination between the two groups at an individual level. 
+
+
+## Methods 
+  
+### Sample 
+  
+At 14.28 hours on 12 May 2008, an earthquake measuring 8.0-magnitude devastated the Sichuan Province of China. We recruited 100 survivors of the earthquake including 50 who fulfilled the diagnostic criteria for PTSD and 50 who did not meet such criteria using the PTSD Checklist (Weathers   et al.  ), a 17-item self-report measure of symptoms of PTSD, and the Clinician-Administered PTSD Scale (Blake   et al.  ), a 30-item structured interview based on the DSM-IV criteria for PTSD. Inclusion criteria for the two groups of survivors included: (i) physically experiencing the earthquake; (ii) personally witnessing death, serious injury or the collapse of buildings; and (iii) not suffering any physical injury. Exclusion criteria included psychiatric co-morbidity assessed using the Structured Clinical Interview for DSM-IV (First   et al.  ), a history of psychiatric or neurological disorders, recent medication that might affect brain function, alcohol or drug abuse and pregnancy. The acquisition of neuroimaging and clinical data from survivors took place between 263 and 468 days after the earthquake, with an average interval of 384.33 (  = 58.43) days. In addition, we used data from 40 healthy participants recruited by advertisement from the same region and scanned with the same protocol shortly before the earthquake. Exclusion criteria included history of psychiatric or neurological disorders, recent medication that might affect brain function, alcohol or drug abuse and pregnancy. The three groups were carefully matched for age and gender by pairing each subject in one group with another subject of the same gender and the same age (± 3 years) in the other two groups ( ). Inspection of neuroanatomical scans (i.e. T1- and T2-weighted images) by an experienced neuroradiologist did not reveal gross abnormalities in any of the participants. Informed written consent was obtained from all participants and the research protocol was approved by the local ethics committee.
+   
+Demographic and clinical characteristics of participants 
+      
+
+
+### MRI acquisition 
+  
+All participants were scanned using a 3T MRI system (EXCITE, General Electric, USA) with a volumetric three-dimensional spoiled gradient-recalled sequence (repetition time = 8.5 ms, echo time = 3.4 ms, flip angle = 12°, slice thickness = 1.0 mm) with an eight-channel phase array head coil. A field of view of 24 cm  was used with an acquisition matrix comprising 256 readings of 128 phase-encoding steps, producing 156 contiguous coronal slices with slice thickness of 1.0 mm and in-plane resolution of 0.47 × 0.47 mm. 
+
+
+### Pre-processing 
+  
+After checking for scanner artifacts and gross anatomical abnormalities for each subject, we reoriented the original images along the anterior–posterior commissure line and set the anterior commissure as the origin of the spatial coordinates to assist the normalization algorithm. The new segmentation procedure implemented in SPM8 ( ), running under Matlab 7.1 (Math Works, USA) was used to segment all the images into grey matter (GM) and white matter (WM), i.e. maps of probability values representing the probability of a voxel containing a specific tissue type. A fast diffeomorphic image registration algorithm (Ashburner,  ), available as a toolbox in SPM8, was used to warp the GM and WM partitions into a new study-specific reference space representing an average of all the subjects included in the analysis. As an initial step, a set of study-specific templates and the corresponding deformation fields, required to warp the data from each subject to the new reference space, were created using the GM and WM partitions. Each subject-specific deformation field was used to warp the corresponding GM and WM partitions into the new reference space with the aim of maximizing accuracy and sensitivity (Yassa & Stark,  ); finally, the warped GM and WM partitions were separately affine transformed into the Montreal Neurological Institute (MNI) space and smoothed with a standard 8 mm full-width at half-maximum Gaussian kernel. An additional ‘modulation’ step was used to scale the GM and WM probability values by the Jacobian determinants of the deformations to ensure that the total amount of GM and WM in each voxel was conserved after the registration. The resulting GM and WM partitions had an isotropic resolution of 1.5 mm and included a total of 275 042 and 169 491 voxels, respectively. 
+
+
+### SVM 
+  
+After pre-processing, we used SVM (Burges,  ) as implemented in the PROBID software package ( ) to investigate the potential of whole-brain structural MRI images for discriminating amongst the three experimental groups. Individual brain scans were treated as points located in a high-dimensional space defined by the GM or WM values in the pre-processed images. A linear decision boundary in this high-dimensional space was defined by a ‘hyperplane’ that separated the individual brain scans according to a class label (e.g. survivors with   versus   without PTSD). The optimal hyperplane was computed based on the whole multivariate pattern of GM values across each structural MRI image. A linear rather than a non-linear kernel SVM was used in order to reduce the risk of overfitting the data and to allow direct extraction of the weight vector as an image (i.e. the SVM discrimination map). The PROBID software allows a linear kernel matrix (measuring similarity between all pairs of brain images) to be pre-computed and supplied to the classifier. This approach affords a substantial increase in computational efficiency and permits whole-brain classification without requiring explicit dimensionality reduction. A ‘leave-one-out’ cross-validation method (Hastie & Tibshirani,  ) was used which involved excluding a single subject from each group and training the classifier using the remaining subjects; the subject pair excluded was then used to test the ability of the classifier to reliably distinguish between categories (e.g. survivors with   versus   without PTSD). This procedure was repeated for each subject pair in order to assess the overall accuracy of the SVM. Statistical significance of the overall classification accuracy was determined by permutation testing; this involved repeating the classification procedure 1000 times with a different random permutation of the training group labels and counting the number of permutations achieving higher sensitivity and specificity than the true labels. We repeated this procedure for GM and WM images separately in order to assess the predictive power of each tissue type. 
+
+
+### Mass-univariate analysis 
+  
+In order to compare the results of our multivariate approach with the standard mass-univariate analysis using the general linear model, a total of three paired   t   tests comparing those subjects used for the corresponding SVM comparisons were conducted for GM and WM, respectively. These   t   tests were implemented in SPM8 software ( ) running under Matlab 7.1 (Math Works, USA). Statistical inferences were made at   p   < 0.05 after family-wise error (FWE) correction for multiple comparisons. Regions reported in Tables S1–S9 of the Supplementary material were identified using the Automated Anatomical Labeling atlas as implemented in PickAtlas software ( ). 
+
+
+
+## Results 
+  
+### Demographics and clinical scores 
+  
+The three groups were perfectly matched for gender and did not differ with respect to age (  F   = 0.143,   p =   0.867). However, the interval between the earthquake and scanning differed between survivors with (355.64 days,   = 66.97) and without (413.02 days,   = 27.06) PTSD [  t   = −5.62, degrees of freedom (df) = 98,   p   < 0.001]. As expected, survivors with PTSD scored higher than survivors without PTSD both on the PTSD Checklist (  t   = 8.80, df = 98,   p   < 0.001) and on the Clinician-Administered PTSD Scale (  t   = 9.94, df = 98,   p   < 0.001) ( ). 
+
+
+### Survivors with PTSD   versus   healthy controls 
+  
+We first compared survivors who had developed PTSD against healthy controls. The application of SVM to GM images allowed discrimination between the two groups with a sensitivity of 92% and a specificity of 90%, resulting in an accuracy of 91%; permutation testing indicated that such accuracy was statistically significant [  p   < 0.001; see Fig. S1 in the Supplementary material for receiver operating characteristic (ROC) curve]. The application of SVM to WM images yielded a similar pattern of results, namely a sensitivity of 97%, a specificity of 85% and an accuracy of 91% (  p   < 0.001; see Fig. S1 in the Supplementary material for ROC curve). When GM and WM were considered simultaneously, sensitivity, specificity and accuracy were 95, 87.5 and 91.25%, respectively (  p   < 0.001). The use of an arbitrary threshold corresponding to the top 30% of the maximum absolute weight vector score revealed that discrimination between the two groups was driven by GM and WM differences in a widely distributed network of prefrontal, temporal, parietal and occipital regions ( ; see Tables S1 and S2 in the Supplementary material for a full list).
+   
+Grey and white matter regions that showed the highest discriminative value for the comparison between survivors with post-traumatic stress disorder (PTSD) and healthy controls (HC). Regions were identified by setting the threshold to the top 30% of the maximum absolute weight vector score. Red indicates higher values in the group of survivors with PTSD, while blue indicates higher values for the HC group. 
+  
+
+In addition to the multivariate analysis, we performed a standard mass-univariate analysis for comparison. This revealed that survivors with PTSD showed reduced GM and WM relative to healthy controls within a highly distributed bilateral network which included prefrontal, temporal and parietal regions, the cerebellum and the putamen (  p   < 0.05 after FWE correction). These GM and WM differences are reported in detail in Tables S3 and S4 of the Supplementary material. 
+
+
+### Survivors without PTSD   versus   healthy controls 
+  
+We then compared survivors who had not developed PTSD against healthy controls. Using GM images, SVM allowed discrimination between the two groups with a sensitivity of 77% and a specificity of 75%, resulting in an accuracy of 76% (  p   < 0.001; see Fig. S2 in the Supplementary material for ROC curve). A similar pattern of results was found using WM images, namely a sensitivity of 87%, a specificity of 82% and an accuracy of 85% (  p   < 0.001; see Fig. S2 in the Supplementary material for ROC curve). When GM and WM were considered simultaneously, sensitivity, specificity and accuracy were 87.5, 80 and 83.75%, respectively (  p   < 0.001). The use of an arbitrary threshold corresponding to the top 30% of the maximum absolute weight vector score showed that discrimination between the two groups was driven by GM and WM differences in several prefrontal, temporal, parietal and occipital regions ( ; see Tables S5 and S6 in the Supplementary material for a full list).
+   
+Grey and white matter regions that showed the highest discriminative value for the comparison between survivors without post-traumatic stress disorder (PTSD) and healthy controls (HC). Regions were identified by setting the threshold to the top 30% of the maximum absolute weight vector score. Red indicates higher values in the group of survivors without PTSD, while blue indicates higher values for the HC group. 
+  
+
+The standard mass-univariate analysis revealed that survivors without PTSD relative to the healthy controls had reduced GM in the bilateral middle temporal gyrus, left parahippocampal gyrus, left lentiform gyrus, right inferior frontal gyrus, left cerebellum, left cuneus and right putamen (  p   < 0.05 after FWE correction); the only GM region to show increased volume in survivors without PTSD relative to the healthy controls was the left putamen whereas there were no WM regions that showed the same effect. These differences are reported in detail in Tables S7 and S8 of the Supplementary material. 
+
+
+### Survivors with PTSD   versus   survivors without PTSD 
+  
+Finally we directly compared survivors who had developed PTSD against survivors who had not. Using GM images, SVM allowed discrimination between the two groups with a sensitivity of 66%, a specificity of 68% and an accuracy of 67% (  p   < 0.001; see Fig. S3 in the Supplementary material for ROC curve). The use of an arbitrary threshold corresponding to the top 30% of the maximum absolute weight vector score revealed that this discrimination was driven by GM differences in a highly distributed network that included prefrontal, temporal, parietal and occipital regions as well as subcortical structures ( ; see Table S9 in the Supplementary material for a full list). In contrast the two groups could not be distinguished at an individual level using WM images (sensitivity 58%, specificity 58%, accuracy 58%,   p   > 0.05). When GM and WM were considered simultaneously, sensitivity, specificity and accuracy were 76, 50 and 62%, respectively (  p   = 0.006). The standard mass-univariate analysis did not detect any significant differences between survivors with and without PTSD after correction for multiple comparisons, in either GM or WM.
+   
+Grey matter regions that showed the highest discriminative value for the comparison between survivors with and without post-traumatic stress disorder (PTSD). Regions were identified by setting the threshold to the top 30% of the maximum absolute weight vector score. Red indicates higher values in the group of survivors with PTSD, while blue indicates higher values for survivors without PTSD. 
+  
+
+
+### Network of interest analyses 
+  
+For completeness, we repeated the above analyses using an   a priori   mask comprising regions implicated in PTSD, i.e. the bilateral prefrontal cortex, amygdala and hippocampus (see Fig. S4 in the Supplementary material) (Shin   et al.  ; Nardo   et al.  ; Robinson & Shergill,  ). For most comparisons accuracy was still statistically significant but lower compared with the whole-brain analyses (see Table S10 in the Supplementary material), suggesting that discrimination was informed by regions outside the bilateral fronto-limbic network that is traditionally associated with PTSD. 
+
+
+
+## Discussion 
+  
+The results demonstrate that multivariate analysis of structural MRI allows discrimination between trauma-exposed individuals and healthy controls with high levels of accuracy (76–91%,   p   < 0.001); this finding was replicated using GM and WM, indicating that neuroanatomical differences between the two groups were expressed in both tissue types. In addition, the results show that it is possible to discriminate between trauma-exposed individuals with and without PTSD at an individual level with above-chance accuracy (67%,   p   < 0.001); such discrimination was obtained using GM but not WM, suggesting that neuroanatomical differences between the two groups were tissue-specific. This pattern of results provides preliminary support to the development of SVM as a clinically useful diagnostic tool in PTSD. Such a tool could potentially be used in a clinical setting to inform the clinical evaluation of those difficult to categorize using traditional methods of clinical assessment alone (Lanius   et al.  ; Pace & Heim,  ). In addition, it could potentially be used in a forensic setting as an objective means of reducing controversy in evaluations of mental illness and minimizing errors in detecting malingering (Rosen & Taylor,  ; Sartori   et al.  ). In contrast, no significant regions were detected for the comparison between survivors with and without PTSD using standard mass-univariate techniques in which each voxel is considered as a spatially independent unit. This provides support to the idea that multivariate methods such as SVM may be better suited to the development of a real-world clinical diagnostic tool than standard mass-univariate techniques (Brammer,  ). 
+
+Successful discrimination between the two groups of survivors was driven by neuroanatomical alterations in a widespread network of prefrontal, temporal, parietal and occipital regions as well as subcortical structures ( ). Furthermore, the use of a fronto-limbic mask resulted in generally lower accuracy relative to the whole-brain analyses, indicating that regions outside the bilateral fronto-limbic network that is traditionally associated with PTSD contributed to discrimination. In multivariate methods such as SVM, an individual region may display high discriminative power due to two possible reasons: (i) a difference in volume between groups in that region; and (ii) a difference in the correlation between that region and other areas between groups. Thus, the widespread network identified in the present investigation should be interpreted as a spatially distributed pattern rather than as individual regions. In addition, it should be noted that this widespread network was identified using an arbitrary threshold and that the discrimination was in fact informed by all voxels in the brain since no feature extraction was employed. Thus, one should be cautious when drawing inferences regarding specific regions out of the context of the overall pattern using multivariate methods. 
+
+In the present investigation, we could not establish whether the neuroanatomical differences that led to accurate discrimination between survivors with and without PTSD reflected neuroplastic changes that occurred after the earthquake or pre-existing differences associated with individual variability in psychological vulnerability. However, the fact that the two groups of survivors could be discriminated from healthy controls with high levels of accuracy suggests that our result may reflect neuroplastic changes after the earthquake rather than pre-existing differences. This interpretation is supported by animal models suggesting that exposure to a brief period of intense stress is sufficient to cause significant neuroanatomical changes (Holmes & Wellman,  ) and recent evidence that stressful life events lead to longitudinal changes in the human brain (Papagni   et al.  ). We also note that on average survivors who met criteria for PTSD were more likely to have been scanned sooner after the earthquake than those who did not. This points to time from the earthquake as a potential critical variable modulating the differences in clinical symptomatology and structural neuroanatomy between the two groups, and is therefore consistent with the interpretation of our results in terms of neuroplastic changes. 
+
+The present study has a number of methodological limitations. First, all healthy participants were scanned shortly before the earthquake and therefore some of the differences between this group and survivors could be explained by changes in image quality before and after the earthquake; however, careful examination of phantom images acquired before and after the earthquake found no evidence for such changes and furthermore this limitation is not relevant to the comparison between survivors who did and did not develop PTSD. Second, all data were acquired using the same scanner and acquisition sequence and therefore we were unable to make inference regarding the generalizability of any of the successful classifiers across different research centres. Nevertheless, a recent investigation of MRI changes in Alzheimer dementia provides preliminary evidence that the methodology can be generalized across different research centres (Klöppel   et al.  ). Third, the three subject groups were compared using a binary rather than a multi-class classification approach, which would have provided a closer approximation of how differential diagnostic decisions are made in real-world clinical practice. However, since multiple binary classifiers for each possible comparison were generated in the current study, a quantitative estimate is still provided demonstrating the relative ease, or difficulty, with which subjects from each group may be differentiated from the subjects of every other group, with respect to each data type. Finally, the development of a diagnostic algorithm in SVM is based on the distinction between patients and controls in the training data, which in turn relies on traditional clinical assessment. It follows that the application of SVM to neuroimaging data can only reach the same level of diagnostic accuracy as traditional methods of clinical assessment. Nevertheless, such application could still be useful as an objective means of reducing controversy in forensic evaluations of mental insanity and minimizing errors in detecting malingering (Rosen & Taylor,  ; Sartori   et al.  ). For a more comprehensive discussion of the limitations of the use of SVM in psychiatry and neurology, see our recent review (Orrù   et al.  ). 
+
+In conclusion, we have reported that multivariate analysis to MRI allows the identification of trauma-exposed individuals with high accuracy, and furthermore identifies trauma-exposed individuals who have and have not developed PTSD with statistically significant accuracy. These results reveal patterns of neuroanatomical alterations that could be used to inform the identification of trauma survivors with and without PTSD at the individual level, and provide preliminary support to the development of SVM as a clinically useful diagnostic aid. Nevertheless, it should be stressed that the eventual use of this technique in the real world would ultimately require a greater level of accuracy than that found in the present study. Greater diagnostic accuracy might be achieved by combining structural and functional neuroimaging data within the same SVM, an integrative approach that was successfully applied to an investigation of mild cognitive impairment (Fan   et al.  ). 
+
+
+## Supplementary Material 
+  
+ </div>
+</div>
+</div>
+</div>
+</div>
+<div class='study' id='study-4'>
+<h2>4. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/29939345/' target='_blank'>29939345</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Assault-related self-blame and its association with PTSD in sexually assaulted women: an MRI inquiry</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Soc Cogn Affect Neurosci</p>
+<p><strong>Publication Year:</strong> 2018</p>
+<p><strong>DOI:</strong> 10.1093/scan/nsy044</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/6121153/' target='_blank'>6121153</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included</p>
+<p><strong>Fulltext Reasoning:</strong> This adult (ages 19–37) MRI study used voxel-based morphometry (VBM) of gray matter volume and reports whole-brain VBM results (FDR-corrected cluster-level; peak MNI coordinates and cluster size) showing decreased lingual gyrus GMV associated with self-blame and differences between PTSD and non-PTSD subgroups. The sample includes trauma-exposed women with PTSD (n≈25 above PCL-5 cutoff) and trauma-exposed non-PTSD subgroup as well as non-exposed controls, and the paper reports between-group comparisons (PTSD vs non-PTSD and NEC). Results are whole-brain, coordinate-based, and adults only. No exclusion criteria (e.g., ROI-only, non-adult sample, or absence of PTSD group) are violated. Therefore the study meets all inclusion criteria for the meta-analysis.</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+Sexual assault is a frequent interpersonal trauma, which often leads to post-traumatic stress disorder (PTSD). Among other postassault characteristics, self-blame attributions were suggested to play an important role in sexually assaulted individuals’ coping and were consistently associated with PTSD in this population. The present study aimed to elucidate the neural underpinnings that may associate self-blame and PTSD in women who experienced sexual assault at adulthood, using structural and resting-state functional MRI. Thirty-eight sexually assaulted women and 24 non-exposed matched controls were studied (mean age: 25 years). Among the sexually assaulted participants, assault-related self-blame was negatively correlated with gray matter volume (GMV) bilaterally in the lingual gyrus and adjacent intracalcarine cortex. GMV in this cluster was also predicted by intrusion symptoms and negative social reactions. Resting-state functional connectivity (rs-FC) of this cluster with the left anterior temporal fusiform cortex significantly differed between PTSD and non-PTSD sexually assaulted participants, and was inversely correlated with intrusion symptoms and with peritraumatic dissociation. Finally, lingual cluster’s GMV and rs-FC with the anterior fusiform mediated the association between self-blame and intrusion symptoms across sexually assaulted participants. These findings link assault-related self-blame, disrupted postassault recovery and the neural circuitry involved in the processing of traumatic memories. 
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (34697 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## Introduction 
+  
+Sexual assault is a well-established risk factor for various mental and physical health consequences, including post-traumatic stress disorder (PTSD) ( ;  ;  ; for a recent review see  ). Of the different postassault characteristics that were suggested to play a crucial role in victims’ psychological coping (e.g.  ;  ;  ), one of the most studied is self-blame attributions, which have consistently been found to correlate with PTSD symptomatology in this population ( ;  ;  ;  ;  ). Importantly, self-blame attributions following sexual assault are often boosted by a stigmatizing social climate and victim-blaming reactions from various community systems and support providers ( ;  ;  ;  ;  ). Consequently, compared with victims of other traumatic experiences such as combat stress and car accident, in victims of sexual assault, trauma-related self-blame is highest, and its association with PTSD is the strongest ( ). 
+
+Several studies addressed the mechanism associating self-blame to post-traumatic symptomatology in sexually assaulted women. While some suggested that it involves re-experiencing sensations, maladaptive beliefs and global distress ( ;  ;  ), others focused on coping strategies ( ). Yet, despite the great empirical support for an association between these phenomena, the pathway by which self-blame attributions contribute to post-traumatic symptoms is not well understood. 
+
+Many neuroimaging studies have utilized magnetic resonance imaging (MRI) to investigate the neural underpinnings of emotional and cognitive processes [such as emotion dysregulation (e.g.  ) and overgeneralized self-blame (e.g.  ;  )] that are associated with the emergence of psychiatric disorders. Yet, no study assessed the neural traits associated with self-blame attributions in sexually assaulted individuals. Thus far, MRI studies of self-blame were conducted in healthy samples during fictional lab tasks (e.g.  ;  ) or in depressed individuals (e.g.  ), and pointed to the involvement of regions such as the subgenual cingulate cortex and amygdala. Only one study addressed the neural correlates of cognitive distortions, including self-blame, in explicitly traumatized individuals, most of them in a car accident ( ). During trauma recall, distorted cognitions were correlated with blood–oxygen-level-dependent (BOLD) signal intensity in brain areas implicated in imagery, autobiographic memory recall, and motor preparation, most notably the visual cortex, somatosensory areas and basal ganglia. As these activations were also strongly correlated with re-experiencing, the authors concluded that cognitive distortions are linked with vivid imagery as it is elicited by trauma cues ( ). 
+
+The goal of the present study was to elucidate the neural underpinnings that may associate assault-related self-blame and PTSD in sexually assaulted individuals. To this end, we examined whether self-blame attributions are associated with regional neuroanatomical alterations in gray matter volume (GMV) across the whole brain in women who were sexually assaulted during adulthood, and if so, whether and how such alterations are functionally related to PTSD. The latter was evaluated by assessing whether resting-state functional connectivity (rs-FC) patterns of regions showing self-blame-related GMV alterations differ between PTSD and non-PTSD participants, and whether these patterns are correlated with overall post-traumatic symptomatology and/or specific PTSD symptom clusters (for a similar approach see  ;  ). Finally, a mediation analysis was conducted to assess whether identified neural alterations mediate the association between self-blame and PTSD symptoms. Although we hypothesized that self-blame would be negatively correlated with GMV in regions previously implicated in self-blame and/or PTSD (e.g. anterior cingulate cortex, amygdala), in light of the scarcity of studies of structural alterations in women who were victims of sexual assault during adulthood, and lack of studies of the neural substrates of self-blame in this population, our analyses were exploratory. 
+
+
+## Materials and methods 
+  
+### Participants 
+  
+Sixty-eight women aged 19–37 years enrolled in the present study: 38 victims of adult sexual assault and 30 non-exposed controls (NEC) matched for age, education level and handedness. Participants were recruited via advertisements in social media and in the Tel Aviv Rape Crisis Center. Inclusion criterion for the traumatized individuals was experiencing sexual assault(s) in the past 3 years and after the age of 18 years. In order to maintain the ecological validity of the study, and because many victims of adult sexual assault have histories of childhood sexual abuse (e.g.  ), participants with additional experiences of earlier sexual assaults were not excluded. Although we tried to recruit both women and men to participate in the study, only women responded to our advertisements. NEC inclusion criterion was a lack of exposure to significant traumatic events. Exclusion criteria for both groups included MRI contraindications, a history of neurological disorder or any pervasive developmental disorder, head injury, fibromyalgia, any significant physical condition that is not being treated, and a frequent use of alcohol during the past 6 months. NEC participants were additionally excluded if they had a history of any psychiatric disorder. Prior to enrollment in the study, all participants were provided with full details about the study and gave informed written consent. The study was approved by the Sheba hospital Helsinki committee and the Tel Aviv University ethical board. 
+
+
+### Procedure 
+  
+The study took place at the Strauss Center for Computational Neuroimaging at Tel Aviv University. The experimental session included a 40-min MRI scan followed by 45 min of filling out self-report questionnaires in a quiet, private room. Women in the Sexual Assault group were instructed to fill out the questionnaires with regard to their most recent experience of sexual assault, while NEC participants were instructed to fill them out with regard to a self-chosen difficult event, which they have experienced sometime along their lives. Upon completion, participants were debriefed and asked for their feelings, and finally thanked and compensated for their time. 
+
+
+### Measures 
+  
+#### Self-blame attributions 
+  
+Assault-related self-blame was assessed using the Rape Attribution Questionnaire (RAQ;  ). Of its five subscales, we analyzed only the items assessing characterological self-blame, which assigns the blame to the kind of person one is (e.g. ‘things like this happen to people like me’), and is consistently considered to be psychologically maladaptive ( ;  ;  ). The five items (each answered on a five-point scale) assessing this kind of self-blame were averaged to create a Self-Blame score. Women in the NEC group were given a modified version of the questionnaire, in which items were rephrased to assess participant’s view of reasons for the occurrence of rape. Thus, for NEC participants, this score reflects rape-related victim-blaming attitudes. 
+
+
+#### Psychological symptomatology 
+  
+Post-traumatic symptoms were assessed with the PTSD Checklist (PCL-5;  ), a widely used self-report measure with good psychometric properties (e.g.  ;  ). The PCL-5 includes 20 items that assess PTSD symptoms severity (on a five-point scale) during the past month. We calculated a total severity score as well as scores on its four subscales: Intrusion, Avoidance, Negative Alterations in Cognitions and Mood, and Alterations in Arousal and Reactivity. For some analyses, the sexually assaulted women were divided into probable PTSD and non-PTSD subgroups according to a PCL-5 cutoff score of 31, which corresponds to diagnoses made with the Clinician-Administered PTSD Scale ( ) and is in agreement with the PCL-S cutoff of 44, which was recommended for use with female civilian samples ( ;  ). Depressive symptoms were assessed with the Patient Health Questionnaire—depression module (PHQ-9;  ) that consists of nine items, which measure the frequency (on a five-point scale) of experiencing depressive symptoms during the past 2 weeks. General distress was measured with the Brief Symptom Inventory (BSI;  ) that includes 53 items, which assess the degree (on a five-point scale) of psychological distress during the prior month. Total mean scores were calculated for the PHQ-9 and the BSI. 
+
+
+#### Childhood trauma 
+  
+The 28-item Childhood Trauma Questionnaire (CTQ;  ) was used to retrospectively measure the frequency (on a five-point scale) of traumatic experiences in childhood, including sexual abuse, physical abuse, emotional abuse, physical neglect and emotional neglect. Total CTQ score was calculated for each participant. 
+
+
+#### Peritraumatic and postassault characteristics 
+  
+The Peritraumatic Dissociative Experiences Questionnaire (PDEQ;  ) was used to assess the degree of dissociation experienced during the assault. It contains eight statements describing dissociative experiences, which participants rate on a five-point scale. Negative social reactions following disclosure were assessed with the Social Reactions Questionnaire (SRQ;  ), which includes 48 items specifying responses often experienced by sexual assault victims, both positive and negative. Participants were asked to indicate (on a five-point scale) how often they received these responses from other people. Scores of all negative reactions items (e.g. ‘pulled away from you’) were averaged to create a Negative Reactions score. Perceived Social Support was measured with a single item, asking the participant to assess (on a five-point scale) the extent of the ongoing social support she is receiving. 
+
+The BSI, PCL, PHQ-9, CTQ and PDEQ were administered in their Hebrew versions, which have been found reliable and are extensively used (e.g.  ;  ), although only the Hebrew version of the BSI has been validated ( ). We translated into Hebrew the RAQ and SRQ, and used back-translation and agreement between judges to validate the translation. 
+
+
+
+### Image acquisition 
+  
+Participants underwent a T1-weighted structural scan followed by a resting-state fMRI scan in a Magnetom Prisma 3T scanner (Siemens, Germany) equipped with a 64-channel head coil. T1-weighted images were acquired in the axial plane using a 3D magnetization-prepared rapid gradient-echo sequence with the following parameters: TR = 2530 ms; TE = 2.88 ms; TI = 1100 ms; flip angle = 7°; matrix size = 224 ×224; voxel size = 1 ×1×1 mm ; iPAT = 2. The resting-state scan was carried out using a 2D BOLD echo planar sequence in an axial plane with the following parameters: TR = 2000 ms; TE = 30 ms; flip angle = 75°; matrix size = 64×64; voxel size = 3.5×3.5×3.5 mm  and full brain coverage by acquiring 37 interleaved slices (no gaps); iPAT = 2 with fat suppression. For each participant, this sequence generated 200 volumes in a total of 6:40 min. During the resting-state scan, participants were asked to relax, maintain their eyes closed, not to think of anything in particular and to stay awake. 
+
+
+### Image preprocessing 
+  
+#### Voxel-based morphometry 
+  
+For estimation of macroscopic volumetric regional tissue alterations, voxel-based morphometry (VBM,  ) was performed with MATLAB (MathWorks, Natick, MA, USA) and SPM8 (Wellcome Department of Cognitive Neurology, London, UK;   http://www.fil.ion.ucl.ac.uk/spm  ), using the optimized VBM protocol ( ). Preprocessing included a segmentation of images into gray matter, white matter and cerebrospinal fluid, a high-dimensional DARTEL spatial normalization to MNI space and modulation for the non-linear components only, allowing for the analysis of GMV corrected for individual brain size. Lastly, images were smoothed with a Gaussian kernel of 8 mm. The resulting preprocessed gray matter maps were used for volumetric analyses. 
+
+
+#### Resting-state functional connectivity 
+  
+rs-FC analyses were performed with the Functional Connectivity toolbox (CONN) v16 ( ) and SPM12. All preprocessing steps were conducted using CONN’s default preprocessing pipeline for volume-based analyses on MNI-space. Following discarding of the first four volumes, preprocessing included slice time correction, realignment, normalization to MNI space and smoothing with a Gaussian kernel of 8 mm. The aCompCor strategy ( ) was used to extract signal noise from white matter and cerebrospinal fluid masks. Motion artifacts were further detected using the ART-based scrubbing procedure, using the default thresholds of global-signal   Z   value =9 and subject motion =2 mm. Next, motion parameters, white matter and cerebrospinal fluid were entered as potential confounders and were regressed out from each participant’s BOLD signal, as were four time points detected by the ART-based scrubbing procedure. Finally, data were filtered using a band-pass filter (0.008–0.09 kHz) and linearly detrended. Fisher-transformed bivariate correlations were used for analyses. 
+
+
+
+### Statistical analyses 
+  
+Demographic and psychological measures were compared between Sexual Assault and NEC groups as well between the PTSD and non-PTSD subgroups using Student’s   t  -tests for continuous variables and   χ   tests for categorical variables, performed with SPSS v20 (IBM Corp., Armonk, NY, USA). Associations between Self-Blame and all other psychological variables were assessed via two-tailed correlational analyses in the Sexual Assault group only. These and all following between-group comparisons and correlational analyses were considered significant at a false discovery rate (FDR)-corrected threshold of   P   < 0.05. 
+
+Self-Blame-related whole brain GMV alterations were assessed via regression analyses in SPM8 with age, total intracranial volume and CTQ as covariates of no interest, conducted separately for Sexual Assault and NEC groups. Clusters were considered significant at an FDR-corrected cluster level threshold of   P  <0.05. Significant cluster’s mean GMV was calculated for each participant and exported to SPSS. In addition, for further evaluation of the functional relevance of a cluster identified with volumetric alterations, anatomical locations of this cluster were extracted from SPM and saved for rs-FC analysis. In order to assess the relationship of self-blame-related GMV alterations with psychological symptomatology and peri- and postassault factors among the Sexual Assault group, two-tailed correlation analyses were conducted between an identified cluster’s GMV and PCL, PHQ-9, BSI, PDEQ, Negative Reactions and Perceived Social Support. Next, because high correlations between these variables were expected, a stepwise regression analysis including these variables and Self-Blame was performed in SPSS. Although the effect size for Self-Blame in the second regression is expected to be biased by the first regression ( ), this was necessary to ensure that the correlation of Self-Blame with a cluster’s GMV was not a spurious one (driven by the correlation of one of the other psychological variables with the cluster’s GMV). In addition, based on the strong association that has been observed between distorted cognitions-related brain activity and intrusion characteristics ( ), regressions were repeated with participants’ Intrusion subscale score instead of the total PCL score. A secondary analysis assessed whether an identified cluster’s GMV differed between PTSD, non-PTSD and NEC groups, using one-way ANOVA followed by a Tukey post hoc test. 
+
+In order to explore the functional significance of a cluster with Self-Blame-related volumetric alterations to the manifestation of PTSD, this cluster was used as ‘seed’ and assessed for its rs-FC with all cortical and subcortical brain regions, anatomically defined with the Harvard-Oxford atlas implemented in CONN. Mean temporal correlations between the BOLD signals from the VBM-identified cluster and each region for each participant were calculated and exported to SPSS. Two-tailed   t  -tests were used to detect regions whose rs-FC with the seed cluster were significantly different between the PTSD and non-PTSD groups. For these regions, we computed across the Sexual Assault group the correlations between the rs-FC with the seed cluster and psychological symptomatology measures, peri- and postassault characteristics, and the seed cluster’s GMV. In order to rule out the possible effects of childhood trauma and age on these associations, correlations were calculated while controlling for CTQ and age. For comparison purposes, these rs-FC values and correlations were also computed in the NEC group. 
+
+Finally, in order to assess whether Self-Blame-related GMV alterations and associated rs-FC patterns may account for the relations between self-blame and post-traumatic symptom severity, we conducted a mediation analysis using PROCESS ( ) for SPSS, controlling for CTQ and age. Given the previous evidence of strong association between cognitive distortions and intrusion, analyses were conducted for both total PCL score and the Intrusion subscale. Mediation was established if the bias corrected 95% confidence interval for the completely standardized indirect effect did not include zero and thus considered significant.  
+
+
+
+## Results 
+  
+### Sample characteristics 
+  
+Out of the 68 recruited participants, 6 NEC participants were excluded from analysis (2 due to neurological abnormalities discovered after scanning, and four due to above-cutoff PCL scores). Thus, the final sample consisted of 38 Sexual Assault and 24 NEC participants. Among these, one participant from the Sexual Assault group experienced anxiety inside the scanner and thus completed only the structural scan. One participant from each Sexual Assault and NEC groups had ADHD. The use of psychotropic medications was reported by seven participants in the Sexual Assault group and one in the NEC group. Among the sexually assaulted women, mean time since last assault was 18.3 months (SD 10.0; range 2–36). Twenty-five participants (66%) in the Sexual Assault group scored above the 31 PCL-5 cutoff. 
+
+No differences were found in demographic variables between the Sexual Assault and NEC groups, as well as between the PTSD and non-PTSD subgroups ( ). As expected, scores on the PCL and its subscales, BSI and PHQ-9 differed both between the NEC and Sexual Assault groups and between the Sexual Assault subgroups. CTQ scores were higher in the Sexual Assault group, but did not differ between the PTSD and non-PTSD subgroups. Peri- and postassault psychosocial measures were also similar between the Sexual Assault subgroups, except for Self-Blame which was higher in the PTSD subgroup ( ).
+   
+Demographic and psychological characteristics of the sample 
+    
+
+
+### Associations between self-blame attributions, psychological symptomatology, childhood trauma and peri- and postassault characteristics 
+  
+Self-Blame was strongly and positively associated with total PCL score (  r   = 0.67,   P   < 0.001) and its subscales: Intrusion:   r   = 0.60,   P  <0.001, Negative Alterations in Cognitions and Mood:   r   = 0.57,   P  <0.001, and Alterations in Arousal and Reactivity:   r   = 0.55,   P   = 0.002, but not with Avoidance (  r   = 0.41,   P   = 0.105). Self-blame was also positively correlated with PHQ-9 (  r   = 0.60,   P   < 0.001), BSI (  r   = 0.55,   P   = 0.002) and CTQ (  r   = 0.51,   P   = 0.008). 
+
+
+### Voxel-based morphometry 
+  
+Among the Sexual Assault participants, Self-Blame was negatively associated with GMV in a medial occipital cluster, mostly comprising of the bilateral lingual gyrus and intracalcarine cortex (BA17/18, cluster size:   k   = 1335, peak MNI coordinates:   x   = 0,   y   = −66,   z   = 6,   t   = 4.71,   P   = 0.005;  ). The cluster’s GMV was negatively correlated with total PCL score and subscales (except Avoidance), as well as with BSI and Negative Reactions ( ). There were no positive associations between Self-Blame and GMV. When examined in NEC participants, victim-blame attributions were not associated with GMV decreases or increases. 
+   
+Correlations between the GMV of the self-blame-related lingual cluster and its resting-state functional connectivity with the anterior fusiform cortex with psychological symptomatology and peri-and postassault characteristics 
+    
+  
+GMV reduction associated with assault-related self-blame in sexually assaulted women. (A–C) Location of identified cluster in the lingual gyrus negatively correlated with Self-Blame, superimposed on the study T1 template. (D) Mean GMV in the identified cluster extracted for each participant plotted against Self-Blame scores. 
+  
+A stepwise regression analysis among the Sexual Assault participants confirmed that Self-Blame was the strongest predictor of lingual cluster’s GMV [  F  (1, 36) = 19.99,   P  <0.001,   β   = −0.603], significantly explaining 36% of its variance (  R   = 0.35). Negative Reactions were also found to be a significant predictor, explaining an additional 9.1% of lingual GMV variance [  F  (1, 34) = 5.65,   P    = 0.023,   β   = −0.328]. In contrast, PCL, PHQ-9, BSI, PDEQ and Perceived Social Support did not predict GMV in the identified cluster. However, when Intrusion subscale was added to the regression, it became the strongest predictor [  F  (1, 36) = 27.74,   P  <0.001,   β   = −0.665] significantly explaining 44% of variance in lingual GMV in Sexual Assault participants (  R   = 0.43), with Self-Blame significantly explaining additional 6.4% of variance [  F  (1, 34) = 4.43,   P    = 0.043,   β   = −0.318]. None of the variables significantly predicted GMV in the identified lingual cluster in the NEC group. 
+
+Comparison of GMV in the identified cluster between PTSD, non-PTSD and NEC groups revealed a significant difference [  F  (2, 59) = 4.42,   P   = 0.016;  ]. The PTSD subgroup had decreased lingual GMV compared with the non-PTSD subgroup (  P   =0.014), with NEC not different from either subgroup (  P   =0.188 and   P    = 0.341, respectively).
+ 
+  
+Between group comparisons of GMV in the self-blame-related lingual cluster and of its resting-state functional connectivity with the anterior fusiform. (A) Lingual cluster’s GMV in PTSD, non-PTSD and NEC. (B) Lingual-fusiform functional connectivity in PTSD, non-PTSD and NEC. *  P  <0.05. 
+  
+
+### Resting-state functional connectivity 
+  
+Comparing rs-FC strength of the lingual cluster with other brain regions between the PTSD and non-PTSD subgroups revealed a significant difference in the lingual cluster rs-FC with the anterior division of the left temporal fusiform cortex [  t  (35) = −2.22,   P   =0.033]. rs-FC between these regions was lower in the PTSD compared with the non-PTSD subgroups ( ). NEC did not differ from either subgroup (  P   =0.509 and   P   =0.188, respectively). 
+
+Among sexually assaulted participants, the lingual-fusiform rs-FC was inversely correlated with Intrusion (  r   =−0.39,   P   =0.021), but not with other symptomatology measures ( ). Among the peri- and postassault characteristics, a negative correlation was observed with PDEQ (  r  =−0.43,   P   =0.009). Finally, lingual-fusiform rs-FC was positively albeit non-significantly correlated with the lingual cluster’s GMV (  r  =0.28,   P   = 0.104). In contrast, among the NEC group, lingual-fusiform rs-FC was not significantly correlated with any of the assessed variables ( ). 
+
+
+### Mediation analysis of the association between self-blame and post-traumatic symptoms 
+  
+This analysis revealed that the lingual gyrus GMV and lingual-fusiform rs-FC did not mediate the relationship between Self-Blame and total PCL score (95% CI=−0.016–0.214), but did mediate the relationship between Self-Blame and Intrusion score (95% CI=0.003–0.219). 
+
+
+
+## Discussion 
+  
+This is the first study to assess brain alterations associated with self-blame attributions in individuals who were sexually assaulted. We found self-blame-related GMV alterations bilaterally in the lingual gyrus and adjacent intracalcarine cortex (referred to here as ‘the lingual cluster’). GMV in this cluster was also predicted by intrusion and negative social reactions. Resting-state functional connectivity of this cluster with the left anterior temporal fusiform cortex (referred to here as ‘lingual-fusiform rs-FC’) was found to significantly differ between the PTSD and non-PTSD Sexual Assault subgroups, and was inversely correlated with intrusion and with peritraumatic dissociation. Finally, lingual cluster’s GMV and lingual-fusiform rs-FC mediated the association between self-blame and intrusion symptoms in the Sexual Assault group. Taken together, these results provide preliminary support for the involvement of the lingual gyrus and neighboring intracalcarine cortex in the neural pathway associating self-blame attributions and post-traumatic symptomatology related to intrusive memories. 
+
+Specifically, as previously reported (e.g.  ;  ), we found that self-blame correlated strongly with psychological symptoms at adulthood, including PTSD and depression symptoms and general distress, as well as with childhood trauma. These findings support the central role assigned to self-blame in postassault coping and reinforce views that emphasize the explicit addressing of self-blame attributions in the treatment of this population ( ). 
+
+Our whole-brain analysis revealed that among women in the Sexual Assault group, assault-related self-blame was negatively correlated with GMV in a cluster mostly consisting of the lingual gyrus bilaterally. Importantly, although high correlations were observed between self-blame-related GMV and all the other psychological measures we assessed, a stepwise regression analysis revealed that GMV in the lingual cluster was strongly predicted by self-blame and intrusion symptoms, and, to a lesser extent, by negative social reactions. These findings are in agreement with   observation that among traumatized individuals, cognitive distortions were correlated with heightened activity during trauma recall in several structures including the lingual gyrus and adjacent regions, and that these activations were strongly associated with re-experiencing during the recall. 
+
+Previous neuroimaging studies provide support for an involvement of the lingual gyrus in retrieval and processing of negatively valenced memories ( ;  ;  ;  ), and, among individuals with PTSD, in processing and imagery of the trauma memory ( ;  ,  ;  ;  ). Furthermore, regional cerebral blood flow in this region was correlated with flashbacks intensity ( ). These results suggest that the lingual gyrus plays a role in both voluntary and involuntary trauma recall. Our finding of intrusion being a potent predictor of lingual GMV among the sexually assaulted participants is consistent with these studies and extends the current functional literature to the realm of structural changes. 
+
+Although the present study cannot answer questions of causality, several lines of evidence suggest that the observed lingual GMV alterations may be an acquired rather than a pre-traumatic characteristic. Evidence from animal studies show that both stress and high-dose glucocorticoid exposure facilitate structural reorganization in multiple cortical areas including the visual cortex ( ;  ;  ). In humans, ongoing atrophy in occipital regions among veterans with PTSD was associated with an increase in PTSD symptoms ( ), and lower volume and thickness of the lingual gyrus was found in adults who experienced childhood sexual abuse or witnessed domestic violence ( ,  ). Further support for the hypothesis that the assault had a causal role in the alterations in the lingual cluster derives from the current observation that in NEC participants, lingual GMV was not predicted by any of the psychological variables we assessed. The fact that lingual GMV differed between the PTSD and non-PTSD subgroups and that the NEC group was in between the two Sexual Assault subgroups, suggest that the observed alterations may reflect both vulnerability and resilience among assaulted women. 
+
+Taking into account the aforementioned functional data implicating the lingual gyrus in visual imagery of the trauma, together with findings of altered lingual gyrus activity in acutely and non-acutely traumatized individuals compared with NEC ( ;  ), the following cascade may be suggested. Exposure to trauma initiated structural and functional alterations of the lingual cluster; in assaulted women who were highly preoccupied with self-blame attributions, repeated engagement in visual imagery of the trauma might have excessively activated the lingual gyrus, thus further contributing to the structural alterations. The structural and functional alterations led, in turn, to elevation in intrusive memories. 
+
+This scenario is supported by our finding that the PTSD subgroup had lower levels of rs-FC between the lingual cluster and the left anterior temporal fusiform cortex, compared with the non-PTSD subgroup. Anatomically, these occipital and anterior temporal cortices are directly connected via the inferior longitudinal fasciculus ( ). The human anterior fusiform is considered a multimodal area, which, together with other temporal and inferior parietal regions, supports social cognition, language and mental simulations ( ), and has been demonstrated to be crucially and selectively important for the processing and retrieval of semantic information ( ;  ). 
+
+The fusiform cortex has been implicated in the processing of trauma-related stimuli, and was reported to be hypoactivated in individuals with PTSD compared with non-PTSD during exposure to trauma reminders and retrieval of emotionally valenced stimuli ( ,  ;  ). Furthermore, such hypoactivation predicted subsequent increases in PTSD symptoms in patients with acute stress disorder ( ). Thus, reduced lingual-fusiform rs-FC in the PTSD subgroup may reflect alterations in the neural circuitry involved in the processing of traumatic memories, and specifically, deficiencies in the narration of trauma memory and in the assignment of personal meaning, which are important processes in post-traumatic recovery ( ;  ). In contrast, more synchronized activity between these regions may enhance one’s ability to integrate representations of the traumatic memory into her autobiographical knowledge, and to reevaluate distorted cognitions by exploring the meaning of the assault. 
+
+This interpretation is in line with the dual representation theory of PTSD and its revised model ( ,  ;  ,  ), which conceptualize PTSD as a failure to associate low-level sensory representations of the traumatic event with the abstract declarative ones. As a result, the sensory representations are poorly contextualized, and involuntarily reactivated as flashbacks. In contrast, in non-PTSD individuals, the traumatic event is integrated with its autobiographical context, and semantic memory processes are activated to produce meaningful interpretations of the event ( ). Brewin   et al.   further hypothesized that these processes are subserved by areas in the ventral visual stream, one of which is the fusiform cortex. 
+
+The hypothesis that coordinated activity of the lingual and fusiform regions is associated with improved narrated memory for the assault is supported by the negative correlations of the lingual-fusiform rs-FC with intrusive symptoms and with peritraumatic dissociation in the Sexual Assault group. This is because theoretical and empirical accounts have consistently associated both unintentional re-experiencing and peritraumatic dissociation with fragmented and disorganized trauma memory ( ;  ;  ;  ). 
+
+Our findings that intrusion symptoms are mediated by lingual gyrus GMV and lingual-fusiform rs-FC may have therapeutic implications. Although a causal pathway cannot be determined, our findings suggest that plasticity in the lingual gyrus or in its functional connectivity with the anterior fusiform may lead to amelioration of intrusion symptoms, and, possibly, that such plasticity may be enhanced via changes to individuals’ social cognitions associated with the assault. This suggestion is in accordance with   finding that successful exposure therapy is characterized by decreased lingual gyrus responsiveness to phobogenic images, and that post-therapy activity in this structure predicted later therapeutic outcomes. Future studies could examine the psychological and neural effects of the use of psychotherapeutic (such as exposure) and neurofeedback techniques to target the function of the lingual gyrus and its functional connectivity with the anterior fusiform in sexually assaulted individuals. 
+
+Our study has several limitations. As mentioned above, given the cross-sectional design of this study, alternative explanations for the order of observed effects cannot be ruled out. For example, it is possible that lingual GMV is a pre-trauma characteristic that influences both self-blame attributions and intrusion symptoms. Another limitation concerns the sample. A minority of the traumatized participants were using psychotropic medications, which might have influenced MRI indices of structure and function. Nonetheless, repeating our analyses after excluding these participants yielded the same pattern of results, with the main findings remaining unchanged. Last, all psychological and psychosocial measures relied on self-report, and could have been influenced by demand characteristics. In addition, we did not assess participants’ memory characteristics and thus could not test this aspect of our hypothesis. 
+
+Despite these limitations, this study provides important preliminary converging evidence for the relevance of the ventral occipital cortex to both assault-related self-blame and post-traumatic re-experiencing in sexually assaulted individuals, and advocates for additional exploration of this relationship. By incorporating neuroimaging methods into the study of postassault self-blame, new insights about the determinants of victims’ coping can be established and better-informed therapeutic techniques can be promoted, for the benefit of this population. Future studies may reveal whether the present findings can be generalized to victims of other traumatic experiences characterized with high levels of self-blame, such as following a car accident. Meanwhile, the present study provides evidence for the neuroanatomical injury associated with self-blame attributions, and emphasizes the need for a change in current social stand toward sexually assaulted individuals. 
+
+ </div>
+</div>
+</div>
+</div>
+</div>
+<div class='study' id='study-5'>
+<h2>5. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24724093/' target='_blank'>24724093</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Reduced Amygdala Volume Is Associated with Deficits in Inhibitory Control: A Voxel- and Surface-Based Morphometric Analysis of Comorbid PTSD/Mild TBI</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Biomed Res Int</p>
+<p><strong>Publication Year:</strong> 2014</p>
+<p><strong>DOI:</strong> 10.1155/2014/691505</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/3958771/' target='_blank'>3958771</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included</p>
+<p><strong>Fulltext Reasoning:</strong> The study reports whole-brain voxel-based morphometry (FSL-VBM) analyses comparing an adult group with PTSD (comorbid PTSD/mTBI; N=21) to a trauma-exposed deployed control group without PTSD or mTBI (N=16). Whole-brain VBM results (TFCE-corrected, 5000 permutations) showing reduced bilateral anterior amygdala volume in the PTSD/mTBI group are described, and surface-based morphometry was used to corroborate VBM findings. The sample is adult (ages 18–45). Although the PTSD group is comorbid with mTBI, inclusion criteria required at least one PTSD group and at least one comparison group (met here), and comorbidity is not an exclusion in the stated criteria. The paper provides whole-brain VBM between-group results and links them to behavioral measures, satisfying the meta-analysis inclusion criteria.</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+A significant portion of previously deployed combat Veterans from Operation Enduring Freedom and Operation Iraqi Freedom/Operation New Dawn (OEF/OIF/OND) are affected by comorbid posttraumatic stress disorder (PTSD) and mild traumatic brain injury (mTBI). Despite this fact, neuroimaging studies investigating the neural correlates of cognitive dysfunction within this population are almost nonexistent, with the exception of research examining the neural correlates of diagnostic PTSD or TBI. The current study used both voxel-based and surface-based morphometry to determine whether comorbid PTSD/mTBI is characterized by altered brain structure in the same regions as observed in singular diagnostic PTSD or TBI. Furthermore, we assessed whether alterations in brain structures in these regions were associated with behavioral measures related to inhibitory control, as assessed by the Go/No-go task, self-reports of impulsivity, and/or PTSD or mTBI symptoms. Results indicate volumetric reductions in the bilateral anterior amygdala in our comorbid PTSD/mTBI sample as compared to a control sample of OEF/OIF Veterans with no history of mTBI and/or PTSD. Moreover, increased volume reduction in the amygdala predicted poorer inhibitory control as measured by performance on the Go/No-go task, increased self-reported impulsivity, and greater symptoms associated with PTSD. These findings suggest that alterations in brain anatomy in OEF/OIF/OND Veterans with comorbid PTSD/mTBI are associated with both cognitive deficits and trauma symptoms related to PTSD.  
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (36617 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## 1. Introduction 
+  
+Posttraumatic stress disorder (PTSD) affects a significant percentage (e.g., 10–30%) of deployed combat Veterans (i.e., Operation Enduring Freedom and Operation Iraqi Freedom/Operation New Dawn (OEF/OIF/OND); [ ,  ]). Similarly, a significant percent (e.g., 15–25%) of OEF/OIF Veterans are also affected by traumatic brain injury (TBI; [ ,  ]), particularly mild TBI (mTBI). Therefore, estimates of comorbidity are as high as 42% [ – ]. One factor cited for the increase in the rise of comorbidity is the presence of implemented explosive devices (IEDs; [ ]). Neuroimaging research indicates that individuals with PTSD exhibit abnormalities in the hippocampal/amygdalar complex [ ,  ] and regions putatively responsible for regulation of them. That is the ventromedial prefrontal cortex (vmPFC) and the subgenual anterior cingulate cortex (sgACC) [ ,  ]. Likewise, individuals with TBI that experience direct impact or blast wave trauma exhibit damage to the brain in these same regions, most significantly the vmPFC/sgACC [ – ]. The localization of injury associated with TBI may result from inner-cranial wave physics [ ] and the presence of boney protuberances on the inner surface of the skull near the orbital and anterior temporal lobes [ ,  ] makes the vmPFC/sgACC and amygdalar complex vulnerable. Therefore, it is not surprising that a vast anatomical and functional neuroimaging literature exists that focuses on or indicates results relating either PTSD or TBI to these brain regions. However, in comparison, there is a paucity of literature examining the neuroanatomical deficits in comorbid PTSD/TBI. 
+
+Neuroimaging studies examining comorbid PTSD/TBI are almost nonexistent, perhaps, because of an old but common notion that an amnesic TBI event was “protective” towards developing PTSD [ ]. This idea has been largely reversed in the last 20 years by studies investigating the prevalence of cooccurring PTSD/TBI, which indicate increased rates of PTSD among individuals with a TBI when compared to individuals who have never had a brain injury [ ,  ]. Furthermore, recent indications suggest that an occurrence of TBI may even render individuals more susceptible to PTSD [ ,  ]. The few neuroimaging studies investigating comorbid PTSD/TBI indicate glucose hypometabolism in the cerebellum and medial temporal lobe [ ] and increases in hemosiderin deposits (iron deposits related to hemorrhaging) linked to increases in TBI symptoms [ ]. 
+
+However, neuroimaging studies conducted on individuals with PTSD consistently indicate both functional and anatomical alterations in the vmPFC/sgACC, striatum, thalamus, and amygdalar/hippocampal complex (for reviews/meta-analyses see [ – ]). Functional studies show alterations in a multitude of brain regions, although being able to detect altered engagement likely depends on the tasks employed. As such, there are inconsistencies in reported results with both hyper- and hypoactivation observed in the aforementioned regions [ ,  ]. However, anatomical studies consistently indicate reductions in amygdalar/hippocampal complex and the vmPFC/sgACC volume and represent the most replicated findings among individuals with PTSD, when compared to controls ([ – ].) Dysfunction in the vmPFC/sgACC—amygdalar/hippocampal complex pathways is suggested to be functionally associated with decreased control or regulation over fear/threat related stimuli and conditioning [ ]. 
+
+Compared to PTSD, the neuroimaging literature is less abundant concerning TBI, particularly mild TBI, and studies tend to focus more on anatomical measures (e.g., diffusion tensor imaging (DTI), morphometry) rather than function, possibly due to the condition acutely causing tissue damage [ ]. Mirroring morphometric studies in PTSD, volumetric reductions in the amygdalar/hippocampal complex, and the vmPFC/sgACC occur in individuals with TBI as compared to controls [ – ]. Historically, TBI has been linked to impaired executive function, such that individuals with a TBI perform worse on tasks designed to tap executive or cognitive control processes (thought to primarily involve the PFC) than individuals without TBI [ ,  ]. However, many of these studies involve individuals with moderate and severe TBI, rather than mTBI [ ]. Therefore, it is unclear whether persistent executive dysfunction is also compromised among those with mTBI [ ,  ]. 
+
+Regardless of the paucity of neuroimaging studies examining individuals with comorbid PTSD/TBI studies, a reasonable estimate is that disruption in neural circuitry of comorbid PTSD/TBI likely involves constituent elements observed within singular diagnosis of PTSD and TBI individually. The most consistent and replicated findings common to both of these populations are anatomical alterations in the vmPFC/sgACC and amygdalar/hippocampal complex. Consistent with these anatomical findings, diagnostically comorbid PTSD/TBI is associated with deficient inhibitory control [ ,  ]. Inhibitory control is ubiquitously described under the rubric of executive function as the ability to “hold back” or inhibit a prepotent response and its dysfunction is usually associated with impulsive symptomatology [ ]. While anatomical findings indicate that regions of the brain underlying inhibitory control are compromised in both PTSD and TBI, it is unclear whether symptoms related to PTSD or TBI are more indicative of these inhibitory control deficits in comorbid PTSD/TBI. 
+
+While specific symptoms and diagnostic criteria associated with PTSD and TBI have been associated with amygdalar/hippocampal complex hyperactivity and reduced volume [ ,  ,  ,  ]) as well as vmPFC/sgACC hypoarousal and decreased volume [ ,  ,  ], however, there have been few anatomical neuroimaging investigations of the basic underlying cognitive processes that may be disrupted, without using emotional or fear-related stimuli. Knowledge of these more general cognitive processes and the associated alterations in anatomy is important in order to design more effective interventions. For example, it is thought that alterations in the putative fear conditioning/extinction circuitry (vmPFC/sgACC-amygdala) reflect poor inhibitory control. However, investigations, using tasks designed to tap inhibitory control by a means not associated with fear and/or threat, are lacking. One notable exception is a study by Falconer and colleagues [ ] who investigated inhibitory control in individuals diagnosed with PTSD using a Go/No-go paradigm. Compared to controls, individuals with PTSD had decreased right inferior PFC activity and increased striatal activity, suggesting decreased activity in the neural mechanisms of inhibitory control. More research investigating inhibitory control as a cognitive or behavioral construct is needed to determine whether inhibitory systems are specifically linked to fear or threat related stimuli are altered in individuals with PTSD or whether they are generally compromised. Additionally, because deficits in inhibitory control are related to both PTSD and TBI, understanding the specific context in which inhibitory control is deficient may lend insight into dysfunctional neural mechanisms that are associated with the specific diagnoses. 
+
+In order to increase our understanding of the neural underpinnings of inhibitory control deficits in comorbid PTSD/mTBI, we investigated several questions. First, we investigated whether anatomical differences in previously deployed OEF/OIF/OND combat Veterans with comorbid PTSD/mTBI were consistent with either singular diagnostic (a) PTSD and/or (b) mTBI or they were perhaps more severe due to comorbidity, as compared to previously deployed OEF/OIF combat Veterans without PTSD or mTBI diagnoses. Because the extant literature covering both diagnostic groups indicates disruptions in general fear circuitry, we expected to find decreased anatomical volume within (a) vmPFC/sgACC and the (b) hippocampus/amygdalar complex. Second, we examined the degree to which performance on a task of inhibitory control that does not involve fearful or threatening stimuli, the Go/No-go task, was predicted by anatomical alterations. Finally, we examined the degree to which self-report of impulsivity and symptoms related to PTSD or mTBI are associated with anatomical alterations. Based on the extant literature, we hypothesized that individuals with PTSD/mTBI would show reduced volume in vmPFC/sgACC and amygdalar/hippocampal regions as compared to controls. Moreover, we predicted that anatomical alterations would predict behavioral measures. More specifically, we expected that decreased volume in these regions in individuals with comorbid PTSD/mTBI, but not controls, would be associated with decreased inhibitory control on the Go/No-go task, and with self-reported measures of impulsivity. 
+
+
+## 2. Methods 
+  
+Twenty-one previously deployed OEF/OIF/OND combat Veterans with comorbid PTSD/mTBI diagnoses (20 males) and 17 OEF/OIF/OND previously deployed combat veteran controls without PTSD or mTBI (14 males) took part in the study. One individual (male) from the control group was excluded for MRI head movement leaving an N of 21 and 16, respectively. Recruitment was primarily accomplished through fliers circulated in the Denver area. All individuals were required to provide consent, which was approved through the Colorado Multiple Institutional Review Board. Individuals were compensated for their participation. Demographic information regarding age, gender, race, and years of education was obtained. 
+
+### 2.1. Recruitment 
+  
+ Inclusion Criteria.   Inclusion criteria include (1) population between the ages of 18–45, (2) at least one OEF/OIF/OND deployment, and (3) population currently receiving or eligible to receive physical and/or mental health care through the VA Eastern Colorado Health Care System. 
+
+ Exclusion Criteria.   Exclusion criteria include (1) history of other significant neurological diseases (other than mild TBI for the appropriate group) as assessed by interview and chart review; (2) history or diagnosis of lifetime moderate or severe TBI for the PTSD/mTBI group, or any history of TBI for the non-TBI group, as assessed by interview and chart review; (3) history or diagnosis of nonactive duty-related mild TBI or PTSD disorder as assessed by interview and/or chart review; (4) diagnosis of schizophrenia or bipolar I disorder as assessed by administration of the Structured Clinical Interview for the DSM IV (SCID; [ ]); (5) Computerized Assessment of Response Bias (CARB) [ ] performance categorized as very poor effort, poor effort, or symptom exaggerator; (6) problematic drinking behavior that consistently exceeds recommended drinking limits per day, for example, diagnosis of alcohol abuse disorder or alcohol dependence disorder per the SCID, or five or more alcoholic drinks per day, four out of seven days per week for the previous two weeks; (7) use of illicit substance(s) more than five times in the two weeks before enrollment; (8) inability to read the informed consent document or adequately respond to questions regarding the informed consent procedure; (9) contraindication to having an MRI; and (10) Veterans who have previously enrolled in other VA studies which administer identical or similar instruments to this study. 
+
+ Diagnostic Criteria/Measures.   We used the Computerized Assessment of Response Bias (CARB) to assess performance and determine effort, the Shipley 2 Institute of Living Scale to measure premorbid level of functioning [ ]. To assess impulsivity we used the Barratt Impulsivity Scale [ ]. Alcohol and Substance use was measured by the SCID [ ]. To diagnose PTSD we used the SCID and we also assessed PTSD symptom severity using the Trauma Symptom Inventory (TSI; [ ]). To diagnose TBI we used the Ohio State University Traumatic Brain Injury Identification Method (OSU TBI-ID) structured clinical interview, which allows for interrogation of mTBI symptoms [ ]; if the participant had a TBI, it must have been a mild TBI from active duty. Though severity of TBI by the OSU TBI-ID is mostly determined according to loss or alteration of conciousness, the following criteria was used to determine TBI severity: (1) mild TBI: A TBI with normal structural imaging, 0–30 minutes of loss of consciousness (LOC), a moment and up to 24 hours of alteration of consciousness/mental state (AOC), 0-1 day of or posttraumatic amnesia (PTA), or a best available Glascow Coma Scale Score (GCS) of 13–15 recorded within the 24 hours of the injury event, (2) moderate TBI: A TBI with normal or abnormal structural imaging, >30 min and <24 hours of LOC, >24 hours of AOC, >1 and <7 days of PTA, or a GCS score of 9–12, and (3) severe TBI: A TBI with normal or abnormal structural imaging, >24 hours of LOC, >24 hours of AOC, >7 days of PTA, or a GCS score < 9. 
+
+ Inhibitory Control.   To assess inhibitory control we used a standard Go/No-go task [ ]. Participants were required to press the response button with the right index finger for each letter that appeared on the screen except for the letter X. The task consisted of three blocks of 120 trials each. Each letter, approximately 2.5 cm in size, appeared for 500 milliseconds with an interstimulus interval of 2000 ms. The letter “X” occurred on 20% of all trials (  n   = 72), which were presented randomly throughout the run. Other letters were randomly selected from the alphabet. Performance measures on the Go/No-go task were mean reaction time for correct go trials, errors of omission, and errors of commission. 
+
+
+### 2.2. Neuroimaging Acquisition 
+  
+ Structural.   All structural MRI images were acquired using a Philips 1.5-Tesla Achieva 16-channel MR scanner located at the Denver Veterans Affairs Medical Center. An eight-channel headcoil was used for radiofrequency transmission and reception. Foam padding was placed around the head, within the head coil, to limit head motion during the scan. Structural images were obtained via a T1-weighted 3D TFE in 160 sagittal slices. Imaging parameters were as follows: echo time (  T  ) = 3.2 ms., repetition time (  T  ) = 7100 ms, flip angle = 8.0°, field of view (FoV) = 240 mm, and voxel size = 1.0 × 1.03 × 1.0 mm. Scan parameters were consistent for all imaging sessions. 
+
+
+### 2.3. Neuroimaging Analysis 
+  
+ Voxel-Based Morphometry (VBM).   All VBM analyses were performed using the FSL-VBM toolbox and follow the processing pipeline put forth by Ashburner and Friston [ ] and Good et al. [ ]. First, the raw T1-weighted images were brain-extracted using the FSL default BET brain extraction process, which strips the skull and removes any nonbrain tissue from the image using the FAST4 tool. The resulting GM images were then aligned to MNI152 standard space using the affine registration tool FLIRT, followed by nonlinear registration using FNIRT. The resulting images were averaged to create a study-specific template, to which the native GM images were then nonlinearly reregistered using FNIRT. The registered partial volume images were then modulated (to correct for local expansion and contraction) by dividing the Jacobian of the warp field. The modulated segmented images were then smoothed with an isotropic Gaussian kernel with a sigma of 2, yielding full-width half-maximum (FWHM) 2 × 2.3 mm = 4.6 mm FWHM. The resulting subject-specific GM probability maps were input into a general linear model (GLM) evaluating group differences between all voxels of GM, using whole-brain GM volume as a nuisance covariate. One-sample   t  -tests for group contrasts were performed using the Threshold-Free Cluster Enhancement (TFCE) method, which detects clusters of contiguous voxels without first setting an arbitrary statistical cut-off (e.g.,   Z   > 2.58) and controls the familywise error (FWE) rate at   P   < 0.05. Each contrast underwent 5000 permutations. Randomize produces corrected 1-  p   maps, which we used to mask   t  -score maps for all figures. Figures of statistical maps were created using FSLview.  
+
+ Surface-Based Morphometry (SBM).   Automated segmentation of the bilateral amygdala and hippocampus was performed using FIRST (FSL v4.0.1) which uses a Bayesian probabilistic approach. The shape and appearance models in FIRST are constructed from a library of manually segmented images. The manually generated labels are parameterized as surface meshes and then modeled as a point distribution. Using the learned models, FIRST searches through shape deformations that are linear combinations of the modes of variation to find the most probable shape instance given the observed intensities from the input image. Using T1 images, the segmentation was performed with two-stage affine transformation to standard space of MNI 152 at 1 mm resolution [ ,  ]. The first stage utilized a standard 12 degrees of freedom registration to the template and the second stage applied 12 degrees of freedom registration using an MNI152 subcortical mask to exclude voxels outside the subcortical regions. Boundary voxels were thresholded at   s   = 2 and   s   = 3, along with the recommended number of modes (iterations) for the hippocampus (30) and amygdala (50). All processes of segmentation were then visually inspected to assess boundaries by two independent raters for each of the two boundary thresholded training sets (  s   = 2,     s   = 3). Because   s   = 2 yielded a more conservative boundary threshold that included the amygdala and hippocampus proper, while minimizing neocortical tissue, ventricles, and white matter, this data set was selected for final analyses. One-sample   t  -tests for group contrasts were performed using the Threshold-Free Cluster Enhancement (TFCE) method, which detects clusters of contiguous voxels without first setting an arbitrary statistical cut-off (e.g.,   Z   > 2.58) and controls the familywise error (FWE) rate at   P   < 0.05. Each contrast underwent 5000 permutations. Randomize produces corrected 1-  p   maps, which we used to mask   t  -score maps for all figures. Figures of statistical maps were created using FSLview. 
+
+ Multiple Regression.   To perform multiple regression we used a two-stage procedure as outlined in Hastie et al. [ ]. We first used penalized regression using LASSO [ ] to perform subset variable/feature selection. Subsequently, because LASSO can over penalize highly collinear variables, we then performed an ordinary least squares (OLS) best model multiple regression on the subset of selected variables/features taken from LASSO to obtain beta estimates, regression coefficients, and determinants of explained variance. 
+
+
+
+## 3. Results 
+  
+### 3.1. Demographic and Behavioral Measures 
+  
+There were no significant differences between the groups in demographic characteristics ( ). Significant group differences emerged for previous alcohol use (  P   < 0.005), indicating that the PTSD/mTBI group had higher proportions of alcohol use. Significant group differences emerged for the Barratt Impulsivity Scale (Barratt) in the subcomponents of attention, perseveration, and self-control (  P   = 0.0002,   P   = 0.01, and   P   = 0.001, resp.), indicating that the PTSD/mTBI group exhibited higher proportions or more impulsivity than the control group. Group differences also arose in the Trauma Symptom Inventory in the three subcomponents linked to SCID PTSD diagnostic criteria (Intrusive Experiences, Defensive Avoidance, and Dissociation; all three   P   < 0.0001), indicating that the PTSD/mTBI group exhibited higher proportions or more symptoms associated with PTSD than the control group. Group differences were also found in the Shipley 2 Abstraction and Composite A score (  P   = 0.004,   P   = 0.006, resp.), indicating that the PTSD/mTBI group exhibited lower premorbid functioning as compared to the control group. 
+
+
+### 3.2. Inhibitory Control 
+  
+Go/No-go behavior indicated a significant group difference in errors of commission (  t   = 2.61,   P   = 0.009), with individuals with PTSD/mTBI (  M   = 15.14, SE = 1.82) who made more errors of commission than controls (  M   = 9.25, SE = 1.25). Errors of omission (EO) and reaction time (RT) did not significantly differ between the two groups (PTSD/mTBI, EO = 5.3, RT = 373.62 ms.; controls, EO = 4.4, RT = 409.77 ms.,   P   = 0.78,   P   = 0.21, resp.). 
+
+
+### 3.3. Neuroimaging 
+  
+Whole brain VBM analyses controlling for overall GM volume revealed significant group differences in the bilateral anterior amygdala, such that the PTSD/mTBI group showed reduced volume, as compared to the control group (  P   < 0.05 TFCE corrected, 5000 permutations; see methods for a full description;  ). Because VBM analyses can be susceptible to incorrect registration and differences in individual cortical folding patterns [ ], we also performed SBM on the amygdala to potentially corroborate our findings. SBM analyses mirrored our VBM analyses, indicating significant group differences in the bilateral anterior amygdala (  P   < 0.05 TFCE corrected, 5000 permutations; see methods for a full description;  ). 
+
+Next, to determine whether the volumetric differences in the amygdala are related to behavioral performance, we extracted an individual's left and right amygdala volume based on the SBM analyses and regressed it with Go/No-go errors of commission and omission, as well as RT, controlling for overall GM volume. Analyses revealed that errors of commission significantly related to volume in the left amygdala, such that increased errors of commission were predicted by decreased volume of the left amygdala, in the PTSD/mTBI group, but not the control group (  F   = 7.81,   P   = 0.01,   R   = 0.30; Figures  ) and  )). 
+
+We then determined whether the volume of the left and right amygdala was associated with impulsivity (Barratt), premorbid functioning (Shipley 2), and symptoms related to PTSD (Trauma Symptom Inventory) or TBI (OSU TBI-ID form), controlling for overall GM volume. Regression analyses revealed that an increased cognitive instability subcomponent of the Barratt Impulsivity Scale was predicted by decreased volume of the left amygdala in the PTSD/mTBI group, but not the control group (  F   = 5.41,   P   = 0.03,   R   = 0.23; Figures  ) and  )). Decreases of cognitive function as measured by Composite A of the Shipley 2 was associated with decreased volume of the right hippocampus in the PTSD/mTBI group but not the control group (  F   = 4.60,   P   = 0.04,   R   = 0.20; Figures  ) and  )). Increased scores on the Defensive Avoidance subscale of the Trauma Symptom Inventory were associated with decreased right amygdala volume in the PTSD/TBI group, but not the control group (  F   = 4.84,   P   = 0.04,   R   = 0.17; Figures  ) and  )). No relationship between amygdalar volume and symptoms of mTBI was noted. 
+
+With regard to hippocampal volume, our VBM and SBM analyses revealed no significant differences. We also tested the difference between the regression parameter estimates of amygdala volume with the behavioral variables and hippocampal volume with the behavioral variables, respectively. The differences in parameter estimates for amygdala volume and behavioral variables were all significantly different than those for hippocampal volume and behavioral variables, indicating that our findings are specific to amygdala volume (cognitive instability:   Z   = 2.05,   P   = 0.04; Shipley A:   Z   = −2.23,   P   = 0.03; Defensive Avoidance:   Z   = 2.49,   P   = 0.01). 
+
+As a summary analysis, we ran feature selection and multiple regression with left amygdala volume and multiple regression with trauma symptoms examining the sets of variables within the PTSD/mTBI group that best predicted (1) left amygdala volume (as it was found to be associated with motor inhibition and impulsivity) and (2) trauma symptoms related to PTSD (as they were the symptoms related to amygdala volume). Feature selection and multiple regression examining decreases in left amygdala volume were best predicted by a model indicating significant contributions of independent variance from both (a) increases in commission errors from Go/No-go performance and (b) increases in the cognitive instability subcomponent of the Barratt Impulsivity Scale   F   = 5.94,   P   = 0.02,   R   = 0.34; standardized coefficients are presented in  ). Feature selection and multiple regression examining increases in trauma symptoms related to PTSD were best predicted by a model indicating significant contributions of independent variance from (a) increases in the cognitive instability subcomponent of the Barratt Impulsivity Scale, (b) decreases in right amygdala volume, and (c) decreases of cognitive function of in Composite A of the Shipley 2   F   = 4.17,   P   = 0.04,   R   = 0.33; standardized coefficients are presented in  ). 
+
+
+
+## 4. Discussion 
+  
+The current study is the first, to our knowledge, in its approach to examine both voxel- and surface-based morphometry in a comorbid diagnostic group of individuals with PTSD/mTBI. Furthermore, it is novel in demonstrating that inhibitory control, as assessed through the Go/No-go task, is linked to known abnormalities in brain morphometry in PTSD/mTBI, namely, decreased amygdala volume. Decreased amygdala volume also was associated with increased impulsivity (Barratt Impulsivity Scale), a known indicator of deficits in inhibitory control. Both increased errors of commission and impulsivity contributed independent variance predicting decreases in amygdala volume. Furthermore, decreased amygdala volume was related to increases in trauma symptoms related to PTSD, but not mTBI symptoms (Trauma Inventory Scale, OSU TBI-ID, resp.). And finally, decreased amygdala volume, increased impulsivity, and decreased cognitive functioning assessed by the Shipley 2 Composite A contributed independent variance predicting increases in trauma symptoms related to PTSD. 
+
+While neuroimaging literature suggests that both singular diagnostic PTSD and TBI are related to decreases in the vmPFC/sgACC and amygdalar/hippocampal complex volume, our results indicate that comorbid diagnosis of PTSD/mTBI shows the same decreases in amygdala volume. Our analysis using VBM indicating reductions in anterior amygdala volume was corroborated by our analysis using SBM. The combination of VBM and SBM is an important analysis step considering that voxel-based morphometric studies have been shown to be susceptible to misregistration and individual cortical folding differences [ ]. Utilizing both approaches and obtaining convergent findings enable us to be more confident in our results. 
+
+Although we found no group differences in the vmPFC/sgACC and the hippocampus, this null effect can potentially be attributed to a myriad of different factors. First, reductions of vmPFC/sgACC volume have been linked to TBI [ ], but it is unclear how the severity of a TBI affects brain damage. Because individuals with a moderate or severe TBI were excluded from the current study, we may have less power to detect abnormalities in the vmPFC/sgACC. Additionally, mTBI has been linked to increased vulnerability of developing PTSD symptoms [ ,  ], such that it may not be the long-term effects of mTBI, but rather a predisposition to developing PTSD in our sample that was detected. Future research is needed to determine whether there is a pattern whereby certain brain regions are not affected at low levels of severity of TBI, while other regions are affected more uniformly across levels of severity and the nature of mTBI predisposing individuals to PTSD. Second, while reductions in hippocampal volume have been replicated in a large number of studies examining PTSD, numerous studies also fail to replicate this finding [ ,  ]. In particular, studies have suggested that only certain subpopulations (dependent on trauma type) show reductions in hippocampal volume [ ]. Lastly, variation exists in the control samples used across these studies. One of the largest differences affecting results is likely because of the inclusion of either combat deployed or noncombat deployed military personnel. Because our study used previously combat deployed military OEF/OIF Veterans, differences between the current groups may be harder to detect than between PTSD/TBI and a nonmilitary control group. Future research is needed to determine whether simply the experience of combat deployment affects brain morphometry. For instance, combat deployment in general may relate to increased stress and subsequently affect the hippocampus through stress induced glucocorticoid release [ ]. 
+
+The current study analyzed multiple measures related to symptoms of both PTSD and mTBI. We indicate that deficits in inhibitory control, highly related to PTSD and TBI, are associated with decreases in amygdala volume in the PTSD/mTBI but not the control group. This relationship was significant in the PTSD/mTBI but not control group as indicated through regressions with errors of commission from the Go/No-go task, which also indicated significant group differences. Increased impulsivity, which has also been shown to be related to deficits in inhibitory control and performance on the Go/No-go task, also showed an association with decreased amygdala volume in the PTSD/mTBI but not control group. The Shipley 2 was used as a proxy for IQ, and therefore our best premorbid indicator of cognitive functioning. However, group differences emerged in both Abstraction and Composite A subscales, indicating that the PTSD/mTBI group exhibited decreased cognitive functioning. An individual's score on the Composite A subscale was also related to amygdala volume, such that decreased cognitive function were related to decreases in amygdala volume, in the PTSD/mTBI but not control group. We acknowledge that there are multiple interpretations regarding the Shipley 2 in the context of the current study (a) that the Shipley 2 is sensitive to the premorbid cognitive functioning of the individual, or (b) that the Shipley 2 is actually measuring cognitive impairment sequelae of PTSD and/or mTBI, or (3) some combination of the previous two interpretations. The current results are consistent with the literature suggesting that premorbid decreases in IQ may predispose individuals to PTSD [ ]; however, it is notable that abstraction can be considered an executive function, which is known to be affected by both PTSD and TBI. Continued research is needed to determine the contribution of premorbid deficits and sequelae of individuals with PTSD and/or TBI as it relates to cognitive and executive function. The culmination of the findings from these multiple measures suggests that deficient inhibitory control is related to decreases in amygdala volume and may be more related to trauma associated with PTSD, rather than mTBI symptoms. The location of VBM and more importantly SBM findings in the anterior amygdala provide further interpretation of deficient inhibitory control as it relates to PTSD/mTBI. 
+
+Often the amygdala is treated as a functionally homogeneous region, but both animal and human research investigating nonpsychiatric populations suggests there may be dissociations of function along either a ventral-dorsal or anterior-posterior axis [ ]. The ventral-dorsal axis has been linked to numerous functional dissociations including sensory input versus sensory output [ ], impulsivity versus aggression [ ], and fear conditioning (via input to the hippocampus) versus fear response [ ], respectively. These dissociations are most likely attributed to the locality of two of the major amygdalar nuclei groups, the basolateral nuclei (BLA) and the central nuclei (CE). In humans, the BLA corresponds to the anterior or ventral segment of amygdala, while the CE is localized to the posterior or dorsal region of the amygdala [ ]. The BLA is the set of nuclei in which multimodal sensory information converges [ ]. This information is then processed and relayed to the CE nuclei group responsible for affecting physiological response via output to the brainstem, insula, and somatosensory cortex [ ]. This well-established circuitry has been linked to fear extinction in which inhibitory cell groups (intercalated cell masses) positioned between the BLA and CE can reduce fear response via excitatory input from the vmPFC, which in turn decreases information flow to the CE nuclei group and fear mediated physiological response is lessened or abolished [ ]. Therefore, our findings, indicating decreases specific to anterior amygdala volume, can likely be interpreted as abnormal morphometry associated with the BLA and as such may be linked to problems with multimodal sensory input. Problems with sensory input may lead to overprocessing of irrelevant stimuli and lead to increased anxiety and impulsive behavior [ – ]. Indeed, our results are consistent with this previous interpretation as we found that Go/No-go task, impulsivity, and trauma symptoms were linked to the anterior amygdala. Of course, it is not clear how reduced volume in this region is associated with sensory input specifically; however, it provides an interesting focus for future research. 
+
+The current study employed a standard cognitive task (Go/No-go), as opposed to using a symptom provocation task (e.g., script-driven imagery, processing of threat-related stimuli). Understandably, while most neuroimaging research regarding PTSD uses symptom provocation studies, it is also important to determine whether deficits in inhibitory function can be found under nonemotional conditions. The results of the current study suggest more general inhibitory control deficits in PTSD/mTBI individuals, consistent with the findings of Falconer et al., [ ] in PTSD individuals. Therefore, future research using standard cognitive tasks may help to determine whether the neural systems affecting these populations are “generally” dysfunctional or whether they exhibit deficits only under certain conditions (e.g., threat/fear stimuli). Such information will likely be helpful to provide additional insights into how to develop more effective interventions. 
+
+While the current study uses multiple neuroimaging analysis techniques (i.e., VBM, SBM) and linear regression to indicate relationships between PTSD/mTBI symptoms and impairments, there are limitations that should be acknowledged. First, the sample size is relatively small for individual difference analyses, even though we first selected regions that exhibited group differences. Therefore, our findings are in need of replication. Second, we only included individuals with a mild but not moderate or severe TBI, which may have reduced our power to detect differences based on mTBI symptoms. Currently, it is unclear how TBI symptoms relate to differences in volume of specific brain regions. Third, our control population had trauma symptoms which have been shown to be linked to anatomical changes [ ]; therefore, future studies need to determine the effect of trauma in isolation from diagnostic disorders. Fourth, our findings regarding increased impulsivity and the relation to decreased amygdala volume are based on the Barratt Impulsivity Scale, a self-report measure, which can lead to social desirability biases. Therefore, future research is needed to also investigate the relationship between impulsivity and amygdala volume with more biological indices of impulsivity. And last, we used a comorbid diagnostic group (i.e., PTSD/mTBI) to determine the relationships between brain morphometry and behavior/symptoms. Although this was the goal of the current study, future studies should examine the differences within a comorbid diagnostic group, in comparison to singular diagnostic groups (i.e., PTSD only, TBI only) to help fully decipher brain morphometry and the relationship to specific symptom profiles. 
+
+In sum, the current study has provided novel findings indicating abnormal anterior amygdala morphometry in comorbid PTSD/TBI, as compared to controls, as assessed by both voxel- and surface-based morphometric analyses. The group level reduction in amygdala volume was then shown to predict individual differences within the PTSD/mTBI group in errors of commission, impulsivity, cognitive function, and symptoms related to PTSD but not mTBI. Therefore, abnormalities in the anterior amygdala may provide a specific neural region that can be examined as it relates to deficits in inhibitory control, which may help identify biomarkers related more to PTSD, rather than mTBI in comorbid diagnostic groups. 
+
+ </div>
+</div>
+</div>
+</div>
+</div>
+<div class='study' id='study-6'>
+<h2>6. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23113800/' target='_blank'>23113800</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included</p>
+<p><strong>Fulltext Reasoning:</strong> This study used voxel-based morphometry (VBM) on MRI data (VBM5/SPM5) to examine gray matter volume. The sample includes an adult PTSD group (N=15) and a trauma-exposed non-PTSD control group (N=17). The paper reports whole-brain VBM between-group contrasts comparing PTSD vs. traumatized controls (NS > S and S > NS) with coordinate-based results and cluster-level statistics provided in Table 3 and described in the text. Thus it meets all inclusion criteria (VBM of GMV, PTSD and trauma-exposed comparison group, whole-brain voxel-wise results reported). No exclusion criteria are violated.</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-7'>
+<h2>7. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/16371250/' target='_blank'>16371250</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included</p>
+<p><strong>Fulltext Reasoning:</strong> This is an adult VBM MRI study comparing 12 fire survivors with DSM-IV PTSD to 12 trauma-exposed (same fire) controls without PTSD. Methods use whole-brain voxel-based morphometry (SPM2) of gray matter with between-group contrasts; significant whole-brain VBM results (coordinates, SPM{t} maps, table and figure) are reported for PTSD vs trauma-exposed controls (left hippocampus, left ACC, bilateral insula). The sample is adult, not a treatment/longitudinal or ROI-only study, and between-group coordinate-based results are provided. No exclusion criteria are violated. Therefore the study meets all inclusion criteria for the meta-analysis.</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-8'>
+<h2>8. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/30127342/' target='_blank'>30127342</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> A transdiagnostic neuroanatomical signature of psychiatric illness</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Neuropsychopharmacology</p>
+<p><strong>Publication Year:</strong> 2018</p>
+<p><strong>DOI:</strong> 10.1038/s41386-018-0175-9</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/6461829/' target='_blank'>6461829</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included</p>
+<p><strong>Fulltext Reasoning:</strong> Study uses voxel-based morphometry (VBM) of gray matter volume with MRI; includes an adult PTSD group (n=91) and an unexposed healthy control group (n=201); reports whole-brain VBM comparisons (PTSD vs HC included within diagnosis-specific contrasts and in the transdiagnostic inclusive mask) with coordinate-based results (bilateral putamen clusters) surviving whole-brain FWE correction. Not ROI-only, not longitudinal/treatment only, and includes required between-group contrast (PTSD vs trauma-unexposed controls). Therefore meets all inclusion criteria.</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+Despite an increasing focus on transdiagnostic approaches to mental health, it remains unclear whether different diagnostic categories share a common neuronatomical basis. The current investigation sought to investigate whether a transdiagnostic set of structural alterations characterized schizophrenia, depression, post-traumatic stress disorder, and obsessive-compulsive disorder, and determine whether any such alterations reflected markers of psychiatric illness or pre-existing familial vulnerability. A total of 404 patients with a psychiatric diagnosis were recruited (psychosis,   n   = 129; unipolar depression,   n   = 92; post-traumatic stress disorder,   n   = 91; obsessive-compulsive disorder,   n   = 92) alongside   n   = 201 healthy controls and   n   = 20 unaffected first-degree relatives. We collected structural magnetic resonance imaging scans from each participant, and tested for transdiagnostic alterations using Voxel-based morphometry. Inferences were made at   p   < 0.05 after family-wise error correction for multiple comparisons. The four psychiatric groups relative to healthy controls were all characterized by significantly greater gray matter volume in the putamen (right:   z  -score: 5.97,   p  -value < 0.001; left:   z  -score: 4.97,   p  -value = 0.001); the volume of this region was positively correlated with severity of symptoms across groups (  r   = 0.313;   p   < 0.001). Putamen enlargement was also evident in unaffected relatives compared to healthy controls (right:   z  -score: 8.13,   p  -value < 0.001; left:   z  -score: 9.38,   p  -value < 0.001). Taken collectively, these findings indicate that increased putamen volume may reflect a transdiagnostic marker of familial vulnerability to psychopathology. This is consistent with emerging conceptualizations of psychiatric illness, in which each disorder is understood as a combination of diagnosis-specific features and a transdiagnostic factor reflecting general psychopathology. 
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (25729 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## Introduction 
+  
+Modern psychiatry is based on the principle that mental disorders are separate categories with distinct etiologies and clinical presentations. However, it is well known that several individuals show clear signs of general psychopathology but do not fit neatly within the boundaries of any diagnostic categories [ ]. Furthermore, it has been recognized for several decades that comorbidity (the coexistence of two or more disorders) is the rule rather than the exception in mental health, with half of people who meet diagnostic criteria for one disorder also meeting criteria for at least one another disorder [ ]. Within existing diagnostic systems, therefore, it is acknowledged that there are not clear-cut boundaries between the different categories. For example, in the Diagnostic Statistical Manual of Mental Disorders (DSM), “there is no assumption that each category of mental disorder is a completely discrete entity with absolute boundaries dividing it from other mental disorders” [ ]. Consistent with this notion, an increasing number of genetic and epidemiological studies are pointing to large overlap between different psychiatric disorders. For example, similar sets of genes [ ] and environmental risk factors [ ] have been found to underlie a range of diagnostic categories, including schizophrenia, depression, obsessive-compulsive disorder (OCD), and post-traumatic stress disorder (PTSD). These findings have informed an emerging conceptualization of psychiatric illness, in which each disorder is best understood as a combination of diagnosis-specific as well as transdiagnostic features or mechanisms [ – ]. For example, in one influential model, this transdiagnostic factor—referred to as factor   p  —captures general psychopathology in a manner similar to how factor   g   of general intelligence measures performance across a wide range of seemingly disparate cognitive tasks [ ]. Understanding the nature of vulnerabilities across psychiatric disorders may be important in informing the development of transdiagnostic interventions aimed a decreasing risk of psychopathology across disorders—a key direction for intervention research [ ]. 
+
+If a transdiagnostic factor underlies multiple psychiatric disorders, then one would expect a common neuroanatomical signature to characterize different diagnostic categories. Currently, the neuroimaging literature comprises hundreds of studies on the neuroanatomical basis of psychiatric disease. The vast majority of these, however, have compared groups of patients who met criteria for a specific disorder with control groups of healthy individuals. Such studies, while valuable in shedding light on specific psychiatric disorders preclude any test as to whether neuroanatomical alterations are in fact shared across traditional diagnostic categories. Furthermore, because the vast majority of studies did not include unaffected relatives, it has generally not been possible to establish whether the observed alterations reflected the development of psychiatric illness or pre-existing familial vulnerability. 
+
+Our current understanding as to whether common neuroanatomical features characterize different disorders is based on meta-analyses of studies that were carried out on individual disorders using different methodologies [ ]. Consequently, at present, it is unclear whether different diagnostic categories have a common underlying neuroanatomical basis and whether any such marker reflects actual psychiatric illness or pre-existing familial vulnerability. A recent study investigate examined the neural basis of three psychiatric disorders (schizophrenia, bipolar disorder, and major depression). Critically, this study includes high percentages of medicated patients, ranging from 37% for major depression to 64% for schizophrenia [ ]. This raises the possibility that at least some of the findings might be attributed to treatment effects. The aim of the present investigation was therefore to examine neuroanatomical alterations across medication-naive individuals suffering from four psychiatric disorders, including schizophrenia, depression, PTSD, and OCD. We recruited a total of 404 patients with a psychiatric diagnosis, including psychosis (  n   = 129), unipolar depression (  n   = 92), PTSD (  n   = 91), and OCD (  n   = 92) and 201 healthy volunteers. In addition, in order to elucidate whether the transdiagnostic alterations were a marker of current psychiatric illness or reflects pre-existing familial vulnerability, we also recruited 20 unaffected first-degree relatives of patients with first-episode psychosis (FEP). All participants were scanned using the same scanner and acquisition sequence, ensuring comparability of the data across multiple diagnostic categories. We hypothesized that a common transdiagnostic neuroanatomical alteration would characterize all four disorders compared to healthy controls (HCs). Furthermore, we expected that that the degree of structural alteration would be related to severity of symptoms within each illness. Finally, we hypothesized that alterations in similar brain regions would, at least in part, be evident in unaffected relatives and therefore reflect underlying familial vulnerability rather than simply a marker of current psychiatric illness. 
+
+
+## Materials and methods 
+  
+### Participants 
+  
+All participants were recruited as part of a larger cohort study of psychiatric illness in the Chinese population of Han nationality. Subsets of the data used here have been used in previous studies [ – ]. The present investigation was approved by the local research ethics committee and all participants provided written informed consent. Exclusion criteria applicable to all participants included: (i) history of drug or alcohol abuse; (ii) pregnancy; and (iii) any physical illness such as hepatitis, cardiovascular disease, or neurological disorder, as assessed by interview and review of medical records. Further information on each group is provided below. 
+
+
+### First-episode psychosis 
+  
+In all, 129 patients with FEP were included (Table  ). Diagnosis of FEP and duration of illness were determined by the consensus of two experienced clinical psychiatrists using the Structured Interview for the DSM-IV Axis I Disorder, Patient Edition (SCID) [ ]. Psychopathology was measured on the day of scanning using the Positive and Negative Syndrome Scale (PANSS) [ ]. At the time of scanning, all patients were medication-naive; this was assessed by asking participants whether they had ever taken medication for mental health issues and examining their clinical records.   
+Demographic and clinical characteristics of participants 
+  
+ FEP   first-episode psychosis,   MDD   major depressive disorder,   PTSD   post-traumatic stress disorder,   OCD   obsessive-compulsive disorder,   HC   healthy control,   PANSS   Positive and Negative Syndrome Scale,   PCL   PTSD checklist,   CAPS   Clinician Administered PTSD Scale,   HAM-D   Hamilton Depression Rating Scale,   Y-BOCS   Yale-Brown Obsessive Compulsive Scale,   SEM   standard error of the mean,   M   males,   F   females 
+  
+
+
+### Major depressive disorder 
+  
+Ninety-two participants with major depressive disorder (MDD) were included (Table  ). Diagnosis of MDD was made with the SCID [ ]. Severity of depression was quantified using the 17-item Hamilton Depression Rating Scale (HAM-D [ ]). All participants had a total HAM-D score ≥ 18 on the day of testing. At the time of scanning, all patients were medication-naive; this was assessed by asking participants and examining their clinical records. 
+
+
+### Post-traumatic stress disorder 
+  
+Ninety-one participants with PTSD were included (Table  ). These participants were survivors of the 2008 Sichuan earthquake who had all physically experienced the earthquake, personally witnessed death, serious injury, or the collapse of buildings, and not suffered any physical injury. All participants were assessed using the PTSD Checklist (PCL) [ ] and met threshold criteria (PCL score ≥ 35) for diagnosis of PTSD on the day of scanning. Patients were also assessed using the Clinician Administered PTSD scale [ ]. At the time of scanning, all patients were medication-naive; this was assessed by asking participants and examining their clinical records. 
+
+
+### Obsessive-compulsive disorder 
+  
+Ninety-two participants with OCD were included (Table  ). Diagnosis of OCD and assessment of symptom severity were based on the Yale-Brown Obsessive-Compulsive Scale (Y-BOCS) and the clinician-rated Y-BOCS symptom checklist [ ]. At the time of scanning, all patients were medication-naive; this was assessed by asking participants and examining their clinical records. 
+
+
+### Healthy controls 
+  
+In all, 201 HC subjects were included (Table  ). All were recruited by poster advertisement, and screened using the non-patient edition of the SCID [ ] to confirm the lifetime absence of psychiatric illnesses. In addition, these subjects were interviewed to exclude individuals with a known history of psychiatric illness in first-degree relatives. 
+
+
+### Unaffected relatives 
+  
+To explore whether any transdiagnostic neuroanatomic alterations detected in the four diagnostic groups were a marker of current psychiatric illness or reflected pre-existing familial vulnerability, we also recruited 20 unaffected first-degree relatives of patients with a diagnosis of FEP. The absence of psychiatric illness in these participants was established using the non-patient edition of the SCID [ ]. 
+
+
+### Data acquisition 
+  
+High-resolution T1-weighted images were acquired using a 3 T magnetic resonance imaging (MRI) system (EXCITE, General Electric, Milwaukee, WI, USA) with a volumetric three-dimensional spoiled gradient recall sequence (TR = 8.5 ms, TE = 3.4 ms, flip angle = 12°, and slice thickness = 1.0 mm) with an eight-channel phase array head coil. A field of view of 24 cm  was used with an acquisition matrix comprising 256 readings of 128 phase-encoding steps, producing 156 contiguous coronal slices with slice thickness of 1.0 mm and in-plane resolution of 0.47 mm × 0.47 mm. 
+
+
+### Data analysis 
+  
+The T -weighted volumetric images were pre-processed using voxel-based morphometry as implemented in SPM12 software (  http://www.fil.ion.ucl.ac.uk/spm  ) running under Matlab 7.1 (Math Works, Natick, MA, USA). In particular we used the Diffeomorphic Anatomical Registration using Exponentiated Lie algebra (DARTEL) SPM8 toolbox [ ]; this involves the creation of a dataset-specific template and the segmentation of each individual image using such template, with the aim of maximizing accuracy and sensitivity [ ]. The following steps were followed: (1) checking for scanner artifacts and gross anatomical abnormalities for each subject; (2) setting the image origin to the anterior commissure; (3) using the DARTEL toolbox to produce a high-dimensional normalization protocol; (4) checking for homogeneity across the sample; and (5) using standard smoothing (i.e. 8 mm). A “modulation step” was also included in the normalization in order to preserve the information about the absolute gray matter values [ ]. After pre-processing, we obtained smoothed, modulated, normalized images for each of our four datasets. These were used to compare patients and controls using an analysis of covariance (ANCOVA), with age, gender, and total gray matter volume modeled as covariates of no interest. Neuroanatomical alterations common to the four diagnostic groups were identified by comparing FEP, PTSD, MDD, and OCD patients against HCs (e.g. FEP, PTSD, MDD, and OCD vs HC) and then using the inclusive masking option (at   p   < 0.05 uncorrected) in SPM12 software to identify those regions that survived the diagnosis-specific comparisons (i.e. FEP vs HC; PTSD vs HC; MDD vs HC; and OCD vs HC). This enabled us to detect alterations in the FEP group that reflect a transdiagnostic feature of psychiatric illness. Statistical inferences were made at   p   < 0.05 after family-wise error (FWE) correction with a minimum extent threshold of 10 voxels. Finally, in order to elucidate whether transdiagnostic alterations were a marker of current psychiatric illness or reflected pre-existing familial vulnerability, we performed statistical comparison between unaffected relatives and HCs, using a mask that comprised all voxels showing a transdiagnostic alteration in the ANCOVA. This mask was created using the Neuromorphometrics atlas (  http://www.neuromorphometrics.com/  ) as implemented in SPM12. This statistical comparison was carried out using a two-sample   t  -test and, once again, statistical inferences were made at   p   < 0.05 after FWE correction with a minimum extent threshold of 10 voxels. 
+
+
+
+## Results 
+  
+There were no regions with lower gray matter volume in patients relative to HCs across all diagnostic groups. However, the putamen showed higher gray matter volume in all four psychiatric groups relative to HC; this effect was evident both in the right (cluster = 32 voxels;   x   = 32   y   = 6   z   = −2;   z  -score: 5.97;   p  -value < 0.001 after FWE correction) and the left (cluster = 30 voxels;   x   = −30   y   = 5   z   = −7;   z  -score: 4.97;   p  -value = 0.001 after FWE correction) hemisphere (Fig.  ).   
+Transdiagnostic gray matter increases in patients relative to healthy controls. Left: mean gray matter volume in the five groups; the values on the   y  -axis refer to cubic millimeters per voxel with error bars representing SD. Right: regions of the left and right putamen where transdiagnostic increases were detected. FEP first-episode psychosis, OCD obsessive-compulsive disorder, PTSD post-traumatic stress disorder, MDD major depressive disorder, HC healthy controls, GMV gray matter volume measured as mm  of gray matter per voxel 
+  
+
+Next, we considered whether the neuroanatomical increase in the bilateral putamen of patients relative to HCs was associated with severity of symptoms. This involved performing partial correlation analyses between gray matter volume in the left and right putamen and clinical scores within each diagnostic group, controlling for age and gender. This revealed significant positive correlations in the whole patient sample as well as in each individual diagnostic group (Table   and Fig.  ); in other words, higher gray matter volume in the putamen was associated with higher severity of symptoms.   
+Association between gray matter volume in the bilateral putamen and severity of symptoms 
+  
+Symptoms were measured using PANSS total score for FEP; HAM-D score for MDD; CAPS score for PTSD; and Y-BOCS total score for OCD patients. The reported results refers to partial correlations, where age and gender were controlled in the correlation between GM and disease severity. 
+
+ FEP   first-episode psychosis,   MDD   major depressive disorder,   PTSD   post-traumatic stress disorder,   OCD   obsessive-compulsive disorder 
+    
+Partial correlation between gray matter volume in the right (  a  ) and left (  b  ) putamen and the disease severity, controlling for age and gender. To ensure disease severity scores were comparable across different disorders, these scores were normalized accordingly within each diagnostic group with the following formula: normalized individual value = (individual value − minimum score)/(maximum score − minimum score). Following the application of this formula, the disease severity score of each patient ranged between 0 and 1. GMV gray matter volume measured as mm  of gray matter per voxel 
+  
+
+To elucidate whether the transdiagnostic increase in the bilateral putamen is a marker of current psychiatric illness or reflected pre-existing familial vulnerability, we performed a region of interest analysis in 20 unaffected first-degree relatives of patients with a diagnosis of FEP. This involved creating a mask of the bilateral putamen (total size: 62 voxels) and then performing a two-sample   t  -test to compare unaffected relatives and our group of HCs within this bilateral mask. The putamen showed higher gray matter volume in the group of unaffected relatives compared to HCs; this effect was evident both in the left (cluster = 30 voxels;   x   = −32   y   = −8   z   = 2;   z  -score: 9.39;   p  -value < 0.001 after FWE correction) and the right (cluster = 32 voxels;   x   = 32   y   = −6   z   = 2;   z  -score: 8.13;   p  -value < 0.001 after FWE correction) hemisphere Fig.  .   
+Transdiagnostic gray matter increases in unaffected relatives relative to healthy controls. Left: mean gray matter volume in the two groups; the values on the   y  -axis refer to cubic millimeters per voxel with error bars representing SD. Right: regions of the left and right putamen where transdiagnostic increases were detected. GMV gray matter volume measured as mm  of gray matter per voxel 
+  
+
+
+## Discussion 
+  
+The aim of this study was to test for common underlying neuroanatomic alterations across several diagnostic categories. This was achieved by investigating brain structure in medication-naive individuals with a number of psychiatric disorders, including schizophrenia, depression, OCD, and PTSD. Our findings indicated a transdiagnostic neuroanatomic signature across different diagnostic categories: an increase in gray matter volume of the bilateral putamen in all patient groups relative to HCs. The degree of increase was correlated with symptom severity and was also evident in unaffected first-degree relatives. Critically, as the individuals included in the current study were all medication-naive at the time of the scanning, the current results cannot be explained by medication effects. 
+
+Consistent with our first hypothesis of transdiagnostic neuroanatomical alterations, our investigation revealed higher gray matter volume of the putamen across all four disorders. The putamen receives afferent inputs from several cortical regions and via the thalamus sends neural projections back to the neocortex [ ]. Through these cortico–striato–thalamo neural loops, the putamen serves as a center for the integration of high-level cognitive, motor, and limbic processes [ ]. Given its role in these processes, it is unsurprising that dysregulation of this region is thought to underlie the emergence of cognitive and clinical symptoms in psychiatric disease [ ]. Previous studies have reported higher gray matter volume in the putamen of patients relative to HCs in schizophrenia [ ,  ] and OCD [ ,  ]. As dopamine is a key neurotransmitter in the putamen and D2 dopamine receptors are a major target of typical antipsychotic medications, the observed increases have typically been interpreted as a consequence of D2 blockade induced by antipsychotic medication [ ]. However, it is not possible to determine the functional significance of increased putamen volume observed in the present study. Future studies using healthy high-risk samples, which systematically map structural and functional indices within a longitudinal design, are necessary to shed light on what these observed structural differences may mean at a mechanistic level of disease progression and presentation. 
+
+Consistent with our second hypothesis of an association between transdiagnostic neuroanatomical alteration and severity of symptoms, gray matter volume in the putamen was positively correlated with higher severity of symptoms; this correlation was evident when considering each diagnostic group separately as well when combining the four disorders into a single sample (  n   = 404). A similar positive association between gray matter volume in the putamen and severity of symptoms had been reported in individuals with OCD [ ] and PTSD [ ]; however, to our knowledge, this is not a common finding in psychiatric neuroimaging, and as such requires replication. A previous investigation had reported a progressive loss of gray matter volume in the putamen in patients with schizophrenia with poor long-term outcome relative to those with good long-term outcome [ ]. This had led to the suggestion that putamen enlargement may be a marker of responsiveness to antipsychotic treatment and even act as a protective factor against poor long-term outcome [ ]. Our investigation extends this interpretation by suggesting that higher gray matter volume of the putamen is associated with a more severe clinical presentation across diagnostic boundaries. Because disease-specific clinical scales were used to measure severity of symptoms in each diagnostic group, higher gray matter volume of the putamen is likely to reflect generic symptomatology rather than the correlate of specific symptoms that are common to all four disorders. 
+
+To elucidate whether the transdiagnostic increase in the bilateral putamen is a marker of current psychiatric illness or reflected pre-existing familial vulnerability we performed a region of interest analysis in 20 unaffected first-degree relatives of patients with a diagnosis of FEP. Consistent with our third hypothesis, we detected a significant gray matter volume increase in the left and right putamen within this sample. This suggests that putamen enlargement is marker of underlying familial vulnerability rather than the disease itself. Here the term “familial” refers to effects that are shared between family members, without necessarily assuming a genetic or environmental etiology. 
+
+Taken collectively, our findings are consistent with emerging conceptualizations of psychiatric illness, in which each disorder is best understood as a combination of diagnosis-specific features and a transdiagnostic factor reflecting general psychopathology [ – ]. In particular, the observation of putamen enlargement in patients as well as unaffected relatives provides neurobiological evidence, which supports conceptualizations of mental illness based on cross-diagnostic vulnerability [ ]. Given the role of the putamen in the integration of high-level cognitive, motor, and limbic processes, we speculate that disruption of these processes may represent a transdiagnostic feature of psychiatric disease. These processes could therefore be used as target in the development of novel transdiagnostic interventions aimed a decreasing risk for psychopathology across multiple disorders [ ]. We note that the term “transdiagnostic” can be used to mean “across diagnoses” as well as “above and beyond diagnosis”. Here we use this term to refer to effects that are evident across different psychiatric disorders; in other words, we are not referring to the idea of abandoning current categorical categories to go “above and beyond” them (for interesting discussions on this topic [ ,  ]). 
+
+A strength of the present investigation is that at the time of scanning, patients were experiencing their first episode of the illness and were still medication-naive. This means that the effects reported here cannot be explained by illness chronicity or medication—two common confounds in neuroimaging studies of psychiatric disease. A further strength is that all six groups were scanned using the same MRI scanner and image acquisition parameters over the same period of time, and therefore our results cannot be explained by systematic differences in the acquisition of the data. However, the present investigation has at least three limitations that warrant careful consideration. First, although we can exclude medication, age, and gender as potential confounds, there are other sources of neuroanatomical variability such as intelligence quotient and socioeconomic status that were not assessed and which may have contributed to the results. Second, because the data were acquired using a cross-sectional rather than a longitudinal design, it was not possible to unambiguously distinguish between correlates of vulnerability to psychiatric illness and correlates of psychiatric illness itself. However, the fact that we did detect a significant effect in unaffected relatives supports the notion that putamen enlargement is a marker of vulnerability rather than the illness itself. Third, the group of unaffected relatives (  n   = 20) was noticeably smaller than the other five groups. Nevertheless, we note that a group size of 20 is considered appropriate for a neuroimaging investigation [ ], and that the bilateral effect detected in this group relative to HCs would have been statistically significant even if we had used a more conservative whole-brain FWE correction for multiple comparisons. Finally, while the aim of the present investigation was to examine common underlying neuroanatomic alterations across several diagnostic categories, it was not our intention to assume or imply that there are no disorder-specific correlates. We are therefore reporting disease-specific effects in the Supplementary Material for completeness (see  ). 
+
+In conclusion, the present study has revealed putamen enlargement as a transdiagnostic marker of psychiatric illness; the observation of this difference in non-affected relatives suggests that this may reflect underlying familial vulnerability to general psychopathology. This raises the prospect that this region could be used to assess degree of familial vulnerability to psychopathology across traditional diagnostic boundaries, and thus adds to the development of psychoradiology (  https://radiopaedia.org/articles/psychoradiology  ). These findings are consistent with emerging conceptualizations of psychiatric illness, in which each disorder is best understood as a combination of diagnosis-specific features and a transdiagnostic factor reflecting general psychopathology [ ,  ]. 
+
+
+## Electronic supplementary material 
+  
+
+
+
+
+ </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

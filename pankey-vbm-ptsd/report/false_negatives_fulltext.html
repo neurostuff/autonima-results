@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        /* Accordion styles */
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC'; /* Down arrow */
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2'; /* Up arrow */
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+</script>
+<h1>False Negatives Papers at Fulltext Stage</h1>
+<p>Total papers: 3</p>
+<div class='study-list'>
+<div class='study' id='study-1'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23776553/' target='_blank'>23776553</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Voxel-Based Morphometry in Women with Borderline Personality Disorder with and without Comorbid Posttraumatic Stress Disorder</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> PLoS One</p>
+<p><strong>Publication Year:</strong> 2013</p>
+<p><strong>DOI:</strong> 10.1371/journal.pone.0065824</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/3680473/' target='_blank'>3680473</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded</p>
+<p><strong>Fulltext Reasoning:</strong> Although the study uses whole-brain VBM and includes a PTSD subgroup (BPD+PTSD), it does not report a whole-brain VBM contrast comparing individuals with PTSD to trauma-exposed individuals without PTSD or to trauma-unexposed healthy controls. The reported between-group whole-brain comparison is BPD+PTSD vs BPD-PTSD (both groups have BPD), and it is unclear whether the BPD-PTSD group is trauma-exposed. There is no clear coordinate-based PTSD vs healthy control (or PTSD vs trauma-exposed non-PTSD) contrast in the paper. Thus it fails the requirement to report at least one whole-brain between-group VBM contrast comparing PTSD cases to an acceptable comparison group.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+Patients with Borderline Personality Disorder (BPD) showed reduced volume of amygdala and hippocampus, but similar findings are evident in Posttraumatic Stress Disorder (PTSD). Applying voxel-based morphometry (VBM) in a larger cohort of patients with BPD, we sought to extend earlier findings of volume abnormalities in limbic regions and to evaluate the influence of co-occurring PTSD in BPD patients. We used voxel-based morphometry to study gray matter volume (GMV) in 60 healthy controls (HC) and 60 patients with BPD. Subgroup analyses on 53 patients concerning the role of co-occurring PTSD were conducted. Additionally, regression analyses were calculated to assess the relation between borderline symptom severity as well as dissociative experiences and GMV. Differences in local GMV between patients with BPD and HC were observed in the amygdale and hippocampus as well as in the fusiform and cingulate gyrus. Co-occurring PTSD was accompanied by increased GMV in the superior temporal gyrus and dorsolateral prefrontal cortex. Independent of co-occurring PTSD, severity of BPD symptoms predicted smaller GMV in the amygdala and dorsal ACC. Dissociation was positively related to GMV in the middle temporal gyrus. We could replicate earlier findings of diminished limbic GMV in patients with BPD and additionally show that patients with co-morbid PTSD feature increased GMV in prefrontal regions associated with cognitive control. 
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (20446 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## Introduction 
+  
+Borderline Personality Disorder (BPD) is a highly prevalent disorder  –  with instability in interpersonal relationships and self-image as well as emotion dysregulation as its core symptoms  . Earlier studies on brain structure in BPD found diminished gray matter volume (GMV) in amygdala, hippocampus, cingulate cortex, frontal lobe, and parietal cortex  – . Based on this growing body of research, it was speculated that reduced volume of amygdala and hippocampus might be “biological markers” of BPD (for a meta-analysis, see  ). However, reduced volume of the hippocampus and amygdala are also commonly observed in patients with Posttraumatic Stress Disorder (PTSD, for a meta-analysis, see  ), and in women with a history of sexual abuse in childhood  ,  . Both conditions are also highly prevalent in patients with BPD. For instance, about fifty percent of BPD patients fulfill criteria for PTSD  . One may conclude that both disorders (BPD and PTSD) share common biological factors, and it is not clear whether these volume reductions are related to elevated stress levels or genetic factors  ,  . In sum, up until now, it remains unclear whether abnormalities in GMV of the limbic system are exclusively attributable to BPD. 
+
+A recent meta-analysis aimed to evaluate the influence of co-occurring PTSD in BPD patients and points to reduced bilateral hippocampal volumes in patients with BPD compared to healthy control subjects (HC). Importantly, these differences in GMV of the hippocampus were more pronounced for patients with BPD and co-morbid PTSD  . In both disorders, dissociation is a frequent psychopathological symptom  ,   and is more specifically defined as an altered state of consciousness causing impairments in body awareness, perception, and memory  . Dissociative symptoms are often triggered by either specific stimuli, emotional arousal or aversive tension  ,  , providing a possible symptomatic link between both disorders. 
+
+Most studies on brain volume in BPD used manual tracing methods  – ,  – ,  , thereby following an a priori region-of-interest approach that allows for precise detection of small volume differences. To our knowledge, there are only six studies available that report whole-brain results on GMV in BPD using voxel-based morphometry (VBM), which is a technique to conduct voxel-wise comparisons of and gray matter concentration (GMC) between groups of subjects, searching for structural differences within the whole brain  . The first study by Ruesch and colleagues   in twenty BPD patients found reduced GMV in the left amygdala compared to healthy control subjects (HC). The second study by Soloff et al.   compared 34 BPD patients to HC and observed changes in GMC in the hippocampus, amygdala, and ventral cingulate gyrus. Smaller GMV in the cingulate gyrus was associated with high depression, while smaller GMV in limbic and paralimbic regions was negatively correlated with impulsivity. In the third study, Völlm and colleagues   investigated GMV in seven male patients with BPD and six HC and found differences in orbitofrontal cortex, middle frontal gyrus, precentral and postcentral gyrus, temporal pole, and inferior and superior parietal cortex, which were negatively correlated to trait impulsivity. In the fourth study, Brunner and colleagues   compared 20 adolescent patients with BPD to patients with other psychiatric disorders and HC. BPD patients showed reduced GMV in the dorsolateral prefrontal cortex (DLPFC) and orbitofrontal cortex compared to HC, but there were no significant GMV differences compared to the clinical control group, which also showed smaller DLPFC volumes than HC. In the fifth study by Soloff and colleagues  , 68 patients (male and female) with BPD were investigated. The authors found reduced GMC in the insula, orbitofrontal gyrus and middle superior temporal cortex, which were associated with suicidal behavior in BPD. In the most recent study, Kuhlmann and colleagues   found reduced gray matter in 30 female patients with BPD in the hippocampus, and increased volume in the hypothalamus compared to 30 healthy participants, but no significant alterations were found in the amygdala or anterior cingulate cortex (ACC). Hypothalamic volume correlated positively with the self-ratings of past traumatization in patients with BPD. However, no differences were found between subgroups of BPD patients with comorbid PTSD (n = 9) and BPD patients without PTSD (n = 21). Regression analyses did not reveal any significant correlations with clinical variables (e.g. BPD symptom severity as assessed by the Borderline Symptom List). In total, available evidence regarding GMV differences in the limbic system in BPD is rather inconclusive at the present time. Moreover, most of the previous studies included rather small sample sizes, which did not allow for controlling the role of co-occurring PTSD in individuals with BPD. 
+
+In the present study, we sought to extend earlier findings of volume alterations in limbic regions by applying voxel-based morphometry (VBM) in a larger cohort of patients with BPD. Moreover, we were interested in GMV differences in patients with BPD and co-occurring PTSD. Additionally, we investigated whether changes in GMV are related to borderline symptom severity as well as dissociative experiences. 
+
+
+## Methods 
+  
+Structural imaging data of 60 women with BPD according to DSM-IV   without psychotropic medication (age   M   = 29.67,   SD   = 8.06) and 60 healthy women (age   M   = 28.5,   SD   = 7.49;   T   = 0.763, p = .447) were collected on a 3T MRI scanner (TRIO, Siemens Medical Systems, Erlangen, Germany) between 2007 and 2011 at the Central Institute of Mental Health in Mannheim. Data can be obtained per request. The T1-weighted high-resolution structural scan was acquired using 3-D magnetization-prepared-rapid-acquisition-gradient-echo (176 sagittal slices, voxel size 1×1×1 mm, 256 mm field of view, repetition time 1570 ms, echo time 2.75 ms, flip angle 15°, echo spacing = 8.2 ms, inversion time 800 ms). To assess psychiatric disorders, all participants were rated by trained psychologists with semi-structured interviews (Structured Clinical Interview for Axis I disorders, SCID-I,  ; International Personality Disorder Examination, IPDE  ). Inter-rater reliability for IPDE/SCID was assessed using exemplary video interviews by master trainers, which were then rated by all individual raters involved in the study. This resulted in a sufficient inter-rater reliability (κ = .77). Exclusion criteria for all participants were severe medical or neurological illnesses, organic brain disease, mental retardation, medical history of skull- and/or brain-damage, pregnancy, left-handedness, pieces of metal in the body, claustrophobia, psychotropic medication two weeks prior to the study, as well as substance abuse or dependency during the last year prior to the study. Reliable data on PTSD co-occurrence was available for 53 BPD patients. 21 BPD patients met PTSD diagnosis (“BPD+PTSD”) and 32 did not fulfill the diagnosis (“BPD-PTSD”). Traumatic events comprised physical or sexual abuse. 
+
+A total of 42 BPD patients completed the Borderline Symptom List (BSL)   measuring BPD symptom severity, and the German adaptation of the Dissociative Experience Scale (Fragebogen zu Dissoziativen Symptomen, FDS)  . Patients with BPD+PTSD had higher FDS scores (M = 26.7, SD = 15.8) than patients in the BPD-PTSD group (M = 19.5, SD = 8.8) on a descriptive level, which did not reach statistical significance (T(24) = 1.493, p = .149). Severity of borderline symptoms was comparable between the BPD+PTSD (M = 189.6, SD = 39.4) and the BPD-PTSD group (M = 181.1, SD = 55.3; T(28) = 0.469, p = .642). All participants gave written informed consent to a study protocol according to the Declaration of Helsinki and approved by the ethics committee of the University of Heidelberg. We only included participants with full capacity to consent. Capacity to consent was established during a clinical interview. 
+
+For MRI analysis, we applied standard procedures implemented in the VBM8 toolbox (  http://dbm.neuro.uni-jena.de/vbm/  ), implemented as a toolbox in SPM8 (Wellcome Department of Cognitive Neurology, London;   www.fil.ion.ucl.ac.uk/spm  ). Data preprocessing consisted of segmentation into gray and white matter images, as well as a bias correction for magnetic field inhomogeneities. Additionally, Hidden Markov Random Fields were applied to increase the signal-to-noise ratio  . All resulting native GM and WM images were registered to a template provided by the International Consortium of Brain Mapping and a diffeomorphic image registration algorithm (DARTEL)   was used for spatially normalizing GM images into MNI space. DARTEL is a nonlinear algorithm to transform native images in stereotactic space which has proven to be suitable for morphometry studies  . Finally, the modulated normalized gray matter maps (m0wrp1*), depicting the absolute amount regional GMV corrected for individual brain sizes, were smoothed with a standard 10 mm full-width-at-half-maximum (FWHM) isotropic Gaussian kernel and used for further statistical analyses of differences in GMV between both groups. 
+
+Group differences in local GMV between HC and BPD were analyzed using two-sample t-tests. We also investigated subgroups of BPD patients without (BPD-PTSD, n = 31) and with current PTSD (BPD+PTSD, n = 21). Additionally, we used regression analyses within the subgroup of 42 BPD patients for whom questionnaires were available entering trait dissociation scores (FDS)   as well as dimensional scores of borderline symptom severity (BSL)   as regressors. For significant clusters, correlation coefficients were calculated between GMV of the peak-voxel and questionnaire scores using custom statistical software (SPSS, Rel. 15.0.1. 2006. Chicago: SPSS Inc.). Furthermore, stepwise regression analyses were conducted to investigate whether comorbid PTSD explains additional variance in this context. We decided not to include healthy controls in the regression analyses due to floor effects. In all analyses, we used an absolute threshold of 0.2 (probability for the presence of gray matter) to prevent effects located at the border regions of the tissue maps. Furthermore, in all analyses age was used as a covariate of no interest. 
+
+Region of Interest (ROI) Analyses were conducted for the bilateral amygdala, hippocampus and ACC. Therefore, anatomical masks defined by the Automated Anatomical Labeling software were used  . Since we were also interested in differences in prefrontal regions, we used the peak voxel in DLPFC which was found by Brunner and colleagues   with a 10 mm sphere at the MNI-coordinate [−18, 63, 24]. 
+
+To reduce the possibility of type-I errors, we chose the following procedures: For a-priori-defined ROI analyses we chose a statistical threshold of p(FWE)<.05. For whole-brain analyses, we used the cluster extent correction procedure implemented in spm8, which computes the number of expected voxels per cluster according to random field theory  . More specifically, we combined a cluster-defining height threshold (set at p<.001 uncorrected in the present study) with an empirically determined extent threshold (expected number of voxels per cluster)  ;  . Importantly, cluster sizes are known to vary with local roughness of the provided images. Thus, non-stationary random field theory procedures were used for cluster-size statistics adjusting cluster sizes depending on the local smoothness of the data  . For the two-sample t-test (BPD vs. HC), the minimum cluster size was determined to be 189 adjacent voxels, for the subgroup analysis (two-sample t-test BPD+PTSD vs. BPD-PTSD) 179 voxels, and for regression analyses (BSL and FDS) 158 and 146 voxels, respectively. 
+
+
+## Results 
+  
+Voxel-based analyses revealed significant differences in local GMV between patients with BPD and HC. In the ROIs, patients with BPD showed smaller volumes in the right amygdala, right hippocampus and BA 23/cingulate gyrus (see   and  ). The whole-brain analysis illustrated less GMV compared to HC in the fusiform gyrus (BA37)/inferior temporal gyrus and lingual gyrus (see   and   for more details). The reverse contrast (BPD>HC) revealed no significant results. 
+   Whole-brain maps illustrate smaller gray matter volumes in patients with borderline personality disorders compared to healthy controls (1a) and negative correlations between gray matter volume and the severity of BPD symptoms (1b).  
+For visualization purposes, the statistical maps were thresholded at T>2.5. Size and location of clusters are reported in   and  . 
+     Results of ROI analyses of gray matter volume.           Whole Brain Results of voxel-based analyses of gray matter volume.        
+Comparing BPD-PTSD to BPD+PTSD, patients with co-occurring PTSD showed more GMV in superior temporal gyrus (BA22) and DLPFC (see  ). No significant group differences in hippocampal or amygdala GMV were found between BPD patients with vs. without co-morbid PTSD. 
+   Whole-brain maps illustrate smaller gray matter volumes in patients with borderline personality disorder (BPD-PTSD) compared to patients with borderline personality disorders and co-occurring PTSD (BPD+PTSD).  
+For visualization purposes, the statistical maps were thresholded at T>2.5. Size and location of clusters are reported in   and  . 
+  
+Regression analyses with trait dissociation scores (FDS) showed higher GMV in middle temporal gyrus in patients with high scores of trait dissociation (r = .34). Patients with high borderline symptom severity showed less GMV in the cerebellum (visual association area), as well as in the fusiform gyrus/inferior temporal gyrus (see   and  ). A significant negative correlation with borderline symptom severity was observed within the ROI-analyses of the dorsal ACC (r = –.56), and a statistical trend for the bilateral amygdala (r = –.49) (see   and  ). Furthermore, stepwise multiple regression analyses confirmed borderline symptom severity as the strongest predictor for GMV in the left amygdala (beta = −0.36, p<0.05), whereas co-morbid PTSD did not explain incremental variance (beta = −0.08, p = .66). 
+
+
+## Discussion 
+  
+In this study, we used VBM to extend findings on gray matter volume (GMV) in patients with BPD. Moreover, we investigated the influence of co-occurring PTSD, as well as the role of borderline symptom severity and dissociative experiences. We were able to replicate reduced GMV in right amygdala, right hippocampus, and cingulate cortex in BPD  ,  ,  ,  . Additionally, we found diminished GMV in the fusiform and inferior temporal gyrus in BPD patients, which was also observed in three other studies using VBM in BPD  ,  ,  . Deviations in amygdala, hippocampus and fusiform gyrus were observed not only in volumetric studies, but also in fMRI studies in BPD  – , presumably reflecting affective instability or problems with emotion regulation. While our finding of posterior cingulate gyrus volume reduction in BA 23 corresponds to the study by Hazlett and colleagues  , whereas other studies in BPD have found reduced volumes in more caudal portions of the ACC, such as BA 24 and BA 32  . 
+
+Interestingly, a recent study in healthy adults provides a possible explanation for the relation of structural and functional abnormalities in limbic regions in BPD patients  . The authors demonstrated structural and functional alterations in healthy subjects with childhood maltreatment, which are strikingly similar to some findings in BPD research. First, the authors found reduced GMV in the hippocampus, orbitofrontal cortex, and ACC dependent on the severity of adverse events in childhood. Second, childhood maltreatment in healthy adults was also associated with higher amygdala responsiveness when viewing threat-related facial expressions  . This leads to the assumption that alterations in limbic brain regions could be mediators between adverse events in childhood and the development of psychiatric disorders like BPD, PTSD or major depression  . Nonetheless, it was argued that the co-occurrence of early childhood traumatization along with reduced abilities to regulate emotions and heightened impulsivity might be more specific for the development of BPD  . 
+
+Investigating the influence of PTSD, we compared patients with BPD to patients with both BPD and PTSD. Importantly, the subgroups (21 vs. 32 patients) were large enough to ensure sufficient statistical power. The subgroup of patients with BPD and PTSD showed increased volumes in DLPFC (BA9), and superior temporal gyrus (BA22) compared to BPD patients without PTSD. To date, there is only one study showing reduced DLPFC (BA9) volumes in adolescents with BPD  , but there are a number of studies pointing to reduced prefrontal efficiency  ,  – . Since DLPFC activity was found to be implicated in the suppression of unwanted memories  , one could tentatively claim that volume differences are driven by use-dependent brain plasticity  . This would imply that co-morbid PTSD is characterized by frequent inhibition of emotions via the DLPFC  , resulting in increased GMV. However, since our results are correlational, an other possible explanation is that individuals with a large DLPFC could be more vulnerable to develop PTSD. We found no significant differences in GMV between the subgroups in the amygdala or hippocampus. 
+
+Further investigating the influence of symptom levels, we found that high trait dissociation scores coincide with increased GMV in middle temporal gyrus. This finding corresponds to the temporal lobe hypothesis of dissociation. Studies in PTSD, Depersonalization Disorder as well as literature on temporal lobe epilepsy point to a connection between brain function in the middle temporal gyri and dissociative symptoms  ,  . One could reason that frequent states of dissociation may be connected to volume changes in temporal gyri. 
+
+Finally, we found that high severity of borderline symptoms was correlated to reduced GMV in the visual association cortex, the fusiform gyrus and inferior temporal gyrus, which are implicated in face perception. Correspondingly, most functional imaging studies on emotion processing in BPD found increased activity in these brain areas  ,  ,  . One possible explanation was first mentioned by Herpertz and colleagues   concerning the modulation of perceptual areas by back-projections from the amygdala, resulting in increased sensitivity to emotional stimuli. Accordingly, borderline severity was correlated to GMV reduction in the left amygdala, which was statistically independent from co-morbid PTSD. 
+
+However, since we did not investigate patients with PTSD alone, our conclusions are restricted to patients with BPD and co-morbid PTSD. Furthermore, we investigated only patients with BPD and current PTSD, and can not exclude the possibility that some patients had previous lifetime-diagnoses of PTSD. Therefore, it is important to note that one should not draw conclusions from the absence of significant differences between BPD+PTSD and BPD-PTSD. Future studies should include a group of patients with PTSD to examine the specificity of our results. Unfortunately, we also have no differentiated information whether participants in in the non-PTSD group also experienced traumatic events. Although it is safe to assume that most of the BPD patients did experience adverse and traumatic events in childhood (for a Review, see  ), it remains unclear whether group differences are indeed primarily attributable to PTSD. Another limitation of this study is the lack of rigorous statistical correction for multiple comparisons (i.e., FWE) and a relatively small smoothing kernel. However, four out of the six other studies using VBM in BPD chose similar or even more liberal correction procedures  ,  ,  ,  . Nevertheless, those correction procedures would have reduced the possibility of a type I error. 
+
+In this study we could replicate results from previous studies on GMV loss in limbic regions (amygdala, hippocampus) in BPD. Patients with co-occurring PTSD as well as patients with high dissociation showed increased brain volume in superior and middle temporal gyri. Independent of co-occurring PTSD, the GMV of the left amygdala was shown to be strongly correlated with the severity of BPD symptoms. 
+
+ </div>
+</div>
+</div>
+</div>
+</div>
+<div class='study' id='study-2'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/21118656/' target='_blank'>21118656</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded</p>
+<p><strong>Fulltext Reasoning:</strong> Although the study performed voxel-based morphometry (VBM) and reports cluster coordinates comparing PTSD and control groups, the VBM analyses were masked and restricted to predefined ROIs (FreeSurfer-derived bilateral ROIs) rather than a whole‑brain, voxel-wise analysis. The meta-analysis inclusion criterion requires at least one whole‑brain VBM result comparing individuals with PTSD to trauma‑exposed or trauma‑unexposed controls. All other inclusion criteria are met (adult sample, PTSD group plus both trauma‑exposed and unexposed control groups, MRI VBM on grey matter), but because the VBM results are ROI‑masked and not whole‑brain, the study does not satisfy the required whole‑brain evidence criterion and should be excluded.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-3'>
+<h2>3. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/21418787/' target='_blank'>21418787</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded</p>
+<p><strong>Fulltext Reasoning:</strong> Although the study used voxel-based morphometry (VBM) on adult participants and included a PTSD group and a trauma-exposed healthy control group, the paper does not report a whole-brain, coordinate-based between-group VBM contrast specifically comparing the PTSD group alone to the trauma-exposed controls (or to trauma-unexposed controls). The primary reported whole-brain between-group result contrasts the combined clinical groups (PTSD + major depression) against controls; PTSD-specific whole-brain coordinates/contrasts are not provided. Thus it fails the requirement to report at least one whole-brain VBM result comparing individuals with PTSD to a suitable comparison group, and does not meet the inclusion criteria for the review.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

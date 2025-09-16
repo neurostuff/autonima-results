@@ -354,9 +354,9 @@ def save_results_to_files(results, study_classifications, output_dir='evaluation
     
     print(f"Results saved to {output_dir}/")
 
-def main(directory='example'):
+def main(meta_pmids_path, directory='example'):
     # Construct file paths based on the directory
-    meta_pmids_path = os.path.join(directory, 'meta_pmids.txt')
+    # meta_pmids_path is now directly provided
     final_results_path = os.path.join(directory, 'outputs', 'final_results.json')
     fulltext_results_path = os.path.join(directory, 'outputs', 'fulltext_retrieval_results.json')
     evaluation_output_dir = os.path.join(directory, 'evaluation')
@@ -440,6 +440,7 @@ def main(directory='example'):
 if __name__ == "__main__":
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Compare final results to meta analysis PMIDs')
+    parser.add_argument('meta_pmids_file', help='Path to the meta PMIDs file')
     parser.add_argument('directory', nargs='?',
                         help='Directory containing the output files (default: example)')
     # If no directory is provided, show help
@@ -449,5 +450,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     
-    main(args.directory)
+    main(args.meta_pmids_file, args.directory or 'example')
 

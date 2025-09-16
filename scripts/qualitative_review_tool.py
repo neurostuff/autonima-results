@@ -28,8 +28,8 @@ class QualitativeReviewTool:
             output_dir (str): Path to the output directory for HTML reports
         """
         self.project_dir = Path(project_dir)
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(exist_ok=True)
+        self.result_dir = Path(output_dir)
+        self.result_dir.mkdir(exist_ok=True)
         
         # File paths
         self.classifications_file = (
@@ -270,7 +270,7 @@ class QualitativeReviewTool:
         
         # Write HTML report
         filename = f"{error_type}_{stage}.html"
-        output_path = self.output_dir / filename
+        output_path = self.result_dir / filename
         with open(output_path, 'w') as f:
             f.write(html_content)
         

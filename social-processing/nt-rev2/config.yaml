@@ -9,7 +9,14 @@ search:
 retrieval:
   sources:
     - pubget
-    - ace
+  full_text_source:
+    root_path: "/data/alejandro/projects/ns-pond/data"
+    pmid_source: "json"  # or "json" or "file_name"
+    text_path_templates:
+      - 'processed/pubget/text.txt'
+      - 'processed/ace/text.txt'
+    json_filename: "identifiers.json"
+    json_pmid_key: "pmid"
 
 screening:
   objective: "Identify fMRI studies of social related processing in healthy adults"
@@ -40,8 +47,5 @@ screening:
       - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.
 
 output:
-  prisma_diagram: true
   formats:
-    - csv
     - json
-    - pdf
