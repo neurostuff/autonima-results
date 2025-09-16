@@ -1,0 +1,42 @@
+search:
+  database: "pubmed"
+  query: "( ('functional MRI'[Title/Abstract] OR 'functional magnetic resonance imaging'[Title/Abstract] OR 'fMRI'[Title/Abstract] ) AND ( 'social communication'[Title/Abstract] OR 'social processing'[Title/Abstract] OR 'social interaction'[Title/Abstract] OR 'affiliation'[Title/Abstract] OR 'social attachment'[Title/Abstract] OR 'social cognition'[Title/Abstract] OR 'understanding others'[Title/Abstract] ) AND 'Humans'[MeSH])"
+  max_results: 5000
+  email: "delavega@utexas.edu"  # Optional but recommended for NCBI API access
+  date_from: "1995/01/01"
+  date_to: "2020/03/01"
+
+retrieval:
+  sources:
+    - pubget
+    - ace
+
+screening:
+  objective: "Identify fMRI studies of social related processing in healthy adults"
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    objective: "Identify fMRI studies of social related processing in healthy adults"
+    inclusion_criteria:
+      - functional MRI scan while a human was completing a social-related task, including but not only the following constructs:  Affiliation and Attachment, Social Communication, Perception and Understanding of Self, and Perception and Understanding of Others
+      - at least 1 group of healthy participants, age 17-65, even if other groups have psychiatric and/or neurological disorders
+    exclusion_criteria:
+      - systematic reviews or meta-analyses
+    confidence_reporting: true
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Identify fMRI studies of social related processing in healthy adults"
+    inclusion_criteria:
+      - functional MRI scan while a human was completing a social-related task, including but not only following constructs:  Affiliation and Attachment, Social Communication, Perception and Understanding of Self, and Perception and Understanding of Others
+      - at least 1 group of healthy participants, age 17-65, even if other groups have psychiatric and/or neurological disorders, as long as results for healthy participants are reported separately
+      - the previous results must be whole-brain analyses (not only region of interest analyses). If both whole-brain and ROI analyses are reported, the study is included.
+    exclusion_criteria:
+      - only region of interest (ROI) analyses are reported
+      - only reporting results among participants with psychiatric and/or neurological disorders, or comparing such participants to healthy controls
+
+output:
+  prisma_diagram: true
+  formats:
+    - csv
+    - json
+    - pdf

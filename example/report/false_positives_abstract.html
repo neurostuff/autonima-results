@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Positives at Abstract Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        /* Accordion styles */
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC'; /* Down arrow */
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2'; /* Up arrow */
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+</script>
+<h1>False Positives Papers at Abstract Stage</h1>
+<p>Total papers: 54</p>
+<div class='study-list'>
+<div class='study' id='study-1'>
+<h2>1. PMID: 40598470</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Brain state dynamics and working memory in patients with schizophrenia and unaffected siblings</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> BMC Med</p>
+<p><strong>Publication Year:</strong> 2025</p>
+<p><strong>DOI:</strong> 10.1186/s12916-025-04216-6</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human study examining working memory in people with schizophrenia and unaffected siblings using a brain-state analysis during a WM task. Abstract does not explicitly state fMRI, but it investigates task-based brain-state dynamics that likely involve neuroimaging and includes patient and control-like comparison groups; full text needed to confirm fMRI modality and detailed case-control design.</p>
+<p><strong>Abstract Confidence:</strong> 0.75</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) deficits are a key feature of schizophrenia and are also seen in unaffected siblings. These deficits might arise  from disrupted transitions from one brain state to another. Using a robust algorithm called the Bayesian Switching Dynamical System (BSDS), we studied hidden brain states and their transitions during a WM task in people with schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-2'>
+<h2>2. PMID: 21914644</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study with a case-control design using a task-based working memory paradigm (delayed match-to-sample) comparing schizophrenia patients and matched healthy controls. Abstract clearly meets all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.98</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Substantial evidence implicates working memory (WM) as a core deficit in schizophrenia (SCZ), purportedly due to primary deficits in dorsolateral prefrontal cortex functioning. Recent findings suggest that SCZ is also associated with abnormalities in suppression of certain regions during cognitive engagement--namely the default mode system--that may further contribute to WM pathology. However, no study has systematically examined activation and suppression abnormalities across both encoding and maintenance phases of WM in SCZ. Twenty-eight patients and 24 demographically matched healthy subjects underwent functional magnetic resonance imaging at 3T while performing a delayed match-to-sample WM task. Groups were accuracy matched to rule out performance effects. Encoding load was identical across subjects to facilitate comparisons across WM phases. We examined activation differences using an assumed model approach at the whole-brain level and within meta-analytically defined WM areas. Despite matched performance, we found regions showing less recruitment during encoding and maintenance for SCZ subjects. Furthermore, we identified 2 areas closely matching the default system, which SCZ subjects failed to deactivate across WM phases. Lastly, activation in prefrontal regions predicted the degree of deactivation for healthy but not SCZ subjects. Current results replicate and extend prefrontal recruitment abnormalities across WM phases in SCZ. Results also indicate deactivation abnormalities across WM phases, possibly due to inefficient prefrontal recruitment. Such regional deactivation may be critical for suppressing sources of interference during WM trace formation. Thus, deactivation deficits may constitute an additional source of impairments, which needs to be further characterized for a complete understanding of WM pathology in SCZ.</p>
+</div>
+</div>
+<div class='study' id='study-3'>
+<h2>3. PMID: 31801965</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> The neural and molecular basis of working memory function in psychosis: a multimodal PET-fMRI study</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Mol Psychiatry</p>
+<p><strong>Publication Year:</strong> 2019</p>
+<p><strong>DOI:</strong> 10.1038/s41380-019-0619-6</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human case-control study with drug-free schizophrenia/schizoaffective patients and healthy controls. Uses task-based working memory fMRI (Sternberg paradigm) with neural activation measured via BOLD; meets all inclusion criteria. PET was an additional modality for a subset but fMRI data are primary.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) deficits predict clinical and functional outcomes in schizophrenia but are poorly understood and unaddressed by existing treatments. WM encoding and WM retrieval have not been investigated in schizophrenia without the confounds of illness chronicity or the use of antipsychotics and illicit substances. Moreover, it is unclear if WM deficits may be linked to cannabinoid 1 receptor dysfunction in schizophrenia. Sixty-six volunteers (35 controls, 31 drug-free patients with diagnoses of schizophrenia or schizoaffective disorder) completed the Sternberg Item-Recognition paradigm during an fMRI scan. Neural activation during WM encoding and WM retrieval was indexed using the blood-oxygen-level-dependent hemodynamic response. A subset of volunteers (20 controls, 20 drug-free patients) underwent a dynamic PET scan to measure [</p>
+</div>
+</div>
+<div class='study' id='study-4'>
+<h2>4. PMID: 11431233</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract examines dorsolateral prefrontal cortex activity during parametrically manipulated working memory tasks in schizophrenia with healthy comparison subjects (case-control). However, the abstract does not explicitly state fMRI; include for full-text review to confirm imaging modality and details.</p>
+<p><strong>Abstract Confidence:</strong> 0.75</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The dorsolateral prefrontal cortex has been implicated in both working memory and the pathophysiology of schizophrenia. A relationship among dorsolateral prefrontal cortex activity, working memory dysfunction, and symptoms in schizophrenia has not been firmly established, partly because of generalized cognitive impairments in patients and task complexity. Using tasks that parametrically manipulated working memory load, the authors tested three hypotheses: 1) patients with schizophrenia differ in prefrontal activity only when behavioral performance differentiates them from healthy comparison subjects, 2) dorsolateral prefrontal cortex dysfunction is associated with poorer task performance, and 3) dorsolateral prefrontal cortex dysfunction is associated with cognitive disorganization but not negative or positive symptoms.</p>
+</div>
+</div>
+<div class='study' id='study-5'>
+<h2>5. PMID: 28207073</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study using a task-based working memory (n-back) paradigm with a control/comparison group (healthy controls vs. first-degree relatives). The study specifically addresses an intermediate phenotype for schizophrenia (DLPFC–hippocampus connectivity) and is relevant to working memory in the context of schizophrenia risk. No exclusion criteria apply; include for full-text review to confirm patient group relevance and extract data.</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Altered connectivity of dorsolateral prefrontal cortex (DLPFC) and hippocampus during working memory is considered an intermediate phenotype for schizophrenia (SCZ), but the relevance for other mental disorders with shared genetic background remains unknown. Here we investigated its presence in unaffected first-degree relatives of patients with bipolar disorder (BD) or major depressive disorder (MDD). Furthermore, we aimed to provide an independent replication of this phenotype in first-degree relatives of SCZ patients. We acquired functional magnetic resonance imaging (fMRI) data from 309 healthy controls and 218 healthy first-degree relatives of index patients with SCZ (n = 62), BD (n = 66) and MDD (n = 90), who completed the n-back working memory paradigm. We observed a significant group effect on DLPFC-hippocampus coupling (PFWE = .031, all P-values region of interest [ROI] corrected). Post hoc comparisons revealed that this effect was driven by the SCZ relatives, who showed a significant increase in the negative functional connectivity of the DLPFC and right hippocampus compared to controls (PFWE = .001), BD relatives (PFWE = .015) and trend-wise also MDD relatives (PFWE = .082). Comparison of BD and MDD relatives to the controls revealed no difference (PFWE-values > .451). Supplementary analyses suggested that the SCZ relatives finding is robust to a range of potential confounds, including structural differences. Our data further support altered DLPFC-hippocampus connectivity during working memory as an intermediate phenotype for SCZ. This suggests that this phenotype is relatively specific to SCZ and does not translate to other genetically related disorders in the mood-psychosis spectrum.</p>
+</div>
+</div>
+<div class='study' id='study-6'>
+<h2>6. PMID: 34375420</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract reports task-based fMRI investigation of working memory networks in schizophrenia using whole-brain, multi-experiment analyses. It targets WM in human schizophrenia patients, fitting the review objective. The abstract does not explicitly state whether a healthy control/comparison group was included, so information is insufficient to confirm all inclusion criteria; include for full-text review to verify design and presence of controls.</p>
+<p><strong>Abstract Confidence:</strong> 0.75</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) impairment in schizophrenia substantially impacts functional outcome. Although the dorsolateral pFC has been implicated in such impairment, a more comprehensive examination of brain networks comprising pFC is warranted. The present research used a whole-brain, multi-experiment analysis to delineate task-related networks comprising pFC. Activity was examined in schizophrenia patients across a variety of cognitive demands.</p>
+</div>
+</div>
+<div class='study' id='study-7'>
+<h2>7. PMID: 18335036</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Origins of Spatial Working Memory Deficits in Schizophrenia: An Event-Related fMRI and Near-Infrared Spectroscopy Study</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> PLoS One</p>
+<p><strong>Publication Year:</strong> 2008</p>
+<p><strong>DOI:</strong> 10.1371/journal.pone.0001760</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human case-control study comparing schizophrenic patients and healthy controls using event-related fMRI during a spatial working memory task; task-based WM paradigm and fMRI modality clearly reported, meeting all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Abnormal prefrontal functioning plays a central role in the working memory (WM) deficits of schizophrenic patients, but the nature of the relationship between WM and prefrontal activation remains undetermined. Using two functional neuroimaging methods, we investigated the neural correlates of remembering and forgetting in schizophrenic and healthy participants. We focused on the brain activation during WM maintenance phase with event-related functional magnetic resonance imaging (fMRI). We also examined oxygenated hemoglobin changes in relation to memory performance with the near-infrared spectroscopy (NIRS) using the same spatial WM task. Distinct types of correct and error trials were segregated for analysis. fMRI data indicated that prefrontal activation was increased during WM maintenance on correct trials in both schizophrenic and healthy subjects. However, a significant difference was observed in the functional asymmetry of frontal activation pattern. Healthy subjects showed increased activation in the right frontal, temporal and cingulate regions. Schizophrenic patients showed greater activation compared with control subjects in left frontal, temporal and parietal regions as well as in right frontal regions. We also observed increased 'false memory' errors in schizophrenic patients, associated with increased prefrontal activation and resembling the activation pattern observed on the correct trials. NIRS data replicated the fMRI results. Thus, increased frontal activity was correlated with the accuracy of WM in both healthy control and schizophrenic participants. The major difference between the two groups concerned functional asymmetry; healthy subjects recruited right frontal regions during spatial WM maintenance whereas schizophrenic subjects recruited a wider network in both hemispheres to achieve the same level of memory performance. Increased "false memory" errors and accompanying bilateral prefrontal activation in schizophrenia suggest that the etiology of memory errors must be considered when comparing group performances. Finally, the concordance of fMRI and NIRS data supports NIRS as an alternative functional neuroimaging method for psychiatric research.</p>
+</div>
+</div>
+<div class='study' id='study-8'>
+<h2>8. PMID: 30933745</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study comparing schizophrenia patients to healthy controls during a task-based visual working memory paradigm; reports activation and functional connectivity measures related to WM performance and symptoms, meeting inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) deficits are key features of schizophrenia and are associated with significant functional impairment. The precise mechanisms of WM and their relationship between WM deficits with other clinical symptoms of schizophrenia remain unclear. Contemporary models propose that WM requires synchronous activity across brain regions within a distributed network, including lateral prefrontal cortex (PFC) and task-relevant posterior sensory cortical regions. This suggests that WM deficits in patients may be due to PFC functional connectivity (FC) impairments rather than activation impairments per se. We tested this hypothesis by measuring the magnitude of FC between lateral PFC and visual cortex and univariate activations within these regions during visual WM. We found decreased FC in patients compared to healthy subjects in the context of similar levels of univariate activity. Furthermore, this decreased FC was associated with task performance and clinical symptomatology in patients. The magnitude of FC, particularly during the delay period, was positively correlated with WM task accuracy, while FC during cue was inversely correlated with severity of disorganization. Taken together, these results suggest that impairment in lateral PFC FC is a key aspect of information processing impairment in patients with schizophrenia, and may be a sensitive index of altered neurophysiology.</p>
+</div>
+</div>
+<div class='study' id='study-9'>
+<h2>9. PMID: 29496125</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract reports a task-based working memory fMRI study in childhood-onset schizophrenia. It fits the review objective (fMRI WM in schizophrenia) and involves human participants. The abstract does not explicitly state control group, so full-text review is warranted to confirm case-control design, but information provided is sufficient to include for review.</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) deficits are consistently reported in schizophrenia and are related to poor functional outcomes. Functional magnetic resonance imaging studies of adult-onset schizophrenia have reported decreased functional activations and connectivity in the WM network, but no prior functional magnetic resonance imaging study has examined WM in childhood-onset schizophrenia (COS). The aim of this study was to examine the neural correlates of WM in COS.</p>
+</div>
+</div>
+<div class='study' id='study-10'>
+<h2>10. PMID: 24434074</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Title explicitly addresses working memory networks and activation patterns in schizophrenia with comparison to healthy controls, implying a task-based, case-control neuroimaging study. Abstract text is minimal and does not explicitly state fMRI modality or task details; include for full-text review to confirm imaging modality and working memory paradigm.</p>
+<p><strong>Abstract Confidence:</strong> 0.8</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Schizophrenia and bipolar disorder are severe mental disorders with overlapping genetic and clinical characteristics, including cognitive impairments. An important question is whether these disorders also have overlapping neuronal deficits.</p>
+</div>
+</div>
+<div class='study' id='study-11'>
+<h2>11. PMID: 21067898</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human study with schizophrenia patients and healthy controls (n=22, n=15); uses fMRI to assess cerebral activations; employs task-based working memory paradigms (verbal and spatial); case-control design. No exclusion criteria met.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> We aimed to identify and compare cerebral activations in schizophrenia patients and controls during a working memory (WM) task at the same performance level for both a verbal and a spatial task. Whereas the performances of the patients (n=22) and controls (n=15) were similar, cerebral activations were significantly increased in the patients, particularly in the thalamus/basal ganglia for the two tasks and in regions of the prefrontal cortex and the cerebellum for the spatial task only. Our results suggest that stronger activations of deep brain structures in patients may be the result from a compensating mechanism for WM difficulties.</p>
+</div>
+</div>
+<div class='study' id='study-12'>
+<h2>12. PMID: 15804721</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human schizophrenia patients compared to healthy controls using fMRI in a group comparison (case-control) design. Task explicitly involved facial working memory (neutral face images as mnemonic content). All inclusion criteria met; no exclusion criteria apparent from abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Impaired processing of facial information is one of the broad ranges of cognitive deficits seen in patients with schizophrenia. This study aimed to elucidate the differences in brain activities involved in the process of facial working memory (images of neutral faces as mnemonic content) between schizophrenic patients and healthy comparison subjects using functional magnetic resonance imaging (fMRI). Group comparison analysis revealed aberrant activities from the patient group in several cortical areas, including the left fusiform gyrus, right superior frontal gyrus, bilateral middle frontal gyri/insula, and left middle temporal gyrus. A decreased level of activity in the left fusiform gyrus, along with performance reduction, implicates abnormal processing of facial information in schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-13'>
+<h2>13. PMID: 15099600</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study with case-control design (10 schizophrenia patients vs 10 healthy controls) using a task-based spatial N-back working memory paradigm. Meets all inclusion criteria; no exclusion criteria evident from abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Impaired working memory (WM) function in schizophrenia has been associated with abnormal activation of the dorsolateral prefrontal cortex (DLPFC). It is, however, not clear whether abnormal activation is a sign of DLPFC pathology, or a correlate of poor performance. We address this question by examining activity in the WM brain system at different levels of task difficulty. A parametric fMRI paradigm is used to examine how the WM system responds to increasing load. A parametric fMRI design with four levels of a spatial N-back task was used to examine the relationships between working memory load, functional output (performance) and brain activity in 10 schizophrenic patients on atypical antipsychotic medication and to compare these to 10 healthy controls. In spite of increasingly poor performance in schizophrenic patients, activity increased normally in DLPFC and inferior parietal cortex bilaterally and in anterior cingulate, with increasing load. At 3-back, activity dropped in DLPFC in comparison with controls, but not in the other regions. The results indicate that peak activation of the WM-system is reached at a lower processing load in schizophrenic patients than in healthy controls. As a decline of DLPFC activity at high processing loads in itself is not abnormal, WM dysfunction in schizophrenia appears to be the result of an impaired functional output of the whole WM system, causing elevation of the effective burden imposed by WM tasks.</p>
+</div>
+</div>
+<div class='study' id='study-14'>
+<h2>14. PMID: 34667261</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Effect of mGluR2 Positive Allosteric Modulation on Frontostriatal Working Memory Activation in Schizophrenia</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Mol Psychiatry</p>
+<p><strong>Publication Year:</strong> 2021</p>
+<p><strong>DOI:</strong> 10.1038/s41380-021-01320-w</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants with schizophrenia; 3T fMRI used; randomized double-blind placebo-controlled cross-over (experimental) design; task-based n-back working memory paradigm reported. No exclusion criteria met and abstract provides sufficient information to determine eligibility.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Negative symptoms and cognitive deficits contribute strongly to disability in schizophrenia, and are resistant to existing medications. Recent drug development has targeted enhanced NMDA function by increasing mGluR2/3 signaling. However, the clinical utility of such agents remains uncertain, and markers of brain circuit function are critical for clarifying mechanisms and understanding individual differences in efficacy. We conducted a double-blind, placebo-controlled, randomized cross-over (14 day washout) pilot study evaluating adjunctive use of the mGluR2 positive allosteric modulator AZD8529 (80 mg daily for 3 days), in chronic stable patients with schizophrenia (n = 26 analyzed). We focused on 3 T fMRI response in frontostriatal regions during an n-back working memory task, testing the hypothesis that AZD8529 produces fMRI changes that correlate with improvement in negative symptoms and cognition. We found that AZD8529 did not produce significant group-average effects on symptoms or cognitive accuracy. However, AZD8529 did increase n-back fMRI activation in striatum (p < 0.0001) and anterior cingulate/paracingulate (p = 0.002). Greater drug-versus-placebo effects on caudate activation significantly correlated with greater reductions in PANSS negative symptom scores (r = -0.42, p = 0.031), and exploratory correlations suggested broader effects across multiple symptom domains and regions of interest. These findings demonstrate that fMRI responses to mGluR2 positive modulation relate to individual differences in symptom reduction, and could be pursued for future biomarker development. Negative clinical results at the group level should not lead to premature termination of investigation of this mechanism, which may benefit an important subset of individuals with schizophrenia. Imaging biomarkers may reveal therapeutic mechanisms, and help guide treatment toward specific populations.</p>
+</div>
+</div>
+<div class='study' id='study-15'>
+<h2>15. PMID: 24867353</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study using a task-based working memory paradigm (letter N-back) in schizophrenia with healthy comparison participants and experimental randomization to training vs control; meets case-control/experimental design and all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> We investigated whether intensive computerized cognitive training in schizophrenia could improve working memory performance and increase signal efficiency of associated middle frontal gyri (MFG) circuits in a functionally meaningful manner. Thirty schizophrenia participants and 13 healthy comparison participants underwent fMRI scanning during a letter N-back working memory task. Schizophrenia participants were then randomly assigned to either 80 h (16 weeks) of cognitive training or a computer games control condition. After this intervention, participants completed a second fMRI N-back scanning session. At baseline, during 2-back working memory trials, healthy participants showed the largest and most significant activation in bilateral MFG, which correlated with task performance. Schizophrenia participants showed impaired working memory, hypoactivation in left MFG, and no correlation between bilateral MFG signal and task performance. After training, schizophrenia participants improved their 2-back working memory performance and showed increased activation in left MFG. They also demonstrated a significant association between enhanced task performance and right MFG signal, similar to healthy participants. Both task performance and brain activity in right MFG after training predicted better generalized working memory at 6-month follow-up. Furthermore, task performance and brain activity within bilateral MFG predicted better occupational functioning at 6-month follow-up. No such findings were observed in the computer games control participants. Working memory impairments in schizophrenia and its underlying neural correlates in MFG can be improved by intensive computerized cognitive training; these improvements generalize beyond the trained task and are associated with enduring effects on cognition and functioning 6 months after the intervention.</p>
+</div>
+</div>
+<div class='study' id='study-16'>
+<h2>16. PMID: 18788030</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Meets inclusion criteria: human participants, fMRI neuroimaging, case-control design (12 patients, 11 controls), task-based two-back verbal working memory paradigm. No exclusion criteria apparent and abstract provides sufficient methodological detail.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Impaired processing of working memory information is one of the cognitive deficits seen in patients with schizophrenia. This study aims at corroborating the differences in the brain activities involved in the process of working memory between patients with schizophrenia and the controls. Twelve patients with schizophrenia and 11 controls participated in the study. Functional magnetic resonance imaging (fMRI) was used to assess cortical activities during the performance of a two-back verbal working memory paradigm using the Korean alphabet as mnemonic content. Group analysis revealed that inferior fontal, middle frontal, and superior temporal region showed decreased cortical activities in the patient group compared to those of the controls. This study showed a decreased activation in inferior fontal (BA 47), middle frontal (BA 6), and superior temporal (BA 22/38) neural networks from the patient group and confirmed the earlier findings on the impaired working memory of schizophrenic patients in the fMRI investigation.</p>
+</div>
+</div>
+<div class='study' id='study-17'>
+<h2>17. PMID: 30104335</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study with 37 schizophrenia patients and 37 matched healthy controls using a task-based working memory change-detection paradigm emphasizing storage. It is a case-control, task-based fMRI study and meets all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> PFC dysfunction is widely believed to underlie working memory (WM) deficits in people with schizophrenia (PSZ), but few studies have focused on measures of WM storage devoid of manipulation. Research in neurotypical individuals has shown that storage capacity is more closely related to posterior parietal cortex (PPC) than PFC, suggesting that reductions in WM storage capacity in schizophrenia that are associated with broad cognitive deficits may be related to neural activity in PPC. In the present human neuroimaging study, 37 PSZ and 37 matched healthy control subjects of either sex completed a change detection task with varying set sizes while undergoing fMRI. The task was designed to emphasize WM storage with minimal top-down control demands. Whole-brain analysis identified areas in which BOLD activity covaried with the number of items maintained in WM (</p>
+</div>
+</div>
+<div class='study' id='study-18'>
+<h2>18. PMID: 19434601</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study using a task-based working memory paradigm (Sternberg Item Recognition) with a case-control design (115 schizophrenia patients, 130 healthy controls). Meets all inclusion criteria and no exclusion criteria are apparent from the abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Deficits in working memory (WM) are a consistent neurocognitive marker for schizophrenia. Previous studies have suggested that WM is the product of coordinated activity in distributed functionally connected brain regions. Independent component analysis (ICA) is a data-driven approach that can identify temporally coherent networks that underlie fMRI activity. We applied ICA to an fMRI dataset for 115 patients with chronic schizophrenia and 130 healthy controls by performing the Sternberg Item Recognition Paradigm. Here, we describe the first results using ICA to identify differences in the function of WM networks in schizophrenia compared to controls. ICA revealed six networks that showed significant differences between patients with schizophrenia and healthy controls. Four of these networks were negatively task-correlated and showed deactivation across the posterior cingulate, precuneus, medial prefrontal cortex, anterior cingulate, inferior parietal lobules, and parahippocampus. These networks comprise brain regions known as the default-mode network (DMN), a well-characterized set of regions shown to be active during internal modes of cognition and implicated in schizophrenia. Two networks were positively task-correlated, with one network engaging WM regions such as bilateral DLPFC and inferior parietal lobules while the other network engaged primarily the cerebellum. Our results suggest that DLPFC dysfunction in schizophrenia might be lateralized to the left and intrinsically tied to other regions such as the inferior parietal lobule and cingulate gyrus. Furthermore, we found that DMN dysfunction in schizophrenia exists across multiple subnetworks of the DMN and that these subnetworks are individually relevant to the pathophysiology of schizophrenia. In summary, this large multisite study identified multiple temporally coherent networks, which are aberrant in schizophrenia versus healthy controls and suggests that both task-correlated and task-anticorrelated networks may serve as potential biomarkers.</p>
+</div>
+</div>
+<div class='study' id='study-19'>
+<h2>19. PMID: 31185485</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> The study used task-based fMRI in human participants, employed a working memory (spatial delayed match-to-sample) paradigm, and included case-control comparisons (schizophrenia, psychotic bipolar disorder, and healthy controls). All inclusion criteria are clearly met from the abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) is impaired in psychotic disorders and linked to functional outcome. Most neurobiological models emphasize prefrontal cortex (PFC) dysfunction in the etiology of WM impairment. However, WM is composed of multiple processes, including encoding and maintenance, and the delineation of the neurobiology of these sub-processes has not been well characterized in schizophrenia and psychotic bipolar disorder. Functional MRI was obtained during an event-related spatial delayed match-to-sample task from 58 healthy individuals, 72 individuals with schizophrenia and 41 people with bipolar I disorder with psychotic features in order to: 1) characterize neural responses during encoding, maintenance and retrieval stages of WM using complementary region-of-interest and whole brain approaches; 2) determine whether schizophrenia and psychotic bipolar disorder exhibit similar abnormalities in WM-related brain function; and 3) elucidate the associations between WM-related brain function, task performance, and neuropsychological functioning. Both schizophrenia and psychotic bipolar disorder groups showed encoding- and maintenance-related impairments in the posterior parietal cortex (PPC) and frontal eye fields (FEF). BOLD response in the PPC and FEF, during encoding and maintenance respectively, was associated with task performance independent of group. Additionally, encoding-related activation in the PPC correlated with general neuropsychological functioning independent of group. Only encoding-related activation in the right ventral striatum differed between schizophrenia and psychotic bipolar disorder; individuals with schizophrenia showed significantly lower activation than both psychotic bipolar disorder and healthy groups. Our results are consistent with emerging evidence implicating PPC dysfunction in WM impairment and suggest interventions targeting neural activation in PPC may improve WM and neuropsychological functioning across psychotic disorders.</p>
+</div>
+</div>
+<div class='study' id='study-20'>
+<h2>20. PMID: 34337670</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract reports investigation of working memory deficits in schizophrenia during task engagement, implying task-based neuroimaging in human patients and likely case-control comparisons. No exclusion criteria (animal, non-fMRI, review, or lack of controls) are clearly met. Methods are not fully detailed in the abstract, so include for full-text review to confirm fMRI modality and control group.</p>
+<p><strong>Abstract Confidence:</strong> 0.8</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Thalamocortical circuit imbalance characterized by prefronto-thalamic hypoconnectivity and sensorimotor-thalamic hyperconnectivity has been consistently documented at rest in schizophrenia (SCZ). However, this thalamocortical imbalance has not been studied during task engagement to date, limiting our understanding of its role in cognitive dysfunction in schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-21'>
+<h2>21. PMID: 34215467</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study involving schizophrenia patients; abstract/title states analyses during rest and working memory tasks, indicating a task-based working memory paradigm. Likely case-control design assessing cognitive correlates. Meets inclusion criteria for fMRI working memory studies in schizophrenia.</p>
+<p><strong>Abstract Confidence:</strong> 0.92</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Schizophrenia can be understood as a disturbance of functional connections within brain networks. However, functional alterations that involve white matter (WM) specifically, or their cognitive correlates, have seldomly been investigated, especially during tasks.</p>
+</div>
+</div>
+<div class='study' id='study-22'>
+<h2>22. PMID: 21868203</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract reports a human fMRI study with simultaneous EEG in 18 schizophrenia patients and matched controls performing a working memory task (task-based). Design is case-control and directly addresses working memory in schizophrenia. No exclusion criteria apply.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Cognition has become a target for therapeutic intervention and favoring arousal could be a way to help patients. Working memory is an arousal dependent cognitive function. This study used functional MRI (fMRI) as a surrogate marker of working memory to evaluate the sensitivity of patients' hypoactive regions to arousal in a subpopulation of rehabilitated patients. Are hypoactive regions sensitive to arousal? Does the deficit result from arousal deficit or improper coupling with cognitive activity? Eighteen patients and matched controls were recruited. Participants performed a working memory task during combined electroencephalographic (EEG) and fMRI measurements. Cortical regions sensitive to arousal were defined as those which were inversely correlated with low EEG frequencies. Overlap between the arousal-sensitive and hypoactive regions was assessed by mutual information. Arousal-cognitive coupling was evaluated by the correlation between the arousal effect and the task effect. In the patient group, most hypoactive voxels were sensitive to arousal and corresponded to the prefronto-parietal network. But patients had no arousal deficit. Although arousal seems to improve cognitive activity in most of the patients' cortical areas, this coupling appears to be specifically disturbed in their hypoactive regions. In conclusion, although increasing arousal may help cognition, it may do so in an unspecific way.</p>
+</div>
+</div>
+<div class='study' id='study-23'>
+<h2>23. PMID: 34399233</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants (people with schizophrenia and healthy controls); includes fMRI results (posterior parietal BOLD activity) combined with EEG; task-based visual working memory paradigm (visual change detection); case-control design. No exclusion criteria met based on abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Although people with schizophrenia (PSZ) exhibit robust and reliable deficits in working memory (WM) capacity, the neural processes that give rise to this impairment remain poorly understood. One reason for this lack of clarity is that most studies employ a single neural recording modality-each with strengths and weaknesses-with few examples of integrating results across modalities. To address this gap, we conducted a secondary analysis that combined data from an overlapping set of subjects in previously published electroencephalographic and functional magnetic resonance imaging studies that used nearly identical working memory tasks (visual change detection). The prior studies found similar patterns of results for both posterior parietal BOLD activation and suppression of the alpha frequency band within the EEG. Specifically, both signals exhibited abnormally shallow modulation as a function of the amount of information being stored in WM in PSZ. In the present study, both alpha suppression and posterior parietal BOLD activity increased as the number of items stored in WM increased. The magnitude of alpha suppression modulation was correlated with the magnitude of BOLD signal modulation in PSZ, but not in HCS. This finding suggests that the same illness-related biological processes constrain both alpha suppression and BOLD signal modulation as a function of WM storage in PSZ. The complementary strengths of these two techniques may thus combine to advance the identification of the processes underlying WM deficits in PSZ.</p>
+</div>
+</div>
+<div class='study' id='study-24'>
+<h2>24. PMID: 21224491</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study using a Sternberg working memory task with 15 schizophrenia patients and 15 healthy controls (case-control, task-based WM paradigm). Meets inclusion criteria (human participants, fMRI, case-control design, task-based WM). No exclusion criteria apparent from abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) is one of the most impaired cognitive processes in schizophrenia. Functional magnetic resonance imaging (fMRI) studies in this area have typically found a reduction in information processing efficiency but have focused on the dorsolateral prefrontal cortex. In the current study using the Sternberg Item Recognition Test, we consider networks of regions supporting WM and measure the activation of functionally connected neural networks over different WM load conditions. We used constrained principal component analysis with a finite impulse response basis set to compare the estimated hemodynamic response associated with different WM load condition for 15 healthy control subjects and 15 schizophrenia patients. Three components emerged, reflecting activated (task-positive) and deactivated (task-negative or default-mode) neural networks. Two of the components (with both task-positive and task-negative aspects) were load dependent, were involved in encoding and delay phases (one exclusively encoding and the other both encoding and delay), and both showed evidence for decreased efficiency in patients. The results suggest that WM capacity is reached sooner for schizophrenia patients as the overt levels of WM load increase, to the point that further increases in overt memory load do not increase fMRI activation, and lead to performance impairments. These results are consistent with an account holding that patients show reduced efficiency in task-positive and task-negative networks during WM and also partially support the shifted inverted-U-shaped curve theory of the relationship between WM load and fMRI activation in schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-25'>
+<h2>25. PMID: 16199831</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract describes an fMRI study of working memory in first-episode schizophrenia with human participants and task-based WM processes. The abstract does not explicitly state presence of a control/comparison group, so include for full-text review to confirm case-control design.</p>
+<p><strong>Abstract Confidence:</strong> 0.8</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory, a critical cognitive capacity that is affected in schizophrenia, can be divided into maintenance and manipulation processes. Previous behavioral research suggested that manipulation is more affected than maintenance in patients with chronic schizophrenia. In this study of first-episode schizophrenia patients, the authors evaluated the extent to which the two working memory processes are affected early in the course of schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-26'>
+<h2>26. PMID: 12150424</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study with schizophrenia patients (n=38) and healthy controls (n=48) using task-based working memory paradigms (verbal and nonverbal), i.e., case-control design. Abstract clearly reports task-based fMRI working memory investigation, meeting all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.98</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> This study tested the hypothesis that dorsolateral prefrontal cortex deficits contribute to both working memory and long-term memory disturbances in schizophrenia. It also examined whether such deficits were more severe for verbal than nonverbal stimuli. Functional magnetic resonance imaging was used to assess cortical activation during performance of verbal and nonverbal versions of a working memory task and both encoding and recognition tasks in 38 individuals with schizophrenia and 48 healthy controls. Performance of both working memory and long-term memory tasks revealed disturbed dorsolateral prefrontal cortex activation in schizophrenia, although medial temporal deficits were also present. Some evidence was found for more severe cognitive and functional deficits with verbal than nonverbal stimuli, although these results were mixed.</p>
+</div>
+</div>
+<div class='study' id='study-27'>
+<h2>27. PMID: 33784023</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Working memory in schizophrenia: The role of the locus coeruleus and its relation to functional brain networks</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Brain Behav</p>
+<p><strong>Publication Year:</strong> 2021</p>
+<p><strong>DOI:</strong> 10.1002/brb3.2130</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human study with 40 medicated schizophrenia patients and 58 healthy controls; used task-based fMRI (3-back working memory task); case-control design with between-group comparisons. Meets all inclusion criteria for fMRI working memory studies in schizophrenia.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Evidence suggests functional brain networks, especially the executive control network (ECN) and default mode network (DMN), to be abnormal in schizophrenia. Dysfunctions within the locus coeruleus (LC)-noradrenaline (NE) system, which is supposed to be pivotal to modulate neuronal network activation during executive control (e.g., working memory function), are also considered to play a vital role in the occurrence of positive (e.g., hallucinatory) or negative (e.g., inattentive) symptoms in these patients. In the present study, we sought to shed further light on the role of the LC-NE system in patients with schizophrenia. More specifically, we wanted to improve our understanding of the relationship and possible disturbances of the ECN and DMN during a working memory task in patients. A total of 58 healthy control subjects and 40 medicated patients with schizophrenia were investigated using a working memory 3-back task during functional magnetic resonance imaging. Main findings of our present study were differential dynamics of ECN and DMN blood oxygenation level-dependent (BOLD) activations with increasing task demands in both patients and controls. Moreover, we found increased BOLD activation in the LC in patients compared to controls in the interaction contrast between groups and conditions. LC BOLD activation significantly correlated with both, the main hub of the ECN, that is, the dorsolateral prefrontal cortex, and of the DMN, that is, the posterior cingulate cortex. Thus, the LC-NE system seems to be crucial in modulating neuronal network activity in a 3-back working memory task and might significantly contribute to cognitive impairments in schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-28'>
+<h2>28. PMID: 35513527</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Combining fMRI and DISC1 gene haplotypes to understand working memory-related brain activity in schizophrenia</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Sci Rep</p>
+<p><strong>Publication Year:</strong> 2022</p>
+<p><strong>DOI:</strong> 10.1038/s41598-022-10660-8</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human study using task-based fMRI (n-back working memory) with schizophrenia patients and healthy controls in a case-control design; meets all inclusion criteria and no exclusion criteria are present in the abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The DISC1 gene is one of the most relevant susceptibility genes for psychosis. However, the complex genetic landscape of this locus, which includes protective and risk variants in interaction, may have hindered consistent conclusions on how DISC1 contributes to schizophrenia (SZ) liability. Analysis from haplotype approaches and brain-based phenotypes can contribute to understanding DISC1 role in the neurobiology of this disorder. We assessed the brain correlates of DISC1 haplotypes associated with SZ through a functional neuroimaging genetics approach. First, we tested the association of two DISC1 haplotypes, the HEP1 (rs6675281-1000731-rs999710) and the HEP3 (rs151229-rs3738401), with the risk for SZ in a sample of 138 healthy subjects (HS) and 238 patients. This approach allowed the identification of three haplotypes associated with SZ (HEP1-CTG, HEP3-GA and HEP3-AA). Second, we explored whether these haplotypes exerted differential effects on n-back associated brain activity in a subsample of 70 HS compared to 70 patients (diagnosis × haplotype interaction effect). These analyses evidenced that HEP3-GA and HEP3-AA modulated working memory functional response conditional to the health/disease status in the cuneus, precuneus, middle cingulate cortex and the ventrolateral and dorsolateral prefrontal cortices. Our results are the first to show a diagnosis-based effect of DISC1 haplotypes on working memory-related brain activity, emphasising its role in SZ.</p>
+</div>
+</div>
+<div class='study' id='study-29'>
+<h2>29. PMID: 25297695</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study using a task-based working memory paradigm in a case-control design (104 schizophrenia patients, 122 healthy controls). Meets all inclusion criteria for the review.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The specific contribution of risk or candidate gene variants to the complex phenotype of schizophrenia is largely unknown. Studying the effects of such variants on brain function can provide insight into disease-associated mechanisms on a neural systems level. Previous studies found common variants in the complexin2 (CPLX2) gene to be highly associated with cognitive dysfunction in schizophrenia patients. Similarly, cognitive functioning was found to be impaired in Cplx2 gene-deficient mice if they were subjected to maternal deprivation or mild brain trauma during puberty. Here, we aimed to study seven common CPLX2 single-nucleotide polymorphisms (SNPs) and their neurogenetic risk mechanisms by investigating their relationship to a schizophrenia-related functional neuroimaging intermediate phenotype. We examined functional MRI and genotype data collected from 104 patients with DSM-IV-diagnosed schizophrenia and 122 healthy controls who participated in the Mind Clinical Imaging Consortium study of schizophrenia. Seven SNPs distributed over the whole CPLX2 gene were tested for association with working memory-elicited neural activity in a frontoparietal neural network. Three CPLX2 SNPs were significantly associated with increased neural activity in the dorsolateral prefrontal cortex and intraparietal sulcus in the schizophrenia sample, but showed no association in healthy controls. Since increased working memory-related neural activity in individuals with or at risk for schizophrenia has been interpreted as 'neural inefficiency,' these findings suggest that certain variants of CPLX2 may contribute to impaired brain function in schizophrenia, possibly combined with other deleterious genetic variants, adverse environmental events, or developmental insults.</p>
+</div>
+</div>
+<div class='study' id='study-30'>
+<h2>30. PMID: 39763421</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants (patients with schizophrenia and unaffected siblings), task-based working memory paradigm, and assessment of the functional connectome (implying task-fMRI) with comparison groups present. Meets inclusion criteria for fMRI studies of working memory in schizophrenia.</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory deficit, a key feature of schizophrenia, is a heritable trait shared with unaffected siblings. It can be attributed to dysregulation in transitions from one brain state to another.</p>
+</div>
+</div>
+<div class='study' id='study-31'>
+<h2>31. PMID: 20096539</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study of working memory in schizophrenia that addresses the review objective. Abstract does not explicitly state a control/comparison group; insufficient information to exclude, so include for full-text review to confirm case-control design.</p>
+<p><strong>Abstract Confidence:</strong> 0.75</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory studies in schizophrenia (SZ), using functional magnetic resonance imaging (fMRI) and univariate analyses, have led to observations of hypo- or hyperactivation of discrete cortical regions and subsequent interpretations (e.g. neural inefficiencies). We employed a data-driven, multivariate analysis to identify the patterns of brain-behavior relationships in SZ during working memory.</p>
+</div>
+</div>
+<div class='study' id='study-32'>
+<h2>32. PMID: 18155446</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants; FMRI data acquired; case-control design with 18 schizophrenia patients and 18 controls; task-based verbal working memory paradigm (novel/practiced stimuli) and WM capacity dual-task. Meets all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) dysfunction in schizophrenia is characterized by inefficient WM recruitment and reduced capacity, but it is not yet clear how these relate to one another. In controls practice of certain cognitive tasks induces automatization, which is associated with reduced WM recruitment and increased capacity of concurrent task performance. We therefore investigated whether inefficient function and reduced capacity in schizophrenia was associated with a failure in automatization. FMRI data was acquired with a verbal WM task with novel and practiced stimuli in 18 schizophrenia patients and 18 controls. Participants performed a dual-task outside the scanner to test WM capacity. Patients showed intact performance on the WM task, which was paralleled by excessive WM activity. Practice improved performance and reduced WM activity in both groups. The difference in WM activity after practice predicted performance cost in controls but not in patients. In addition, patients showed disproportionately poor dual-task performance compared to controls, especially when processing information that required continuous adjustment in WM. Our findings support the notion of inefficient WM function and reduced capacity in schizophrenia. This was not related to a failure in automatization, but was evident when processing continuously changing information. This suggests that inefficient WM function and reduced capacity may be related to an inability to process information requiring frequent updating.</p>
+</div>
+</div>
+<div class='study' id='study-33'>
+<h2>33. PMID: 31521336</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human study of patients with schizophrenia using task-based working memory and fMRI activation of DLPFC; includes comparison by medication status (case-control implied). Meets fMRI, human, task-based WM, and comparison-group criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Cognitive deficits such as working memory (WM) impairment are core features of schizophrenia. One candidate marker for the integrity of synaptic neurotransmission necessary for cognitive processes is glutamate. It is frequently postulated that antipsychotic medication possibly alters functional mechanisms in the living brain. We tested in vivo for group differences in activation of the dorsolateral prefrontal cortex (DLPFC) during WM performance and the association with glutamate concentration in DLPFC depending on medication status.</p>
+</div>
+</div>
+<div class='study' id='study-34'>
+<h2>34. PMID: 24837210</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants (schizophrenia patients and healthy controls), task-based fMRI during the Sternberg working-memory paradigm, and a case-control design are explicitly reported, meeting all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Many genetic studies report mixed results both for the associations between COMT polymorphisms and schizophrenia and for the effects of COMT variants on common intermediate phenotypes of the disorder. Reasons for this may include small genetic effect sizes and the modulation of environmental influences. To improve our understanding of the role of COMT in the disease etiology, we investigated the effect of DNA methylation in the MB-COMT promoter on neural activity in the dorsolateral prefrontal cortex during working memory processing as measured by fMRI - an intermediate phenotype for schizophrenia. Imaging and epigenetic data were measured in 102 healthy controls and 82 schizophrenia patients of the Mind Clinical Imaging Consortium (MCIC) study of schizophrenia. Neural activity during the Sternberg Item Recognition Paradigm was acquired with either a 3T Siemens Trio or 1.5T Siemens Sonata and analyzed using the FMRIB Software Library (FSL). DNA methylation measurements were derived from cryo-conserved blood samples. We found a positive association between MB-COMT promoter methylation and neural activity in the left dorsolateral prefrontal cortex in a model using a region-of-interest approach and could confirm this finding in a whole-brain model. This effect was independent of disease status. Analyzing the effect of MB-COMT promoter DNA methylation on a neuroimaging phenotype can provide further evidence for the importance of COMT and epigenetic risk mechanisms in schizophrenia. The latter may represent trans-regulatory or environmental risk factors that can be measured using brain-based intermediate phenotypes.</p>
+</div>
+</div>
+<div class='study' id='study-35'>
+<h2>35. PMID: 27076432</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human study using fMRI during an n-back working-memory task; includes a case-control comparison (unmedicated schizophrenia patients and matched healthy controls). Task-based working memory paradigm is used. Although PET was also employed, that does not exclude the study since fMRI data and a control group are reported.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Connectivity between brain networks may adapt flexibly to cognitive demand, a process that could underlie adaptive behaviors and cognitive deficits, such as those observed in neuropsychiatric conditions like schizophrenia. Dopamine signaling is critical for working memory but its influence on internetwork connectivity is relatively unknown. We addressed these questions in healthy humans using functional magnetic resonance imaging (during ann-back working-memory task) and positron emission tomography using the radiotracer [(11)C]FLB457 before and after amphetamine to measure the capacity for dopamine release in extrastriatal brain regions. Brain networks were defined by spatial independent component analysis (ICA) and working-memory-load-dependent connectivity between task-relevant pairs of networks was determined via a modified psychophysiological interaction analysis. For most pairs of task-relevant networks, connectivity significantly changed as a function of working-memory load. Moreover, load-dependent changes in connectivity between left and right frontoparietal networks (Δ connectivity lFPN-rFPN) predicted interindividual differences in task performance more accurately than other fMRI and PET imaging measures. Δ Connectivity lFPN-rFPN was not related to cortical dopamine release capacity. A second study in unmedicated patients with schizophrenia showed no abnormalities in load-dependent connectivity but showed a weaker relationship between Δ connectivity lFPN-rFPN and working memory performance in patients compared with matched healthy individuals. Poor working memory performance in patients was, in contrast, related to deficient cortical dopamine release. Our findings indicate that interactions between brain networks dynamically adapt to fluctuating environmental demands. These dynamic adaptations underlie successful working memory performance in healthy individuals and are not well predicted by amphetamine-induced dopamine release capacity.</p>
+</div>
+</div>
+<div class='study' id='study-36'>
+<h2>36. PMID: 36376466</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants (first-episode, drug‑naïve schizophrenia and healthy controls); task-based fMRI working memory paradigm with load manipulation; case-control design with direct patient-control comparison. No exclusion criteria met based on abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Impaired working memory (WM) is a core neuropsychological dysfunction of schizophrenia, however complex interactions among the information storage, information processing and attentional aspects of WM tasks make it difficult to uncover the psychophysiological mechanisms of this deficit. Thirty-six first-episode and drug-naïve schizophrenia and 29 healthy controls (HCs) were enrolled in this study. Here, we modified a WM task to isolate components of WM storage and WM processing, while also varying the difficulty level (load) of the task to study regional differences in load-specific activation using mixed effects models, and its relationship to distributed gene expression. Comparing patients with HCs, we found both attentional deficits and WM deficits, with WM processing being more impaired than WM storage in patients. In patients, but not controls, a linear modulation of brain activation was observed mainly in the frontoparietal and dorsal attention networks. In controls, an inverted U-shaped response pattern was identified in the left anterior cingulate cortex. The vertex of this inverted U-shape was lower in patients than controls, and a left-shifting axis of symmetry was associated with better WM performance in patients. Both the above linear and U-shaped modulation effects were associated with the expressions of the genes enriched in the dopamine neurotransmitter system across all cortical brain regions. These findings indicate that a WM processing deficit is evident in schizophrenia from an early stage before antipsychotic treatment, and associated with a dopamine pathway related aberration in nonlinear response pattern at the cingulate cortex when processing WM load.</p>
+</div>
+</div>
+<div class='study' id='study-37'>
+<h2>37. PMID: 25392519</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants (63 schizophrenia patients, 118 healthy controls); task-based working memory paradigm assessed with fMRI; case-control design with controls; directly addresses working memory in schizophrenia. Meets all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Schizophrenia is a highly heritable and polygenic disease, and identified common genetic variants have shown weak individual effects. Many studies have reported altered working memory (WM)-related brain activation in schizophrenia, preferentially in the frontal lobe. Such differences in brain activations could reflect inherited alterations possibly involved in the disease etiology, or rather secondary disease-related mechanisms. The use of polygenic risk scores (PGRS) based on a large number of risk polymorphisms with small effects is a valuable approach to examine the effect of cumulative genetic risk on brain functioning. This study examined the impact of cumulative genetic risk for schizophrenia on WM-related brain activations, assessed with functional magnetic resonance imaging. For each participant (63 schizophrenia patients and 118 healthy controls), we calculated a PGRS for schizophrenia based on 18 862 single-nucleotide polymorphism in a large multicenter genome-wide association study including 9146 schizophrenia patients and 12 111 controls, performed by the Psychiatric Genomics Consortium. As expected, the PGRS was significantly higher in patients compared with healthy controls. Further, the PGRS was related to differences in frontal lobe brain activation between high and low WM demand. Specifically, even in absence of main effects of diagnosis, increased PGRS was associated with decreased activation difference in the right middle-superior prefrontal cortex (BA 10/11) and the right inferior frontal gyrus (BA 45). This effect was seen in both cases and controls, and was not influenced by sex, age, or task performance. The findings support the notion of dysregulation of frontal lobe functioning as an inherited vulnerability factor in schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-38'>
+<h2>38. PMID: 19042912</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract and title indicate a task-based working memory investigation using functional imaging in schizophrenia (DLPFC inefficiency). While the abstract does not explicitly state a control group, it clearly targets fMRI working-memory effects in patients; include for full-text review to confirm design and controls.</p>
+<p><strong>Abstract Confidence:</strong> 0.85</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The Functional Imaging Biomedical Informatics Network is a consortium developing methods for multisite functional imaging studies. Both prefrontal hyper- or hypoactivity in chronic schizophrenia have been found in previous studies of working memory.</p>
+</div>
+</div>
+<div class='study' id='study-39'>
+<h2>39. PMID: 28269167</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI study with 147 schizophrenia patients and 147 controls examining multimodal (including fMRI) co-alterations linked to working memory performance. Abstract does not explicitly state a task-based working memory paradigm, so inclusion for full-text review is warranted to determine task-based fMRI details.</p>
+<p><strong>Abstract Confidence:</strong> 0.78</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Multimodal fusion is an effective approach to better understand brain disease. To date, most current fusion approaches are unsupervised; there is need for a multivariate method that can adopt prior information to guide multimodal fusion. Here we proposed a novel supervised fusion model, called "MCCAR+jICA", which enables both identification of multimodal co-alterations and linking the covarying brain regions with a specific reference signal, e.g., cognitive scores. The proposed method has been validated on both simulated and real human brain data. Features from 3 modalities (fMRI, sMRI, dMRI) obtained from 147 schizophrenia patients and 147 age-matched healthy controls were included as fusion input, who participated in the Function Biomedical Informatics Research Network (FBIRN) Phase III study. Our aim was to investigate the group co-alterations seen in three types of MRI data that are also correlated with working memory performance. One joint IC was found both significantly group-discriminating (p=7.4E-06, 0.001, 7.0E-09) and highly correlated with working memory scores(r=0.296, 0.241, 0.301) and PANSS negative scores (r=-0.229, -0.276, -0.240) for fMRI, dMRI and sMRI, respectively. Given the simulation and FBIRN results, MCCAR+jICA is shown to be an effective multivariate approach to extract accurate and stable multimodal components associated with a particular measure of interest, and promises a wide application in identifying potential neuromarkers for mental disorders.</p>
+</div>
+</div>
+<div class='study' id='study-40'>
+<h2>40. PMID: 24768119</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract reports behavioral and neural evidence for working memory in schizophrenia but does not specify the neuroimaging modality (fMRI) or clearly state a case-control design or task details. Insufficient information to confirm inclusion criteria; include for full-text review to verify fMRI, task-based WM paradigm, and control group.</p>
+<p><strong>Abstract Confidence:</strong> 0.75</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Susceptibility to item-specific proactive interference (PI) contributes to interindividual differences in working memory (WM) capacity and complex cognition relying on WM. Although WM deficits are a well-recognized impairment in schizophrenia, the underlying pathophysiological effects on specific WM control functions, such as the ability to resist item-specific PI, remain unknown. Moreover, opposing hypotheses on increased versus reduced PI susceptibility in schizophrenia are both justifiable by the extant literature.</p>
+</div>
+</div>
+<div class='study' id='study-41'>
+<h2>41. PMID: 28095997</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract reports an fMRI study in human participants (19 schizophrenia patients, 23 matched controls) using a task-based working memory binding paradigm with a case-control design; no exclusion criteria apply.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory deficits have been widely reported in schizophrenia, and may result from inefficient binding processes. These processes, and their neural correlates, remain understudied in schizophrenia. Thus, we designed an FMRI study aimed at investigating the neural correlates of both passive and active binding in working memory in schizophrenia. Nineteen patients with schizophrenia and 23 matched controls were recruited to perform a working memory binding task, in which they were instructed to memorize three letters and three spatial locations. In the passive binding condition, letters and spatial locations were directly presented as bound. Conversely, in the active binding condition, words and spatial locations were presented as separated, and participants were instructed to intentionally create associations between them. Patients exhibited a similar performance to the controls for the passive binding condition, but a significantly lower performance for the active binding. FMRI analyses revealed that this active binding deficit was related to aberrant activity in the posterior parietal cortex and the ventrolateral prefrontal cortex. This study provides initial evidence of a specific deficit for actively binding information in schizophrenia, which is linked to dysfunctions in the neural networks underlying attention, manipulation of information, and encoding strategies. Together, our results suggest that all these dysfunctions may be targets for neuromodulation interventions known to improve cognitive deficits in schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-42'>
+<h2>42. PMID: 27103065</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants (40 schizophrenia patients, 40 controls); task-based verbal working memory paradigm; fMRI neuroimaging; case-control design with control group reported. Abstract directly investigates WM activation/connectivity in schizophrenia, meeting all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) impairment, a core feature of schizophrenia, is often associated with aberrant dorsolateral prefrontal cortex (dlPFC) activation. Reduced resting-state connectivity within the frontoparietal control network (FPCN) has also been reported in schizophrenia. However, interpretation of WM-related dlPFC dysfunction has been limited by performance differences between patients and controls, and by uncertainty over the relevance of resting-state connectivity to network engagement during task. We contrasted brain activation in 40 schizophrenia patients and 40 controls during verbal WM performance, and evaluated underlying functional connectivity during rest and task. During correct trials, patients demonstrated normal FPCN activation, despite an inverse relationship between positive symptoms and activation. FPCN activation differed between the groups only during error trials (controls>patients). In contrast, controls demonstrated stronger deactivation of the ventromedial prefrontal cortex (vmPFC) during correct and error trials. Functional connectivity analysis indicated impaired resting-state FPCN connectivity in patients, but normal connectivity during task. However, patients showed abnormal connectivity among regions such as vmPFC, lateral orbitofrontal cortex, and parahippocampal gyrus (PHG) during both rest and task. During task, patients also exhibited altered thalamic connectivity to PHG and FPCN. Activation and connectivity patterns that were more characteristic of controls generally correlated with better performance. In summary, patients demonstrated normal FPCN activation when they remained on-task, and exhibited normal FPCN connectivity during WM, whereas vmPFC deactivation differences persisted regardless of WM performance. Our findings suggest that altered FPCN activation in patients reflects performance difference, and that limbic and thalamic dysfunction is critically involved in WM deficits in schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-43'>
+<h2>43. PMID: 20670970</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI case-control study with 14 schizophrenia patients and 14 matched controls using a task-based working memory paradigm (modified Sternberg) with fMRI outcomes directly addressing working memory in schizophrenia.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Children and adolescents who develop schizophrenia tend to have greater symptom severity than adults who develop the illness. Since the brain continues to mature into early adulthood, developmental differences in brain structure and function may provide clues to the underlying neurobiology of schizophrenia. With an emerging body of evidence supporting disrupted connectivity contributing to the underlying pathophysiology of schizophrenia, it was our goal to assess differences in functional connectivity in children and adolescents who develop schizophrenia. Participants included a total of 28 children and adolescents (14 patients with schizophrenia and 14 age- and gender-matched controls). All subjects underwent a functional magnetic resonance imaging scan involving a modified Sternberg Item Recognition Paradigm with 3 working memory (WkM) loads. Patients had poorer performance at all 3 WkM loads without a load by diagnosis interaction. Functional imaging results demonstrated 3 specific brain networks disrupted in children and adolescents with schizophrenia. These networks include 1) the anterior cingulate and the temporal lobes, bilaterally; 2) the cerebellum with subcortical regions; and 3) the occipital lobe and the cerebellum. Patients with early-onset schizophrenia demonstrate abnormal functional connectivity in networks involving limbic, temporal lobe, cerebellum, and early visual processing streams.</p>
+</div>
+</div>
+<div class='study' id='study-44'>
+<h2>44. PMID: 29111478</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human case-control study (16 schizophrenia, 21 healthy controls) using task-based verbal working memory fMRI and comparing connectivity between groups. Meets inclusion criteria (human, fMRI, case-control, working memory task).</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The aim of this study was to test whether bilinear and nonlinear effective connectivity (EC) measures of working memory fMRI data can differentiate between patients with schizophrenia (SZ) and healthy controls (HC). We applied bilinear and nonlinear Dynamic Causal Modeling (DCM) for the analysis of verbal working memory in 16 SZ and 21 HC. The connection strengths with nonlinear modulation between the dorsolateral prefrontal cortex (DLPFC) and the ventral tegmental area/substantia nigra (VTA/SN) were evaluated. We used Bayesian Model Selection at the group and family levels to compare the optimal bilinear and nonlinear models. Bayesian Model Averaging was used to assess the connection strengths with nonlinear modulation. The DCM analyses revealed that SZ and HC used different bilinear networks despite comparable behavioral performance. In addition, the connection strengths with nonlinear modulation between the DLPFC and the VTA/SN area showed differences between SZ and HC. The adoption of different functional networks in SZ and HC indicated neurobiological alterations underlying working memory performance, including different connection strengths with nonlinear modulation between the DLPFC and the VTA/SN area. These novel findings may increase our understanding of connectivity in working memory in schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-45'>
+<h2>45. PMID: 40545821</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Enhancement of the left frontoparietal network through real‐time functional magnetic resonance imaging functional connectivity–informed neurofeedback and its impact on working memory in schizophrenia: A pilot study</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Psychiatry Clin Neurosci</p>
+<p><strong>Publication Year:</strong> 2025</p>
+<p><strong>DOI:</strong> 10.1111/pcn.13849</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human fMRI neurofeedback pilot study targeting working memory in schizophrenia; meets fMRI and working memory criteria. Abstract does not specify a control/comparison group, so include for full-text review to confirm design.</p>
+<p><strong>Abstract Confidence:</strong> 0.75</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Cognitive impairment in schizophrenia shows limited improvement with pharmacotherapy, indicating a need for effective treatment. The frontoparietal network supports working memory, and a biomarker has successfully predicted performance in patients, with the left frontoparietal network contributing the most to working memory. We hypothesized that enhancing functional connectivity in this network through real-time neurofeedback (NF) will improve working memory in patients with schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-46'>
+<h2>46. PMID: 18823880</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants; task-based spatial working memory paradigm; fMRI neuroimaging; direct comparison between individuals with schizophrenia and healthy controls (case-control design). Abstract clearly meets all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Comparing prefrontal cortical activity during particular phases of working memory in healthy subjects and individuals diagnosed with schizophrenia might help to define the phase-specific deficits in cortical function that contribute to cognitive impairments associated with schizophrenia. This study featured a spatial working memory task, similar to that used in nonhuman primates, that was designed to facilitate separating brain activation into encoding, maintenance, and response phases.</p>
+</div>
+</div>
+<div class='study' id='study-47'>
+<h2>47. PMID: 34108456</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Brain network dynamics during working memory are modulated by dopamine and diminished in schizophrenia</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Nat Commun</p>
+<p><strong>Publication Year:</strong> 2021</p>
+<p><strong>DOI:</strong> 10.1038/s41467-021-23694-9</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants (healthy controls and individuals with schizophrenia), uses task-based fMRI (pharmacological fMRI), and a case-control/experimental design focused on working memory. Meets all inclusion criteria; no exclusion criteria evident from the abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Dynamical brain state transitions are critical for flexible working memory but the network mechanisms are incompletely understood. Here, we show that working memory performance entails brain-wide switching between activity states using a combination of functional magnetic resonance imaging in healthy controls and individuals with schizophrenia, pharmacological fMRI, genetic analyses and network control theory. The stability of states relates to dopamine D1 receptor gene expression while state transitions are influenced by D2 receptor expression and pharmacological modulation. Individuals with schizophrenia show altered network control properties, including a more diverse energy landscape and decreased stability of working memory representations. Our results demonstrate the relevance of dopamine signaling for the steering of whole-brain network dynamics during working memory and link these processes to schizophrenia pathophysiology.</p>
+</div>
+</div>
+<div class='study' id='study-48'>
+<h2>48. PMID: 22917204</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human early-onset schizophrenia sample studied for DLPFC activation and functional connectivity during working memory, indicating a task-based fMRI case-control study. Meets inclusion criteria (human, fMRI task-based WM, case-control design).</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Disruption within the working memory (WM) neural network is considered an integral feature of schizophrenia. The WM network, and the dorsolateral prefrontal cortex (DLPFC) in particular, undergo significant remodeling in late adolescence. Potential interactions between developmental changes in the WM network and disease-related processes for schizophrenia remain unclear. The aim of this study was to determine whether DLPFC activation and functional connectivity are impaired during WM in patients with early-onset schizophrenia (EOS; age of onset <18 years).</p>
+</div>
+</div>
+<div class='study' id='study-49'>
+<h2>49. PMID: 27056754</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Mechanisms of Working Memory Impairment in Schizophrenia</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Biol Psychiatry</p>
+<p><strong>Publication Year:</strong> 2016</p>
+<p><strong>DOI:</strong> 10.1016/j.biopsych.2016.02.017</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human study of schizophrenia assessing working memory load–related brain activation (dorsolateral PFC) using task-based imaging and comparing patients to controls, indicating fMRI case-control design. Meets all inclusion criteria based on the abstract.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The neural correlates of working memory (WM) impairment in schizophrenia remain a key puzzle in understanding the cognitive deficits and dysfunction of dorsolateral prefrontal cortex observed in this disorder. We sought to determine whether patients with schizophrenia exhibit an alteration in the inverted-U relationship between WM load and activation that we recently observed in healthy individuals and whether this could account for WM deficits in this population.</p>
+</div>
+</div>
+<div class='study' id='study-50'>
+<h2>50. PMID: 30536081</h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> An experimental medicine study of the phosphodiesterase-4 inhibitor, roflumilast, on working memory-related brain activity and episodic memory in schizophrenia patients</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Psychopharmacology (Berl)</p>
+<p><strong>Publication Year:</strong> 2018</p>
+<p><strong>DOI:</strong> 10.1007/s00213-018-5134-y</p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Title reports working memory-related brain activity in schizophrenia and describes an experimental medicine study; however the abstract does not explicitly state fMRI or presence of a control/comparison group. Insufficient detail to confirm fMRI and design from abstract alone — include for full-text review.</p>
+<p><strong>Abstract Confidence:</strong> 0.8</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Schizophrenia is associated with impairments in cognitive functioning yet there are no approved drugs to treat these deficits.</p>
+</div>
+</div>
+<div class='study' id='study-51'>
+<h2>51. PMID: 24051015</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract addresses working memory in unaffected siblings and refers to neuroimaging/functional (DMN) abnormalities. However, it does not explicitly state fMRI, task paradigm, or control group; insufficient methodological detail—include for full-text screening.</p>
+<p><strong>Abstract Confidence:</strong> 0.75</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Impaired working memory (WM) is a hallmark of schizophrenia. In addition to classical WM regions such as the dorsolateral prefrontal cortex (DLPFC) and the striatum, dysfunctions in the default-mode network (DMN) contribute to these WM deficits. Unaffected siblings of patients also show WM impairments. However, the nature of the functional deficits underlying these impairments is unclear, mainly because of impaired performance confounding neuroimaging results.</p>
+</div>
+</div>
+<div class='study' id='study-52'>
+<h2>52. PMID: 25132644</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human participants (first-episode schizophrenia patients and healthy controls); fMRI measures including task-evoked activations during an n-back working memory task and resting-state ALFF; case-control design with control group; task-based working memory paradigm. Fits all inclusion criteria.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Working memory (WM) deficit is an important component of impaired cognition in schizophrenia. However, between-studies inconsistencies as to the specific functional substrate imply that inter-individual variability (IIV) in the WM performance is associated with IIV in brain activity in schizophrenia. To examine the neural substrate of this WM IIV, we studied whether the neural mechanisms that underlie individual differences in WM capacity are the same in schizophrenia patients and healthy people. We correlated the IIV of the task-evoked brain activity and task performance during an n-back WM task with the IIV of the moment-to-moment variability in intrinsic resting-state activity, as measured by the amplitude of low-frequency fluctuations (ALFFs) and further compared this relationship between 17 patients with first-episode schizophrenia (FES) and 18 healthy controls. Between-group comparisons of the correlation patterns indicated aberrant ALFF-WM activation correlations and ALFF-WM performance correlations in the FES patients, but no significant changes were detected in any single measurement of these three characteristics. Specifically, we found increased positive ALFF-WM activation correlations in the bilateral lateral prefrontal cortices, posterior parietal cortices and fusiform gyri in the FES patients. We also observed significant increases in positive ALFF-WM performance correlations in the bilateral ventromedial prefrontal cortices in the FES patients. This hyper-coupling between the ALFF and fMRI measures during a WM task may indicate that it was difficult for the patients to detach themselves from one state to transition to another and suggests that the inefficient cortical function in schizophrenia stems from the intrinsic functional architecture of the brain.</p>
+</div>
+</div>
+<div class='study' id='study-53'>
+<h2>53. PMID: 24675869</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Abstract reports an event-related fMRI study in human adolescents with early-onset schizophrenia vs matched controls using a task-based visual working memory paradigm. It is a case-control design and meets all inclusion criteria; no exclusion criteria apply.</p>
+<p><strong>Abstract Confidence:</strong> 0.98</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Behavioral evidence indicates that working memory (WM) in schizophrenia is already impaired at the encoding stage. However, the neurophysiological basis of this primary deficit remains poorly understood. Using event-related fMRI, we assessed differences in brain activation and functional connectivity during the encoding, maintenance and retrieval stages of a visual WM task with 3 levels of memory load in 17 adolescents with early-onset schizophrenia (EOS) and 17 matched controls. The amount of information patients could store in WM was reduced at all memory load levels. During encoding, activation in left ventrolateral prefrontal cortex (VLPFC) and extrastriate visual cortex, which in controls positively correlated with the amount of stored information, was reduced in patients. Additionally, patients showed disturbed functional connectivity between prefrontal and visual areas. During retrieval, right inferior VLPFC hyperactivation was correlated with hypoactivation of left VLPFC in patients during encoding. Visual WM encoding is disturbed by a failure to adequately engage a visual-prefrontal network critical for the transfer of perceptual information into WM. Prefrontal hyperactivation appears to be a secondary consequence of this primary deficit. Isolating the component processes of WM can lead to more specific neurophysiological markers for translational efforts seeking to improve the treatment of cognitive dysfunction in schizophrenia.</p>
+</div>
+</div>
+<div class='study' id='study-54'>
+<h2>54. PMID: 22219266</h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> included</p>
+<p><strong>Abstract Reasoning:</strong> Human study using fMRI with a task-based working memory paradigm; case-control design comparing 41 schizophrenia patients and 42 healthy controls. Meets all inclusion criteria and no exclusion criteria are present.</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The neural mechanisms behind cognitive deficits in schizophrenia still remain unclear. Functional neuroimaging studies on working memory (WM) yielded inconsistent results, suggesting task performance as a moderating variable of prefrontal activation. Beyond regional specific activation, disordered integration of brain regions was supposed as a critical pathophysiological mechanism of cognitive deficits in schizophrenia. Here, we first hypothesized that prefrontal activation implicated in WM depends primarily on task performance and therefore stratified participants into performance subgroups. Second, in line with the dysconnectivity hypothesis, we asked whether connectivity in the prefrontal-parietal network underlying WM is altered in all patients. We used functional magnetic resonance imaging in human subjects (41 schizophrenia patients, 42 healthy controls) and dynamic causal modeling to examine effective connectivity during a WM task. In line with our first hypothesis, we found that prefrontal activation was differentially modulated by task performance: there was a significant task by group by performance interaction revealing an increase of activation with performance in patients and a decrease with performance in controls. Beyond that, we show for the first time that WM-dependent effective connectivity from prefrontal to parietal cortex is reduced in all schizophrenia patients. This finding was independent of performance. In conclusion, our results are in line with the highly influential hypothesis that the relationship between WM performance and prefrontal activation follows an inverted U-shaped function. Moreover, this study in a large sample of patients reveals a mechanism underlying prefrontal inefficiency and cognitive deficits in schizophrenia, thereby providing direct experimental evidence for the dysconnectivity hypothesis.</p>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

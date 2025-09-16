@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        /* Accordion styles */
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC'; /* Down arrow */
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2'; /* Up arrow */
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+</script>
+<h1>False Negatives Papers at Fulltext Stage</h1>
+<p>Total papers: 50</p>
+<div class='study-list'>
+<div class='study' id='study-1'>
+<h2>1. PMID: 27477020</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-2'>
+<h2>2. PMID: 26604273</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-3'>
+<h2>3. PMID: 25996424</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-4'>
+<h2>4. PMID: 24639542</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-5'>
+<h2>5. PMID: 29723244</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-6'>
+<h2>6. PMID: 25697049</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-7'>
+<h2>7. PMID: 28931014</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-8'>
+<h2>8. PMID: 29073111</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-9'>
+<h2>9. PMID: 24097375</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-10'>
+<h2>10. PMID: 18985118</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-11'>
+<h2>11. PMID: 30658938</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-12'>
+<h2>12. PMID: 27528669</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-13'>
+<h2>13. PMID: 21864459</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-14'>
+<h2>14. PMID: 23876243</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-15'>
+<h2>15. PMID: 21940454</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-16'>
+<h2>16. PMID: 24936688</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-17'>
+<h2>17. PMID: 19136216</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-18'>
+<h2>18. PMID: 28905269</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-19'>
+<h2>19. PMID: 26417673</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-20'>
+<h2>20. PMID: 27716474</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-21'>
+<h2>21. PMID: 23988759</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-22'>
+<h2>22. PMID: 26608245</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-23'>
+<h2>23. PMID: 24726338</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-24'>
+<h2>24. PMID: 22349798</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-25'>
+<h2>25. PMID: 31142792</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-26'>
+<h2>26. PMID: 15701234</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-27'>
+<h2>27. PMID: 18603608</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-28'>
+<h2>28. PMID: 27236373</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-29'>
+<h2>29. PMID: 24051621</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-30'>
+<h2>30. PMID: 20188190</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-31'>
+<h2>31. PMID: 26301900</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-32'>
+<h2>32. PMID: 26481048</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-33'>
+<h2>33. PMID: 25088911</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-34'>
+<h2>34. PMID: 29265483</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-35'>
+<h2>35. PMID: 26920683</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-36'>
+<h2>36. PMID: 23722983</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-37'>
+<h2>37. PMID: 26235682</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-38'>
+<h2>38. PMID: 18633846</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-39'>
+<h2>39. PMID: 21600991</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-40'>
+<h2>40. PMID: 23482624</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-41'>
+<h2>41. PMID: 29330483</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-42'>
+<h2>42. PMID: 14568477</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-43'>
+<h2>43. PMID: 27576746</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-44'>
+<h2>44. PMID: 22174872</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-45'>
+<h2>45. PMID: 24582805</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-46'>
+<h2>46. PMID: 25911123</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-47'>
+<h2>47. PMID: 26746179</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-48'>
+<h2>48. PMID: 22956840</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-49'>
+<h2>49. PMID: 20045478</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+<div class='study' id='study-50'>
+<h2>50. PMID: 25716010</h2>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>
