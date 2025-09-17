@@ -1,14 +1,21 @@
 """ Query PubMed for results from several journals, and save to file.
-The resulting directory can then be passed to the Database instance for 
+The resulting directory can then be passed to the Database instance for
 extraction, as in the create_db_and_add_articles example.
-NOTE: selenium must be installed and working properly for this to work. 
+NOTE: selenium must be installed and working properly for this to work.
 Code has only been tested with the Chrome driver. """
 
+import argparse
 from selenium.common.exceptions import WebDriverException
 from ace.scrape import Scraper
 from pathlib import Path
 import ace
 import os
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Fetch missing PubMed articles')
+parser.add_argument('pmids_file', help='Path to file containing PubMed IDs')
+parser.add_argument('output_dir', help='Output directory for fetched articles')
+args = parser.parse_args()
 
 # Function to split a list into chunks
 def chunk_list(lst, chunk_size):
@@ -19,8 +26,8 @@ def chunk_list(lst, chunk_size):
 settings = {
     'delay': 0.2,
     'skip_pubmed_central': False,
-    'invalid_article_log_file': './ace_scrape/invalid_missing_articles.log',
-    'metadata_store': './ace_scrape/pm_metadata',
+    'invalid_article_log_file': f'{args.output_dir}/invalid_missing_articles.log',
+    'metadata_store': f'{args.output_dir}/pm_metadata',
     'index_pmids': True,
 }
 
@@ -32,15 +39,15 @@ os.environ['PUBMED_API_KEY'] = api_key
 ace.set_logging_level('debug')
 
 # Create temporary output dir
-output_dir = Path('./ace_scrape/articles').expanduser()
+output_dir = Path(args.output_dir).expanduser()
 if not output_dir.exists():
-    output_dir.mkdir()
+    output_dir.mkdir(parents=True)
 
 # Initialize Scraper
 scraper = Scraper(str(output_dir))
 
 # Read PMIDs from the file
-with open("./nt-rev2/outputs/unavailable_fulltexts.txt", "r") as nsf:
+with open(args.pmids_file, "r") as nsf:
     pmids = [pmid.strip() for pmid in nsf]
 
 # Batch PMIDs in groups of 1000
