@@ -313,7 +313,7 @@ def save_results_to_files(results: Dict[str, Any], study_classifications: Dict[s
     print(f"Results saved to {output_dir}/")
 
 
-def main(meta_pmids_path: str, directory: str = 'example'):
+def main(meta_pmids_path: str, directory: str = 'example', output_dir: str = None):
     """
     Run full evaluation pipeline:
     - Load PMIDs and screening results
@@ -322,7 +322,7 @@ def main(meta_pmids_path: str, directory: str = 'example'):
     - Print summary
     """
     outputs_dir = os.path.join(directory, 'outputs')
-    evaluation_output_dir = os.path.join(directory, 'evaluation')
+    evaluation_output_dir = output_dir or os.path.join(directory, 'evaluation')
 
     meta_pmids = pd.read_csv(meta_pmids_path, header=None, names=['pmid'])['pmid'].astype(str).tolist()
     final_results = json.load(open(os.path.join(outputs_dir, 'final_results.json')))
@@ -390,14 +390,16 @@ if __name__ == "__main__":
               "'outputs/fulltext_retrieval_results.json'. "
               "Results will be saved to <directory>/evaluation/")
     )
+    parser.add_argument(
+        "--output_dir",
+        help="Directory to save evaluation results (default: <directory>/evaluation/).",
+        default=None
+    )
 
     args = parser.parse_args()
 
     try:
-        main(args.meta_pmids, directory=args.directory)
+        main(args.meta_pmids, directory=args.directory, output_dir=args.output_dir)
     except FileNotFoundError as e:
         print(f"[ERROR] Missing required file: {e.filename}", file=sys.stderr)
-        sys.exit(1)
-    except Exception as e:
-        print(f"[ERROR] {e}", file=sys.stderr)
         sys.exit(1)
