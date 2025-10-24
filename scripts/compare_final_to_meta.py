@@ -313,13 +313,19 @@ def save_results_to_files(results: Dict[str, Any], study_classifications: Dict[s
     print(f"Results saved to {output_dir}/")
 
 
-def main(meta_pmids_path: str, directory: str = 'example', output_dir: str = None):
+def main(meta_pmids_path: str, directory: str = 'example', output_dir: str = None, all_ids_path: str = None):
     """
     Run full evaluation pipeline:
     - Load PMIDs and screening results
     - Compute metrics
     - Save results
     - Print summary
+    
+    Args:
+        meta_pmids_path: Path to gold-standard meta-analysis PMIDs
+        directory: Base directory containing outputs
+        output_dir: Directory to save evaluation results
+        all_ids_path: Optional path to file with all PMIDs to restrict comparison to
     """
     outputs_dir = os.path.join(directory, 'outputs')
     evaluation_output_dir = output_dir or os.path.join(directory, 'evaluation')
@@ -333,6 +339,22 @@ def main(meta_pmids_path: str, directory: str = 'example', output_dir: str = Non
                                   if s['status'] == 'included' and 'activation_tables' in s and len(s['activation_tables']) > 0]
     fulltext_results = json.load(open(os.path.join(outputs_dir, 'fulltext_retrieval_results.json')))['studies_with_fulltext']
     fulltext_unavailable_pmids = [s['pmid'] for s in fulltext_results if s['status'] == 'fulltext_unavailable']
+
+    # Filter by all_ids if provided
+    if all_ids_path:
+        all_ids = pd.read_csv(all_ids_path, header=None, names=['pmid'])['pmid'].astype(str).tolist()
+        all_ids_set = set(all_ids)
+        
+        # Filter all lists to only include PMIDs in all_ids
+        meta_pmids = [pmid for pmid in meta_pmids if pmid in all_ids_set]
+        all_pmids = [pmid for pmid in all_pmids if pmid in all_ids_set]
+        abstract_included_pmids = [pmid for pmid in abstract_included_pmids if pmid in all_ids_set]
+        fulltext_included_pmids = [pmid for pmid in fulltext_included_pmids if pmid in all_ids_set]
+        fulltext_with_coords_pmids = [pmid for pmid in fulltext_with_coords_pmids if pmid in all_ids_set]
+        fulltext_unavailable_pmids = [pmid for pmid in fulltext_unavailable_pmids if pmid in all_ids_set]
+        
+        print(f"Restricting comparison to {len(all_ids):,} PMIDs from {all_ids_path}")
+        print('-' * 20)
 
     results = calculate_metrics_with_ci(
         meta_pmids, all_pmids, abstract_included_pmids,
@@ -395,11 +417,19 @@ if __name__ == "__main__":
         help="Directory to save evaluation results (default: <directory>/evaluation/).",
         default=None
     )
+    parser.add_argument(
+        "--all_ids",
+        help=("Path to text file with one PMID per line containing all PMIDs to restrict "
+              "the comparison to. If provided, only studies in this list will be counted "
+              "towards statistics."),
+        default=None
+    )
 
     args = parser.parse_args()
 
     try:
-        main(args.meta_pmids, directory=args.directory, output_dir=args.output_dir)
+        main(args.meta_pmids, directory=args.directory, output_dir=args.output_dir,
+             all_ids_path=args.all_ids)
     except FileNotFoundError as e:
         print(f"[ERROR] Missing required file: {e.filename}", file=sys.stderr)
         sys.exit(1)
