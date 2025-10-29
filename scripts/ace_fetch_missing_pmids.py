@@ -29,6 +29,7 @@ settings = {
     'invalid_article_log_file': f'{args.output_dir}/invalid_missing_articles.log',
     'metadata_store': f'{args.output_dir}/pm_metadata',
     'index_pmids': True,
+    'headless': True
 }
 
 # Add API key to environment
@@ -59,7 +60,7 @@ for batch in pmid_batches:
     try:
         scraper.retrieve_articles(
             pmids=batch, mode='browser', 
-            prefer_pmc_source=False,
+            prefer_pmc_source=True,
             **settings
         )
     except WebDriverException as e:
