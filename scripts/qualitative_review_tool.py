@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class QualitativeReviewTool:
-    def __init__(self, project_dir=".", output_dir="qualitative_review"):
+    def __init__(self, project_dir=".", output_dir="qualitative_review", subanalysis=None):
         """
         Initialize the Qualitative Review Tool.
         
@@ -31,10 +31,20 @@ class QualitativeReviewTool:
         self.result_dir = Path(output_dir)
         self.result_dir.mkdir(exist_ok=True)
         
-        # File paths
-        self.classifications_file = (
-            self.project_dir / "evaluation" / "study_classifications.json"
-        )
+        if subanalysis:
+            self.result_dir = self.result_dir / subanalysis
+            self.result_dir.mkdir(parents=True, exist_ok=True)
+
+            # File paths
+            self.classifications_file = (
+                self.project_dir / "evaluation" / subanalysis / "study_classifications.json"
+            )
+            
+        else:
+            self.classifications_file = (
+                self.project_dir / "evaluation" / "study_classifications.json"
+            )
+
         self.final_results_file = (
             self.project_dir / "outputs" / "final_results.json"
         )
@@ -262,6 +272,19 @@ class QualitativeReviewTool:
                 else:
                     html_content += "<p>Fulltext not available</p>\n"
                 html_content += "</div>\n"
+            
+            # Add annotation section
+            html_content += "<div class='annotation'>\n"
+            html_content += "<h3>Annotation</h3>\n"
+            html_content += "<p><strong>Do you agree with the LLM's judgment?</strong></p>\n"
+            html_content += f"<input type='radio' id='agree-{i}' name='judgment-{i}' value='agree'>\n"
+            html_content += f"<label for='agree-{i}'>Agree</label>\n"
+            html_content += f"<input type='radio' id='disagree-{i}' name='judgment-{i}' value='disagree'>\n"
+            html_content += f"<label for='disagree-{i}'>Disagree</label>\n"
+            html_content += "<br><br>\n"
+            html_content += "<label for='comment'><strong>Comments:</strong></label>\n"
+            html_content += f"<textarea id='comment-{i}' name='comment-{i}' rows='4' cols='50' placeholder='Add your comments here...'></textarea>\n"
+            html_content += "</div>\n"
 
             html_content += "</div>\n"  # Close study div
         
@@ -316,6 +339,10 @@ class QualitativeReviewTool:
         }}
         .content {{
             border-left-color: #2ecc71;
+        }}
+        .annotation {{
+            border-left-color: #f39c12;
+            background-color: #fff8e1;
         }}
         strong {{
             color: #2c3e50;
@@ -380,6 +407,7 @@ class QualitativeReviewTool:
     </style>
 </head>
 <body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
 <script>
     function toggleAccordion(btn) {{
         btn.classList.toggle("active");
@@ -389,6 +417,50 @@ class QualitativeReviewTool:
         }} else {{
             panel.style.maxHeight = panel.scrollHeight + "px";
         }}
+    }}
+    
+    function saveAnnotations() {{
+        // Collect all annotations
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+        
+        for (var i = 0; i < studies.length; i++) {{
+            var study = studies[i];
+            var studyId = study.id;
+            var pmid = study.querySelector('h2').textContent.split(':')[1].trim().split(' ')[0];
+            
+            // Get judgment
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {{
+                judgment = 'agree';
+            }} else if (disagreeRadio && disagreeRadio.checked) {{
+                judgment = 'disagree';
+            }}
+            
+            // Get comment
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+            
+            annotations.push({{
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            }});
+        }}
+        
+        // Create and download JSON file
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(annotations, null, 2));
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "annotations.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+        
+        // Show confirmation
+        alert('Annotations saved successfully!');
     }}
 </script>
 """
@@ -416,6 +488,7 @@ def main():
     parser = argparse.ArgumentParser(description="Qualitative Review Tool for Meta-Analysis Pipeline")
     parser.add_argument("project_dir", help="Path to the project directory")
     parser.add_argument("--output-dir", help="Path to the output directory (default: project_dir/report)")
+    parser.add_argument("--subanalysis", help="Name of the sub-analysis to review")
     parser.add_argument("--error-type", choices=['false_positives', 'false_negatives'],
                         help="Type of error to review")
     parser.add_argument("--stage", choices=['abstract', 'fulltext'],
@@ -427,7 +500,7 @@ def main():
     output_dir = args.output_dir if args.output_dir else f"{args.project_dir}/report"
     
     # Initialize the tool
-    tool = QualitativeReviewTool(project_dir=args.project_dir, output_dir=output_dir)
+    tool = QualitativeReviewTool(project_dir=args.project_dir, output_dir=output_dir, subanalysis=args.subanalysis)
     
     # Generate reports
     if args.error_type and args.stage:

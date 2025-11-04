@@ -19,6 +19,9 @@ The qualitative review tool helps researchers examine papers that were misclassi
 - Includes fulltext content when available through pubget
 - Clean, organized interface for efficient review
 - Command-line interface for flexible usage
+- **New:** Annotation capabilities to agree/disagree with LLM judgments
+- **New:** Comment field for detailed feedback
+- **New:** Save annotations to JSON file
 
 ## Requirements
 
@@ -55,6 +58,19 @@ To specify custom project and output directories:
 ```bash
 python qualitative_review_tool.py --project-dir /path/to/project --output-dir /path/to/output
 ```
+
+## Using the Annotation Features
+
+The generated HTML reports now include annotation capabilities:
+
+1. For each study, you can select "Agree" or "Disagree" with the LLM's judgment
+2. You can add detailed comments in the text field provided
+3. Click the "Save Annotations" button at the top right of the page to download your annotations as a JSON file
+
+The annotations file will contain:
+- PMID of the study
+- Your judgment (agree/disagree)
+- Your comments
 
 ## Output
 

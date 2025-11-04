@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .annotation {
+            border-left-color: #f39c12;
+            background-color: #fff8e1;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        /* Accordion styles */
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC'; /* Down arrow */
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2'; /* Up arrow */
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+    
+    function saveAnnotations() {
+        // Collect all annotations
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+        
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var studyId = study.id;
+            var pmid = study.querySelector('h2').textContent.split(':')[1].trim().split(' ')[0];
+            
+            // Get judgment
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+            
+            // Get comment
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+            
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+        
+        // Create and download JSON file
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(annotations, null, 2));
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "annotations.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+        
+        // Show confirmation
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Negatives Papers at Fulltext Stage</h1>
+<p>Total papers: 2</p>
+<div class='study-list'>
+<div class='study' id='study-1'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24834034/' target='_blank'>24834034</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded</p>
+<p><strong>Fulltext Reasoning:</strong> Although this is an fMRI study of a social task (ultimatum game) in healthy adult participants (n=28, mean age 25) and reports group-level task contrasts, the second-level analyses were conducted within a restricted mask of 16 bilateral ROIs (wfu_pickatlas) rather than as an unmasked whole-brain voxelwise analysis. The inclusion criteria require at least one group-level, univariate whole-brain task activation map generalizable to healthy adults. Because the reported results are ROI-masked (not whole‑brain/unmasked), the study does not meet the whole‑brain evidence requirement and must be excluded.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-2'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/29330483/' target='_blank'>29330483</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included</p>
+<p><strong>Fulltext Reasoning:</strong> The study used task-based fMRI in healthy adult participants (ages 21–46) who viewed erotic pictures and videos depicting individuals and same-sex couples, engaging perception of others/social stimuli relevant to social processing constructs (Perception/Understanding of Others). The paper reports group-level, univariate whole-brain task contrasts (one-sample within-group contrasts, FWE-corrected cluster maps) for each healthy orientation group, not limited to ROI analyses. Whole-brain results are clearly described and generalizable to healthy adults. No exclusion criteria (ROI-only, resting-state-only, or age outside range) are violated. Therefore it meets the meta-analysis inclusion criteria.</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-2' name='judgment-2' value='agree'>
+<label for='agree-2'>Agree</label>
+<input type='radio' id='disagree-2' name='judgment-2' value='disagree'>
+<label for='disagree-2'>Disagree</label>
+<br><br>
+<label for='comment'><strong>Comments:</strong></label>
+<textarea id='comment-2' name='comment-2' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>
