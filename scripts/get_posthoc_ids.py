@@ -66,3 +66,6 @@ yes_pmids = df[df['final_status'] == 'YES']['study_pmid'].tolist()
 
 with open('social-processing/posthoc.txt', 'w') as f:
     f.write('\n'.join(yes_pmids))
+
+with open('social-processing/all_pmids.txt', 'w') as f:
+    f.write('\n'.join(df['study_pmid'].tolist()))
