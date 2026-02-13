@@ -333,10 +333,10 @@ def main(meta_pmids_path: str, directory: str = 'example', output_dir: str = Non
     meta_pmids = pd.read_csv(meta_pmids_path, header=None, names=['pmid'])['pmid'].astype(str).tolist()
     final_results = json.load(open(os.path.join(outputs_dir, 'final_results.json')))
     all_pmids = [s['study_id'] for s in final_results['abstract_screening_results']]
-    abstract_included_pmids = [s['study_id'] for s in final_results['abstract_screening_results'] if s['decision'] == 'included']
-    fulltext_included_pmids = [s['study_id'] for s in final_results['fulltext_screening_results'] if s['decision'] == 'included']
+    abstract_included_pmids = [s['study_id'] for s in final_results['abstract_screening_results'] if s['decision'] == 'included_abstract']
+    fulltext_included_pmids = [s['study_id'] for s in final_results['fulltext_screening_results'] if s['decision'] == 'included_fulltext']
     fulltext_with_coords_pmids = [s['pmid'] for s in final_results['studies']
-                                  if s['status'] == 'included' and 'activation_tables' in s and len(s['activation_tables']) > 0]
+                                  if s['status'] == 'included_fulltext' and 'activation_tables' in s and len(s['activation_tables']) > 0]
     fulltext_results = json.load(open(os.path.join(outputs_dir, 'fulltext_retrieval_results.json')))['studies_with_fulltext']
     fulltext_unavailable_pmids = [s['pmid'] for s in fulltext_results if s['status'] == 'fulltext_unavailable']
 
