@@ -14,6 +14,7 @@ from ace import database
 from ace.ingest import add_articles
 from ace.export import export_database
 from pathlib import Path
+from ace import config
 
 
 def main():
@@ -38,7 +39,20 @@ def main():
         default=None,
         help="Output folder for exported CSV files (default: ace_scrape_directory/processed)"
     )
-    
+
+    parser.add_argument(
+        "--save-html",
+        action="store_true",
+        help="Save original HTML files"
+    )
+
+    parser.add_argument(
+        "--pmids",
+        nargs='+',
+        default=None,
+        help="List of PubMed IDs to process"
+    )
+
     args = parser.parse_args()
     
     # Convert to Path object and validate directory exists
@@ -57,6 +71,9 @@ def main():
         out_folder = ace_scrape_dir / "processed"
     else:
         out_folder = Path(args.out_folder)
+
+    if args.save_html:
+        config.update_config(SAVE_ORIGINAL_HTML=True)
     
     # Add API key to environment
     api_key='5f71cf0c189dd20a9012d905898f50da4308'
@@ -83,6 +100,12 @@ def main():
     db_path = f"sqlite:///{db_file.absolute()}"
     print(f"Connecting to database: {db_path}")
     db = database.Database(adapter='sqlite', db_name=db_path)
+
+    # Using pmid as filename, filter files if pmids provided
+    if args.pmids is not None:
+        pmid_set = set(args.pmids)
+        files = [f for f in files if f.stem in pmid_set]
+        print(f"Filtered to {len(files)} files based on provided PMIDs")
     
     # Get existing articles in database
     all_in_db = set([a[0] for a in db.session.query(database.Article.id).all()])
@@ -92,6 +115,7 @@ def main():
     
     print(f'Adding {len(new_files)} new files to database')
     
+    missing_sources = []
     if new_files:
         metadata_dir = ace_scrape_dir / 'pm_metadata'
         missing_sources = add_articles(
@@ -100,15 +124,6 @@ def main():
 
     # Print missing sources if any
     if missing_sources:
-
-        # Use is_pubmed_html from autonima.retrieval.utils to exclude PubMed HTML files
-
-        from autonima.retrieval.utils import is_pubmed_html
-        missing_sources = [
-            source for source in missing_sources
-            if not is_pubmed_html(Path(source).read_text(encoding='utf-8'))
-        ]
-
         # Use pathlib to take folder name as source name for each
         missing_sources_with_names = [
             Path(source).parent.name for source in missing_sources
@@ -121,12 +136,13 @@ def main():
             print(f" - {source}")
     
     db.print_stats()
-    
+
     # Export database to CSV
     print(f"\nExporting database to: {out_folder}")
     out_folder.mkdir(parents=True, exist_ok=True)
-    export_database(db, str(out_folder), skip_empty=False)
-    
+    save_html = args.save_html
+    export_database(db, str(out_folder), skip_empty=False, table_html=save_html)
+
     print("Processing complete!")
 
 
