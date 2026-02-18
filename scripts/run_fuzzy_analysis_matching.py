@@ -5,6 +5,10 @@ Outputs:
 - match_results_<annotation>.json
 - match_results_all_annotations.json
 - fuzzy_matching_summary.html
+
+Manual analyses are loaded from merged NiMADS artifacts:
+- nimads_studyset.json
+- nimads_annotation.json
 """
 
 from __future__ import annotations
@@ -26,7 +30,7 @@ except Exception:  # pragma: no cover
     linear_sum_assignment = None
 
 
-MANUAL_FILE_MAP = {
+ANNOTATION_SOURCE_FILE_MAP = {
     "social_processing_all": "ALL-Merged.json",
     "affiliation_attachment": "Affiliation-Merged.json",
     "perception_others": "Others-Merged.json",
@@ -39,9 +43,20 @@ UNCERTAIN_THRESHOLD = 0.55
 NAME_WEIGHT = 0.30
 COORD_WEIGHT = 0.70
 
-
 def clean_text(value: str) -> str:
     return "".join(ch for ch in str(value) if ch >= " " or ch in "\n\t\r")
+
+def source_filename_to_note_key(filename: str) -> str:
+    stem = Path(filename).stem
+    key = clean_text(stem).lower().strip()
+    key = re.sub(r"[^a-z0-9]+", "_", key)
+    return key.strip("_")
+
+
+ANNOTATION_NOTE_KEY_MAP = {
+    annotation_name: source_filename_to_note_key(filename)
+    for annotation_name, filename in ANNOTATION_SOURCE_FILE_MAP.items()
+}
 
 
 def normalize_text(value: str) -> str:
@@ -62,12 +77,17 @@ def parse_args() -> argparse.Namespace:
         default=default_project_output_dir,
         help="Path to project output dir (e.g., .../annotation-only).",
     )
-    parser.add_argument("--manual-dir", type=Path, default=default_manual_dir)
+    parser.add_argument(
+        "--manual-dir",
+        type=Path,
+        default=default_manual_dir,
+        help="Path to project NiMADS dir or merged dir containing nimads_studyset.json + nimads_annotation.json.",
+    )
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=None,
-        help="Output directory for match JSON + summary HTML. Defaults to sibling analysis/annotation_review_reports.",
+        help="Output directory for match JSON + summary HTML. Defaults to sibling reports/annotation_review_reports.",
     )
     return parser.parse_args()
 
@@ -75,7 +95,7 @@ def parse_args() -> argparse.Namespace:
 def resolve_output_dir(project_output_dir: Path, output_dir: Path | None) -> Path:
     if output_dir is not None:
         return output_dir
-    return project_output_dir.parent / "analysis" / "annotation_review_reports"
+    return project_output_dir / "reports" / "annotation_review_reports"
 
 
 def load_json(path: Path) -> Any:
@@ -120,27 +140,87 @@ def load_auto_parsed_data(path: Path) -> dict[str, list[dict[str, Any]]]:
     return auto_by_pmid
 
 
+def resolve_manual_merged_paths(manual_dir: Path) -> tuple[Path, Path]:
+    direct_studyset = manual_dir / "nimads_studyset.json"
+    direct_annotation = manual_dir / "nimads_annotation.json"
+    if direct_studyset.exists() and direct_annotation.exists():
+        return direct_studyset, direct_annotation
+
+    merged_studyset = manual_dir / "merged" / "nimads_studyset.json"
+    merged_annotation = manual_dir / "merged" / "nimads_annotation.json"
+    if merged_studyset.exists() and merged_annotation.exists():
+        return merged_studyset, merged_annotation
+
+    raise FileNotFoundError(
+        "Could not find merged manual NiMADS files. Expected either "
+        f"{direct_studyset} + {direct_annotation} or "
+        f"{merged_studyset} + {merged_annotation}."
+    )
+
+
 def load_manual_analyses_by_annotation(manual_dir: Path) -> dict[str, dict[str, list[dict[str, Any]]]]:
-    result: dict[str, dict[str, list[dict[str, Any]]]] = {}
-    for annotation_name, filename in MANUAL_FILE_MAP.items():
-        payload = load_json(manual_dir / filename)
-        by_pmid: dict[str, list[dict[str, Any]]] = {}
-        for study in payload.get("studies", []):
-            pmid = str(study.get("id"))
-            analyses: list[dict[str, Any]] = []
-            for analysis in study.get("analyses", []):
-                analysis_id = clean_text(analysis.get("id") or analysis.get("name") or "")
-                analysis_name = clean_text(analysis.get("name") or analysis_id)
-                analyses.append(
-                    {
-                        "id": analysis_id,
-                        "name": analysis_name,
-                        "points": parse_points(analysis.get("points", [])),
-                    }
-                )
-            by_pmid[pmid] = analyses
-        result[annotation_name] = by_pmid
-    return result
+    studyset_path, annotation_path = resolve_manual_merged_paths(manual_dir)
+    studyset_payload = load_json(studyset_path)
+    annotation_payload = load_json(annotation_path)
+
+    required_note_keys = set(ANNOTATION_NOTE_KEY_MAP.values())
+    declared_note_keys = set((annotation_payload.get("note_keys") or {}).keys())
+    missing_note_keys = sorted(required_note_keys - declared_note_keys)
+    if missing_note_keys:
+        raise ValueError(
+            f"Missing expected note_keys in {annotation_path}: {missing_note_keys}. "
+            f"Expected at least: {sorted(required_note_keys)}"
+        )
+
+    analysis_lookup: dict[str, dict[str, Any]] = {}
+    for study in studyset_payload.get("studies", []):
+        pmid = str(study.get("id"))
+        for analysis in study.get("analyses", []):
+            analysis_id = clean_text(analysis.get("id") or "").strip()
+            if not analysis_id:
+                continue
+            analysis_name = clean_text(analysis.get("name") or analysis_id)
+            analysis_lookup[analysis_id] = {
+                "pmid": pmid,
+                "analysis": {
+                    "id": analysis_id,
+                    "name": analysis_name,
+                    "points": parse_points(analysis.get("points", [])),
+                },
+            }
+
+    result: dict[str, dict[str, list[dict[str, Any]]]] = {
+        annotation_name: defaultdict(list) for annotation_name in ANNOTATION_SOURCE_FILE_MAP
+    }
+    seen_analysis_ids: dict[str, set[str]] = {annotation_name: set() for annotation_name in ANNOTATION_SOURCE_FILE_MAP}
+
+    for note_entry in annotation_payload.get("notes", []):
+        analysis_id = clean_text(note_entry.get("analysis") or "").strip()
+        if not analysis_id:
+            continue
+        resolved = analysis_lookup.get(analysis_id)
+        if not resolved:
+            continue
+
+        note_values = note_entry.get("note") or {}
+        if not isinstance(note_values, dict):
+            continue
+
+        for annotation_name, note_key in ANNOTATION_NOTE_KEY_MAP.items():
+            if not bool(note_values.get(note_key)):
+                continue
+            if analysis_id in seen_analysis_ids[annotation_name]:
+                continue
+            pmid = resolved["pmid"]
+            result[annotation_name][pmid].append(resolved["analysis"])
+            seen_analysis_ids[annotation_name].add(analysis_id)
+
+    finalized: dict[str, dict[str, list[dict[str, Any]]]] = {}
+    for annotation_name, by_pmid in result.items():
+        finalized[annotation_name] = {}
+        for pmid, analyses in by_pmid.items():
+            finalized[annotation_name][pmid] = sorted(analyses, key=lambda item: item["id"])
+    return finalized
 
 
 def split_name_base(name: str) -> str:
@@ -477,7 +557,7 @@ def render_matching_summary_html(match_results_by_annotation: dict[str, Any]) ->
     total = defaultdict(float)
     total_missing_pmids: list[str] = []
 
-    for annotation_name in MANUAL_FILE_MAP:
+    for annotation_name in ANNOTATION_SOURCE_FILE_MAP:
         data = match_results_by_annotation.get(annotation_name, {})
         summary = data.get("summary", {})
         missing = data.get("missing_manual_pmids", [])
@@ -612,7 +692,7 @@ def main() -> None:
 
     write_match_artifacts(output_dir, match_results_by_annotation)
 
-    for annotation_name in MANUAL_FILE_MAP:
+    for annotation_name in ANNOTATION_SOURCE_FILE_MAP:
         summary = match_results_by_annotation[annotation_name]["summary"]
         print(
             f"{annotation_name}: accepted={summary['accepted']} "
