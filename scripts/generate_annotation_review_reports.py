@@ -23,6 +23,14 @@ MANUAL_FILE_MAP = {
     "social_communication": "SocComm-Merged.json",
 }
 
+ANNOTATION_TO_NOTE_KEY = {
+    "social_processing_all": "all_merged",
+    "affiliation_attachment": "affiliation_merged",
+    "perception_others": "others_merged",
+    "perception_self": "self_merged",
+    "social_communication": "soccomm_merged",
+}
+
 ANALYSIS_ID_RE = re.compile(r"^(?P<pmid>.+?)_analysis_(?P<index>\d+)$")
 
 
@@ -38,34 +46,112 @@ def clean_text(value: str) -> str:
 
 
 def parse_args() -> argparse.Namespace:
-    default_project_output_dir = Path("../autonima-results/projects/social/coordinates/annotation-only")
-
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--project-output-dir",
         type=Path,
-        default=default_project_output_dir,
-        help="Path to project output dir (e.g., .../annotation-only).",
+        default=None,
+        help=(
+            "Path to project output dir (e.g., .../annotation-only). "
+            "If omitted, auto-detect prefers annotation-only under projects/social/coordinates."
+        ),
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=None,
-        help="Directory for generated HTML reports. Defaults to sibling analysis/annotation_review_reports.",
+        help="Directory for generated HTML reports. Defaults to project-output-dir/reports/annotation_review_reports.",
     )
     parser.add_argument(
         "--match-input-dir",
         type=Path,
         default=None,
-        help="Directory containing match_results_<annotation>.json files. Defaults to output dir.",
+        help="Directory containing match results JSON files. Defaults to project-output-dir/reports.",
+    )
+    parser.add_argument(
+        "--manual-annotation-path",
+        type=Path,
+        default=None,
+        help=(
+            "Optional path to merged nimads_annotation.json used to slice match_results_overall.json "
+            "into per-annotation manual truth."
+        ),
     )
     return parser.parse_args()
 
 
-def resolve_dirs(args: argparse.Namespace) -> tuple[Path, Path]:
-    output_dir = args.output_dir or (args.project_output_dir.parent / "analysis" / "annotation_review_reports")
-    match_input_dir = args.match_input_dir or output_dir
+def infer_project_output_dir(explicit_path: Path | None) -> Path:
+    if explicit_path is not None:
+        return explicit_path
+
+    coordinates_root = Path("../autonima-results/projects/social/coordinates")
+    candidates: list[Path] = []
+    if coordinates_root.exists():
+        for entry in coordinates_root.iterdir():
+            if not entry.is_dir():
+                continue
+            outputs_dir = entry / "outputs"
+            if not outputs_dir.exists():
+                continue
+            if not (outputs_dir / "annotation_results.json").exists():
+                continue
+            candidates.append(entry)
+
+    pool = candidates
+    if not pool:
+        raise FileNotFoundError(
+            "Could not infer project output dir. Pass --project-output-dir explicitly."
+        )
+
+    annotation_only = [c for c in pool if c.name == "annotation-only"]
+    if annotation_only:
+        selected = max(annotation_only, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
+        print(f"Auto-selected project output dir (annotation-only preferred): {selected}")
+        return selected
+
+    preferred = [
+        c
+        for c in pool
+        if "search-all_pmids-studyann-ft" in c.name
+    ]
+    if preferred:
+        selected = max(preferred, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
+        print(f"Auto-selected project output dir (preferred pattern): {selected}")
+        return selected
+
+    latest = max(pool, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
+    print(f"Auto-selected project output dir: {latest}")
+    return latest
+
+
+def resolve_dirs(project_output_dir: Path, args: argparse.Namespace) -> tuple[Path, Path]:
+    output_dir = args.output_dir or (project_output_dir / "reports" / "annotation_review_reports")
+    match_input_dir = args.match_input_dir or (project_output_dir / "reports")
     return output_dir, match_input_dir
+
+
+def infer_project_name(project_output_dir: Path) -> str:
+    parts = list(project_output_dir.parts)
+    if "projects" in parts:
+        idx = parts.index("projects")
+        if idx + 1 < len(parts):
+            return parts[idx + 1]
+    return "social"
+
+
+def resolve_manual_annotation_path(project_output_dir: Path, explicit_path: Path | None) -> Path | None:
+    if explicit_path is not None:
+        return explicit_path
+
+    project_name = infer_project_name(project_output_dir)
+    candidates = [
+        Path(f"../neurometabench/data/nimads/{project_name}/merged/nimads_annotation.json"),
+        project_output_dir / "outputs" / "nimads_annotation.json",
+    ]
+    for path in candidates:
+        if path.exists():
+            return path
+    return None
 
 
 def load_json(path: Path) -> Any:
@@ -211,32 +297,173 @@ def load_model_decisions(path: Path) -> dict[str, dict[str, dict[int, Decision]]
     return decisions
 
 
-def load_match_results_by_annotation(match_input_dir: Path) -> dict[str, Any]:
+def load_manual_annotation_membership(path: Path | None) -> dict[str, dict[str, bool]]:
+    if path is None or not path.exists():
+        return {}
+
+    payload = load_json(path)
+    notes = payload.get("notes", [])
+    membership: dict[str, dict[str, bool]] = {}
+    for row in notes:
+        analysis_id = clean_text(row.get("analysis", "")).strip()
+        if not analysis_id:
+            continue
+        note = row.get("note", {})
+        if isinstance(note, dict):
+            membership[analysis_id] = {str(k): bool(v) for k, v in note.items()}
+    return membership
+
+
+def parse_pmid_from_analysis_id(analysis_id: str) -> str | None:
+    analysis_text = clean_text(analysis_id).strip()
+    if not analysis_text:
+        return None
+
+    match = ANALYSIS_ID_RE.match(analysis_text)
+    if match:
+        return match.group("pmid")
+
+    if "_" in analysis_text:
+        return analysis_text.split("_", 1)[0].strip()
+
+    return None
+
+
+def load_study_pmid_sets_from_annotations(
+    auto_annotation_path: Path | None,
+    manual_annotation_path: Path | None,
+) -> tuple[set[str], dict[str, set[str]], dict[str, set[str]]]:
+    auto_grouped: dict[str, set[str]] = {annotation: set() for annotation in MANUAL_FILE_MAP}
+    manual_grouped: dict[str, set[str]] = {annotation: set() for annotation in MANUAL_FILE_MAP}
+    unique_pmids_in_auto: set[str] = set()
+
+    if auto_annotation_path is not None and auto_annotation_path.exists():
+        payload = load_json(auto_annotation_path)
+        for note in payload.get("notes", []):
+            analysis_id = clean_text(note.get("analysis", "")).strip()
+            match = ANALYSIS_ID_RE.match(analysis_id)
+            if not match:
+                continue
+            pmid = match.group("pmid")
+            unique_pmids_in_auto.add(pmid)
+            note_obj = note.get("note", {})
+            if not isinstance(note_obj, dict):
+                continue
+            for annotation in MANUAL_FILE_MAP:
+                if bool(note_obj.get(annotation, False)):
+                    auto_grouped[annotation].add(pmid)
+
+    if manual_annotation_path is not None and manual_annotation_path.exists():
+        payload = load_json(manual_annotation_path)
+        for note in payload.get("notes", []):
+            pmid = parse_pmid_from_analysis_id(str(note.get("analysis", "")))
+            if not pmid:
+                continue
+            if unique_pmids_in_auto and pmid not in unique_pmids_in_auto:
+                continue
+            note_obj = note.get("note", {})
+            if not isinstance(note_obj, dict):
+                continue
+            for annotation in MANUAL_FILE_MAP:
+                manual_key = ANNOTATION_TO_NOTE_KEY.get(annotation, annotation)
+                included = bool(note_obj.get(manual_key, False))
+                if not included and manual_key != annotation:
+                    included = bool(note_obj.get(annotation, False))
+                if included:
+                    manual_grouped[annotation].add(pmid)
+
+    return unique_pmids_in_auto, auto_grouped, manual_grouped
+
+
+def load_match_results_by_annotation(match_input_dir: Path) -> tuple[dict[str, Any], bool]:
     results: dict[str, Any] = {}
+    missing_per_annotation: list[str] = []
     for annotation_name in MANUAL_FILE_MAP:
         path = match_input_dir / f"match_results_{annotation_name}.json"
         if not path.exists():
-            raise FileNotFoundError(
-                f"Missing match result file for {annotation_name}: {path}. "
-                "Run run_fuzzy_analysis_matching.py first."
-            )
+            missing_per_annotation.append(annotation_name)
+            continue
         results[annotation_name] = load_json(path)
-    return results
+    if not missing_per_annotation:
+        return results, False
+
+    overall_path = match_input_dir / "match_results_overall.json"
+    if not overall_path.exists():
+        alt_overall_path = match_input_dir.parent / "match_results_overall.json"
+        if alt_overall_path.exists():
+            overall_path = alt_overall_path
+    if overall_path.exists():
+        overall = load_json(overall_path)
+        for annotation_name in MANUAL_FILE_MAP:
+            results[annotation_name] = overall
+        print(
+            "Using match_results_overall.json fallback for per-annotation reports. "
+            "Per-annotation truth will be sliced using nimads_annotation notes when available."
+        )
+        if overall_path.parent != match_input_dir:
+            print(f"Loaded overall match file from alternate path: {overall_path}")
+        return results, True
+
+    missing_list = ", ".join(missing_per_annotation)
+    raise FileNotFoundError(
+        f"Missing match result files ({missing_list}) under {match_input_dir}. "
+        "Expected either match_results_<annotation>.json files or match_results_overall.json. "
+        "Run run_fuzzy_analysis_matching.py first."
+    )
 
 
-def build_manual_truth_from_match_results(match_results_by_annotation: dict[str, Any]) -> dict[str, dict[str, dict[str, Any]]]:
+def build_manual_truth_from_match_results(
+    match_results_by_annotation: dict[str, Any],
+    overall_fallback: bool,
+    manual_annotation_membership: dict[str, dict[str, bool]],
+) -> dict[str, dict[str, dict[str, Any]]]:
     manual_truth: dict[str, dict[str, dict[str, Any]]] = defaultdict(dict)
 
     for annotation_name, match_results in match_results_by_annotation.items():
+        target_note_key = ANNOTATION_TO_NOTE_KEY.get(annotation_name)
         for pmid, pmid_result in match_results.get("pmids", {}).items():
-            manual_analyses = pmid_result.get("manual_analyses", [])
+            manual_analyses = list(pmid_result.get("manual_analyses", []))
+            if overall_fallback and manual_annotation_membership:
+                filtered_analyses: list[dict[str, Any]] = []
+                for entry in manual_analyses:
+                    analysis_id = clean_text(entry.get("manual_analysis_id", "")).strip()
+                    auto_analysis_id = clean_text(entry.get("best_auto_analysis_id", "")).strip()
+                    candidate_keys = [annotation_name]
+                    if target_note_key and target_note_key != annotation_name:
+                        candidate_keys.insert(0, target_note_key)
+
+                    include_for_annotation = False
+                    note_manual = manual_annotation_membership.get(analysis_id, {})
+                    if note_manual:
+                        include_for_annotation = any(bool(note_manual.get(k, False)) for k in candidate_keys)
+                    if not include_for_annotation and auto_analysis_id:
+                        note_auto = manual_annotation_membership.get(auto_analysis_id, {})
+                        if note_auto:
+                            include_for_annotation = any(bool(note_auto.get(k, False)) for k in candidate_keys)
+
+                    if include_for_annotation:
+                        filtered_analyses.append(entry)
+                manual_analyses = filtered_analyses
+
             accepted_indices = {
                 int(entry["best_auto_index"])
                 for entry in manual_analyses
                 if entry.get("best_auto_index") is not None and entry.get("match_status") == "accepted"
             }
 
-            status_counts = pmid_result.get("pmid_summary", {})
+            status_counts = {
+                "accepted": sum(1 for entry in manual_analyses if entry.get("match_status") == "accepted"),
+                "uncertain": sum(1 for entry in manual_analyses if entry.get("match_status") == "uncertain"),
+                "unmatched": sum(1 for entry in manual_analyses if entry.get("match_status") == "unmatched"),
+            }
+            if manual_analyses:
+                status_counts["mean_combined_score"] = (
+                    sum(float(entry.get("combined_score", 0.0)) for entry in manual_analyses)
+                    / len(manual_analyses)
+                )
+            else:
+                status_counts["mean_combined_score"] = 0.0
+
             manual_truth[annotation_name][pmid] = {
                 "true_indices": accepted_indices,
                 "manual_names": [entry.get("manual_name", "") for entry in manual_analyses],
@@ -252,7 +479,9 @@ def build_manual_truth_from_match_results(match_results_by_annotation: dict[str,
                     "unmatched": int(status_counts.get("unmatched", 0)),
                     "mean_combined_score": float(status_counts.get("mean_combined_score", 0.0)),
                 },
-                "manual_missing_in_auto": bool(pmid_result.get("manual_missing_in_auto", False)),
+                "manual_missing_in_auto": bool(pmid_result.get("manual_missing_in_auto", False))
+                if not overall_fallback
+                else False,
             }
 
     return manual_truth
@@ -314,6 +543,20 @@ def make_document_row(
     }
 
 
+def compute_prf(tp: int, fp: int, fn: int) -> dict[str, Any]:
+    precision = (tp / (tp + fp)) if (tp + fp) else 0.0
+    recall = (tp / (tp + fn)) if (tp + fn) else 0.0
+    f1 = (2.0 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
+    return {
+        "tp": int(tp),
+        "fp": int(fp),
+        "fn": int(fn),
+        "precision": float(precision),
+        "recall": float(recall),
+        "f1": float(f1),
+    }
+
+
 def classify_documents(
     annotation_name: str,
     parsed_analyses: dict[str, list[str]],
@@ -321,11 +564,16 @@ def classify_documents(
     manual_truth: dict[str, dict[str, dict[str, Any]]],
     pmid_to_fulltext: dict[str, dict[str, str]],
     pmid_to_coord_tables: dict[str, list[dict[str, str]]],
+    study_universe_pmids: set[str] | None = None,
+    auto_study_pmids_by_annotation: dict[str, set[str]] | None = None,
+    manual_study_pmids_by_annotation: dict[str, set[str]] | None = None,
 ) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
     docs = {"Correct": [], "False Positive": [], "False Negative": []}
     ann_decisions = model_decisions.get(annotation_name, {})
     ann_truth = manual_truth.get(annotation_name, {})
-    pmids = set(ann_decisions.keys()) | set(ann_truth.keys())
+    run_pmids = set(parsed_analyses.keys())
+    doc_overlap_pmids = run_pmids & set(ann_truth.keys())
+    pmids = doc_overlap_pmids
 
     for pmid in sorted(pmids, key=lambda x: (len(x), x)):
         parsed_names = parsed_analyses.get(pmid, [])
@@ -373,11 +621,75 @@ def classify_documents(
             )
         )
 
-    tp = len(docs["Correct"])
-    fp = len(docs["False Positive"])
-    fn = len(docs["False Negative"])
-    precision = (tp / (tp + fp)) if (tp + fp) else 0.0
-    recall = (tp / (tp + fn)) if (tp + fn) else 0.0
+    document_metrics = compute_prf(
+        tp=len(docs["Correct"]),
+        fp=len(docs["False Positive"]),
+        fn=len(docs["False Negative"]),
+    )
+
+    if (
+        study_universe_pmids is not None
+        and auto_study_pmids_by_annotation is not None
+        and manual_study_pmids_by_annotation is not None
+    ):
+        study_universe = set(study_universe_pmids)
+        predicted_study_set = set(auto_study_pmids_by_annotation.get(annotation_name, set())) & study_universe
+        manual_study_set = set(manual_study_pmids_by_annotation.get(annotation_name, set())) & study_universe
+    else:
+        study_universe = set(doc_overlap_pmids)
+        manual_study_set = {
+            pmid
+            for pmid in study_universe
+            if ann_truth.get(pmid, {}).get("manual_names")
+        }
+        predicted_study_set = {
+            pmid
+            for pmid in study_universe
+            if any(decision.include for decision in ann_decisions.get(pmid, {}).values())
+        }
+
+    study_tp = len(predicted_study_set & manual_study_set)
+    study_fp = len(predicted_study_set - manual_study_set)
+    study_fn = len(manual_study_set - predicted_study_set)
+    study_tn = max(0, len(study_universe) - study_tp - study_fp - study_fn)
+    study_metrics = compute_prf(tp=study_tp, fp=study_fp, fn=study_fn)
+    study_metrics["tn"] = int(study_tn)
+    study_metrics["accuracy"] = (
+        float((study_tp + study_tn) / len(study_universe))
+        if study_universe
+        else 0.0
+    )
+    study_metrics["manual_studies"] = len(manual_study_set)
+    study_metrics["predicted_studies"] = len(predicted_study_set)
+    study_metrics["run_pmids"] = len(run_pmids)
+    study_metrics["overlap_pmids"] = len(study_universe)
+
+    true_analysis_set: set[tuple[str, int]] = set()
+    predicted_analysis_set: set[tuple[str, int]] = set()
+    analysis_universe: set[tuple[str, int]] = set()
+    for pmid in doc_overlap_pmids:
+        parsed_names = parsed_analyses.get(pmid, [])
+        for idx in range(len(parsed_names)):
+            analysis_universe.add((pmid, idx))
+
+        decisions_for_pmid = ann_decisions.get(pmid, {})
+        for idx, decision in decisions_for_pmid.items():
+            idx_int = int(idx)
+            analysis_universe.add((pmid, idx_int))
+            if decision.include:
+                predicted_analysis_set.add((pmid, idx_int))
+
+        for idx in ann_truth.get(pmid, {}).get("true_indices", set()):
+            true_analysis_set.add((pmid, int(idx)))
+            analysis_universe.add((pmid, int(idx)))
+
+    analysis_tp = len(predicted_analysis_set & true_analysis_set)
+    analysis_fp = len(predicted_analysis_set - true_analysis_set)
+    analysis_fn = len(true_analysis_set - predicted_analysis_set)
+    analysis_metrics = compute_prf(tp=analysis_tp, fp=analysis_fp, fn=analysis_fn)
+    analysis_metrics["manual_accepted_analyses"] = len(true_analysis_set)
+    analysis_metrics["predicted_analyses"] = len(predicted_analysis_set)
+    analysis_metrics["analysis_universe"] = len(analysis_universe)
 
     bucket_match_counts: dict[str, dict[str, int]] = {}
     for bucket, bucket_docs in docs.items():
@@ -399,11 +711,15 @@ def classify_documents(
     )
 
     metrics: dict[str, Any] = {
-        "tp": tp,
-        "fp": fp,
-        "fn": fn,
-        "precision": precision,
-        "recall": recall,
+        "tp": int(document_metrics["tp"]),
+        "fp": int(document_metrics["fp"]),
+        "fn": int(document_metrics["fn"]),
+        "precision": float(document_metrics["precision"]),
+        "recall": float(document_metrics["recall"]),
+        "f1": float(document_metrics["f1"]),
+        "document_metrics": document_metrics,
+        "study_metrics": study_metrics,
+        "analysis_metrics": analysis_metrics,
         "bucket_match_counts": bucket_match_counts,
         "missing_manual_pmids": missing_manual_pmids,
     }
@@ -632,8 +948,21 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
             )
         )
 
-    precision_str = f"{metrics['precision']:.3f}"
-    recall_str = f"{metrics['recall']:.3f}"
+    document_metrics = metrics.get("document_metrics", {})
+    study_metrics = metrics.get("study_metrics", {})
+    analysis_metrics = metrics.get("analysis_metrics", {})
+
+    precision_str = f"{float(document_metrics.get('precision', metrics.get('precision', 0.0))):.3f}"
+    recall_str = f"{float(document_metrics.get('recall', metrics.get('recall', 0.0))):.3f}"
+    f1_str = f"{float(document_metrics.get('f1', metrics.get('f1', 0.0))):.3f}"
+
+    study_precision_str = f"{float(study_metrics.get('precision', 0.0)):.3f}"
+    study_recall_str = f"{float(study_metrics.get('recall', 0.0)):.3f}"
+    study_f1_str = f"{float(study_metrics.get('f1', 0.0)):.3f}"
+
+    analysis_precision_str = f"{float(analysis_metrics.get('precision', 0.0)):.3f}"
+    analysis_recall_str = f"{float(analysis_metrics.get('recall', 0.0)):.3f}"
+    analysis_f1_str = f"{float(analysis_metrics.get('f1', 0.0)):.3f}"
 
     missing_pmids = metrics.get("missing_manual_pmids", [])
     missing_html = ""
@@ -685,12 +1014,63 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
   <header>
     <a id="top"></a>
     <h1>{escape(annotation_name)} report</h1>
-    <p>Document-level buckets based on accepted manual-to-auto matches only. Thresholds come from precomputed matching artifacts.</p>
-    <p><strong>TP/Correct:</strong> {metrics['tp']} |
-       <strong>FP:</strong> {metrics['fp']} |
-       <strong>FN:</strong> {metrics['fn']} |
-       <strong>Precision:</strong> {precision_str} |
-       <strong>Recall:</strong> {recall_str}</p>
+    <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. Analysis-level truth uses accepted fuzzy matches only.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Manual Positives</th>
+            <th>Predicted Positives</th>
+            <th>Universe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Document bucket overlap</td>
+            <td>{int(document_metrics.get('tp', metrics.get('tp', 0)))}</td>
+            <td>{int(document_metrics.get('fp', metrics.get('fp', 0)))}</td>
+            <td>{int(document_metrics.get('fn', metrics.get('fn', 0)))}</td>
+            <td>{precision_str}</td>
+            <td>{recall_str}</td>
+            <td>{f1_str}</td>
+            <td>{int(document_metrics.get('tp', metrics.get('tp', 0))) + int(document_metrics.get('fn', metrics.get('fn', 0)))}</td>
+            <td>{int(document_metrics.get('tp', metrics.get('tp', 0))) + int(document_metrics.get('fp', metrics.get('fp', 0)))}</td>
+            <td>{int(document_metrics.get('tp', metrics.get('tp', 0))) + int(document_metrics.get('fp', metrics.get('fp', 0))) + int(document_metrics.get('fn', metrics.get('fn', 0)))}</td>
+          </tr>
+          <tr>
+            <td>Study inclusion</td>
+            <td>{int(study_metrics.get('tp', 0))}</td>
+            <td>{int(study_metrics.get('fp', 0))}</td>
+            <td>{int(study_metrics.get('fn', 0))}</td>
+            <td>{study_precision_str}</td>
+            <td>{study_recall_str}</td>
+            <td>{study_f1_str}</td>
+            <td>{int(study_metrics.get('manual_studies', 0))}</td>
+            <td>{int(study_metrics.get('predicted_studies', 0))}</td>
+            <td>{int(study_metrics.get('overlap_pmids', 0))}</td>
+          </tr>
+          <tr>
+            <td>Analysis inclusion (accepted matches only)</td>
+            <td>{int(analysis_metrics.get('tp', 0))}</td>
+            <td>{int(analysis_metrics.get('fp', 0))}</td>
+            <td>{int(analysis_metrics.get('fn', 0))}</td>
+            <td>{analysis_precision_str}</td>
+            <td>{analysis_recall_str}</td>
+            <td>{analysis_f1_str}</td>
+            <td>{int(analysis_metrics.get('manual_accepted_analyses', 0))}</td>
+            <td>{int(analysis_metrics.get('predicted_analyses', 0))}</td>
+            <td>{int(analysis_metrics.get('analysis_universe', 0))}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </header>
   <nav class="top-nav">
     <a href="#bucket-correct">Correct ({len(docs['Correct'])})</a>
@@ -706,21 +1086,276 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
 """
 
 
+def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]) -> str:
+    rows: list[dict[str, Any]] = []
+    for annotation_name in MANUAL_FILE_MAP:
+        metrics = metrics_by_annotation.get(annotation_name, {})
+        study = metrics.get("study_metrics", {})
+        tp = int(study.get("tp", 0))
+        fp = int(study.get("fp", 0))
+        fn = int(study.get("fn", 0))
+        tn = int(study.get("tn", 0))
+        precision = float(study.get("precision", 0.0))
+        recall = float(study.get("recall", 0.0))
+        f1 = float(study.get("f1", 0.0))
+        accuracy = float(study.get("accuracy", 0.0))
+        overlap_pmids = int(study.get("overlap_pmids", 0))
+        manual_studies = int(study.get("manual_studies", 0))
+        predicted_studies = int(study.get("predicted_studies", 0))
+
+        rows.append(
+            {
+                "annotation": annotation_name,
+                "tp": tp,
+                "fp": fp,
+                "fn": fn,
+                "tn": tn,
+                "precision": precision,
+                "recall": recall,
+                "f1": f1,
+                "accuracy": accuracy,
+                "overlap_pmids": overlap_pmids,
+                "manual_studies": manual_studies,
+                "predicted_studies": predicted_studies,
+            }
+        )
+
+    if rows:
+        macro_precision = sum(r["precision"] for r in rows) / len(rows)
+        macro_recall = sum(r["recall"] for r in rows) / len(rows)
+        macro_f1 = sum(r["f1"] for r in rows) / len(rows)
+        macro_accuracy = sum(r["accuracy"] for r in rows) / len(rows)
+    else:
+        macro_precision = 0.0
+        macro_recall = 0.0
+        macro_f1 = 0.0
+        macro_accuracy = 0.0
+
+    micro_tp = sum(r["tp"] for r in rows)
+    micro_fp = sum(r["fp"] for r in rows)
+    micro_fn = sum(r["fn"] for r in rows)
+    micro_tn = sum(r["tn"] for r in rows)
+    micro_prf = compute_prf(tp=micro_tp, fp=micro_fp, fn=micro_fn)
+    micro_total = micro_tp + micro_fp + micro_fn + micro_tn
+    micro_accuracy = (micro_tp + micro_tn) / micro_total if micro_total else 0.0
+
+    def render_metric_bars(precision: float, recall: float, f1: float) -> str:
+        return (
+            "<div class=\"metric-bars\">"
+            f"<div class=\"metric-row\"><span class=\"metric-label\">P</span><div class=\"bar\"><div class=\"fill fill-p\" style=\"width:{max(0.0, min(100.0, precision * 100.0)):.1f}%\"></div></div><span class=\"metric-val\">{precision:.3f}</span></div>"
+            f"<div class=\"metric-row\"><span class=\"metric-label\">R</span><div class=\"bar\"><div class=\"fill fill-r\" style=\"width:{max(0.0, min(100.0, recall * 100.0)):.1f}%\"></div></div><span class=\"metric-val\">{recall:.3f}</span></div>"
+            f"<div class=\"metric-row\"><span class=\"metric-label\">F1</span><div class=\"bar\"><div class=\"fill fill-f1\" style=\"width:{max(0.0, min(100.0, f1 * 100.0)):.1f}%\"></div></div><span class=\"metric-val\">{f1:.3f}</span></div>"
+            "</div>"
+        )
+
+    def render_confusion_plot(tp: int, fp: int, fn: int, tn: int) -> str:
+        total = tp + fp + fn + tn
+        if total <= 0:
+            return "<div class=\"confusion-plot empty\">No overlap PMIDs</div>"
+
+        tp_w = (tp / total) * 100.0
+        fp_w = (fp / total) * 100.0
+        fn_w = (fn / total) * 100.0
+        tn_w = max(0.0, 100.0 - tp_w - fp_w - fn_w)
+
+        return (
+            "<div class=\"confusion-plot\">"
+            "<div class=\"stack-bar\">"
+            f"<span class=\"seg seg-tp\" style=\"width:{tp_w:.3f}%\" title=\"TP={tp}\"></span>"
+            f"<span class=\"seg seg-fp\" style=\"width:{fp_w:.3f}%\" title=\"FP={fp}\"></span>"
+            f"<span class=\"seg seg-fn\" style=\"width:{fn_w:.3f}%\" title=\"FN={fn}\"></span>"
+            f"<span class=\"seg seg-tn\" style=\"width:{tn_w:.3f}%\" title=\"TN={tn}\"></span>"
+            "</div>"
+            "<div class=\"legend\">"
+            "<span class=\"lg lg-tp\">TP</span>"
+            "<span class=\"lg lg-fp\">FP</span>"
+            "<span class=\"lg lg-fn\">FN</span>"
+            "<span class=\"lg lg-tn\">TN</span>"
+            "</div>"
+            "</div>"
+        )
+
+    row_html: list[str] = []
+    for row in rows:
+        row_html.append(
+            "<tr>"
+            f"<td>{escape(row['annotation'])}</td>"
+            f"<td>{row['overlap_pmids']}</td>"
+            f"<td>{row['manual_studies']}</td>"
+            f"<td>{row['predicted_studies']}</td>"
+            f"<td>{row['tp']}</td>"
+            f"<td>{row['fp']}</td>"
+            f"<td>{row['fn']}</td>"
+            f"<td>{row['tn']}</td>"
+            f"<td>{row['precision']:.3f}</td>"
+            f"<td>{row['recall']:.3f}</td>"
+            f"<td>{row['f1']:.3f}</td>"
+            f"<td>{row['accuracy']:.3f}</td>"
+            f"<td>{render_metric_bars(row['precision'], row['recall'], row['f1'])}</td>"
+            f"<td>{render_confusion_plot(row['tp'], row['fp'], row['fn'], row['tn'])}</td>"
+            "</tr>"
+        )
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overall Sub-Meta-Analysis Summary</title>
+  <style>
+    :root {{
+      --bg: #f7f6f2;
+      --panel: #ffffff;
+      --ink: #1d2730;
+      --line: #d8dde3;
+    }}
+    body {{ margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }}
+    header, section {{ background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }}
+    .table-wrap {{ overflow-x: auto; }}
+    table {{ width: 100%; border-collapse: collapse; font-size: 0.9rem; }}
+    th, td {{ border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }}
+    th {{ background: #edf2f5; }}
+    .metric-bars {{ min-width: 250px; }}
+    .metric-row {{ display: grid; grid-template-columns: 22px 1fr 46px; gap: 0.35rem; align-items: center; margin-bottom: 0.2rem; }}
+    .metric-label {{ font-weight: 600; font-size: 0.82rem; }}
+    .metric-val {{ font-size: 0.82rem; text-align: right; }}
+    .bar {{ height: 0.55rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }}
+    .fill {{ height: 100%; }}
+    .fill-p {{ background: #3b82f6; }}
+    .fill-r {{ background: #16a34a; }}
+    .fill-f1 {{ background: #f59e0b; }}
+    .confusion-plot {{ min-width: 220px; }}
+    .stack-bar {{ width: 100%; height: 0.78rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }}
+    .seg {{ display: inline-block; height: 100%; }}
+    .seg-tp {{ background: #16a34a; }}
+    .seg-fp {{ background: #dc2626; }}
+    .seg-fn {{ background: #ea580c; }}
+    .seg-tn {{ background: #64748b; }}
+    .legend {{ margin-top: 0.25rem; font-size: 0.77rem; color: #435164; display: flex; gap: 0.55rem; }}
+    .lg::before {{ content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.2rem; border-radius: 50%; vertical-align: -1px; }}
+    .lg-tp::before {{ background: #16a34a; }}
+    .lg-fp::before {{ background: #dc2626; }}
+    .lg-fn::before {{ background: #ea580c; }}
+    .lg-tn::before {{ background: #64748b; }}
+    .confusion-plot.empty {{ font-size: 0.82rem; color: #5a6878; }}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Overall Sub-Meta-Analysis Summary</h1>
+    <p>Study-level evaluation across sub-meta-analyses. A study is included if at least one analysis is included. Universe is PMIDs found in auto <code>outputs/nimads_annotation.json</code>, with manual labels sliced to that same PMID universe.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aggregate</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Macro (mean over annotations)</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>{macro_precision:.3f}</td>
+            <td>{macro_recall:.3f}</td>
+            <td>{macro_f1:.3f}</td>
+            <td>{macro_accuracy:.3f}</td>
+          </tr>
+          <tr>
+            <td>Micro (pooled confusion)</td>
+            <td>{micro_tp}</td>
+            <td>{micro_fp}</td>
+            <td>{micro_fn}</td>
+            <td>{micro_tn}</td>
+            <td>{float(micro_prf.get('precision', 0.0)):.3f}</td>
+            <td>{float(micro_prf.get('recall', 0.0)):.3f}</td>
+            <td>{float(micro_prf.get('f1', 0.0)):.3f}</td>
+            <td>{micro_accuracy:.3f}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </header>
+  <section>
+    <h2>Per-Annotation Study-Level Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Auto PMID Universe</th>
+            <th>Manual Studies+</th>
+            <th>Predicted Studies+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          {''.join(row_html)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</body>
+</html>
+"""
+
+
 def main() -> None:
     args = parse_args()
-    output_dir, match_input_dir = resolve_dirs(args)
+    project_output_dir = infer_project_output_dir(args.project_output_dir)
+    output_dir, match_input_dir = resolve_dirs(project_output_dir, args)
 
-    annotation_results = args.project_output_dir / "outputs" / "annotation_results.json"
-    coordinate_parsing_results = args.project_output_dir / "outputs" / "coordinate_parsing_results.json"
-    retrieval_dir = args.project_output_dir / "retrieval" / "pubget_data"
+    annotation_results = project_output_dir / "outputs" / "annotation_results.json"
+    coordinate_parsing_results = project_output_dir / "outputs" / "coordinate_parsing_results.json"
+    auto_annotation_path = project_output_dir / "outputs" / "nimads_annotation.json"
+    retrieval_dir = project_output_dir / "retrieval" / "pubget_data"
+    manual_annotation_path = resolve_manual_annotation_path(project_output_dir, args.manual_annotation_path)
 
     parsed_analyses = load_auto_parsed_names(coordinate_parsing_results)
     model_decisions = load_model_decisions(annotation_results)
-    match_results_by_annotation = load_match_results_by_annotation(match_input_dir)
-    manual_truth = build_manual_truth_from_match_results(match_results_by_annotation)
+    match_results_by_annotation, overall_fallback = load_match_results_by_annotation(match_input_dir)
+    manual_annotation_membership = load_manual_annotation_membership(manual_annotation_path)
+    if overall_fallback and not manual_annotation_membership:
+        print(
+            "Warning: Using match_results_overall.json without nimads_annotation membership; "
+            "manual truth cannot be sliced by annotation and may be over-inclusive."
+        )
+    manual_truth = build_manual_truth_from_match_results(
+        match_results_by_annotation,
+        overall_fallback=overall_fallback,
+        manual_annotation_membership=manual_annotation_membership,
+    )
+    study_universe_pmids, auto_study_pmids_by_annotation, manual_study_pmids_by_annotation = (
+        load_study_pmid_sets_from_annotations(
+            auto_annotation_path=auto_annotation_path,
+            manual_annotation_path=manual_annotation_path,
+        )
+    )
+    if not study_universe_pmids:
+        study_universe_pmids = set(parsed_analyses.keys())
     pmid_to_fulltext, pmid_to_coord_tables = load_retrieval_context(retrieval_dir)
 
     output_dir.mkdir(parents=True, exist_ok=True)
+    metrics_by_annotation: dict[str, dict[str, Any]] = {}
     for annotation_name in MANUAL_FILE_MAP:
         docs, metrics = classify_documents(
             annotation_name=annotation_name,
@@ -729,7 +1364,11 @@ def main() -> None:
             manual_truth=manual_truth,
             pmid_to_fulltext=pmid_to_fulltext,
             pmid_to_coord_tables=pmid_to_coord_tables,
+            study_universe_pmids=study_universe_pmids,
+            auto_study_pmids_by_annotation=auto_study_pmids_by_annotation,
+            manual_study_pmids_by_annotation=manual_study_pmids_by_annotation,
         )
+        metrics_by_annotation[annotation_name] = metrics
         html = render_html(annotation_name, docs, metrics)
         output_path = output_dir / f"{annotation_name}.html"
         output_path.write_text(html, encoding="utf-8")
@@ -737,9 +1376,20 @@ def main() -> None:
         print(
             f"Wrote {output_path} | "
             f"TP={metrics['tp']} FP={metrics['fp']} FN={metrics['fn']} "
-            f"precision={metrics['precision']:.3f} recall={metrics['recall']:.3f} "
+            f"doc_precision={metrics['precision']:.3f} doc_recall={metrics['recall']:.3f} doc_f1={metrics.get('f1', 0.0):.3f} "
+            f"study_precision={metrics.get('study_metrics', {}).get('precision', 0.0):.3f} "
+            f"study_recall={metrics.get('study_metrics', {}).get('recall', 0.0):.3f} "
+            f"study_f1={metrics.get('study_metrics', {}).get('f1', 0.0):.3f} "
+            f"analysis_precision={metrics.get('analysis_metrics', {}).get('precision', 0.0):.3f} "
+            f"analysis_recall={metrics.get('analysis_metrics', {}).get('recall', 0.0):.3f} "
+            f"analysis_f1={metrics.get('analysis_metrics', {}).get('f1', 0.0):.3f} "
             f"missing_manual_pmids={len(metrics.get('missing_manual_pmids', []))}"
         )
+
+    overall_summary_html = render_overall_summary_html(metrics_by_annotation)
+    overall_summary_path = output_dir / "overall_submeta_summary.html"
+    overall_summary_path.write_text(overall_summary_html, encoding="utf-8")
+    print(f"Wrote {overall_summary_path}")
 
 
 if __name__ == "__main__":
