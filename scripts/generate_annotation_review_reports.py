@@ -504,6 +504,11 @@ def make_document_row(
 ) -> dict[str, Any]:
     pred_indices = {idx for idx, decision in decisions_by_idx.items() if decision.include}
     correct_indices = pred_indices & true_indices
+    matched_auto_indices = {
+        int(entry["best_auto_index"])
+        for entry in match_diagnostics
+        if entry.get("best_auto_index") is not None
+    }
 
     max_idx = len(parsed_names) - 1
     if decisions_by_idx:
@@ -513,13 +518,49 @@ def make_document_row(
     for idx in range(max_idx + 1):
         name = parsed_names[idx] if idx < len(parsed_names) else f"analysis_{idx}"
         decision = decisions_by_idx.get(idx)
+        model_include = None if decision is None else decision.include
+        matched_for_review = idx in matched_auto_indices
+        manual_include = idx in true_indices
+
+        if matched_for_review and model_include is not None:
+            if model_include and manual_include:
+                confusion_label = "TP"
+                confusion_class = "confusion-good"
+            elif model_include and not manual_include:
+                confusion_label = "FP"
+                confusion_class = "confusion-bad"
+            elif (not model_include) and manual_include:
+                confusion_label = "FN"
+                confusion_class = "confusion-bad"
+            else:
+                confusion_label = "TN"
+                confusion_class = "confusion-good"
+        else:
+            confusion_label = "-"
+            confusion_class = "confusion-na"
+
+        if model_include is True:
+            decision_icon = "+"
+            decision_class = "decision-include"
+        elif model_include is False:
+            decision_icon = "-"
+            decision_class = "decision-exclude"
+        else:
+            decision_icon = "?"
+            decision_class = "decision-none"
+
         analysis_rows.append(
             {
                 "analysis_id": f"{pmid}_analysis_{idx}",
                 "parsed_name": name,
-                "model_include": None if decision is None else decision.include,
+                "model_include": model_include,
+                "model_decision_icon": decision_icon,
+                "model_decision_class": decision_class,
+                "confusion_label": confusion_label,
+                "confusion_class": confusion_class,
+                "matched_for_review": matched_for_review,
                 "reasoning": "" if decision is None else decision.reasoning,
-                "manual_include": idx in true_indices,
+                "manual_include": manual_include,
                 "correct": idx in correct_indices,
             }
         )
@@ -790,16 +831,8 @@ def render_doc_card(doc: dict[str, Any]) -> str:
         joined = ", ".join(escape(x) for x in doc["unmatched_manual_names"])
         unmatched_html = f"<p><strong>Unmatched manual analyses:</strong> {joined}</p>"
 
-    manual_names_html = ""
-    if doc["manual_names"]:
-        joined = ", ".join(escape(x) for x in doc["manual_names"])
-        manual_names_html = f"<p><strong>Manual analyses:</strong> {joined}</p>"
-
     rows_html = []
     for row in doc["analysis_rows"]:
-        include_text = "Include" if row["model_include"] else "Exclude"
-        if row["model_include"] is None:
-            include_text = "No decision"
         label_parts = []
         if row["manual_include"]:
             label_parts.append("manual+ (accepted)")
@@ -810,7 +843,8 @@ def render_doc_card(doc: dict[str, Any]) -> str:
             "<tr>"
             f"<td>{escape(row['analysis_id'])}</td>"
             f"<td>{escape(row['parsed_name'])}</td>"
-            f"<td>{escape(include_text)}</td>"
+            f"<td class=\"decision-cell\"><span class=\"decision-pill {escape(row['model_decision_class'])}\">{escape(row['model_decision_icon'])}</span></td>"
+            f"<td class=\"confusion-cell\"><span class=\"confusion-pill {escape(row['confusion_class'])}\">{escape(row['confusion_label'])}</span></td>"
             f"<td>{escape(label_text)}</td>"
             f"<td>{escape(row['reasoning'])}</td>"
             "</tr>"
@@ -871,7 +905,6 @@ def render_doc_card(doc: dict[str, Any]) -> str:
   <summary><strong>PMID {escape(doc['pmid'])}</strong> | {escape(meta)}</summary>
   <p><a href="{escape(doc['pubmed_url'])}" target="_blank" rel="noopener noreferrer">PubMed full text page</a></p>
   {missing_manual_msg}
-  {manual_names_html}
   {unmatched_html}
   <details class="inner-accordion" open>
     <summary>Parsed analyses and annotation reasoning</summary>
@@ -882,6 +915,7 @@ def render_doc_card(doc: dict[str, Any]) -> str:
             <th>Analysis ID</th>
             <th>Parsed Analysis Name</th>
             <th>Model Decision</th>
+            <th>Matched Outcome</th>
             <th>Tags</th>
             <th>Model Reasoning</th>
           </tr>
@@ -892,7 +926,7 @@ def render_doc_card(doc: dict[str, Any]) -> str:
       </table>
     </div>
   </details>
-  <details class="inner-accordion">
+  <details class="inner-accordion" open>
     <summary>Manual-to-Auto Match Diagnostics</summary>
     {match_diag_html}
   </details>
@@ -1007,6 +1041,24 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
     table {{ width: 100%; border-collapse: collapse; font-size: 0.9rem; }}
     th, td {{ border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }}
     th {{ background: #edf2f5; }}
+    .decision-cell, .confusion-cell {{ text-align: center; vertical-align: middle; }}
+    .decision-pill, .confusion-pill {{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.55rem;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      border: 1px solid transparent;
+    }}
+    .decision-include {{ background: #e9f8ef; color: #1f7a3d; border-color: #b7e4c6; }}
+    .decision-exclude {{ background: #fdecec; color: #9b1c1c; border-color: #f6caca; }}
+    .decision-none {{ background: #f2f4f7; color: #5b6775; border-color: #dde3ea; }}
+    .confusion-good {{ background: #e9f8ef; color: #166534; border-color: #b7e4c6; }}
+    .confusion-bad {{ background: #fdecec; color: #991b1b; border-color: #f6caca; }}
+    .confusion-na {{ background: #f2f4f7; color: #5b6775; border-color: #dde3ea; }}
     a {{ color: #0e4f85; }}
   </style>
 </head>
