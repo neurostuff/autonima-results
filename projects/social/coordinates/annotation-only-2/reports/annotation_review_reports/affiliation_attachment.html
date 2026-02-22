@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>affiliation_attachment review report</title>
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --panel: #ffffff;
+      --ink: #1d2730;
+      --line: #d8dde3;
+    }
+    body { margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .top-nav { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 0.5rem; background: #eef3f2; border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem; margin-bottom: 1rem; }
+    .top-nav a { display: inline-block; padding: 0.35rem 0.6rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; text-decoration: none; font-size: 0.9rem; color: #0e4f85; }
+    section { margin-bottom: 1rem; }
+    .bucket > summary, .doc-card > summary, .inner-accordion > summary { cursor: pointer; }
+    .doc-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.85rem; margin-bottom: 0.85rem; }
+    .table-wrap, .table-html { overflow-x: auto; }
+    .inner-accordion { margin-top: 0.6rem; border-top: 1px dashed var(--line); padding-top: 0.4rem; }
+    .paper-text { white-space: pre-wrap; max-height: 26rem; overflow-y: auto; background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem; font-size: 0.88rem; line-height: 1.35; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }
+    th { background: #edf2f5; }
+    .decision-cell, .confusion-cell { text-align: center; vertical-align: middle; }
+    .decision-pill, .confusion-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.55rem;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      border: 1px solid transparent;
+    }
+    .decision-include { background: #e9f8ef; color: #1f7a3d; border-color: #b7e4c6; }
+    .decision-exclude { background: #fdecec; color: #9b1c1c; border-color: #f6caca; }
+    .decision-none { background: #f2f4f7; color: #5b6775; border-color: #dde3ea; }
+    .confusion-good { background: #e9f8ef; color: #166534; border-color: #b7e4c6; }
+    .confusion-bad { background: #fdecec; color: #991b1b; border-color: #f6caca; }
+    .confusion-na { background: #f2f4f7; color: #5b6775; border-color: #dde3ea; }
+    a { color: #0e4f85; }
+  </style>
+</head>
+<body>
+  <header>
+    <a id="top"></a>
+    <h1>affiliation_attachment report</h1>
+    <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. Analysis-level truth uses accepted fuzzy matches only.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Manual Positives</th>
+            <th>Predicted Positives</th>
+            <th>Universe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Document bucket overlap</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0.000</td>
+            <td>0.000</td>
+            <td>0.000</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>Study inclusion</td>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0.000</td>
+            <td>0.000</td>
+            <td>0.000</td>
+            <td>0</td>
+            <td>1</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td>Analysis inclusion (accepted matches only)</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0.000</td>
+            <td>0.000</td>
+            <td>0.000</td>
+            <td>0</td>
+            <td>0</td>
+            <td>13</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </header>
+  <nav class="top-nav">
+    <a href="#bucket-correct">Correct (0)</a>
+    <a href="#bucket-false-positive">False Positive (0)</a>
+    <a href="#bucket-false-negative">False Negative (0)</a>
+    <a href="#missing-manual">Missing PMIDs (0)</a>
+    <a href="#top">Top</a>
+  </nav>
+  <section id="bucket-correct"><details class="bucket"><summary><h2>Correct (0)</h2></summary><p><strong>Match status totals:</strong> accepted=0 | uncertain=0 | unmatched=0</p><p>No documents in this bucket.</p></details></section><section id="bucket-false-positive"><details class="bucket" open><summary><h2>False Positive (0)</h2></summary><p><strong>Match status totals:</strong> accepted=0 | uncertain=0 | unmatched=0</p><p>No documents in this bucket.</p></details></section><section id="bucket-false-negative"><details class="bucket" open><summary><h2>False Negative (0)</h2></summary><p><strong>Match status totals:</strong> accepted=0 | uncertain=0 | unmatched=0</p><p>No documents in this bucket.</p></details></section>
+  
+</body>
+</html>
