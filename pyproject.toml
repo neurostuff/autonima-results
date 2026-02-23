@@ -1,6 +1,6 @@
 [project]
 authors = [{name = "Alejandro de la Vega", email = "aleph4@gmail.com"}]
-dependencies = ["beautifulsoup4>=4.14.2,<5", "lxml>=6.0.2,<7", "regex>=2025.10.23,<2026", "requests>=2.32.5,<3", "simplejson", "sqlalchemy", "selenium>=4.37.0,<5", "seleniumbase>=4.43.1,<5", "tqdm>=4.67.1,<5", "xmltodict>=1.0.2,<2"]
+dependencies = ["beautifulsoup4>=4.14.2,<5", "lxml>=6.0.2,<7", "regex>=2025.10.23,<2027", "requests>=2.32.5,<3", "simplejson", "sqlalchemy", "selenium>=4.37.0,<5", "seleniumbase>=4.43.1,<5", "tqdm>=4.67.1,<5", "xmltodict>=1.0.2,<2"]
 name = "autonima-results"
 requires-python = ">= 3.11"
 version = "0.1.0"
@@ -11,13 +11,13 @@ requires = ["hatchling"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
-platforms = ["linux-64"]
+platforms = ["linux-64", "osx-arm64"]
 
 [tool.pixi.pypi-dependencies]
 autonima_results = { path = ".", editable = true }
 autonima = { path = '../autonima', editable = true }
-ace = { path = '../ACE', editable = true }
-pubget = { path = '../pubget', editable = true }
+ace = { git = "https://github.com/neurosynth/ACE" }
+pubget = { git = "https://github.com/neuroquery/pubget" }
 
 [tool.pixi.tasks]
 
