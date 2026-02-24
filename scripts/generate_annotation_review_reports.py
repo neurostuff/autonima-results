@@ -509,6 +509,11 @@ def make_document_row(
         for entry in match_diagnostics
         if entry.get("best_auto_index") is not None
     }
+    match_status_by_auto_idx = {
+        int(entry["best_auto_index"]): str(entry.get("match_status", ""))
+        for entry in match_diagnostics
+        if entry.get("best_auto_index") is not None
+    }
 
     max_idx = len(parsed_names) - 1
     if decisions_by_idx:
@@ -520,9 +525,13 @@ def make_document_row(
         decision = decisions_by_idx.get(idx)
         model_include = None if decision is None else decision.include
         matched_for_review = idx in matched_auto_indices
+        match_status_for_idx = match_status_by_auto_idx.get(idx, "")
         manual_include = idx in true_indices
 
-        if matched_for_review and model_include is not None:
+        if matched_for_review and match_status_for_idx == "unmatched":
+            confusion_label = "UNMATCHED"
+            confusion_class = "confusion-na"
+        elif matched_for_review and model_include is not None:
             if model_include and manual_include:
                 confusion_label = "TP"
                 confusion_class = "confusion-good"
@@ -705,32 +714,55 @@ def classify_documents(
     study_metrics["run_pmids"] = len(run_pmids)
     study_metrics["overlap_pmids"] = len(study_universe)
 
-    true_analysis_set: set[tuple[str, int]] = set()
-    predicted_analysis_set: set[tuple[str, int]] = set()
-    analysis_universe: set[tuple[str, int]] = set()
+    # Analysis-level metrics are restricted to the set of MANUAL analyses that have
+    # an assigned auto analysis index (best_auto_index is not None). This avoids
+    # counting unmatched auto analyses as FP in the "accepted matches only" row.
+    analysis_tp = 0
+    analysis_fp = 0
+    analysis_fn = 0
+    analysis_tn = 0
+    matched_manual_universe = 0
+    manual_accepted_matched = 0
+    predicted_positive_on_matched = 0
+
     for pmid in doc_overlap_pmids:
-        parsed_names = parsed_analyses.get(pmid, [])
-        for idx in range(len(parsed_names)):
-            analysis_universe.add((pmid, idx))
-
         decisions_for_pmid = ann_decisions.get(pmid, {})
-        for idx, decision in decisions_for_pmid.items():
-            idx_int = int(idx)
-            analysis_universe.add((pmid, idx_int))
-            if decision.include:
-                predicted_analysis_set.add((pmid, idx_int))
+        match_rows = ann_truth.get(pmid, {}).get("match_diagnostics", [])
+        for entry in match_rows:
+            best_auto_index = entry.get("best_auto_index")
+            if best_auto_index is None:
+                continue
 
-        for idx in ann_truth.get(pmid, {}).get("true_indices", set()):
-            true_analysis_set.add((pmid, int(idx)))
-            analysis_universe.add((pmid, int(idx)))
+            matched_manual_universe += 1
+            idx_int = int(best_auto_index)
+            decision = decisions_for_pmid.get(idx_int)
+            pred_include = bool(decision.include) if decision is not None else False
+            true_include = str(entry.get("match_status", "")) == "accepted"
 
-    analysis_tp = len(predicted_analysis_set & true_analysis_set)
-    analysis_fp = len(predicted_analysis_set - true_analysis_set)
-    analysis_fn = len(true_analysis_set - predicted_analysis_set)
+            if true_include:
+                manual_accepted_matched += 1
+            if pred_include:
+                predicted_positive_on_matched += 1
+
+            if pred_include and true_include:
+                analysis_tp += 1
+            elif pred_include and not true_include:
+                analysis_fp += 1
+            elif (not pred_include) and true_include:
+                analysis_fn += 1
+            else:
+                analysis_tn += 1
+
     analysis_metrics = compute_prf(tp=analysis_tp, fp=analysis_fp, fn=analysis_fn)
-    analysis_metrics["manual_accepted_analyses"] = len(true_analysis_set)
-    analysis_metrics["predicted_analyses"] = len(predicted_analysis_set)
-    analysis_metrics["analysis_universe"] = len(analysis_universe)
+    analysis_metrics["tn"] = int(analysis_tn)
+    analysis_metrics["accuracy"] = (
+        float((analysis_tp + analysis_tn) / matched_manual_universe)
+        if matched_manual_universe
+        else 0.0
+    )
+    analysis_metrics["manual_accepted_analyses"] = int(manual_accepted_matched)
+    analysis_metrics["predicted_analyses"] = int(predicted_positive_on_matched)
+    analysis_metrics["analysis_universe"] = int(matched_manual_universe)
 
     bucket_match_counts: dict[str, dict[str, int]] = {}
     for bucket, bucket_docs in docs.items():
@@ -1066,7 +1098,7 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
   <header>
     <a id="top"></a>
     <h1>{escape(annotation_name)} report</h1>
-    <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. Analysis-level truth uses accepted fuzzy matches only.</p>
+    <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. Analysis-level row is evaluated only on manual analyses with an assigned auto match (truth positives are accepted fuzzy matches only).</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -1109,7 +1141,7 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
             <td>{int(study_metrics.get('overlap_pmids', 0))}</td>
           </tr>
           <tr>
-            <td>Analysis inclusion (accepted matches only)</td>
+            <td>Analysis inclusion (matched manual universe; accepted=positive)</td>
             <td>{int(analysis_metrics.get('tp', 0))}</td>
             <td>{int(analysis_metrics.get('fp', 0))}</td>
             <td>{int(analysis_metrics.get('fn', 0))}</td>
@@ -1140,9 +1172,11 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
 
 def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]) -> str:
     rows: list[dict[str, Any]] = []
+    analysis_rows: list[dict[str, Any]] = []
     for annotation_name in MANUAL_FILE_MAP:
         metrics = metrics_by_annotation.get(annotation_name, {})
         study = metrics.get("study_metrics", {})
+        analysis = metrics.get("analysis_metrics", {})
         tp = int(study.get("tp", 0))
         fp = int(study.get("fp", 0))
         fn = int(study.get("fn", 0))
@@ -1172,6 +1206,23 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
             }
         )
 
+        analysis_rows.append(
+            {
+                "annotation": annotation_name,
+                "tp": int(analysis.get("tp", 0)),
+                "fp": int(analysis.get("fp", 0)),
+                "fn": int(analysis.get("fn", 0)),
+                "tn": int(analysis.get("tn", 0)),
+                "precision": float(analysis.get("precision", 0.0)),
+                "recall": float(analysis.get("recall", 0.0)),
+                "f1": float(analysis.get("f1", 0.0)),
+                "accuracy": float(analysis.get("accuracy", 0.0)),
+                "manual_accepted_analyses": int(analysis.get("manual_accepted_analyses", 0)),
+                "predicted_analyses": int(analysis.get("predicted_analyses", 0)),
+                "analysis_universe": int(analysis.get("analysis_universe", 0)),
+            }
+        )
+
     if rows:
         macro_precision = sum(r["precision"] for r in rows) / len(rows)
         macro_recall = sum(r["recall"] for r in rows) / len(rows)
@@ -1190,6 +1241,18 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
     micro_prf = compute_prf(tp=micro_tp, fp=micro_fp, fn=micro_fn)
     micro_total = micro_tp + micro_fp + micro_fn + micro_tn
     micro_accuracy = (micro_tp + micro_tn) / micro_total if micro_total else 0.0
+
+    analysis_micro_tp = sum(r["tp"] for r in analysis_rows)
+    analysis_micro_fp = sum(r["fp"] for r in analysis_rows)
+    analysis_micro_fn = sum(r["fn"] for r in analysis_rows)
+    analysis_micro_tn = sum(r["tn"] for r in analysis_rows)
+    analysis_micro_prf = compute_prf(tp=analysis_micro_tp, fp=analysis_micro_fp, fn=analysis_micro_fn)
+    analysis_micro_total = analysis_micro_tp + analysis_micro_fp + analysis_micro_fn + analysis_micro_tn
+    analysis_micro_accuracy = (
+        (analysis_micro_tp + analysis_micro_tn) / analysis_micro_total
+        if analysis_micro_total
+        else 0.0
+    )
 
     def render_metric_bars(precision: float, recall: float, f1: float) -> str:
         return (
@@ -1235,6 +1298,27 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
             f"<td>{row['overlap_pmids']}</td>"
             f"<td>{row['manual_studies']}</td>"
             f"<td>{row['predicted_studies']}</td>"
+            f"<td>{row['tp']}</td>"
+            f"<td>{row['fp']}</td>"
+            f"<td>{row['fn']}</td>"
+            f"<td>{row['tn']}</td>"
+            f"<td>{row['precision']:.3f}</td>"
+            f"<td>{row['recall']:.3f}</td>"
+            f"<td>{row['f1']:.3f}</td>"
+            f"<td>{row['accuracy']:.3f}</td>"
+            f"<td>{render_metric_bars(row['precision'], row['recall'], row['f1'])}</td>"
+            f"<td>{render_confusion_plot(row['tp'], row['fp'], row['fn'], row['tn'])}</td>"
+            "</tr>"
+        )
+
+    analysis_row_html: list[str] = []
+    for row in analysis_rows:
+        analysis_row_html.append(
+            "<tr>"
+            f"<td>{escape(row['annotation'])}</td>"
+            f"<td>{row['analysis_universe']}</td>"
+            f"<td>{row['manual_accepted_analyses']}</td>"
+            f"<td>{row['predicted_analyses']}</td>"
             f"<td>{row['tp']}</td>"
             f"<td>{row['fp']}</td>"
             f"<td>{row['fn']}</td>"
@@ -1334,6 +1418,17 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
             <td>{float(micro_prf.get('f1', 0.0)):.3f}</td>
             <td>{micro_accuracy:.3f}</td>
           </tr>
+          <tr>
+            <td>Matched analyses micro (pooled confusion)</td>
+            <td>{analysis_micro_tp}</td>
+            <td>{analysis_micro_fp}</td>
+            <td>{analysis_micro_fn}</td>
+            <td>{analysis_micro_tn}</td>
+            <td>{float(analysis_micro_prf.get('precision', 0.0)):.3f}</td>
+            <td>{float(analysis_micro_prf.get('recall', 0.0)):.3f}</td>
+            <td>{float(analysis_micro_prf.get('f1', 0.0)):.3f}</td>
+            <td>{analysis_micro_accuracy:.3f}</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -1362,6 +1457,35 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
         </thead>
         <tbody>
           {''.join(row_html)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>Per-Annotation Matched-Analysis Metrics</h2>
+    <p>Mirrors the per-report analysis row: universe is manual analyses that have an assigned auto match; positives are accepted fuzzy matches.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Matched Manual Universe</th>
+            <th>Manual Accepted+</th>
+            <th>Predicted+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          {''.join(analysis_row_html)}
         </tbody>
       </table>
     </div>
