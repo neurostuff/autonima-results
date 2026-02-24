@@ -1,5 +1,5 @@
 search:
-  pmids_file: "/home/zorro/repos/autonima-results/projects/social/validation_ids/official.txt"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/social/validation_ids/official_test.txt"
 
 retrieval:
   load_excluded: true
@@ -32,6 +32,7 @@ annotation:
   model: "gpt-5-mini-2025-08-07"
   create_all_from_search_annotation: true
   create_all_included_annotation: true
+  prompt_type: "multi_analysis"
   metadata_fields:
     - "analysis_name"
     - "analysis_description"
@@ -60,18 +61,18 @@ annotation:
     - name: "social_communication"
       description: "Social Communication involves the exchange of socially relevant information and involves both receptive (e.g., affect recognition, facial recognition, and characterization) and productive (e.g., eye contact, expressive reciprocation, gaze following) aspects of communication. Within this construct, there exist four subconstructs: (i) Reception of Facial Communication, (ii) Production of Facial Communication, (iii) Reception of Non-Facial Communication, and (iv) Production of Non-Facial Communication. "
       inclusion_criteria:
-        - "Analyses from tasks measuring Social Communication (example tasks: Kinship-related social scenarios; Cooperation and competition; Social comparison)"
-        - "The analysis/contrast must measure Social Communication (example contrast: Loved one vs Stranger)"
+        - "Analyses from tasks measuring Social Communication (example tasks: Viewing picures of faces; Emotion, Auditory Stimuli; Direct or aveted eye gaze; Hand mimmicking)"
+        - "The analysis/contrast must measure Social Communication (example contrast: Faces > non-faces)"
     - name: "perception_self"
       description: "Perception and Understanding of Self includes processes involved in being aware of, accessing knowledge, or making judgments about the self, and can include current cognitive or emotional internal states, traits, and/or abilities, as well as mechanisms that support self-awareness, self-monitoring, and self-knowledge. Within this construct, there exist two subconstructs: (i) Agency and (ii) Self-knowledge. "
       inclusion_criteria:
-        - "Analyses from tasks measuring Perception and Understanding of Self (example tasks: Kinship-related social scenarios; Cooperation and competition; Social comparison)"
-        - "The analysis/contrast must measure Perception and Understanding of Self (example contrast: Loved one vs Stranger)"
+        - "Analyses from tasks measuring Perception and Understanding of Self (example tasks: Self-judgment; Viewing pictures of self; Detecting affective touch; Thinking about the self vs others)"
+        - "The analysis/contrast must measure Perception and Understanding of Self (example contrast: Self > Other)"
     - name: "perception_others"
       description: "Perception and Understanding of Others are the representations involved in being aware of, assessing knowledge about, and reasoning about others’ emotional states, traits, or abilities. Among this construct exist three subconstructs: (i) Animacy Perception, (ii) Action Perception, and (iii) Understanding Mental States."
       inclusion_criteria:
-        - "Analyses from tasks measuring Perception and Understanding of Others (example tasks: Kinship-related social scenarios; Cooperation and competition; Social comparison)"
-        - "The analysis/contrast must measure Perception and Understanding of Others (example contrast: Loved one vs Stranger)"
+        - "Analyses from tasks measuring Perception and Understanding of Others (example tasks: Empathy related; Theory of Mind; Compassion ratings; Point-light biological motion)"
+        - "The analysis/contrast must measure Perception and Understanding of Others (example contrast: Cooperative > Neutral)"
 
 output:
   formats:
