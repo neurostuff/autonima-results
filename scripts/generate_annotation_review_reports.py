@@ -260,6 +260,7 @@ def load_retrieval_context(retrieval_dir: Path) -> tuple[dict[str, dict[str, str
                     "table_id": table_id,
                     "table_label": clean_text(meta.get("table_label", "")).strip(),
                     "table_caption": clean_text(meta.get("table_caption", "")).strip(),
+                    "table_foot": clean_text(meta.get("table_foot", "")).strip(),
                     "table_html": table_html_by_id.get(table_id, ""),
                 }
             )
@@ -267,14 +268,23 @@ def load_retrieval_context(retrieval_dir: Path) -> tuple[dict[str, dict[str, str
     return pmid_to_fulltext, dict(pmid_to_coord_tables)
 
 
-def load_auto_parsed_names(path: Path) -> dict[str, list[str]]:
+def load_auto_parsed_analysis_info(path: Path) -> dict[str, list[dict[str, str]]]:
     payload = load_json(path)
     studies = payload.get("studies", [])
-    parsed: dict[str, list[str]] = {}
+    parsed: dict[str, list[dict[str, str]]] = {}
     for study in studies:
         pmid = str(study.get("pmid"))
         analyses = study.get("analyses", [])
-        parsed[pmid] = [clean_text(a.get("name") or f"analysis_{i}") for i, a in enumerate(analyses)]
+        parsed_rows: list[dict[str, str]] = []
+        for i, a in enumerate(analyses):
+            parsed_rows.append(
+                {
+                    "name": clean_text(a.get("name") or f"analysis_{i}"),
+                    "description": clean_text(a.get("description") or ""),
+                    "table_id": clean_text(a.get("table_id") or "").strip(),
+                }
+            )
+        parsed[pmid] = parsed_rows
     return parsed
 
 
@@ -423,6 +433,7 @@ def build_manual_truth_from_match_results(
         target_note_key = ANNOTATION_TO_NOTE_KEY.get(annotation_name)
         for pmid, pmid_result in match_results.get("pmids", {}).items():
             manual_analyses = list(pmid_result.get("manual_analyses", []))
+            review_match_diagnostics = list(manual_analyses)
             if overall_fallback and manual_annotation_membership:
                 filtered_analyses: list[dict[str, Any]] = []
                 for entry in manual_analyses:
@@ -473,6 +484,9 @@ def build_manual_truth_from_match_results(
                     if entry.get("match_status") == "unmatched"
                 ],
                 "match_diagnostics": manual_analyses,
+                # Preserve overall fuzzy matches for row-level "Matched Outcome" labels and
+                # the diagnostics panel when per-annotation truth is sliced from overall fallback.
+                "review_match_diagnostics": review_match_diagnostics,
                 "status_counts": {
                     "accepted": int(status_counts.get("accepted", 0)),
                     "uncertain": int(status_counts.get("uncertain", 0)),
@@ -490,7 +504,7 @@ def build_manual_truth_from_match_results(
 def make_document_row(
     pmid: str,
     annotation_name: str,
-    parsed_names: list[str],
+    parsed_analyses: list[dict[str, str]],
     decisions_by_idx: dict[int, Decision],
     true_indices: set[int],
     manual_names: list[str],
@@ -499,6 +513,7 @@ def make_document_row(
     fulltext_entry: dict[str, str] | None,
     coord_tables: list[dict[str, str]],
     match_diagnostics: list[dict[str, Any]],
+    review_match_diagnostics: list[dict[str, Any]],
     status_counts: dict[str, Any],
     manual_missing_in_auto: bool,
 ) -> dict[str, Any]:
@@ -506,22 +521,23 @@ def make_document_row(
     correct_indices = pred_indices & true_indices
     matched_auto_indices = {
         int(entry["best_auto_index"])
-        for entry in match_diagnostics
+        for entry in review_match_diagnostics
         if entry.get("best_auto_index") is not None
     }
     match_status_by_auto_idx = {
         int(entry["best_auto_index"]): str(entry.get("match_status", ""))
-        for entry in match_diagnostics
+        for entry in review_match_diagnostics
         if entry.get("best_auto_index") is not None
     }
 
-    max_idx = len(parsed_names) - 1
+    max_idx = len(parsed_analyses) - 1
     if decisions_by_idx:
         max_idx = max(max_idx, max(decisions_by_idx.keys()))
 
     analysis_rows: list[dict[str, Any]] = []
     for idx in range(max_idx + 1):
-        name = parsed_names[idx] if idx < len(parsed_names) else f"analysis_{idx}"
+        parsed_info = parsed_analyses[idx] if idx < len(parsed_analyses) else {}
+        name = clean_text(parsed_info.get("name") or f"analysis_{idx}")
         decision = decisions_by_idx.get(idx)
         model_include = None if decision is None else decision.include
         matched_for_review = idx in matched_auto_indices
@@ -529,7 +545,7 @@ def make_document_row(
         manual_include = idx in true_indices
 
         if matched_for_review and match_status_for_idx == "unmatched":
-            confusion_label = "UNMATCHED"
+            confusion_label = "*"
             confusion_class = "confusion-na"
         elif matched_for_review and model_include is not None:
             if model_include and manual_include:
@@ -562,6 +578,8 @@ def make_document_row(
             {
                 "analysis_id": f"{pmid}_analysis_{idx}",
                 "parsed_name": name,
+                "parsed_description": clean_text(parsed_info.get("description") or ""),
+                "table_id": clean_text(parsed_info.get("table_id") or "").strip(),
                 "model_include": model_include,
                 "model_decision_icon": decision_icon,
                 "model_decision_class": decision_class,
@@ -588,6 +606,7 @@ def make_document_row(
         "fulltext": fulltext_entry,
         "coord_tables": coord_tables,
         "match_diagnostics": match_diagnostics,
+        "review_match_diagnostics": review_match_diagnostics,
         "status_counts": status_counts,
         "manual_missing_in_auto": manual_missing_in_auto,
     }
@@ -609,7 +628,7 @@ def compute_prf(tp: int, fp: int, fn: int) -> dict[str, Any]:
 
 def classify_documents(
     annotation_name: str,
-    parsed_analyses: dict[str, list[str]],
+    parsed_analyses: dict[str, list[dict[str, str]]],
     model_decisions: dict[str, dict[str, dict[int, Decision]]],
     manual_truth: dict[str, dict[str, dict[str, Any]]],
     pmid_to_fulltext: dict[str, dict[str, str]],
@@ -626,7 +645,7 @@ def classify_documents(
     pmids = doc_overlap_pmids
 
     for pmid in sorted(pmids, key=lambda x: (len(x), x)):
-        parsed_names = parsed_analyses.get(pmid, [])
+        parsed_analysis_info = parsed_analyses.get(pmid, [])
         decisions_by_idx = ann_decisions.get(pmid, {})
         truth_entry = ann_truth.get(
             pmid,
@@ -657,7 +676,7 @@ def classify_documents(
             make_document_row(
                 pmid=pmid,
                 annotation_name=annotation_name,
-                parsed_names=parsed_names,
+                parsed_analyses=parsed_analysis_info,
                 decisions_by_idx=decisions_by_idx,
                 true_indices=true_indices,
                 manual_names=truth_entry["manual_names"],
@@ -666,6 +685,10 @@ def classify_documents(
                 fulltext_entry=pmid_to_fulltext.get(pmid),
                 coord_tables=pmid_to_coord_tables.get(pmid, []),
                 match_diagnostics=truth_entry.get("match_diagnostics", []),
+                review_match_diagnostics=truth_entry.get(
+                    "review_match_diagnostics",
+                    truth_entry.get("match_diagnostics", []),
+                ),
                 status_counts=truth_entry.get("status_counts", {}),
                 manual_missing_in_auto=bool(truth_entry.get("manual_missing_in_auto", False)),
             )
@@ -714,30 +737,38 @@ def classify_documents(
     study_metrics["run_pmids"] = len(run_pmids)
     study_metrics["overlap_pmids"] = len(study_universe)
 
-    # Analysis-level metrics are restricted to the set of MANUAL analyses that have
-    # an assigned auto analysis index (best_auto_index is not None). This avoids
-    # counting unmatched auto analyses as FP in the "accepted matches only" row.
+    # Analysis-level metrics are computed over the set of AUTO analyses that have
+    # any overall fuzzy match to a manual analysis (best_auto_index is not None).
+    # Positives are still annotation-sliced manual accepted matches (true_indices).
+    # This counts study-overall matched-but-manual-negative auto selections as FP,
+    # while excluding unmatched manual rows (no best_auto_index) from the universe.
     analysis_tp = 0
     analysis_fp = 0
     analysis_fn = 0
     analysis_tn = 0
-    matched_manual_universe = 0
+    matched_auto_universe = 0
     manual_accepted_matched = 0
     predicted_positive_on_matched = 0
 
     for pmid in doc_overlap_pmids:
         decisions_for_pmid = ann_decisions.get(pmid, {})
-        match_rows = ann_truth.get(pmid, {}).get("match_diagnostics", [])
-        for entry in match_rows:
-            best_auto_index = entry.get("best_auto_index")
-            if best_auto_index is None:
-                continue
+        truth_for_pmid = ann_truth.get(pmid, {})
+        true_indices = set(truth_for_pmid.get("true_indices", set()))
+        review_match_rows = truth_for_pmid.get(
+            "review_match_diagnostics",
+            truth_for_pmid.get("match_diagnostics", []),
+        )
+        matched_auto_indices = {
+            int(entry["best_auto_index"])
+            for entry in review_match_rows
+            if entry.get("best_auto_index") is not None
+        }
 
-            matched_manual_universe += 1
-            idx_int = int(best_auto_index)
+        for idx_int in matched_auto_indices:
+            matched_auto_universe += 1
             decision = decisions_for_pmid.get(idx_int)
             pred_include = bool(decision.include) if decision is not None else False
-            true_include = str(entry.get("match_status", "")) == "accepted"
+            true_include = idx_int in true_indices
 
             if true_include:
                 manual_accepted_matched += 1
@@ -756,13 +787,13 @@ def classify_documents(
     analysis_metrics = compute_prf(tp=analysis_tp, fp=analysis_fp, fn=analysis_fn)
     analysis_metrics["tn"] = int(analysis_tn)
     analysis_metrics["accuracy"] = (
-        float((analysis_tp + analysis_tn) / matched_manual_universe)
-        if matched_manual_universe
+        float((analysis_tp + analysis_tn) / matched_auto_universe)
+        if matched_auto_universe
         else 0.0
     )
     analysis_metrics["manual_accepted_analyses"] = int(manual_accepted_matched)
     analysis_metrics["predicted_analyses"] = int(predicted_positive_on_matched)
-    analysis_metrics["analysis_universe"] = int(matched_manual_universe)
+    analysis_metrics["analysis_universe"] = int(matched_auto_universe)
 
     bucket_match_counts: dict[str, dict[str, int]] = {}
     for bucket, bucket_docs in docs.items():
@@ -863,26 +894,110 @@ def render_doc_card(doc: dict[str, Any]) -> str:
         joined = ", ".join(escape(x) for x in doc["unmatched_manual_names"])
         unmatched_html = f"<p><strong>Unmatched manual analyses:</strong> {joined}</p>"
 
-    rows_html = []
+    coord_tables = doc.get("coord_tables", [])
+    table_meta_by_id = {str(t.get("table_id", "")).strip(): t for t in coord_tables}
+    analyses_by_table: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in doc["analysis_rows"]:
-        label_parts = []
-        if row["manual_include"]:
-            label_parts.append("manual+ (accepted)")
-        if row["correct"]:
-            label_parts.append("correct")
-        label_text = ", ".join(label_parts)
-        rows_html.append(
+        analyses_by_table[str(row.get("table_id", "")).strip()].append(row)
+
+    # Preserve source table order when available, then append unknown/unlisted table groups.
+    ordered_table_ids: list[str] = []
+    for t in coord_tables:
+        tid = str(t.get("table_id", "")).strip()
+        if tid and tid not in ordered_table_ids:
+            ordered_table_ids.append(tid)
+    for tid in sorted(k for k in analyses_by_table.keys() if k and k not in ordered_table_ids):
+        ordered_table_ids.append(tid)
+    if "" in analyses_by_table:
+        ordered_table_ids.append("")
+
+    grouped_blocks: list[str] = []
+    for group_index, table_id in enumerate(ordered_table_ids, start=1):
+        rows_for_table = analyses_by_table.get(table_id, [])
+        if not rows_for_table:
+            continue
+
+        table_meta = table_meta_by_id.get(table_id, {})
+        table_label = str(table_meta.get("table_label", "")).strip()
+        table_heading = f"{group_index}) {table_label}" if table_label else f"{group_index}) Table"
+        table_meta_lines = []
+        if not table_label and table_id:
+            table_meta_lines.append(
+                f"<li><strong>Table ID:</strong> {escape(table_id)}</li>"
+            )
+        if table_meta.get("table_caption"):
+            table_meta_lines.append(
+                f"<li><strong>Caption:</strong> {escape(str(table_meta.get('table_caption', '')))}</li>"
+            )
+        if table_meta.get("table_foot"):
+            table_meta_lines.append(
+                f"<li><strong>Footer:</strong> {escape(str(table_meta.get('table_foot', '')))}</li>"
+            )
+        if not table_meta_lines and table_id:
+            table_meta_lines.append(
+                f"<li><strong>Table ID:</strong> {escape(table_id)}</li>"
+            )
+        if not table_meta_lines and not table_id:
+            table_meta_lines.append("<li><strong>Table:</strong> Unspecified / not parsed</li>")
+
+        # Make sparse table groups more compact, e.g. "2) Table ID: 46".
+        if (
+            len(table_meta_lines) == 1
+            and not table_meta.get("table_label")
+            and not table_meta.get("table_caption")
+            and not table_meta.get("table_foot")
+            and table_id
+        ):
+            table_heading = f"{group_index}) Table ID: {table_id}"
+            table_meta_html = ""
+        else:
+            table_meta_html = f"<ul class=\"table-meta-list\">{''.join(table_meta_lines)}</ul>"
+
+        rows_html = []
+        for row in rows_for_table:
+            parsed_name_html = escape(row["parsed_name"])
+            parsed_description = str(row.get("parsed_description", "") or "").strip()
+            if parsed_description:
+                parsed_name_html += f"<br><span class=\"muted\">{escape(parsed_description)}</span>"
+            rows_html.append(
+                "<tr>"
+                f"<td>{escape(row['analysis_id'])}</td>"
+                f"<td>{parsed_name_html}</td>"
+                f"<td class=\"decision-cell\"><span class=\"decision-pill {escape(row['model_decision_class'])}\">{escape(row['model_decision_icon'])}</span></td>"
+                f"<td class=\"confusion-cell\"><span class=\"confusion-pill {escape(row['confusion_class'])}\">{escape(row['confusion_label'])}</span></td>"
+                f"<td>{escape(row['reasoning'])}</td>"
+                "</tr>"
+            )
+
+        grouped_blocks.append(
+            "<div class=\"table-group\">"
+            f"<h4>{escape(table_heading)}</h4>"
+            f"{table_meta_html}"
+            "<div class=\"table-wrap\">"
+            "<table class=\"analysis-review-table\">"
+            "<colgroup>"
+            "<col class=\"col-analysis-id\">"
+            "<col class=\"col-parsed-name\">"
+            "<col class=\"col-model-decision\">"
+            "<col class=\"col-matched-outcome\">"
+            "<col class=\"col-reasoning\">"
+            "</colgroup>"
+            "<thead>"
             "<tr>"
-            f"<td>{escape(row['analysis_id'])}</td>"
-            f"<td>{escape(row['parsed_name'])}</td>"
-            f"<td class=\"decision-cell\"><span class=\"decision-pill {escape(row['model_decision_class'])}\">{escape(row['model_decision_icon'])}</span></td>"
-            f"<td class=\"confusion-cell\"><span class=\"confusion-pill {escape(row['confusion_class'])}\">{escape(row['confusion_label'])}</span></td>"
-            f"<td>{escape(label_text)}</td>"
-            f"<td>{escape(row['reasoning'])}</td>"
+            "<th>Analysis ID</th>"
+            "<th>Parsed Analysis Name</th>"
+            "<th>Model Decision</th>"
+            "<th>Matched Outcome</th>"
+            "<th>Model Reasoning</th>"
             "</tr>"
+            "</thead>"
+            f"<tbody>{''.join(rows_html)}</tbody>"
+            "</table>"
+            "</div>"
+            "</div>"
         )
 
-    rows = "\n".join(rows_html)
+    grouped_analysis_html = "".join(grouped_blocks)
 
     fulltext_html = ""
     fulltext = doc.get("fulltext")
@@ -910,7 +1025,6 @@ def render_doc_card(doc: dict[str, Any]) -> str:
         )
 
     tables_html = ""
-    coord_tables = doc.get("coord_tables", [])
     if coord_tables:
         table_blocks = []
         for t in coord_tables:
@@ -930,7 +1044,9 @@ def render_doc_card(doc: dict[str, Any]) -> str:
             + "</details>"
         )
 
-    match_diag_html = render_match_diagnostics(doc.get("match_diagnostics", []))
+    match_diag_html = render_match_diagnostics(
+        doc.get("review_match_diagnostics", doc.get("match_diagnostics", []))
+    )
 
     return f"""
 <details class="doc-card">
@@ -940,23 +1056,7 @@ def render_doc_card(doc: dict[str, Any]) -> str:
   {unmatched_html}
   <details class="inner-accordion" open>
     <summary>Parsed analyses and annotation reasoning</summary>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Analysis ID</th>
-            <th>Parsed Analysis Name</th>
-            <th>Model Decision</th>
-            <th>Matched Outcome</th>
-            <th>Tags</th>
-            <th>Model Reasoning</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
-    </div>
+    {grouped_analysis_html}
   </details>
   <details class="inner-accordion" open>
     <summary>Manual-to-Auto Match Diagnostics</summary>
@@ -1091,6 +1191,18 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
     .confusion-good {{ background: #e9f8ef; color: #166534; border-color: #b7e4c6; }}
     .confusion-bad {{ background: #fdecec; color: #991b1b; border-color: #f6caca; }}
     .confusion-na {{ background: #f2f4f7; color: #5b6775; border-color: #dde3ea; }}
+    .table-group {{ margin: 0.8rem 0 1rem; padding: 0.6rem; border: 1px solid var(--line); border-radius: 8px; background: #fcfcfd; }}
+    .table-group h4 {{ margin: 0 0 0.35rem; }}
+    .table-meta-list {{ margin: 0 0 0.55rem 0; padding-left: 1.1rem; }}
+    .table-meta-list li {{ margin: 0.15rem 0; }}
+    .muted {{ color: #5b6775; font-size: 0.84rem; }}
+    .analysis-review-table {{ table-layout: fixed; width: 100%; }}
+    .analysis-review-table th, .analysis-review-table td {{ overflow-wrap: anywhere; word-break: normal; }}
+    .analysis-review-table col.col-analysis-id {{ width: 15%; }}
+    .analysis-review-table col.col-parsed-name {{ width: 24%; }}
+    .analysis-review-table col.col-model-decision {{ width: 8%; }}
+    .analysis-review-table col.col-matched-outcome {{ width: 10%; }}
+    .analysis-review-table col.col-reasoning {{ width: 43%; }}
     a {{ color: #0e4f85; }}
   </style>
 </head>
@@ -1098,7 +1210,7 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
   <header>
     <a id="top"></a>
     <h1>{escape(annotation_name)} report</h1>
-    <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. Analysis-level row is evaluated only on manual analyses with an assigned auto match (truth positives are accepted fuzzy matches only).</p>
+    <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. Analysis-level row is evaluated on overall fuzzy-matched auto analyses (truth positives are annotation-sliced accepted matches only).</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -1141,7 +1253,7 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
             <td>{int(study_metrics.get('overlap_pmids', 0))}</td>
           </tr>
           <tr>
-            <td>Analysis inclusion (matched manual universe; accepted=positive)</td>
+            <td>Analysis inclusion (overall fuzzy-matched auto analyses; annotation-sliced accepted=positive)</td>
             <td>{int(analysis_metrics.get('tp', 0))}</td>
             <td>{int(analysis_metrics.get('fp', 0))}</td>
             <td>{int(analysis_metrics.get('fn', 0))}</td>
@@ -1506,7 +1618,7 @@ def main() -> None:
     retrieval_dir = project_output_dir / "retrieval" / "pubget_data"
     manual_annotation_path = resolve_manual_annotation_path(project_output_dir, args.manual_annotation_path)
 
-    parsed_analyses = load_auto_parsed_names(coordinate_parsing_results)
+    parsed_analyses = load_auto_parsed_analysis_info(coordinate_parsing_results)
     model_decisions = load_model_decisions(annotation_results)
     match_results_by_annotation, overall_fallback = load_match_results_by_annotation(match_input_dir)
     manual_annotation_membership = load_manual_annotation_membership(manual_annotation_path)
