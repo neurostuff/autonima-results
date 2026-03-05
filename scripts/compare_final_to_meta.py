@@ -8,6 +8,60 @@ import sys
 from typing import List, Dict, Any, Tuple
 
 
+def load_meta_pmids(meta_pmids_path: str, meta_analysis_pmid: str | None = None) -> List[str]:
+    """
+    Load gold-standard included study PMIDs from either:
+    - a text file with one PMID per line, or
+    - an included_studies CSV filtered by meta-analysis PMID.
+    """
+    path_lower = meta_pmids_path.lower()
+
+    if path_lower.endswith(".csv"):
+        df = pd.read_csv(meta_pmids_path)
+        columns = set(df.columns)
+        has_relation_cols = {"meta_pmid", "study_pmid"}.issubset(columns)
+
+        if has_relation_cols:
+            if not meta_analysis_pmid:
+                raise ValueError(
+                    "CSV input with columns 'meta_pmid' and 'study_pmid' requires "
+                    "--meta-analysis-pmid."
+                )
+
+            filtered = df[df["meta_pmid"].astype(str) == str(meta_analysis_pmid)]
+            pmids = (
+                filtered["study_pmid"]
+                .dropna()
+                .astype(str)
+                .str.strip()
+                .tolist()
+            )
+            if not pmids:
+                raise ValueError(
+                    f"No included study PMIDs found for meta-analysis PMID "
+                    f"{meta_analysis_pmid} in {meta_pmids_path}."
+                )
+            return pmids
+
+        if "pmid" in columns:
+            return (
+                df["pmid"]
+                .dropna()
+                .astype(str)
+                .str.strip()
+                .tolist()
+            )
+
+    # Backward-compatible path: text file with one PMID per line.
+    return (
+        pd.read_csv(meta_pmids_path, header=None, names=["pmid"])["pmid"]
+        .dropna()
+        .astype(str)
+        .str.strip()
+        .tolist()
+    )
+
+
 def wilson_score_interval(successes: int, total: int, confidence_level: float = 0.95) -> Tuple[float, float]:
     """
     Calculate Wilson score interval for a proportion with continuity correction.
@@ -313,7 +367,13 @@ def save_results_to_files(results: Dict[str, Any], study_classifications: Dict[s
     print(f"Results saved to {output_dir}/")
 
 
-def main(meta_pmids_path: str, directory: str = 'example', output_dir: str = None, all_ids_path: str = None):
+def main(
+    meta_pmids_path: str,
+    directory: str = 'example',
+    output_dir: str = None,
+    all_ids_path: str = None,
+    meta_analysis_pmid: str | None = None,
+):
     """
     Run full evaluation pipeline:
     - Load PMIDs and screening results
@@ -322,15 +382,16 @@ def main(meta_pmids_path: str, directory: str = 'example', output_dir: str = Non
     - Print summary
     
     Args:
-        meta_pmids_path: Path to gold-standard meta-analysis PMIDs
+        meta_pmids_path: Path to PMIDs text file or included_studies CSV
         directory: Base directory containing outputs
         output_dir: Directory to save evaluation results
         all_ids_path: Optional path to file with all PMIDs to restrict comparison to
+        meta_analysis_pmid: Meta-analysis PMID used to filter included_studies CSV
     """
     outputs_dir = os.path.join(directory, 'outputs')
     evaluation_output_dir = output_dir or os.path.join(directory, 'evaluation')
 
-    meta_pmids = pd.read_csv(meta_pmids_path, header=None, names=['pmid'])['pmid'].astype(str).tolist()
+    meta_pmids = load_meta_pmids(meta_pmids_path, meta_analysis_pmid=meta_analysis_pmid)
     final_results = json.load(open(os.path.join(outputs_dir, 'final_results.json')))
     all_pmids = [s['study_id'] for s in final_results['abstract_screening_results']]
     abstract_included_pmids = [s['study_id'] for s in final_results['abstract_screening_results'] if s['decision'] == 'included_abstract']
@@ -404,7 +465,12 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "meta_pmids",
-        help="Path to text file with one PMID per line (gold-standard meta-analysis)."
+        help=(
+            "Path to gold-standard PMIDs input. Supports either: "
+            "(1) text file with one PMID per line, or "
+            "(2) included_studies.csv with 'meta_pmid' and 'study_pmid' columns "
+            "(requires --meta-analysis-pmid)."
+        )
     )
     parser.add_argument(
         "directory",
@@ -424,12 +490,24 @@ if __name__ == "__main__":
               "towards statistics."),
         default=None
     )
+    parser.add_argument(
+        "--meta-analysis-pmid",
+        dest="meta_analysis_pmid",
+        help=(
+            "Meta-analysis PMID used to filter included_studies CSV input and extract "
+            "the corresponding included study PMIDs."
+        ),
+        default=None,
+    )
 
     args = parser.parse_args()
 
     try:
         main(args.meta_pmids, directory=args.directory, output_dir=args.output_dir,
-             all_ids_path=args.all_ids)
+             all_ids_path=args.all_ids, meta_analysis_pmid=args.meta_analysis_pmid)
     except FileNotFoundError as e:
         print(f"[ERROR] Missing required file: {e.filename}", file=sys.stderr)
+        sys.exit(1)
+    except ValueError as e:
+        print(f"[ERROR] {e}", file=sys.stderr)
         sys.exit(1)
