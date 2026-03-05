@@ -1,0 +1,80 @@
+search:
+  database: "pubmed"
+  query: '(((cue reactiv*[tiab] OR cue-induced*[tiab] OR cue-induc*[tiab] OR cue-related*[tiab] OR "drug cue*"[tiab] OR "smoking cue*"[tiab] OR "alcohol cue*"[tiab] OR "food cue*"[tiab] OR "sexual cue*"[tiab] OR "erotic cue*"[tiab] OR "reward cue*"[tiab] OR "appetitive cue*"[tiab] OR "incentive salience"[tiab] OR craving[tiab] OR cravings[tiab] OR urge[tiab] OR urges[tiab]) OR ((cue[tiab] OR cues[tiab] OR cued[tiab] OR cueing[tiab]) AND (crav*[tiab] OR urge*[tiab] OR induc*[tiab] OR react*[tiab] OR reward*[tiab] OR appetit*[tiab]))) AND (Substance-Related Disorders[mh] OR Tobacco Use Disorder[mh] OR Smoking[mh] OR Alcohol-Related Disorders[mh] OR Cocaine-Related Disorders[mh] OR Opioid-Related Disorders[mh] OR Cannabis[mh] OR Marijuana Abuse[mh] OR nicotine[tiab] OR smoking[tiab] OR tobacco[tiab] OR cigarette*[tiab] OR alcohol[tiab] OR ethanol[tiab] OR "alcohol use disorder"[tiab] OR AUD[tiab] OR cocaine[tiab] OR crack[tiab] OR cannabis[tiab] OR marijuana[tiab] OR heroin[tiab] OR opioid*[tiab] OR opiate*[tiab] OR morphine[tiab] OR "Feeding Behavior"[mh] OR appetite[mh] OR "food craving*"[tiab] OR "Sexual Behavior"[mh] OR erotica[tiab]) AND Humans[mh] AND ((Magnetic Resonance Imaging, Functional[mh] OR fMRI[tiab] OR "functional MRI"[tiab] OR "functional magnetic resonance imaging"[tiab] OR BOLD[tiab] OR "blood oxygenation level dependent"[tiab] OR neuroimaging[tiab]) OR ("Meta-Analysis"[pt] OR meta-analy*[tiab] OR "Activation Likelihood Estimation"[tiab] OR ALE[tiab] OR GingerALE[tiab])))'
+  date_from: "1995/01/01"
+  date_to: "2020/08/31"
+  
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/projects/cue_reactivity/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/projects/cue_reactivity/ace_scrape/processed/"
+
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    objective: "Meta-analysis of fMRI studies of drug and natural reward-related cue-reactivity using visual stimuli."
+    inclusion_criteria:
+      - English language empirical studies with original data
+      - Functional MRI scan conducted while human participants assessing drug or natural reward-related cue-reactivity using visual stimuli
+    exclusion_criteria:
+      - Systematic reviews or meta-analyses
+      - Cue-reactivity using only other sensory cues (e.g., gustatory, olfactory, tactile)
+    confidence_reporting: true
+
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Meta-analysis of fMRI studies of drug and natural reward-related cue-reactivity using visual stimuli."
+    inclusion_criteria:
+      - Functional MRI study assesing drug or natural reward-related cue-reactivity using visual stimuli
+      - At least one analysis involving a within-participant contrast of drug cues>control stimuli or natural reward-related cues>control stimuli
+      - Whole-brain evidence- At least one analysis must be a group-level, whole-brain (voxelwise) task-evoked statistical map 
+      - It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.
+      - Relevant information was reported regarding participant age and sex, cue type (i.e., nicotine, alcohol, cannabis, cocaine, heroin, food, or sexual), MRI scanner field strength, and processing software (e.g., AFNI, FSL, SPM).
+    exclusion_criteria:
+      - Studies that report only region-of-interest (ROI) analyses with no whole-brain results.
+      - Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a whole-brain task activation map.
+      - Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying unmasked, whole-brain task effect.
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.
+
+parsing:
+  parse_coordinates: false 
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: false
+  model: "gpt-5-mini-2025-08-07"
+  create_all_from_search_annotation: true
+  create_all_included_annotation: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_abstract"
+  inclusion_criteria:
+    - placeholder
+  exclusion_criteria:
+    - placeholder
+  annotations:
+    - name: "social_processing_all"
+      description: "???"
+      inclusion_criteria:
+        - Analyses performed a XXXX
+
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true
