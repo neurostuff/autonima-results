@@ -1,5 +1,2929 @@
 {
-  "screening_results": [
+  "config": {
+    "search": {
+      "database": "pubmed",
+      "query": "problem solving, calculation, verbal reasoning, visuospatial reasoning, insight, deductive reasoning, inductive reasoning, or fluid reasoning",
+      "max_results": 5000,
+      "date_from": "1997/01/01",
+      "date_to": "2015/03/01",
+      "email": "anthonyang2027@utexas.edu",
+      "pmids_file": null,
+      "pmids_list": null
+    },
+    "screening": {
+      "abstract": {
+        "model": "gpt-5-mini-2025-08-07",
+        "threshold": null,
+        "confidence_reporting": true,
+        "objective": "Identify task-based fMRI studies of problem solving in healthy adults.",
+        "inclusion_criteria": [
+          "Task-based fMRI study.",
+          "Human partcipants performing a problem-solving or reasoning task.",
+          "Includes at least one group of healthy adults (18-65).",
+          "Reports task-related brain activation results."
+        ],
+        "exclusion_criteria": [
+          "Reviews or meta-analyses.",
+          "Resting-state or connectivity-only studies.",
+          "No healthy adult sample.",
+          "Non-fMRI studies."
+        ],
+        "additional_instructions": null,
+        "criteria_mapping": {
+          "inclusion": {
+            "I1": "Task-based fMRI study.",
+            "I2": "Human partcipants performing a problem-solving or reasoning task.",
+            "I3": "Includes at least one group of healthy adults (18-65).",
+            "I4": "Reports task-related brain activation results."
+          },
+          "exclusion": {
+            "E1": "Reviews or meta-analyses.",
+            "E2": "Resting-state or connectivity-only studies.",
+            "E3": "No healthy adult sample.",
+            "E4": "Non-fMRI studies."
+          }
+        }
+      },
+      "fulltext": {
+        "model": "gpt-5-mini-2025-08-07",
+        "threshold": null,
+        "confidence_reporting": true,
+        "objective": "Identify whole-brain, task-based fMRI studies examining problem-solving across domains in healthy adults.",
+        "inclusion_criteria": [
+          "Task-based fMRI with group-level whole-brain analyses.",
+          "Problem-solving task involving multi-step reasoning (e.g. math, verbal, logical, visuospatial, physics).",
+          "At least one group of healthy adults (18-65), reproted separately if mixed.",
+          "Reports peak coordinates (MNI or Talairach) for problem-solving contrasts."
+        ],
+        "exclusion_criteria": [
+          "ROI-only analyses without whole-brain results.",
+          "Connectivity-only or resting-state studies.",
+          "Simple tasks without clear problem-solving demands.",
+          "Between-group contrasts only (no healthy-group task effect).",
+          "Reviews, meta-analyses, or non-empirical papers."
+        ],
+        "additional_instructions": null,
+        "criteria_mapping": {
+          "inclusion": {
+            "I5": "Task-based fMRI with group-level whole-brain analyses.",
+            "I6": "Problem-solving task involving multi-step reasoning (e.g. math, verbal, logical, visuospatial, physics).",
+            "I7": "At least one group of healthy adults (18-65), reproted separately if mixed.",
+            "I8": "Reports peak coordinates (MNI or Talairach) for problem-solving contrasts."
+          },
+          "exclusion": {
+            "E5": "ROI-only analyses without whole-brain results.",
+            "E6": "Connectivity-only or resting-state studies.",
+            "E7": "Simple tasks without clear problem-solving demands.",
+            "E8": "Between-group contrasts only (no healthy-group task effect).",
+            "E9": "Reviews, meta-analyses, or non-empirical papers."
+          }
+        }
+      }
+    },
+    "retrieval": {
+      "sources": [
+        "pubget"
+      ],
+      "timeout": 30,
+      "max_retries": 3,
+      "download_directory": "downloads",
+      "n_jobs": 1,
+      "load_excluded": false,
+      "full_text_sources": [],
+      "parse_coordinates": false,
+      "coordinate_model": "gpt-4o-mini"
+    },
+    "parsing": {
+      "parse_coordinates": false,
+      "coordinate_model": "gpt-5-mini-2025-08-07"
+    },
+    "annotation": {
+      "model": "gpt-5-mini-2025-08-07",
+      "create_all_included_annotation": true,
+      "create_all_from_search_annotation": true,
+      "metadata_fields": [
+        "analysis_name",
+        "analysis_description",
+        "table_caption",
+        "study_title",
+        "study_abstract"
+      ],
+      "annotations": [
+        {
+          "name": "social_processing_all",
+          "description": "???",
+          "inclusion_criteria": [
+            "Analyses performed a XXXX"
+          ],
+          "exclusion_criteria": []
+        }
+      ],
+      "enabled": false
+    },
+    "output": {
+      "directory": "v1",
+      "prisma_diagram": true,
+      "formats": [
+        "csv"
+      ],
+      "nimads": true,
+      "export_excluded_studies": true
+    }
+  },
+  "studies": [
+    {
+      "pmid": "18958222",
+      "pmcid": 2525981,
+      "title": "Neural correlates of fluid reasoning in children and adults.",
+      "abstract": "Fluid reasoning, or the capacity to think logically and solve novel problems, is central to the development of human cognition, but little is known about the underlying neural changes. During the acquisition of event-related fMRI data, children aged 6-13 (N = 16) and young adults (N = 17) performed a task in which they were asked to identify semantic relationships between drawings of common objects. On semantic problems, participants indicated which of five objects was most closely semantically related to a cued object. On analogy problems, participants solved a visual propositional analogy (e.g., shoe is to foot as glove is to...?) by indicating which of four objects would complete the problem; these problems required integration of two semantic relations, or relational integration. Our prior research on analogical reasoning in adults implicated left anterior ventrolateral prefrontal cortex (VLPFC) in the controlled retrieval of individual semantic relationships, and rostrolateral prefrontal cortex (RLPFC) in relational integration. In this study, age-related changes in the recruitment of VLPFC, temporal cortex, and other cortical regions were observed during the retrieval of individual semantic relations. In contrast, age-related changes in RLPFC function were observed during relational integration. Children aged 6-13 engage RLPFC too late in the analogy trials to influence their behavioral responses, suggesting that important changes in RLPFC function take place during adolescence.",
+      "authors": [
+        "Samantha B Wright",
+        "Bryan J Matlen",
+        "Carol L Baym",
+        "Emilio Ferrer",
+        "Silvia A Bunge"
+      ],
+      "journal": "Frontiers in human neuroscience",
+      "publication_date": "2007",
+      "doi": "10.3389/neuro.09.008.2007",
+      "keywords": [
+        "analogy",
+        "brain",
+        "cognition",
+        "development",
+        "frontal",
+        "functional magnetic resonance imaging",
+        "hierarchy",
+        "relational"
+      ],
+      "status": "included_fulltext",
+      "abstract_screening_reason": "Task-based fMRI study with participants performing analogy/semantic problem-solving. Includes a young adult group alongside children (healthy participants) and reports task-related brain activation and age-related changes. Fits all inclusion criteria.",
+      "fulltext_screening_reason": "This is a task-based fMRI study that conducted group-level whole-brain analyses (whole-brain contrasts and multiple regressions) of a propositional analogy task, which qualifies as multi-step relational/problem-solving. It includes a separate healthy adult group (n=17, ages 19\u201326) reported separately from children. The paper reports peak coordinates for key contrasts/regions (e.g., left RLPFC \u221227,50,0; right RLPFC 27,45,16; SPL 36,\u221266,52). Therefore it satisfies all required inclusion criteria for the review.",
+      "metadata": {},
+      "abstract_screening_score": 0.95,
+      "fulltext_screening_score": 0.95,
+      "retrieved_at": "2026-03-06T10:40:04.394456",
+      "screened_at": "2026-03-06T10:40:40.801726",
+      "full_text_path": null,
+      "fulltext_available": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [
+        "I1",
+        "I2",
+        "I3",
+        "I4"
+      ],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [
+        "I5",
+        "I6",
+        "I7",
+        "I8"
+      ],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "20483908",
+      "pmcid": 3000572,
+      "title": "Lateral prefrontal cortex subregions make dissociable contributions during fluid reasoning.",
+      "abstract": "Reasoning is a key component of adaptable \"executive\" behavior and is known to depend on a network of frontal and parietal brain regions. However, the mechanisms by which this network supports reasoning and adaptable behavior remain poorly defined. Here, we examine the relationship between reasoning, executive control, and frontoparietal function in a series of nonverbal reasoning experiments. Our results demonstrate that, in accordance with previous studies, a network of frontal and parietal brain regions is recruited during reasoning. Our results also reveal that this network can be fractionated according to how different subregions respond when distinct reasoning demands are manipulated. While increased rule complexity modulates activity within a right lateralized network including the middle frontal gyrus and the superior parietal cortex, analogical reasoning demand-or the requirement to remap rules on to novel features-recruits the left inferior rostrolateral prefrontal cortex and the lateral occipital complex. In contrast, the posterior extent of the inferior frontal gyrus, associated with simpler executive demands, is not differentially sensitive to rule complexity or analogical demand. These findings accord well with the hypothesis that different reasoning demands are supported by different frontal and parietal subregions.",
+      "authors": [
+        "Adam Hampshire",
+        "Russell Thompson",
+        "John Duncan",
+        "Adrian M Owen"
+      ],
+      "journal": "Cerebral cortex (New York, N.Y. : 1991)",
+      "publication_date": "2011 Jan",
+      "doi": "10.1093/cercor/bhq085",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": "Task-based fMRI study examining nonverbal reasoning in humans, reports frontoparietal task-related activations and dissociable prefrontal subregions. Appears to involve healthy adult participants and directly assesses problem-solving/reasoning.",
+      "fulltext_screening_reason": "This is a task-based fMRI study in healthy adult participants (ages 20\u201340) that uses novel multi-step nonverbal reasoning problems (rule derivation and application), satisfying problem-solving task requirements. Group-level whole-brain random-effects analyses were conducted (SPM5) with FDR correction and whole-brain contrasts reported. Peak activation coordinates for multiple contrasts (rule complexity, analogical distance, task > baseline) are provided across frontal, parietal, and occipital regions. Participants are healthy adults (two experiments, n=16 and n=21), and task effects within the healthy groups are reported. The paper is empirical and not a review. Therefore it meets all inclusion criteria and violates no exclusion criteria.",
+      "metadata": {},
+      "abstract_screening_score": 0.9,
+      "fulltext_screening_score": 0.95,
+      "retrieved_at": "2026-03-06T10:40:04.394460",
+      "screened_at": "2026-03-06T10:40:40.801750",
+      "full_text_path": null,
+      "fulltext_available": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "tbl1",
+          "table_label": "Table 1",
+          "table_caption": "Peak activation coordinates during reasoning in experiment 1",
+          "table_foot": "Note: BA, Brodmann area; preSMA, presupplementary motor area.",
+          "table_data_path": "v1/retrieval/pubget_data/articles/b47/pmcid_3000572/tables/table_000.csv",
+          "table_raw_path": null
+        },
+        {
+          "table_id": "tbl2",
+          "table_label": "Table 2",
+          "table_caption": "Peak activation coordinates for rule complexity and analogical distance in experiment 1",
+          "table_foot": "Note: BA, Brodmann area.",
+          "table_data_path": "v1/retrieval/pubget_data/articles/b47/pmcid_3000572/tables/table_001.csv",
+          "table_raw_path": null
+        },
+        {
+          "table_id": "tbl3",
+          "table_label": "Table 3",
+          "table_caption": "Peak activation coordinates for the main effects of rule complexity and analogical distance in experiment 2",
+          "table_foot": "Note: BA, Brodmann area.",
+          "table_data_path": "v1/retrieval/pubget_data/articles/b47/pmcid_3000572/tables/table_002.csv",
+          "table_raw_path": null
+        },
+        {
+          "table_id": "tbl4",
+          "table_label": "Table 4",
+          "table_caption": "Previously published peak activation coordinates",
+          "table_foot": "aConverted to MNI from Talairach space.bAveraged coordinates.",
+          "table_data_path": "v1/retrieval/pubget_data/articles/b47/pmcid_3000572/tables/table_003.csv",
+          "table_raw_path": null
+        }
+      ],
+      "analyses": [
+        {
+          "name": "tbl1",
+          "description": "Table 1",
+          "table_id": "tbl1",
+          "points": [
+            {
+              "coordinates": [
+                -30.0,
+                24.0,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                30.0,
+                28.0,
+                0.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -28.0,
+                -2.0,
+                60.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -44.0,
+                48.0,
+                16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                26.0,
+                4.0,
+                54.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                48.0,
+                44.0,
+                22.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -4.0,
+                16.0,
+                48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -28.0,
+                -48.0,
+                48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                30.0,
+                -68.0,
+                36.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -10.0,
+                4.0,
+                2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                12.0,
+                4.0,
+                0.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        },
+        {
+          "name": "tbl2",
+          "description": "Table 2",
+          "table_id": "tbl2",
+          "points": [
+            {
+              "coordinates": [
+                -30.0,
+                52.0,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                36.0,
+                60.0,
+                16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -32.0,
+                54.0,
+                20.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -44.0,
+                28.0,
+                38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                44.0,
+                46.0,
+                20.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                50.0,
+                24.0,
+                32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                8.0,
+                -56.0,
+                58.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -26.0,
+                -56.0,
+                56.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                22.0,
+                -60.0,
+                46.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -46.0,
+                40.0,
+                0.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -46.0,
+                30.0,
+                16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -40.0,
+                40.0,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -44.0,
+                -50.0,
+                -8.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -28.0,
+                -66.0,
+                32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -22.0,
+                18.0,
+                60.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -32.0,
+                60.0,
+                16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                16.0,
+                64.0,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -26.0,
+                44.0,
+                36.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                36.0,
+                58.0,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                42.0,
+                22.0,
+                38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                44.0,
+                46.0,
+                20.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                14.0,
+                -68.0,
+                44.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -16.0,
+                -54.0,
+                44.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                44.0,
+                -48.0,
+                48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -46.0,
+                40.0,
+                0.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -40.0,
+                40.0,
+                -10.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -62.0,
+                -52.0,
+                -8.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        },
+        {
+          "name": "tbl3",
+          "description": "Table 3",
+          "table_id": "tbl3",
+          "points": [
+            {
+              "coordinates": [
+                26.0,
+                -54.0,
+                50.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -28.0,
+                -54.0,
+                48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -16.0,
+                48.0,
+                4.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                30.0,
+                30.0,
+                42.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                26.0,
+                60.0,
+                2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -28.0,
+                -46.0,
+                -18.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -40.0,
+                36.0,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -48.0,
+                36.0,
+                8.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -48.0,
+                46.0,
+                4.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -10.0,
+                50.0,
+                22.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        },
+        {
+          "name": "tbl4",
+          "description": "Table 4",
+          "table_id": "tbl4",
+          "points": [
+            {
+              "coordinates": [
+                -34.0,
+                50.0,
+                9.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                38.0,
+                26.0,
+                13.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -44.0,
+                4.0,
+                33.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                28.0,
+                8.0,
+                36.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -36.0,
+                57.0,
+                9.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                39.0,
+                54.0,
+                14.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -42.0,
+                48.0,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -42.0,
+                48.0,
+                -15.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -45.0,
+                42.0,
+                -3.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -50.0,
+                42.0,
+                -10.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -38.0,
+                48.0,
+                0.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -48.0,
+                27.0,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -42.0,
+                33.0,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -54.0,
+                27.0,
+                -9.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -48.0,
+                33.0,
+                -9.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -54.0,
+                27.0,
+                -9.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [
+        "I1",
+        "I2",
+        "I3",
+        "I4"
+      ],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [
+        "I5",
+        "I6",
+        "I7",
+        "I8"
+      ],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "26594629",
+      "pmcid": 4596928,
+      "title": "Autistic fluid intelligence: Increased reliance on visual functional connectivity with diminished modulation of coupling by task difficulty.",
+      "abstract": "Different test types lead to different intelligence estimates in autism, as illustrated by the fact that autistic individuals obtain higher scores on the Raven's Progressive Matrices (RSPM) test than they do on the Wechsler IQ, in contrast to relatively similar performance on both tests in non-autistic individuals. However, the cerebral processes underlying these differences are not well understood. This study investigated whether activity in the fluid \"reasoning\" network, which includes frontal, parietal, temporal and occipital regions, is differently modulated by task complexity in autistic and non-autistic individuals during the RSPM. In this purpose, we used fMRI to study autistic and non-autistic participants solving the 60 RSPM problems focussing on regions and networks involved in reasoning complexity. As complexity increased, activity in the left superior occipital gyrus and the left middle occipital gyrus increased for autistic participants, whereas non-autistic participants showed increased activity in the left middle frontal gyrus and bilateral precuneus. Using psychophysiological interaction analyses (PPI), we then verified in which regions did functional connectivity increase as a function of reasoning complexity. PPI analyses revealed greater connectivity in autistic, compared to non-autistic participants, between the left inferior occipital gyrus and areas in the left superior frontal gyrus, right superior parietal lobe, right middle occipital gyrus and right inferior temporal gyrus. We also observed generally less modulation of the reasoning network as complexity increased in autistic participants. These results suggest that autistic individuals, when confronted with increasing task complexity, rely mainly on visuospatial processes when solving more complex matrices. In addition to the now well-established enhanced activity observed in visual areas in a range of tasks, these results suggest that the enhanced reliance on visual perception has a central role in autistic cognition.",
+      "authors": [
+        "Isabelle Simard",
+        "David Luck",
+        "Laurent Mottron",
+        "Thomas A Zeffiro",
+        "Isabelle Souli\u00e8res"
+      ],
+      "journal": "NeuroImage. Clinical",
+      "publication_date": "2015",
+      "doi": "10.1016/j.nicl.2015.09.007",
+      "keywords": [
+        "Autism",
+        "Connectivity",
+        "Intelligence",
+        "PPI",
+        "Reasoning",
+        "fMRI"
+      ],
+      "status": "included_fulltext",
+      "abstract_screening_reason": "Task-based fMRI study using Raven's Progressive Matrices; participants include autistic and non-autistic (healthy) adults performing a reasoning/problem-solving task. Abstract reports task-related brain activation and connectivity results related to task complexity.",
+      "fulltext_screening_reason": "This study reports a task-based fMRI experiment using the Raven's Progressive Matrices (a multi-step visuospatial/logical problem-solving task) with group-level whole-brain analyses and reports coordinates for task contrasts and seed regions. It includes a healthy comparison (non-autistic) group reported separately and within-group task effects are presented. Therefore it satisfies the review inclusion requirements for task-based whole-brain fMRI of problem-solving and coordinate reporting. Note: participant ages span 14\u201336; although some participants are adolescents, a healthy adult comparison group is reported separately (mean age ~21.7). If the review applies a strict minimum age cutoff (all participants >=18), this could reduce confidence; otherwise the study is eligible.",
+      "metadata": {},
+      "abstract_screening_score": 0.9,
+      "fulltext_screening_score": 0.75,
+      "retrieved_at": "2026-03-06T10:40:04.394461",
+      "screened_at": "2026-03-06T10:40:40.801781",
+      "full_text_path": null,
+      "fulltext_available": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "t0015",
+          "table_label": "Table\u00a03",
+          "table_caption": "Statistical modeling results using a complexity contrast (figural\u00a0<\u00a0analytical\u00a0<\u00a0complex analytical), p\u00a0<\u00a00.001 unc, K\u00a0=\u00a050 contiguous voxels.",
+          "table_foot": "*Clusters significant at p\u00a0<\u00a00.05, FWE corrected.",
+          "table_data_path": "v1/retrieval/pubget_data/articles/38d/pmcid_4596928/tables/table_002.csv",
+          "table_raw_path": null
+        },
+        {
+          "table_id": "t0020",
+          "table_label": "Table\u00a04",
+          "table_caption": "PPI analyses Based on common areas of activity (conjunction seeds) (p\u00a0<\u00a00.001 unc.).",
+          "table_foot": "*Clusters significant at p\u00a0<\u00a00.05, FWE corrected.",
+          "table_data_path": "v1/retrieval/pubget_data/articles/38d/pmcid_4596928/tables/table_003.csv",
+          "table_raw_path": null
+        },
+        {
+          "table_id": "t0025",
+          "table_label": "Table\u00a05",
+          "table_caption": "PPI analyses Based on areas of maximal between-group differences in activity (maximum difference seeds) (p\u00a0<\u00a00.001 unc.).",
+          "table_foot": null,
+          "table_data_path": "v1/retrieval/pubget_data/articles/38d/pmcid_4596928/tables/table_004.csv",
+          "table_raw_path": null
+        }
+      ],
+      "analyses": [
+        {
+          "name": "t0015",
+          "description": "Table\u00a03",
+          "table_id": "t0015",
+          "points": [
+            {
+              "coordinates": [
+                7.89,
+                -44.0,
+                28.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                44.0,
+                7.83,
+                -42.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                6.0,
+                7.33,
+                -26.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                7.0,
+                10.25,
+                -24.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                18.0,
+                13.82,
+                -28.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                19.0,
+                10.1,
+                -26.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                47.0,
+                5.86,
+                -28.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.89,
+                -4.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                6.27,
+                -6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                11.08,
+                -48.0,
+                24.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                9.59,
+                -48.0,
+                26.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                10.61,
+                -44.0,
+                16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                15.26,
+                -32.0,
+                -88.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                47.0,
+                7.08,
+                -28.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                5.06,
+                -10.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.77,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.05,
+                -4.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                19.0,
+                3.96,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                18.0,
+                3.53,
+                -22.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                9.0,
+                4.44,
+                -42.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.1,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                7.77,
+                40.0,
+                32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                9.51,
+                30.0,
+                8.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                7.13,
+                50.0,
+                28.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.91,
+                30.0,
+                26.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -10.0,
+                3.67,
+                6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.07,
+                2.0,
+                -56.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        },
+        {
+          "name": "t0020",
+          "description": "Table\u00a04",
+          "table_id": "t0020",
+          "points": [
+            {
+              "coordinates": [
+                44.0,
+                5.1,
+                -32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                6.0,
+                3.78,
+                -38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.46,
+                -36.0,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.0,
+                3.73,
+                -6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.0,
+                3.82,
+                -6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                42.0,
+                3.68,
+                -58.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                19.0,
+                3.71,
+                -32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                3.61,
+                -6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                5.07,
+                -32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.68,
+                -24.0,
+                -80.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.94,
+                -40.0,
+                -70.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                3.47,
+                0.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                44.0,
+                3.96,
+                -30.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                48.0,
+                4.05,
+                -48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                48.0,
+                3.89,
+                -32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                3.87,
+                -40.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.82,
+                -4.0,
+                -64.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                3.58,
+                0.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                44.0,
+                4.72,
+                -32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                48.0,
+                3.78,
+                -48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                19.0,
+                4.25,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.01,
+                -18.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.53,
+                -16.0,
+                14.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                9.0,
+                4.65,
+                -18.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                9.0,
+                4.39,
+                -10.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                9.0,
+                3.65,
+                -36.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.64,
+                -34.0,
+                40.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                40.0,
+                4.05,
+                32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.42,
+                2.0,
+                -20.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.78,
+                4.0,
+                -38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.4,
+                10.0,
+                -88.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.91,
+                14.0,
+                -32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.54,
+                16.0,
+                -8.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.34,
+                18.0,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.46,
+                8.0,
+                -74.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.4,
+                22.0,
+                -72.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        },
+        {
+          "name": "t0025",
+          "description": "Table\u00a05",
+          "table_id": "t0025",
+          "points": [
+            {
+              "coordinates": [
+                9.0,
+                4.56,
+                -18.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                22.0,
+                5.02,
+                -68.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.02,
+                -56.0,
+                -36.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.85,
+                -56.0,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                21.0,
+                4.05,
+                -56.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                17.0,
+                4.35,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                18.0,
+                4.62,
+                -14.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                18.0,
+                4.51,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                18.0,
+                4.14,
+                -4.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                37.0,
+                3.89,
+                -26.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                10.0,
+                4.1,
+                -38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                9.0,
+                4.43,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.71,
+                -22.0,
+                54.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                38.0,
+                4.21,
+                -40.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.09,
+                -36.0,
+                30.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.67,
+                -32.0,
+                32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                47.0,
+                3.94,
+                -34.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                48.0,
+                7.15,
+                -48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.11,
+                -62.0,
+                -20.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.71,
+                -58.0,
+                -26.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.02,
+                -58.0,
+                -38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.93,
+                -54.0,
+                -10.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.66,
+                -52.0,
+                -28.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                22.0,
+                4.89,
+                -64.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.63,
+                -38.0,
+                -26.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.68,
+                -66.0,
+                -40.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                19.0,
+                4.22,
+                -38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                39.0,
+                7.4,
+                -44.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.0,
+                3.73,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                42.0,
+                3.71,
+                -66.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.86,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.66,
+                -18.0,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.64,
+                -30.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                5.45,
+                -36.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.68,
+                -30.0,
+                -72.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.31,
+                -16.0,
+                -74.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.22,
+                -22.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.7,
+                -18.0,
+                -52.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.66,
+                -30.0,
+                -36.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                3.91,
+                -26.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.68,
+                -12.0,
+                -50.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                44.0,
+                5.23,
+                -44.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.32,
+                -34.0,
+                24.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.0,
+                3.66,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                7.0,
+                3.84,
+                -36.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.68,
+                -38.0,
+                -50.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.25,
+                -44.0,
+                -54.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                5.69,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.45,
+                -14.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.78,
+                -12.0,
+                0.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                4.43,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.87,
+                -10.0,
+                -44.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                3.68,
+                -34.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                6.0,
+                4.48,
+                -34.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                48.0,
+                3.7,
+                -52.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                47.0,
+                3.69,
+                -38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                40.0,
+                4.1,
+                -52.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.98,
+                -50.0,
+                -50.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                20.0,
+                4.06,
+                -28.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.91,
+                -64.0,
+                -26.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.66,
+                -64.0,
+                -48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                22.0,
+                3.9,
+                -62.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.67,
+                -62.0,
+                -32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                3.85,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                0.0,
+                3.68,
+                -6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                10.0,
+                4.06,
+                6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                26.0,
+                4.16,
+                4.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.31,
+                26.0,
+                30.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.22,
+                30.0,
+                28.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.2,
+                10.0,
+                -38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.85,
+                16.0,
+                24.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.02,
+                42.0,
+                30.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.66,
+                48.0,
+                18.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.82,
+                12.0,
+                2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.77,
+                12.0,
+                6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.67,
+                10.0,
+                64.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.56,
+                66.0,
+                -40.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.44,
+                56.0,
+                -38.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.93,
+                64.0,
+                -48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.02,
+                48.0,
+                -32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.79,
+                40.0,
+                10.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.75,
+                56.0,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.67,
+                62.0,
+                -10.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.72,
+                48.0,
+                -12.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                6.0,
+                5.84,
+                20.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -46.0,
+                4.5,
+                46.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.16,
+                36.0,
+                -72.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.06,
+                32.0,
+                -76.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.69,
+                40.0,
+                -70.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.75,
+                28.0,
+                -56.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -30.0,
+                4.52,
+                28.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.67,
+                44.0,
+                -70.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.65,
+                28.0,
+                -22.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.69,
+                44.0,
+                -18.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                22.0,
+                4.07,
+                48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.0,
+                40.0,
+                8.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.86,
+                22.0,
+                6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.79,
+                28.0,
+                8.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.69,
+                46.0,
+                40.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                18.0,
+                6.73,
+                20.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                5.1,
+                20.0,
+                2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.22,
+                34.0,
+                -72.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.72,
+                22.0,
+                -8.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -4.0,
+                4.24,
+                18.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.87,
+                16.0,
+                -22.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.77,
+                8.0,
+                -24.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.84,
+                30.0,
+                -62.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.69,
+                12.0,
+                -78.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                3.71,
+                28.0,
+                -64.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [
+        "I1",
+        "I2",
+        "I3",
+        "I4"
+      ],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [
+        "I5",
+        "I6",
+        "I7",
+        "I8"
+      ],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "22912831",
+      "pmcid": 3422311,
+      "title": "Functional alterations in neural substrates of geometric reasoning in adults with high-functioning autism.",
+      "abstract": "Individuals with autism spectrum condition (ASC) are known to excel in some perceptual cognitive tasks, but such developed functions have been often regarded as \"islets of abilities\" that do not significantly contribute to broader intellectual capacities. However, recent behavioral studies have reported that individuals with ASC have advantages for performing Raven's (Standard) Progressive Matrices (RPM/RSPM), a standard neuropsychological test for general fluid intelligence, raising the possibility that ASC's cognitive strength can be utilized for more general purposes like novel problem solving. Here, the brain activity of 25 adults with high-functioning ASC and 26 matched normal controls (NC) was measured using functional magnetic resonance imaging (fMRI) to examine neural substrates of geometric reasoning during the engagement of a modified version of the RSPM test. Among the frontal and parietal brain regions involved in fluid intelligence, ASC showed larger activation in the left lateral occipitotemporal cortex (LOTC) during an analytic condition with moderate difficulty than NC. Activation in the left LOTC and ventrolateral prefrontal cortex (VLPFC) increased with task difficulty in NC, whereas such modulation of activity was absent in ASC. Furthermore, functional connectivity analysis revealed a significant reduction of activation coupling between the left inferior parietal cortex and the right anterior prefrontal cortex during both figural and analytic conditions in ASC. These results indicate altered pattern of functional specialization and integration in the neural system for geometric reasoning in ASC, which may explain its atypical cognitive pattern, including performance on the Raven's Matrices test.",
+      "authors": [
+        "Takashi Yamada",
+        "Haruhisa Ohta",
+        "Hiromi Watanabe",
+        "Chieko Kanai",
+        "Masayuki Tani",
+        "Taisei Ohno",
+        "Yuko Takayama",
+        "Akira Iwanami",
+        "Nobumasa Kato",
+        "Ryuichiro Hashimoto"
+      ],
+      "journal": "PloS one",
+      "publication_date": "2012",
+      "doi": "10.1371/journal.pone.0043220",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": "This is a task-based fMRI study where participants performed a modified Raven's Progressive Matrices (a problem-solving/reasoning task). It includes a healthy adult control group (matched NC) and reports task-related brain activation results. Thus it satisfies all inclusion criteria.",
+      "fulltext_screening_reason": "This study meets all inclusion criteria for the review: it is a task-based fMRI experiment with group-level whole-brain analyses (voxel-based contrasts and cluster-level inference), employs a multi-step problem-solving task (Raven\u2019s Standard Progressive Matrices; analytic items requiring analogical reasoning), includes a healthy adult control group (NC; ages matched to ASC) reported separately, and reports peak locations in MNI space for contrasts. It does not violate exclusion criteria (not ROI-only, not connectivity/resting-state only, not a review, and presents within-group task effects for healthy controls). Therefore it is eligible for inclusion.",
+      "metadata": {},
+      "abstract_screening_score": 0.95,
+      "fulltext_screening_score": 0.95,
+      "retrieved_at": "2026-03-06T10:40:04.394461",
+      "screened_at": "2026-03-06T10:40:40.801795",
+      "full_text_path": null,
+      "fulltext_available": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "pone-0043220-t003",
+          "table_label": "Table 3",
+          "table_caption": "Significant activity during easy analytic condition.",
+          "table_foot": "p<0.001, uncorrected for multiple comparison at the voxel level.Extent threshold: k>72 voxels. The coordinates are in the MNI space.NC: Normal Control, ASC: Autism Spectrum Condition, LOTC: lateral occipitotemporal cortex.IPC: inferior parietal cortex, PMC: premotor cortex, VLPFC: ventrolateral prefrontal cortex.NC showed no significant brain activation during the easy analytic condition.No areas showed larger activation for NC than ASC.",
+          "table_data_path": "v1/retrieval/pubget_data/articles/9a8/pmcid_3422311/tables/table_002.csv",
+          "table_raw_path": null
+        },
+        {
+          "table_id": "pone-0043220-t004",
+          "table_label": "Table 4",
+          "table_caption": "Significant activity during difficult analytic condition.",
+          "table_foot": "p<0.001, uncorrected for multiple comparison at the voxel level.Extent threshold: k>72 voxels. Coordinates are in the MNI space.NC: Normal Control, ASC: Autism Spectrum Condition, IPC: inferior parietal cortex.VLPFC: ventrolateral prefrontal cortex, PMC: premotor cortex.No significant activation was identified by direct comparisons between the groups.",
+          "table_data_path": "v1/retrieval/pubget_data/articles/9a8/pmcid_3422311/tables/table_003.csv",
+          "table_raw_path": null
+        },
+        {
+          "table_id": "pone-0043220-t005",
+          "table_label": "Table 5",
+          "table_caption": "Significant activity during the analytic conditions (easy+difficult).",
+          "table_foot": "p<0.001, uncorrected for multiple comparison at the voxel level. Extent threshold: k>72 voxels.Coordinates are in the MNI space.NC: Normal Control, ASC: Autism Spectrum Disorder, IPC: inferior parietal cortex.PMC: premotor cortex, VLPFC: ventrolateral prefrontal cortex, LOTC: lateral occipitotemporal cortex.",
+          "table_data_path": "v1/retrieval/pubget_data/articles/9a8/pmcid_3422311/tables/table_004.csv",
+          "table_raw_path": null
+        }
+      ],
+      "analyses": [
+        {
+          "name": "pone-0043220-t003",
+          "description": "Table 3",
+          "table_id": "pone-0043220-t003",
+          "points": [
+            {
+              "coordinates": [
+                -60.0,
+                -32.0,
+                -14.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -48.0,
+                -66.0,
+                42.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -44.0,
+                14.0,
+                54.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -42.0,
+                50.0,
+                -6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -52.0,
+                -30.0,
+                -14.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                54.0,
+                -54.0,
+                50.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        },
+        {
+          "name": "pone-0043220-t004",
+          "description": "Table 4",
+          "table_id": "pone-0043220-t004",
+          "points": [
+            {
+              "coordinates": [
+                -58.0,
+                -56.0,
+                42.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -42.0,
+                48.0,
+                -8.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -6.0,
+                -62.0,
+                34.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -46.0,
+                -70.0,
+                48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -20.0,
+                20.0,
+                62.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                52.0,
+                -74.0,
+                32.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                22.0,
+                60.0,
+                20.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                24.0,
+                24.0,
+                62.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                56.0,
+                -58.0,
+                48.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                32.0,
+                26.0,
+                52.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                32.0,
+                52.0,
+                -14.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        },
+        {
+          "name": "pone-0043220-t005",
+          "description": "Table 5",
+          "table_id": "pone-0043220-t005",
+          "points": [
+            {
+              "coordinates": [
+                -44.0,
+                -76.0,
+                44.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -42.0,
+                48.0,
+                -10.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -36.0,
+                16.0,
+                56.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -48.0,
+                -64.0,
+                40.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -36.0,
+                12.0,
+                52.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -62.0,
+                -28.0,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -38.0,
+                52.0,
+                -2.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -50.0,
+                -68.0,
+                44.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -64.0,
+                -28.0,
+                -16.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -36.0,
+                14.0,
+                54.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                -42.0,
+                48.0,
+                -6.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                54.0,
+                -70.0,
+                34.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                34.0,
+                34.0,
+                44.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                36.0,
+                28.0,
+                56.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                54.0,
+                -62.0,
+                46.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                38.0,
+                28.0,
+                54.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                38.0,
+                50.0,
+                -10.0
+              ],
+              "space": null,
+              "values": []
+            },
+            {
+              "coordinates": [
+                4.0,
+                -64.0,
+                40.0
+              ],
+              "space": null,
+              "values": []
+            }
+          ]
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [
+        "I1",
+        "I2",
+        "I3",
+        "I4"
+      ],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [
+        "I5",
+        "I6",
+        "I7",
+        "I8"
+      ],
+      "fulltext_exclusion_criteria_applied": []
+    }
+  ],
+  "abstract_screening_results": [
     {
       "study_id": "25369134",
       "decision": "excluded_abstract",
@@ -4267,5 +7191,107 @@
       ]
     }
   ],
-  "timestamp": "2026-03-06T10:40:00.775394"
+  "fulltext_screening_results": [
+    {
+      "study_id": "18958222",
+      "decision": "included_fulltext",
+      "reason": "This is a task-based fMRI study that conducted group-level whole-brain analyses (whole-brain contrasts and multiple regressions) of a propositional analogy task, which qualifies as multi-step relational/problem-solving. It includes a separate healthy adult group (n=17, ages 19\u201326) reported separately from children. The paper reports peak coordinates for key contrasts/regions (e.g., left RLPFC \u221227,50,0; right RLPFC 27,45,16; SPL 36,\u221266,52). Therefore it satisfies all required inclusion criteria for the review.",
+      "confidence": 0.95,
+      "model_used": "gpt-5-mini-2025-08-07",
+      "screening_type": "fulltext",
+      "timestamp": "2026-03-06T10:40:30.971849",
+      "inclusion_criteria_applied": [
+        "I5",
+        "I6",
+        "I7",
+        "I8"
+      ],
+      "exclusion_criteria_applied": []
+    },
+    {
+      "study_id": "20483908",
+      "decision": "included_fulltext",
+      "reason": "This is a task-based fMRI study in healthy adult participants (ages 20\u201340) that uses novel multi-step nonverbal reasoning problems (rule derivation and application), satisfying problem-solving task requirements. Group-level whole-brain random-effects analyses were conducted (SPM5) with FDR correction and whole-brain contrasts reported. Peak activation coordinates for multiple contrasts (rule complexity, analogical distance, task > baseline) are provided across frontal, parietal, and occipital regions. Participants are healthy adults (two experiments, n=16 and n=21), and task effects within the healthy groups are reported. The paper is empirical and not a review. Therefore it meets all inclusion criteria and violates no exclusion criteria.",
+      "confidence": 0.95,
+      "model_used": "gpt-5-mini-2025-08-07",
+      "screening_type": "fulltext",
+      "timestamp": "2026-03-06T10:40:13.196755",
+      "inclusion_criteria_applied": [
+        "I5",
+        "I6",
+        "I7",
+        "I8"
+      ],
+      "exclusion_criteria_applied": []
+    },
+    {
+      "study_id": "26594629",
+      "decision": "included_fulltext",
+      "reason": "This study reports a task-based fMRI experiment using the Raven's Progressive Matrices (a multi-step visuospatial/logical problem-solving task) with group-level whole-brain analyses and reports coordinates for task contrasts and seed regions. It includes a healthy comparison (non-autistic) group reported separately and within-group task effects are presented. Therefore it satisfies the review inclusion requirements for task-based whole-brain fMRI of problem-solving and coordinate reporting. Note: participant ages span 14\u201336; although some participants are adolescents, a healthy adult comparison group is reported separately (mean age ~21.7). If the review applies a strict minimum age cutoff (all participants >=18), this could reduce confidence; otherwise the study is eligible.",
+      "confidence": 0.75,
+      "model_used": "gpt-5-mini-2025-08-07",
+      "screening_type": "fulltext",
+      "timestamp": "2026-03-06T10:40:40.800246",
+      "inclusion_criteria_applied": [
+        "I5",
+        "I6",
+        "I7",
+        "I8"
+      ],
+      "exclusion_criteria_applied": []
+    },
+    {
+      "study_id": "22912831",
+      "decision": "included_fulltext",
+      "reason": "This study meets all inclusion criteria for the review: it is a task-based fMRI experiment with group-level whole-brain analyses (voxel-based contrasts and cluster-level inference), employs a multi-step problem-solving task (Raven\u2019s Standard Progressive Matrices; analytic items requiring analogical reasoning), includes a healthy adult control group (NC; ages matched to ASC) reported separately, and reports peak locations in MNI space for contrasts. It does not violate exclusion criteria (not ROI-only, not connectivity/resting-state only, not a review, and presents within-group task effects for healthy controls). Therefore it is eligible for inclusion.",
+      "confidence": 0.95,
+      "model_used": "gpt-5-mini-2025-08-07",
+      "screening_type": "fulltext",
+      "timestamp": "2026-03-06T10:40:20.936995",
+      "inclusion_criteria_applied": [
+        "I5",
+        "I6",
+        "I7",
+        "I8"
+      ],
+      "exclusion_criteria_applied": []
+    }
+  ],
+  "execution_stats": {
+    "search_completed": "2026-03-06T10:36:57.369271",
+    "studies_found": 314,
+    "search_engine": "pubmed",
+    "search_query": "problem solving, calculation, verbal reasoning, visuospatial reasoning, insight, deductive reasoning, inductive reasoning, or fluid reasoning",
+    "pmids_file": null,
+    "pmids_list": null,
+    "retrieval": {
+      "scope": "included only",
+      "total_considered": 16,
+      "local_found": 0,
+      "retrieved_or_cached": 4,
+      "missing_full_text": 12
+    },
+    "coordinate_parsing": {
+      "enabled": false,
+      "studies_with_tables": 0,
+      "tables_processed": 0
+    },
+    "annotation": {
+      "enabled": false,
+      "decisions": 0
+    },
+    "output_completed": "2026-03-06T10:40:40.809758",
+    "prisma_stats": {
+      "total_identified": 314,
+      "abstract_screened": 308,
+      "abstract_excluded": 292,
+      "fulltext_assessed": 4,
+      "fulltext_excluded": 0,
+      "final_included": 4
+    },
+    "final_included_count": 4
+  },
+  "errors": [],
+  "started_at": "2026-03-06T10:36:55.693801",
+  "completed_at": null
 }
