@@ -563,7 +563,7 @@ def main(
     print_stage(
         'fulltext',
         pre_line_templates=[
-            "Unavailable full text: {unavailable_full_text:,} "
+            "Unavailable gold-standard full text: {unavailable_full_text:,} "
             "({missing_full_text:,} missing, {incomplete_full_text:,} incomplete)"
         ],
         extra_counts=[
