@@ -1,0 +1,89 @@
+# Generic project config template for Autonima
+# Copy this file and replace all <...> placeholders.
+
+search:
+  database: "pubmed"
+  pmids_file: "<PATH_TO_PMIDS_FILE>"  # e.g., projects/<project_name>/validation_ids/all_pmids.txt
+  query: "<PUBMED_QUERY_STRING>"
+  max_results: 5000
+  email: "<YOUR_EMAIL@example.com>"
+  date_from: "<YYYY/MM/DD>"
+  date_to: "<YYYY/MM/DD>"
+
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "<PATH_TO_LOCAL_FULLTEXT_ROOT_1>"
+      pmid_source: "folder_name"  # or file_name depending on your corpus
+      text_path_templates:
+        - "text.txt"
+      coordinates_path_templates:
+        - "coordinates.json"
+    - root_path: "<PATH_TO_LOCAL_FULLTEXT_ROOT_2>"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "<PATH_TO_PROCESSED_DATA_DIR>"
+
+screening:
+  abstract:
+    model: "<MODEL_NAME>"  # e.g., gpt-5-mini-2025-08-07
+    objective: "<ONE_SENTENCE_REVIEW_OBJECTIVE>"
+    inclusion_criteria:
+      - "<ABSTRACT_INCLUSION_CRITERION_1>"
+      - "<ABSTRACT_INCLUSION_CRITERION_2>"
+    exclusion_criteria:
+      - "<ABSTRACT_EXCLUSION_CRITERION_1>"
+      - "<ABSTRACT_EXCLUSION_CRITERION_2>"
+    confidence_reporting: true
+
+  fulltext:
+    model: "<MODEL_NAME>"
+    confidence_reporting: true
+    objective: "<ONE_SENTENCE_REVIEW_OBJECTIVE>"
+    inclusion_criteria:
+      - "<FULLTEXT_INCLUSION_CRITERION_1>"
+      - "<FULLTEXT_INCLUSION_CRITERION_2>"
+      - "<FULLTEXT_INCLUSION_CRITERION_3>"
+    exclusion_criteria:
+      - "<FULLTEXT_EXCLUSION_CRITERION_1>"
+      - "<FULLTEXT_EXCLUSION_CRITERION_2>"
+      - "<FULLTEXT_EXCLUSION_CRITERION_3>"
+
+parsing:
+  parse_coordinates: true
+  coordinate_model: "<MODEL_NAME>"
+
+annotation:
+  enabled: true
+  model: "<MODEL_NAME>"
+  create_all_from_search_annotation: true
+  create_all_included_annotation: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_abstract"
+  inclusion_criteria:
+    - "<ANNOTATION_INCLUSION_CRITERION_1>"
+    - "<ANNOTATION_INCLUSION_CRITERION_2>"
+  exclusion_criteria:
+    - "<ANNOTATION_EXCLUSION_CRITERION_1>"
+    - "<ANNOTATION_EXCLUSION_CRITERION_2>"
+  annotations:
+    - name: "<ANNOTATION_SLUG_1>"
+      description: "<SHORT_DESCRIPTION_1>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_1>"
+    - name: "<ANNOTATION_SLUG_2>"
+      description: "<SHORT_DESCRIPTION_2>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_2>"
+
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true
