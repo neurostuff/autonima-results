@@ -16,9 +16,17 @@ def analyze_annotations(json_file_path, output_dir=None):
     with open(json_file_path, 'r') as f:
         data = json.load(f)
 
-    # Get available constructs from note_keys, excluding 'all_analyses'
+    # Get available constructs from note_keys, excluding system annotations.
     available_keys = list(data['note_keys'].keys())
-    constructs = [key for key in available_keys if key != 'all_analyses']
+    system_annotations = {
+        'all_analyses',
+        'all_studies',
+        'all_abstract',
+        # Legacy aggregate names
+        'all_search',
+        'all_abstract_screened',
+    }
+    constructs = [key for key in available_keys if key not in system_annotations]
     
     print(f"Found constructs: {constructs}")
     print()
