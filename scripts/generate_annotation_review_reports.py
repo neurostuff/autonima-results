@@ -13,25 +13,61 @@ from dataclasses import dataclass
 from html import escape
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 
-MANUAL_FILE_MAP = {
-    "social_processing_all": "ALL-Merged.json",
-    "affiliation_attachment": "Affiliation-Merged.json",
-    "perception_others": "Others-Merged.json",
-    "perception_self": "Self-Merged.json",
-    "social_communication": "SocComm-Merged.json",
+DEFAULT_ANNOTATION_NAMES = [
+    "social_processing_all",
+    "affiliation_attachment",
+    "perception_others",
+    "perception_self",
+    "social_communication",
+]
+
+DEFAULT_ANNOTATION_TO_NOTE_KEYS = {
+    "social_processing_all": ["all_merged"],
+    "affiliation_attachment": ["affiliation_merged"],
+    "perception_others": ["others_merged"],
+    "perception_self": ["self_merged"],
+    "social_communication": ["soccomm_merged"],
 }
 
-ANNOTATION_TO_NOTE_KEY = {
-    "social_processing_all": "all_merged",
-    "affiliation_attachment": "affiliation_merged",
-    "perception_others": "others_merged",
-    "perception_self": "self_merged",
-    "social_communication": "soccomm_merged",
+ACTIVE_ANNOTATION_NAMES = list(DEFAULT_ANNOTATION_NAMES)
+ACTIVE_ANNOTATION_TO_NOTE_KEYS = {
+    key: list(values) for key, values in DEFAULT_ANNOTATION_TO_NOTE_KEYS.items()
 }
 
 ANALYSIS_ID_RE = re.compile(r"^(?P<pmid>.+?)_analysis_(?P<index>\d+)$")
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent
+PROJECTS_ROOT = REPO_ROOT / "projects"
+MANUAL_NIMADS_ROOT = REPO_ROOT.parent / "neurometabench" / "data" / "nimads"
+REQUIRED_OUTPUT_FILES = ("annotation_results.json", "coordinate_parsing_results.json")
+CRITERIA_CONFUSION_LABELS = {"TP", "TN", "FP", "FN"}
+CRITERIA_ERROR_CATEGORY_RULES: dict[str, dict[str, str]] = {
+    "fn_inclusion_wrongly_failed": {
+        "label": "False Negative: inclusion criterion wrongly failed",
+        "confusion": "FN",
+        "criterion_type": "inclusion",
+    },
+    "fn_exclusion_wrongly_applied": {
+        "label": "False Negative: exclusion criterion wrongly applied",
+        "confusion": "FN",
+        "criterion_type": "exclusion",
+    },
+    "fp_inclusion_wrongly_applied": {
+        "label": "False Positive: inclusion criterion wrongly applied",
+        "confusion": "FP",
+        "criterion_type": "inclusion",
+    },
+    "fp_exclusion_missed_or_mishandled": {
+        "label": "False Positive: exclusion criterion missed/mishandled",
+        "confusion": "FP",
+        "criterion_type": "exclusion",
+    },
+}
+CRITERIA_ERROR_CATEGORY_ORDER = list(CRITERIA_ERROR_CATEGORY_RULES.keys())
 
 
 @dataclass
@@ -39,10 +75,34 @@ class Decision:
     include: bool
     reasoning: str
     analysis_id: str
+    inclusion_criteria_applied: list[str]
+    exclusion_criteria_applied: list[str]
 
 
 def clean_text(value: str) -> str:
     return "".join(ch for ch in str(value) if ch >= " " or ch in "\n\t\r")
+
+
+def dedupe_keep_order(values: list[str]) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        item = clean_text(value).strip()
+        if not item or item in seen:
+            continue
+        seen.add(item)
+        out.append(item)
+    return out
+
+
+def note_keys_for_annotation(annotation_name: str) -> list[str]:
+    manual_keys = list(ACTIVE_ANNOTATION_TO_NOTE_KEYS.get(annotation_name, []))
+    expanded: list[str] = [*manual_keys]
+    for key in manual_keys:
+        if key.endswith("_wbonly"):
+            expanded.append(key[: -len("_wbonly")])
+    expanded.append(annotation_name)
+    return dedupe_keep_order(expanded)
 
 
 def parse_args() -> argparse.Namespace:
@@ -52,8 +112,9 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=None,
         help=(
-            "Path to project output dir (e.g., .../annotation-only). "
-            "If omitted, auto-detect prefers annotation-only under projects/social/coordinates."
+            "Path to project run dir containing outputs/ (e.g., projects/cue_reactivity/v1 "
+            "or projects/social/coordinates/annotation-only). "
+            "If omitted, auto-detects the most recently updated run under projects/."
         ),
     )
     parser.add_argument(
@@ -77,51 +138,108 @@ def parse_args() -> argparse.Namespace:
             "into per-annotation manual truth."
         ),
     )
+    parser.add_argument(
+        "--annotation-mapping-path",
+        type=Path,
+        default=None,
+        help=(
+            "Optional path to project annotation mapping JSON (manual-key -> auto-annotation), "
+            "such as projects/<project>/nmb_mappings.json. "
+            "If omitted, attempts to load projects/{project_name}/nmb_mappings.json."
+        ),
+    )
     return parser.parse_args()
 
 
 def infer_project_output_dir(explicit_path: Path | None) -> Path:
     if explicit_path is not None:
-        return explicit_path
+        path = explicit_path.expanduser().resolve()
+        if not path.exists():
+            raise FileNotFoundError(f"--project-output-dir does not exist: {explicit_path}")
 
-    coordinates_root = Path("../autonima-results/projects/social/coordinates")
-    candidates: list[Path] = []
-    if coordinates_root.exists():
-        for entry in coordinates_root.iterdir():
-            if not entry.is_dir():
-                continue
-            outputs_dir = entry / "outputs"
-            if not outputs_dir.exists():
-                continue
-            if not (outputs_dir / "annotation_results.json").exists():
-                continue
-            candidates.append(entry)
+        direct_candidates = [path.parent] if path.name == "outputs" else [path]
+        for candidate in direct_candidates:
+            if is_valid_project_output_dir(candidate):
+                return candidate
 
-    pool = candidates
-    if not pool:
+        scoped_candidates = find_project_output_dirs_within(path)
+        if not scoped_candidates:
+            raise FileNotFoundError(
+                "Could not resolve a project output dir from --project-output-dir. "
+                "Expected a run directory containing outputs/annotation_results.json and "
+                "outputs/coordinate_parsing_results.json."
+            )
+        selected = max(scoped_candidates, key=annotation_result_mtime)
+        print(f"Auto-selected project output dir within {path}: {selected}")
+        return selected
+
+    if not PROJECTS_ROOT.exists():
         raise FileNotFoundError(
-            "Could not infer project output dir. Pass --project-output-dir explicitly."
+            f"Could not infer project output dir because projects root was not found: {PROJECTS_ROOT}. "
+            "Pass --project-output-dir explicitly."
         )
 
-    annotation_only = [c for c in pool if c.name == "annotation-only"]
-    if annotation_only:
-        selected = max(annotation_only, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
-        print(f"Auto-selected project output dir (annotation-only preferred): {selected}")
-        return selected
+    all_candidates: list[Path] = []
+    seen: set[Path] = set()
+    for project_dir in PROJECTS_ROOT.iterdir():
+        if not project_dir.is_dir():
+            continue
+        for candidate in find_project_output_dirs_within(project_dir):
+            resolved = candidate.resolve()
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            all_candidates.append(candidate)
 
-    preferred = [
-        c
-        for c in pool
-        if "search-all_pmids-studyann-ft" in c.name
-    ]
-    if preferred:
-        selected = max(preferred, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
-        print(f"Auto-selected project output dir (preferred pattern): {selected}")
-        return selected
+    if not all_candidates:
+        raise FileNotFoundError(
+            "Could not infer project output dir from projects/. Pass --project-output-dir explicitly."
+        )
 
-    latest = max(pool, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
-    print(f"Auto-selected project output dir: {latest}")
-    return latest
+    selected = max(all_candidates, key=annotation_result_mtime)
+    print(f"Auto-selected project output dir (most recently updated): {selected}")
+    return selected
+
+
+def is_valid_project_output_dir(path: Path) -> bool:
+    if not path.exists() or not path.is_dir():
+        return False
+    outputs_dir = path / "outputs"
+    return outputs_dir.exists() and all((outputs_dir / name).exists() for name in REQUIRED_OUTPUT_FILES)
+
+
+def annotation_result_mtime(project_output_dir: Path) -> float:
+    return (project_output_dir / "outputs" / "annotation_results.json").stat().st_mtime
+
+
+def find_project_output_dirs_within(root: Path) -> list[Path]:
+    if not root.exists() or not root.is_dir():
+        return []
+
+    candidates: list[Path] = []
+    seen: set[Path] = set()
+
+    def maybe_add(path: Path) -> None:
+        if not path.is_dir():
+            return
+        resolved = path.resolve()
+        if resolved in seen:
+            return
+        if is_valid_project_output_dir(path):
+            seen.add(resolved)
+            candidates.append(path)
+
+    maybe_add(root)
+
+    coordinates_dir = root / "coordinates"
+    if coordinates_dir.is_dir():
+        for entry in coordinates_dir.iterdir():
+            maybe_add(entry)
+
+    for entry in root.iterdir():
+        maybe_add(entry)
+
+    return candidates
 
 
 def resolve_dirs(project_output_dir: Path, args: argparse.Namespace) -> tuple[Path, Path]:
@@ -131,27 +249,95 @@ def resolve_dirs(project_output_dir: Path, args: argparse.Namespace) -> tuple[Pa
 
 
 def infer_project_name(project_output_dir: Path) -> str:
-    parts = list(project_output_dir.parts)
-    if "projects" in parts:
-        idx = parts.index("projects")
+    parts = list(project_output_dir.resolve().parts)
+    project_indices = [i for i, part in enumerate(parts) if part == "projects"]
+    if project_indices:
+        idx = project_indices[-1]
         if idx + 1 < len(parts):
             return parts[idx + 1]
-    return "social"
+    raise ValueError(
+        "Could not infer project name from project output dir. "
+        f"Expected path under projects/{{project_name}}/... but got: {project_output_dir}"
+    )
 
 
 def resolve_manual_annotation_path(project_output_dir: Path, explicit_path: Path | None) -> Path | None:
     if explicit_path is not None:
-        return explicit_path
+        return explicit_path.expanduser().resolve()
 
     project_name = infer_project_name(project_output_dir)
     candidates = [
-        Path(f"../neurometabench/data/nimads/{project_name}/merged/nimads_annotation.json"),
+        (MANUAL_NIMADS_ROOT / project_name / "merged" / "nimads_annotation.json").resolve(),
         project_output_dir / "outputs" / "nimads_annotation.json",
     ]
     for path in candidates:
         if path.exists():
+            print(f"Auto-selected manual annotation path: {path}")
             return path
     return None
+
+
+def resolve_project_annotation_mapping_path(
+    project_output_dir: Path,
+    explicit_path: Path | None,
+) -> Path | None:
+    if explicit_path is not None:
+        resolved = explicit_path.expanduser().resolve()
+        if not resolved.exists():
+            raise FileNotFoundError(f"--annotation-mapping-path does not exist: {explicit_path}")
+        return resolved
+
+    project_name = infer_project_name(project_output_dir)
+    inferred = (PROJECTS_ROOT / project_name / "nmb_mappings.json").resolve()
+    if inferred.exists():
+        return inferred
+    return None
+
+
+def configure_active_annotations(mapping_path: Path | None) -> None:
+    global ACTIVE_ANNOTATION_NAMES
+    global ACTIVE_ANNOTATION_TO_NOTE_KEYS
+
+    if mapping_path is None:
+        ACTIVE_ANNOTATION_NAMES = list(DEFAULT_ANNOTATION_NAMES)
+        ACTIVE_ANNOTATION_TO_NOTE_KEYS = {
+            key: list(values)
+            for key, values in DEFAULT_ANNOTATION_TO_NOTE_KEYS.items()
+        }
+        print(
+            "Using built-in social annotation mapping defaults; "
+            "no project nmb_mappings.json was found."
+        )
+        return
+
+    payload = load_json(mapping_path)
+    if not isinstance(payload, dict):
+        raise ValueError(f"Invalid annotation mapping format at {mapping_path}: expected JSON object")
+
+    annotation_names: list[str] = []
+    note_keys_by_annotation: dict[str, list[str]] = defaultdict(list)
+    for manual_key_raw, auto_annotation_raw in payload.items():
+        manual_key = clean_text(str(manual_key_raw)).strip()
+        auto_annotation = clean_text(str(auto_annotation_raw)).strip()
+        if not manual_key or not auto_annotation:
+            continue
+        if auto_annotation not in annotation_names:
+            annotation_names.append(auto_annotation)
+        note_keys_by_annotation[auto_annotation].append(manual_key)
+
+    annotation_names = dedupe_keep_order(annotation_names)
+    if not annotation_names:
+        raise ValueError(f"Annotation mapping at {mapping_path} did not contain any usable entries")
+
+    ACTIVE_ANNOTATION_NAMES = annotation_names
+    ACTIVE_ANNOTATION_TO_NOTE_KEYS = {
+        annotation: dedupe_keep_order(note_keys_by_annotation.get(annotation, []))
+        for annotation in annotation_names
+    }
+    print(
+        f"Loaded project annotation mapping from {mapping_path} "
+        f"({len(ACTIVE_ANNOTATION_NAMES)} annotations)."
+    )
 
 
 def load_json(path: Path) -> Any:
@@ -162,6 +348,248 @@ def load_json(path: Path) -> Any:
 def load_csv_rows(path: Path) -> list[dict[str, str]]:
     with path.open("r", encoding="utf-8", newline="") as f:
         return list(csv.DictReader(f))
+
+
+def normalize_criteria_items(section: Any) -> list[tuple[str, str]]:
+    items: list[tuple[str, str]] = []
+    if isinstance(section, dict):
+        for code, text in section.items():
+            code_text = clean_text(str(code)).strip()
+            item_text = clean_text(str(text)).strip()
+            if not item_text:
+                continue
+            items.append((code_text, item_text))
+        return items
+
+    if isinstance(section, list):
+        for idx, row in enumerate(section, start=1):
+            if isinstance(row, dict):
+                code = clean_text(str(row.get("id") or row.get("code") or row.get("key") or "")).strip()
+                text = clean_text(str(row.get("text") or row.get("description") or row.get("value") or "")).strip()
+                if not text:
+                    continue
+                items.append((code, text))
+            else:
+                text = clean_text(str(row)).strip()
+                if not text:
+                    continue
+                items.append((f"C{idx}", text))
+    return items
+
+
+def load_annotation_criteria(criteria_mapping_path: Path | None) -> dict[str, Any]:
+    empty = {"global": {"inclusion": [], "exclusion": []}, "annotations": {}}
+    if criteria_mapping_path is None or not criteria_mapping_path.exists():
+        return empty
+
+    payload = load_json(criteria_mapping_path)
+    annotation_block = payload.get("annotation", {}) if isinstance(payload, dict) else {}
+    if not isinstance(annotation_block, dict):
+        return empty
+
+    global_block = annotation_block.get("global", {})
+    global_inclusion = normalize_criteria_items(global_block.get("inclusion", {}) if isinstance(global_block, dict) else {})
+    global_exclusion = normalize_criteria_items(global_block.get("exclusion", {}) if isinstance(global_block, dict) else {})
+
+    annotations_out: dict[str, dict[str, list[tuple[str, str]]]] = {}
+    annotations_block = annotation_block.get("annotations", {})
+    if isinstance(annotations_block, dict):
+        for annotation_name, rule_block in annotations_block.items():
+            if not isinstance(rule_block, dict):
+                continue
+            annotations_out[str(annotation_name)] = {
+                "inclusion": normalize_criteria_items(rule_block.get("inclusion", {})),
+                "exclusion": normalize_criteria_items(rule_block.get("exclusion", {})),
+            }
+
+    return {
+        "global": {"inclusion": global_inclusion, "exclusion": global_exclusion},
+        "annotations": annotations_out,
+    }
+
+
+def build_annotation_criteria_metadata(
+    criteria: dict[str, Any] | None,
+    annotation_name: str,
+) -> dict[str, dict[str, str]]:
+    criteria = criteria or {}
+    metadata: dict[str, dict[str, str]] = {}
+
+    global_criteria = criteria.get("global", {}) if isinstance(criteria, dict) else {}
+    annotation_criteria = criteria.get("annotations", {}) if isinstance(criteria, dict) else {}
+    annotation_rules = (
+        annotation_criteria.get(annotation_name, {})
+        if isinstance(annotation_criteria, dict)
+        else {}
+    )
+
+    def add_items(scope: str, criterion_type: str, items: Any) -> None:
+        for raw_code, _raw_text in items if isinstance(items, list) else []:
+            code = clean_text(str(raw_code)).strip()
+            if not code:
+                continue
+            metadata[code] = {
+                "scope": scope,
+                "criterion_type": criterion_type,
+            }
+
+    if isinstance(global_criteria, dict):
+        add_items("global", "inclusion", global_criteria.get("inclusion", []))
+        add_items("global", "exclusion", global_criteria.get("exclusion", []))
+    if isinstance(annotation_rules, dict):
+        add_items("annotation", "inclusion", annotation_rules.get("inclusion", []))
+        add_items("annotation", "exclusion", annotation_rules.get("exclusion", []))
+
+    return metadata
+
+
+def compile_criteria_code_pattern(allowed_codes: set[str]) -> re.Pattern[str] | None:
+    if not allowed_codes:
+        return None
+    sorted_codes = sorted(allowed_codes, key=len, reverse=True)
+    return re.compile(r"\b(" + "|".join(re.escape(code) for code in sorted_codes) + r")\b")
+
+
+def extract_criteria_codes_from_reasoning(
+    reasoning: str,
+    pattern: re.Pattern[str] | None,
+) -> list[str]:
+    if pattern is None:
+        return []
+    text = clean_text(reasoning or "")
+    if not text:
+        return []
+    return dedupe_keep_order(list(pattern.findall(text)))
+
+
+def compute_criteria_error_analysis(
+    docs: dict[str, list[dict[str, Any]]],
+    annotation_name: str,
+    criteria: dict[str, Any] | None,
+) -> dict[str, Any]:
+    criterion_meta = build_annotation_criteria_metadata(criteria, annotation_name)
+    allowed_codes = set(criterion_meta.keys())
+    criteria_pattern = compile_criteria_code_pattern(allowed_codes)
+
+    rows_considered = 0
+    rows_with_codes = 0
+    rows_without_codes = 0
+    per_code_stats: dict[str, dict[str, Any]] = {}
+
+    for bucket_docs in docs.values():
+        for doc in bucket_docs:
+            for row in doc.get("analysis_rows", []):
+                confusion_label = clean_text(str(row.get("confusion_label", ""))).strip().upper()
+                if confusion_label not in CRITERIA_CONFUSION_LABELS:
+                    continue
+                rows_considered += 1
+
+                found_codes = extract_criteria_codes_from_reasoning(
+                    str(row.get("reasoning") or ""),
+                    criteria_pattern,
+                )
+                if not found_codes:
+                    rows_without_codes += 1
+                    continue
+
+                rows_with_codes += 1
+                for code in found_codes:
+                    meta = criterion_meta.get(code)
+                    if meta is None:
+                        continue
+
+                    entry = per_code_stats.setdefault(
+                        code,
+                        {
+                            "criterion": code,
+                            "scope": str(meta.get("scope", "")),
+                            "criterion_type": str(meta.get("criterion_type", "")),
+                            "correct_mentions": 0,
+                            "fp_mentions": 0,
+                            "fn_mentions": 0,
+                            **{category_id: 0 for category_id in CRITERIA_ERROR_CATEGORY_ORDER},
+                        },
+                    )
+
+                    if confusion_label in {"TP", "TN"}:
+                        entry["correct_mentions"] += 1
+                    if confusion_label == "FP":
+                        entry["fp_mentions"] += 1
+                    if confusion_label == "FN":
+                        entry["fn_mentions"] += 1
+
+                    for category_id, category_rule in CRITERIA_ERROR_CATEGORY_RULES.items():
+                        if (
+                            confusion_label == category_rule["confusion"]
+                            and entry["criterion_type"] == category_rule["criterion_type"]
+                        ):
+                            entry[category_id] += 1
+
+    per_code_out: dict[str, dict[str, Any]] = {}
+    for code, entry in per_code_stats.items():
+        correct_mentions = int(entry.get("correct_mentions", 0))
+        fp_mentions = int(entry.get("fp_mentions", 0))
+        fn_mentions = int(entry.get("fn_mentions", 0))
+        enriched = {
+            "criterion": code,
+            "scope": str(entry.get("scope", "")),
+            "criterion_type": str(entry.get("criterion_type", "")),
+            "correct_mentions": correct_mentions,
+            "fp_mentions": fp_mentions,
+            "fn_mentions": fn_mentions,
+            "error_mentions": int(fp_mentions + fn_mentions),
+        }
+        for category_id in CRITERIA_ERROR_CATEGORY_ORDER:
+            category_error_mentions = int(entry.get(category_id, 0))
+            enriched[category_id] = category_error_mentions
+            enriched[f"{category_id}_rate_vs_correct"] = float(category_error_mentions / max(1, correct_mentions))
+            enriched[f"{category_id}_minus_correct"] = int(category_error_mentions - correct_mentions)
+        per_code_out[code] = enriched
+
+    ranked_categories: dict[str, list[dict[str, Any]]] = {}
+    for category_id in CRITERIA_ERROR_CATEGORY_ORDER:
+        rows: list[dict[str, Any]] = []
+        for code, entry in per_code_out.items():
+            error_mentions = int(entry.get(category_id, 0))
+            if error_mentions <= 0:
+                continue
+            correct_mentions = int(entry.get("correct_mentions", 0))
+            rows.append(
+                {
+                    "criterion": code,
+                    "scope": str(entry.get("scope", "")),
+                    "criterion_type": str(entry.get("criterion_type", "")),
+                    "category": category_id,
+                    "category_label": CRITERIA_ERROR_CATEGORY_RULES[category_id]["label"],
+                    "error_mentions": error_mentions,
+                    "correct_mentions": correct_mentions,
+                    "error_rate_vs_correct": float(error_mentions / max(1, correct_mentions)),
+                    "error_minus_correct": int(error_mentions - correct_mentions),
+                    "fp_mentions": int(entry.get("fp_mentions", 0)),
+                    "fn_mentions": int(entry.get("fn_mentions", 0)),
+                }
+            )
+
+        rows.sort(
+            key=lambda row: (
+                -float(row.get("error_rate_vs_correct", 0.0)),
+                -int(row.get("error_mentions", 0)),
+                str(row.get("criterion", "")),
+            )
+        )
+        ranked_categories[category_id] = rows
+
+    return {
+        "coverage": {
+            "analysis_rows_considered": int(rows_considered),
+            "rows_with_codes": int(rows_with_codes),
+            "rows_without_codes": int(rows_without_codes),
+            "coverage_rate": float(rows_with_codes / max(1, rows_considered)),
+            "allowed_criteria_codes": int(len(allowed_codes)),
+        },
+        "per_code": per_code_out,
+        "ranked_categories": ranked_categories,
+    }
 
 
 def local_name(tag: str) -> str:
@@ -291,6 +719,12 @@ def load_auto_parsed_analysis_info(path: Path) -> dict[str, list[dict[str, str]]
 def load_model_decisions(path: Path) -> dict[str, dict[str, dict[int, Decision]]]:
     rows = load_json(path)
     decisions: dict[str, dict[str, dict[int, Decision]]] = defaultdict(lambda: defaultdict(dict))
+
+    def parse_applied_codes(value: Any) -> list[str]:
+        if not isinstance(value, list):
+            return []
+        return dedupe_keep_order([str(item) for item in value if clean_text(str(item)).strip()])
+
     for row in rows:
         analysis_id = str(row.get("analysis_id", ""))
         match = ANALYSIS_ID_RE.match(analysis_id)
@@ -303,6 +737,8 @@ def load_model_decisions(path: Path) -> dict[str, dict[str, dict[int, Decision]]
             include=bool(row.get("include", False)),
             reasoning=clean_text(row.get("reasoning") or ""),
             analysis_id=analysis_id,
+            inclusion_criteria_applied=parse_applied_codes(row.get("inclusion_criteria_applied")),
+            exclusion_criteria_applied=parse_applied_codes(row.get("exclusion_criteria_applied")),
         )
     return decisions
 
@@ -343,8 +779,8 @@ def load_study_pmid_sets_from_annotations(
     auto_annotation_path: Path | None,
     manual_annotation_path: Path | None,
 ) -> tuple[set[str], dict[str, set[str]], dict[str, set[str]]]:
-    auto_grouped: dict[str, set[str]] = {annotation: set() for annotation in MANUAL_FILE_MAP}
-    manual_grouped: dict[str, set[str]] = {annotation: set() for annotation in MANUAL_FILE_MAP}
+    auto_grouped: dict[str, set[str]] = {annotation: set() for annotation in ACTIVE_ANNOTATION_NAMES}
+    manual_grouped: dict[str, set[str]] = {annotation: set() for annotation in ACTIVE_ANNOTATION_NAMES}
     unique_pmids_in_auto: set[str] = set()
 
     if auto_annotation_path is not None and auto_annotation_path.exists():
@@ -359,7 +795,7 @@ def load_study_pmid_sets_from_annotations(
             note_obj = note.get("note", {})
             if not isinstance(note_obj, dict):
                 continue
-            for annotation in MANUAL_FILE_MAP:
+            for annotation in ACTIVE_ANNOTATION_NAMES:
                 if bool(note_obj.get(annotation, False)):
                     auto_grouped[annotation].add(pmid)
 
@@ -374,11 +810,9 @@ def load_study_pmid_sets_from_annotations(
             note_obj = note.get("note", {})
             if not isinstance(note_obj, dict):
                 continue
-            for annotation in MANUAL_FILE_MAP:
-                manual_key = ANNOTATION_TO_NOTE_KEY.get(annotation, annotation)
-                included = bool(note_obj.get(manual_key, False))
-                if not included and manual_key != annotation:
-                    included = bool(note_obj.get(annotation, False))
+            for annotation in ACTIVE_ANNOTATION_NAMES:
+                candidate_keys = note_keys_for_annotation(annotation)
+                included = any(bool(note_obj.get(key, False)) for key in candidate_keys)
                 if included:
                     manual_grouped[annotation].add(pmid)
 
@@ -388,7 +822,7 @@ def load_study_pmid_sets_from_annotations(
 def load_match_results_by_annotation(match_input_dir: Path) -> tuple[dict[str, Any], bool]:
     results: dict[str, Any] = {}
     missing_per_annotation: list[str] = []
-    for annotation_name in MANUAL_FILE_MAP:
+    for annotation_name in ACTIVE_ANNOTATION_NAMES:
         path = match_input_dir / f"match_results_{annotation_name}.json"
         if not path.exists():
             missing_per_annotation.append(annotation_name)
@@ -404,7 +838,7 @@ def load_match_results_by_annotation(match_input_dir: Path) -> tuple[dict[str, A
             overall_path = alt_overall_path
     if overall_path.exists():
         overall = load_json(overall_path)
-        for annotation_name in MANUAL_FILE_MAP:
+        for annotation_name in ACTIVE_ANNOTATION_NAMES:
             results[annotation_name] = overall
         print(
             "Using match_results_overall.json fallback for per-annotation reports. "
@@ -430,7 +864,7 @@ def build_manual_truth_from_match_results(
     manual_truth: dict[str, dict[str, dict[str, Any]]] = defaultdict(dict)
 
     for annotation_name, match_results in match_results_by_annotation.items():
-        target_note_key = ANNOTATION_TO_NOTE_KEY.get(annotation_name)
+        target_note_keys = note_keys_for_annotation(annotation_name)
         for pmid, pmid_result in match_results.get("pmids", {}).items():
             manual_analyses = list(pmid_result.get("manual_analyses", []))
             review_match_diagnostics = list(manual_analyses)
@@ -439,9 +873,7 @@ def build_manual_truth_from_match_results(
                 for entry in manual_analyses:
                     analysis_id = clean_text(entry.get("manual_analysis_id", "")).strip()
                     auto_analysis_id = clean_text(entry.get("best_auto_analysis_id", "")).strip()
-                    candidate_keys = [annotation_name]
-                    if target_note_key and target_note_key != annotation_name:
-                        candidate_keys.insert(0, target_note_key)
+                    candidate_keys = target_note_keys
 
                     include_for_annotation = False
                     note_manual = manual_annotation_membership.get(analysis_id, {})
@@ -587,6 +1019,16 @@ def make_document_row(
                 "confusion_class": confusion_class,
                 "matched_for_review": matched_for_review,
                 "reasoning": "" if decision is None else decision.reasoning,
+                "inclusion_criteria_applied": (
+                    []
+                    if decision is None
+                    else list(decision.inclusion_criteria_applied)
+                ),
+                "exclusion_criteria_applied": (
+                    []
+                    if decision is None
+                    else list(decision.exclusion_criteria_applied)
+                ),
                 "manual_include": manual_include,
                 "correct": idx in correct_indices,
             }
@@ -631,6 +1073,7 @@ def classify_documents(
     parsed_analyses: dict[str, list[dict[str, str]]],
     model_decisions: dict[str, dict[str, dict[int, Decision]]],
     manual_truth: dict[str, dict[str, dict[str, Any]]],
+    criteria: dict[str, Any] | None,
     pmid_to_fulltext: dict[str, dict[str, str]],
     pmid_to_coord_tables: dict[str, list[dict[str, str]]],
     study_universe_pmids: set[str] | None = None,
@@ -813,6 +1256,11 @@ def classify_documents(
         [pmid for pmid, entry in ann_truth.items() if entry.get("manual_missing_in_auto")],
         key=lambda x: (len(x), x),
     )
+    criteria_error_analysis = compute_criteria_error_analysis(
+        docs=docs,
+        annotation_name=annotation_name,
+        criteria=criteria,
+    )
 
     metrics: dict[str, Any] = {
         "tp": int(document_metrics["tp"]),
@@ -826,6 +1274,7 @@ def classify_documents(
         "analysis_metrics": analysis_metrics,
         "bucket_match_counts": bucket_match_counts,
         "missing_manual_pmids": missing_manual_pmids,
+        "criteria_error_analysis": criteria_error_analysis,
     }
     return docs, metrics
 
@@ -871,7 +1320,108 @@ def render_match_diagnostics(match_rows: list[dict[str, Any]]) -> str:
     )
 
 
-def render_doc_card(doc: dict[str, Any]) -> str:
+def classify_criterion_status_for_row(
+    inclusion_criteria_applied: list[str],
+    exclusion_criteria_applied: list[str],
+    criterion_meta: dict[str, dict[str, str]],
+) -> dict[str, list[str]]:
+    inclusion_codes = [
+        code
+        for code, meta in criterion_meta.items()
+        if str(meta.get("criterion_type", "")).lower() == "inclusion"
+    ]
+    exclusion_codes = [
+        code
+        for code, meta in criterion_meta.items()
+        if str(meta.get("criterion_type", "")).lower() == "exclusion"
+    ]
+
+    inclusion_met = [code for code in inclusion_codes if code in inclusion_criteria_applied]
+    exclusion_met = [code for code in exclusion_codes if code in exclusion_criteria_applied]
+
+    inclusion_not_met = [code for code in inclusion_codes if code not in inclusion_met]
+    exclusion_not_met = [code for code in exclusion_codes if code not in exclusion_met]
+
+    unknown_applied = [
+        code
+        for code in dedupe_keep_order([*inclusion_criteria_applied, *exclusion_criteria_applied])
+        if code not in criterion_meta
+    ]
+    return {
+        "inclusion_met": inclusion_met,
+        "inclusion_not_met": inclusion_not_met,
+        "exclusion_not_met": exclusion_not_met,
+        "exclusion_met": exclusion_met,
+        "unknown_applied": unknown_applied,
+    }
+
+
+def render_criteria_checks_cell(
+    row: dict[str, Any],
+    criterion_meta: dict[str, dict[str, str]],
+) -> str:
+    if not criterion_meta:
+        return "<span class=\"muted\">No criteria mapping loaded.</span>"
+
+    status = classify_criterion_status_for_row(
+        inclusion_criteria_applied=list(row.get("inclusion_criteria_applied", []) or []),
+        exclusion_criteria_applied=list(row.get("exclusion_criteria_applied", []) or []),
+        criterion_meta=criterion_meta,
+    )
+
+    def render_pills(codes: list[str], pill_class: str, empty_label: str) -> str:
+        if not codes:
+            return f"<span class=\"muted\">{escape(empty_label)}</span>"
+        pills = []
+        for code in codes:
+            meta = criterion_meta.get(code, {})
+            title = clean_text(str(meta.get("text", ""))).strip()
+            title_attr = escape(f"{code}: {title}") if title else escape(code)
+            pills.append(
+                f"<span class=\"criteria-pill {escape(pill_class)}\" title=\"{title_attr}\">{escape(code)}</span>"
+            )
+        return "".join(pills)
+
+    unknown_applied = status.get("unknown_applied", [])
+    unknown_html = ""
+    if unknown_applied:
+        unknown_html = (
+            "<div class=\"criteria-status-row\">"
+            "<span class=\"criteria-status-label\">Unknown codes</span>"
+            + "".join(
+                f"<span class=\"criteria-pill criteria-unknown\">{escape(code)}</span>"
+                for code in unknown_applied
+            )
+            + "</div>"
+        )
+
+    return (
+        "<div class=\"criteria-status-wrap\">"
+        "<div class=\"criteria-status-row\">"
+        "<span class=\"criteria-status-label\">Incl met</span>"
+        f"{render_pills(status['inclusion_met'], 'criteria-good', 'none')}"
+        "</div>"
+        "<div class=\"criteria-status-row\">"
+        "<span class=\"criteria-status-label\">Incl not met</span>"
+        f"{render_pills(status['inclusion_not_met'], 'criteria-bad', 'none')}"
+        "</div>"
+        "<div class=\"criteria-status-row\">"
+        "<span class=\"criteria-status-label\">Excl not met</span>"
+        f"{render_pills(status['exclusion_not_met'], 'criteria-good', 'none')}"
+        "</div>"
+        "<div class=\"criteria-status-row\">"
+        "<span class=\"criteria-status-label\">Excl met</span>"
+        f"{render_pills(status['exclusion_met'], 'criteria-bad', 'none')}"
+        "</div>"
+        f"{unknown_html}"
+        "</div>"
+    )
+
+
+def render_doc_card(
+    doc: dict[str, Any],
+    criterion_meta: dict[str, dict[str, str]],
+) -> str:
     status_counts = doc.get("status_counts", {})
     status_meta = (
         f"accepted={int(status_counts.get('accepted', 0))}, "
@@ -965,6 +1515,7 @@ def render_doc_card(doc: dict[str, Any]) -> str:
                 f"<td>{parsed_name_html}</td>"
                 f"<td class=\"decision-cell\"><span class=\"decision-pill {escape(row['model_decision_class'])}\">{escape(row['model_decision_icon'])}</span></td>"
                 f"<td class=\"confusion-cell\"><span class=\"confusion-pill {escape(row['confusion_class'])}\">{escape(row['confusion_label'])}</span></td>"
+                f"<td>{render_criteria_checks_cell(row, criterion_meta)}</td>"
                 f"<td>{escape(row['reasoning'])}</td>"
                 "</tr>"
             )
@@ -980,6 +1531,7 @@ def render_doc_card(doc: dict[str, Any]) -> str:
             "<col class=\"col-parsed-name\">"
             "<col class=\"col-model-decision\">"
             "<col class=\"col-matched-outcome\">"
+            "<col class=\"col-criteria-checks\">"
             "<col class=\"col-reasoning\">"
             "</colgroup>"
             "<thead>"
@@ -988,6 +1540,7 @@ def render_doc_card(doc: dict[str, Any]) -> str:
             "<th>Parsed Analysis Name</th>"
             "<th>Model Decision</th>"
             "<th>Matched Outcome</th>"
+            "<th>Criteria Checks</th>"
             "<th>Model Reasoning</th>"
             "</tr>"
             "</thead>"
@@ -1068,7 +1621,15 @@ def render_doc_card(doc: dict[str, Any]) -> str:
 """
 
 
-def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], metrics: dict[str, Any]) -> str:
+def render_html(
+    annotation_name: str,
+    docs: dict[str, list[dict[str, Any]]],
+    metrics: dict[str, Any],
+    criteria: dict[str, Any] | None = None,
+) -> str:
+    criteria = criteria or {}
+    criterion_meta = build_annotation_criteria_metadata(criteria, annotation_name)
+
     bucket_ids = {
         "Correct": "bucket-correct",
         "False Positive": "bucket-false-positive",
@@ -1086,7 +1647,10 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
             ),
         )
         if cards:
-            body = "\n".join(render_doc_card(card) for card in cards)
+            body = "\n".join(
+                render_doc_card(card, criterion_meta=criterion_meta)
+                for card in cards
+            )
         else:
             body = "<p>No documents in this bucket.</p>"
 
@@ -1147,6 +1711,125 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
             "</section>"
         )
 
+    global_criteria = criteria.get("global", {}) if isinstance(criteria, dict) else {}
+    per_annotation = criteria.get("annotations", {}) if isinstance(criteria, dict) else {}
+    annotation_criteria = (
+        per_annotation.get(annotation_name, {})
+        if isinstance(per_annotation, dict)
+        else {}
+    )
+
+    def render_criteria_items(items: list[tuple[str, str]]) -> str:
+        if not items:
+            return "<p class=\"muted\">None specified.</p>"
+        lines = []
+        for code, text in items:
+            code_text = clean_text(str(code)).strip()
+            text_value = clean_text(str(text)).strip()
+            if code_text:
+                lines.append(f"<li><strong>{escape(code_text)}:</strong> {escape(text_value)}</li>")
+            else:
+                lines.append(f"<li>{escape(text_value)}</li>")
+        return "<ul class=\"criteria-list\">" + "".join(lines) + "</ul>"
+
+    global_inclusion = list(global_criteria.get("inclusion", [])) if isinstance(global_criteria, dict) else []
+    global_exclusion = list(global_criteria.get("exclusion", [])) if isinstance(global_criteria, dict) else []
+    annotation_inclusion = list(annotation_criteria.get("inclusion", [])) if isinstance(annotation_criteria, dict) else []
+    annotation_exclusion = list(annotation_criteria.get("exclusion", [])) if isinstance(annotation_criteria, dict) else []
+
+    criteria_html = (
+        "<section id=\"criteria\" class=\"criteria-panel\">"
+        "<h2>Inclusion / Exclusion Criteria</h2>"
+        "<div class=\"criteria-block\">"
+        "<h3>Global Criteria</h3>"
+        "<div class=\"criteria-grid\">"
+        "<div><h4>Inclusion</h4>{global_inclusion}</div>"
+        "<div><h4>Exclusion</h4>{global_exclusion}</div>"
+        "</div>"
+        "</div>"
+        "<div class=\"criteria-block\">"
+        "<h3>Annotation-Specific Criteria ({annotation_name})</h3>"
+        "<div class=\"criteria-grid\">"
+        "<div><h4>Inclusion</h4>{annotation_inclusion}</div>"
+        "<div><h4>Exclusion</h4>{annotation_exclusion}</div>"
+        "</div>"
+        "</div>"
+        "</section>"
+    ).format(
+        global_inclusion=render_criteria_items(global_inclusion),
+        global_exclusion=render_criteria_items(global_exclusion),
+        annotation_name=escape(annotation_name),
+        annotation_inclusion=render_criteria_items(annotation_inclusion),
+        annotation_exclusion=render_criteria_items(annotation_exclusion),
+    )
+
+    criteria_error_analysis = metrics.get("criteria_error_analysis", {})
+    criteria_error_coverage = (
+        criteria_error_analysis.get("coverage", {})
+        if isinstance(criteria_error_analysis, dict)
+        else {}
+    )
+    criteria_error_ranked = (
+        criteria_error_analysis.get("ranked_categories", {})
+        if isinstance(criteria_error_analysis, dict)
+        else {}
+    )
+
+    def render_criteria_error_table(category_id: str) -> str:
+        rows = list(criteria_error_ranked.get(category_id, [])) if isinstance(criteria_error_ranked, dict) else []
+        if not rows:
+            return "<p class=\"muted\">No criteria IDs from this category were detected in misclassified analyses.</p>"
+
+        body_rows = []
+        for row in rows:
+            body_rows.append(
+                "<tr>"
+                f"<td>{escape(str(row.get('criterion', '')))}</td>"
+                f"<td>{escape(str(row.get('criterion_type', '')))}</td>"
+                f"<td>{int(row.get('error_mentions', 0))}</td>"
+                f"<td>{int(row.get('correct_mentions', 0))}</td>"
+                f"<td>{float(row.get('error_rate_vs_correct', 0.0)):.3f}</td>"
+                "</tr>"
+            )
+        return (
+            "<div class=\"table-wrap\">"
+            "<table class=\"criteria-error-table\">"
+            "<thead><tr>"
+            "<th>Criterion</th>"
+            "<th>Type (Inclusion/Exclusion)</th>"
+            "<th>Error Mentions</th>"
+            "<th>Correct Mentions</th>"
+            "<th>Error Rate vs Correct</th>"
+            "</tr></thead>"
+            f"<tbody>{''.join(body_rows)}</tbody>"
+            "</table>"
+            "</div>"
+        )
+
+    criteria_error_sections = []
+    for category_id in CRITERIA_ERROR_CATEGORY_ORDER:
+        label = CRITERIA_ERROR_CATEGORY_RULES[category_id]["label"]
+        criteria_error_sections.append(
+            "<div class=\"criteria-error-block\">"
+            f"<h3>{escape(label)}</h3>"
+            f"{render_criteria_error_table(category_id)}"
+            "</div>"
+        )
+
+    criteria_error_html = (
+        "<section id=\"criteria-errors\" class=\"criteria-panel\">"
+        "<h2>Commonly Misapplied Criteria</h2>"
+        "<p class=\"muted\">"
+        "Computed at analysis level from explicit criterion IDs in model reasoning. "
+        f"Rows considered={int(criteria_error_coverage.get('analysis_rows_considered', 0))}, "
+        f"rows with criteria IDs={int(criteria_error_coverage.get('rows_with_codes', 0))}, "
+        f"rows without criteria IDs={int(criteria_error_coverage.get('rows_without_codes', 0))}, "
+        f"coverage={float(criteria_error_coverage.get('coverage_rate', 0.0)):.3f}."
+        "</p>"
+        f"{''.join(criteria_error_sections)}"
+        "</section>"
+    )
+
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1198,11 +1881,39 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
     .muted {{ color: #5b6775; font-size: 0.84rem; }}
     .analysis-review-table {{ table-layout: fixed; width: 100%; }}
     .analysis-review-table th, .analysis-review-table td {{ overflow-wrap: anywhere; word-break: normal; }}
-    .analysis-review-table col.col-analysis-id {{ width: 15%; }}
-    .analysis-review-table col.col-parsed-name {{ width: 24%; }}
-    .analysis-review-table col.col-model-decision {{ width: 8%; }}
-    .analysis-review-table col.col-matched-outcome {{ width: 10%; }}
-    .analysis-review-table col.col-reasoning {{ width: 43%; }}
+    .analysis-review-table col.col-analysis-id {{ width: 12%; }}
+    .analysis-review-table col.col-parsed-name {{ width: 21%; }}
+    .analysis-review-table col.col-model-decision {{ width: 7%; }}
+    .analysis-review-table col.col-matched-outcome {{ width: 8%; }}
+    .analysis-review-table col.col-criteria-checks {{ width: 27%; }}
+    .analysis-review-table col.col-reasoning {{ width: 25%; }}
+    .criteria-status-wrap {{ display: grid; gap: 0.3rem; }}
+    .criteria-status-row {{ display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; }}
+    .criteria-status-label {{ min-width: 6.5rem; font-weight: 600; font-size: 0.77rem; color: #334155; }}
+    .criteria-pill {{
+      display: inline-flex;
+      align-items: center;
+      padding: 0.08rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.76rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }}
+    .criteria-pill.criteria-good {{ background: #e9f8ef; color: #166534; border-color: #b7e4c6; }}
+    .criteria-pill.criteria-bad {{ background: #fdecec; color: #991b1b; border-color: #f6caca; }}
+    .criteria-pill.criteria-unknown {{ background: #eef2f7; color: #334155; border-color: #cbd5e1; }}
+    .criteria-panel {{ margin-top: 1rem; border-top: 1px solid var(--line); padding-top: 0.8rem; }}
+    .criteria-panel h2 {{ margin: 0 0 0.7rem 0; }}
+    .criteria-block {{ background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.65rem; margin-bottom: 0.7rem; }}
+    .criteria-block h3 {{ margin: 0 0 0.45rem 0; font-size: 1rem; }}
+    .criteria-block h4 {{ margin: 0 0 0.35rem 0; font-size: 0.92rem; }}
+    .criteria-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }}
+    .criteria-list {{ margin: 0; padding-left: 1.1rem; }}
+    .criteria-list li {{ margin: 0.2rem 0; }}
+    .criteria-error-block {{ background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.65rem; margin-bottom: 0.7rem; }}
+    .criteria-error-block h3 {{ margin: 0 0 0.45rem 0; font-size: 1rem; }}
+    @media (max-width: 900px) {{ .criteria-grid {{ grid-template-columns: 1fr; }} }}
     a {{ color: #0e4f85; }}
   </style>
 </head>
@@ -1211,6 +1922,7 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
     <a id="top"></a>
     <h1>{escape(annotation_name)} report</h1>
     <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. Analysis-level row is evaluated on overall fuzzy-matched auto analyses (truth positives are annotation-sliced accepted matches only).</p>
+    <p class="muted">Criteria Checks are computed from explicit model outputs in <code>outputs/annotation_results.json</code> (<code>inclusion_criteria_applied</code>, <code>exclusion_criteria_applied</code>), not inferred from free-text reasoning.</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -1269,12 +1981,16 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
     </div>
   </header>
   <nav class="top-nav">
+    <a href="#criteria">Criteria</a>
+    <a href="#criteria-errors">Criteria Errors</a>
     <a href="#bucket-correct">Correct ({len(docs['Correct'])})</a>
     <a href="#bucket-false-positive">False Positive ({len(docs['False Positive'])})</a>
     <a href="#bucket-false-negative">False Negative ({len(docs['False Negative'])})</a>
     <a href="#missing-manual">Missing PMIDs ({len(missing_pmids)})</a>
     <a href="#top">Top</a>
   </nav>
+  {criteria_html}
+  {criteria_error_html}
   {''.join(sections)}
   {missing_html}
 </body>
@@ -1285,7 +2001,9 @@ def render_html(annotation_name: str, docs: dict[str, list[dict[str, Any]]], met
 def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]) -> str:
     rows: list[dict[str, Any]] = []
     analysis_rows: list[dict[str, Any]] = []
-    for annotation_name in MANUAL_FILE_MAP:
+    criteria_global_rows: list[dict[str, Any]] = []
+    criteria_annotation_rows: list[dict[str, Any]] = []
+    for annotation_name in ACTIVE_ANNOTATION_NAMES:
         metrics = metrics_by_annotation.get(annotation_name, {})
         study = metrics.get("study_metrics", {})
         analysis = metrics.get("analysis_metrics", {})
@@ -1334,6 +2052,35 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
                 "analysis_universe": int(analysis.get("analysis_universe", 0)),
             }
         )
+
+        criteria_error_analysis = metrics.get("criteria_error_analysis", {})
+        ranked_categories = (
+            criteria_error_analysis.get("ranked_categories", {})
+            if isinstance(criteria_error_analysis, dict)
+            else {}
+        )
+        for category_id in CRITERIA_ERROR_CATEGORY_ORDER:
+            category_rows = (
+                ranked_categories.get(category_id, [])
+                if isinstance(ranked_categories, dict)
+                else []
+            )
+            for item in category_rows:
+                row = {
+                    "annotation": annotation_name,
+                    "annotation_href": f"{quote(annotation_name)}.html",
+                    "category": CRITERIA_ERROR_CATEGORY_RULES[category_id]["label"],
+                    "criterion": str(item.get("criterion", "")),
+                    "criterion_type": str(item.get("criterion_type", "")),
+                    "scope": str(item.get("scope", "")),
+                    "error_mentions": int(item.get("error_mentions", 0)),
+                    "correct_mentions": int(item.get("correct_mentions", 0)),
+                    "error_rate_vs_correct": float(item.get("error_rate_vs_correct", 0.0)),
+                }
+                if row["scope"] == "global":
+                    criteria_global_rows.append(row)
+                else:
+                    criteria_annotation_rows.append(row)
 
     if rows:
         macro_precision = sum(r["precision"] for r in rows) / len(rows)
@@ -1402,11 +2149,57 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
             "</div>"
         )
 
+    def render_annotation_link(annotation: str) -> str:
+        href = f"{quote(annotation)}.html"
+        return f"<a href=\"{escape(href)}\">{escape(annotation)}</a>"
+
+    def render_cross_annotation_criteria_table(table_rows: list[dict[str, Any]]) -> str:
+        if not table_rows:
+            return "<p class=\"muted\">No criteria misapplication rows found.</p>"
+        sorted_rows = sorted(
+            table_rows,
+            key=lambda row: (
+                -float(row.get("error_rate_vs_correct", 0.0)),
+                -int(row.get("error_mentions", 0)),
+                str(row.get("annotation", "")),
+                str(row.get("criterion", "")),
+            ),
+        )
+        html_rows = []
+        for row in sorted_rows:
+            html_rows.append(
+                "<tr>"
+                f"<td><a href=\"{escape(str(row.get('annotation_href', '')))}\">{escape(str(row.get('annotation', '')))}</a></td>"
+                f"<td>{escape(str(row.get('category', '')))}</td>"
+                f"<td>{escape(str(row.get('criterion', '')))}</td>"
+                f"<td>{escape(str(row.get('criterion_type', '')))}</td>"
+                f"<td>{int(row.get('error_mentions', 0))}</td>"
+                f"<td>{int(row.get('correct_mentions', 0))}</td>"
+                f"<td>{float(row.get('error_rate_vs_correct', 0.0)):.3f}</td>"
+                "</tr>"
+            )
+        return (
+            "<div class=\"table-wrap\">"
+            "<table>"
+            "<thead><tr>"
+            "<th>Annotation</th>"
+            "<th>Error Category</th>"
+            "<th>Criterion</th>"
+            "<th>Type (Inclusion/Exclusion)</th>"
+            "<th>Error Mentions</th>"
+            "<th>Correct Mentions</th>"
+            "<th>Error Rate vs Correct</th>"
+            "</tr></thead>"
+            f"<tbody>{''.join(html_rows)}</tbody>"
+            "</table>"
+            "</div>"
+        )
+
     row_html: list[str] = []
     for row in rows:
         row_html.append(
             "<tr>"
-            f"<td>{escape(row['annotation'])}</td>"
+            f"<td>{render_annotation_link(row['annotation'])}</td>"
             f"<td>{row['overlap_pmids']}</td>"
             f"<td>{row['manual_studies']}</td>"
             f"<td>{row['predicted_studies']}</td>"
@@ -1427,7 +2220,7 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
     for row in analysis_rows:
         analysis_row_html.append(
             "<tr>"
-            f"<td>{escape(row['annotation'])}</td>"
+            f"<td>{render_annotation_link(row['annotation'])}</td>"
             f"<td>{row['analysis_universe']}</td>"
             f"<td>{row['manual_accepted_analyses']}</td>"
             f"<td>{row['predicted_analyses']}</td>"
@@ -1602,6 +2395,16 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
       </table>
     </div>
   </section>
+  <section>
+    <h2>Cross-Annotation Criteria Misapplication (Global Criteria)</h2>
+    <p>Aggregated from per-annotation criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
+    {render_cross_annotation_criteria_table(criteria_global_rows)}
+  </section>
+  <section>
+    <h2>Cross-Annotation Criteria Misapplication (Annotation-Specific Criteria)</h2>
+    <p>Aggregated from per-annotation criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
+    {render_cross_annotation_criteria_table(criteria_annotation_rows)}
+  </section>
 </body>
 </html>
 """
@@ -1610,13 +2413,22 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
 def main() -> None:
     args = parse_args()
     project_output_dir = infer_project_output_dir(args.project_output_dir)
+    annotation_mapping_path = resolve_project_annotation_mapping_path(
+        project_output_dir,
+        args.annotation_mapping_path,
+    )
+    configure_active_annotations(annotation_mapping_path)
     output_dir, match_input_dir = resolve_dirs(project_output_dir, args)
 
     annotation_results = project_output_dir / "outputs" / "annotation_results.json"
     coordinate_parsing_results = project_output_dir / "outputs" / "coordinate_parsing_results.json"
     auto_annotation_path = project_output_dir / "outputs" / "nimads_annotation.json"
+    criteria_mapping_path = project_output_dir / "outputs" / "criteria_mapping.json"
     retrieval_dir = project_output_dir / "retrieval" / "pubget_data"
     manual_annotation_path = resolve_manual_annotation_path(project_output_dir, args.manual_annotation_path)
+    criteria = load_annotation_criteria(criteria_mapping_path)
+    if not criteria_mapping_path.exists():
+        print(f"Warning: criteria mapping not found at {criteria_mapping_path}; criteria section may be empty.")
 
     parsed_analyses = load_auto_parsed_analysis_info(coordinate_parsing_results)
     model_decisions = load_model_decisions(annotation_results)
@@ -1644,12 +2456,13 @@ def main() -> None:
 
     output_dir.mkdir(parents=True, exist_ok=True)
     metrics_by_annotation: dict[str, dict[str, Any]] = {}
-    for annotation_name in MANUAL_FILE_MAP:
+    for annotation_name in ACTIVE_ANNOTATION_NAMES:
         docs, metrics = classify_documents(
             annotation_name=annotation_name,
             parsed_analyses=parsed_analyses,
             model_decisions=model_decisions,
             manual_truth=manual_truth,
+            criteria=criteria,
             pmid_to_fulltext=pmid_to_fulltext,
             pmid_to_coord_tables=pmid_to_coord_tables,
             study_universe_pmids=study_universe_pmids,
@@ -1657,7 +2470,7 @@ def main() -> None:
             manual_study_pmids_by_annotation=manual_study_pmids_by_annotation,
         )
         metrics_by_annotation[annotation_name] = metrics
-        html = render_html(annotation_name, docs, metrics)
+        html = render_html(annotation_name, docs, metrics, criteria=criteria)
         output_path = output_dir / f"{annotation_name}.html"
         output_path.write_text(html, encoding="utf-8")
 

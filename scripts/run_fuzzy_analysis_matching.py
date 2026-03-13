@@ -50,6 +50,12 @@ HUMAN_REVIEW_EXTRACTION_REASONS = [
     ("other_extraction_issue", "Other extraction issue"),
 ]
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent
+PROJECTS_ROOT = REPO_ROOT / "projects"
+MANUAL_NIMADS_ROOT = REPO_ROOT.parent / "neurometabench" / "data" / "nimads"
+REQUIRED_OUTPUT_FILES = ("annotation_results.json", "coordinate_parsing_results.json")
+
 def clean_text(value: str) -> str:
     return "".join(ch for ch in str(value) if ch >= " " or ch in "\n\t\r")
 
@@ -61,23 +67,26 @@ def normalize_text(value: str) -> str:
 
 
 def parse_args() -> argparse.Namespace:
-    default_manual_dir = Path("../neurometabench/data/nimads/social")
-
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--project-output-dir",
         type=Path,
         default=None,
         help=(
-            "Path to project output dir (e.g., .../annotation-only). "
-            "If omitted, auto-detect prefers annotation-only under projects/social/coordinates."
+            "Path to project run dir containing outputs/ (e.g., projects/cue_reactivity/v1 "
+            "or projects/social/coordinates/annotation-only). "
+            "If omitted, auto-detects the most recently updated run under projects/."
         ),
     )
     parser.add_argument(
         "--manual-dir",
         type=Path,
-        default=default_manual_dir,
-        help="Path to project NiMADS dir or merged dir containing nimads_studyset.json.",
+        default=None,
+        help=(
+            "Path to project NiMADS dir or merged dir containing nimads_studyset.json. "
+            "If omitted, infers project_name from projects/{project_name}/... and uses "
+            "../neurometabench/data/nimads/{project_name}."
+        ),
     )
     parser.add_argument(
         "--output-dir",
@@ -85,56 +94,120 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Output directory for match JSON + summary HTML. Defaults to sibling reports/.",
     )
+    parser.add_argument(
+        "--coord-accept-override-threshold",
+        type=float,
+        default=0.9,
+        help=(
+            "Coordinate score threshold above which a matched pair is accepted regardless of "
+            "combined score/name (strictly greater-than). Default: 0.9."
+        ),
+    )
     return parser.parse_args()
+
+
+def is_valid_project_output_dir(path: Path) -> bool:
+    if not path.exists() or not path.is_dir():
+        return False
+    outputs_dir = path / "outputs"
+    return outputs_dir.exists() and all((outputs_dir / name).exists() for name in REQUIRED_OUTPUT_FILES)
+
+
+def annotation_result_mtime(project_output_dir: Path) -> float:
+    return (project_output_dir / "outputs" / "annotation_results.json").stat().st_mtime
+
+
+def find_project_output_dirs_within(root: Path) -> list[Path]:
+    if not root.exists() or not root.is_dir():
+        return []
+
+    candidates: list[Path] = []
+    seen: set[Path] = set()
+
+    def maybe_add(path: Path) -> None:
+        if not path.is_dir():
+            return
+        resolved = path.resolve()
+        if resolved in seen:
+            return
+        if is_valid_project_output_dir(path):
+            seen.add(resolved)
+            candidates.append(path)
+
+    maybe_add(root)
+
+    coordinates_dir = root / "coordinates"
+    if coordinates_dir.is_dir():
+        for entry in coordinates_dir.iterdir():
+            maybe_add(entry)
+
+    for entry in root.iterdir():
+        maybe_add(entry)
+
+    return candidates
 
 
 def infer_project_output_dir(explicit_path: Path | None) -> Path:
     if explicit_path is not None:
-        return explicit_path
+        path = explicit_path.expanduser().resolve()
+        if not path.exists():
+            raise FileNotFoundError(f"--project-output-dir does not exist: {explicit_path}")
 
-    coordinates_root = Path("../autonima-results/projects/social/coordinates")
-    candidates: list[Path] = []
-    if coordinates_root.exists():
-        for entry in coordinates_root.iterdir():
-            if not entry.is_dir():
-                continue
-            outputs_dir = entry / "outputs"
-            if not outputs_dir.exists():
-                continue
-            if not (
-                (outputs_dir / "annotation_results.json").exists()
-                and (outputs_dir / "coordinate_parsing_results.json").exists()
-            ):
-                continue
-            candidates.append(entry)
+        direct_candidates = [path.parent] if path.name == "outputs" else [path]
+        for candidate in direct_candidates:
+            if is_valid_project_output_dir(candidate):
+                return candidate
 
-    pool = candidates
-    if not pool:
+        scoped_candidates = find_project_output_dirs_within(path)
+        if not scoped_candidates:
+            raise FileNotFoundError(
+                "Could not resolve a project output dir from --project-output-dir. "
+                "Expected a run directory containing outputs/annotation_results.json and "
+                "outputs/coordinate_parsing_results.json."
+            )
+        selected = max(scoped_candidates, key=annotation_result_mtime)
+        print(f"Auto-selected project output dir within {path}: {selected}")
+        return selected
+
+    if not PROJECTS_ROOT.exists():
         raise FileNotFoundError(
-            "Could not infer project output dir. Pass --project-output-dir explicitly."
+            f"Could not infer project output dir because projects root was not found: {PROJECTS_ROOT}. "
+            "Pass --project-output-dir explicitly."
         )
 
-    annotation_only = [c for c in pool if c.name == "annotation-only"]
-    if annotation_only:
-        selected = max(annotation_only, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
-        print(f"Auto-selected project output dir (annotation-only preferred): {selected}")
-        return selected
+    all_candidates: list[Path] = []
+    seen: set[Path] = set()
+    for project_dir in PROJECTS_ROOT.iterdir():
+        if not project_dir.is_dir():
+            continue
+        for candidate in find_project_output_dirs_within(project_dir):
+            resolved = candidate.resolve()
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            all_candidates.append(candidate)
 
-    exact = [c for c in pool if c.name == "rev3-search-all_pmids-studyann-ft"]
-    if exact:
-        selected = max(exact, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
-        print(f"Auto-selected project output dir (exact preferred): {selected}")
-        return selected
+    if not all_candidates:
+        raise FileNotFoundError(
+            "Could not infer project output dir from projects/. Pass --project-output-dir explicitly."
+        )
 
-    preferred = [c for c in pool if "search-all_pmids-studyann-ft" in c.name]
-    if preferred:
-        selected = max(preferred, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
-        print(f"Auto-selected project output dir (preferred pattern): {selected}")
-        return selected
-
-    selected = max(pool, key=lambda p: (p / "outputs" / "annotation_results.json").stat().st_mtime)
-    print(f"Auto-selected project output dir: {selected}")
+    selected = max(all_candidates, key=annotation_result_mtime)
+    print(f"Auto-selected project output dir (most recently updated): {selected}")
     return selected
+
+
+def infer_project_name(project_output_dir: Path) -> str:
+    parts = list(project_output_dir.resolve().parts)
+    project_indices = [i for i, part in enumerate(parts) if part == "projects"]
+    if project_indices:
+        idx = project_indices[-1]
+        if idx + 1 < len(parts):
+            return parts[idx + 1]
+    raise ValueError(
+        "Could not infer project name from project output dir. "
+        f"Expected path under projects/{{project_name}}/... but got: {project_output_dir}"
+    )
 
 
 def resolve_output_dir(project_output_dir: Path, output_dir: Path | None) -> Path:
@@ -379,6 +452,25 @@ def resolve_manual_merged_studyset_path(manual_dir: Path) -> Path:
     )
 
 
+def resolve_manual_dir(project_output_dir: Path, explicit_manual_dir: Path | None) -> Path:
+    if explicit_manual_dir is not None:
+        return explicit_manual_dir.expanduser().resolve()
+
+    project_name = infer_project_name(project_output_dir)
+    inferred_manual_dir = (MANUAL_NIMADS_ROOT / project_name).resolve()
+
+    if not inferred_manual_dir.exists():
+        raise FileNotFoundError(
+            "Could not infer manual benchmark directory. "
+            f"Expected to find: {inferred_manual_dir}. "
+            "Pass --manual-dir explicitly."
+        )
+
+    resolve_manual_merged_studyset_path(inferred_manual_dir)
+    print(f"Auto-selected manual benchmark dir from project '{project_name}': {inferred_manual_dir}")
+    return inferred_manual_dir
+
+
 def load_manual_analyses_overall(manual_dir: Path) -> tuple[dict[str, list[dict[str, Any]]], dict[str, str]]:
     studyset_path = resolve_manual_merged_studyset_path(manual_dir)
     studyset_payload = load_json(studyset_path)
@@ -521,26 +613,31 @@ def status_from_score(score: float) -> str:
 
 
 def status_from_detail(detail: dict[str, Any]) -> str:
-    if bool(detail.get("exact_coord_set", False)):
+    if bool(detail.get("coord_override_accepted", False)):
         return "accepted"
     return status_from_score(float(detail.get("combined_score", 0.0)))
 
 
-def score_pair(manual_analysis: dict[str, Any], auto_analysis: dict[str, Any]) -> dict[str, Any]:
+def score_pair(
+    manual_analysis: dict[str, Any],
+    auto_analysis: dict[str, Any],
+    coord_accept_override_threshold: float,
+) -> dict[str, Any]:
     name_score = compute_name_score(manual_analysis["name"], auto_analysis["name"])
     coord_score, coord_meta, reasons = compute_coord_score(manual_analysis["points"], auto_analysis["points"])
     combined = (COORD_WEIGHT * coord_score) + (NAME_WEIGHT * name_score)
     exact_coord_set = bool(coord_meta.get("exact_coord_set", False))
-    low_name_with_exact_coords = exact_coord_set and name_score < LOW_NAME_SCORE_HIGHLIGHT_THRESHOLD
+    coord_override_accepted = coord_score > coord_accept_override_threshold
+    low_name_with_exact_coords = coord_override_accepted and name_score < LOW_NAME_SCORE_HIGHLIGHT_THRESHOLD
 
     if coord_score < 0.4 and name_score >= 0.75:
         reasons.append("low_coord_high_name")
     if coord_score == 0.0 and name_score >= 0.6:
         reasons.append("name_only_signal")
     if low_name_with_exact_coords:
-        reasons.append("low_name_with_exact_coords")
-    if exact_coord_set and combined < ACCEPTED_THRESHOLD:
-        reasons.append("accepted_exact_coord_override")
+        reasons.append("low_name_with_coord_override")
+    if coord_override_accepted and combined < ACCEPTED_THRESHOLD:
+        reasons.append("accepted_coord_override")
     if combined < UNCERTAIN_THRESHOLD:
         reasons.append("low_total_score")
 
@@ -549,6 +646,7 @@ def score_pair(manual_analysis: dict[str, Any], auto_analysis: dict[str, Any]) -
         "coord_score": round(coord_score, 6),
         "combined_score": round(combined, 6),
         "exact_coord_set": exact_coord_set,
+        "coord_override_accepted": coord_override_accepted,
         "low_name_with_exact_coords": low_name_with_exact_coords,
         "reason_codes": sorted(set(reasons)),
     }
@@ -557,6 +655,7 @@ def score_pair(manual_analysis: dict[str, Any], auto_analysis: dict[str, Any]) -
 def match_with_hungarian(
     manual_analyses: list[dict[str, Any]],
     auto_analyses: list[dict[str, Any]],
+    coord_accept_override_threshold: float,
 ) -> tuple[list[dict[str, Any]], list[int]]:
     if not manual_analyses:
         return [], [a["index"] for a in auto_analyses]
@@ -577,6 +676,7 @@ def match_with_hungarian(
                     "combined_score": 0.0,
                     "match_status": "unmatched",
                     "exact_coord_set": False,
+                    "coord_override_accepted": False,
                     "low_name_with_exact_coords": False,
                     "reason_codes": ["no_auto_analyses_for_pmid"],
                     "manual_coordinates": [[float(x), float(y), float(z)] for x, y, z in m.get("points", [])],
@@ -589,7 +689,7 @@ def match_with_hungarian(
     matrix = np.zeros((len(manual_analyses), len(auto_analyses)), dtype=float)
     for i, m in enumerate(manual_analyses):
         for j, a in enumerate(auto_analyses):
-            detail = score_pair(m, a)
+            detail = score_pair(m, a, coord_accept_override_threshold=coord_accept_override_threshold)
             pair_scores[(i, j)] = detail
             matrix[i, j] = detail["combined_score"]
 
@@ -612,6 +712,7 @@ def match_with_hungarian(
                     "combined_score": 0.0,
                     "match_status": "unmatched",
                     "exact_coord_set": False,
+                    "coord_override_accepted": False,
                     "low_name_with_exact_coords": False,
                     "reason_codes": ["unassigned_by_global_matching", "low_total_score"],
                     "manual_coordinates": [[float(x), float(y), float(z)] for x, y, z in m.get("points", [])],
@@ -636,6 +737,7 @@ def match_with_hungarian(
                 "combined_score": d["combined_score"],
                 "match_status": status_from_detail(d),
                 "exact_coord_set": bool(d.get("exact_coord_set", False)),
+                "coord_override_accepted": bool(d.get("coord_override_accepted", False)),
                 "low_name_with_exact_coords": bool(d.get("low_name_with_exact_coords", False)),
                 "reason_codes": d["reason_codes"],
                 "manual_coordinates": [[float(x), float(y), float(z)] for x, y, z in m.get("points", [])],
@@ -662,6 +764,7 @@ def build_match_results_overall(
     manual_analyses_by_pmid: dict[str, list[dict[str, Any]]],
     manual_study_names_by_pmid: dict[str, str],
     auto_parsed_by_pmid: dict[str, list[dict[str, Any]]],
+    coord_accept_override_threshold: float,
 ) -> dict[str, Any]:
     pmid_results: dict[str, dict[str, Any]] = {}
 
@@ -675,7 +778,11 @@ def build_match_results_overall(
         manual_analyses = manual_analyses_by_pmid.get(pmid, [])
         auto_analyses = auto_parsed_by_pmid.get(pmid, [])
 
-        matched_entries, unassigned_auto_indices = match_with_hungarian(manual_analyses, auto_analyses)
+        matched_entries, unassigned_auto_indices = match_with_hungarian(
+            manual_analyses,
+            auto_analyses,
+            coord_accept_override_threshold=coord_accept_override_threshold,
+        )
         counts = defaultdict(int)
         for entry in matched_entries:
             counts[entry["match_status"]] += 1
@@ -715,15 +822,15 @@ def build_match_results_overall(
     combined_scores = []
     perfect_pmids = 0
     category_counts = defaultdict(int)
-    exact_coord_override_accepted = 0
-    low_name_exact_matches = 0
+    coord_override_accepted = 0
+    low_name_coord_override_matches = 0
     for entry in all_entries:
         status_counts[entry["match_status"]] += 1
         combined_scores.append(float(entry["combined_score"]))
-        if bool(entry.get("exact_coord_set", False)) and float(entry.get("combined_score", 0.0)) < ACCEPTED_THRESHOLD:
-            exact_coord_override_accepted += 1
+        if bool(entry.get("coord_override_accepted", False)) and float(entry.get("combined_score", 0.0)) < ACCEPTED_THRESHOLD:
+            coord_override_accepted += 1
         if bool(entry.get("low_name_with_exact_coords", False)):
-            low_name_exact_matches += 1
+            low_name_coord_override_matches += 1
     for pmid, data in pmid_results.items():
         pmid_summary = data.get("pmid_summary", {})
         manual_count = int(pmid_summary.get("manual_analysis_count", 0))
@@ -754,7 +861,9 @@ def build_match_results_overall(
             "coordinate_space_handling": "ignore_space_labels_use_raw_xyz",
             "metric_truth_policy": "accepted_only",
             "pmid_scope_for_scoring": "overlap_only_manual_and_auto",
-            "exact_coord_accept_override": True,
+            "coord_accept_override": True,
+            "coord_accept_override_threshold": coord_accept_override_threshold,
+            "exact_coord_accept_override": False,
             "low_name_highlight_threshold": LOW_NAME_SCORE_HIGHLIGHT_THRESHOLD,
         },
         "pmids": pmid_results,
@@ -773,8 +882,11 @@ def build_match_results_overall(
             "accepted": int(status_counts["accepted"]),
             "uncertain": int(status_counts["uncertain"]),
             "unmatched": int(status_counts["unmatched"]),
-            "accepted_exact_coord_override": int(exact_coord_override_accepted),
-            "low_name_exact_matches": int(low_name_exact_matches),
+            "accepted_coord_override": int(coord_override_accepted),
+            "low_name_coord_override_matches": int(low_name_coord_override_matches),
+            # Back-compat aliases.
+            "accepted_exact_coord_override": int(coord_override_accepted),
+            "low_name_exact_matches": int(low_name_coord_override_matches),
             "pmids_all_manual_accepted": int(perfect_pmids),
             "pmids_all_manual_accepted_rate": (float(perfect_pmids) / len(overlap_pmids)) if overlap_pmids else 0.0,
             "all_correct_pmids": int(category_counts["all_correct"]),
@@ -1062,6 +1174,8 @@ def render_combined_report_html(
     pubget_by_pmid: dict[str, dict[str, Any]] | None = None,
 ) -> str:
     summary = match_result.get("summary", {})
+    policy = match_result.get("matching_policy", {})
+    coord_override_threshold = float(policy.get("coord_accept_override_threshold", 0.9))
     pmids = match_result.get("pmids", {})
     pubget_by_pmid = pubget_by_pmid or {}
     table_html_cache: dict[str, str] = {}
@@ -1270,7 +1384,7 @@ def render_combined_report_html(
             manual_coords = manual.get("manual_coordinates", [])
             name_score_cell_class = "score-discrepancy" if bool(manual.get("low_name_with_exact_coords", False)) else ""
             name_score_title = (
-                " title=\"Exact coordinate-set match accepted, but name similarity is low.\""
+                " title=\"High coordinate score override accepted this match, but name similarity is low.\""
                 if bool(manual.get("low_name_with_exact_coords", False))
                 else ""
             )
@@ -1330,7 +1444,7 @@ def render_combined_report_html(
                 else ""
             )
             name_score_title = (
-                " title=\"Exact coordinate-set match accepted, but name similarity is low.\""
+                " title=\"High coordinate score override accepted this match, but name similarity is low.\""
                 if (linked_manual is not None and bool(linked_manual.get("low_name_with_exact_coords", False)))
                 else ""
             )
@@ -1794,7 +1908,7 @@ def render_combined_report_html(
   <header>
     <a id="top"></a>
     <h1>Fuzzy Matching Report</h1>
-    <p>Coordinate-first matching (70%) + name similarity (30%), one-to-one Hungarian assignment, accepted &gt;= 0.75, uncertain &gt;= 0.55. Metrics include overlap PMIDs only (manual ∩ auto).</p>
+    <p>Coordinate-first matching (70%) + name similarity (30%), one-to-one Hungarian assignment, accepted &gt;= 0.75, uncertain &gt;= 0.55, coordinate override when coord score &gt; {coord_override_threshold:.2f}. Metrics include overlap PMIDs only (manual ∩ auto).</p>
     <p><strong>Overlap PMIDs:</strong> {int(summary.get("overlap_pmids", 0))} |
        <strong>Manual analyses:</strong> {int(summary.get("manual_analyses_total", 0))} |
        <strong>Accepted:</strong> {int(summary.get("accepted", 0))} |
@@ -1803,8 +1917,8 @@ def render_combined_report_html(
     <p><strong>Study categories:</strong> All correct={int(summary.get("all_correct_pmids", 0))} |
        Mixed={int(summary.get("mixed_pmids", 0))} |
        All incorrect={int(summary.get("all_incorrect_pmids", 0))}</p>
-    <p><strong>Accepted by exact-coordinate override:</strong> {int(summary.get("accepted_exact_coord_override", 0))} |
-       <strong>Exact-coordinate matches with low name score:</strong> {int(summary.get("low_name_exact_matches", 0))}</p>
+    <p><strong>Accepted by coordinate-score override:</strong> {int(summary.get("accepted_coord_override", summary.get("accepted_exact_coord_override", 0)))} |
+       <strong>Coordinate-override matches with low name score:</strong> {int(summary.get("low_name_coord_override_matches", summary.get("low_name_exact_matches", 0)))}</p>
     <p><strong>PMIDs with Pubget docs:</strong> {int(summary.get("pmids_with_pubget", 0))} |
        <strong>Extracted tables available:</strong> {int(summary.get("pubget_tables_total", 0))}</p>
     <p><strong>All Correct exact same # analyses:</strong> {all_correct_exact_count} / {all_correct_total}</p>
@@ -1847,18 +1961,26 @@ def write_match_artifacts(
 
 def main() -> None:
     args = parse_args()
+    if not (0.0 <= args.coord_accept_override_threshold <= 1.0):
+        raise ValueError(
+            "--coord-accept-override-threshold must be between 0.0 and 1.0 (inclusive)."
+        )
     project_output_dir = infer_project_output_dir(args.project_output_dir)
+    manual_dir = resolve_manual_dir(project_output_dir, args.manual_dir)
     output_dir = resolve_output_dir(project_output_dir, args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     coordinate_parsing_results = project_output_dir / "outputs" / "coordinate_parsing_results.json"
+    if not coordinate_parsing_results.exists():
+        raise FileNotFoundError(f"Missing coordinate parsing results: {coordinate_parsing_results}")
     auto_by_pmid = load_auto_parsed_data(coordinate_parsing_results)
-    manual_by_pmid, manual_study_names_by_pmid = load_manual_analyses_overall(args.manual_dir)
+    manual_by_pmid, manual_study_names_by_pmid = load_manual_analyses_overall(manual_dir)
     pubget_by_pmid = build_pubget_index(project_output_dir)
     match_result = build_match_results_overall(
         manual_analyses_by_pmid=manual_by_pmid,
         manual_study_names_by_pmid=manual_study_names_by_pmid,
         auto_parsed_by_pmid=auto_by_pmid,
+        coord_accept_override_threshold=float(args.coord_accept_override_threshold),
     )
     annotate_match_result_with_pubget(match_result, pubget_by_pmid)
     write_match_artifacts(output_dir, match_result, pubget_by_pmid=pubget_by_pmid)
