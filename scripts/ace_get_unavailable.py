@@ -3,6 +3,7 @@ import random
 import time
 from pathlib import Path
 from ace import scrape
+import os
 from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC

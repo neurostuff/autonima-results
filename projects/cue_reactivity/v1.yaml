@@ -5,7 +5,7 @@ search:
   date_to: "2020/08/31"
   
 retrieval:
-  load_excluded: false
+  load_excluded: true
   sources:
     - pubget
   full_text_sources:
@@ -18,7 +18,7 @@ retrieval:
     - root_path: "/home/zorro/repos/autonima-results/projects/cue_reactivity/ace_outputs"
       pmid_source: "file_name"
       allowed_extensions: [".html"]
-      processed_data_path: "/home/zorro/repos/autonima-results/projects/cue_reactivity/ace_scrape/processed/"
+      processed_data_path: "/home/zorro/repos/autonima-results/projects/cue_reactivity/ace_outputs/processed/"
 
 screening:
   abstract:
@@ -55,8 +55,7 @@ parsing:
 annotation:
   enabled: true
   model: "gpt-5-mini-2025-08-07"
-  create_all_from_search_annotation: true
-  create_all_included_annotation: true
+  create_all_included_annotations: true
   prompt_type: "multi_analysis"
   metadata_fields:
     - "analysis_name"
