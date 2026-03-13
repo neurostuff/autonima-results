@@ -102,8 +102,7 @@ def main():
     else:
         out_folder = Path(args.out_folder)
 
-    if args.skip_table_html:
-        config.update_config(SAVE_ORIGINAL_HTML=False)
+    config.update_config(SAVE_ORIGINAL_HTML=not args.skip_table_html)
     
     # Set logging level
     ace.set_logging_level('info')
