@@ -15,6 +15,29 @@ from ace.ingest import add_articles
 from ace.export import export_database
 from pathlib import Path
 from ace import config
+import logging
+
+# Configure root logger to WARNING globally
+logging.basicConfig(level=logging.WARNING)
+logging.getLogger().setLevel(logging.WARNING)
+
+# Ensure ACE logging calls cannot lower the level later in the script.
+_original_set_logging = getattr(ace, "set_logging_level", None)
+
+
+def _force_warning_setter(*args, **kwargs):
+    # Always enforce WARNING on the root logger and, if possible, call the original
+    logging.getLogger().setLevel(logging.WARNING)
+    if _original_set_logging:
+        try:
+            _original_set_logging("warning")
+        except Exception:
+            pass
+
+
+ace.set_logging_level = _force_warning_setter
+# Apply immediately
+ace.set_logging_level("warning")
 
 
 def main():
@@ -41,16 +64,23 @@ def main():
     )
 
     parser.add_argument(
-        "--save-html",
+        "--skip-table-html",
         action="store_true",
-        help="Save original HTML files"
-    )
+        help="Skip saving original HTML files"
+    )   
 
     parser.add_argument(
         "--pmids",
         nargs='+',
         default=None,
         help="List of PubMed IDs to process"
+    )
+
+    parser.add_argument(
+        "--num-workers",
+        type=int,
+        default=1,
+        help="Number of worker threads to use for processing (default: 1)"
     )
 
     args = parser.parse_args()
@@ -72,12 +102,7 @@ def main():
     else:
         out_folder = Path(args.out_folder)
 
-    if args.save_html:
-        config.update_config(SAVE_ORIGINAL_HTML=True)
-    
-    # Add API key to environment
-    api_key='5f71cf0c189dd20a9012d905898f50da4308'
-    os.environ['PUBMED_API_KEY'] = api_key
+    config.update_config(SAVE_ORIGINAL_HTML=not args.skip_table_html)
     
     # Set logging level
     ace.set_logging_level('info')
@@ -87,7 +112,7 @@ def main():
     print(f"Output folder: {out_folder}")
     
     # Process articles and add to database
-    articles_dir = ace_scrape_dir / 'articles' / 'html'
+    articles_dir = ace_scrape_dir / 'html'
     if not articles_dir.exists():
         print(f"Warning: Articles directory '{articles_dir}' does not exist")
         files = []
@@ -117,9 +142,10 @@ def main():
     
     missing_sources = []
     if new_files:
-        metadata_dir = ace_scrape_dir / 'pm_metadata'
+        metadata_dir = ace_scrape_dir / 'metadata'
         missing_sources = add_articles(
-            db, new_files, metadata_dir=str(metadata_dir), pmid_filenames=True, force_ingest=False
+            db, new_files, metadata_dir=str(metadata_dir), pmid_filenames=True, force_ingest=False,
+            num_workers=args.num_workers
         )
 
     # Print missing sources if any
@@ -140,7 +166,7 @@ def main():
     # Export database to CSV
     print(f"\nExporting database to: {out_folder}")
     out_folder.mkdir(parents=True, exist_ok=True)
-    save_html = args.save_html
+    save_html = not args.skip_table_html
     export_database(db, str(out_folder), skip_empty=False, table_html=save_html)
 
     print("Processing complete!")

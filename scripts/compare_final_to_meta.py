@@ -97,7 +97,8 @@ def classify_studies(
     abstract_included_pmids: List[str],
     fulltext_included_pmids: List[str],
     fulltext_unavailable_pmids: List[str],
-    fulltext_with_coords_pmids: List[str]
+    fulltext_with_coords_pmids: List[str],
+    fulltext_incomplete_pmids: List[str] | None = None,
 ) -> Dict[str, Any]:
     """
     Classify studies into categories (TP, FN, FP) at each stage.
@@ -109,6 +110,7 @@ def classify_studies(
     fulltext_included_set = set(fulltext_included_pmids)
     fulltext_unavailable_set = set(fulltext_unavailable_pmids)
     fulltext_with_coords_set = set(fulltext_with_coords_pmids)
+    fulltext_incomplete_set = set(fulltext_incomplete_pmids or [])
 
     # Search level
     search_true_positives = meta_pmids_set & all_pmids_set
@@ -122,9 +124,17 @@ def classify_studies(
     abstract_false_positives = abstract_included_set - meta_in_search
 
     # Full-text screening
-    meta_in_search_available = meta_in_search - fulltext_unavailable_set
+    missing_fulltext_omitted = meta_in_search & fulltext_unavailable_set
+    fulltext_incomplete_omitted = meta_in_search & fulltext_incomplete_set
+    meta_in_search_available = (
+        meta_in_search
+        - missing_fulltext_omitted
+        - fulltext_incomplete_omitted
+    )
     fulltext_true_positives = meta_in_search_available & fulltext_included_set
     fulltext_false_negatives_all = meta_in_search_available - fulltext_included_set
+    fulltext_false_negatives_all_texts = meta_in_search - fulltext_included_set
+    fulltext_false_negatives_fulltext_only = fulltext_false_negatives_all
     fulltext_false_positives = fulltext_included_set - meta_in_search_available
 
     # For reporting: exclude FN already marked at abstract stage
@@ -150,13 +160,19 @@ def classify_studies(
             'true_positives': list(fulltext_true_positives),
             'false_negatives_all': list(fulltext_false_negatives_all),
             'false_negatives': list(fulltext_false_negatives),
-            'false_positives': list(fulltext_false_positives)
+            'false_positives': list(fulltext_false_positives),
+            'false_negatives_all_texts': list(fulltext_false_negatives_all_texts),
+            'false_negatives_fulltext_only': list(fulltext_false_negatives_fulltext_only),
+            'missing_full_text': list(missing_fulltext_omitted),
+            'incomplete_full_text': list(fulltext_incomplete_omitted),
         },
         'fulltext_with_coords': {
             'true_positives': list(fulltext_with_coords_true_positives),
             'false_negatives': list(fulltext_with_coords_false_negatives),
             'false_positives': list(fulltext_with_coords_false_positives)
         },
+        'fulltext_incomplete_omitted': list(fulltext_incomplete_omitted),
+        'fulltext_missing_omitted': list(missing_fulltext_omitted),
         'meta_in_search': list(meta_in_search),
         'meta_in_search_available': list(meta_in_search_available)
     }
@@ -220,7 +236,8 @@ def calculate_metrics_with_ci(
     abstract_included_pmids: List[str],
     fulltext_included_pmids: List[str],
     fulltext_unavailable_pmids: List[str],
-    fulltext_with_coords_pmids: List[str]
+    fulltext_with_coords_pmids: List[str],
+    fulltext_incomplete_pmids: List[str] | None = None,
 ) -> Dict[str, Any]:
     """
     Calculate recall and precision with CIs for each stage:
@@ -233,11 +250,18 @@ def calculate_metrics_with_ci(
     fulltext_included_set = set(fulltext_included_pmids)
     fulltext_unavailable_set = set(fulltext_unavailable_pmids)
     fulltext_with_coords_set = set(fulltext_with_coords_pmids)
+    fulltext_incomplete_set = set(fulltext_incomplete_pmids or [])
 
     meta_count, all_count = len(meta_pmids_set), len(all_pmids_set)
 
     meta_in_search = meta_pmids_set & all_pmids_set
-    meta_in_search_available = meta_in_search - fulltext_unavailable_set
+    missing_fulltext_omitted = meta_in_search & fulltext_unavailable_set
+    fulltext_incomplete_omitted = meta_in_search & fulltext_incomplete_set
+    meta_in_search_available = (
+        meta_in_search
+        - missing_fulltext_omitted
+        - fulltext_incomplete_omitted
+    )
 
     # Wrapper for stage metric calculation
     def stage(name: str, tp: set, fn: set, fp: set,
@@ -280,6 +304,7 @@ def calculate_metrics_with_ci(
     # --- Stage 3: Full-text ---
     ft_tp = meta_in_search_available & fulltext_included_set
     ft_fn = meta_in_search_available - fulltext_included_set
+    ft_fn_all_texts = meta_in_search - fulltext_included_set
     ft_fp = fulltext_included_set - meta_in_search_available
     additional_fn = len(ft_fn - (meta_in_search - abstract_included_set))
 
@@ -291,10 +316,38 @@ def calculate_metrics_with_ci(
         recall_denom=len(meta_in_search_available),
         precision_denom=len(fulltext_included_set),
         extras={'additional_false_negatives': additional_fn,
+                'missing_full_text': len(missing_fulltext_omitted),
+                'incomplete_full_text': len(fulltext_incomplete_omitted),
+                'unavailable_full_text': len(missing_fulltext_omitted) + len(fulltext_incomplete_omitted),
+                'false_negatives_all_texts': len(ft_fn_all_texts),
+                'false_negatives_fulltext_only': len(ft_fn),
+                'omitted_incomplete_fulltext': len(fulltext_incomplete_omitted),
                 'meta_in_search_available': len(meta_in_search_available),
                 'meta_total': meta_count,
                 'included_total': len(fulltext_included_set)}
     )
+
+    # Add full-text disambiguated and adjusted metrics while preserving existing keys.
+    fulltext_metrics = fulltext_results['metrics']
+    tp_count = len(ft_tp)
+
+    fulltext_metrics.update({
+        'recall_fulltext_only': fulltext_metrics['recall_in_search'],
+        'recall_fulltext_only_ci_lower': fulltext_metrics['recall_in_search_ci_lower'],
+        'recall_fulltext_only_ci_upper': fulltext_metrics['recall_in_search_ci_upper'],
+        'precision_fulltext_only': fulltext_metrics['precision'],
+        'precision_fulltext_only_ci_lower': fulltext_metrics['precision_ci_lower'],
+        'precision_fulltext_only_ci_upper': fulltext_metrics['precision_ci_upper'],
+    })
+
+    absolute_recall_denom = len(meta_in_search)
+    absolute_recall = tp_count / absolute_recall_denom if absolute_recall_denom else 0
+    absolute_recall_ci = wilson_score_interval(tp_count, absolute_recall_denom)
+    fulltext_metrics.update({
+        'absolute_recall_all_texts': absolute_recall,
+        'absolute_recall_all_texts_ci_lower': absolute_recall_ci[0],
+        'absolute_recall_all_texts_ci_upper': absolute_recall_ci[1],
+    })
 
     # --- Stage 4: Full-text with coords ---
     fulltext_with_coords_results = stage(
@@ -304,7 +357,8 @@ def calculate_metrics_with_ci(
         fp=fulltext_with_coords_set - meta_in_search_available,
         recall_denom=len(meta_in_search_available),
         precision_denom=len(fulltext_with_coords_set),
-        extras={'meta_in_search_available': len(meta_in_search_available),
+        extras={'omitted_incomplete_fulltext': len(fulltext_incomplete_omitted),
+                'meta_in_search_available': len(meta_in_search_available),
                 'meta_total': meta_count,
                 'included_total': len(fulltext_with_coords_set)}
     )
@@ -333,7 +387,17 @@ def save_results_to_files(results: Dict[str, Any], study_classifications: Dict[s
         metrics, counts = content['metrics'], content['counts']
 
         # Counts
-        for count_key in ['true_positives', 'false_negatives', 'false_positives', 'additional_false_negatives']:
+        for count_key in [
+            'true_positives',
+            'false_negatives',
+            'false_positives',
+            'additional_false_negatives',
+            'missing_full_text',
+            'incomplete_full_text',
+            'false_negatives_all_texts',
+            'false_negatives_fulltext_only',
+            'omitted_incomplete_fulltext',
+        ]:
             if count_key in counts:
                 csv_data.append({
                     'stage': stage,
@@ -347,8 +411,11 @@ def save_results_to_files(results: Dict[str, Any], study_classifications: Dict[s
         for metric, label in [
             ('recall', 'Recall'),
             ('recall_in_search', 'Recall (in search)'),
+            ('recall_fulltext_only', 'Recall (full-text only)'),
+            ('absolute_recall_all_texts', 'Recall (in search)'),
             ('recall_all_meta', 'Recall (all meta)'),
-            ('precision', 'Precision')
+            ('precision', 'Precision'),
+            ('precision_fulltext_only', 'Precision (full-text only)'),
         ]:
             if metric in metrics:
                 csv_data.append({
@@ -396,6 +463,7 @@ def main(
     all_pmids = [s['study_id'] for s in final_results['abstract_screening_results']]
     abstract_included_pmids = [s['study_id'] for s in final_results['abstract_screening_results'] if s['decision'] == 'included_abstract']
     fulltext_included_pmids = [s['study_id'] for s in final_results['fulltext_screening_results'] if s['decision'] == 'included_fulltext']
+    fulltext_incomplete_pmids = [s['study_id'] for s in final_results['fulltext_screening_results'] if s['decision'] == 'fulltext_incomplete']
     fulltext_with_coords_pmids = [s['pmid'] for s in final_results['studies']
                                   if s['status'] == 'included_fulltext' and 'activation_tables' in s and len(s['activation_tables']) > 0]
     fulltext_results = json.load(open(os.path.join(outputs_dir, 'fulltext_retrieval_results.json')))['studies_with_fulltext']
@@ -411,6 +479,7 @@ def main(
         all_pmids = [pmid for pmid in all_pmids if pmid in all_ids_set]
         abstract_included_pmids = [pmid for pmid in abstract_included_pmids if pmid in all_ids_set]
         fulltext_included_pmids = [pmid for pmid in fulltext_included_pmids if pmid in all_ids_set]
+        fulltext_incomplete_pmids = [pmid for pmid in fulltext_incomplete_pmids if pmid in all_ids_set]
         fulltext_with_coords_pmids = [pmid for pmid in fulltext_with_coords_pmids if pmid in all_ids_set]
         fulltext_unavailable_pmids = [pmid for pmid in fulltext_unavailable_pmids if pmid in all_ids_set]
         
@@ -419,43 +488,108 @@ def main(
 
     results = calculate_metrics_with_ci(
         meta_pmids, all_pmids, abstract_included_pmids,
-        fulltext_included_pmids, fulltext_unavailable_pmids, fulltext_with_coords_pmids
+        fulltext_included_pmids, fulltext_unavailable_pmids,
+        fulltext_with_coords_pmids, fulltext_incomplete_pmids
     )
     study_classifications = classify_studies(
         meta_pmids, all_pmids, abstract_included_pmids,
-        fulltext_included_pmids, fulltext_unavailable_pmids, fulltext_with_coords_pmids
+        fulltext_included_pmids, fulltext_unavailable_pmids,
+        fulltext_with_coords_pmids, fulltext_incomplete_pmids
     )
 
     save_results_to_files(results, study_classifications, evaluation_output_dir)
 
     # Print console summary
-    print(f"Meta-analysis PMIDs: {results['search']['counts']['meta_total']:,}")
-    print(f"All PMIDs in final results: {results['search']['counts']['retrieved_total']:,}")
-    print('-' * 20)
+    print(f"Comparison PMIDs (gold standard): {results['search']['counts']['meta_total']:,}")
 
-    def print_stage(stage: str, extra_counts=()):
+    def print_stage(
+        stage: str,
+        pre_counts=(),
+        extra_counts=(),
+        pre_line_templates=(),
+        metric_labels=None,
+        extra_count_labels=None,
+        show_default_false_negatives=True,
+        false_negative_key='false_negatives',
+        false_negative_label='False negatives',
+        false_negative_note_key=None,
+    ):
         m, c = results[stage]['metrics'], results[stage]['counts']
-        print(f"{stage.capitalize()} screening - True positives: {c['true_positives']:,}")
-        print(f"{stage.capitalize()} screening - False negatives: {c['false_negatives']:,}")
-        for ec in extra_counts:
-            print(f"{stage.capitalize()} screening - {ec.replace('_', ' ').title()}: {c.get(ec, 0):,}")
-        print(f"{stage.capitalize()} screening - False positives: {c['false_positives']:,}")
-        for metric, label in [
+        metric_labels = metric_labels or [
             ('recall', 'Recall'),
             ('recall_in_search', 'Recall (in search)'),
             ('recall_all_meta', 'Recall (all meta)'),
             ('precision', 'Precision')
-        ]:
+        ]
+        extra_count_labels = extra_count_labels or {}
+        stage_labels = {
+            'fulltext_with_coords': 'Fulltext with Coordinates'
+        }
+        stage_label = stage_labels.get(stage, stage.replace('_', ' ').title())
+
+        print('=' * 40)
+        print(f"{stage_label} screening")
+        print('=' * 40)
+        for line_template in pre_line_templates:
+            print(line_template.format(**c))
+        for pc in pre_counts:
+            label = extra_count_labels.get(pc, pc.replace('_', ' ').title())
+            print(f"{label}: {c.get(pc, 0):,}")
+        print(f"True positives: {c['true_positives']:,}")
+        if show_default_false_negatives:
+            false_negative_line = f"{false_negative_label}: {c.get(false_negative_key, 0):,}"
+            if false_negative_note_key is not None:
+                false_negative_line += f" ({c.get(false_negative_note_key, 0):,} new)"
+            print(false_negative_line)
+        for ec in extra_counts:
+            label = extra_count_labels.get(ec, ec.replace('_', ' ').title())
+            print(f"{label}: {c.get(ec, 0):,}")
+        print(f"False positives: {c['false_positives']:,}")
+        for metric, label in metric_labels:
             if metric in m:
                 ci = (m[f"{metric}_ci_lower"], m[f"{metric}_ci_upper"])
-                print(f"{stage.capitalize()} screening - {label}: {m[metric]:.2f} "
+                print(f"{label}: {m[metric]:.2f} "
                       f"(95% CI: {ci[0]:.2f}-{ci[1]:.2f})")
-        print('-' * 20)
+        print()
 
-    print_stage('search')
+    print_stage(
+        'search',
+        pre_counts=['retrieved_total'],
+        extra_count_labels={
+            'retrieved_total': 'Retrieved from search (all studies)'
+        }
+    )
     print_stage('abstract')
-    print_stage('fulltext', extra_counts=['additional_false_negatives'])
-    print_stage('fulltext_with_coords')
+    print_stage(
+        'fulltext',
+        pre_line_templates=[
+            "Unavailable gold-standard full text: {unavailable_full_text:,} "
+            "({missing_full_text:,} missing, {incomplete_full_text:,} incomplete)"
+        ],
+        extra_counts=[
+        ],
+        extra_count_labels={
+            'false_negatives_all_texts': 'False negatives (all texts)',
+        },
+        metric_labels=[
+            ('recall_fulltext_only', 'Recall (full-text)'),
+            ('absolute_recall_all_texts', 'Recall (in search)'),
+            ('recall_all_meta', 'Recall (all meta)'),
+            ('precision_fulltext_only', 'Precision'),
+        ],
+        show_default_false_negatives=True,
+        false_negative_key='false_negatives_fulltext_only',
+        false_negative_label='False negatives (full-text)',
+        false_negative_note_key='additional_false_negatives',
+    )
+    print_stage(
+        'fulltext_with_coords',
+        metric_labels=[
+            ('recall_in_search', 'Recall (full-text)'),
+            ('recall_all_meta', 'Recall (all meta)'),
+            ('precision', 'Precision'),
+        ],
+    )
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
