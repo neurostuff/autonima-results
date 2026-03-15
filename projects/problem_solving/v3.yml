@@ -1,0 +1,76 @@
+search:
+  database: "pubmed"
+  query: ("problem solving"[Title/Abstract] OR "calculation"[Title/Abstract] OR  "reasoning"[Title/Abstract]) AND ("fMRI"[Title/Abstract] OR "functional magnetic resonance imaging"[Title/Abstract] OR "PET"[Title/Abstract] OR "positron emission tomography"[Title/Abstract])
+  max_results: 5000
+  email: "anthonyang2027@utexas.edu"  
+  date_from: "1997/01/01"
+  date_to: "2015/03/14"
+  
+retrieval:
+  load_excluded: false
+
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    objective: "Identify task-based fMRI studies of problem solving in healthy adults."
+    inclusion_criteria:
+      - Task-based fMRI study.
+      - Human partcipants performing a problem-solving or reasoning task.
+      - Includes at least one group of healthy adults (18-65).
+      - Reports task-related brain activation results.
+    exclusion_criteria:
+      - Reviews or meta-analyses.
+      - Resting-state or connectivity-only studies.
+      - No healthy adult sample.
+      - Non-fMRI studies.
+    confidence_reporting: true
+
+  fulltext: 
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Identify whole-brain, task-based fMRI studies examining problem-solving across domains in healthy adults."
+    inclusion_criteria:
+      - Task-based fMRI with group-level whole-brain analyses.
+      - Problem-solving task involving multi-step reasoning (e.g. math, verbal, logical, visuospatial, physics).
+      - At least one group of healthy adults (18-65), reproted separately if mixed.
+      - Reports peak coordinates (MNI or Talairach) for problem-solving contrasts.
+    exclusion_criteria:
+      - ROI-only analyses without whole-brain results.
+      - Connectivity-only or resting-state studies.
+      - Simple tasks without clear problem-solving demands.
+      - Between-group contrasts only (no healthy-group task effect).
+      - Reviews, meta-analyses, or non-empirical papers.
+
+parsing:
+  parse_coordinates: false
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: false
+  model: "gpt-5-mini-2025-08-07"
+  create_all_from_search_annotation: true
+  create_all_included_annotation: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_abstract"
+  inclusion_criteria:
+    - Sample- The analysis must be on a healthy adult participants (alone, not a clinical or special group, or a comparison between healthy and clinical/special groups).
+    - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is from the healthy/control group and is generalizable to the healthy adult population.
+  exclusion_criteria:
+    - Region-of-interest (ROI) analyses
+    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) 
+    - Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control)
+  annotations:
+    - name: "social_processing_all"
+      description: "???"
+      inclusion_criteria:
+        - Analyses performed a XXXX
+
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true
