@@ -797,6 +797,25 @@ class QualitativeReviewTool:
             logger.info("No %s found at %s stage", error_type, stage)
             return None
 
+        if stage == "fulltext":
+            pmids_with_fulltext = [pmid for pmid in pmids if self.get_fulltext(pmid) is not None]
+            omitted_count = len(pmids) - len(pmids_with_fulltext)
+            if omitted_count:
+                logger.info(
+                    "Omitting %d %s/%s studies without available full text from qualitative report",
+                    omitted_count,
+                    error_type,
+                    stage,
+                )
+            pmids = pmids_with_fulltext
+            if not pmids:
+                logger.info(
+                    "No %s found at %s stage with available full text",
+                    error_type,
+                    stage,
+                )
+                return None
+
         html_content = self._generate_html_header(
             f"{error_type.replace('_', ' ').title()} at {stage.title()} Stage"
         )
