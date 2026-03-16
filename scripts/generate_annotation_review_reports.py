@@ -68,6 +68,29 @@ CRITERIA_ERROR_CATEGORY_RULES: dict[str, dict[str, str]] = {
     },
 }
 CRITERIA_ERROR_CATEGORY_ORDER = list(CRITERIA_ERROR_CATEGORY_RULES.keys())
+REVIEW_BUCKET_ORDER = ["Correct", "False Positive", "False Negative", "True Negatives"]
+REVIEW_BUCKET_IDS = {
+    "Correct": "bucket-correct",
+    "False Positive": "bucket-false-positive",
+    "False Negative": "bucket-false-negative",
+    "True Negatives": "bucket-true-negatives",
+}
+EVAL_MODE_CONFIGS: dict[str, dict[str, Any]] = {
+    "accepted": {
+        "label": "ACCEPTED (strict)",
+        "allowed_statuses": {"accepted"},
+    },
+    "uncertain": {
+        "label": "UNCERTAIN (borderline only)",
+        "allowed_statuses": {"uncertain"},
+    },
+    "combined": {
+        "label": "COMBINED (accepted + uncertain)",
+        "allowed_statuses": {"accepted", "uncertain"},
+    },
+}
+ANNOTATION_SECTION_MODE_ORDER = ["accepted", "uncertain"]
+OVERALL_SUMMARY_MODE_ORDER = ["accepted", "combined"]
 
 
 @dataclass
@@ -946,11 +969,20 @@ def make_document_row(
     coord_tables: list[dict[str, str]],
     match_diagnostics: list[dict[str, Any]],
     review_match_diagnostics: list[dict[str, Any]],
+    evaluable_auto_indices: set[int] | None,
     status_counts: dict[str, Any],
     manual_missing_in_auto: bool,
 ) -> dict[str, Any]:
-    pred_indices = {idx for idx, decision in decisions_by_idx.items() if decision.include}
-    correct_indices = pred_indices & true_indices
+    evaluable_indices = None if evaluable_auto_indices is None else set(evaluable_auto_indices)
+    pred_indices = {
+        idx
+        for idx, decision in decisions_by_idx.items()
+        if decision.include and (evaluable_indices is None or idx in evaluable_indices)
+    }
+    true_indices_eval = set(true_indices)
+    if evaluable_indices is not None:
+        true_indices_eval &= evaluable_indices
+    correct_indices = pred_indices & true_indices_eval
     matched_auto_indices = {
         int(entry["best_auto_index"])
         for entry in review_match_diagnostics
@@ -974,7 +1006,7 @@ def make_document_row(
         model_include = None if decision is None else decision.include
         matched_for_review = idx in matched_auto_indices
         match_status_for_idx = match_status_by_auto_idx.get(idx, "")
-        manual_include = idx in true_indices
+        manual_include = idx in true_indices_eval
 
         if matched_for_review and match_status_for_idx == "unmatched":
             confusion_label = "*"
@@ -1040,7 +1072,7 @@ def make_document_row(
         "pubmed_url": f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
         "bucket": bucket,
         "pred_indices": sorted(pred_indices),
-        "true_indices": sorted(true_indices),
+        "true_indices": sorted(true_indices_eval),
         "correct_indices": sorted(correct_indices),
         "manual_names": manual_names,
         "unmatched_manual_names": unmatched_manual_names,
@@ -1068,6 +1100,19 @@ def compute_prf(tp: int, fp: int, fn: int) -> dict[str, Any]:
     }
 
 
+def extract_evaluable_auto_indices(
+    review_match_diagnostics: list[dict[str, Any]],
+    allowed_statuses: set[str],
+) -> set[int]:
+    normalized_statuses = {str(status).strip().lower() for status in allowed_statuses}
+    return {
+        int(entry["best_auto_index"])
+        for entry in review_match_diagnostics
+        if entry.get("best_auto_index") is not None
+        and str(entry.get("match_status", "")).strip().lower() in normalized_statuses
+    }
+
+
 def classify_documents(
     annotation_name: str,
     parsed_analyses: dict[str, list[dict[str, str]]],
@@ -1076,16 +1121,18 @@ def classify_documents(
     criteria: dict[str, Any] | None,
     pmid_to_fulltext: dict[str, dict[str, str]],
     pmid_to_coord_tables: dict[str, list[dict[str, str]]],
+    allowed_match_statuses: set[str],
     study_universe_pmids: set[str] | None = None,
     auto_study_pmids_by_annotation: dict[str, set[str]] | None = None,
     manual_study_pmids_by_annotation: dict[str, set[str]] | None = None,
 ) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
-    docs = {"Correct": [], "False Positive": [], "False Negative": []}
+    docs = {bucket: [] for bucket in REVIEW_BUCKET_ORDER}
     ann_decisions = model_decisions.get(annotation_name, {})
     ann_truth = manual_truth.get(annotation_name, {})
     run_pmids = set(parsed_analyses.keys())
     doc_overlap_pmids = run_pmids & set(ann_truth.keys())
     pmids = doc_overlap_pmids
+    evaluable_pmids: set[str] = set()
 
     for pmid in sorted(pmids, key=lambda x: (len(x), x)):
         parsed_analysis_info = parsed_analyses.get(pmid, [])
@@ -1102,8 +1149,20 @@ def classify_documents(
             },
         )
 
-        pred_indices = {idx for idx, decision in decisions_by_idx.items() if decision.include}
-        true_indices = set(truth_entry["true_indices"])
+        review_match_diagnostics = truth_entry.get(
+            "review_match_diagnostics",
+            truth_entry.get("match_diagnostics", []),
+        )
+        evaluable_auto_indices = extract_evaluable_auto_indices(
+            review_match_diagnostics,
+            allowed_statuses=allowed_match_statuses,
+        )
+        if not evaluable_auto_indices:
+            continue
+        evaluable_pmids.add(pmid)
+
+        pred_indices = {idx for idx, decision in decisions_by_idx.items() if decision.include and idx in evaluable_auto_indices}
+        true_indices = set(truth_entry["true_indices"]) & evaluable_auto_indices
         correct_indices = pred_indices & true_indices
 
         if correct_indices:
@@ -1112,6 +1171,8 @@ def classify_documents(
             bucket = "False Positive"
         elif true_indices and not correct_indices:
             bucket = "False Negative"
+        elif not pred_indices and not true_indices:
+            bucket = "True Negatives"
         else:
             continue
 
@@ -1128,10 +1189,8 @@ def classify_documents(
                 fulltext_entry=pmid_to_fulltext.get(pmid),
                 coord_tables=pmid_to_coord_tables.get(pmid, []),
                 match_diagnostics=truth_entry.get("match_diagnostics", []),
-                review_match_diagnostics=truth_entry.get(
-                    "review_match_diagnostics",
-                    truth_entry.get("match_diagnostics", []),
-                ),
+                review_match_diagnostics=review_match_diagnostics,
+                evaluable_auto_indices=evaluable_auto_indices,
                 status_counts=truth_entry.get("status_counts", {}),
                 manual_missing_in_auto=bool(truth_entry.get("manual_missing_in_auto", False)),
             )
@@ -1148,11 +1207,11 @@ def classify_documents(
         and auto_study_pmids_by_annotation is not None
         and manual_study_pmids_by_annotation is not None
     ):
-        study_universe = set(study_universe_pmids)
+        study_universe = set(study_universe_pmids) & evaluable_pmids
         predicted_study_set = set(auto_study_pmids_by_annotation.get(annotation_name, set())) & study_universe
         manual_study_set = set(manual_study_pmids_by_annotation.get(annotation_name, set())) & study_universe
     else:
-        study_universe = set(doc_overlap_pmids)
+        study_universe = set(doc_overlap_pmids) & evaluable_pmids
         manual_study_set = {
             pmid
             for pmid in study_universe
@@ -1181,10 +1240,8 @@ def classify_documents(
     study_metrics["overlap_pmids"] = len(study_universe)
 
     # Analysis-level metrics are computed over the set of AUTO analyses that have
-    # any overall fuzzy match to a manual analysis (best_auto_index is not None).
-    # Positives are still annotation-sliced manual accepted matches (true_indices).
-    # This counts study-overall matched-but-manual-negative auto selections as FP,
-    # while excluding unmatched manual rows (no best_auto_index) from the universe.
+    # evaluable manual-to-auto matches (accepted/uncertain with best_auto_index).
+    # Positives are annotation-sliced manual accepted matches (true_indices).
     analysis_tp = 0
     analysis_fp = 0
     analysis_fn = 0
@@ -1201,11 +1258,12 @@ def classify_documents(
             "review_match_diagnostics",
             truth_for_pmid.get("match_diagnostics", []),
         )
-        matched_auto_indices = {
-            int(entry["best_auto_index"])
-            for entry in review_match_rows
-            if entry.get("best_auto_index") is not None
-        }
+        matched_auto_indices = extract_evaluable_auto_indices(
+            review_match_rows,
+            allowed_statuses=allowed_match_statuses,
+        )
+        if not matched_auto_indices:
+            continue
 
         for idx_int in matched_auto_indices:
             matched_auto_universe += 1
@@ -1400,8 +1458,8 @@ def render_doc_card(
         f"unmatched={int(status_counts.get('unmatched', 0))}"
     )
     meta = (
-        f"Pred included: {len(doc['pred_indices'])} | "
-        f"Manual included (accepted matches only): {len(doc['true_indices'])} | "
+        f"Pred included (matched analyses only): {len(doc['pred_indices'])} | "
+        f"Manual included (accepted matched analyses only): {len(doc['true_indices'])} | "
         f"Correct overlaps: {len(doc['correct_indices'])} | "
         f"Match statuses: {status_meta}"
     )
@@ -1594,88 +1652,149 @@ def render_doc_card(
 
 def render_html(
     annotation_name: str,
-    docs: dict[str, list[dict[str, Any]]],
-    metrics: dict[str, Any],
+    mode_results: dict[str, dict[str, Any]],
     criteria: dict[str, Any] | None = None,
 ) -> str:
     criteria = criteria or {}
     criterion_meta = build_annotation_criteria_metadata(criteria, annotation_name)
 
-    bucket_ids = {
-        "Correct": "bucket-correct",
-        "False Positive": "bucket-false-positive",
-        "False Negative": "bucket-false-negative",
-    }
+    def get_mode_payload(mode_id: str) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+        payload = mode_results.get(mode_id, {})
+        docs_in = payload.get("docs", {}) if isinstance(payload, dict) else {}
+        metrics_in = payload.get("metrics", {}) if isinstance(payload, dict) else {}
+        docs_out = {
+            bucket: list(docs_in.get(bucket, [])) if isinstance(docs_in, dict) else []
+            for bucket in REVIEW_BUCKET_ORDER
+        }
+        return docs_out, (metrics_in if isinstance(metrics_in, dict) else {})
 
-    sections = []
-    for bucket in ["Correct", "False Positive", "False Negative"]:
-        cards = sorted(
-            docs[bucket],
-            key=lambda d: (
-                0 if d.get("fulltext") else 1,
-                len(str(d.get("pmid", ""))),
-                str(d.get("pmid", "")),
-            ),
-        )
-        if cards:
-            body = "\n".join(
-                render_doc_card(card, criterion_meta=criterion_meta)
-                for card in cards
+    accepted_docs, accepted_metrics = get_mode_payload("accepted")
+    uncertain_docs, uncertain_metrics = get_mode_payload("uncertain")
+    combined_docs, combined_metrics = get_mode_payload("combined")
+
+    def render_mode_bucket_panel(
+        mode_id: str,
+        mode_title: str,
+        docs: dict[str, list[dict[str, Any]]],
+        metrics: dict[str, Any],
+    ) -> str:
+        sections = []
+        for bucket in REVIEW_BUCKET_ORDER:
+            cards = sorted(
+                docs.get(bucket, []),
+                key=lambda d: (
+                    0 if d.get("fulltext") else 1,
+                    len(str(d.get("pmid", ""))),
+                    str(d.get("pmid", "")),
+                ),
             )
-        else:
-            body = "<p>No documents in this bucket.</p>"
+            if cards:
+                body = "\n".join(render_doc_card(card, criterion_meta=criterion_meta) for card in cards)
+            else:
+                body = "<p>No documents in this bucket.</p>"
 
-        bm = metrics["bucket_match_counts"].get(bucket, {"accepted": 0, "uncertain": 0, "unmatched": 0})
-        bucket_summary = (
-            f"<p><strong>Match status totals:</strong> accepted={bm['accepted']} | "
-            f"uncertain={bm['uncertain']} | unmatched={bm['unmatched']}</p>"
-        )
-
-        open_attr = " open" if bucket != "Correct" else ""
-        sections.append(
-            "<section id=\"{sid}\">"
-            "<details class=\"bucket\"{open_attr}>"
-            "<summary><h2>{bucket} ({count})</h2></summary>"
-            "{bucket_summary}"
-            "{body}"
-            "</details>"
-            "</section>".format(
-                sid=bucket_ids[bucket],
-                open_attr=open_attr,
-                bucket=bucket,
-                count=len(cards),
-                bucket_summary=bucket_summary,
-                body=body,
+            bm = metrics.get("bucket_match_counts", {}).get(
+                bucket,
+                {"accepted": 0, "uncertain": 0, "unmatched": 0},
             )
+            bucket_summary = (
+                f"<p><strong>Match status totals:</strong> accepted={int(bm.get('accepted', 0))} | "
+                f"uncertain={int(bm.get('uncertain', 0))} | unmatched={int(bm.get('unmatched', 0))}</p>"
+            )
+            open_attr = " open" if bucket != "Correct" else ""
+            bucket_anchor = f"{mode_id}-{REVIEW_BUCKET_IDS[bucket]}"
+            sections.append(
+                "<section id=\"{sid}\">"
+                "<details class=\"bucket\"{open_attr}>"
+                "<summary><h3>{bucket} ({count})</h3></summary>"
+                "{bucket_summary}"
+                "{body}"
+                "</details>"
+                "</section>".format(
+                    sid=bucket_anchor,
+                    open_attr=open_attr,
+                    bucket=bucket,
+                    count=len(cards),
+                    bucket_summary=bucket_summary,
+                    body=body,
+                )
+            )
+
+        return (
+            f"<section id=\"{mode_id}-section\" class=\"mode-panel\">"
+            f"<h2>{escape(mode_title)}</h2>"
+            f"{''.join(sections)}"
+            "</section>"
         )
 
-    document_metrics = metrics.get("document_metrics", {})
-    study_metrics = metrics.get("study_metrics", {})
-    analysis_metrics = metrics.get("analysis_metrics", {})
+    def render_metric_rows(mode_label: str, metrics: dict[str, Any]) -> str:
+        document_metrics = metrics.get("document_metrics", {})
+        study_metrics = metrics.get("study_metrics", {})
+        analysis_metrics = metrics.get("analysis_metrics", {})
 
-    precision_str = f"{float(document_metrics.get('precision', metrics.get('precision', 0.0))):.3f}"
-    recall_str = f"{float(document_metrics.get('recall', metrics.get('recall', 0.0))):.3f}"
-    f1_str = f"{float(document_metrics.get('f1', metrics.get('f1', 0.0))):.3f}"
+        document_tp = int(document_metrics.get("tp", metrics.get("tp", 0)))
+        document_fp = int(document_metrics.get("fp", metrics.get("fp", 0)))
+        document_fn = int(document_metrics.get("fn", metrics.get("fn", 0)))
+        document_precision = float(document_metrics.get("precision", metrics.get("precision", 0.0)))
+        document_recall = float(document_metrics.get("recall", metrics.get("recall", 0.0)))
+        document_f1 = float(document_metrics.get("f1", metrics.get("f1", 0.0)))
 
-    study_precision_str = f"{float(study_metrics.get('precision', 0.0)):.3f}"
-    study_recall_str = f"{float(study_metrics.get('recall', 0.0)):.3f}"
-    study_f1_str = f"{float(study_metrics.get('f1', 0.0)):.3f}"
+        return (
+            "<tr>"
+            f"<td>{escape(mode_label)}</td>"
+            "<td>Document bucket overlap</td>"
+            f"<td>{document_tp}</td>"
+            f"<td>{document_fp}</td>"
+            f"<td>{document_fn}</td>"
+            f"<td>{document_precision:.3f}</td>"
+            f"<td>{document_recall:.3f}</td>"
+            f"<td>{document_f1:.3f}</td>"
+            f"<td>{document_tp + document_fn}</td>"
+            f"<td>{document_tp + document_fp}</td>"
+            f"<td>{document_tp + document_fp + document_fn}</td>"
+            "</tr>"
+            "<tr>"
+            f"<td>{escape(mode_label)}</td>"
+            "<td>Study inclusion</td>"
+            f"<td>{int(study_metrics.get('tp', 0))}</td>"
+            f"<td>{int(study_metrics.get('fp', 0))}</td>"
+            f"<td>{int(study_metrics.get('fn', 0))}</td>"
+            f"<td>{float(study_metrics.get('precision', 0.0)):.3f}</td>"
+            f"<td>{float(study_metrics.get('recall', 0.0)):.3f}</td>"
+            f"<td>{float(study_metrics.get('f1', 0.0)):.3f}</td>"
+            f"<td>{int(study_metrics.get('manual_studies', 0))}</td>"
+            f"<td>{int(study_metrics.get('predicted_studies', 0))}</td>"
+            f"<td>{int(study_metrics.get('overlap_pmids', 0))}</td>"
+            "</tr>"
+            "<tr>"
+            f"<td>{escape(mode_label)}</td>"
+            "<td>Analysis inclusion</td>"
+            f"<td>{int(analysis_metrics.get('tp', 0))}</td>"
+            f"<td>{int(analysis_metrics.get('fp', 0))}</td>"
+            f"<td>{int(analysis_metrics.get('fn', 0))}</td>"
+            f"<td>{float(analysis_metrics.get('precision', 0.0)):.3f}</td>"
+            f"<td>{float(analysis_metrics.get('recall', 0.0)):.3f}</td>"
+            f"<td>{float(analysis_metrics.get('f1', 0.0)):.3f}</td>"
+            f"<td>{int(analysis_metrics.get('manual_accepted_analyses', 0))}</td>"
+            f"<td>{int(analysis_metrics.get('predicted_analyses', 0))}</td>"
+            f"<td>{int(analysis_metrics.get('analysis_universe', 0))}</td>"
+            "</tr>"
+        )
 
-    analysis_precision_str = f"{float(analysis_metrics.get('precision', 0.0)):.3f}"
-    analysis_recall_str = f"{float(analysis_metrics.get('recall', 0.0)):.3f}"
-    analysis_f1_str = f"{float(analysis_metrics.get('f1', 0.0)):.3f}"
-
-    missing_pmids = metrics.get("missing_manual_pmids", [])
+    missing_pmids: set[str] = set()
+    for metrics in [accepted_metrics, uncertain_metrics, combined_metrics]:
+        missing_pmids |= {str(pmid) for pmid in metrics.get("missing_manual_pmids", [])}
+    missing_pmids_sorted = sorted(missing_pmids, key=lambda x: (len(x), x))
     missing_html = ""
-    if missing_pmids:
+    if missing_pmids_sorted:
         missing_items = "".join(
             f"<li><a href=\"https://pubmed.ncbi.nlm.nih.gov/{escape(pmid)}/\" target=\"_blank\" rel=\"noopener noreferrer\">PMID {escape(pmid)}</a></li>"
-            for pmid in missing_pmids
+            for pmid in missing_pmids_sorted
         )
         missing_html = (
             "<section id=\"missing-manual\">"
             "<details class=\"bucket\" open>"
-            f"<summary><h2>Manual PMIDs Missing In Auto Parsing ({len(missing_pmids)})</h2></summary>"
+            f"<summary><h2>Manual PMIDs Missing In Auto Parsing ({len(missing_pmids_sorted)})</h2></summary>"
             "<p>These studies exist in manual NiMADS but were not found in auto parsed outputs for this project.</p>"
             f"<ul>{missing_items}</ul>"
             "</details>"
@@ -1684,11 +1803,7 @@ def render_html(
 
     global_criteria = criteria.get("global", {}) if isinstance(criteria, dict) else {}
     per_annotation = criteria.get("annotations", {}) if isinstance(criteria, dict) else {}
-    annotation_criteria = (
-        per_annotation.get(annotation_name, {})
-        if isinstance(per_annotation, dict)
-        else {}
-    )
+    annotation_criteria = per_annotation.get(annotation_name, {}) if isinstance(per_annotation, dict) else {}
 
     def render_criteria_items(items: list[tuple[str, str]]) -> str:
         if not items:
@@ -1734,7 +1849,7 @@ def render_html(
         annotation_exclusion=render_criteria_items(annotation_exclusion),
     )
 
-    criteria_error_analysis = metrics.get("criteria_error_analysis", {})
+    criteria_error_analysis = accepted_metrics.get("criteria_error_analysis", {})
     criteria_error_coverage = (
         criteria_error_analysis.get("coverage", {})
         if isinstance(criteria_error_analysis, dict)
@@ -1789,7 +1904,7 @@ def render_html(
 
     criteria_error_html = (
         "<section id=\"criteria-errors\" class=\"criteria-panel\">"
-        "<h2>Commonly Misapplied Criteria</h2>"
+        "<h2>Commonly Misapplied Criteria (from ACCEPTED strict evaluation)</h2>"
         "<p class=\"muted\">"
         "Computed at analysis level from explicit criterion IDs in model reasoning. "
         f"Rows considered={int(criteria_error_coverage.get('analysis_rows_considered', 0))}, "
@@ -1799,6 +1914,19 @@ def render_html(
         "</p>"
         f"{''.join(criteria_error_sections)}"
         "</section>"
+    )
+
+    accepted_section_html = render_mode_bucket_panel(
+        mode_id="accepted",
+        mode_title="ACCEPTED Matches (Strict)",
+        docs=accepted_docs,
+        metrics=accepted_metrics,
+    )
+    uncertain_section_html = render_mode_bucket_panel(
+        mode_id="uncertain",
+        mode_title="UNCERTAIN Matches (Borderline)",
+        docs=uncertain_docs,
+        metrics=uncertain_metrics,
     )
 
     return f"""<!doctype html>
@@ -1892,12 +2020,13 @@ def render_html(
   <header>
     <a id="top"></a>
     <h1>{escape(annotation_name)} report</h1>
-    <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. Analysis-level row is evaluated on overall fuzzy-matched auto analyses (truth positives are annotation-sliced accepted matches only).</p>
+    <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. This report shows ACCEPTED and UNCERTAIN matches in separate sections.</p>
     <p class="muted">Unmet Criteria is computed from explicit model outputs in <code>outputs/annotation_results.json</code> and shows only <code>exclusion_criteria_applied</code> entries (no inferred unmet inclusion criteria).</p>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
+            <th>Mode</th>
             <th>Level</th>
             <th>TP</th>
             <th>FP</th>
@@ -1911,42 +2040,8 @@ def render_html(
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Document bucket overlap</td>
-            <td>{int(document_metrics.get('tp', metrics.get('tp', 0)))}</td>
-            <td>{int(document_metrics.get('fp', metrics.get('fp', 0)))}</td>
-            <td>{int(document_metrics.get('fn', metrics.get('fn', 0)))}</td>
-            <td>{precision_str}</td>
-            <td>{recall_str}</td>
-            <td>{f1_str}</td>
-            <td>{int(document_metrics.get('tp', metrics.get('tp', 0))) + int(document_metrics.get('fn', metrics.get('fn', 0)))}</td>
-            <td>{int(document_metrics.get('tp', metrics.get('tp', 0))) + int(document_metrics.get('fp', metrics.get('fp', 0)))}</td>
-            <td>{int(document_metrics.get('tp', metrics.get('tp', 0))) + int(document_metrics.get('fp', metrics.get('fp', 0))) + int(document_metrics.get('fn', metrics.get('fn', 0)))}</td>
-          </tr>
-          <tr>
-            <td>Study inclusion</td>
-            <td>{int(study_metrics.get('tp', 0))}</td>
-            <td>{int(study_metrics.get('fp', 0))}</td>
-            <td>{int(study_metrics.get('fn', 0))}</td>
-            <td>{study_precision_str}</td>
-            <td>{study_recall_str}</td>
-            <td>{study_f1_str}</td>
-            <td>{int(study_metrics.get('manual_studies', 0))}</td>
-            <td>{int(study_metrics.get('predicted_studies', 0))}</td>
-            <td>{int(study_metrics.get('overlap_pmids', 0))}</td>
-          </tr>
-          <tr>
-            <td>Analysis inclusion (overall fuzzy-matched auto analyses; annotation-sliced accepted=positive)</td>
-            <td>{int(analysis_metrics.get('tp', 0))}</td>
-            <td>{int(analysis_metrics.get('fp', 0))}</td>
-            <td>{int(analysis_metrics.get('fn', 0))}</td>
-            <td>{analysis_precision_str}</td>
-            <td>{analysis_recall_str}</td>
-            <td>{analysis_f1_str}</td>
-            <td>{int(analysis_metrics.get('manual_accepted_analyses', 0))}</td>
-            <td>{int(analysis_metrics.get('predicted_analyses', 0))}</td>
-            <td>{int(analysis_metrics.get('analysis_universe', 0))}</td>
-          </tr>
+          {render_metric_rows("STRICT (accepted only)", accepted_metrics)}
+          {render_metric_rows("COMBINED (accepted + uncertain)", combined_metrics)}
         </tbody>
       </table>
     </div>
@@ -1954,136 +2049,24 @@ def render_html(
   <nav class="top-nav">
     <a href="#criteria">Criteria</a>
     <a href="#criteria-errors">Criteria Errors</a>
-    <a href="#bucket-correct">Correct ({len(docs['Correct'])})</a>
-    <a href="#bucket-false-positive">False Positive ({len(docs['False Positive'])})</a>
-    <a href="#bucket-false-negative">False Negative ({len(docs['False Negative'])})</a>
-    <a href="#missing-manual">Missing PMIDs ({len(missing_pmids)})</a>
+    <a href="#accepted-section">ACCEPTED Sections</a>
+    <a href="#uncertain-section">UNCERTAIN Sections</a>
+    <a href="#missing-manual">Missing PMIDs ({len(missing_pmids_sorted)})</a>
     <a href="#top">Top</a>
   </nav>
   {criteria_html}
   {criteria_error_html}
-  {''.join(sections)}
+  {accepted_section_html}
+  {uncertain_section_html}
   {missing_html}
 </body>
 </html>
 """
 
 
-def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]) -> str:
-    rows: list[dict[str, Any]] = []
-    analysis_rows: list[dict[str, Any]] = []
-    criteria_global_rows: list[dict[str, Any]] = []
-    criteria_annotation_rows: list[dict[str, Any]] = []
-    for annotation_name in ACTIVE_ANNOTATION_NAMES:
-        metrics = metrics_by_annotation.get(annotation_name, {})
-        study = metrics.get("study_metrics", {})
-        analysis = metrics.get("analysis_metrics", {})
-        tp = int(study.get("tp", 0))
-        fp = int(study.get("fp", 0))
-        fn = int(study.get("fn", 0))
-        tn = int(study.get("tn", 0))
-        precision = float(study.get("precision", 0.0))
-        recall = float(study.get("recall", 0.0))
-        f1 = float(study.get("f1", 0.0))
-        accuracy = float(study.get("accuracy", 0.0))
-        overlap_pmids = int(study.get("overlap_pmids", 0))
-        manual_studies = int(study.get("manual_studies", 0))
-        predicted_studies = int(study.get("predicted_studies", 0))
-
-        rows.append(
-            {
-                "annotation": annotation_name,
-                "tp": tp,
-                "fp": fp,
-                "fn": fn,
-                "tn": tn,
-                "precision": precision,
-                "recall": recall,
-                "f1": f1,
-                "accuracy": accuracy,
-                "overlap_pmids": overlap_pmids,
-                "manual_studies": manual_studies,
-                "predicted_studies": predicted_studies,
-            }
-        )
-
-        analysis_rows.append(
-            {
-                "annotation": annotation_name,
-                "tp": int(analysis.get("tp", 0)),
-                "fp": int(analysis.get("fp", 0)),
-                "fn": int(analysis.get("fn", 0)),
-                "tn": int(analysis.get("tn", 0)),
-                "precision": float(analysis.get("precision", 0.0)),
-                "recall": float(analysis.get("recall", 0.0)),
-                "f1": float(analysis.get("f1", 0.0)),
-                "accuracy": float(analysis.get("accuracy", 0.0)),
-                "manual_accepted_analyses": int(analysis.get("manual_accepted_analyses", 0)),
-                "predicted_analyses": int(analysis.get("predicted_analyses", 0)),
-                "analysis_universe": int(analysis.get("analysis_universe", 0)),
-            }
-        )
-
-        criteria_error_analysis = metrics.get("criteria_error_analysis", {})
-        ranked_categories = (
-            criteria_error_analysis.get("ranked_categories", {})
-            if isinstance(criteria_error_analysis, dict)
-            else {}
-        )
-        for category_id in CRITERIA_ERROR_CATEGORY_ORDER:
-            category_rows = (
-                ranked_categories.get(category_id, [])
-                if isinstance(ranked_categories, dict)
-                else []
-            )
-            for item in category_rows:
-                row = {
-                    "annotation": annotation_name,
-                    "annotation_href": f"{quote(annotation_name)}.html",
-                    "category": CRITERIA_ERROR_CATEGORY_RULES[category_id]["label"],
-                    "criterion": str(item.get("criterion", "")),
-                    "criterion_type": str(item.get("criterion_type", "")),
-                    "scope": str(item.get("scope", "")),
-                    "error_mentions": int(item.get("error_mentions", 0)),
-                    "correct_mentions": int(item.get("correct_mentions", 0)),
-                    "error_rate_vs_correct": float(item.get("error_rate_vs_correct", 0.0)),
-                }
-                if row["scope"] == "global":
-                    criteria_global_rows.append(row)
-                else:
-                    criteria_annotation_rows.append(row)
-
-    if rows:
-        macro_precision = sum(r["precision"] for r in rows) / len(rows)
-        macro_recall = sum(r["recall"] for r in rows) / len(rows)
-        macro_f1 = sum(r["f1"] for r in rows) / len(rows)
-        macro_accuracy = sum(r["accuracy"] for r in rows) / len(rows)
-    else:
-        macro_precision = 0.0
-        macro_recall = 0.0
-        macro_f1 = 0.0
-        macro_accuracy = 0.0
-
-    micro_tp = sum(r["tp"] for r in rows)
-    micro_fp = sum(r["fp"] for r in rows)
-    micro_fn = sum(r["fn"] for r in rows)
-    micro_tn = sum(r["tn"] for r in rows)
-    micro_prf = compute_prf(tp=micro_tp, fp=micro_fp, fn=micro_fn)
-    micro_total = micro_tp + micro_fp + micro_fn + micro_tn
-    micro_accuracy = (micro_tp + micro_tn) / micro_total if micro_total else 0.0
-
-    analysis_micro_tp = sum(r["tp"] for r in analysis_rows)
-    analysis_micro_fp = sum(r["fp"] for r in analysis_rows)
-    analysis_micro_fn = sum(r["fn"] for r in analysis_rows)
-    analysis_micro_tn = sum(r["tn"] for r in analysis_rows)
-    analysis_micro_prf = compute_prf(tp=analysis_micro_tp, fp=analysis_micro_fp, fn=analysis_micro_fn)
-    analysis_micro_total = analysis_micro_tp + analysis_micro_fp + analysis_micro_fn + analysis_micro_tn
-    analysis_micro_accuracy = (
-        (analysis_micro_tp + analysis_micro_tn) / analysis_micro_total
-        if analysis_micro_total
-        else 0.0
-    )
-
+def render_overall_summary_html(
+    metrics_by_annotation_by_mode: dict[str, dict[str, dict[str, Any]]],
+) -> str:
     def render_metric_bars(precision: float, recall: float, f1: float) -> str:
         return (
             "<div class=\"metric-bars\">"
@@ -2166,96 +2149,162 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
             "</div>"
         )
 
-    row_html: list[str] = []
-    for row in rows:
-        row_html.append(
-            "<tr>"
-            f"<td>{render_annotation_link(row['annotation'])}</td>"
-            f"<td>{row['overlap_pmids']}</td>"
-            f"<td>{row['manual_studies']}</td>"
-            f"<td>{row['predicted_studies']}</td>"
-            f"<td>{row['tp']}</td>"
-            f"<td>{row['fp']}</td>"
-            f"<td>{row['fn']}</td>"
-            f"<td>{row['tn']}</td>"
-            f"<td>{row['precision']:.3f}</td>"
-            f"<td>{row['recall']:.3f}</td>"
-            f"<td>{row['f1']:.3f}</td>"
-            f"<td>{row['accuracy']:.3f}</td>"
-            f"<td>{render_metric_bars(row['precision'], row['recall'], row['f1'])}</td>"
-            f"<td>{render_confusion_plot(row['tp'], row['fp'], row['fn'], row['tn'])}</td>"
-            "</tr>"
+    strict_metrics_by_annotation = metrics_by_annotation_by_mode.get("accepted", {})
+    criteria_global_rows: list[dict[str, Any]] = []
+    criteria_annotation_rows: list[dict[str, Any]] = []
+    for annotation_name in ACTIVE_ANNOTATION_NAMES:
+        metrics = strict_metrics_by_annotation.get(annotation_name, {})
+        criteria_error_analysis = metrics.get("criteria_error_analysis", {})
+        ranked_categories = (
+            criteria_error_analysis.get("ranked_categories", {})
+            if isinstance(criteria_error_analysis, dict)
+            else {}
+        )
+        for category_id in CRITERIA_ERROR_CATEGORY_ORDER:
+            category_rows = (
+                ranked_categories.get(category_id, [])
+                if isinstance(ranked_categories, dict)
+                else []
+            )
+            for item in category_rows:
+                row = {
+                    "annotation": annotation_name,
+                    "annotation_href": f"{quote(annotation_name)}.html",
+                    "category": CRITERIA_ERROR_CATEGORY_RULES[category_id]["label"],
+                    "criterion": str(item.get("criterion", "")),
+                    "criterion_type": str(item.get("criterion_type", "")),
+                    "scope": str(item.get("scope", "")),
+                    "error_mentions": int(item.get("error_mentions", 0)),
+                    "correct_mentions": int(item.get("correct_mentions", 0)),
+                    "error_rate_vs_correct": float(item.get("error_rate_vs_correct", 0.0)),
+                }
+                if row["scope"] == "global":
+                    criteria_global_rows.append(row)
+                else:
+                    criteria_annotation_rows.append(row)
+
+    mode_sections: list[str] = []
+    for mode_id in OVERALL_SUMMARY_MODE_ORDER:
+        mode_cfg = EVAL_MODE_CONFIGS.get(mode_id, {})
+        mode_label = str(mode_cfg.get("label", mode_id.upper()))
+        metrics_by_annotation = metrics_by_annotation_by_mode.get(mode_id, {})
+
+        rows: list[dict[str, Any]] = []
+        analysis_rows: list[dict[str, Any]] = []
+        for annotation_name in ACTIVE_ANNOTATION_NAMES:
+            metrics = metrics_by_annotation.get(annotation_name, {})
+            study = metrics.get("study_metrics", {})
+            analysis = metrics.get("analysis_metrics", {})
+            rows.append(
+                {
+                    "annotation": annotation_name,
+                    "tp": int(study.get("tp", 0)),
+                    "fp": int(study.get("fp", 0)),
+                    "fn": int(study.get("fn", 0)),
+                    "tn": int(study.get("tn", 0)),
+                    "precision": float(study.get("precision", 0.0)),
+                    "recall": float(study.get("recall", 0.0)),
+                    "f1": float(study.get("f1", 0.0)),
+                    "accuracy": float(study.get("accuracy", 0.0)),
+                    "overlap_pmids": int(study.get("overlap_pmids", 0)),
+                    "manual_studies": int(study.get("manual_studies", 0)),
+                    "predicted_studies": int(study.get("predicted_studies", 0)),
+                }
+            )
+            analysis_rows.append(
+                {
+                    "annotation": annotation_name,
+                    "tp": int(analysis.get("tp", 0)),
+                    "fp": int(analysis.get("fp", 0)),
+                    "fn": int(analysis.get("fn", 0)),
+                    "tn": int(analysis.get("tn", 0)),
+                    "precision": float(analysis.get("precision", 0.0)),
+                    "recall": float(analysis.get("recall", 0.0)),
+                    "f1": float(analysis.get("f1", 0.0)),
+                    "accuracy": float(analysis.get("accuracy", 0.0)),
+                    "manual_accepted_analyses": int(analysis.get("manual_accepted_analyses", 0)),
+                    "predicted_analyses": int(analysis.get("predicted_analyses", 0)),
+                    "analysis_universe": int(analysis.get("analysis_universe", 0)),
+                }
+            )
+
+        if rows:
+            macro_precision = sum(r["precision"] for r in rows) / len(rows)
+            macro_recall = sum(r["recall"] for r in rows) / len(rows)
+            macro_f1 = sum(r["f1"] for r in rows) / len(rows)
+            macro_accuracy = sum(r["accuracy"] for r in rows) / len(rows)
+        else:
+            macro_precision = 0.0
+            macro_recall = 0.0
+            macro_f1 = 0.0
+            macro_accuracy = 0.0
+
+        micro_tp = sum(r["tp"] for r in rows)
+        micro_fp = sum(r["fp"] for r in rows)
+        micro_fn = sum(r["fn"] for r in rows)
+        micro_tn = sum(r["tn"] for r in rows)
+        micro_prf = compute_prf(tp=micro_tp, fp=micro_fp, fn=micro_fn)
+        micro_total = micro_tp + micro_fp + micro_fn + micro_tn
+        micro_accuracy = (micro_tp + micro_tn) / micro_total if micro_total else 0.0
+
+        analysis_micro_tp = sum(r["tp"] for r in analysis_rows)
+        analysis_micro_fp = sum(r["fp"] for r in analysis_rows)
+        analysis_micro_fn = sum(r["fn"] for r in analysis_rows)
+        analysis_micro_tn = sum(r["tn"] for r in analysis_rows)
+        analysis_micro_prf = compute_prf(tp=analysis_micro_tp, fp=analysis_micro_fp, fn=analysis_micro_fn)
+        analysis_micro_total = analysis_micro_tp + analysis_micro_fp + analysis_micro_fn + analysis_micro_tn
+        analysis_micro_accuracy = (
+            (analysis_micro_tp + analysis_micro_tn) / analysis_micro_total
+            if analysis_micro_total
+            else 0.0
         )
 
-    analysis_row_html: list[str] = []
-    for row in analysis_rows:
-        analysis_row_html.append(
-            "<tr>"
-            f"<td>{render_annotation_link(row['annotation'])}</td>"
-            f"<td>{row['analysis_universe']}</td>"
-            f"<td>{row['manual_accepted_analyses']}</td>"
-            f"<td>{row['predicted_analyses']}</td>"
-            f"<td>{row['tp']}</td>"
-            f"<td>{row['fp']}</td>"
-            f"<td>{row['fn']}</td>"
-            f"<td>{row['tn']}</td>"
-            f"<td>{row['precision']:.3f}</td>"
-            f"<td>{row['recall']:.3f}</td>"
-            f"<td>{row['f1']:.3f}</td>"
-            f"<td>{row['accuracy']:.3f}</td>"
-            f"<td>{render_metric_bars(row['precision'], row['recall'], row['f1'])}</td>"
-            f"<td>{render_confusion_plot(row['tp'], row['fp'], row['fn'], row['tn'])}</td>"
-            "</tr>"
-        )
+        row_html = []
+        for row in rows:
+            row_html.append(
+                "<tr>"
+                f"<td>{render_annotation_link(row['annotation'])}</td>"
+                f"<td>{row['overlap_pmids']}</td>"
+                f"<td>{row['manual_studies']}</td>"
+                f"<td>{row['predicted_studies']}</td>"
+                f"<td>{row['tp']}</td>"
+                f"<td>{row['fp']}</td>"
+                f"<td>{row['fn']}</td>"
+                f"<td>{row['tn']}</td>"
+                f"<td>{row['precision']:.3f}</td>"
+                f"<td>{row['recall']:.3f}</td>"
+                f"<td>{row['f1']:.3f}</td>"
+                f"<td>{row['accuracy']:.3f}</td>"
+                f"<td>{render_metric_bars(row['precision'], row['recall'], row['f1'])}</td>"
+                f"<td>{render_confusion_plot(row['tp'], row['fp'], row['fn'], row['tn'])}</td>"
+                "</tr>"
+            )
 
-    return f"""<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Overall Sub-Meta-Analysis Summary</title>
-  <style>
-    :root {{
-      --bg: #f7f6f2;
-      --panel: #ffffff;
-      --ink: #1d2730;
-      --line: #d8dde3;
-    }}
-    body {{ margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }}
-    header, section {{ background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }}
-    .table-wrap {{ overflow-x: auto; }}
-    table {{ width: 100%; border-collapse: collapse; font-size: 0.9rem; }}
-    th, td {{ border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }}
-    th {{ background: #edf2f5; }}
-    .metric-bars {{ min-width: 250px; }}
-    .metric-row {{ display: grid; grid-template-columns: 22px 1fr 46px; gap: 0.35rem; align-items: center; margin-bottom: 0.2rem; }}
-    .metric-label {{ font-weight: 600; font-size: 0.82rem; }}
-    .metric-val {{ font-size: 0.82rem; text-align: right; }}
-    .bar {{ height: 0.55rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }}
-    .fill {{ height: 100%; }}
-    .fill-p {{ background: #3b82f6; }}
-    .fill-r {{ background: #16a34a; }}
-    .fill-f1 {{ background: #f59e0b; }}
-    .confusion-plot {{ min-width: 220px; }}
-    .stack-bar {{ width: 100%; height: 0.78rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }}
-    .seg {{ display: inline-block; height: 100%; }}
-    .seg-tp {{ background: #16a34a; }}
-    .seg-fp {{ background: #dc2626; }}
-    .seg-fn {{ background: #ea580c; }}
-    .seg-tn {{ background: #64748b; }}
-    .legend {{ margin-top: 0.25rem; font-size: 0.77rem; color: #435164; display: flex; gap: 0.55rem; }}
-    .lg::before {{ content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.2rem; border-radius: 50%; vertical-align: -1px; }}
-    .lg-tp::before {{ background: #16a34a; }}
-    .lg-fp::before {{ background: #dc2626; }}
-    .lg-fn::before {{ background: #ea580c; }}
-    .lg-tn::before {{ background: #64748b; }}
-    .confusion-plot.empty {{ font-size: 0.82rem; color: #5a6878; }}
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Overall Sub-Meta-Analysis Summary</h1>
-    <p>Study-level evaluation across sub-meta-analyses. A study is included if at least one analysis is included. Universe is PMIDs found in auto <code>outputs/nimads_annotation.json</code>, with manual labels sliced to that same PMID universe.</p>
+        analysis_row_html = []
+        for row in analysis_rows:
+            analysis_row_html.append(
+                "<tr>"
+                f"<td>{render_annotation_link(row['annotation'])}</td>"
+                f"<td>{row['analysis_universe']}</td>"
+                f"<td>{row['manual_accepted_analyses']}</td>"
+                f"<td>{row['predicted_analyses']}</td>"
+                f"<td>{row['tp']}</td>"
+                f"<td>{row['fp']}</td>"
+                f"<td>{row['fn']}</td>"
+                f"<td>{row['tn']}</td>"
+                f"<td>{row['precision']:.3f}</td>"
+                f"<td>{row['recall']:.3f}</td>"
+                f"<td>{row['f1']:.3f}</td>"
+                f"<td>{row['accuracy']:.3f}</td>"
+                f"<td>{render_metric_bars(row['precision'], row['recall'], row['f1'])}</td>"
+                f"<td>{render_confusion_plot(row['tp'], row['fp'], row['fn'], row['tn'])}</td>"
+                "</tr>"
+            )
+
+        mode_sections.append(
+            f"""
+  <section>
+    <h2>{escape(mode_label)} Aggregates</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -2308,9 +2357,9 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
         </tbody>
       </table>
     </div>
-  </header>
+  </section>
   <section>
-    <h2>Per-Annotation Study-Level Metrics</h2>
+    <h2>{escape(mode_label)} Per-Annotation Study-Level Metrics</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -2338,8 +2387,7 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
     </div>
   </section>
   <section>
-    <h2>Per-Annotation Matched-Analysis Metrics</h2>
-    <p>Mirrors the per-report analysis row: universe is manual analyses that have an assigned auto match; positives are accepted fuzzy matches.</p>
+    <h2>{escape(mode_label)} Per-Annotation Matched-Analysis Metrics</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -2366,14 +2414,67 @@ def render_overall_summary_html(metrics_by_annotation: dict[str, dict[str, Any]]
       </table>
     </div>
   </section>
+"""
+        )
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overall Sub-Meta-Analysis Summary</title>
+  <style>
+    :root {{
+      --bg: #f7f6f2;
+      --panel: #ffffff;
+      --ink: #1d2730;
+      --line: #d8dde3;
+    }}
+    body {{ margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }}
+    header, section {{ background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }}
+    .table-wrap {{ overflow-x: auto; }}
+    table {{ width: 100%; border-collapse: collapse; font-size: 0.9rem; }}
+    th, td {{ border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }}
+    th {{ background: #edf2f5; }}
+    .metric-bars {{ min-width: 250px; }}
+    .metric-row {{ display: grid; grid-template-columns: 22px 1fr 46px; gap: 0.35rem; align-items: center; margin-bottom: 0.2rem; }}
+    .metric-label {{ font-weight: 600; font-size: 0.82rem; }}
+    .metric-val {{ font-size: 0.82rem; text-align: right; }}
+    .bar {{ height: 0.55rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }}
+    .fill {{ height: 100%; }}
+    .fill-p {{ background: #3b82f6; }}
+    .fill-r {{ background: #16a34a; }}
+    .fill-f1 {{ background: #f59e0b; }}
+    .confusion-plot {{ min-width: 220px; }}
+    .stack-bar {{ width: 100%; height: 0.78rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }}
+    .seg {{ display: inline-block; height: 100%; }}
+    .seg-tp {{ background: #16a34a; }}
+    .seg-fp {{ background: #dc2626; }}
+    .seg-fn {{ background: #ea580c; }}
+    .seg-tn {{ background: #64748b; }}
+    .legend {{ margin-top: 0.25rem; font-size: 0.77rem; color: #435164; display: flex; gap: 0.55rem; }}
+    .lg::before {{ content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.2rem; border-radius: 50%; vertical-align: -1px; }}
+    .lg-tp::before {{ background: #16a34a; }}
+    .lg-fp::before {{ background: #dc2626; }}
+    .lg-fn::before {{ background: #ea580c; }}
+    .lg-tn::before {{ background: #64748b; }}
+    .confusion-plot.empty {{ font-size: 0.82rem; color: #5a6878; }}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Overall Sub-Meta-Analysis Summary</h1>
+    <p>Metrics are shown for STRICT (accepted only) and COMBINED (accepted + uncertain) evaluations.</p>
+  </section>
+  {''.join(mode_sections)}
   <section>
-    <h2>Cross-Annotation Criteria Misapplication (Global Criteria)</h2>
-    <p>Aggregated from per-annotation criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
+    <h2>Cross-Annotation Criteria Misapplication (Global Criteria, Strict)</h2>
+    <p>Aggregated from strict (accepted-only) criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
     {render_cross_annotation_criteria_table(criteria_global_rows)}
   </section>
   <section>
-    <h2>Cross-Annotation Criteria Misapplication (Annotation-Specific Criteria)</h2>
-    <p>Aggregated from per-annotation criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
+    <h2>Cross-Annotation Criteria Misapplication (Annotation-Specific Criteria, Strict)</h2>
+    <p>Aggregated from strict (accepted-only) criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
     {render_cross_annotation_criteria_table(criteria_annotation_rows)}
   </section>
 </body>
@@ -2426,39 +2527,48 @@ def main() -> None:
     pmid_to_fulltext, pmid_to_coord_tables = load_retrieval_context(retrieval_dir)
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    metrics_by_annotation: dict[str, dict[str, Any]] = {}
+    metrics_by_annotation_by_mode: dict[str, dict[str, dict[str, Any]]] = {
+        mode_id: {}
+        for mode_id in OVERALL_SUMMARY_MODE_ORDER
+    }
     for annotation_name in ACTIVE_ANNOTATION_NAMES:
-        docs, metrics = classify_documents(
-            annotation_name=annotation_name,
-            parsed_analyses=parsed_analyses,
-            model_decisions=model_decisions,
-            manual_truth=manual_truth,
-            criteria=criteria,
-            pmid_to_fulltext=pmid_to_fulltext,
-            pmid_to_coord_tables=pmid_to_coord_tables,
-            study_universe_pmids=study_universe_pmids,
-            auto_study_pmids_by_annotation=auto_study_pmids_by_annotation,
-            manual_study_pmids_by_annotation=manual_study_pmids_by_annotation,
-        )
-        metrics_by_annotation[annotation_name] = metrics
-        html = render_html(annotation_name, docs, metrics, criteria=criteria)
+        mode_results: dict[str, dict[str, Any]] = {}
+        for mode_id, mode_cfg in EVAL_MODE_CONFIGS.items():
+            docs, metrics = classify_documents(
+                annotation_name=annotation_name,
+                parsed_analyses=parsed_analyses,
+                model_decisions=model_decisions,
+                manual_truth=manual_truth,
+                criteria=criteria,
+                pmid_to_fulltext=pmid_to_fulltext,
+                pmid_to_coord_tables=pmid_to_coord_tables,
+                allowed_match_statuses=set(mode_cfg.get("allowed_statuses", set())),
+                study_universe_pmids=study_universe_pmids,
+                auto_study_pmids_by_annotation=auto_study_pmids_by_annotation,
+                manual_study_pmids_by_annotation=manual_study_pmids_by_annotation,
+            )
+            mode_results[mode_id] = {"docs": docs, "metrics": metrics}
+            if mode_id in metrics_by_annotation_by_mode:
+                metrics_by_annotation_by_mode[mode_id][annotation_name] = metrics
+
+        html = render_html(annotation_name, mode_results, criteria=criteria)
         output_path = output_dir / f"{annotation_name}.html"
         output_path.write_text(html, encoding="utf-8")
 
+        strict_metrics = mode_results.get("accepted", {}).get("metrics", {})
+        combined_metrics = mode_results.get("combined", {}).get("metrics", {})
         print(
             f"Wrote {output_path} | "
-            f"TP={metrics['tp']} FP={metrics['fp']} FN={metrics['fn']} "
-            f"doc_precision={metrics['precision']:.3f} doc_recall={metrics['recall']:.3f} doc_f1={metrics.get('f1', 0.0):.3f} "
-            f"study_precision={metrics.get('study_metrics', {}).get('precision', 0.0):.3f} "
-            f"study_recall={metrics.get('study_metrics', {}).get('recall', 0.0):.3f} "
-            f"study_f1={metrics.get('study_metrics', {}).get('f1', 0.0):.3f} "
-            f"analysis_precision={metrics.get('analysis_metrics', {}).get('precision', 0.0):.3f} "
-            f"analysis_recall={metrics.get('analysis_metrics', {}).get('recall', 0.0):.3f} "
-            f"analysis_f1={metrics.get('analysis_metrics', {}).get('f1', 0.0):.3f} "
-            f"missing_manual_pmids={len(metrics.get('missing_manual_pmids', []))}"
+            f"strict_doc_f1={float(strict_metrics.get('f1', 0.0)):.3f} "
+            f"strict_study_f1={float(strict_metrics.get('study_metrics', {}).get('f1', 0.0)):.3f} "
+            f"strict_analysis_f1={float(strict_metrics.get('analysis_metrics', {}).get('f1', 0.0)):.3f} "
+            f"combined_doc_f1={float(combined_metrics.get('f1', 0.0)):.3f} "
+            f"combined_study_f1={float(combined_metrics.get('study_metrics', {}).get('f1', 0.0)):.3f} "
+            f"combined_analysis_f1={float(combined_metrics.get('analysis_metrics', {}).get('f1', 0.0)):.3f} "
+            f"missing_manual_pmids={len(strict_metrics.get('missing_manual_pmids', []))}"
         )
 
-    overall_summary_html = render_overall_summary_html(metrics_by_annotation)
+    overall_summary_html = render_overall_summary_html(metrics_by_annotation_by_mode)
     overall_summary_path = output_dir / "overall_submeta_summary.html"
     overall_summary_path.write_text(overall_summary_html, encoding="utf-8")
     print(f"Wrote {overall_summary_path}")

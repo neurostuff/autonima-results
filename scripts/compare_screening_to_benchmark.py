@@ -1,4 +1,5 @@
 import argparse
+from collections import Counter
 import csv
 import html
 import json
@@ -499,10 +500,12 @@ class QualitativeReviewTool:
         self.metadata_file = self.project_dir / "retrieval" / "pubget_data" / "metadata.csv"
         self.text_file = self.project_dir / "retrieval" / "pubget_data" / "text.csv"
         self.search_results_file = self.project_dir / "outputs" / "search_results.json"
+        self.criteria_mapping_file = self.project_dir / "outputs" / "criteria_mapping.json"
 
         self.metadata_df = self._load_csv(self.metadata_file)
         self.text_df = self._load_csv(self.text_file)
         self.search_results = self._load_json(self.search_results_file)
+        self.criteria_mapping = self._load_json(self.criteria_mapping_file) or {}
 
         self.metadata_dict: Dict[str, Dict[str, Any]] = {}
         self.text_dict: Dict[str, Dict[str, Any]] = {}
@@ -585,6 +588,208 @@ class QualitativeReviewTool:
     def get_fulltext(self, pmid: str) -> Dict[str, Any] | None:
         return self.text_dict.get(pmid)
 
+    def _get_stage_criteria(self, stage: str) -> tuple[Dict[str, str], Dict[str, str]]:
+        screening_cfg = self.criteria_mapping.get("screening", {})
+        if not isinstance(screening_cfg, dict):
+            return {}, {}
+
+        stage_cfg = screening_cfg.get(stage, {})
+        if not isinstance(stage_cfg, dict):
+            return {}, {}
+
+        inclusion = stage_cfg.get("inclusion", {})
+        exclusion = stage_cfg.get("exclusion", {})
+
+        if not isinstance(inclusion, dict):
+            inclusion = {}
+        if not isinstance(exclusion, dict):
+            exclusion = {}
+
+        inclusion_map = {str(key): str(value) for key, value in inclusion.items()}
+        exclusion_map = {str(key): str(value) for key, value in exclusion.items()}
+        return inclusion_map, exclusion_map
+
+    def _get_stage_screening_results(self, stage: str) -> List[Dict[str, Any]]:
+        if stage == "abstract":
+            return self.final_results.get("abstract_screening_results", [])
+        if stage == "fulltext":
+            return self.final_results.get("fulltext_screening_results", [])
+        return []
+
+    def _get_stage_screening_record(self, stage: str, pmid: str) -> Dict[str, Any]:
+        if stage == "abstract":
+            return self.abstract_screening_dict.get(pmid, {})
+        if stage == "fulltext":
+            return self.fulltext_screening_dict.get(pmid, {})
+        return {}
+
+    def _get_applied_criteria_ids(self, values: Any) -> List[str]:
+        if not isinstance(values, list):
+            return []
+        criteria_ids = []
+        for value in values:
+            criterion_id = str(value).strip()
+            if criterion_id:
+                criteria_ids.append(criterion_id)
+        return criteria_ids
+
+    def _count_stage_criteria_usage(
+        self,
+        stage: str,
+        only_pmids: set[str] | None = None,
+    ) -> tuple[Counter, Counter, int]:
+        inclusion_counts: Counter = Counter()
+        exclusion_counts: Counter = Counter()
+        total_records = 0
+
+        for result in self._get_stage_screening_results(stage):
+            study_id = normalize_pmid(result.get("study_id"))
+            if only_pmids is not None and study_id not in only_pmids:
+                continue
+
+            total_records += 1
+            for criterion_id in self._get_applied_criteria_ids(result.get("inclusion_criteria_applied")):
+                inclusion_counts[criterion_id] += 1
+            for criterion_id in self._get_applied_criteria_ids(result.get("exclusion_criteria_applied")):
+                exclusion_counts[criterion_id] += 1
+
+        return inclusion_counts, exclusion_counts, total_records
+
+    def _render_criterion_items(
+        self,
+        criterion_ids: List[str],
+        criteria_map: Dict[str, str],
+        tone: str,
+        empty_message: str,
+    ) -> str:
+        if not criterion_ids:
+            return f"<p>{self._escape(empty_message)}</p>\n"
+
+        content = "<ul class='criterion-list'>\n"
+        for criterion_id in sorted(criterion_ids):
+            description = criteria_map.get(criterion_id, "Description unavailable")
+            content += (
+                "<li>"
+                f"<span class='criterion-tag criterion-{tone}'>{self._escape(criterion_id)}</span> "
+                f"{self._escape(description)}"
+                "</li>\n"
+            )
+        content += "</ul>\n"
+        return content
+
+    def _render_stage_criteria_summary(self, stage: str, report_pmids: set[str]) -> str:
+        inclusion_map, exclusion_map = self._get_stage_criteria(stage)
+        stage_inclusion_counts, stage_exclusion_counts, total_stage_records = (
+            self._count_stage_criteria_usage(stage)
+        )
+        report_inclusion_counts, report_exclusion_counts, total_report_records = (
+            self._count_stage_criteria_usage(stage, only_pmids=report_pmids)
+        )
+
+        # Fallback if mapping is unavailable: summarize observed IDs only.
+        if not inclusion_map:
+            inclusion_map = {
+                criterion_id: "Description unavailable (missing criteria_mapping.json)"
+                for criterion_id in sorted(stage_inclusion_counts.keys())
+            }
+        if not exclusion_map:
+            exclusion_map = {
+                criterion_id: "Description unavailable (missing criteria_mapping.json)"
+                for criterion_id in sorted(stage_exclusion_counts.keys())
+            }
+
+        content = "<div class='criteria-summary'>\n"
+        content += "<h2>Stage Criteria Summary</h2>\n"
+        content += (
+            f"<p>Stage: <strong>{self._escape(stage.title())}</strong>. "
+            "Counts show criterion usage across all stage decisions and within this report subset.</p>\n"
+        )
+        content += (
+            "<div class='criteria-grid'>\n"
+            "<div>\n"
+            "<h3>Inclusion Criteria</h3>\n"
+            "<ul class='criterion-list'>\n"
+        )
+        for criterion_id in sorted(inclusion_map.keys()):
+            description = inclusion_map[criterion_id]
+            stage_count = stage_inclusion_counts.get(criterion_id, 0)
+            report_count = report_inclusion_counts.get(criterion_id, 0)
+            content += (
+                "<li>"
+                f"<span class='criterion-tag criterion-neutral'>{self._escape(criterion_id)}</span> "
+                f"{self._escape(description)} "
+                f"<span class='criterion-count'>(all stage: {stage_count}/{total_stage_records}, "
+                f"this report: {report_count}/{total_report_records})</span>"
+                "</li>\n"
+            )
+        if not inclusion_map:
+            content += "<li>No inclusion criteria available.</li>\n"
+        content += "</ul>\n</div>\n<div>\n<h3>Exclusion Criteria</h3>\n<ul class='criterion-list'>\n"
+        for criterion_id in sorted(exclusion_map.keys()):
+            description = exclusion_map[criterion_id]
+            stage_count = stage_exclusion_counts.get(criterion_id, 0)
+            report_count = report_exclusion_counts.get(criterion_id, 0)
+            content += (
+                "<li>"
+                f"<span class='criterion-tag criterion-neutral'>{self._escape(criterion_id)}</span> "
+                f"{self._escape(description)} "
+                f"<span class='criterion-count'>(all stage: {stage_count}/{total_stage_records}, "
+                f"this report: {report_count}/{total_report_records})</span>"
+                "</li>\n"
+            )
+        if not exclusion_map:
+            content += "<li>No exclusion criteria available.</li>\n"
+        content += "</ul>\n</div>\n</div>\n</div>\n"
+        return content
+
+    def _render_study_criteria_details(self, stage: str, screening: Dict[str, Any]) -> str:
+        inclusion_map, exclusion_map = self._get_stage_criteria(stage)
+
+        met_inclusion = set(self._get_applied_criteria_ids(screening.get("inclusion_criteria_applied")))
+        met_exclusion = set(self._get_applied_criteria_ids(screening.get("exclusion_criteria_applied")))
+
+        expected_inclusion = set(inclusion_map.keys()) if inclusion_map else set(met_inclusion)
+        expected_exclusion = set(exclusion_map.keys()) if exclusion_map else set(met_exclusion)
+
+        unmet_inclusion = expected_inclusion - met_inclusion
+        unmet_exclusion = expected_exclusion - met_exclusion
+
+        content = "<div class='criteria-details'>\n"
+        content += "<h3>Criteria Assessment</h3>\n"
+
+        content += "<div class='criteria-grid'>\n<div>\n<h4>Inclusion</h4>\n"
+        content += "<p><strong>Met</strong> (green)</p>\n"
+        content += self._render_criterion_items(
+            criterion_ids=list(met_inclusion),
+            criteria_map=inclusion_map,
+            tone="green",
+            empty_message="No inclusion criteria marked as met.",
+        )
+        content += "<p><strong>Not met</strong> (red)</p>\n"
+        content += self._render_criterion_items(
+            criterion_ids=list(unmet_inclusion),
+            criteria_map=inclusion_map,
+            tone="red",
+            empty_message="No unmet inclusion criteria.",
+        )
+        content += "</div>\n<div>\n<h4>Exclusion</h4>\n"
+        content += "<p><strong>Met / triggered</strong> (red)</p>\n"
+        content += self._render_criterion_items(
+            criterion_ids=list(met_exclusion),
+            criteria_map=exclusion_map,
+            tone="red",
+            empty_message="No exclusion criteria triggered.",
+        )
+        content += "<p><strong>Not met</strong> (green)</p>\n"
+        content += self._render_criterion_items(
+            criterion_ids=list(unmet_exclusion),
+            criteria_map=exclusion_map,
+            tone="green",
+            empty_message="No remaining exclusion criteria.",
+        )
+        content += "</div>\n</div>\n</div>\n"
+        return content
+
     def generate_error_report(self, error_type: str, stage: str) -> Path | None:
         pmids = normalize_pmid_list(self.classifications.get(stage, {}).get(error_type, []))
 
@@ -597,17 +802,14 @@ class QualitativeReviewTool:
         )
         html_content += f"<h1>{error_type.replace('_', ' ').title()} Papers at {stage.title()} Stage</h1>\n"
         html_content += f"<p>Total papers: {len(pmids)}</p>\n"
+        html_content += self._render_stage_criteria_summary(stage=stage, report_pmids=set(pmids))
         html_content += "<div class='study-list'>\n"
 
         for i, pmid in enumerate(pmids, 1):
             metadata = self.metadata_dict.get(pmid, {})
             fulltext = self.get_fulltext(pmid)
 
-            screening = {}
-            if stage == "abstract":
-                screening = self.abstract_screening_dict.get(pmid, {})
-            elif stage == "fulltext":
-                screening = self.fulltext_screening_dict.get(pmid, {})
+            screening = self._get_stage_screening_record(stage=stage, pmid=pmid)
 
             html_content += f"<div class='study' id='study-{i}' data-pmid='{self._escape(pmid)}'>\n"
             html_content += (
@@ -666,6 +868,7 @@ class QualitativeReviewTool:
                         f"<p><strong>Fulltext Confidence:</strong> "
                         f"{self._escape(screening.get('confidence'))}</p>\n"
                     )
+                html_content += self._render_study_criteria_details(stage=stage, screening=screening)
                 html_content += "</div>\n"
 
             html_content += "<div class='content'>\n"
@@ -764,6 +967,12 @@ class QualitativeReviewTool:
             padding: 10px;
             border-left: 3px solid #3498db;
         }}
+        .criteria-summary, .criteria-details {{
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }}
         .metadata {{
             border-left-color: #3498db;
         }}
@@ -772,6 +981,42 @@ class QualitativeReviewTool:
         }}
         .content {{
             border-left-color: #2ecc71;
+        }}
+        .criteria-summary {{
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }}
+        .criteria-grid {{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }}
+        .criterion-list {{
+            margin: 8px 0;
+            padding-left: 18px;
+        }}
+        .criterion-tag {{
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }}
+        .criterion-red {{
+            background: #c0392b;
+        }}
+        .criterion-green {{
+            background: #1e8449;
+        }}
+        .criterion-neutral {{
+            background: #34495e;
+        }}
+        .criterion-count {{
+            color: #555;
+            font-size: 12px;
         }}
         .annotation {{
             border-left: 3px solid #f39c12;
@@ -835,6 +1080,11 @@ class QualitativeReviewTool:
             font-family: monospace;
             font-size: 12px;
             line-height: 1.4;
+        }}
+        @media (max-width: 900px) {{
+            .criteria-grid {{
+                grid-template-columns: 1fr;
+            }}
         }}
     </style>
 </head>
@@ -1039,7 +1289,11 @@ def main(
     if skip_qualitative_report:
         print("Skipping qualitative report generation (--skip-qualitative-report).")
     else:
-        report_output_dir = qualitative_output_dir or os.path.join(directory, "report")
+        report_output_dir = qualitative_output_dir or os.path.join(
+            directory,
+            "reports",
+            "qualitative",
+        )
         qualitative_tool = QualitativeReviewTool(
             project_dir=directory,
             output_dir=report_output_dir,
@@ -1202,7 +1456,10 @@ if __name__ == "__main__":
         "--qualitative-output-dir",
         dest="qualitative_output_dir",
         default=None,
-        help="Directory to save qualitative HTML reports (default: <directory>/report).",
+        help=(
+            "Directory to save qualitative HTML reports "
+            "(default: <directory>/reports/qualitative/)."
+        ),
     )
     parser.add_argument(
         "--qualitative-error-type",
