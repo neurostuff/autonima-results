@@ -1325,34 +1325,21 @@ def classify_criterion_status_for_row(
     exclusion_criteria_applied: list[str],
     criterion_meta: dict[str, dict[str, str]],
 ) -> dict[str, list[str]]:
-    inclusion_codes = [
-        code
-        for code, meta in criterion_meta.items()
-        if str(meta.get("criterion_type", "")).lower() == "inclusion"
-    ]
     exclusion_codes = [
         code
         for code, meta in criterion_meta.items()
         if str(meta.get("criterion_type", "")).lower() == "exclusion"
     ]
 
-    inclusion_met = [code for code in inclusion_codes if code in inclusion_criteria_applied]
-    exclusion_met = [code for code in exclusion_codes if code in exclusion_criteria_applied]
-
-    inclusion_not_met = [code for code in inclusion_codes if code not in inclusion_met]
-    exclusion_not_met = [code for code in exclusion_codes if code not in exclusion_met]
-
-    unknown_applied = [
-        code
-        for code in dedupe_keep_order([*inclusion_criteria_applied, *exclusion_criteria_applied])
-        if code not in criterion_meta
+    # Explicit-only behavior: only exclusion criteria listed as applied are treated as unmet.
+    # Do not infer unmet inclusion criteria from omissions.
+    explicit_unmet_known = [
+        code for code in dedupe_keep_order(exclusion_criteria_applied) if code in exclusion_codes
     ]
+    unknown_unmet = [code for code in dedupe_keep_order(exclusion_criteria_applied) if code not in criterion_meta]
     return {
-        "inclusion_met": inclusion_met,
-        "inclusion_not_met": inclusion_not_met,
-        "exclusion_not_met": exclusion_not_met,
-        "exclusion_met": exclusion_met,
-        "unknown_applied": unknown_applied,
+        "explicit_unmet_known": explicit_unmet_known,
+        "unknown_unmet": unknown_unmet,
     }
 
 
@@ -1369,9 +1356,9 @@ def render_criteria_checks_cell(
         criterion_meta=criterion_meta,
     )
 
-    def render_pills(codes: list[str], pill_class: str, empty_label: str) -> str:
+    def render_pills(codes: list[str], pill_class: str) -> str:
         if not codes:
-            return f"<span class=\"muted\">{escape(empty_label)}</span>"
+            return ""
         pills = []
         for code in codes:
             meta = criterion_meta.get(code, {})
@@ -1382,40 +1369,24 @@ def render_criteria_checks_cell(
             )
         return "".join(pills)
 
-    unknown_applied = status.get("unknown_applied", [])
+    unmet_codes = list(status.get("explicit_unmet_known", []))
+    unknown_unmet = list(status.get("unknown_unmet", []))
+    if not unmet_codes and not unknown_unmet:
+        return "<span class=\"muted\">---</span>"
+
+    unmet_html = render_pills(unmet_codes, "criteria-bad")
     unknown_html = ""
-    if unknown_applied:
+    if unknown_unmet:
         unknown_html = (
             "<div class=\"criteria-status-row\">"
-            "<span class=\"criteria-status-label\">Unknown codes</span>"
+            "<span class=\"criteria-status-label\">Unknown</span>"
             + "".join(
                 f"<span class=\"criteria-pill criteria-unknown\">{escape(code)}</span>"
-                for code in unknown_applied
+                for code in unknown_unmet
             )
             + "</div>"
         )
-
-    return (
-        "<div class=\"criteria-status-wrap\">"
-        "<div class=\"criteria-status-row\">"
-        "<span class=\"criteria-status-label\">Incl met</span>"
-        f"{render_pills(status['inclusion_met'], 'criteria-good', 'none')}"
-        "</div>"
-        "<div class=\"criteria-status-row\">"
-        "<span class=\"criteria-status-label\">Incl not met</span>"
-        f"{render_pills(status['inclusion_not_met'], 'criteria-bad', 'none')}"
-        "</div>"
-        "<div class=\"criteria-status-row\">"
-        "<span class=\"criteria-status-label\">Excl not met</span>"
-        f"{render_pills(status['exclusion_not_met'], 'criteria-good', 'none')}"
-        "</div>"
-        "<div class=\"criteria-status-row\">"
-        "<span class=\"criteria-status-label\">Excl met</span>"
-        f"{render_pills(status['exclusion_met'], 'criteria-bad', 'none')}"
-        "</div>"
-        f"{unknown_html}"
-        "</div>"
-    )
+    return "<div class=\"criteria-status-wrap\">" + unmet_html + unknown_html + "</div>"
 
 
 def render_doc_card(
@@ -1540,7 +1511,7 @@ def render_doc_card(
             "<th>Parsed Analysis Name</th>"
             "<th>Model Decision</th>"
             "<th>Matched Outcome</th>"
-            "<th>Criteria Checks</th>"
+            "<th>Unmet Criteria</th>"
             "<th>Model Reasoning</th>"
             "</tr>"
             "</thead>"
@@ -1922,7 +1893,7 @@ def render_html(
     <a id="top"></a>
     <h1>{escape(annotation_name)} report</h1>
     <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. Analysis-level row is evaluated on overall fuzzy-matched auto analyses (truth positives are annotation-sliced accepted matches only).</p>
-    <p class="muted">Criteria Checks are computed from explicit model outputs in <code>outputs/annotation_results.json</code> (<code>inclusion_criteria_applied</code>, <code>exclusion_criteria_applied</code>), not inferred from free-text reasoning.</p>
+    <p class="muted">Unmet Criteria is computed from explicit model outputs in <code>outputs/annotation_results.json</code> and shows only <code>exclusion_criteria_applied</code> entries (no inferred unmet inclusion criteria).</p>
     <div class="table-wrap">
       <table>
         <thead>
