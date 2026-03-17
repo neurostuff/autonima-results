@@ -103,6 +103,17 @@ def parse_args() -> argparse.Namespace:
             "combined score/name (strictly greater-than). Default: 0.9."
         ),
     )
+    parser.add_argument(
+        "--exclude-decimal-manual-coordinates",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help=(
+            "If enabled (default), manual analyses with non-zero decimal coordinate values are "
+            "excluded from matching because they likely represent converted coordinates rather "
+            "than raw extracted values. Values ending in .0 are not excluded by this heuristic. "
+            "Use --no-exclude-decimal-manual-coordinates to disable."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -413,6 +424,42 @@ def parse_points(points: list[dict[str, Any]]) -> list[tuple[float, float, float
     return parsed
 
 
+def coordinate_value_has_decimal(value: Any) -> bool:
+    if isinstance(value, bool):
+        return False
+    try:
+        if isinstance(value, str):
+            numeric = float(clean_text(value).strip())
+        else:
+            numeric = float(value)
+    except Exception:
+        return False
+    return not float(numeric).is_integer()
+
+
+def parse_points_with_decimal_detection(
+    points: list[dict[str, Any]],
+) -> tuple[list[tuple[float, float, float]], bool]:
+    parsed: list[tuple[float, float, float]] = []
+    has_decimal_coordinate = False
+    for point in points or []:
+        coords = point.get("coordinates", [])
+        if not isinstance(coords, (list, tuple)) or len(coords) != 3:
+            continue
+        try:
+            x_raw, y_raw, z_raw = coords[0], coords[1], coords[2]
+            if (
+                coordinate_value_has_decimal(x_raw)
+                or coordinate_value_has_decimal(y_raw)
+                or coordinate_value_has_decimal(z_raw)
+            ):
+                has_decimal_coordinate = True
+            parsed.append((float(x_raw), float(y_raw), float(z_raw)))
+        except Exception:
+            continue
+    return parsed, has_decimal_coordinate
+
+
 def load_auto_parsed_data(path: Path) -> dict[str, list[dict[str, Any]]]:
     payload = load_json(path)
     studies = payload.get("studies", [])
@@ -485,11 +532,13 @@ def load_manual_analyses_overall(manual_dir: Path) -> tuple[dict[str, list[dict[
             if not analysis_id:
                 continue
             analysis_name = clean_text(analysis.get("name") or analysis_id)
+            points, has_decimal_coordinates = parse_points_with_decimal_detection(analysis.get("points", []))
             analyses.append(
                 {
                     "id": analysis_id,
                     "name": analysis_name,
-                    "points": parse_points(analysis.get("points", [])),
+                    "points": points,
+                    "has_decimal_coordinates": has_decimal_coordinates,
                 }
             )
         result[pmid] = sorted(analyses, key=lambda item: item["id"])
@@ -765,18 +814,33 @@ def build_match_results_overall(
     manual_study_names_by_pmid: dict[str, str],
     auto_parsed_by_pmid: dict[str, list[dict[str, Any]]],
     coord_accept_override_threshold: float,
+    exclude_decimal_manual_coordinates: bool,
 ) -> dict[str, Any]:
     pmid_results: dict[str, dict[str, Any]] = {}
+    unavailable_manual_decimal_pmids: list[str] = []
 
     manual_pmids = set(manual_analyses_by_pmid.keys())
     auto_pmids = set(auto_parsed_by_pmid.keys())
-    overlap_pmids = sorted(manual_pmids & auto_pmids, key=lambda x: (len(x), x))
+    overlap_pmids_all = sorted(manual_pmids & auto_pmids, key=lambda x: (len(x), x))
     excluded_manual_only_pmids = sorted(manual_pmids - auto_pmids, key=lambda x: (len(x), x))
     auto_only_pmids = sorted(auto_pmids - manual_pmids, key=lambda x: (len(x), x))
 
-    for pmid in overlap_pmids:
-        manual_analyses = manual_analyses_by_pmid.get(pmid, [])
+    for pmid in overlap_pmids_all:
+        manual_analyses_original = manual_analyses_by_pmid.get(pmid, [])
+        excluded_decimal_analyses: list[dict[str, Any]] = []
+        if exclude_decimal_manual_coordinates:
+            manual_analyses = []
+            for analysis in manual_analyses_original:
+                if bool(analysis.get("has_decimal_coordinates", False)):
+                    excluded_decimal_analyses.append(analysis)
+                    continue
+                manual_analyses.append(analysis)
+        else:
+            manual_analyses = manual_analyses_original
         auto_analyses = auto_parsed_by_pmid.get(pmid, [])
+        if exclude_decimal_manual_coordinates and manual_analyses_original and not manual_analyses:
+            unavailable_manual_decimal_pmids.append(pmid)
+            continue
 
         matched_entries, unassigned_auto_indices = match_with_hungarian(
             manual_analyses,
@@ -796,6 +860,14 @@ def build_match_results_overall(
         pmid_results[pmid] = {
             "manual_missing_in_auto": False,
             "manual_analyses": matched_entries,
+            "excluded_manual_analyses_decimal": [
+                {
+                    "id": str(analysis.get("id", "")),
+                    "name": str(analysis.get("name", "")),
+                    "coord_count": len(analysis.get("points", [])),
+                }
+                for analysis in excluded_decimal_analyses
+            ],
             "auto_analyses": [
                 {
                     "index": int(a["index"]),
@@ -812,6 +884,8 @@ def build_match_results_overall(
                 "uncertain": int(counts["uncertain"]),
                 "unmatched": int(counts["unmatched"]),
                 "manual_analysis_count": len(matched_entries),
+                "manual_analysis_count_original": len(manual_analyses_original),
+                "excluded_manual_decimal_analysis_count": len(excluded_decimal_analyses),
                 "all_manual_accepted": bool(matched_entries) and int(counts["accepted"]) == len(matched_entries),
                 "mean_combined_score": round(mean_combined, 6),
             },
@@ -865,17 +939,21 @@ def build_match_results_overall(
             "coord_accept_override_threshold": coord_accept_override_threshold,
             "exact_coord_accept_override": False,
             "low_name_highlight_threshold": LOW_NAME_SCORE_HIGHLIGHT_THRESHOLD,
+            "exclude_decimal_manual_coordinates": exclude_decimal_manual_coordinates,
         },
         "pmids": pmid_results,
+        "unavailable_manual_decimal_pmids": unavailable_manual_decimal_pmids,
         "missing_manual_pmids": [],
         "excluded_manual_only_pmids": excluded_manual_only_pmids,
         "auto_only_pmids": auto_only_pmids,
         "summary": {
-            "manual_pmids": len(overlap_pmids),
+            "manual_pmids": len(pmid_results),
             "missing_manual_pmids": 0,
             "manual_pmids_total": len(manual_pmids),
             "auto_pmids_total": len(auto_pmids),
-            "overlap_pmids": len(overlap_pmids),
+            "overlap_pmids": len(pmid_results),
+            "overlap_pmids_before_decimal_filter": len(overlap_pmids_all),
+            "unavailable_manual_decimal_pmids": len(unavailable_manual_decimal_pmids),
             "excluded_manual_only_pmids": len(excluded_manual_only_pmids),
             "auto_only_pmids": len(auto_only_pmids),
             "manual_analyses_total": len(all_entries),
@@ -888,7 +966,7 @@ def build_match_results_overall(
             "accepted_exact_coord_override": int(coord_override_accepted),
             "low_name_exact_matches": int(low_name_coord_override_matches),
             "pmids_all_manual_accepted": int(perfect_pmids),
-            "pmids_all_manual_accepted_rate": (float(perfect_pmids) / len(overlap_pmids)) if overlap_pmids else 0.0,
+            "pmids_all_manual_accepted_rate": (float(perfect_pmids) / len(pmid_results)) if pmid_results else 0.0,
             "all_correct_pmids": int(category_counts["all_correct"]),
             "mixed_pmids": int(category_counts["mixed"]),
             "all_incorrect_pmids": int(category_counts["all_incorrect"]),
@@ -899,6 +977,7 @@ def build_match_results_overall(
 
 def render_matching_summary_html(match_result: dict[str, Any]) -> str:
     summary = match_result.get("summary", {})
+    unavailable_manual_decimal_pmids = int(summary.get("unavailable_manual_decimal_pmids", 0))
     overlap_pmids = int(summary.get("overlap_pmids", 0))
     manual_total = int(summary.get("manual_analyses_total", 0))
     accepted = int(summary.get("accepted", 0))
@@ -941,6 +1020,7 @@ def render_matching_summary_html(match_result: dict[str, Any]) -> str:
     <p><strong>PMIDs with all manual analyses accepted:</strong> {perfect_pmids} |
        <strong>Perfect PMID rate:</strong> {perfect_pmid_rate:.3f}</p>
     <p><strong>Study categories:</strong> All correct={all_correct_pmids} | Mixed={mixed_pmids} | All incorrect={all_incorrect_pmids}</p>
+    <p><strong>Unavailable Manual Studies (decimal coordinates):</strong> {unavailable_manual_decimal_pmids}</p>
     <p><strong>Excluded manual-only PMIDs:</strong> {excluded_manual_only_pmids} |
        <strong>Auto-only PMIDs:</strong> {auto_only_pmids}</p>
   </header>
@@ -974,6 +1054,10 @@ def render_matching_summary_html(match_result: dict[str, Any]) -> str:
 def render_detailed_study_review_html(match_result: dict[str, Any]) -> str:
     pmids = match_result.get("pmids", {})
     summary = match_result.get("summary", {})
+    unavailable_manual_decimal_pmids = sorted(
+        [str(pmid) for pmid in match_result.get("unavailable_manual_decimal_pmids", [])],
+        key=lambda value: (len(value), value),
+    )
     grouped: dict[str, list[tuple[str, dict[str, Any]]]] = {
         "all_correct": [],
         "mixed": [],
@@ -1118,6 +1202,17 @@ def render_detailed_study_review_html(match_result: dict[str, Any]) -> str:
                 cards=cards or "<p>No studies in this category.</p>",
             )
         )
+    unavailable_section = ""
+    unavailable_nav_link = ""
+    if unavailable_manual_decimal_pmids:
+        unavailable_nav_link = (
+            f"<a href=\"#cat-unavailable\">Unavailable ({len(unavailable_manual_decimal_pmids)})</a>"
+        )
+        unavailable_section = (
+            "<section id=\"cat-unavailable\">"
+            "<h2>Unavailable Manual Studies (decimal coordinates): [{pmids}]</h2>"
+            "</section>"
+        ).format(pmids=", ".join(escape(pmid) for pmid in unavailable_manual_decimal_pmids))
 
     return f"""<!doctype html>
 <html lang="en">
@@ -1155,8 +1250,10 @@ def render_detailed_study_review_html(match_result: dict[str, Any]) -> str:
     <a href="#cat-all_correct">All correct ({int(summary.get("all_correct_pmids", 0))})</a>
     <a href="#cat-mixed">Mixed ({int(summary.get("mixed_pmids", 0))})</a>
     <a href="#cat-all_incorrect">All incorrect ({int(summary.get("all_incorrect_pmids", 0))})</a>
+    {unavailable_nav_link}
   </nav>
   {"".join(sections)}
+  {unavailable_section}
 </body>
 </html>
 """
@@ -1177,6 +1274,10 @@ def render_combined_report_html(
     policy = match_result.get("matching_policy", {})
     coord_override_threshold = float(policy.get("coord_accept_override_threshold", 0.9))
     pmids = match_result.get("pmids", {})
+    unavailable_manual_decimal_pmids = sorted(
+        [str(pmid) for pmid in match_result.get("unavailable_manual_decimal_pmids", [])],
+        key=lambda value: (len(value), value),
+    )
     pubget_by_pmid = pubget_by_pmid or {}
     table_html_cache: dict[str, str] = {}
     grouped: dict[str, list[tuple[str, dict[str, Any]]]] = {
@@ -1547,6 +1648,39 @@ def render_combined_report_html(
             )
         )
 
+    unavailable_section_html = ""
+    unavailable_nav_link = ""
+    if unavailable_manual_decimal_pmids:
+        unavailable_nav_link = (
+            f"<a href=\"#bucket-unavailable\">Unavailable Manual Studies ({len(unavailable_manual_decimal_pmids)})</a>"
+        )
+        unavailable_pmid_text = ", ".join(escape(pmid) for pmid in unavailable_manual_decimal_pmids)
+        unavailable_pmid_chips = "".join(
+            (
+                "<a class=\"pmid-chip\" href=\"https://pubmed.ncbi.nlm.nih.gov/{pmid}/\" "
+                "target=\"_blank\" rel=\"noopener noreferrer\">PMID {pmid}</a>"
+            ).format(pmid=escape(pmid))
+            for pmid in unavailable_manual_decimal_pmids
+        )
+        unavailable_section_html = (
+            "<section id=\"bucket-unavailable\">"
+            "<details class=\"bucket\" open>"
+            "<summary><h2>Unavailable Manual Studies (decimal coordinates) ({count})</h2></summary>"
+            "<p class=\"resource-note\">These studies were excluded from matching because all manual analyses "
+            "used non-zero decimal coordinates and are likely coordinate-converted (not raw extracted values).</p>"
+            "<div class=\"pmid-chip-list\">{chips}</div>"
+            "<details class=\"unavailable-raw\">"
+            "<summary>Raw PMID list</summary>"
+            "<code>[{pmids}]</code>"
+            "</details>"
+            "</details>"
+            "</section>"
+        ).format(
+            count=len(unavailable_manual_decimal_pmids),
+            chips=unavailable_pmid_chips,
+            pmids=unavailable_pmid_text,
+        )
+
     needs_review_total = len(grouped["mixed"]) + len(grouped["all_incorrect"])
     review_toolbar = ""
     review_script = ""
@@ -1877,6 +2011,12 @@ def render_combined_report_html(
     section {{ margin-bottom: 1rem; }}
     .bucket > summary, .doc-card > summary, .inner-accordion > summary {{ cursor: pointer; }}
     .doc-card {{ background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.85rem; margin-bottom: 0.85rem; }}
+    .pmid-chip-list {{ display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.45rem 0 0.2rem 0; }}
+    .pmid-chip {{ display: inline-block; border: 1px solid #bed2e5; background: #f3f8ff; color: #0f4978; border-radius: 999px; padding: 0.2rem 0.55rem; font-size: 0.84rem; text-decoration: none; }}
+    .pmid-chip:hover {{ background: #e7f1ff; border-color: #98bbdc; }}
+    .unavailable-raw {{ margin-top: 0.55rem; }}
+    .unavailable-raw > summary {{ cursor: pointer; color: #0e4f85; }}
+    .unavailable-raw code {{ display: block; margin-top: 0.35rem; white-space: normal; line-height: 1.45; background: #f7f9fc; border: 1px solid var(--line); border-radius: 7px; padding: 0.45rem; }}
     .doc-links {{ margin: 0.45rem 0 0.25rem 0; font-size: 0.92rem; }}
     .inner-accordion {{ margin-top: 0.6rem; border-top: 1px dashed var(--line); padding-top: 0.4rem; }}
     .resource-box {{ background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.55rem; }}
@@ -1917,6 +2057,7 @@ def render_combined_report_html(
     <p><strong>Study categories:</strong> All correct={int(summary.get("all_correct_pmids", 0))} |
        Mixed={int(summary.get("mixed_pmids", 0))} |
        All incorrect={int(summary.get("all_incorrect_pmids", 0))}</p>
+    <p><strong>Unavailable Manual Studies (decimal coordinates):</strong> {len(unavailable_manual_decimal_pmids)}</p>
     <p><strong>Accepted by coordinate-score override:</strong> {int(summary.get("accepted_coord_override", summary.get("accepted_exact_coord_override", 0)))} |
        <strong>Coordinate-override matches with low name score:</strong> {int(summary.get("low_name_coord_override_matches", summary.get("low_name_exact_matches", 0)))}</p>
     <p><strong>PMIDs with Pubget docs:</strong> {int(summary.get("pmids_with_pubget", 0))} |
@@ -1932,9 +2073,11 @@ def render_combined_report_html(
     <a href="#bucket-all-correct">All Correct ({int(summary.get("all_correct_pmids", 0))})</a>
     <a href="#bucket-mixed">Mixed ({int(summary.get("mixed_pmids", 0))})</a>
     <a href="#bucket-all-incorrect">All Incorrect ({int(summary.get("all_incorrect_pmids", 0))})</a>
+    {unavailable_nav_link}
     <a href="#top">Top</a>
   </nav>
   {"".join(bucket_html)}
+  {unavailable_section_html}
   {review_script}
 </body>
 </html>
@@ -1981,6 +2124,7 @@ def main() -> None:
         manual_study_names_by_pmid=manual_study_names_by_pmid,
         auto_parsed_by_pmid=auto_by_pmid,
         coord_accept_override_threshold=float(args.coord_accept_override_threshold),
+        exclude_decimal_manual_coordinates=bool(args.exclude_decimal_manual_coordinates),
     )
     annotate_match_result_with_pubget(match_result, pubget_by_pmid)
     write_match_artifacts(output_dir, match_result, pubget_by_pmid=pubget_by_pmid)
@@ -1992,6 +2136,7 @@ def main() -> None:
         f"overlap_pmids={summary['overlap_pmids']} "
         f"manual_pmids_total={summary['manual_pmids_total']} "
         f"excluded_manual_only_pmids={summary['excluded_manual_only_pmids']} "
+        f"unavailable_manual_decimal_pmids={summary.get('unavailable_manual_decimal_pmids', 0)} "
         f"pmids_all_manual_accepted={summary['pmids_all_manual_accepted']} "
         f"pmids_with_pubget={summary.get('pmids_with_pubget', 0)}"
     )
