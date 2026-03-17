@@ -797,20 +797,48 @@ class QualitativeReviewTool:
             logger.info("No %s found at %s stage", error_type, stage)
             return None
 
+        # For full-text qualitative reports, include only studies that were actually
+        # screened at full-text and have a valid screening outcome.
         if stage == "fulltext":
-            pmids_with_fulltext = [pmid for pmid in pmids if self.get_fulltext(pmid) is not None]
-            omitted_count = len(pmids) - len(pmids_with_fulltext)
+            valid_decisions = {"included_fulltext", "excluded_fulltext"}
+            pmids_with_valid_screening = []
+            omitted_no_screening = 0
+            omitted_incomplete = 0
+            omitted_other_invalid = 0
+
+            for pmid in pmids:
+                screening_record = self.fulltext_screening_dict.get(pmid)
+                if not screening_record:
+                    omitted_no_screening += 1
+                    continue
+
+                decision = str(screening_record.get("decision") or "").strip()
+                if decision == "fulltext_incomplete":
+                    omitted_incomplete += 1
+                    continue
+                if decision not in valid_decisions:
+                    omitted_other_invalid += 1
+                    continue
+
+                pmids_with_valid_screening.append(pmid)
+
+            omitted_count = len(pmids) - len(pmids_with_valid_screening)
             if omitted_count:
                 logger.info(
-                    "Omitting %d %s/%s studies without available full text from qualitative report",
+                    "Omitting %d %s/%s studies without valid fulltext screening "
+                    "(no record=%d, incomplete=%d, other invalid=%d)",
                     omitted_count,
                     error_type,
                     stage,
+                    omitted_no_screening,
+                    omitted_incomplete,
+                    omitted_other_invalid,
                 )
-            pmids = pmids_with_fulltext
+
+            pmids = pmids_with_valid_screening
             if not pmids:
                 logger.info(
-                    "No %s found at %s stage with available full text",
+                    "No %s found at %s stage with valid fulltext screening results",
                     error_type,
                     stage,
                 )
