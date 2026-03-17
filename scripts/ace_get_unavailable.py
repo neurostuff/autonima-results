@@ -1,9 +1,9 @@
 import argparse
+import logging
 import random
 import time
 from pathlib import Path
 from ace import scrape
-import os
 from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -261,8 +261,27 @@ def main():
         default=35.0,
         help='Seconds to wait for challenge pages to resolve (default: 35.0)'
     )
+    verbosity_group = parser.add_mutually_exclusive_group()
+    verbosity_group.add_argument(
+        '--log-level',
+        choices=['debug', 'info', 'warning', 'error', 'critical'],
+        default='warning',
+        help='Logging level (default: warning)'
+    )
+    verbosity_group.add_argument(
+        '--verbose',
+        dest='verbose',
+        action='store_true',
+        help='Enable info-level logging'
+    )
     
     args = parser.parse_args()
+
+    log_level_name = 'INFO' if args.verbose else args.log_level.upper()
+    log_level = getattr(logging, log_level_name)
+    logging.basicConfig(level=log_level)
+    logging.getLogger().setLevel(log_level)
+    scrape.logger.setLevel(log_level)
     
     scrape_path = args.scrape_path
     
