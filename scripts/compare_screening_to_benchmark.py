@@ -677,6 +677,15 @@ class QualitativeReviewTool:
         content += "</ul>\n"
         return content
 
+    def _render_all_criteria_tag(self, text: str, tone: str) -> str:
+        return (
+            "<ul class='criterion-list'>\n"
+            "<li>"
+            f"<span class='criterion-tag criterion-{tone}'>{self._escape(text)}</span>"
+            "</li>\n"
+            "</ul>\n"
+        )
+
     def _render_stage_criteria_summary(self, stage: str, report_pmids: set[str]) -> str:
         inclusion_map, exclusion_map = self._get_stage_criteria(stage)
         stage_inclusion_counts, stage_exclusion_counts, total_stage_records = (
@@ -753,40 +762,56 @@ class QualitativeReviewTool:
 
         unmet_inclusion = expected_inclusion - met_inclusion
         unmet_exclusion = expected_exclusion - met_exclusion
+        can_collapse_inclusion = bool(inclusion_map) and bool(expected_inclusion)
+        can_collapse_exclusion = bool(exclusion_map) and bool(expected_exclusion)
+        all_inclusion_met = can_collapse_inclusion and (met_inclusion == expected_inclusion)
+        all_inclusion_not_met = can_collapse_inclusion and not met_inclusion
+        all_exclusion_met = can_collapse_exclusion and (met_exclusion == expected_exclusion)
+        all_exclusion_not_met = can_collapse_exclusion and not met_exclusion
 
         content = "<div class='criteria-details'>\n"
         content += "<h3>Criteria Assessment</h3>\n"
 
         content += "<div class='criteria-grid'>\n<div>\n<h4>Inclusion</h4>\n"
-        content += "<p><strong>Met</strong> (green)</p>\n"
-        content += self._render_criterion_items(
-            criterion_ids=list(met_inclusion),
-            criteria_map=inclusion_map,
-            tone="green",
-            empty_message="No inclusion criteria marked as met.",
-        )
-        content += "<p><strong>Not met</strong> (red)</p>\n"
-        content += self._render_criterion_items(
-            criterion_ids=list(unmet_inclusion),
-            criteria_map=inclusion_map,
-            tone="red",
-            empty_message="No unmet inclusion criteria.",
-        )
+        if all_inclusion_met:
+            content += self._render_all_criteria_tag("all inclusion criteria met", "green")
+        elif all_inclusion_not_met:
+            content += self._render_all_criteria_tag("all inclusion criteria not met", "red")
+        else:
+            content += "<p><strong>Met</strong> (green)</p>\n"
+            content += self._render_criterion_items(
+                criterion_ids=list(met_inclusion),
+                criteria_map=inclusion_map,
+                tone="green",
+                empty_message="No inclusion criteria marked as met.",
+            )
+            content += "<p><strong>Not met</strong> (red)</p>\n"
+            content += self._render_criterion_items(
+                criterion_ids=list(unmet_inclusion),
+                criteria_map=inclusion_map,
+                tone="red",
+                empty_message="No unmet inclusion criteria.",
+            )
         content += "</div>\n<div>\n<h4>Exclusion</h4>\n"
-        content += "<p><strong>Met / triggered</strong> (red)</p>\n"
-        content += self._render_criterion_items(
-            criterion_ids=list(met_exclusion),
-            criteria_map=exclusion_map,
-            tone="red",
-            empty_message="No exclusion criteria triggered.",
-        )
-        content += "<p><strong>Not met</strong> (green)</p>\n"
-        content += self._render_criterion_items(
-            criterion_ids=list(unmet_exclusion),
-            criteria_map=exclusion_map,
-            tone="green",
-            empty_message="No remaining exclusion criteria.",
-        )
+        if all_exclusion_met:
+            content += self._render_all_criteria_tag("all exclusion criteria met", "red")
+        elif all_exclusion_not_met:
+            content += self._render_all_criteria_tag("all exclusion criteria not met", "green")
+        else:
+            content += "<p><strong>Met / triggered</strong> (red)</p>\n"
+            content += self._render_criterion_items(
+                criterion_ids=list(met_exclusion),
+                criteria_map=exclusion_map,
+                tone="red",
+                empty_message="No exclusion criteria triggered.",
+            )
+            content += "<p><strong>Not met</strong> (green)</p>\n"
+            content += self._render_criterion_items(
+                criterion_ids=list(unmet_exclusion),
+                criteria_map=exclusion_map,
+                tone="green",
+                empty_message="No remaining exclusion criteria.",
+            )
         content += "</div>\n</div>\n</div>\n"
         return content
 
@@ -1148,7 +1173,20 @@ class QualitativeReviewTool:
         }}
     }}
 
-    function saveAnnotations() {{
+    function getAnnotationsFilename() {{
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {{
+            return "annotations.json";
+        }}
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {{
+            return "annotations.json";
+        }}
+        return base + ".json";
+    }}
+
+    async function saveAnnotations() {{
         var annotations = [];
         var studies = document.getElementsByClassName('study');
 
@@ -1175,10 +1213,35 @@ class QualitativeReviewTool:
             }});
         }}
 
-        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(annotations, null, 2));
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {{
+            try {{
+                var fileHandle = await window.showSaveFilePicker({{
+                    suggestedName: outputFilename,
+                    types: [{{
+                        description: "JSON Files",
+                        accept: {{ "application/json": [".json"] }}
+                    }}]
+                }});
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            }} catch (error) {{
+                if (error && error.name === "AbortError") {{
+                    return;
+                }}
+                console.warn("Falling back to browser download.", error);
+            }}
+        }}
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
         var downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", "annotations.json");
+        downloadAnchorNode.setAttribute("download", outputFilename);
         document.body.appendChild(downloadAnchorNode);
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
