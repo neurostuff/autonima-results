@@ -4,6 +4,7 @@ import random
 import socket
 import time
 from pathlib import Path
+from urllib.parse import quote
 from ace import scrape
 from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
@@ -39,6 +40,24 @@ def _looks_like_client_challenge(html):
     return any(pattern in html_lower for pattern in CHALLENGE_PATTERNS)
 
 
+def _get_challenge_match_details(html, context_chars=70, max_excerpt_chars=180):
+    if not html:
+        return None
+    html_lower = html.lower()
+    for pattern in CHALLENGE_PATTERNS:
+        start_idx = html_lower.find(pattern)
+        if start_idx == -1:
+            continue
+        end_idx = start_idx + len(pattern)
+        excerpt_start = max(0, start_idx - context_chars)
+        excerpt_end = min(len(html), end_idx + context_chars)
+        excerpt = " ".join(html[excerpt_start:excerpt_end].split())
+        if len(excerpt) > max_excerpt_chars:
+            excerpt = excerpt[: max_excerpt_chars - 3] + "..."
+        return pattern, excerpt
+    return None
+
+
 _ORIGINAL_VALIDATE_SCRAPE = scrape._validate_scrape
 
 
@@ -65,6 +84,9 @@ class ChallengeAwareScraper(scrape.Scraper):
         use_uc_reconnect=True,
         use_uc=True,
         uc_debug_port=0,
+        proxy_prefix=None,
+        interactive_proxy_login=False,
+        browser_user_data_dir=None,
     ):
         super().__init__(store, api_key=api_key)
         self.browser_retries = max(1, int(browser_retries))
@@ -72,6 +94,10 @@ class ChallengeAwareScraper(scrape.Scraper):
         self.use_uc_reconnect = bool(use_uc_reconnect)
         self.use_uc = bool(use_uc)
         self.uc_debug_port = int(uc_debug_port)
+        self.proxy_prefix = proxy_prefix.rstrip() if proxy_prefix else None
+        self.interactive_proxy_login = bool(interactive_proxy_login)
+        self.browser_user_data_dir = browser_user_data_dir
+        self._proxy_login_completed = False
 
     @staticmethod
     def _pick_free_local_port():
@@ -95,7 +121,29 @@ class ChallengeAwareScraper(scrape.Scraper):
             uc_port = self.uc_debug_port or self._pick_free_local_port()
             driver_kwargs["chromium_arg"] = f"remote-debugging-port={uc_port}"
             scrape.logger.info("Using UC remote debugging port: %s", uc_port)
+        if self.browser_user_data_dir:
+            driver_kwargs["user_data_dir"] = str(self.browser_user_data_dir)
         return scrape.Driver(**driver_kwargs)
+
+    def _apply_proxy_prefix(self, url):
+        if not self.proxy_prefix:
+            return url
+        if url.startswith(self.proxy_prefix):
+            return url
+        encoded_url = quote(url, safe="")
+        return f"{self.proxy_prefix}{encoded_url}"
+
+    def _maybe_wait_for_proxy_login(self):
+        if not self.proxy_prefix or not self.interactive_proxy_login or self._proxy_login_completed:
+            return
+        scrape.logger.info(
+            "Proxy login required: complete authentication in the browser, then press Enter to continue."
+        )
+        try:
+            input("Proxy login pending. Press Enter after authentication is complete... ")
+        except EOFError:
+            scrape.logger.info("No interactive stdin available; continuing without manual confirmation.")
+        self._proxy_login_completed = True
 
     @staticmethod
     def _safe_page_source(driver, retries=3):
@@ -107,18 +155,21 @@ class ChallengeAwareScraper(scrape.Scraper):
         return ""
 
     def _open_with_reconnect(self, driver, url, attempt):
+        target_url = self._apply_proxy_prefix(url)
         if self.use_uc_reconnect and hasattr(driver, "uc_open_with_reconnect"):
             reconnect_time = min(14, 5 + attempt * 2)
             scrape.logger.info(
                 "Opening URL with uc reconnect (attempt %s, reconnect=%ss): %s",
                 attempt,
                 reconnect_time,
-                url,
+                target_url,
             )
-            driver.uc_open_with_reconnect(url, reconnect_time=reconnect_time)
+            driver.uc_open_with_reconnect(target_url, reconnect_time=reconnect_time)
+            self._maybe_wait_for_proxy_login()
             return
-        scrape.logger.info("Opening URL with standard driver.get (attempt %s): %s", attempt, url)
-        driver.get(url)
+        scrape.logger.info("Opening URL with standard driver.get (attempt %s): %s", attempt, target_url)
+        driver.get(target_url)
+        self._maybe_wait_for_proxy_login()
 
     def _wait_for_content(self, driver, timeout):
         deadline = time.time() + timeout
@@ -135,10 +186,20 @@ class ChallengeAwareScraper(scrape.Scraper):
                 stable_non_challenge_samples = 0
                 if time.time() >= next_status_log:
                     remaining = max(0.0, deadline - time.time())
-                    scrape.logger.info(
-                        "Still on challenge/interstitial page (%.1fs remaining in wait window).",
-                        remaining,
-                    )
+                    match_details = _get_challenge_match_details(html)
+                    if match_details:
+                        marker, excerpt = match_details
+                        scrape.logger.info(
+                            "Still on challenge/interstitial page (%.1fs remaining; marker=%r; excerpt=%r).",
+                            remaining,
+                            marker,
+                            excerpt,
+                        )
+                    else:
+                        scrape.logger.info(
+                            "Still on challenge/interstitial page (%.1fs remaining in wait window).",
+                            remaining,
+                        )
                     next_status_log = time.time() + 5.0
                 time.sleep(1.0)
                 continue
@@ -255,12 +316,24 @@ class ChallengeAwareScraper(scrape.Scraper):
                     )
                     return html
                 if html and _looks_like_client_challenge(html):
-                    scrape.logger.info(
-                        "Detected client challenge/interstitial for %s (attempt %s/%s).",
-                        journal,
-                        attempt,
-                        self.browser_retries,
-                    )
+                    match_details = _get_challenge_match_details(html)
+                    if match_details:
+                        marker, excerpt = match_details
+                        scrape.logger.info(
+                            "Detected client challenge/interstitial for %s (attempt %s/%s, marker=%r, excerpt=%r).",
+                            journal,
+                            attempt,
+                            self.browser_retries,
+                            marker,
+                            excerpt,
+                        )
+                    else:
+                        scrape.logger.info(
+                            "Detected client challenge/interstitial for %s (attempt %s/%s).",
+                            journal,
+                            attempt,
+                            self.browser_retries,
+                        )
                 else:
                     scrape.logger.info(
                         "Retrieved HTML for %s failed ACE validation (attempt %s/%s); likely interstitial/blocked page.",
@@ -383,6 +456,21 @@ def main():
         default=0,
         help='UC remote debugging port (default: 0 = auto-select free port per attempt)'
     )
+    parser.add_argument(
+        '--proxy-prefix',
+        default=None,
+        help='Optional URL prefix for article URLs (e.g., http://ezproxy.lib.utexas.edu/login?url=)'
+    )
+    parser.add_argument(
+        '--interactive-proxy-login',
+        action='store_true',
+        help='Pause once after first proxied page load and wait for manual login confirmation'
+    )
+    parser.add_argument(
+        '--browser-user-data-dir',
+        default=None,
+        help='Optional persistent browser profile dir (recommended with interactive proxy login)'
+    )
     verbosity_group = parser.add_mutually_exclusive_group()
     verbosity_group.add_argument(
         '--log-level',
@@ -425,6 +513,12 @@ def main():
         metadata_store = Path(args.metadata_store)
     else:
         metadata_store = Path(scrape_path) / 'metadata'
+
+    if args.interactive_proxy_login and args.headless:
+        scrape.logger.warning(
+            "--interactive-proxy-login was set with --headless. "
+            "Login may not be possible in headless mode; consider running without --headless."
+        )
     
     # Initialize scraper
     scraper = ChallengeAwareScraper(
@@ -434,6 +528,9 @@ def main():
         use_uc_reconnect=not args.no_uc_reconnect,
         use_uc=not args.no_uc,
         uc_debug_port=args.uc_debug_port,
+        proxy_prefix=args.proxy_prefix,
+        interactive_proxy_login=args.interactive_proxy_login,
+        browser_user_data_dir=args.browser_user_data_dir,
     )
     
     # Retrieve articles by PMID list
