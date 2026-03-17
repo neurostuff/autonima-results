@@ -1,6 +1,7 @@
 import argparse
 import logging
 import random
+import socket
 import time
 from pathlib import Path
 from ace import scrape
@@ -12,6 +13,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 CHALLENGE_PATTERNS = (
     "<title>client challenge</title>",
+    "<title>just a moment...</title>",
+    "<title>attention required!</title>",
+    "checking if you are a human",
+    "checking if the site connection is secure",
+    "enable javascript and cookies to continue",
+    "please turn javascript on and reload the page",
+    "verify you are human",
+    "cf-chl-",
+    "/cdn-cgi/challenge-platform/",
+    "cf-turnstile",
+    "__cf_bm",
+    "cloudflare ray id",
     "/_fs-ch-",
     "javascript is disabled in your browser",
     "a required part of this site couldn",
@@ -35,21 +48,54 @@ def _validate_scrape_with_client_challenge(html):
     return _ORIGINAL_VALIDATE_SCRAPE(html)
 
 
+def _is_valid_scrape(html):
+    return bool(html) and _validate_scrape_with_client_challenge(html)
+
+
 scrape._validate_scrape = _validate_scrape_with_client_challenge
 
 
 class ChallengeAwareScraper(scrape.Scraper):
-    def __init__(self, store, api_key=None, browser_retries=4, challenge_timeout=35.0):
+    def __init__(
+        self,
+        store,
+        api_key=None,
+        browser_retries=4,
+        challenge_timeout=35.0,
+        use_uc_reconnect=True,
+        use_uc=True,
+        uc_debug_port=0,
+    ):
         super().__init__(store, api_key=api_key)
         self.browser_retries = max(1, int(browser_retries))
         self.challenge_timeout = max(5.0, float(challenge_timeout))
+        self.use_uc_reconnect = bool(use_uc_reconnect)
+        self.use_uc = bool(use_uc)
+        self.uc_debug_port = int(uc_debug_port)
+
+    @staticmethod
+    def _pick_free_local_port():
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.bind(("127.0.0.1", 0))
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            return sock.getsockname()[1]
 
     def _new_driver(self, headless):
-        return scrape.Driver(
-            uc=True,
-            headless2=headless,
-            agent=random.choice(scrape.USER_AGENTS),
+        scrape.logger.info(
+            "Initializing browser driver (uc=%s, headless=%s).",
+            self.use_uc,
+            headless,
         )
+        driver_kwargs = {
+            "uc": self.use_uc,
+            "headless2": headless,
+            "agent": random.choice(scrape.USER_AGENTS),
+        }
+        if self.use_uc:
+            uc_port = self.uc_debug_port or self._pick_free_local_port()
+            driver_kwargs["chromium_arg"] = f"remote-debugging-port={uc_port}"
+            scrape.logger.info("Using UC remote debugging port: %s", uc_port)
+        return scrape.Driver(**driver_kwargs)
 
     @staticmethod
     def _safe_page_source(driver, retries=3):
@@ -61,16 +107,24 @@ class ChallengeAwareScraper(scrape.Scraper):
         return ""
 
     def _open_with_reconnect(self, driver, url, attempt):
-        if hasattr(driver, "uc_open_with_reconnect"):
+        if self.use_uc_reconnect and hasattr(driver, "uc_open_with_reconnect"):
             reconnect_time = min(14, 5 + attempt * 2)
+            scrape.logger.info(
+                "Opening URL with uc reconnect (attempt %s, reconnect=%ss): %s",
+                attempt,
+                reconnect_time,
+                url,
+            )
             driver.uc_open_with_reconnect(url, reconnect_time=reconnect_time)
             return
+        scrape.logger.info("Opening URL with standard driver.get (attempt %s): %s", attempt, url)
         driver.get(url)
 
     def _wait_for_content(self, driver, timeout):
         deadline = time.time() + timeout
         last_html = self._safe_page_source(driver)
         stable_non_challenge_samples = 0
+        next_status_log = time.time() + 5.0
 
         while time.time() < deadline:
             html = self._safe_page_source(driver)
@@ -79,6 +133,13 @@ class ChallengeAwareScraper(scrape.Scraper):
 
             if _looks_like_client_challenge(html):
                 stable_non_challenge_samples = 0
+                if time.time() >= next_status_log:
+                    remaining = max(0.0, deadline - time.time())
+                    scrape.logger.info(
+                        "Still on challenge/interstitial page (%.1fs remaining in wait window).",
+                        remaining,
+                    )
+                    next_status_log = time.time() + 5.0
                 time.sleep(1.0)
                 continue
 
@@ -86,6 +147,15 @@ class ChallengeAwareScraper(scrape.Scraper):
                 ready = driver.execute_script("return document.readyState")
             except Exception:
                 ready = "complete"
+
+            if time.time() >= next_status_log:
+                remaining = max(0.0, deadline - time.time())
+                scrape.logger.info(
+                    "Waiting for page readiness: state=%s (%.1fs remaining).",
+                    ready,
+                    remaining,
+                )
+                next_status_log = time.time() + 5.0
 
             if ready in ("interactive", "complete"):
                 stable_non_challenge_samples += 1
@@ -100,12 +170,15 @@ class ChallengeAwareScraper(scrape.Scraper):
 
     def _load_article_html(self, driver, url, journal, attempt):
         driver.set_page_load_timeout(20)
+        scrape.logger.info("Loading article for %s (attempt %s).", journal, attempt)
         self._open_with_reconnect(driver, url, attempt)
         resolved_url = driver.current_url
 
         html = self._wait_for_content(driver, timeout=self.challenge_timeout)
+        scrape.logger.info("Initial page load complete for %s (attempt %s).", journal, attempt)
         substitute_url = self.check_for_substitute_url(resolved_url, html, journal)
         if substitute_url != resolved_url:
+            scrape.logger.info("Following substitute URL for %s: %s", journal, substitute_url)
             self._open_with_reconnect(driver, substitute_url, attempt)
             html = self._wait_for_content(driver, timeout=self.challenge_timeout)
 
@@ -157,18 +230,44 @@ class ChallengeAwareScraper(scrape.Scraper):
         for attempt in range(1, self.browser_retries + 1):
             driver = None
             try:
-                driver = self._new_driver(headless=headless)
-                html = self._load_article_html(driver, url, journal, attempt)
-                if html:
-                    last_html = html
-                if html and not _looks_like_client_challenge(html):
-                    return html
                 scrape.logger.info(
-                    "Detected client challenge/interstitial for %s (attempt %s/%s).",
+                    "Browser scrape attempt %s/%s for %s.",
+                    attempt,
+                    self.browser_retries,
+                    journal,
+                )
+                driver = self._new_driver(headless=headless)
+                scrape.logger.info(
+                    "Browser driver initialized for %s (attempt %s/%s).",
                     journal,
                     attempt,
                     self.browser_retries,
                 )
+                html = self._load_article_html(driver, url, journal, attempt)
+                if html:
+                    last_html = html
+                if _is_valid_scrape(html):
+                    scrape.logger.info(
+                        "Successfully retrieved valid HTML for %s on attempt %s/%s.",
+                        journal,
+                        attempt,
+                        self.browser_retries,
+                    )
+                    return html
+                if html and _looks_like_client_challenge(html):
+                    scrape.logger.info(
+                        "Detected client challenge/interstitial for %s (attempt %s/%s).",
+                        journal,
+                        attempt,
+                        self.browser_retries,
+                    )
+                else:
+                    scrape.logger.info(
+                        "Retrieved HTML for %s failed ACE validation (attempt %s/%s); likely interstitial/blocked page.",
+                        journal,
+                        attempt,
+                        self.browser_retries,
+                    )
             except TimeoutException:
                 scrape.logger.info(
                     "Timeout while loading %s (attempt %s/%s).",
@@ -192,6 +291,13 @@ class ChallengeAwareScraper(scrape.Scraper):
 
             if attempt < self.browser_retries:
                 backoff_seconds = min(12.0, 2.0 * attempt + random.random())
+                scrape.logger.info(
+                    "Retrying %s after %.1fs backoff (next attempt %s/%s).",
+                    journal,
+                    backoff_seconds,
+                    attempt + 1,
+                    self.browser_retries,
+                )
                 time.sleep(backoff_seconds)
 
         return last_html
@@ -261,6 +367,22 @@ def main():
         default=35.0,
         help='Seconds to wait for challenge pages to resolve (default: 35.0)'
     )
+    parser.add_argument(
+        '--no-uc-reconnect',
+        action='store_true',
+        help='Disable uc_open_with_reconnect and use standard driver.get'
+    )
+    parser.add_argument(
+        '--no-uc',
+        action='store_true',
+        help='Disable undetected browser mode (use standard webdriver)'
+    )
+    parser.add_argument(
+        '--uc-debug-port',
+        type=int,
+        default=0,
+        help='UC remote debugging port (default: 0 = auto-select free port per attempt)'
+    )
     verbosity_group = parser.add_mutually_exclusive_group()
     verbosity_group.add_argument(
         '--log-level',
@@ -270,6 +392,7 @@ def main():
     )
     verbosity_group.add_argument(
         '--verbose',
+        '--debug',
         dest='verbose',
         action='store_true',
         help='Enable info-level logging'
@@ -308,6 +431,9 @@ def main():
         scrape_path,
         browser_retries=args.browser_retries,
         challenge_timeout=args.challenge_timeout,
+        use_uc_reconnect=not args.no_uc_reconnect,
+        use_uc=not args.no_uc,
+        uc_debug_port=args.uc_debug_port,
     )
     
     # Retrieve articles by PMID list
