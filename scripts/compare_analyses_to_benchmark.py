@@ -3021,6 +3021,11 @@ def build_manual_truth_from_match_results(
                 for entry in manual_analyses
                 if entry.get("best_auto_index") is not None and entry.get("match_status") == "accepted"
             }
+            uncertain_indices = {
+                int(entry["best_auto_index"])
+                for entry in manual_analyses
+                if entry.get("best_auto_index") is not None and entry.get("match_status") == "uncertain"
+            }
 
             status_counts = {
                 "accepted": sum(1 for entry in manual_analyses if entry.get("match_status") == "accepted"),
@@ -3037,6 +3042,7 @@ def build_manual_truth_from_match_results(
 
             manual_truth[annotation_name][pmid] = {
                 "true_indices": accepted_indices,
+                "uncertain_indices": uncertain_indices,
                 "manual_names": [entry.get("manual_name", "") for entry in manual_analyses],
                 "unmatched_manual_names": [
                     entry.get("manual_name", "")
@@ -3214,6 +3220,41 @@ def extract_evaluable_auto_indices(
         and str(entry.get("match_status", "")).strip().lower() in normalized_statuses
     }
 
+
+def derive_true_indices_for_mode(
+    truth_entry: dict[str, Any],
+    allowed_statuses: set[str],
+    evaluable_auto_indices: set[int],
+) -> set[int]:
+    normalized_statuses = {str(status).strip().lower() for status in allowed_statuses}
+
+    accepted_indices = {
+        int(idx)
+        for idx in set(truth_entry.get("true_indices", set()) or set())
+    }
+
+    uncertain_indices_raw = truth_entry.get("uncertain_indices")
+    if uncertain_indices_raw is None:
+        uncertain_indices = {
+            int(entry["best_auto_index"])
+            for entry in truth_entry.get(
+                "review_match_diagnostics",
+                truth_entry.get("match_diagnostics", []),
+            )
+            if entry.get("best_auto_index") is not None
+            and str(entry.get("match_status", "")).strip().lower() == "uncertain"
+        }
+    else:
+        uncertain_indices = {int(idx) for idx in set(uncertain_indices_raw)}
+
+    mode_true_indices: set[int] = set()
+    if "accepted" in normalized_statuses:
+        mode_true_indices |= accepted_indices
+    if "uncertain" in normalized_statuses:
+        mode_true_indices |= uncertain_indices
+
+    return mode_true_indices & set(evaluable_auto_indices)
+
 def classify_documents(
     annotation_name: str,
     parsed_analyses: dict[str, list[dict[str, str]]],
@@ -3242,6 +3283,7 @@ def classify_documents(
             pmid,
             {
                 "true_indices": set(),
+                "uncertain_indices": set(),
                 "manual_names": [],
                 "unmatched_manual_names": [],
                 "match_diagnostics": [],
@@ -3263,7 +3305,11 @@ def classify_documents(
         evaluable_pmids.add(pmid)
 
         pred_indices = {idx for idx, decision in decisions_by_idx.items() if decision.include and idx in evaluable_auto_indices}
-        true_indices = set(truth_entry["true_indices"]) & evaluable_auto_indices
+        true_indices = derive_true_indices_for_mode(
+            truth_entry=truth_entry,
+            allowed_statuses=allowed_match_statuses,
+            evaluable_auto_indices=evaluable_auto_indices,
+        )
         correct_indices = pred_indices & true_indices
 
         if correct_indices:
@@ -3341,8 +3387,8 @@ def classify_documents(
     study_metrics["overlap_pmids"] = len(study_universe)
 
     # Analysis-level metrics are computed over the set of AUTO analyses that have
-    # evaluable manual-to-auto matches (accepted/uncertain with best_auto_index).
-    # Positives are annotation-sliced manual accepted matches (true_indices).
+    # evaluable manual-to-auto matches for the current mode (accepted/uncertain).
+    # Positives are mode-specific manual truth positives.
     analysis_tp = 0
     analysis_fp = 0
     analysis_fn = 0
@@ -3354,7 +3400,6 @@ def classify_documents(
     for pmid in doc_overlap_pmids:
         decisions_for_pmid = ann_decisions.get(pmid, {})
         truth_for_pmid = ann_truth.get(pmid, {})
-        true_indices = set(truth_for_pmid.get("true_indices", set()))
         review_match_rows = truth_for_pmid.get(
             "review_match_diagnostics",
             truth_for_pmid.get("match_diagnostics", []),
@@ -3365,6 +3410,11 @@ def classify_documents(
         )
         if not matched_auto_indices:
             continue
+        true_indices = derive_true_indices_for_mode(
+            truth_entry=truth_for_pmid,
+            allowed_statuses=allowed_match_statuses,
+            evaluable_auto_indices=matched_auto_indices,
+        )
 
         for idx_int in matched_auto_indices:
             matched_auto_universe += 1
@@ -3556,7 +3606,7 @@ def render_doc_card(
     )
     meta = (
         f"Pred included (matched analyses only): {len(doc['pred_indices'])} | "
-        f"Manual included (accepted matched analyses only): {len(doc['true_indices'])} | "
+        f"Manual included (mode truth positives): {len(doc['true_indices'])} | "
         f"Correct overlaps: {len(doc['correct_indices'])} | "
         f"Match statuses: {status_meta}"
     )
