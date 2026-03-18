@@ -1,11 +1,15 @@
 import argparse
 import logging
+import os
 import random
+import shutil
 import socket
 import time
 from pathlib import Path
 from ace import scrape
+from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -74,6 +78,8 @@ class ChallengeAwareScraper(scrape.Scraper):
         self,
         store,
         api_key=None,
+        browser="chrome",
+        firefox_binary=None,
         browser_retries=4,
         challenge_timeout=35.0,
         use_uc_reconnect=True,
@@ -81,6 +87,10 @@ class ChallengeAwareScraper(scrape.Scraper):
         uc_debug_port=0,
     ):
         super().__init__(store, api_key=api_key)
+        self.browser = str(browser).strip().lower()
+        if self.browser not in {"chrome", "firefox"}:
+            raise ValueError(f"Unsupported browser: {self.browser!r}. Use 'chrome' or 'firefox'.")
+        self.firefox_binary = firefox_binary
         self.browser_retries = max(1, int(browser_retries))
         self.challenge_timeout = max(5.0, float(challenge_timeout))
         self.use_uc_reconnect = bool(use_uc_reconnect)
@@ -94,18 +104,86 @@ class ChallengeAwareScraper(scrape.Scraper):
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             return sock.getsockname()[1]
 
+    @staticmethod
+    def _is_probably_elf_binary(path):
+        if os.name != "posix":
+            return True
+        try:
+            with open(path, "rb") as f:
+                return f.read(4) == b"\x7fELF"
+        except OSError:
+            return False
+
+    def _resolve_firefox_binary(self):
+        if self.firefox_binary:
+            binary = str(self.firefox_binary).strip()
+            if not os.path.exists(binary):
+                raise ValueError(f"Firefox binary does not exist: {binary}")
+            return binary
+
+        candidates = [
+            "/snap/firefox/current/usr/lib/firefox/firefox",
+            "/usr/lib/firefox/firefox",
+            "/usr/lib/firefox-esr/firefox-esr",
+            "/opt/firefox/firefox",
+        ]
+        discovered = shutil.which("firefox")
+        if discovered:
+            candidates.append(discovered)
+        candidates.extend(
+            [
+                "/usr/local/bin/firefox",
+                "/usr/bin/firefox",
+            ]
+        )
+        seen = set()
+        for candidate in candidates:
+            if not candidate or candidate in seen:
+                continue
+            seen.add(candidate)
+            if not os.path.exists(candidate):
+                continue
+            if self._is_probably_elf_binary(candidate):
+                return candidate
+
+        return discovered
+
     def _new_driver(self, headless):
+        use_uc = self.use_uc and self.browser == "chrome"
+        if self.use_uc and self.browser != "chrome":
+            scrape.logger.info(
+                "UC mode requested, but %s does not support UC. Continuing without UC.",
+                self.browser,
+            )
         scrape.logger.info(
-            "Initializing browser driver (uc=%s, headless=%s).",
-            self.use_uc,
+            "Initializing browser driver (browser=%s, uc=%s, headless=%s).",
+            self.browser,
+            use_uc,
             headless,
         )
+        if self.browser == "firefox":
+            firefox_options = FirefoxOptions()
+            user_agent = random.choice(scrape.USER_AGENTS)
+            firefox_options.set_preference("general.useragent.override", user_agent)
+            if headless:
+                firefox_options.add_argument("-headless")
+            firefox_binary = self._resolve_firefox_binary()
+            if firefox_binary:
+                scrape.logger.info("Using Firefox binary: %s", firefox_binary)
+                firefox_options.binary_location = firefox_binary
+            return webdriver.Firefox(options=firefox_options)
+
         driver_kwargs = {
-            "uc": self.use_uc,
-            "headless2": headless,
+            "browser": self.browser,
             "agent": random.choice(scrape.USER_AGENTS),
         }
-        if self.use_uc:
+        if self.browser == "chrome":
+            driver_kwargs["uc"] = use_uc
+            driver_kwargs["headless2"] = headless
+        else:
+            driver_kwargs["headless"] = headless
+
+        if use_uc:
             uc_port = self.uc_debug_port or self._pick_free_local_port()
             driver_kwargs["chromium_arg"] = f"remote-debugging-port={uc_port}"
             scrape.logger.info("Using UC remote debugging port: %s", uc_port)
@@ -121,7 +199,12 @@ class ChallengeAwareScraper(scrape.Scraper):
         return ""
 
     def _open_with_reconnect(self, driver, url, attempt):
-        if self.use_uc_reconnect and hasattr(driver, "uc_open_with_reconnect"):
+        if (
+            self.browser == "chrome"
+            and self.use_uc
+            and self.use_uc_reconnect
+            and hasattr(driver, "uc_open_with_reconnect")
+        ):
             reconnect_time = min(14, 5 + attempt * 2)
             scrape.logger.info(
                 "Opening URL with uc reconnect (attempt %s, reconnect=%ss): %s",
@@ -370,6 +453,16 @@ def main():
         help='Scraping mode (default: browser)'
     )
     parser.add_argument(
+        '--browser',
+        choices=['chrome', 'firefox'],
+        default='chrome',
+        help='Browser engine for Selenium mode (default: chrome)'
+    )
+    parser.add_argument(
+        '--firefox-binary',
+        help='Path to Firefox executable when using --browser firefox'
+    )
+    parser.add_argument(
         '--prefer-pmc-source',
         action='store_true',
         default=True,
@@ -411,13 +504,13 @@ def main():
     parser.add_argument(
         '--no-uc',
         action='store_true',
-        help='Disable undetected browser mode (use standard webdriver)'
+        help='Disable undetected browser mode (Chrome only; ignored for Firefox)'
     )
     parser.add_argument(
         '--uc-debug-port',
         type=int,
         default=0,
-        help='UC remote debugging port (default: 0 = auto-select free port per attempt)'
+        help='UC remote debugging port (Chrome+UC only; default: 0 = auto-select per attempt)'
     )
     verbosity_group = parser.add_mutually_exclusive_group()
     verbosity_group.add_argument(
@@ -465,6 +558,8 @@ def main():
     # Initialize scraper
     scraper = ChallengeAwareScraper(
         scrape_path,
+        browser=args.browser,
+        firefox_binary=args.firefox_binary,
         browser_retries=args.browser_retries,
         challenge_timeout=args.challenge_timeout,
         use_uc_reconnect=not args.no_uc_reconnect,
