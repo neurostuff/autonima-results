@@ -423,6 +423,20 @@ class ChallengeAwareScraper(scrape.Scraper):
 
 
 def main():
+    def _parse_prefer_pmc_source(value):
+        if isinstance(value, bool):
+            return value
+        value_normalized = str(value).strip().lower()
+        if value_normalized in {'true', '1', 'yes', 'y'}:
+            return True
+        if value_normalized in {'false', '0', 'no', 'n'}:
+            return False
+        if value_normalized == 'only':
+            return 'only'
+        raise argparse.ArgumentTypeError(
+            "Invalid value for --prefer-pmc-source. Use true, false, or only."
+        )
+
     parser = argparse.ArgumentParser(
         description='Retrieve unavailable articles by PMID'
     )
@@ -464,15 +478,18 @@ def main():
     )
     parser.add_argument(
         '--prefer-pmc-source',
-        action='store_true',
+        nargs='?',
+        const=True,
         default=True,
-        help='Prefer PMC source when available (default: True)'
+        type=_parse_prefer_pmc_source,
+        metavar='{true,false,only}',
+        help='Prefer PMC source when available. Use "only" to fetch only articles with PMC source (default: true)'
     )
     parser.add_argument(
         '--no-prefer-pmc-source',
         action='store_false',
         dest='prefer_pmc_source',
-        help='Do not prefer PMC source'
+        help='Do not prefer PMC source (equivalent to --prefer-pmc-source false)'
     )
     parser.add_argument(
         '--metadata-store',
