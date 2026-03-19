@@ -143,7 +143,7 @@ def classify_studies(
 
     # Full-text screening
     meta_in_search_screened = meta_in_search & fulltext_screened_set
-    missing_fulltext_omitted = (meta_in_search & fulltext_unavailable_set) - meta_in_search_screened
+    missing_fulltext_omitted = meta_in_search & fulltext_unavailable_set
     fulltext_incomplete_omitted = meta_in_search & fulltext_incomplete_set
     fulltext_not_screened_omitted = (
         meta_in_search
@@ -282,7 +282,7 @@ def calculate_metrics_with_ci(
 
     meta_in_search = meta_pmids_set & all_pmids_set
     meta_in_search_screened = meta_in_search & fulltext_screened_set
-    missing_fulltext_omitted = (meta_in_search & fulltext_unavailable_set) - meta_in_search_screened
+    missing_fulltext_omitted = meta_in_search & fulltext_unavailable_set
     fulltext_incomplete_omitted = meta_in_search & fulltext_incomplete_set
     fulltext_not_screened_omitted = (
         meta_in_search
@@ -356,8 +356,9 @@ def calculate_metrics_with_ci(
             "additional_false_negatives": additional_fn,
             "missing_full_text": len(missing_fulltext_omitted),
             "incomplete_full_text": len(fulltext_incomplete_omitted),
-            "unavailable_full_text": len(missing_fulltext_omitted)
-            + len(fulltext_incomplete_omitted),
+            "unavailable_full_text": len(
+                missing_fulltext_omitted | fulltext_incomplete_omitted
+            ),
             "not_screened_full_text": len(fulltext_not_screened_omitted),
             "false_negatives_all_texts": len(ft_fn_all_texts),
             "false_negatives_fulltext_only": len(ft_fn),
