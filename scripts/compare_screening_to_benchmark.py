@@ -117,6 +117,7 @@ def classify_studies(
     fulltext_unavailable_pmids: List[str],
     fulltext_with_coords_pmids: List[str],
     fulltext_incomplete_pmids: List[str] | None = None,
+    fulltext_screened_pmids: List[str] | None = None,
 ) -> Dict[str, Any]:
     """Classify studies into categories (TP, FN, FP) at each stage."""
 
@@ -127,6 +128,7 @@ def classify_studies(
     fulltext_unavailable_set = set(fulltext_unavailable_pmids)
     fulltext_with_coords_set = set(fulltext_with_coords_pmids)
     fulltext_incomplete_set = set(fulltext_incomplete_pmids or [])
+    fulltext_screened_set = set(fulltext_screened_pmids or fulltext_included_pmids)
 
     # Search level
     search_true_positives = meta_pmids_set & all_pmids_set
@@ -140,13 +142,16 @@ def classify_studies(
     abstract_false_positives = abstract_included_set - meta_in_search
 
     # Full-text screening
-    missing_fulltext_omitted = meta_in_search & fulltext_unavailable_set
+    meta_in_search_screened = meta_in_search & fulltext_screened_set
+    missing_fulltext_omitted = (meta_in_search & fulltext_unavailable_set) - meta_in_search_screened
     fulltext_incomplete_omitted = meta_in_search & fulltext_incomplete_set
-    meta_in_search_available = (
+    fulltext_not_screened_omitted = (
         meta_in_search
+        - meta_in_search_screened
         - missing_fulltext_omitted
         - fulltext_incomplete_omitted
     )
+    meta_in_search_available = meta_in_search_screened
     fulltext_true_positives = meta_in_search_available & fulltext_included_set
     fulltext_false_negatives_all = meta_in_search_available - fulltext_included_set
     fulltext_false_negatives_all_texts = meta_in_search - fulltext_included_set
@@ -181,6 +186,7 @@ def classify_studies(
             "false_negatives_fulltext_only": list(fulltext_false_negatives_fulltext_only),
             "missing_full_text": list(missing_fulltext_omitted),
             "incomplete_full_text": list(fulltext_incomplete_omitted),
+            "not_screened_full_text": list(fulltext_not_screened_omitted),
         },
         "fulltext_with_coords": {
             "true_positives": list(fulltext_with_coords_true_positives),
@@ -189,6 +195,7 @@ def classify_studies(
         },
         "fulltext_incomplete_omitted": list(fulltext_incomplete_omitted),
         "fulltext_missing_omitted": list(missing_fulltext_omitted),
+        "fulltext_not_screened_omitted": list(fulltext_not_screened_omitted),
         "meta_in_search": list(meta_in_search),
         "meta_in_search_available": list(meta_in_search_available),
     }
@@ -256,6 +263,7 @@ def calculate_metrics_with_ci(
     fulltext_unavailable_pmids: List[str],
     fulltext_with_coords_pmids: List[str],
     fulltext_incomplete_pmids: List[str] | None = None,
+    fulltext_screened_pmids: List[str] | None = None,
 ) -> Dict[str, Any]:
     """
     Calculate recall and precision with CIs for each stage:
@@ -268,17 +276,21 @@ def calculate_metrics_with_ci(
     fulltext_unavailable_set = set(fulltext_unavailable_pmids)
     fulltext_with_coords_set = set(fulltext_with_coords_pmids)
     fulltext_incomplete_set = set(fulltext_incomplete_pmids or [])
+    fulltext_screened_set = set(fulltext_screened_pmids or fulltext_included_pmids)
 
     meta_count, all_count = len(meta_pmids_set), len(all_pmids_set)
 
     meta_in_search = meta_pmids_set & all_pmids_set
-    missing_fulltext_omitted = meta_in_search & fulltext_unavailable_set
+    meta_in_search_screened = meta_in_search & fulltext_screened_set
+    missing_fulltext_omitted = (meta_in_search & fulltext_unavailable_set) - meta_in_search_screened
     fulltext_incomplete_omitted = meta_in_search & fulltext_incomplete_set
-    meta_in_search_available = (
+    fulltext_not_screened_omitted = (
         meta_in_search
+        - meta_in_search_screened
         - missing_fulltext_omitted
         - fulltext_incomplete_omitted
     )
+    meta_in_search_available = meta_in_search_screened
 
     def stage(
         name: str,
@@ -346,6 +358,7 @@ def calculate_metrics_with_ci(
             "incomplete_full_text": len(fulltext_incomplete_omitted),
             "unavailable_full_text": len(missing_fulltext_omitted)
             + len(fulltext_incomplete_omitted),
+            "not_screened_full_text": len(fulltext_not_screened_omitted),
             "false_negatives_all_texts": len(ft_fn_all_texts),
             "false_negatives_fulltext_only": len(ft_fn),
             "omitted_incomplete_fulltext": len(fulltext_incomplete_omitted),
@@ -1322,7 +1335,14 @@ def main(
         [
             s.get("study_id")
             for s in final_results.get("fulltext_screening_results", [])
-            if s.get("decision") == "included_fulltext"
+            if s.get("decision") in {"included_fulltext", "included"}
+        ]
+    )
+    fulltext_screened_pmids = normalize_pmid_list(
+        [
+            s.get("study_id")
+            for s in final_results.get("fulltext_screening_results", [])
+            if s.get("decision") in {"included_fulltext", "excluded_fulltext", "included", "excluded"}
         ]
     )
     fulltext_incomplete_pmids = normalize_pmid_list(
@@ -1371,6 +1391,7 @@ def main(
         fulltext_incomplete_pmids = [pmid for pmid in fulltext_incomplete_pmids if pmid in all_ids_set]
         fulltext_with_coords_pmids = [pmid for pmid in fulltext_with_coords_pmids if pmid in all_ids_set]
         fulltext_unavailable_pmids = [pmid for pmid in fulltext_unavailable_pmids if pmid in all_ids_set]
+        fulltext_screened_pmids = [pmid for pmid in fulltext_screened_pmids if pmid in all_ids_set]
 
         print(f"Restricting comparison to {len(all_ids):,} PMIDs from {all_ids_path}")
         print("-" * 20)
@@ -1383,6 +1404,7 @@ def main(
         fulltext_unavailable_pmids,
         fulltext_with_coords_pmids,
         fulltext_incomplete_pmids,
+        fulltext_screened_pmids,
     )
     study_classifications = classify_studies(
         meta_pmids,
@@ -1392,6 +1414,7 @@ def main(
         fulltext_unavailable_pmids,
         fulltext_with_coords_pmids,
         fulltext_incomplete_pmids,
+        fulltext_screened_pmids,
     )
 
     save_results_to_files(results, study_classifications, evaluation_output_dir)
@@ -1483,6 +1506,7 @@ def main(
         pre_line_templates=[
             "Unavailable gold-standard full text: {unavailable_full_text:,} "
             "({missing_full_text:,} missing, {incomplete_full_text:,} incomplete)",
+            "Not screened at full-text (omitted from recall): {not_screened_full_text:,}",
         ],
         extra_count_labels={
             "false_negatives_all_texts": "False negatives (all texts)",
