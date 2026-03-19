@@ -5,15 +5,15 @@ This script ports the generic notebook workflow into a reusable CLI and produces
 CSV tables, PNG figures, and an HTML report.
 
 Examples:
-    python scripts/compare_auto_vs_manual_generic.py \
+    python scripts/compare_meta_to_benchmark.py \
         --project-dir projects/cue_reactivity
 
-    python scripts/compare_auto_vs_manual_generic.py \
+    python scripts/compare_meta_to_benchmark.py \
         --project-dir projects/cue_reactivity \
         --run-dir v1 \
         --manual-meta-run manual_meta_v1
 
-    python scripts/compare_auto_vs_manual_generic.py \
+    python scripts/compare_meta_to_benchmark.py \
         --project-dir projects/cue_reactivity \
         --output-dir projects/cue_reactivity/reports/manual_vs_auto_meta_custom \
         --no-save-images
@@ -25,6 +25,7 @@ import argparse
 import json
 import re
 import sys
+from collections import defaultdict
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
@@ -43,6 +44,7 @@ AGGREGATE_ANALYSIS_NAME_VARIANTS = (
     ("all_analyses", "all_studies"),
 )
 MANUAL_META_MARKERS = ("manual_meta", "manual-meta", "manual metas", "manual_metas")
+ANALYSIS_ID_RE = re.compile(r"^(?P<pmid>.+?)_analysis_(?P<index>\d+)$")
 
 
 @dataclass(frozen=True)
@@ -94,6 +96,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("/home/zorro/repos/neurometabench/analysis"),
         help="Root containing manual benchmark maps by project.",
+    )
+    parser.add_argument(
+        "--manual-nimads-base",
+        type=Path,
+        default=Path("/home/zorro/repos/neurometabench/data/nimads"),
+        help="Root containing merged manual benchmark nimads datasets by project.",
     )
     parser.add_argument(
         "--map-filename",
@@ -185,6 +193,26 @@ def heuristic_is_manual_meta_run(run_name: str) -> bool:
     if run_name_lc.startswith("manual"):
         return True
     return any(marker in run_name_lc for marker in MANUAL_META_MARKERS)
+
+
+def normalize_note_key(key: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", str(key).strip().lower()).strip("_")
+
+
+def parse_pmid_from_analysis_id(analysis_id: str) -> str | None:
+    analysis_text = str(analysis_id).strip()
+    if not analysis_text:
+        return None
+
+    match = ANALYSIS_ID_RE.match(analysis_text)
+    if match:
+        return match.group("pmid")
+
+    if "_" in analysis_text:
+        candidate = analysis_text.split("_", 1)[0].strip()
+        return candidate or None
+
+    return None
 
 
 def resolve_project_dir(project_dir: Path) -> Path:
@@ -279,6 +307,268 @@ def load_mappings(mapping_path: Path) -> dict[str, str]:
     if not isinstance(mappings, dict) or not mappings:
         raise ValueError(f"Mapping file must be a non-empty JSON object: {mapping_path}")
     return {str(k): str(v) for k, v in mappings.items()}
+
+
+def load_analysis_to_pmid_map_from_studyset(studyset_path: Path) -> dict[str, str]:
+    with studyset_path.open("r", encoding="utf-8") as f:
+        payload = json.load(f)
+
+    studies = payload.get("studies", [])
+    if not isinstance(studies, list):
+        raise ValueError(f"Invalid nimads_studyset format (missing list 'studies'): {studyset_path}")
+
+    analysis_to_pmid: dict[str, str] = {}
+    for study in studies:
+        if not isinstance(study, dict):
+            continue
+        pmid = str(study.get("pmid") or study.get("id") or "").strip()
+        analyses = study.get("analyses", [])
+        if not isinstance(analyses, list):
+            continue
+        for analysis in analyses:
+            if not isinstance(analysis, dict):
+                continue
+            analysis_id = str(analysis.get("id") or "").strip()
+            if analysis_id and pmid:
+                analysis_to_pmid[analysis_id] = pmid
+
+    return analysis_to_pmid
+
+
+def count_annotation_membership(
+    annotation_path: Path,
+    studyset_path: Path,
+    target_annotation_names: list[str],
+) -> dict[str, tuple[int, int]]:
+    with annotation_path.open("r", encoding="utf-8") as f:
+        payload = json.load(f)
+
+    notes = payload.get("notes", [])
+    if not isinstance(notes, list):
+        raise ValueError(f"Invalid nimads_annotation format (missing list 'notes'): {annotation_path}")
+
+    analysis_to_pmid = load_analysis_to_pmid_map_from_studyset(studyset_path)
+    target_by_normalized_key: dict[str, list[str]] = defaultdict(list)
+    for target_name in target_annotation_names:
+        target_by_normalized_key[normalize_note_key(target_name)].append(target_name)
+
+    analysis_ids_by_annotation: dict[str, set[str]] = {
+        target_name: set() for target_name in target_annotation_names
+    }
+    pmids_by_annotation: dict[str, set[str]] = {
+        target_name: set() for target_name in target_annotation_names
+    }
+    fallback_pmids_used: set[str] = set()
+
+    for note_row in notes:
+        if not isinstance(note_row, dict):
+            continue
+
+        analysis_id = str(note_row.get("analysis", "")).strip()
+        if not analysis_id:
+            continue
+
+        note = note_row.get("note", {})
+        if not isinstance(note, dict):
+            continue
+
+        true_keys = {
+            normalize_note_key(key)
+            for key, value in note.items()
+            if bool(value)
+        }
+        if not true_keys:
+            continue
+
+        pmid = analysis_to_pmid.get(analysis_id, "")
+        if not pmid:
+            parsed = parse_pmid_from_analysis_id(analysis_id)
+            pmid = parsed or ""
+            if pmid:
+                fallback_pmids_used.add(analysis_id)
+
+        for normalized_key in true_keys:
+            for target_name in target_by_normalized_key.get(normalized_key, []):
+                analysis_ids_by_annotation[target_name].add(analysis_id)
+                if pmid:
+                    pmids_by_annotation[target_name].add(pmid)
+
+    if fallback_pmids_used:
+        preview = ", ".join(sorted(fallback_pmids_used)[:5])
+        suffix = "" if len(fallback_pmids_used) <= 5 else f" ... (+{len(fallback_pmids_used)-5} more)"
+        print(
+            f"[WARN] {annotation_path}: {len(fallback_pmids_used)} analyses missing studyset PMID "
+            f"mapping; used analysis-id parsing fallback. Examples: {preview}{suffix}"
+        )
+
+    return {
+        target_name: (
+            len(analysis_ids_by_annotation[target_name]),
+            len(pmids_by_annotation[target_name]),
+        )
+        for target_name in target_annotation_names
+    }
+
+
+def load_available_annotation_names(annotation_path: Path) -> list[str]:
+    with annotation_path.open("r", encoding="utf-8") as f:
+        payload = json.load(f)
+
+    names: set[str] = set()
+    note_keys = payload.get("note_keys", {})
+    if isinstance(note_keys, dict):
+        names.update(str(key) for key in note_keys.keys())
+
+    for note_row in payload.get("notes", []):
+        if not isinstance(note_row, dict):
+            continue
+        note = note_row.get("note", {})
+        if isinstance(note, dict):
+            names.update(str(key) for key in note.keys())
+
+    return sorted(name for name in names if str(name).strip())
+
+
+def compute_automated_annotation_counts(
+    mapping_pairs: list[MappingPair],
+    included_run_infos: list[RunInfo],
+    manual_meta_by_run: dict[str, bool],
+) -> tuple[pd.DataFrame, dict[str, dict[str, str]]]:
+    mapped_auto_names = [pair.auto_name for pair in mapping_pairs]
+    mapped_auto_name_set = set(mapped_auto_names)
+    manual_name_by_auto_name = {
+        pair.auto_name: pair.manual_name for pair in mapping_pairs
+    }
+    annotation_order: list[str] = []
+
+    automated_run_names = [
+        run_info.name for run_info in included_run_infos if not manual_meta_by_run[run_info.name]
+    ]
+    rows: list[dict[str, object]] = []
+    manual_column_labels_by_run: dict[str, dict[str, str]] = {}
+
+    for run_info in included_run_infos:
+        run_name = run_info.name
+        if manual_meta_by_run[run_name]:
+            continue
+
+        outputs_dir = run_info.meta_results_dir.parent
+        annotation_path = outputs_dir / "nimads_annotation.json"
+        studyset_path = outputs_dir / "nimads_studyset.json"
+
+        if not annotation_path.exists():
+            raise FileNotFoundError(
+                f"Run {run_name} missing annotation file for count extraction: {annotation_path}"
+            )
+        if not studyset_path.exists():
+            raise FileNotFoundError(
+                f"Run {run_name} missing studyset file for PMID extraction: {studyset_path}"
+            )
+
+        available_annotations = load_available_annotation_names(annotation_path)
+        all_annotation_names = [
+            name
+            for name in available_annotations
+            if normalize_note_key(name).startswith("all_") or normalize_note_key(name) == "all"
+        ]
+        target_annotation_names = mapped_auto_names + [
+            name for name in all_annotation_names if name not in mapped_auto_name_set
+        ]
+        for annotation_name in target_annotation_names:
+            if annotation_name not in annotation_order:
+                annotation_order.append(annotation_name)
+
+        counts = count_annotation_membership(
+            annotation_path=annotation_path,
+            studyset_path=studyset_path,
+            target_annotation_names=target_annotation_names,
+        )
+
+        run_labels: dict[str, str] = {}
+        for annotation_name in target_annotation_names:
+            n_analyses, n_unique_pmids = counts.get(annotation_name, (0, 0))
+            manual_name = manual_name_by_auto_name.get(annotation_name, "")
+            rows.append(
+                {
+                    "run": run_name,
+                    "manual_name": manual_name,
+                    "auto_name": annotation_name,
+                    "n_analyses": int(n_analyses),
+                    "n_unique_pmids": int(n_unique_pmids),
+                    "is_mapped": bool(manual_name),
+                }
+            )
+            if manual_name:
+                run_labels[manual_name] = (
+                    f"{manual_name} (N analyses={int(n_analyses)}, PMIDs={int(n_unique_pmids)})"
+                )
+
+        manual_column_labels_by_run[run_name] = run_labels
+
+    counts_df = pd.DataFrame(rows)
+    if not counts_df.empty:
+        counts_df["run"] = pd.Categorical(
+            counts_df["run"], categories=automated_run_names, ordered=True
+        )
+        counts_df["auto_name"] = pd.Categorical(
+            counts_df["auto_name"], categories=annotation_order, ordered=True
+        )
+        counts_df = counts_df.sort_values(["auto_name", "run"]).reset_index(drop=True)
+
+    return counts_df, manual_column_labels_by_run
+
+
+def compute_manual_benchmark_totals(project_name: str, manual_nimads_base: Path) -> pd.DataFrame:
+    merged_dir = manual_nimads_base / project_name / "merged"
+    annotation_path = merged_dir / "nimads_annotation.json"
+    studyset_path = merged_dir / "nimads_studyset.json"
+
+    missing_files = [path for path in (annotation_path, studyset_path) if not path.exists()]
+    if missing_files:
+        missing_str = ", ".join(str(path) for path in missing_files)
+        raise FileNotFoundError(
+            "Manual benchmark counts requested, but missing NimADS files: " + missing_str
+        )
+
+    annotation_names = load_available_annotation_names(annotation_path)
+    counts_by_annotation = count_annotation_membership(
+        annotation_path=annotation_path,
+        studyset_path=studyset_path,
+        target_annotation_names=annotation_names,
+    )
+
+    analysis_to_pmid = load_analysis_to_pmid_map_from_studyset(studyset_path)
+    total_n_analyses = len(analysis_to_pmid)
+    total_n_unique_pmids = len({pmid for pmid in analysis_to_pmid.values() if pmid})
+
+    rows: list[dict[str, object]] = []
+    for annotation_name in annotation_names:
+        n_analyses, n_unique_pmids = counts_by_annotation.get(annotation_name, (0, 0))
+        rows.append(
+            {
+                "project": project_name,
+                "annotation": annotation_name,
+                "n_analyses": int(n_analyses),
+                "n_unique_pmids": int(n_unique_pmids),
+                "is_dataset_total": False,
+                "annotation_path": str(annotation_path),
+                "studyset_path": str(studyset_path),
+            }
+        )
+
+    rows.append(
+        {
+            "project": project_name,
+            "annotation": "__dataset_total__",
+            "n_analyses": int(total_n_analyses),
+            "n_unique_pmids": int(total_n_unique_pmids),
+            "is_dataset_total": True,
+            "annotation_path": str(annotation_path),
+            "studyset_path": str(studyset_path),
+        }
+    )
+
+    return pd.DataFrame(rows)
 
 
 def build_mapping_pairs(
@@ -623,11 +913,26 @@ def compute_comparison_results(
     )
 
 
+def relabel_manual_columns(
+    df: pd.DataFrame,
+    run_name: str,
+    manual_column_labels_by_run: dict[str, dict[str, str]],
+) -> pd.DataFrame:
+    labels = manual_column_labels_by_run.get(run_name, {})
+    if not labels:
+        return df
+    rename_map = {column_name: labels.get(column_name, column_name) for column_name in df.columns}
+    return df.rename(columns=rename_map)
+
+
 def write_tables(
     output_tables_dir: Path,
     save_tables: bool,
     results: ComparisonResults,
     availability_df: pd.DataFrame,
+    annotation_counts_df: pd.DataFrame,
+    manual_benchmark_totals_df: pd.DataFrame,
+    manual_column_labels_by_run: dict[str, dict[str, str]],
 ) -> dict[str, Path]:
     table_paths: dict[str, Path] = {}
     if not save_tables:
@@ -639,12 +944,46 @@ def write_tables(
     availability_df.to_csv(availability_path, index=False)
     table_paths["availability_summary"] = availability_path
 
+    if not annotation_counts_df.empty:
+        annotation_counts_path = output_tables_dir / "annotation_counts_by_run.csv"
+        annotation_counts_df.to_csv(annotation_counts_path, index=False)
+        table_paths["annotation_counts_by_run"] = annotation_counts_path
+
+        n_analyses_matrix_path = output_tables_dir / "n_analyses_matrix.csv"
+        (
+            annotation_counts_df.pivot(index="auto_name", columns="run", values="n_analyses")
+            .sort_index()
+            .to_csv(n_analyses_matrix_path)
+        )
+        table_paths["n_analyses_matrix"] = n_analyses_matrix_path
+
+        n_unique_pmids_matrix_path = output_tables_dir / "n_unique_pmids_matrix.csv"
+        (
+            annotation_counts_df.pivot(index="auto_name", columns="run", values="n_unique_pmids")
+            .sort_index()
+            .to_csv(n_unique_pmids_matrix_path)
+        )
+        table_paths["n_unique_pmids_matrix"] = n_unique_pmids_matrix_path
+
+    if not manual_benchmark_totals_df.empty:
+        manual_totals_path = output_tables_dir / "manual_benchmark_totals.csv"
+        manual_benchmark_totals_df.to_csv(manual_totals_path, index=False)
+        table_paths["manual_benchmark_totals"] = manual_totals_path
+
     for run_name in results.run_names:
         safe_run_name = sanitize_name(run_name)
         dice_path = output_tables_dir / f"dice_matrix_{safe_run_name}.csv"
         pearson_path = output_tables_dir / f"pearson_matrix_{safe_run_name}.csv"
-        results.dice_matrices[run_name].to_csv(dice_path)
-        results.pearson_matrices[run_name].to_csv(pearson_path)
+        relabel_manual_columns(
+            results.dice_matrices[run_name],
+            run_name=run_name,
+            manual_column_labels_by_run=manual_column_labels_by_run,
+        ).to_csv(dice_path)
+        relabel_manual_columns(
+            results.pearson_matrices[run_name],
+            run_name=run_name,
+            manual_column_labels_by_run=manual_column_labels_by_run,
+        ).to_csv(pearson_path)
         table_paths[f"dice_matrix::{run_name}"] = dice_path
         table_paths[f"pearson_matrix::{run_name}"] = pearson_path
 
@@ -669,6 +1008,7 @@ def write_images(
     show_figures: bool,
     results: ComparisonResults,
     dice_threshold: float,
+    manual_column_labels_by_run: dict[str, dict[str, str]],
 ) -> dict[str, Path]:
     image_paths: dict[str, Path] = {}
     if not save_images and not show_figures:
@@ -679,15 +1019,25 @@ def write_images(
 
     for run_name in results.run_names:
         safe_run_name = sanitize_name(run_name)
+        run_dice_df = relabel_manual_columns(
+            results.dice_matrices[run_name],
+            run_name=run_name,
+            manual_column_labels_by_run=manual_column_labels_by_run,
+        )
+        run_pearson_df = relabel_manual_columns(
+            results.pearson_matrices[run_name],
+            run_name=run_name,
+            manual_column_labels_by_run=manual_column_labels_by_run,
+        )
 
         fig, ax = plt.subplots(
             figsize=(
-                max(8, 1.4 * len(results.dice_matrices[run_name].columns)),
-                max(6, 1.1 * len(results.dice_matrices[run_name].index)),
+                max(8, 1.4 * len(run_dice_df.columns)),
+                max(6, 1.1 * len(run_dice_df.index)),
             )
         )
         sns.heatmap(
-            results.dice_matrices[run_name],
+            run_dice_df,
             annot=True,
             fmt=".3f",
             cmap="viridis",
@@ -711,12 +1061,12 @@ def write_images(
 
         fig, ax = plt.subplots(
             figsize=(
-                max(8, 1.4 * len(results.pearson_matrices[run_name].columns)),
-                max(6, 1.1 * len(results.pearson_matrices[run_name].index)),
+                max(8, 1.4 * len(run_pearson_df.columns)),
+                max(6, 1.1 * len(run_pearson_df.index)),
             )
         )
         sns.heatmap(
-            results.pearson_matrices[run_name],
+            run_pearson_df,
             annot=True,
             fmt=".3f",
             cmap="coolwarm",
@@ -823,6 +1173,8 @@ def build_html_report(
     skipped_run_missing_pairs: dict[str, list[str]],
     manual_meta_by_run: dict[str, bool],
     availability_df: pd.DataFrame,
+    annotation_counts_df: pd.DataFrame,
+    manual_benchmark_totals_df: pd.DataFrame,
     results: ComparisonResults,
     table_paths: dict[str, Path],
     image_paths: dict[str, Path],
@@ -858,6 +1210,17 @@ def build_html_report(
     diag_pearson_pivot = (
         results.diag_df.pivot(index="auto_name", columns="run", values="pearson_r").round(3)
     )
+    annotation_n_analyses_matrix = pd.DataFrame()
+    annotation_n_unique_pmids_matrix = pd.DataFrame()
+    if not annotation_counts_df.empty:
+        annotation_n_analyses_matrix = (
+            annotation_counts_df.pivot(index="auto_name", columns="run", values="n_analyses")
+            .sort_index()
+        )
+        annotation_n_unique_pmids_matrix = (
+            annotation_counts_df.pivot(index="auto_name", columns="run", values="n_unique_pmids")
+            .sort_index()
+        )
 
     links_html = []
     for label, path in sorted(table_paths.items()):
@@ -913,7 +1276,7 @@ def build_html_report(
 </head>
 <body>
   <h1>Manual vs Automated Meta-Analysis Comparison</h1>
-  <p class="muted">Generated by <code>scripts/compare_auto_vs_manual_generic.py</code>.</p>
+  <p class="muted">Generated by <code>scripts/compare_meta_to_benchmark.py</code>.</p>
 
   <div class="section">
     <h2>Configuration</h2>
@@ -941,6 +1304,21 @@ def build_html_report(
   <div class="section">
     <h2>Availability Matrix</h2>
     {to_html_table(availability_df)}
+  </div>
+
+  <div class="section">
+    <h2>Automated Annotation Counts</h2>
+    <p class="muted">Counts are computed from each run's <code>nimads_annotation.json</code> and PMID-linked through <code>nimads_studyset.json</code>. Includes mapped annotations and <code>all*</code> annotations.</p>
+    {to_html_table(annotation_counts_df)}
+    <h3>n_analyses Matrix (annotation x run)</h3>
+    {to_html_table(annotation_n_analyses_matrix)}
+    <h3>n_unique_pmids Matrix (annotation x run)</h3>
+    {to_html_table(annotation_n_unique_pmids_matrix)}
+  </div>
+
+  <div class="section">
+    <h2>Manual Benchmark Totals By Annotation</h2>
+    {to_html_table(manual_benchmark_totals_df)}
   </div>
 
   <div class="section">
@@ -987,6 +1365,7 @@ def print_configuration_summary(
     project_dir: Path,
     mapping_path: Path,
     manual_analysis_base: Path,
+    manual_nimads_base: Path,
     map_filename: str,
     dice_threshold: float,
     output_dir: Path,
@@ -998,6 +1377,7 @@ def print_configuration_summary(
     print(f"project_dir:         {project_dir}")
     print(f"mapping_path:        {mapping_path}")
     print(f"manual_analysis_base:{manual_analysis_base}")
+    print(f"manual_nimads_base:  {manual_nimads_base}")
     print(f"map_filename:        {map_filename}")
     print(f"dice_threshold:      {dice_threshold}")
     print(f"output_dir:          {output_dir}")
@@ -1050,6 +1430,7 @@ def main() -> None:
         project_dir=project_dir,
         mapping_path=mapping_path,
         manual_analysis_base=args.manual_analysis_base,
+        manual_nimads_base=args.manual_nimads_base,
         map_filename=args.map_filename,
         dice_threshold=args.dice_threshold,
         output_dir=output_dir,
@@ -1093,12 +1474,31 @@ def main() -> None:
         map_filename=args.map_filename,
     )
 
+    annotation_counts_df, manual_column_labels_by_run = compute_automated_annotation_counts(
+        mapping_pairs=mapping_pairs,
+        included_run_infos=included_run_infos,
+        manual_meta_by_run=manual_meta_by_run,
+    )
+    manual_benchmark_totals_df = compute_manual_benchmark_totals(
+        project_name=project_dir.name,
+        manual_nimads_base=args.manual_nimads_base.expanduser().resolve(),
+    )
+
     print_run_selection_summary(
         included_run_infos=included_run_infos,
         skipped_run_missing_pairs=skipped_run_missing_pairs,
         manual_meta_by_run=manual_meta_by_run,
         run_aggregate_paths=run_aggregate_paths,
     )
+
+    print("\nAnnotation Count Summary")
+    print("=" * 80)
+    if annotation_counts_df.empty:
+        print("No automated runs available for annotation count summary.")
+    else:
+        print(annotation_counts_df.to_string(index=False))
+    print("\nManual benchmark totals by annotation")
+    print(manual_benchmark_totals_df.to_string(index=False))
 
     manual_vectors, auto_vectors_by_run, common_shape, n_valid_voxels = load_maps_and_vectors(
         mapping_pairs=mapping_pairs,
@@ -1130,6 +1530,9 @@ def main() -> None:
         save_tables=args.save_tables,
         results=results,
         availability_df=availability_df,
+        annotation_counts_df=annotation_counts_df,
+        manual_benchmark_totals_df=manual_benchmark_totals_df,
+        manual_column_labels_by_run=manual_column_labels_by_run,
     )
 
     image_paths = write_images(
@@ -1138,6 +1541,7 @@ def main() -> None:
         show_figures=args.show_figures,
         results=results,
         dice_threshold=args.dice_threshold,
+        manual_column_labels_by_run=manual_column_labels_by_run,
     )
 
     html_content = build_html_report(
@@ -1153,6 +1557,8 @@ def main() -> None:
         skipped_run_missing_pairs=skipped_run_missing_pairs,
         manual_meta_by_run=manual_meta_by_run,
         availability_df=availability_df,
+        annotation_counts_df=annotation_counts_df,
+        manual_benchmark_totals_df=manual_benchmark_totals_df,
         results=results,
         table_paths=table_paths,
         image_paths=image_paths,

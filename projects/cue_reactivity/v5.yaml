@@ -1,0 +1,104 @@
+# Modified from v4 using feedback from reports (annotated inspect of false negatives primarily), and prompted GPT to improve criteria according
+# As such, this run is "biased" to be more correct
+search:
+  database: "pubmed"
+  query: '(((cue reactiv*[tiab] OR cue-induced*[tiab] OR cue-induc*[tiab] OR cue-related*[tiab] OR "drug cue*"[tiab] OR "smoking cue*"[tiab] OR "alcohol cue*"[tiab] OR "food cue*"[tiab] OR "sexual cue*"[tiab] OR "erotic cue*"[tiab] OR "reward cue*"[tiab] OR "appetitive cue*"[tiab] OR "incentive salience"[tiab] OR craving[tiab] OR cravings[tiab] OR urge[tiab] OR urges[tiab]) OR ((cue[tiab] OR cues[tiab] OR cued[tiab] OR cueing[tiab]) AND (crav*[tiab] OR urge*[tiab] OR induc*[tiab] OR react*[tiab] OR reward*[tiab] OR appetit*[tiab]))) AND (Substance-Related Disorders[mh] OR Tobacco Use Disorder[mh] OR Smoking[mh] OR Alcohol-Related Disorders[mh] OR Cocaine-Related Disorders[mh] OR Opioid-Related Disorders[mh] OR Cannabis[mh] OR Marijuana Abuse[mh] OR nicotine[tiab] OR smoking[tiab] OR tobacco[tiab] OR cigarette*[tiab] OR alcohol[tiab] OR ethanol[tiab] OR "alcohol use disorder"[tiab] OR AUD[tiab] OR cocaine[tiab] OR crack[tiab] OR cannabis[tiab] OR marijuana[tiab] OR heroin[tiab] OR opioid*[tiab] OR opiate*[tiab] OR morphine[tiab] OR "Feeding Behavior"[mh] OR appetite[mh] OR "food craving*"[tiab] OR "Sexual Behavior"[mh] OR erotica[tiab]) AND Humans[mh] AND ((Magnetic Resonance Imaging, Functional[mh] OR fMRI[tiab] OR "functional MRI"[tiab] OR "functional magnetic resonance imaging"[tiab] OR BOLD[tiab] OR "blood oxygenation level dependent"[tiab] OR neuroimaging[tiab]) OR ("Meta-Analysis"[pt] OR meta-analy*[tiab] OR "Activation Likelihood Estimation"[tiab] OR ALE[tiab] OR GingerALE[tiab])))'
+  date_from: "1995/01/01"
+  date_to: "2020/08/31"
+  
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/projects/cue_reactivity/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/projects/cue_reactivity/ace_outputs/processed/"
+
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    objective: "Meta-analysis of fMRI studies of drug and natural reward-related cue-reactivity using visual stimuli."
+    inclusion_criteria:
+      - English language empirical studies with original data
+      - Functional MRI study in humans assessing drug or natural reward-related cue-reactivity with a clear visual cue component (visual-only or multimodal designs that include visual cues)
+    exclusion_criteria:
+      - Systematic reviews or meta-analyses
+      - Cue-reactivity paradigms with no visual cue component (e.g., purely gustatory, olfactory, or tactile designs)
+    confidence_reporting: true
+
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Meta-analysis of fMRI studies of drug and natural reward-related cue-reactivity using visual stimuli."
+    inclusion_criteria:
+      - Functional MRI study assessing drug or natural reward-related cue-reactivity with a clear visual cue component (visual-only or multimodal designs that include visual cues)
+      - At least one analysis involving a within-participant contrast of drug cues>control stimuli or natural reward-related cues>control stimuli
+      - Whole-brain or small-volume-corrected evidence: at least one qualifying analysis must be a group-level voxelwise task-evoked statistical result, reported as either whole-brain or small-volume-corrected.
+      - It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.
+      - Reporting of participant age/sex, cue type, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.
+    exclusion_criteria:
+      - Studies that report only region-of-interest (ROI) analyses with no qualifying voxelwise whole-brain or small-volume-corrected result.
+      - Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a qualifying task-evoked voxelwise result (whole-brain or small-volume-corrected).
+      - Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying qualifying within-participant cue>control contrast.
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human fMRI data.
+
+parsing:
+  parse_coordinates: true 
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  prompt_type: "multi_analysis"
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - Voxelwise task evidence- The analysis must be a group-level, univariate task-evoked voxelwise map (typically whole-brain; small-volume-corrected maps are acceptable). Between-group contrasts/interactions are acceptable when they compare a qualifying cue-reactivity effect across groups.
+    - ROI exception for benchmark compatibility- ROI-focused analyses may be included only when they provide stereotactic coordinates for a qualifying visual cue-reactivity contrast.
+    - Contrast or analysis must be relevant to reward-related cue-reactivity using visual stimuli.
+  exclusion_criteria:
+    - ROI analyses that do not provide stereotactic coordinates for a qualifying cue-reactivity contrast.
+    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) 
+    - Analyses on non-appetitive cue contrasts, or regulation/control contrasts (e.g., reappraisal/decrease/increase, go/no-go) without a qualifying cue-reactivity contrast.
+  annotations:
+    - name: "pooled_cue_reactivity"
+      description: "Appetitive cue reactivity across reward-related cues"
+      inclusion_criteria:
+        - "Analyses must be on a task measuring drug OR natural reward-related cue-reactivity using visual stimuli (example tasks: Drug cue reactivity; Food cue reactivity; Sexual cue reactivity; monetary reward cue tasks)."
+        - "The analysis/contrast must index appetitive cue reactivity versus a valid comparator condition (e.g., neutral, non-reward/non-drug, low-level baseline, or matched control cues; examples: Drug cues>neutral cues, Alcohol cues>non-alcoholic beverage cues, Food cues>neutral/non-food cues)."
+      exclusion_criteria:
+        - "Exclude analyses where cue-reactivity cannot be identified at the analysis/contrast level (e.g., generic pooled group maps with no explicit qualifying cue contrast)."
+    - name: "natural_reward_cue_reactivity"
+      description: "Natural reward cue reactivity is characterized by the detection of and attention to natural reward-related cues, such as food or social stimuli."
+      inclusion_criteria:
+        - "Analyses must explicitly involve NATURAL reward-related visual cue-reactivity at the analysis/contrast level (e.g., food, sexual/erotic, social, monetary/gaming reward cues)."
+        - "The analysis/contrast must measure natural reward-related cue reactivity versus a valid comparator condition (e.g., neutral, non-reward, low-level baseline, or matched control cues)."
+      exclusion_criteria:
+        - "Drug cue contrasts (e.g., Drug cues>neutral cues) should not be included in this annotation"
+        - "Exclude mixed or ambiguous analyses where natural-reward and drug-cue effects are not separable at the reported contrast/map level (e.g., generic group maps in mixed-task studies without an explicit natural-reward contrast)."
+    - name: "drug_cue_reactivity"
+      description: "Drug cue reactivity as characterized by the detection of and attention to drug-related cues."
+      inclusion_criteria:
+        - "Analyses must explicitly involve drug-related visual cue-reactivity at the analysis/contrast level (example tasks: smoking, alcohol, cannabis, cocaine cue reactivity)."
+        - "The analysis/contrast must measure drug-related cue reactivity versus a valid comparator condition (e.g., neutral, non-drug, low-level baseline, or matched control cues; examples: Drug cues>neutral cues, Alcohol cues>non-alcoholic beverage cues)."
+      exclusion_criteria:
+        - "Analyses on natural reward-related cue contrasts (e.g., Food cues>neutral cues) should not be included in this annotation"
+        - "Exclude mixed or ambiguous analyses where drug-cue effects are not separable at the reported contrast/map level."
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true
