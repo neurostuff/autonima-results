@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overall Sub-Meta-Analysis Summary</title>
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --panel: #ffffff;
+      --ink: #1d2730;
+      --line: #d8dde3;
+    }
+    body { margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header, section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }
+    th { background: #edf2f5; }
+    .metric-bars { min-width: 250px; }
+    .metric-row { display: grid; grid-template-columns: 22px 1fr 46px; gap: 0.35rem; align-items: center; margin-bottom: 0.2rem; }
+    .metric-label { font-weight: 600; font-size: 0.82rem; }
+    .metric-val { font-size: 0.82rem; text-align: right; }
+    .bar { height: 0.55rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }
+    .fill { height: 100%; }
+    .fill-p { background: #3b82f6; }
+    .fill-r { background: #16a34a; }
+    .fill-f1 { background: #f59e0b; }
+    .confusion-plot { min-width: 220px; }
+    .stack-bar { width: 100%; height: 0.78rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }
+    .seg { display: inline-block; height: 100%; }
+    .seg-tp { background: #16a34a; }
+    .seg-fp { background: #dc2626; }
+    .seg-fn { background: #ea580c; }
+    .seg-tn { background: #64748b; }
+    .legend { margin-top: 0.25rem; font-size: 0.77rem; color: #435164; display: flex; gap: 0.55rem; }
+    .lg::before { content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.2rem; border-radius: 50%; vertical-align: -1px; }
+    .lg-tp::before { background: #16a34a; }
+    .lg-fp::before { background: #dc2626; }
+    .lg-fn::before { background: #ea580c; }
+    .lg-tn::before { background: #64748b; }
+    .confusion-plot.empty { font-size: 0.82rem; color: #5a6878; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Overall Sub-Meta-Analysis Summary</h1>
+    <p>Study-level evaluation across sub-meta-analyses. A study is included if at least one analysis is included. Universe is PMIDs found in auto <code>outputs/nimads_annotation.json</code>, with manual labels sliced to that same PMID universe.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aggregate</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Macro (mean over annotations)</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0.362</td>
+            <td>0.701</td>
+            <td>0.451</td>
+            <td>0.758</td>
+          </tr>
+          <tr>
+            <td>Micro (pooled confusion)</td>
+            <td>90</td>
+            <td>141</td>
+            <td>36</td>
+            <td>465</td>
+            <td>0.390</td>
+            <td>0.714</td>
+            <td>0.504</td>
+            <td>0.758</td>
+          </tr>
+          <tr>
+            <td>Matched analyses micro (pooled confusion)</td>
+            <td>60</td>
+            <td>44</td>
+            <td>16</td>
+            <td>126</td>
+            <td>0.577</td>
+            <td>0.789</td>
+            <td>0.667</td>
+            <td>0.756</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </header>
+  <section>
+    <h2>Per-Annotation Study-Level Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Auto PMID Universe</th>
+            <th>Manual Studies+</th>
+            <th>Predicted Studies+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="pooled_cue_reactivity.html">pooled_cue_reactivity</a></td><td>244</td><td>63</td><td>113</td><td>45</td><td>68</td><td>18</td><td>113</td><td>0.398</td><td>0.714</td><td>0.511</td><td>0.648</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:39.8%"></div></div><span class="metric-val">0.398</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:71.4%"></div></div><span class="metric-val">0.714</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:51.1%"></div></div><span class="metric-val">0.511</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:18.443%" title="TP=45"></span><span class="seg seg-fp" style="width:27.869%" title="FP=68"></span><span class="seg seg-fn" style="width:7.377%" title="FN=18"></span><span class="seg seg-tn" style="width:46.311%" title="TN=113"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="drug_cue_reactivity.html">drug_cue_reactivity</a></td><td>244</td><td>54</td><td>69</td><td>39</td><td>30</td><td>15</td><td>160</td><td>0.565</td><td>0.722</td><td>0.634</td><td>0.816</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:56.5%"></div></div><span class="metric-val">0.565</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:72.2%"></div></div><span class="metric-val">0.722</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:63.4%"></div></div><span class="metric-val">0.634</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:15.984%" title="TP=39"></span><span class="seg seg-fp" style="width:12.295%" title="FP=30"></span><span class="seg seg-fn" style="width:6.148%" title="FN=15"></span><span class="seg seg-tn" style="width:65.574%" title="TN=160"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="natural_reward_cue_reactivity.html">natural_reward_cue_reactivity</a></td><td>244</td><td>9</td><td>49</td><td>6</td><td>43</td><td>3</td><td>192</td><td>0.122</td><td>0.667</td><td>0.207</td><td>0.811</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:12.2%"></div></div><span class="metric-val">0.122</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:66.7%"></div></div><span class="metric-val">0.667</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:20.7%"></div></div><span class="metric-val">0.207</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:2.459%" title="TP=6"></span><span class="seg seg-fp" style="width:17.623%" title="FP=43"></span><span class="seg seg-fn" style="width:1.230%" title="FN=3"></span><span class="seg seg-tn" style="width:78.689%" title="TN=192"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>Per-Annotation Matched-Analysis Metrics</h2>
+    <p>Mirrors the per-report analysis row: universe is manual analyses that have an assigned auto match; positives are accepted fuzzy matches.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Matched Manual Universe</th>
+            <th>Manual Accepted+</th>
+            <th>Predicted+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="pooled_cue_reactivity.html">pooled_cue_reactivity</a></td><td>82</td><td>38</td><td>52</td><td>30</td><td>22</td><td>8</td><td>22</td><td>0.577</td><td>0.789</td><td>0.667</td><td>0.634</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:57.7%"></div></div><span class="metric-val">0.577</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:78.9%"></div></div><span class="metric-val">0.789</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:66.7%"></div></div><span class="metric-val">0.667</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:36.585%" title="TP=30"></span><span class="seg seg-fp" style="width:26.829%" title="FP=22"></span><span class="seg seg-fn" style="width:9.756%" title="FN=8"></span><span class="seg seg-tn" style="width:26.829%" title="TN=22"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="drug_cue_reactivity.html">drug_cue_reactivity</a></td><td>82</td><td>32</td><td>41</td><td>24</td><td>17</td><td>8</td><td>33</td><td>0.585</td><td>0.750</td><td>0.658</td><td>0.695</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:58.5%"></div></div><span class="metric-val">0.585</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:75.0%"></div></div><span class="metric-val">0.750</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:65.8%"></div></div><span class="metric-val">0.658</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:29.268%" title="TP=24"></span><span class="seg seg-fp" style="width:20.732%" title="FP=17"></span><span class="seg seg-fn" style="width:9.756%" title="FN=8"></span><span class="seg seg-tn" style="width:40.244%" title="TN=33"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="natural_reward_cue_reactivity.html">natural_reward_cue_reactivity</a></td><td>82</td><td>6</td><td>11</td><td>6</td><td>5</td><td>0</td><td>71</td><td>0.545</td><td>1.000</td><td>0.706</td><td>0.939</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:54.5%"></div></div><span class="metric-val">0.545</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:70.6%"></div></div><span class="metric-val">0.706</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:7.317%" title="TP=6"></span><span class="seg seg-fp" style="width:6.098%" title="FP=5"></span><span class="seg seg-fn" style="width:0.000%" title="FN=0"></span><span class="seg seg-tn" style="width:86.585%" title="TN=71"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>Cross-Annotation Criteria Misapplication (Global Criteria)</h2>
+    <p>Aggregated from per-annotation criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
+    <div class="table-wrap"><table><thead><tr><th>Annotation</th><th>Error Category</th><th>Criterion</th><th>Type (Inclusion/Exclusion)</th><th>Error Mentions</th><th>Correct Mentions</th><th>Error Rate vs Correct</th></tr></thead><tbody><tr><td><a href="drug_cue_reactivity.html">drug_cue_reactivity</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E3</td><td>exclusion</td><td>6</td><td>0</td><td>6.000</td></tr><tr><td><a href="pooled_cue_reactivity.html">pooled_cue_reactivity</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E3</td><td>exclusion</td><td>5</td><td>0</td><td>5.000</td></tr><tr><td><a href="drug_cue_reactivity.html">drug_cue_reactivity</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E1</td><td>exclusion</td><td>1</td><td>0</td><td>1.000</td></tr><tr><td><a href="pooled_cue_reactivity.html">pooled_cue_reactivity</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E1</td><td>exclusion</td><td>1</td><td>0</td><td>1.000</td></tr></tbody></table></div>
+  </section>
+  <section>
+    <h2>Cross-Annotation Criteria Misapplication (Annotation-Specific Criteria)</h2>
+    <p>Aggregated from per-annotation criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
+    <p class="muted">No criteria misapplication rows found.</p>
+  </section>
+</body>
+</html>
