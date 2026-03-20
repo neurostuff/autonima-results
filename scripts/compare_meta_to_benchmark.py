@@ -116,6 +116,22 @@ def parse_args() -> argparse.Namespace:
         help="FDR-corrected map filename used for orthogonal stat-map snapshots.",
     )
     parser.add_argument(
+        "--stat-map-display-mode",
+        type=str,
+        default="ortho",
+        help="Display mode for corrected stat-map snapshots (e.g., ortho, x, y, z).",
+    )
+    parser.add_argument(
+        "--stat-map-cut-coords",
+        nargs="+",
+        type=float,
+        default=[0.0, 0.0, 0.0],
+        help=(
+            "Cut coordinates for corrected stat-map snapshots. Provide one or more values. "
+            "For display_mode=ortho, exactly three values are required."
+        ),
+    )
+    parser.add_argument(
         "--dice-threshold",
         type=float,
         default=1.96,
@@ -1203,6 +1219,26 @@ def first_existing_path(paths: list[Path]) -> Path | None:
     return None
 
 
+def resolve_stat_map_cut_coords(
+    display_mode: str,
+    raw_cut_coords: list[float] | tuple[float, ...],
+) -> float | tuple[float, ...]:
+    cut_coords = tuple(float(value) for value in raw_cut_coords)
+    if not cut_coords:
+        raise ValueError("--stat-map-cut-coords requires at least one numeric value.")
+
+    if str(display_mode).lower() == "ortho" and len(cut_coords) != 3:
+        raise ValueError(
+            "--stat-map-display-mode=ortho requires exactly 3 values for --stat-map-cut-coords "
+            f"(got {len(cut_coords)}: {cut_coords})."
+        )
+
+    if len(cut_coords) == 1:
+        return cut_coords[0]
+
+    return cut_coords
+
+
 def write_corrected_stat_map_images(
     output_images_dir: Path,
     save_images: bool,
@@ -1210,6 +1246,8 @@ def write_corrected_stat_map_images(
     project_name: str,
     manual_analysis_base: Path,
     corrected_map_filename: str,
+    stat_map_display_mode: str,
+    stat_map_cut_coords: float | tuple[float, ...],
     mapping_pairs: list[MappingPair],
     included_run_infos: list[RunInfo],
     manual_meta_by_run: dict[str, bool],
@@ -1251,11 +1289,11 @@ def write_corrected_stat_map_images(
     ) -> None:
         display = plotting.plot_stat_map(
             stat_map_img=str(stat_map_path),
-            cut_coords=(0, 0, 0),
-            display_mode="ortho",
+            cut_coords=stat_map_cut_coords,
+            display_mode=stat_map_display_mode,
             title=f"{version_label}: {annotation_label}",
             annotate=True,
-            draw_cross=True,
+            draw_cross=False,
         )
         if out_path is not None:
             display.savefig(str(out_path))
@@ -1402,6 +1440,8 @@ def build_html_report(
     manual_analysis_base: Path,
     map_filename: str,
     corrected_map_filename: str,
+    stat_map_display_mode: str,
+    stat_map_cut_coords: float | tuple[float, ...],
     dice_threshold: float,
     meta_results_subpath: Path,
     run_infos: list[RunInfo],
@@ -1534,6 +1574,8 @@ def build_html_report(
       <li><strong>manual_analysis_base:</strong> {escape(str(manual_analysis_base))}</li>
       <li><strong>map_filename:</strong> {escape(map_filename)}</li>
       <li><strong>corrected_map_filename:</strong> {escape(corrected_map_filename)}</li>
+      <li><strong>stat_map_display_mode:</strong> {escape(stat_map_display_mode)}</li>
+      <li><strong>stat_map_cut_coords:</strong> {escape(str(stat_map_cut_coords))}</li>
       <li><strong>dice_threshold:</strong> {dice_threshold:.4g}</li>
       <li><strong>meta_results_subpath:</strong> {escape(str(meta_results_subpath))}</li>
       <li><strong>discovered_runs:</strong> {len(run_infos)}</li>
@@ -1622,6 +1664,8 @@ def print_configuration_summary(
     manual_nimads_base: Path,
     map_filename: str,
     corrected_map_filename: str,
+    stat_map_display_mode: str,
+    stat_map_cut_coords: float | tuple[float, ...],
     dice_threshold: float,
     output_dir: Path,
     meta_results_subpath: Path,
@@ -1635,6 +1679,8 @@ def print_configuration_summary(
     print(f"manual_nimads_base:  {manual_nimads_base}")
     print(f"map_filename:        {map_filename}")
     print(f"corrected_map_file:  {corrected_map_filename}")
+    print(f"stat_map_mode:       {stat_map_display_mode}")
+    print(f"stat_map_cut_coords: {stat_map_cut_coords}")
     print(f"dice_threshold:      {dice_threshold}")
     print(f"output_dir:          {output_dir}")
     print(f"meta_results_subpath:{meta_results_subpath}")
@@ -1681,6 +1727,10 @@ def main() -> None:
         plt.ioff()
 
     mappings = load_mappings(mapping_path)
+    stat_map_cut_coords = resolve_stat_map_cut_coords(
+        display_mode=args.stat_map_display_mode,
+        raw_cut_coords=args.stat_map_cut_coords,
+    )
 
     print_configuration_summary(
         project_dir=project_dir,
@@ -1689,6 +1739,8 @@ def main() -> None:
         manual_nimads_base=args.manual_nimads_base,
         map_filename=args.map_filename,
         corrected_map_filename=args.corrected_map_filename,
+        stat_map_display_mode=args.stat_map_display_mode,
+        stat_map_cut_coords=stat_map_cut_coords,
         dice_threshold=args.dice_threshold,
         output_dir=output_dir,
         meta_results_subpath=args.meta_results_subpath,
@@ -1807,6 +1859,8 @@ def main() -> None:
         project_name=project_dir.name,
         manual_analysis_base=args.manual_analysis_base.expanduser().resolve(),
         corrected_map_filename=args.corrected_map_filename,
+        stat_map_display_mode=args.stat_map_display_mode,
+        stat_map_cut_coords=stat_map_cut_coords,
         mapping_pairs=mapping_pairs,
         included_run_infos=included_run_infos,
         manual_meta_by_run=manual_meta_by_run,
@@ -1820,6 +1874,8 @@ def main() -> None:
         manual_analysis_base=args.manual_analysis_base,
         map_filename=args.map_filename,
         corrected_map_filename=args.corrected_map_filename,
+        stat_map_display_mode=args.stat_map_display_mode,
+        stat_map_cut_coords=stat_map_cut_coords,
         dice_threshold=args.dice_threshold,
         meta_results_subpath=args.meta_results_subpath,
         run_infos=run_infos,
