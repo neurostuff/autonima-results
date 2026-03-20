@@ -527,9 +527,7 @@ def compute_automated_annotation_counts(
                 }
             )
             if manual_name:
-                run_labels[manual_name] = (
-                    f"{manual_name} (N analyses={int(n_analyses)}, PMIDs={int(n_unique_pmids)})"
-                )
+                run_labels[manual_name] = manual_name
 
         manual_column_labels_by_run[run_name] = run_labels
 
@@ -953,6 +951,14 @@ def relabel_manual_columns(
     return df.rename(columns=rename_map)
 
 
+def set_heatmap_xtick_alignment(ax: plt.Axes, labels: list[str]) -> None:
+    # Keep xticks centered on each heatmap column and anchor rotated labels to the tick.
+    tick_positions = np.arange(len(labels), dtype=float) + 0.5
+    ax.set_xticks(tick_positions)
+    ax.set_xticklabels(labels, rotation=45, ha="right", rotation_mode="anchor")
+    ax.tick_params(axis="x", pad=2)
+
+
 def write_tables(
     output_tables_dir: Path,
     save_tables: bool,
@@ -1077,7 +1083,7 @@ def write_images(
         ax.set_title(f"Dice Matrix: {run_name} (Automated vs Manual)", fontweight="bold")
         ax.set_xlabel("Manual benchmark annotation")
         ax.set_ylabel("Automated annotation + aggregate automated analyses")
-        ax.tick_params(axis="x", rotation=45)
+        set_heatmap_xtick_alignment(ax, [str(label) for label in run_dice_df.columns])
         ax.tick_params(axis="y", rotation=0)
         plt.tight_layout()
         if save_images:
@@ -1107,7 +1113,7 @@ def write_images(
         ax.set_title(f"Pearson Matrix: {run_name} (Automated vs Manual)", fontweight="bold")
         ax.set_xlabel("Manual benchmark annotation")
         ax.set_ylabel("Automated annotation + aggregate automated analyses")
-        ax.tick_params(axis="x", rotation=45)
+        set_heatmap_xtick_alignment(ax, [str(label) for label in run_pearson_df.columns])
         ax.tick_params(axis="y", rotation=0)
         plt.tight_layout()
         if save_images:
