@@ -303,10 +303,38 @@ def resolve_run_infos(
 
 def load_mappings(mapping_path: Path) -> dict[str, str]:
     with mapping_path.open("r", encoding="utf-8") as f:
-        mappings = json.load(f)
-    if not isinstance(mappings, dict) or not mappings:
+        payload = json.load(f)
+    if not isinstance(payload, dict):
         raise ValueError(f"Mapping file must be a non-empty JSON object: {mapping_path}")
-    return {str(k): str(v) for k, v in mappings.items()}
+
+    raw_mappings: dict[str, object]
+    if "annotation_mappings" in payload:
+        nested = payload.get("annotation_mappings")
+        if not isinstance(nested, dict):
+            raise ValueError(
+                f"Invalid mapping format at {mapping_path}: "
+                "expected 'annotation_mappings' to be a JSON object"
+            )
+        raw_mappings = nested
+    else:
+        raw_mappings = {
+            key: value
+            for key, value in payload.items()
+            if str(key).strip() != "meta_pmid"
+        }
+
+    mappings: dict[str, str] = {}
+    for manual_name_raw, auto_name_raw in raw_mappings.items():
+        if isinstance(auto_name_raw, (dict, list)):
+            continue
+        manual_name = str(manual_name_raw).strip()
+        auto_name = str(auto_name_raw).strip()
+        if not manual_name or not auto_name:
+            continue
+        mappings[manual_name] = auto_name
+    if not mappings:
+        raise ValueError(f"Mapping file did not contain any usable mappings: {mapping_path}")
+    return mappings
 
 
 def load_analysis_to_pmid_map_from_studyset(studyset_path: Path) -> dict[str, str]:

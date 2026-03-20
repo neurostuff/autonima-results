@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import random
+import re
 import shutil
 import socket
 import time
@@ -30,6 +31,10 @@ CHALLENGE_PATTERNS = (
     "cloudflare ray id",
     "/_fs-ch-",
 )
+
+
+class SkipURLRequested(Exception):
+    """Raised when a URL should be skipped based on configured substrings."""
 
 
 def _looks_like_client_challenge(html):
@@ -82,6 +87,10 @@ class ChallengeAwareScraper(scrape.Scraper):
         firefox_binary=None,
         browser_retries=4,
         challenge_timeout=35.0,
+        page_load_timeout=20.0,
+        wiley_content_timeout=7.0,
+        final_content_timeout=12.0,
+        skip_on_challenge=False,
         use_uc_reconnect=True,
         use_uc=True,
         uc_debug_port=0,
@@ -93,6 +102,10 @@ class ChallengeAwareScraper(scrape.Scraper):
         self.firefox_binary = firefox_binary
         self.browser_retries = max(1, int(browser_retries))
         self.challenge_timeout = max(5.0, float(challenge_timeout))
+        self.page_load_timeout = max(1.0, float(page_load_timeout))
+        self.wiley_content_timeout = max(0.0, float(wiley_content_timeout))
+        self.final_content_timeout = max(1.0, float(final_content_timeout))
+        self.skip_on_challenge = bool(skip_on_challenge)
         self.use_uc_reconnect = bool(use_uc_reconnect)
         self.use_uc = bool(use_uc)
         self.uc_debug_port = int(uc_debug_port)
@@ -198,6 +211,63 @@ class ChallengeAwareScraper(scrape.Scraper):
                 time.sleep(0.8)
         return ""
 
+    @staticmethod
+    def _normalize_skip_url_substrings(skip_url_substrings):
+        if skip_url_substrings is None:
+            return tuple()
+        if isinstance(skip_url_substrings, str):
+            values = [skip_url_substrings]
+        else:
+            values = skip_url_substrings
+        normalized = []
+        for value in values:
+            if value is None:
+                continue
+            text = str(value).strip().lower()
+            if text:
+                normalized.append(text)
+        return tuple(normalized)
+
+    @staticmethod
+    def _match_skip_substring(url, skip_url_substrings):
+        if not url:
+            return None
+        url_lower = str(url).lower()
+        for substring in skip_url_substrings:
+            if substring in url_lower:
+                return substring
+        return None
+
+    def _raise_if_skipped_url(self, url, skip_url_substrings, context):
+        matched_substring = self._match_skip_substring(url, skip_url_substrings)
+        if matched_substring:
+            self._skip_article_requested = True
+            self._skip_article_due_to_url = True
+            scrape.logger.info(
+                "Skipping URL due to configured substring %r (%s): %s",
+                matched_substring,
+                context,
+                url,
+            )
+            raise SkipURLRequested()
+
+    def _raise_if_skipped_url_in_html(self, html, skip_url_substrings, context):
+        if not html or not skip_url_substrings:
+            return
+        for candidate_url in set(re.findall(r'https?://[^"\'\s<>]+', html)):
+            matched_substring = self._match_skip_substring(candidate_url, skip_url_substrings)
+            if not matched_substring:
+                continue
+            self._skip_article_requested = True
+            self._skip_article_due_to_url = True
+            scrape.logger.info(
+                "Skipping URL due to configured substring %r (%s, discovered in HTML): %s",
+                matched_substring,
+                context,
+                candidate_url,
+            )
+            raise SkipURLRequested()
+
     def _open_with_reconnect(self, driver, url, attempt):
         if (
             self.browser == "chrome"
@@ -217,11 +287,12 @@ class ChallengeAwareScraper(scrape.Scraper):
         scrape.logger.info("Opening URL with standard driver.get (attempt %s): %s", attempt, url)
         driver.get(url)
 
-    def _wait_for_content(self, driver, timeout):
+    def _wait_for_content(self, driver, timeout, ready_markers=None):
         deadline = time.time() + timeout
         last_html = self._safe_page_source(driver)
         stable_non_challenge_samples = 0
         next_status_log = time.time() + 5.0
+        markers = tuple((marker or "").lower() for marker in (ready_markers or ()) if marker)
 
         while time.time() < deadline:
             html = self._safe_page_source(driver)
@@ -229,6 +300,25 @@ class ChallengeAwareScraper(scrape.Scraper):
                 last_html = html
 
             if _looks_like_client_challenge(html):
+                if self.skip_on_challenge:
+                    match_details = _get_challenge_match_details(html)
+                    if match_details:
+                        marker, excerpt = match_details
+                        scrape.logger.info(
+                            "Skipping %s after challenge/interstitial detection "
+                            "(--skip-on-challenge enabled; marker=%r; excerpt=%r).",
+                            "article",
+                            marker,
+                            excerpt,
+                        )
+                    else:
+                        scrape.logger.info(
+                            "Skipping article after challenge/interstitial detection "
+                            "(--skip-on-challenge enabled)."
+                        )
+                    self._skip_article_requested = True
+                    self._skip_article_due_to_challenge = True
+                    raise SkipURLRequested()
                 stable_non_challenge_samples = 0
                 if time.time() >= next_status_log:
                     remaining = max(0.0, deadline - time.time())
@@ -249,6 +339,12 @@ class ChallengeAwareScraper(scrape.Scraper):
                     next_status_log = time.time() + 5.0
                 time.sleep(1.0)
                 continue
+
+            if markers:
+                html_lower = (html or "").lower()
+                for marker in markers:
+                    if marker in html_lower:
+                        return html
 
             try:
                 ready = driver.execute_script("return document.readyState")
@@ -275,16 +371,31 @@ class ChallengeAwareScraper(scrape.Scraper):
 
         return last_html
 
-    def _load_article_html(self, driver, url, journal, attempt):
-        driver.set_page_load_timeout(20)
+    def _load_article_html(self, driver, url, journal, attempt, skip_url_substrings):
+        driver.set_page_load_timeout(self.page_load_timeout)
         scrape.logger.info("Loading article for %s (attempt %s).", journal, attempt)
         self._open_with_reconnect(driver, url, attempt)
         resolved_url = driver.current_url
+        self._raise_if_skipped_url(
+            resolved_url,
+            skip_url_substrings,
+            f"resolved URL for {journal} attempt {attempt}",
+        )
 
         html = self._wait_for_content(driver, timeout=self.challenge_timeout)
+        self._raise_if_skipped_url_in_html(
+            html,
+            skip_url_substrings,
+            f"loaded HTML for {journal} attempt {attempt}",
+        )
         scrape.logger.info("Initial page load complete for %s (attempt %s).", journal, attempt)
         substitute_url = self.check_for_substitute_url(resolved_url, html, journal)
         if substitute_url != resolved_url:
+            self._raise_if_skipped_url(
+                substitute_url,
+                skip_url_substrings,
+                f"substitute URL for {journal} attempt {attempt}",
+            )
             scrape.logger.info("Following substitute URL for %s: %s", journal, substitute_url)
             self._open_with_reconnect(driver, substitute_url, attempt)
             html = self._wait_for_content(driver, timeout=self.challenge_timeout)
@@ -320,18 +431,36 @@ class ChallengeAwareScraper(scrape.Scraper):
             except TimeoutException:
                 pass
         elif "Wiley Online Library</title>" in html:
-            try:
-                WebDriverWait(driver, 7).until(
-                    EC.presence_of_element_located((By.ID, "article__content"))
-                )
-            except TimeoutException:
-                pass
+            if self.wiley_content_timeout > 0:
+                try:
+                    WebDriverWait(driver, self.wiley_content_timeout).until(
+                        EC.presence_of_element_located((By.ID, "article__content"))
+                    )
+                except TimeoutException:
+                    pass
+            return self._wait_for_content(
+                driver,
+                timeout=min(self.final_content_timeout, self.challenge_timeout),
+                ready_markers=('id="article__content"', "id='article__content'"),
+            )
 
-        return self._wait_for_content(driver, timeout=min(12.0, self.challenge_timeout))
+        return self._wait_for_content(
+            driver,
+            timeout=min(self.final_content_timeout, self.challenge_timeout),
+        )
 
-    def get_html(self, url, journal, mode="browser", headless=True):
+    def get_html(self, url, journal, mode="browser", headless=True, skip_url_substrings=None):
+        skip_url_substrings = self._normalize_skip_url_substrings(skip_url_substrings)
+        self._raise_if_skipped_url(url, skip_url_substrings, f"initial URL for {journal}")
+
         if mode != "browser":
-            return super().get_html(url, journal, mode=mode, headless=headless)
+            return super().get_html(
+                url,
+                journal,
+                mode=mode,
+                headless=headless,
+                skip_url_substrings=skip_url_substrings,
+            )
 
         last_html = None
         for attempt in range(1, self.browser_retries + 1):
@@ -350,7 +479,13 @@ class ChallengeAwareScraper(scrape.Scraper):
                     attempt,
                     self.browser_retries,
                 )
-                html = self._load_article_html(driver, url, journal, attempt)
+                html = self._load_article_html(
+                    driver,
+                    url,
+                    journal,
+                    attempt,
+                    skip_url_substrings=skip_url_substrings,
+                )
                 if html:
                     last_html = html
                 if _is_valid_scrape(html):
@@ -380,6 +515,15 @@ class ChallengeAwareScraper(scrape.Scraper):
                             attempt,
                             self.browser_retries,
                         )
+                    if self.skip_on_challenge:
+                        self._skip_article_requested = True
+                        self._skip_article_due_to_challenge = True
+                        scrape.logger.info(
+                            "Skipping %s after challenge/interstitial detection "
+                            "(--skip-on-challenge enabled).",
+                            journal,
+                        )
+                        return None
                 else:
                     scrape.logger.info(
                         "Retrieved HTML for %s failed ACE validation (attempt %s/%s); likely interstitial/blocked page.",
@@ -387,6 +531,8 @@ class ChallengeAwareScraper(scrape.Scraper):
                         attempt,
                         self.browser_retries,
                     )
+            except SkipURLRequested:
+                return None
             except TimeoutException:
                 scrape.logger.info(
                     "Timeout while loading %s (attempt %s/%s).",
@@ -504,14 +650,37 @@ def main():
     parser.add_argument(
         '--browser-retries',
         type=int,
-        default=4,
-        help='Max browser retries for anti-bot/challenge pages (default: 4)'
+        default=2,
+        help='Max browser retries for anti-bot/challenge pages (default: 2)'
     )
     parser.add_argument(
         '--challenge-timeout',
         type=float,
         default=35.0,
         help='Seconds to wait for challenge pages to resolve (default: 35.0)'
+    )
+    parser.add_argument(
+        '--skip-on-challenge',
+        action='store_true',
+        help='Skip an article immediately when a challenge/interstitial page is detected.'
+    )
+    parser.add_argument(
+        '--page-load-timeout',
+        type=float,
+        default=12.0,
+        help='Selenium page-load timeout in seconds per navigation (default: 12.0)'
+    )
+    parser.add_argument(
+        '--wiley-content-timeout',
+        type=float,
+        default=4.0,
+        help='Seconds to wait for Wiley article content element before final HTML capture (default: 4.0)'
+    )
+    parser.add_argument(
+        '--final-content-timeout',
+        type=float,
+        default=5.0,
+        help='Final post-load content wait in seconds after site-specific handling (default: 5.0)'
     )
     parser.add_argument(
         '--no-uc-reconnect',
@@ -528,6 +697,18 @@ def main():
         type=int,
         default=0,
         help='UC remote debugging port (Chrome+UC only; default: 0 = auto-select per attempt)'
+    )
+    parser.add_argument(
+        '--skip-url-substring',
+        action='append',
+        default=[],
+        metavar='SUBSTRING',
+        help='Skip retrieval when a resolved URL contains this substring. Repeat to add multiple values.'
+    )
+    parser.add_argument(
+        '--skip-elsevier',
+        action='store_true',
+        help='Shortcut to skip Elsevier URLs (adds: elsevier, sciencedirect, linkinghub).'
     )
     verbosity_group = parser.add_mutually_exclusive_group()
     verbosity_group.add_argument(
@@ -551,6 +732,20 @@ def main():
     logging.basicConfig(level=log_level)
     logging.getLogger().setLevel(log_level)
     scrape.logger.setLevel(log_level)
+
+    skip_url_substrings = [
+        value.strip()
+        for value in args.skip_url_substring
+        if value and value.strip()
+    ]
+    if args.skip_elsevier:
+        skip_url_substrings.extend(["elsevier", "sciencedirect", "linkinghub"])
+    seen_substrings = set()
+    skip_url_substrings = [
+        value
+        for value in skip_url_substrings
+        if not (value.lower() in seen_substrings or seen_substrings.add(value.lower()))
+    ]
     
     scrape_path = args.scrape_path
     
@@ -579,6 +774,10 @@ def main():
         firefox_binary=args.firefox_binary,
         browser_retries=args.browser_retries,
         challenge_timeout=args.challenge_timeout,
+        page_load_timeout=args.page_load_timeout,
+        wiley_content_timeout=args.wiley_content_timeout,
+        final_content_timeout=args.final_content_timeout,
+        skip_on_challenge=args.skip_on_challenge,
         use_uc_reconnect=not args.no_uc_reconnect,
         use_uc=not args.no_uc,
         uc_debug_port=args.uc_debug_port,
@@ -591,7 +790,8 @@ def main():
         mode=args.mode,
         prefer_pmc_source=args.prefer_pmc_source,
         metadata_store=metadata_store,
-        headless=args.headless
+        headless=args.headless,
+        skip_url_substrings=skip_url_substrings,
     )
     
     print("\nProcessing complete!")

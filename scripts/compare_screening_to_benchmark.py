@@ -38,6 +38,109 @@ def normalize_pmid_list(values: List[Any]) -> List[str]:
     return [pmid for value in values if (pmid := normalize_pmid(value)) is not None]
 
 
+def load_json_if_exists(path: Path) -> Dict[str, Any] | None:
+    """Load JSON if present; return None for missing files."""
+    if not path.exists():
+        return None
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def extract_screening_results(payload: Dict[str, Any] | None, final_key: str) -> List[Dict[str, Any]]:
+    """Extract screening results from either stage files or final_results payloads."""
+    if not payload:
+        return []
+    stage_results = payload.get("screening_results")
+    if isinstance(stage_results, list):
+        return stage_results
+    final_results = payload.get(final_key)
+    if isinstance(final_results, list):
+        return final_results
+    return []
+
+
+def load_missing_fulltext_pmids(outputs_dir: Path) -> tuple[List[str], List[str]]:
+    """Load unavailable/incomplete full-text PMIDs from missing_fulltexts.csv when present."""
+    missing_csv = outputs_dir / "missing_fulltexts.csv"
+    if not missing_csv.exists():
+        return [], []
+
+    unavailable: List[str] = []
+    incomplete: List[str] = []
+    with missing_csv.open("r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            pmid = normalize_pmid(row.get("pmid"))
+            if not pmid:
+                continue
+            row_type = str(row.get("type", "")).strip().lower()
+            if row_type == "unavailable":
+                unavailable.append(pmid)
+            elif row_type == "incomplete":
+                incomplete.append(pmid)
+    return unavailable, incomplete
+
+
+def _outputs_artifact_score(outputs_dir: Path) -> int:
+    """Score outputs directories by available stage artifacts."""
+    score = 0
+    artifacts = [
+        "search_results.json",
+        "abstract_screening_results.json",
+        "fulltext_screening_results.json",
+        "fulltext_retrieval_results.json",
+    ]
+    for artifact in artifacts:
+        if (outputs_dir / artifact).exists():
+            score += 1
+    # Prefer complete runs when available.
+    if (outputs_dir / "final_results.json").exists():
+        score += 5
+    return score
+
+
+def resolve_run_root_and_outputs(project_dir: Path) -> tuple[Path, Path]:
+    """
+    Resolve run root + outputs directory from a project or run directory.
+
+    Supports:
+    - <run>/outputs (direct)
+    - <project>/<run>/outputs (auto-selected when unique best match)
+    """
+    direct_outputs = project_dir / "outputs"
+    if direct_outputs.is_dir():
+        return project_dir, direct_outputs
+
+    candidates: List[Path] = []
+    for candidate in project_dir.glob("*/outputs"):
+        if candidate.is_dir() and _outputs_artifact_score(candidate) > 0:
+            candidates.append(candidate)
+
+    if not candidates:
+        raise FileNotFoundError(str(direct_outputs))
+
+    scored = sorted(
+        [(candidate, _outputs_artifact_score(candidate)) for candidate in candidates],
+        key=lambda item: item[1],
+        reverse=True,
+    )
+    best_score = scored[0][1]
+    best_candidates = [candidate for candidate, score in scored if score == best_score]
+
+    if len(best_candidates) > 1:
+        raise ValueError(
+            "Found multiple run outputs directories under "
+            f"{project_dir} with equal match score: "
+            + ", ".join(str(path) for path in best_candidates)
+            + ". Pass a specific run directory instead."
+        )
+
+    resolved_outputs = best_candidates[0]
+    run_root = resolved_outputs.parent
+    print(f"Auto-selected run outputs directory: {resolved_outputs}")
+    return run_root, resolved_outputs
+
+
 def load_meta_pmids(meta_pmids_path: str, meta_analysis_pmid: str | None = None) -> List[str]:
     """
     Load gold-standard included study PMIDs from either:
@@ -55,7 +158,7 @@ def load_meta_pmids(meta_pmids_path: str, meta_analysis_pmid: str | None = None)
             if not meta_analysis_pmid:
                 raise ValueError(
                     "CSV input with columns 'meta_pmid' and 'study_pmid' requires "
-                    "--meta-analysis-pmid."
+                    "--meta-analysis-pmid (or <project_dir>/nmb_mappings.json with 'meta_pmid')."
                 )
 
             filtered = df[df["meta_pmid"].astype(str) == str(meta_analysis_pmid)]
@@ -74,6 +177,34 @@ def load_meta_pmids(meta_pmids_path: str, meta_analysis_pmid: str | None = None)
     # Backward-compatible path: text file with one PMID per line.
     df = pd.read_csv(meta_pmids_path, header=None, names=["pmid"])
     return normalize_pmid_list(df["pmid"].tolist())
+
+
+def resolve_meta_analysis_pmid(
+    directory: str,
+    explicit_meta_analysis_pmid: str | None,
+) -> str | None:
+    """Resolve meta-analysis PMID from CLI arg, else project nmb_mappings.json."""
+    if explicit_meta_analysis_pmid is not None:
+        resolved = normalize_pmid(explicit_meta_analysis_pmid)
+        if resolved is None:
+            raise ValueError("--meta-analysis-pmid was provided but is empty or invalid.")
+        return resolved
+
+    mapping_path = Path(directory).expanduser().resolve() / "nmb_mappings.json"
+    if not mapping_path.exists():
+        return None
+
+    with mapping_path.open("r", encoding="utf-8") as f:
+        payload = json.load(f)
+    if not isinstance(payload, dict):
+        raise ValueError(f"Invalid mapping format at {mapping_path}: expected JSON object")
+
+    resolved = normalize_pmid(payload.get("meta_pmid"))
+    if resolved is None:
+        return None
+
+    print(f"Auto-selected meta-analysis PMID from {mapping_path}: {resolved}")
+    return resolved
 
 
 def wilson_score_interval(
@@ -1193,7 +1324,7 @@ class QualitativeReviewTool:
         if (!reportName) {{
             return "annotations.json";
         }}
-        var base = reportName.replace(/\.[^.]*$/, '');
+        var base = reportName.replace(/\\.[^.]*$/, '');
         if (!base) {{
             return "annotations.json";
         }}
@@ -1314,69 +1445,138 @@ def main(
     - Print console summary
     - Optionally generate qualitative HTML review reports
     """
-    outputs_dir = os.path.join(directory, "outputs")
-    evaluation_output_dir = output_dir or os.path.join(directory, "evaluation")
+    project_dir = Path(directory).expanduser().resolve()
+    run_root, outputs_dir = resolve_run_root_and_outputs(project_dir)
+    evaluation_output_dir = output_dir or str(run_root / "evaluation")
 
-    meta_pmids = load_meta_pmids(meta_pmids_path, meta_analysis_pmid=meta_analysis_pmid)
+    resolved_meta_analysis_pmid = resolve_meta_analysis_pmid(
+        directory=str(project_dir),
+        explicit_meta_analysis_pmid=meta_analysis_pmid,
+    )
+    meta_pmids = load_meta_pmids(
+        meta_pmids_path,
+        meta_analysis_pmid=resolved_meta_analysis_pmid,
+    )
 
-    with open(os.path.join(outputs_dir, "final_results.json"), "r", encoding="utf-8") as f:
-        final_results = json.load(f)
+    final_results_path = outputs_dir / "final_results.json"
+    search_results_path = outputs_dir / "search_results.json"
+    abstract_results_path = outputs_dir / "abstract_screening_results.json"
+    fulltext_results_path = outputs_dir / "fulltext_screening_results.json"
+    fulltext_retrieval_path = outputs_dir / "fulltext_retrieval_results.json"
+
+    final_results = load_json_if_exists(final_results_path)
+    search_results = load_json_if_exists(search_results_path)
+    abstract_results_payload = load_json_if_exists(abstract_results_path)
+    fulltext_results_payload = load_json_if_exists(fulltext_results_path)
+    fulltext_retrieval_results = load_json_if_exists(fulltext_retrieval_path)
+
+    abstract_screening_results = extract_screening_results(
+        abstract_results_payload or final_results,
+        final_key="abstract_screening_results",
+    )
+    fulltext_screening_results = extract_screening_results(
+        fulltext_results_payload or final_results,
+        final_key="fulltext_screening_results",
+    )
+
+    search_stage_available = search_results is not None or bool(abstract_screening_results)
+    abstract_stage_available = (
+        abstract_results_payload is not None
+        or (
+            isinstance(final_results, dict)
+            and "abstract_screening_results" in final_results
+        )
+    )
+    fulltext_stage_available = (
+        fulltext_results_payload is not None
+        or (
+            isinstance(final_results, dict)
+            and "fulltext_screening_results" in final_results
+        )
+    )
+
+    if not search_stage_available:
+        raise FileNotFoundError(str(search_results_path))
+
+    print(f"Resolved run directory: {run_root}")
+    print(
+        "Detected stage artifacts: "
+        f"search={search_stage_available}, "
+        f"abstract={abstract_stage_available}, "
+        f"fulltext={fulltext_stage_available}"
+    )
 
     all_pmids = normalize_pmid_list(
-        [s.get("study_id") for s in final_results.get("abstract_screening_results", [])]
+        [s.get("pmid") for s in (search_results or {}).get("studies", [])]
     )
+    if not all_pmids:
+        all_pmids = normalize_pmid_list(
+            [s.get("study_id") for s in abstract_screening_results]
+        )
+    if not all_pmids:
+        all_pmids = normalize_pmid_list(
+            [s.get("study_id") for s in fulltext_screening_results]
+        )
+
+    if not all_pmids:
+        raise ValueError(
+            "No PMIDs found in available search/abstract/fulltext artifacts."
+        )
+
     abstract_included_pmids = normalize_pmid_list(
         [
             s.get("study_id")
-            for s in final_results.get("abstract_screening_results", [])
-            if s.get("decision") == "included_abstract"
+            for s in abstract_screening_results
+            if s.get("decision") in {"included_abstract", "included"}
         ]
     )
     fulltext_included_pmids = normalize_pmid_list(
         [
             s.get("study_id")
-            for s in final_results.get("fulltext_screening_results", [])
+            for s in fulltext_screening_results
             if s.get("decision") in {"included_fulltext", "included"}
         ]
     )
     fulltext_screened_pmids = normalize_pmid_list(
         [
             s.get("study_id")
-            for s in final_results.get("fulltext_screening_results", [])
+            for s in fulltext_screening_results
             if s.get("decision") in {"included_fulltext", "excluded_fulltext", "included", "excluded"}
         ]
     )
     fulltext_incomplete_pmids = normalize_pmid_list(
         [
             s.get("study_id")
-            for s in final_results.get("fulltext_screening_results", [])
+            for s in fulltext_screening_results
             if s.get("decision") == "fulltext_incomplete"
         ]
     )
     fulltext_with_coords_pmids = normalize_pmid_list(
         [
             s.get("pmid")
-            for s in final_results.get("studies", [])
+            for s in (final_results or {}).get("studies", [])
             if s.get("status") == "included_fulltext"
             and "activation_tables" in s
             and len(s["activation_tables"]) > 0
         ]
     )
 
-    with open(
-        os.path.join(outputs_dir, "fulltext_retrieval_results.json"),
-        "r",
-        encoding="utf-8",
-    ) as f:
-        fulltext_retrieval_results = json.load(f)
+    csv_unavailable_pmids, csv_incomplete_pmids = load_missing_fulltext_pmids(outputs_dir)
+    if csv_incomplete_pmids:
+        fulltext_incomplete_pmids = normalize_pmid_list(
+            fulltext_incomplete_pmids + csv_incomplete_pmids
+        )
 
-    fulltext_unavailable_pmids = normalize_pmid_list(
-        [
-            s.get("pmid")
-            for s in fulltext_retrieval_results.get("studies_with_fulltext", [])
-            if s.get("status") == "fulltext_unavailable"
-        ]
-    )
+    fulltext_unavailable_pmids = list(csv_unavailable_pmids)
+    if fulltext_retrieval_results:
+        for study in fulltext_retrieval_results.get("studies_with_fulltext", []):
+            pmid = normalize_pmid(study.get("pmid"))
+            if pmid is None:
+                continue
+            status = str(study.get("status", "")).strip().lower()
+            if status == "fulltext_unavailable" or study.get("fulltext_available") is False:
+                fulltext_unavailable_pmids.append(pmid)
+    fulltext_unavailable_pmids = normalize_pmid_list(fulltext_unavailable_pmids)
 
     # Filter by all_ids if provided
     if all_ids_path:
@@ -1397,7 +1597,7 @@ def main(
         print(f"Restricting comparison to {len(all_ids):,} PMIDs from {all_ids_path}")
         print("-" * 20)
 
-    results = calculate_metrics_with_ci(
+    all_results = calculate_metrics_with_ci(
         meta_pmids,
         all_pmids,
         abstract_included_pmids,
@@ -1407,7 +1607,7 @@ def main(
         fulltext_incomplete_pmids,
         fulltext_screened_pmids,
     )
-    study_classifications = classify_studies(
+    all_study_classifications = classify_studies(
         meta_pmids,
         all_pmids,
         abstract_included_pmids,
@@ -1417,6 +1617,29 @@ def main(
         fulltext_incomplete_pmids,
         fulltext_screened_pmids,
     )
+
+    available_stages = ["search"]
+    if abstract_stage_available:
+        available_stages.append("abstract")
+    if fulltext_stage_available:
+        available_stages.append("fulltext")
+        if final_results is not None or fulltext_with_coords_pmids:
+            available_stages.append("fulltext_with_coords")
+
+    results = {stage: all_results[stage] for stage in available_stages}
+    study_classifications: Dict[str, Any] = {
+        stage: all_study_classifications[stage]
+        for stage in available_stages
+    }
+    for key in (
+        "meta_in_search",
+        "meta_in_search_available",
+        "fulltext_incomplete_omitted",
+        "fulltext_missing_omitted",
+        "fulltext_not_screened_omitted",
+    ):
+        if key in all_study_classifications:
+            study_classifications[key] = all_study_classifications[key]
 
     save_results_to_files(results, study_classifications, evaluation_output_dir)
 
@@ -1424,28 +1647,72 @@ def main(
         print("Skipping qualitative report generation (--skip-qualitative-report).")
     else:
         report_output_dir = qualitative_output_dir or os.path.join(
-            directory,
+            str(run_root),
             "reports",
             "qualitative",
         )
-        qualitative_tool = QualitativeReviewTool(
-            project_dir=directory,
-            output_dir=report_output_dir,
-            classifications=study_classifications,
-            final_results=final_results,
-            subanalysis=qualitative_subanalysis,
-        )
-        selected_error_types = [qualitative_error_type] if qualitative_error_type else None
-        selected_stages = [qualitative_stage] if qualitative_stage else None
-        generated_reports = qualitative_tool.generate_reports(
-            error_types=selected_error_types,
-            stages=selected_stages,
-        )
+        available_qualitative_stages = [
+            stage
+            for stage in ["abstract", "fulltext"]
+            if stage in available_stages
+        ]
+        effective_qualitative_dir = Path(report_output_dir)
+        if qualitative_subanalysis:
+            effective_qualitative_dir = effective_qualitative_dir / qualitative_subanalysis
+
+        if qualitative_stage and qualitative_stage not in available_qualitative_stages:
+            print(
+                "Skipping qualitative reports for stage "
+                f"'{qualitative_stage}' because its artifacts are not available."
+            )
+            generated_reports: List[Path] = []
+        elif not available_qualitative_stages:
+            print(
+                "Skipping qualitative report generation: "
+                "no abstract/fulltext stage artifacts available."
+            )
+            generated_reports = []
+        else:
+            qualitative_results_payload = dict(final_results or {})
+            qualitative_results_payload.setdefault(
+                "abstract_screening_results", abstract_screening_results
+            )
+            qualitative_results_payload.setdefault(
+                "fulltext_screening_results", fulltext_screening_results
+            )
+            qualitative_tool = QualitativeReviewTool(
+                project_dir=str(run_root),
+                output_dir=report_output_dir,
+                classifications=study_classifications,
+                final_results=qualitative_results_payload,
+                subanalysis=qualitative_subanalysis,
+            )
+            effective_qualitative_dir = qualitative_tool.result_dir
+            selected_error_types = [qualitative_error_type] if qualitative_error_type else None
+            selected_stages = (
+                [qualitative_stage]
+                if qualitative_stage
+                else available_qualitative_stages
+            )
+            generated_reports = qualitative_tool.generate_reports(
+                error_types=selected_error_types,
+                stages=selected_stages,
+            )
+
+        if (
+            generated_reports
+            and abstract_stage_available
+            and not fulltext_stage_available
+            and qualitative_stage in (None, "abstract")
+        ):
+            print("Generated abstract qualitative reports from partial run artifacts.")
+
         print(f"Qualitative reports generated: {len(generated_reports)}")
-        print(f"Qualitative output directory: {qualitative_tool.result_dir}")
+        print(f"Qualitative output directory: {effective_qualitative_dir}")
 
     # Print console summary
     print(f"Comparison PMIDs (gold standard): {results['search']['counts']['meta_total']:,}")
+    print(f"Stages evaluated: {', '.join(available_stages)}")
 
     def print_stage(
         stage: str,
@@ -1501,36 +1768,52 @@ def main(
         pre_counts=["retrieved_total"],
         extra_count_labels={"retrieved_total": "Retrieved from search (all studies)"},
     )
-    print_stage("abstract")
-    print_stage(
-        "fulltext",
-        pre_line_templates=[
-            "Unavailable gold-standard full text: {unavailable_full_text:,} "
-            "({missing_full_text:,} missing, {incomplete_full_text:,} incomplete)",
-            "Not screened at full-text (omitted from recall): {not_screened_full_text:,}",
-        ],
-        extra_count_labels={
-            "false_negatives_all_texts": "False negatives (all texts)",
-        },
-        metric_labels=[
-            ("recall_fulltext_only", "Recall (full-text)"),
-            ("absolute_recall_all_texts", "Recall (in search)"),
-            ("recall_all_meta", "Recall (all meta)"),
-            ("precision_fulltext_only", "Precision"),
-        ],
-        show_default_false_negatives=True,
-        false_negative_key="false_negatives_fulltext_only",
-        false_negative_label="False negatives (full-text)",
-        false_negative_note_key="additional_false_negatives",
-    )
-    print_stage(
-        "fulltext_with_coords",
-        metric_labels=[
-            ("recall_in_search", "Recall (full-text)"),
-            ("recall_all_meta", "Recall (all meta)"),
-            ("precision", "Precision"),
-        ],
-    )
+
+    if "abstract" in results:
+        print_stage("abstract")
+    else:
+        print("=" * 40)
+        print("Abstract screening")
+        print("=" * 40)
+        print("Skipped: abstract screening artifacts not found.\n")
+
+    if "fulltext" in results:
+        print_stage(
+            "fulltext",
+            pre_line_templates=[
+                "Unavailable gold-standard full text: {unavailable_full_text:,} "
+                "({missing_full_text:,} missing, {incomplete_full_text:,} incomplete)",
+                "Not screened at full-text (omitted from recall): {not_screened_full_text:,}",
+            ],
+            extra_count_labels={
+                "false_negatives_all_texts": "False negatives (all texts)",
+            },
+            metric_labels=[
+                ("recall_fulltext_only", "Recall (full-text)"),
+                ("absolute_recall_all_texts", "Recall (in search)"),
+                ("recall_all_meta", "Recall (all meta)"),
+                ("precision_fulltext_only", "Precision"),
+            ],
+            show_default_false_negatives=True,
+            false_negative_key="false_negatives_fulltext_only",
+            false_negative_label="False negatives (full-text)",
+            false_negative_note_key="additional_false_negatives",
+        )
+    else:
+        print("=" * 40)
+        print("Fulltext screening")
+        print("=" * 40)
+        print("Skipped: fulltext screening artifacts not found.\n")
+
+    if "fulltext_with_coords" in results:
+        print_stage(
+            "fulltext_with_coords",
+            metric_labels=[
+                ("recall_in_search", "Recall (full-text)"),
+                ("recall_all_meta", "Recall (all meta)"),
+                ("precision", "Precision"),
+            ],
+        )
 
 
 if __name__ == "__main__":
@@ -1547,15 +1830,17 @@ if __name__ == "__main__":
             "Path to gold-standard PMIDs input. Supports either: "
             "(1) text file with one PMID per line, or "
             "(2) included_studies.csv with 'meta_pmid' and 'study_pmid' columns "
-            "(requires --meta-analysis-pmid)."
+            "(requires --meta-analysis-pmid or auto-detects from <directory>/nmb_mappings.json)."
         ),
     )
     parser.add_argument(
         "directory",
         help=(
-            "Base directory containing 'outputs/final_results.json', "
-            "'outputs/fulltext_retrieval_results.json', and optional retrieval files. "
-            "Evaluation results are saved to <directory>/evaluation/ by default."
+            "Run or project directory containing pipeline outputs. Supports partial runs "
+            "(search-only / abstract-only) as well as full runs. "
+            "If a direct 'outputs/' folder is not present, attempts to auto-select "
+            "a nested '<run>/outputs/' folder. "
+            "Evaluation results are saved to <run>/evaluation/ by default."
         ),
     )
     parser.add_argument(
@@ -1577,7 +1862,8 @@ if __name__ == "__main__":
         dest="meta_analysis_pmid",
         help=(
             "Meta-analysis PMID used to filter included_studies CSV input and extract "
-            "the corresponding included study PMIDs."
+            "the corresponding included study PMIDs. If omitted, attempts to read "
+            "<directory>/nmb_mappings.json['meta_pmid']."
         ),
         default=None,
     )

@@ -2461,9 +2461,26 @@ def configure_active_annotations(mapping_path: Path | None) -> None:
     if not isinstance(payload, dict):
         raise ValueError(f"Invalid annotation mapping format at {mapping_path}: expected JSON object")
 
+    raw_mappings: Any
+    if "annotation_mappings" in payload:
+        raw_mappings = payload.get("annotation_mappings")
+        if not isinstance(raw_mappings, dict):
+            raise ValueError(
+                f"Invalid annotation mapping format at {mapping_path}: "
+                "expected 'annotation_mappings' to be a JSON object"
+            )
+    else:
+        raw_mappings = {
+            key: value
+            for key, value in payload.items()
+            if str(key).strip() != "meta_pmid"
+        }
+
     annotation_names: list[str] = []
     note_keys_by_annotation: dict[str, list[str]] = defaultdict(list)
-    for manual_key_raw, auto_annotation_raw in payload.items():
+    for manual_key_raw, auto_annotation_raw in raw_mappings.items():
+        if isinstance(auto_annotation_raw, (dict, list)):
+            continue
         manual_key = clean_text(str(manual_key_raw)).strip()
         auto_annotation = clean_text(str(auto_annotation_raw)).strip()
         if not manual_key or not auto_annotation:
