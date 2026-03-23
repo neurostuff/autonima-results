@@ -136,7 +136,15 @@ def main():
     all_in_db = set([a[0] for a in db.session.query(database.Article.id).all()])
     
     # Filter out files already in database
-    new_files = [str(f) for f in files if int(f.stem) not in all_in_db]
+    new_files = []
+    for f in files:
+        try:
+            pmid = int(f.stem)
+        except (ValueError, TypeError):
+            # Skip files whose stem is not an integer
+            continue
+        if pmid not in all_in_db:
+            new_files.append(str(f))
     
     print(f'Adding {len(new_files)} new files to database')
     

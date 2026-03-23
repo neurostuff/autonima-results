@@ -1,0 +1,85 @@
+# PubMed search was copied from original study and expanded using suggestions by GPT 5.4
+
+search:
+  database: "pubmed"
+  query: ((("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab] OR "grey matter volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab]) AND ("magnetic resonance imaging"[Mesh] OR MRI[tiab] OR "structural MRI"[tiab])) AND ((alcohol[tiab] OR "Alcohol-Related Disorders"[Mesh]) OR (nicotine[tiab] OR tobacco[tiab] OR smoking[tiab] OR "Tobacco Use Disorder"[Mesh]) OR (opioid*[tiab] OR opiate*[tiab] OR heroin[tiab] OR "Opioid-Related Disorders"[Mesh]) OR (cannabis[tiab] OR marijuana[tiab] OR marihuana[tiab] OR THC[tiab]) OR (stimulant*[tiab] OR cocaine[tiab] OR amphetamine*[tiab] OR methamphetamine[tiab] OR "Cocaine-Related Disorders"[Mesh] OR "Amphetamine-Related Disorders"[Mesh]))
+  email: "delavega@utexas.edu"
+  date_to: "2019/7/31"
+
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/projects/vbm_of_substance_abuse/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/projects/vbm_of_substance_abuse/ace_outputs/processed/"
+
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07" 
+    objective: "identify consistent regions of structurally altered grey matter (GM) between substance users and controls across five pharmacological classes of drugs: alcohol, nicotine, opioids, cannabis, and stimulants."
+    inclusion_criteria:
+      - Empirical English language MRI studies assessing grey matter (GM) volume differences between substance users and controls
+    exclusion_criteria:
+      - Studies using pharmacological manipulations
+      - Brain lesion studies
+      - Studies including participants with reports of mental and/or neurological disorders
+      - Systematic reviews or meta-analyses
+    confidence_reporting: true
+
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "identify consistent regions of structurally altered grey matter (GM) between substance users and controls across five pharmacological classes of drugs: alcohol, nicotine, opioids, cannabis, and stimulants."
+    inclusion_criteria:
+      - Empirical English language MRI studies assessing grey matter (GM) volume differences between substance users and controls
+      - Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing GM volume
+      - It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.
+      - Reporting of participant age/sex, cue type, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.
+    exclusion_criteria:
+      - Studies that report only region-of-interest (ROI) analyses with no qualifying whole-brain results.
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human fMRI data.
+
+parsing:
+  parse_coordinates: false
+  coordinate_model: "gpt-5-mini-2025-08-07"
+
+annotation:
+  enabled: false
+  model: "gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_abstract"
+  inclusion_criteria:
+    - "<ANNOTATION_INCLUSION_CRITERION_1>"
+    - "<ANNOTATION_INCLUSION_CRITERION_2>"
+  exclusion_criteria:
+    - "<ANNOTATION_EXCLUSION_CRITERION_1>"
+    - "<ANNOTATION_EXCLUSION_CRITERION_2>"
+  annotations:
+    - name: "<ANNOTATION_SLUG_1>"
+      description: "<SHORT_DESCRIPTION_1>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_1>"
+    - name: "<ANNOTATION_SLUG_2>"
+      description: "<SHORT_DESCRIPTION_2>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_2>"
+
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true

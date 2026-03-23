@@ -110,6 +110,28 @@ def parse_args() -> argparse.Namespace:
         help="Map filename expected in each analysis directory.",
     )
     parser.add_argument(
+        "--corrected-map-filename",
+        type=str,
+        default="z_corr-FDR_method-indep.nii.gz",
+        help="FDR-corrected map filename used for orthogonal stat-map snapshots.",
+    )
+    parser.add_argument(
+        "--stat-map-display-mode",
+        type=str,
+        default="ortho",
+        help="Display mode for corrected stat-map snapshots (e.g., ortho, x, y, z).",
+    )
+    parser.add_argument(
+        "--stat-map-cut-coords",
+        nargs="+",
+        type=float,
+        default=[0.0, 0.0, 0.0],
+        help=(
+            "Cut coordinates for corrected stat-map snapshots. Provide one or more values. "
+            "For display_mode=ortho, exactly three values are required."
+        ),
+    )
+    parser.add_argument(
         "--dice-threshold",
         type=float,
         default=1.96,
@@ -303,10 +325,38 @@ def resolve_run_infos(
 
 def load_mappings(mapping_path: Path) -> dict[str, str]:
     with mapping_path.open("r", encoding="utf-8") as f:
-        mappings = json.load(f)
-    if not isinstance(mappings, dict) or not mappings:
+        payload = json.load(f)
+    if not isinstance(payload, dict):
         raise ValueError(f"Mapping file must be a non-empty JSON object: {mapping_path}")
-    return {str(k): str(v) for k, v in mappings.items()}
+
+    raw_mappings: dict[str, object]
+    if "annotation_mappings" in payload:
+        nested = payload.get("annotation_mappings")
+        if not isinstance(nested, dict):
+            raise ValueError(
+                f"Invalid mapping format at {mapping_path}: "
+                "expected 'annotation_mappings' to be a JSON object"
+            )
+        raw_mappings = nested
+    else:
+        raw_mappings = {
+            key: value
+            for key, value in payload.items()
+            if str(key).strip() != "meta_pmid"
+        }
+
+    mappings: dict[str, str] = {}
+    for manual_name_raw, auto_name_raw in raw_mappings.items():
+        if isinstance(auto_name_raw, (dict, list)):
+            continue
+        manual_name = str(manual_name_raw).strip()
+        auto_name = str(auto_name_raw).strip()
+        if not manual_name or not auto_name:
+            continue
+        mappings[manual_name] = auto_name
+    if not mappings:
+        raise ValueError(f"Mapping file did not contain any usable mappings: {mapping_path}")
+    return mappings
 
 
 def load_analysis_to_pmid_map_from_studyset(studyset_path: Path) -> dict[str, str]:
@@ -499,9 +549,7 @@ def compute_automated_annotation_counts(
                 }
             )
             if manual_name:
-                run_labels[manual_name] = (
-                    f"{manual_name} (N analyses={int(n_analyses)}, PMIDs={int(n_unique_pmids)})"
-                )
+                run_labels[manual_name] = manual_name
 
         manual_column_labels_by_run[run_name] = run_labels
 
@@ -925,6 +973,14 @@ def relabel_manual_columns(
     return df.rename(columns=rename_map)
 
 
+def set_heatmap_xtick_alignment(ax: plt.Axes, labels: list[str]) -> None:
+    # Keep xticks centered on each heatmap column and anchor rotated labels to the tick.
+    tick_positions = np.arange(len(labels), dtype=float) + 0.5
+    ax.set_xticks(tick_positions)
+    ax.set_xticklabels(labels, rotation=45, ha="right", rotation_mode="anchor")
+    ax.tick_params(axis="x", pad=2)
+
+
 def write_tables(
     output_tables_dir: Path,
     save_tables: bool,
@@ -1049,7 +1105,7 @@ def write_images(
         ax.set_title(f"Dice Matrix: {run_name} (Automated vs Manual)", fontweight="bold")
         ax.set_xlabel("Manual benchmark annotation")
         ax.set_ylabel("Automated annotation + aggregate automated analyses")
-        ax.tick_params(axis="x", rotation=45)
+        set_heatmap_xtick_alignment(ax, [str(label) for label in run_dice_df.columns])
         ax.tick_params(axis="y", rotation=0)
         plt.tight_layout()
         if save_images:
@@ -1079,7 +1135,7 @@ def write_images(
         ax.set_title(f"Pearson Matrix: {run_name} (Automated vs Manual)", fontweight="bold")
         ax.set_xlabel("Manual benchmark annotation")
         ax.set_ylabel("Automated annotation + aggregate automated analyses")
-        ax.tick_params(axis="x", rotation=45)
+        set_heatmap_xtick_alignment(ax, [str(label) for label in run_pearson_df.columns])
         ax.tick_params(axis="y", rotation=0)
         plt.tight_layout()
         if save_images:
@@ -1147,6 +1203,223 @@ def write_images(
     return image_paths
 
 
+def aggregate_name_candidates() -> list[str]:
+    candidates: list[str] = ["all_analyses"]
+    for variant in AGGREGATE_ANALYSIS_NAME_VARIANTS:
+        for name in variant:
+            if name not in candidates:
+                candidates.append(name)
+    return candidates
+
+
+def first_existing_path(paths: list[Path]) -> Path | None:
+    for path in paths:
+        if path.exists():
+            return path
+    return None
+
+
+def resolve_stat_map_cut_coords(
+    display_mode: str,
+    raw_cut_coords: list[float] | tuple[float, ...],
+) -> float | tuple[float, ...]:
+    cut_coords = tuple(float(value) for value in raw_cut_coords)
+    if not cut_coords:
+        raise ValueError("--stat-map-cut-coords requires at least one numeric value.")
+
+    if str(display_mode).lower() == "ortho" and len(cut_coords) != 3:
+        raise ValueError(
+            "--stat-map-display-mode=ortho requires exactly 3 values for --stat-map-cut-coords "
+            f"(got {len(cut_coords)}: {cut_coords})."
+        )
+
+    if len(cut_coords) == 1:
+        return cut_coords[0]
+
+    return cut_coords
+
+
+def write_corrected_stat_map_images(
+    output_images_dir: Path,
+    save_images: bool,
+    show_figures: bool,
+    project_name: str,
+    manual_analysis_base: Path,
+    corrected_map_filename: str,
+    stat_map_display_mode: str,
+    stat_map_cut_coords: float | tuple[float, ...],
+    mapping_pairs: list[MappingPair],
+    included_run_infos: list[RunInfo],
+    manual_meta_by_run: dict[str, bool],
+    run_aggregate_paths: dict[str, dict[str, Path]],
+) -> dict[str, list[tuple[str, Path]]]:
+    if not save_images and not show_figures:
+        return {}
+
+    try:
+        from nilearn import datasets, plotting
+    except ImportError as exc:
+        print(
+            "Skipping corrected stat-map plotting: nilearn is not installed "
+            f"({exc})."
+        )
+        return {}
+
+    stat_maps_root = output_images_dir / "stat_maps"
+    if save_images:
+        stat_maps_root.mkdir(parents=True, exist_ok=True)
+
+    aggregate_candidates = aggregate_name_candidates()
+    plot_paths_by_version: dict[str, list[tuple[str, Path]]] = {}
+
+    unique_pairs: list[MappingPair] = []
+    seen_auto_names: set[str] = set()
+    for pair in mapping_pairs:
+        if pair.auto_name in seen_auto_names:
+            continue
+        seen_auto_names.add(pair.auto_name)
+        unique_pairs.append(pair)
+
+    def plot_one(
+        *,
+        version_label: str,
+        annotation_label: str,
+        stat_map_path: Path,
+        out_path: Path | None,
+    ) -> None:
+        display = plotting.plot_stat_map(
+            stat_map_img=str(stat_map_path),
+            cut_coords=stat_map_cut_coords,
+            display_mode=stat_map_display_mode,
+            title=f"{version_label}: {annotation_label}",
+            annotate=True,
+            draw_cross=False,
+        )
+        if out_path is not None:
+            display.savefig(str(out_path))
+        if show_figures:
+            maybe_show_figure(show_figures)
+        display.close()
+
+    # Manual benchmark first.
+    manual_version_label = "manual_benchmark"
+    manual_version_dir = stat_maps_root / sanitize_name(manual_version_label)
+    if save_images:
+        manual_version_dir.mkdir(parents=True, exist_ok=True)
+    manual_entries: list[tuple[str, Path]] = []
+
+    manual_aggregate_paths = [
+        manual_analysis_base / project_name / candidate / corrected_map_filename
+        for candidate in aggregate_candidates
+    ]
+    manual_aggregate_path = first_existing_path(manual_aggregate_paths)
+    if manual_aggregate_path is not None:
+        out_path = manual_version_dir / "all_analyses.png" if save_images else None
+        plot_one(
+            version_label=manual_version_label,
+            annotation_label="all_analyses",
+            stat_map_path=manual_aggregate_path,
+            out_path=out_path,
+        )
+        if out_path is not None:
+            manual_entries.append(("all_analyses", out_path))
+    else:
+        checked = ", ".join(str(path) for path in manual_aggregate_paths)
+        print(
+            "Manual benchmark aggregate map missing for corrected stat-map plot. "
+            f"Checked: {checked}"
+        )
+
+    for pair in unique_pairs:
+        candidate_paths = [
+            manual_analysis_base / project_name / candidate / corrected_map_filename
+            for candidate in manual_name_candidates(pair.manual_name)
+        ]
+        manual_map_path = first_existing_path(candidate_paths)
+        if manual_map_path is None:
+            checked = ", ".join(str(path) for path in candidate_paths)
+            print(
+                f"Missing manual corrected map for {pair.manual_name} "
+                f"(label={pair.auto_name}). Checked: {checked}"
+            )
+            continue
+        out_path = manual_version_dir / f"{sanitize_name(pair.auto_name)}.png" if save_images else None
+        plot_one(
+            version_label=manual_version_label,
+            annotation_label=pair.auto_name,
+            stat_map_path=manual_map_path,
+            out_path=out_path,
+        )
+        if out_path is not None:
+            manual_entries.append((pair.auto_name, out_path))
+
+    if manual_entries:
+        plot_paths_by_version[manual_version_label] = manual_entries
+
+    # Then each automated meta-analysis run.
+    for run_info in included_run_infos:
+        run_name = run_info.name
+        if manual_meta_by_run.get(run_name, False):
+            continue
+
+        run_version_dir = stat_maps_root / sanitize_name(run_name)
+        if save_images:
+            run_version_dir.mkdir(parents=True, exist_ok=True)
+        run_entries: list[tuple[str, Path]] = []
+
+        preferred_aggregate_names = list(run_aggregate_paths.get(run_name, {}).keys())
+        aggregate_name_order = ["all_analyses"] + [
+            name for name in preferred_aggregate_names if name != "all_analyses"
+        ]
+        aggregate_name_order.extend(
+            name for name in aggregate_candidates if name not in aggregate_name_order
+        )
+        run_aggregate_map_path = first_existing_path(
+            [
+                run_info.meta_results_dir / aggregate_name / corrected_map_filename
+                for aggregate_name in aggregate_name_order
+            ]
+        )
+
+        if run_aggregate_map_path is not None:
+            out_path = run_version_dir / "all_analyses.png" if save_images else None
+            plot_one(
+                version_label=run_name,
+                annotation_label="all_analyses",
+                stat_map_path=run_aggregate_map_path,
+                out_path=out_path,
+            )
+            if out_path is not None:
+                run_entries.append(("all_analyses", out_path))
+        else:
+            print(
+                f"Missing corrected aggregate map for run {run_name}; skipped all_analyses plot."
+            )
+
+        for pair in unique_pairs:
+            auto_map_path = run_info.meta_results_dir / pair.auto_name / corrected_map_filename
+            if not auto_map_path.exists():
+                print(
+                    f"Missing corrected map for run {run_name}, annotation {pair.auto_name}: "
+                    f"{auto_map_path}"
+                )
+                continue
+            out_path = run_version_dir / f"{sanitize_name(pair.auto_name)}.png" if save_images else None
+            plot_one(
+                version_label=run_name,
+                annotation_label=pair.auto_name,
+                stat_map_path=auto_map_path,
+                out_path=out_path,
+            )
+            if out_path is not None:
+                run_entries.append((pair.auto_name, out_path))
+
+        if run_entries:
+            plot_paths_by_version[run_name] = run_entries
+
+    return plot_paths_by_version
+
+
 def to_html_table(df: pd.DataFrame) -> str:
     if df.empty:
         return "<p><em>No rows.</em></p>"
@@ -1166,6 +1439,9 @@ def build_html_report(
     mapping_path: Path,
     manual_analysis_base: Path,
     map_filename: str,
+    corrected_map_filename: str,
+    stat_map_display_mode: str,
+    stat_map_cut_coords: float | tuple[float, ...],
     dice_threshold: float,
     meta_results_subpath: Path,
     run_infos: list[RunInfo],
@@ -1178,6 +1454,7 @@ def build_html_report(
     results: ComparisonResults,
     table_paths: dict[str, Path],
     image_paths: dict[str, Path],
+    stat_map_paths_by_version: dict[str, list[tuple[str, Path]]],
 ) -> str:
     run_overview_rows = []
     run_info_by_name = {run_info.name: run_info for run_info in run_infos}
@@ -1255,6 +1532,16 @@ def build_html_report(
                 f'<img src="{escape(rel)}" alt="{escape(title)}" class="plot-img" />'
             )
 
+    stat_map_sections: list[str] = []
+    for version_label, entries in stat_map_paths_by_version.items():
+        stat_map_sections.append(f"<h3>{escape(version_label)}</h3>")
+        for annotation_label, path in entries:
+            rel = path.relative_to(output_dir).as_posix()
+            stat_map_sections.append(
+                f"<h4>{escape(annotation_label)}</h4>"
+                f'<img src="{escape(rel)}" alt="Stat map {escape(version_label)} {escape(annotation_label)}" class="plot-img" />'
+            )
+
     html = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1286,6 +1573,9 @@ def build_html_report(
       <li><strong>mapping_path:</strong> {escape(str(mapping_path))}</li>
       <li><strong>manual_analysis_base:</strong> {escape(str(manual_analysis_base))}</li>
       <li><strong>map_filename:</strong> {escape(map_filename)}</li>
+      <li><strong>corrected_map_filename:</strong> {escape(corrected_map_filename)}</li>
+      <li><strong>stat_map_display_mode:</strong> {escape(stat_map_display_mode)}</li>
+      <li><strong>stat_map_cut_coords:</strong> {escape(str(stat_map_cut_coords))}</li>
       <li><strong>dice_threshold:</strong> {dice_threshold:.4g}</li>
       <li><strong>meta_results_subpath:</strong> {escape(str(meta_results_subpath))}</li>
       <li><strong>discovered_runs:</strong> {len(run_infos)}</li>
@@ -1345,6 +1635,12 @@ def build_html_report(
     <h2>Visualizations</h2>
     {''.join(image_sections) if image_sections else '<p><em>No images available.</em></p>'}
   </div>
+
+  <div class="section">
+    <h2>Orthogonal Stat Maps (FDR Corrected)</h2>
+    <p class="muted">Ordered as manual benchmark first, then each automated run. Includes only <code>all_analyses</code> and mapped custom annotations.</p>
+    {''.join(stat_map_sections) if stat_map_sections else '<p><em>No corrected stat-map images available.</em></p>'}
+  </div>
 </body>
 </html>
 """
@@ -1367,6 +1663,9 @@ def print_configuration_summary(
     manual_analysis_base: Path,
     manual_nimads_base: Path,
     map_filename: str,
+    corrected_map_filename: str,
+    stat_map_display_mode: str,
+    stat_map_cut_coords: float | tuple[float, ...],
     dice_threshold: float,
     output_dir: Path,
     meta_results_subpath: Path,
@@ -1379,6 +1678,9 @@ def print_configuration_summary(
     print(f"manual_analysis_base:{manual_analysis_base}")
     print(f"manual_nimads_base:  {manual_nimads_base}")
     print(f"map_filename:        {map_filename}")
+    print(f"corrected_map_file:  {corrected_map_filename}")
+    print(f"stat_map_mode:       {stat_map_display_mode}")
+    print(f"stat_map_cut_coords: {stat_map_cut_coords}")
     print(f"dice_threshold:      {dice_threshold}")
     print(f"output_dir:          {output_dir}")
     print(f"meta_results_subpath:{meta_results_subpath}")
@@ -1425,6 +1727,10 @@ def main() -> None:
         plt.ioff()
 
     mappings = load_mappings(mapping_path)
+    stat_map_cut_coords = resolve_stat_map_cut_coords(
+        display_mode=args.stat_map_display_mode,
+        raw_cut_coords=args.stat_map_cut_coords,
+    )
 
     print_configuration_summary(
         project_dir=project_dir,
@@ -1432,6 +1738,9 @@ def main() -> None:
         manual_analysis_base=args.manual_analysis_base,
         manual_nimads_base=args.manual_nimads_base,
         map_filename=args.map_filename,
+        corrected_map_filename=args.corrected_map_filename,
+        stat_map_display_mode=args.stat_map_display_mode,
+        stat_map_cut_coords=stat_map_cut_coords,
         dice_threshold=args.dice_threshold,
         output_dir=output_dir,
         meta_results_subpath=args.meta_results_subpath,
@@ -1543,6 +1852,20 @@ def main() -> None:
         dice_threshold=args.dice_threshold,
         manual_column_labels_by_run=manual_column_labels_by_run,
     )
+    stat_map_paths_by_version = write_corrected_stat_map_images(
+        output_images_dir=output_images_dir,
+        save_images=args.save_images,
+        show_figures=args.show_figures,
+        project_name=project_dir.name,
+        manual_analysis_base=args.manual_analysis_base.expanduser().resolve(),
+        corrected_map_filename=args.corrected_map_filename,
+        stat_map_display_mode=args.stat_map_display_mode,
+        stat_map_cut_coords=stat_map_cut_coords,
+        mapping_pairs=mapping_pairs,
+        included_run_infos=included_run_infos,
+        manual_meta_by_run=manual_meta_by_run,
+        run_aggregate_paths=run_aggregate_paths,
+    )
 
     html_content = build_html_report(
         output_dir=output_dir,
@@ -1550,6 +1873,9 @@ def main() -> None:
         mapping_path=mapping_path,
         manual_analysis_base=args.manual_analysis_base,
         map_filename=args.map_filename,
+        corrected_map_filename=args.corrected_map_filename,
+        stat_map_display_mode=args.stat_map_display_mode,
+        stat_map_cut_coords=stat_map_cut_coords,
         dice_threshold=args.dice_threshold,
         meta_results_subpath=args.meta_results_subpath,
         run_infos=run_infos,
@@ -1562,6 +1888,7 @@ def main() -> None:
         results=results,
         table_paths=table_paths,
         image_paths=image_paths,
+        stat_map_paths_by_version=stat_map_paths_by_version,
     )
     html_path = write_html_report(
         output_dir=output_dir,
@@ -1577,6 +1904,7 @@ def main() -> None:
     print(f"save_images: {args.save_images}")
     if args.save_images:
         print(f"images_dir:  {output_images_dir}")
+        print(f"stat_maps:   {output_images_dir / 'stat_maps'}")
     print(f"save_html:   {args.save_html}")
     if html_path is not None:
         print(f"html_report: {html_path}")
