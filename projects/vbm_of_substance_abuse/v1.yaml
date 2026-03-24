@@ -49,11 +49,11 @@ screening:
       - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human fMRI data.
 
 parsing:
-  parse_coordinates: false
+  parse_coordinates: true
   coordinate_model: "gpt-5-mini-2025-08-07"
 
 annotation:
-  enabled: false
+  enabled: true
   model: "gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
   metadata_fields:
@@ -63,20 +63,48 @@ annotation:
     - "study_title"
     - "study_abstract"
   inclusion_criteria:
-    - "<ANNOTATION_INCLUSION_CRITERION_1>"
-    - "<ANNOTATION_INCLUSION_CRITERION_2>"
+    - Grey matter volume comparison between substance users and controls, with a users < controls contrast indicating reduced GM in substance users.
+    - Must be a voxelwise whole brain analysis 
+    - The inclusion of multiple experiments per article were only considered if the experiments overlapped in the control group, but not the substance user group. For example, moderate smoker<control, and separately severe smoker<control include two different samples of cigarette smokers. 
   exclusion_criteria:
-    - "<ANNOTATION_EXCLUSION_CRITERION_1>"
-    - "<ANNOTATION_EXCLUSION_CRITERION_2>"
+    - Region of interest (ROI) or small volume correction (SVC) analyses 
+    - Analyses other than substance users < controls (e.g., user > control contrasts)
+    - Analyses of other modalities (e.g., functional MRI, diffusion tensor imaging) or other structural measures 
   annotations:
-    - name: "<ANNOTATION_SLUG_1>"
-      description: "<SHORT_DESCRIPTION_1>"
+    - name: all_drug_classes
+      description: convergent lower GM common across all substances
       inclusion_criteria:
-        - "<ANNOTATION_SPECIFIC_CRITERION_1>"
-    - name: "<ANNOTATION_SLUG_2>"
-      description: "<SHORT_DESCRIPTION_2>"
+        - Comparison of drug users of any class to controls
+    - name: alcohol
+      description: lower GM in alcohol users relative to controls
       inclusion_criteria:
-        - "<ANNOTATION_SPECIFIC_CRITERION_2>"
+        - Comparison of alcohol users to controls
+      exclusion_criteria:
+        - Comparison of users of other drug classes to controls
+    - name: nicotine
+      description: lower GM in nicotine users relative to controls
+      inclusion_criteria:
+        - Comparison of nicotine users to controls
+      exclusion_criteria:
+        - Comparison of users of other drug classes to controls
+    - name: opioids
+      description: lower GM in opioid users relative to controls
+      inclusion_criteria:
+        - Comparison of opioid users to controls
+      exclusion_criteria:
+        - Comparison of users of other drug classes to controls
+    - name: stimulants
+      description: lower GM in stimulant users relative to controls
+      inclusion_criteria:
+        - Comparison of stimulant users to controls
+      exclusion_criteria:
+        - Comparison of users of other drug classes to controls
+    - name: cannabis
+      description: lower GM in cannabis users relative to controls
+      inclusion_criteria:
+        - Comparison of cannabis users to controls
+      exclusion_criteria:
+        - Comparison of users of other drug classes to controls
 
 output:
   formats:
