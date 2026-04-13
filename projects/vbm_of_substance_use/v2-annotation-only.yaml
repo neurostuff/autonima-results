@@ -1,10 +1,8 @@
-# PubMed search was copied from original study and expanded using suggestions by GPT 5.4
+# Double checked criteria using GPT 5.4
 
 search:
   database: "pubmed"
-  query: ((("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab] OR "grey matter volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab]) AND ("magnetic resonance imaging"[Mesh] OR MRI[tiab] OR "structural MRI"[tiab])) AND ((alcohol[tiab] OR "Alcohol-Related Disorders"[Mesh]) OR (nicotine[tiab] OR tobacco[tiab] OR smoking[tiab] OR "Tobacco Use Disorder"[Mesh]) OR (opioid*[tiab] OR opiate*[tiab] OR heroin[tiab] OR "Opioid-Related Disorders"[Mesh]) OR (cannabis[tiab] OR marijuana[tiab] OR marihuana[tiab] OR THC[tiab]) OR (stimulant*[tiab] OR cocaine[tiab] OR amphetamine*[tiab] OR methamphetamine[tiab] OR "Cocaine-Related Disorders"[Mesh] OR "Amphetamine-Related Disorders"[Mesh]))
-  email: "delavega@utexas.edu"
-  date_to: "2019/7/31"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/vbm_of_substance_use/official_pmids.txt"
 
 retrieval:
   load_excluded: true
@@ -40,13 +38,13 @@ screening:
     confidence_reporting: true
     objective: "identify consistent regions of structurally altered grey matter (GM) between substance users and controls across five pharmacological classes of drugs: alcohol, nicotine, opioids, cannabis, and stimulants."
     inclusion_criteria:
-      - Empirical English language MRI studies assessing grey matter (GM) volume differences between substance users and controls
+      - Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls
       - Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing GM volume
       - It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.
-      - Reporting of participant age/sex, cue type, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.
+      - Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.
     exclusion_criteria:
       - Studies that report only region-of-interest (ROI) analyses with no qualifying whole-brain results.
-      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human fMRI data.
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human structural MRI data.
 
 parsing:
   parse_coordinates: true
@@ -64,9 +62,9 @@ annotation:
     - "study_title"
     - "study_abstract"
   inclusion_criteria:
-    - Grey matter volume comparison between substance users and controls, with a users < controls contrast indicating reduced GM in substance users.
-    - Must be a voxelwise whole brain analysis 
-    - The inclusion of multiple experiments per article were only considered if the experiments overlapped in the control group, but not the substance user group. For example, moderate smoker<control, and separately severe smoker<control include two different samples of cigarette smokers. 
+    - Voxelwise whole-brain grey matter comparison between substance users and controls, with a users < controls contrast indicating reduced grey matter in substance users.
+    - Must be a voxelwise whole brain analysis of grey matter volume
+    - Multiple experiments from the same article may be included only when they share the same control group but involve non-overlapping substance-user groups. For example, moderate smoker<control, and separately severe smoker<control include two different samples of cigarette smokers. 
   exclusion_criteria:
     - Region of interest (ROI) or small volume correction (SVC) analyses 
     - Analyses other than substance users < controls (e.g., user > control contrasts)
