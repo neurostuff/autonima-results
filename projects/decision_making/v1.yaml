@@ -1,0 +1,102 @@
+# Used ChatGPT to refine query in an evaluation loop. 
+search:
+  database: "pubmed"
+  query: ((((risk*[tiab] OR "risk taking"[tiab] OR "risk-taking"[tiab]) AND (decision-making[tiab] OR "decision making"[tiab] OR choice[tiab] OR choices[tiab])) OR ((ambigu*[tiab] OR uncertainty[tiab] OR probabilistic[tiab]) AND (decision-making[tiab] OR "decision making"[tiab] OR choice[tiab] OR choices[tiab])) OR ("perceptual decision-making"[tiab] OR "perceptual decision making"[tiab]) OR (((ambigu*[tiab] OR uncertainty[tiab] OR probabilistic[tiab]) AND (reward*[tiab] OR learning[tiab])))) AND (fMRI[tiab] OR "functional MRI"[tiab] OR "functional magnetic resonance imaging"[tiab] OR BOLD[tiab] OR "blood oxygenation level dependent"[tiab]) AND Humans[mh] AND English[lang] NOT (review[pt] OR "systematic review"[tiab] OR meta-analysis[pt]))
+  date_from: "1995/01/01"
+  date_to: "2019/03/31"
+  max_results: 15000
+  email: delavega@utexas.edu
+  
+retrieval:
+  load_excluded: false
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/projects/decision_making/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/projects/decision_making/ace_outputs/processed/"
+
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    objective: "Meta-analysis of fMRI studies of risky, ambiguous, and perceptual decision-making."
+    inclusion_criteria:
+      - English language empirical studies with original data
+      - Functional MRI scan conducted while human participants performed a risky, ambiguous, or perceptual decision-making task
+      - Sample- humans of any age that were either healthy participants, substance users, as well as groups with other neuropsychiatric conditions 
+    exclusion_criteria:
+      - Studies using only PET or other non-fMRI neuroimaging methods
+      - Systematic reviews or meta-analyses
+    confidence_reporting: true
+
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Meta-analysis of fMRI studies of drug and natural reward-related cue-reactivity using visual stimuli."
+    inclusion_criteria:
+      - Functional MRI scan conducted while human participants performed a risky, ambiguous, or perceptual decision-making task
+      - At least one within-task or between-task contrast related to risky, ambiguous, or perceptual decision-making (e.g., “risky > safe”, “high-risk > low-risk”, “risk > certainty”, “riskier > surer” or “experimental task (risk) > control task” for risky-DM studies; “high uncertainty > low uncertainty”, “ambiguity > ignorance”, “ambiguous > non-ambiguous” or “ambiguous task > control task” for ambiguous-DM studies; and “hard > easy”, “low coherence > high coherence”, or “perceptual task > control task” for perceptual-DM studies.
+      - Whole-brain evidence- The target analysis must be a group-level, whole-brain (voxelwise) task-evoked statistical map 
+      - It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.
+    exclusion_criteria:
+      - Studies that report only region-of-interest (ROI) analyses with no whole-brain results.
+      - Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a whole-brain task activation map.
+      - Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying unmasked, whole-brain task effect.
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.
+
+parsing:
+  parse_coordinates: false 
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+# In progress below:
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  prompt_type: "multi_analysis"
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is from the healthy/control group and is generalizable to the healthy adult population.
+    - Contrast or analysis must be relevant to drug or natural reward-related cue-reactivity using visual stimuli (e.g., drug cues>neutral cues, sexual cues>neutral cues, food cues>neutral cues).
+  exclusion_criteria:
+    - Region-of-interest (ROI) analyses
+    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) 
+    - Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control)
+    - "Analyses on non-appetitive cue contrasts"
+  annotations:
+    - name: "pooled_cue_reactivity"
+      description: "Appetitive cue reactivity across both drug and natural reward-related cues"
+      inclusion_criteria:
+        - "Analyses must be on a task measuring drug or natural reward-related cue-reactivity using visual stimuli (example tasks: Drug cue reactivity; Food cue reactivity; Sexual cue reactivity)"
+        - "The analysis/contrast must measure drug or natural reward-related cue reactivity compared to control stimuli (example contrast: Drug cues>neutral cues; Food cues>neutral cues; Sexual cues>neutral cues)"
+    - name: "natural_reward_cue_reactivity"
+      description: "Natural reward cue reactivity is characterized by the detection of and attention to natural reward-related cues, such as food or social stimuli."
+      inclusion_criteria:
+        - "Analyses must be on a task measuring natural reward-related cue-reactivity (example tasks: Food cue reactivity; Social cue reactivity, Sexual cue reactivity)"
+        - "The analysis/contrast must measure natural reward-related cue reactivity compared to control stimuli (example contrast: Food cues>neutral cues; Social cues>neutral cues; Sexual cues>neutral cues)"
+      exclusion_criteria:
+        - "Drug cue contrasts (e.g., Drug cues>neutral cues) should not be included in this annotation"
+    - name: "drug_cue_reactivity"
+      description: "Drug cue reactivity as characterized by the detection of and attention to drug-related cues."
+      inclusion_criteria:
+        - "Analyses must be on a task measuring drug-related cue-reactivity (example tasks: Drug cue reactivity)"
+        - "The analysis/contrast must measure drug-related cue reactivity compared to control stimuli (example contrast: Drug cues>neutral cues)"
+      exclusion_criteria:
+        - "Analyses on natural reward-related cue contrasts (e.g., Food cues>neutral cues) should not be included in this annotation"
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true

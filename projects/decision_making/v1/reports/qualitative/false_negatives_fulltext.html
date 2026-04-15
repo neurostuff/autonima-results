@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .criteria-summary, .criteria-details {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .criteria-summary {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .criterion-list {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+        .criterion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }
+        .criterion-red {
+            background: #c0392b;
+        }
+        .criterion-green {
+            background: #1e8449;
+        }
+        .criterion-neutral {
+            background: #34495e;
+        }
+        .criterion-count {
+            color: #555;
+            font-size: 12px;
+        }
+        .annotation {
+            border-left: 3px solid #f39c12;
+            background-color: #fff8e1;
+            padding: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC';
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2';
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        @media (max-width: 900px) {
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+
+    function getAnnotationsFilename() {
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {
+            return "annotations.json";
+        }
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {
+            return "annotations.json";
+        }
+        return base + ".json";
+    }
+
+    async function saveAnnotations() {
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var pmid = study.getAttribute('data-pmid') || '';
+
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {
+            try {
+                var fileHandle = await window.showSaveFilePicker({
+                    suggestedName: outputFilename,
+                    types: [{
+                        description: "JSON Files",
+                        accept: { "application/json": [".json"] }
+                    }]
+                });
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            } catch (error) {
+                if (error && error.name === "AbortError") {
+                    return;
+                }
+                console.warn("Falling back to browser download.", error);
+            }
+        }
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", outputFilename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Negatives Papers at Fulltext Stage</h1>
+<p>Total papers: 1</p>
+<div class='criteria-summary'>
+<h2>Stage Criteria Summary</h2>
+<p>Stage: <strong>Fulltext</strong>. Counts show criterion usage across all stage decisions and within this report subset.</p>
+<div class='criteria-grid'>
+<div>
+<h3>Inclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>I4</span> Functional MRI scan conducted while human participants performed a risky, ambiguous, or perceptual decision-making task <span class='criterion-count'>(all stage: 87/122, this report: 1/1)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I5</span> At least one within-task or between-task contrast related to risky, ambiguous, or perceptual decision-making (e.g., “risky &gt; safe”, “high-risk &gt; low-risk”, “risk &gt; certainty”, “riskier &gt; surer” or “experimental task (risk) &gt; control task” for risky-DM studies; “high uncertainty &gt; low uncertainty”, “ambiguity &gt; ignorance”, “ambiguous &gt; non-ambiguous” or “ambiguous task &gt; control task” for ambiguous-DM studies; and “hard &gt; easy”, “low coherence &gt; high coherence”, or “perceptual task &gt; control task” for perceptual-DM studies. <span class='criterion-count'>(all stage: 80/122, this report: 1/1)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I6</span> Whole-brain evidence- The target analysis must be a group-level, whole-brain (voxelwise) task-evoked statistical map <span class='criterion-count'>(all stage: 108/122, this report: 1/1)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I7</span> It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text. <span class='criterion-count'>(all stage: 108/122, this report: 1/1)</span></li>
+</ul>
+</div>
+<div>
+<h3>Exclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>E3</span> Studies that report only region-of-interest (ROI) analyses with no whole-brain results. <span class='criterion-count'>(all stage: 7/122, this report: 0/1)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E4</span> Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a whole-brain task activation map. <span class='criterion-count'>(all stage: 1/122, this report: 0/1)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E5</span> Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying unmasked, whole-brain task effect. <span class='criterion-count'>(all stage: 0/122, this report: 0/1)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E6</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults. <span class='criterion-count'>(all stage: 0/122, this report: 0/1)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='study-list'>
+<div class='study' id='study-1' data-pmid='16785427'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/16785427/' target='_blank'>16785427</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Involvement of human left dorsolateral prefrontal cortex in perceptual decision making is independent of response modality</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Proc Natl Acad Sci U S A</p>
+<p><strong>Publication Year:</strong> 2006</p>
+<p><strong>DOI:</strong> 10.1073/pnas.0603949103</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/1479865/' target='_blank'>1479865</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> While this full-text reports an fMRI perceptual decision-making task with appropriate within-task contrasts (high vs low coherence), whole-brain group-level voxelwise analysis, and reported coordinates, it does NOT address the meta-analysis objective of drug or natural reward-related cue-reactivity using visual stimuli. Inclusion criteria met: I4 (perceptual decision-making fMRI task), I5 (within-task contrasts related to perceptual decision-making: high&gt;low and low&gt;high coherence), I6 (group-level whole-brain voxelwise task-evoked maps), I7 (results reported with coordinates/figures). Exclusion criteria met: none of E3–E6 apply. Because the study does not investigate reward-related cue-reactivity (topic mismatch with review objective), it is excluded. Full text appears complete for screening.</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+Perceptual decision making typically entails the processing of sensory signals, the formation of a decision, and the planning and execution of a motor response. Although recent studies in monkeys and humans have revealed possible neural mechanisms for perceptual decision making, much less is known about how the decision is subsequently transformed into a motor action and whether or not the decision is represented at an abstract level, i.e., independently of the specific motor response. To address this issue, we used functional MRI to monitor changes in brain activity while human subjects discriminated the direction of motion in random-dot visual stimuli that varied in coherence and responded with either button presses or saccadic eye movements. We hypothesized that areas representing decision variables should respond more to high- than to low-coherence stimuli independent of the motor system used to express a decision. Four areas were found that fulfilled this condition: left posterior dorsolateral prefrontal cortex (DLPFC), left posterior cingulate cortex, left inferior parietal lobule, and left fusifom/parahippocampal gyrus. We previously found that, when subjects made categorical decisions about degraded face and house stimuli, left posterior DLPFC showed a greater response to high- relative to low-coherence stimuli. Furthermore, the left posterior DLPFC appears to perform a comparison of signals from sensory processing areas during perceptual decision making. These data suggest that the involvement of left posterior DLPFC in perceptual decision making transcends both task and response specificity, thereby enabling a flexible link among sensory evidence, decision, and action. 
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (27979 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+Perceptual decision making typically entails the processing of sensory signals, the formation of a decision, and the planning and execution of a motor response. Single-unit recordings in monkeys and, more recently, neuroimaging studies in humans have identified critical features of the first two of these processes, namely, the processing of sensory signals and the formation of a decision. In monkeys, it has been shown that lower-level sensory regions represent the perceptual evidence contained in a stimulus and that perceptual decisions might arise from a subtraction operation between the activities of pools of neurons with opposite sensory preferences ( – ); for recent reviews see refs.   and  . For example, in a direction-of-motion task, in which the monkey must decide whether a noisy field of dots is moving upward or downward, the monkey’s decision can be predicted by subtracting the activities of two populations of sensory neurons in the middle temporal area (area MT) that prefer upward and downward motion, respectively ( ,  – ). Moreover, during this task, cells in downstream brain regions, such as the lateral intraparietal area and the dorsolateral prefrontal cortex (DLPFC), form a decision by computing the difference in the activities of populations of neurons in area MT that prefer upward and downward motion ( ). These studies have also shown greater activity in areas involved in decision making, such as the DLPFC, during high-motion-coherence trials, i.e., trials in which the sensory evidence is greatest, than during low-coherence trials. 
+
+As in the visual system, in the somatosensory system, in a task in which the monkey must decide which of two vibratory stimuli has a higher frequency, the monkey’s decision can be predicted by subtracting the activities of two populations of sensory neurons in the secondary somatosensory cortex (SII) that prefer high and low frequencies, respectively ( ). Furthermore, the activity of cells in the DLPFC is proportional to the difference in activity of the populations of neurons in SII that prefer high- and low-frequency vibratory stimuli ( ). It has, therefore, been suggested that activity in these higher-level regions may reflect a decision variable that is computed by subtracting outputs from pools of neurons with opposite sensory preferences. 
+
+Using functional MRI (fMRI) and a face–house categorization task, we have recently shown that similar mechanisms are at work in the human brain ( ). Consistent with single-unit recordings, we found that activity in category-specific regions of the ventral temporal cortex represents the sensory evidence for different object categories, namely, images of faces and houses. Furthermore, we found that activity in the left posterior DLPFC (  i  ) is greater in response to high-coherence (suprathreshold) than to low-coherence (perithreshold) stimuli; (  ii  ) covaries with the difference signal between face- and house-selective regions in the ventral temporal cortex; and (  iii  ) predicts behavioral performance in the categorization task ( ). It therefore appears that comparable systems for perceptual decision making exist in monkey and human brains and that similar computations may be used even for higher-level object categories. 
+
+Neurophysiological studies in monkeys have found that the formation of the decision and the expression of the behavioral response are performed by the same neuronal populations but only when the decision is associated with a specific, predictable movement. For example, when monkeys decide the direction of random-dot motion and indicate their decision with an eye movement, decision-related as well as saccade-related activity can be found in oculomotor neurons in the DLPFC ( ). Although these studies have revealed possible neural mechanisms for perceptual decision making, much less is known about how the decision is subsequently transformed into a motor action and whether or not the decision is represented at an abstract level, i.e., independent of the motor response. 
+
+We tested the hypothesis of a decision variable existing independent of motor planning and execution by having subjects express their decision about direction of motion using two independent motor systems, oculomotor and manual, in alternating blocks of trials ( ). The rationale for using two response modalities was that doing so would allow us to distinguish the motor response specific to oculomotor or manual motor behavior from the decision process common to both response modalities. Based on our previous results, we hypothesized that the blood-oxygenation-level-dependent (BOLD) response in areas involved in decision making, such as the left posterior DLPFC, would increase with the strength of the motion signal [i.e., motion coherence in the random-dot stimuli (RDS)]. Furthermore, we hypothesized that this effect would be independent of the motor system used and might represent an abstract decision variable. Such a finding would indicate that decision-related activity in areas such as the DLPFC transcends both stimulus input (stimulus motion and object categories) and response output [saccades and button presses (BPs)]. 
+  
+Experimental task and fMRI design. In the fMRI experiment we used a 2 × 2 factorial design, with motion coherence and response modality as the two factors. A color cue at the beginning of each block of trials instructed the subjects to respond with either a BP (blue cue) or SAC (green cue). Subjects were instructed to press the appropriate button or to make a saccade to the appropriate target depending on the direction of coherent motion. For example, if the coherent motion was in the leftward direction, subjects were instructed to press the button in their left hand or to make a SAC toward the leftward target. Each block contained 10 trials, during which an RDS was presented for 1 s, followed by 0.6 s of fixation. RDS were either suprathreshold (51.2% coherence) or perithreshold (12.8% coherence). Note that there was no forced delay, and subjects were instructed to respond as quickly and as accurately as possible. Task blocks of 16-s duration alternated with fixation periods of 16-s duration. 
+  
+## Results 
+  
+To determine the coherence levels of the RDS to be used in the fMRI study, we conducted a behavioral pilot study. We presented stimuli with 0%, 6.4%, 12.8%, 25.6%, or 51.2% coherence for 1 s. Ten subjects decided whether the net direction of motion was leftward or rightward and indicated the direction of motion with a BP on the respective side. The results from the pilot indicated that subjects could correctly classify the direction of motion ≈98% of the time when viewing 51.2% (suprathreshold) coherence and ≈78% when viewing 12.8% (perithreshold) coherence. 
+
+In the scanner, we used a 2 × 2 factorial design in which the factors were response modality (BPs or saccades) and coherence (suprathreshold or perithreshold). In alternating blocks of stimulus trials, we presented RDS with either 12.8% (perithreshold level) or 51.2% coherence (suprathreshold level). Subjects were cued with a color cue before each block of stimuli as to whether to respond with a BP or a saccadic eye movement (SAC) ( ). Subjects decided whether the net direction of motion was leftward or rightward and indicated the direction of motion with a BP on the respective side or a SAC to a target on the respective side. 
+
+### Behavioral Results. 
+  
+Mirroring the behavioral pilot, performance within the scanner improved with increasing motion coherence. At 12.8% motion coherence, the percent correct was 75% (SD 6) for SACs and 77% (SD 7) for BPs, whereas at 51.2% motion coherence, the percent correct was 97% (SD 4) for SAC and 98% (SD 4) for BPs. This difference was statistically significant for both SACs and BPs as the response modality (  P   &lt; 0.0001). Response times were longer for perithreshold levels of motion coherence [SAC, 0.79 s (0.05); BP, 1.01 s (0.08)] than for suprathreshold levels [SAC, 0.6 s (0.07); BP, 0.86 s (0.07);   P   &lt; 0.005 for both BP and SAC] and longer for BPs than for SACs (  P   &lt; 0.001). 
+
+
+### Imaging Results. 
+  
+#### Effect of response modality independent of motion coherence. 
+  
+As expected, during blocks in which subjects responded with BPs relative to blocks in which they responded with SACs, we found greater activity bilaterally along the central sulcus in the primary somatosensory and motor cortex (see   and Table 2, which is published as supporting information on the PNAS web site). Conversely, during blocks in which subjects responded with SACs relative to blocks in which they responded with BPs, we found greater activity bilaterally in regions typically activated by different tasks involving eye movements ( ), including the bilateral frontal eye field (FEF) [Brodmann’s area (BA) 6], supplementary eye field (SEF) (BA 6), posterior cingulate cortex (PCC) (BA 31), temporoparietal regions (BAs 7, 18, 19, 21, 22, and 40), and parahippocampal gyrus (PHG) (BAs 27/36) as well as the basal ganglia (compare   and Table 2). 
+  
+Brain regions showing a main effect of response modality. Areas of significant group activation comparing SACs and BPs independent of coherence level mapped onto axial and coronal anatomical sections of a standard brain. Regions that showed increased activation for SAC relative to BP are shown in orange. These regions included the FEF, SEF, PCC, superior temporal gyrus (STG), precuneus (PCN), PHG, and the basal ganglia (BG). Regions shown in blue showed increased activation for BP relative to SAC and included bilateral sensorimotor cortex along the central sulcus (CS). Orange, SAC &gt; BP; blue, BP &gt; SAC. 
+  
+
+#### Effect of stimulus coherence independent of response modality. 
+  
+##### High coherence vs. low coherence. 
+  
+As outlined in the Introduction, higher-level decision-making areas should show a greater response when decisions are made about high-coherence (suprathreshold) RDS relative to when decisions are made about low-coherence (perithreshold) stimuli. Brain regions showing this response pattern independent of response modality are shown in  . Of these regions, a region in the depth of the superior frontal sulcus (SFS) within DLPFC (BA 8/9), the PCC (BA 31), and the fusiform gyrus (FG)/PHG also showed a greater response to suprathreshold images relative to perithreshold images in our previous face–house categorization study ( ). However, in that study, activation in the PCC was right lateralized (coordinates of peak voxel:   x   = 14,   y   = −46,   z   = 34), whereas it was strongly left lateralized in this study (  x   = −6,   y   = −56,   z   = 26). The FG/PHG activation in the previous study was bilateral (  x   = −28,   y   = −12,   z   = −20;   x   = 26,   y   = −16,   z   = −22) but left lateralized and more inferior in this study (  x   = −32,   y   = −14,   z   = −31). Notably, the only region that was virtually identical in the two studies was the region in the depth of the SFS in the posterior portion of the left DLPFC (this study:   x   = −23,   y   = 29,   z   = 37; previous study:   x   = −24,   y   = 24,   z   = 36). 
+  
+Anatomical locations and coordinates of activations 
+    
+To confirm that the involvement of the brain regions showing a greater response to suprathreshold than to perithreshold stimuli in perceptual decision making is, indeed, independent of response modality, we performed two additional analyses. First, we determined, separately when subjects responded with BPs and when they responded with SACs, which voxels showed a greater response during high- relative to low-coherence trials. Between the resulting two maps, we performed a logical AND operation (conjunction analysis are shown in   and  ). This analysis revealed a greater response during high- relative to low-coherence trials in the left posterior DLPFC (BA 8/9), the left PCC (BA 31), the left inferior parietal lobule (IPL) (BA 39), and the left FG/PHG both when subjects responded with BPs and when they responded with SACs ( ). The result of this conjunction analysis thus shows that the increase in BOLD signal as a function of coherence in the RDS in these four regions was, indeed, independent of response modality. 
+  
+Brain regions showing a main effect of motion coherence. Regions of significant activation are mapped onto axial and coronal anatomical sections of a standard brain. Regions in orange showed significantly greater activation during high coherence relative to low coherence trials independent of response modality. These regions included the left SFS, PCC, left IPL, and left FG/PHG (not illustrated). Regions in blue showed significantly greater activation during low- relative to high-coherence trials. These regions included the FEF, the SEF, and the inferior frontal gyrus (IFG). Orange, higher coherence (lower noise proportion) &gt; lower coherence; blue, lower &gt; higher. 
+    
+Brain regions showing a main effect of motion coherence independent from response modality. (  A  ) The conjunction analysis reveals those brain regions that showed an increase in BOLD response with increasing motion coherence during both BPs and saccades. The results reveal the involvement of a network of areas including the left PCC, left FG/PHG, left IPL, and the SFS within the posterior left DLPFC in perceptual decision making that is independent of response modality. (  B  ) Average BOLD signal change (  n   = 8, error bars represent SEM) in left PCC, left FG/PHG, and left SFS in response to increasing motion coherence (high &gt; low) during BP blocks and SAC blocks, respectively. Note that there was no statistically significant difference between the two response modalities for any of the regions. 
+  
+Second, we performed a region-of-interest analysis of these regions shown in   B  . During both BP and SAC blocks, there was a greater response during high-coherence (suprathreshold) trials than during low-coherence (perithreshold) trials. There was no statistically significant difference between the increase in BOLD signal with increasing coherence (high coherence relative to low coherence) between the two response modalities for any of the four regions (  B  ). Note, however, that there was overall greater activation for SAC than for BP blocks in the left PCC, IPL, and FG/PHG (see  ) but not the left DLPFC. 
+
+
+##### Low coherence vs. high coherence. 
+  
+Several brain regions showed a greater response to low-coherence (perithreshold) than to high-coherence (suprathreshold) stimuli (  and  ). These regions, which included the FEF (BA 6) and the SEF (BA 6), are typically associated with the attentional network ( ,  ), consistent with the perithreshold trials being more difficult than suprathreshold trials. The bilateral inferior frontal gyrus (BA 44, 45, 47) also showed a greater response to perithreshold than to suprathreshold stimuli. Finally, regions in the bilateral intraparietal sulcus also showed a greater response to low- than to high-coherence stimuli, but these activations did not survive our cluster threshold (&gt;1,000 mm , see   Materials and Methods  ). 
+
+Contrary to our expectations, areas specialized for motion processing, such as the middle temporal area/medial superior temporal and the extrastriate cortex (V3A), showed no main effect of stimulus coherence. Further analysis and behavioral experiments were used to examine this phenomenon, and we found that the response in these particular regions to increasing levels of coherence in the RDS over a range of 6.4–51.2% coherence was nonmonotonic.  We therefore speculate that these nonlinearities are, in part, a property of the pooled response from inhomogeneously tuned cell populations, as has been proposed by Rainer   et al.   ( ) for the nonmonotonic BOLD response to increasingly scrambled images. 
+
+
+
+
+
+## Discussion 
+  
+In this study, we asked whether decisions are transformed into motor actions in the human brain independent of motor planning and execution, that is, at an abstract level. Areas representing decision variables at a more abstract level should show a greater response to high- relative to low-coherence trials independent of the motor system used to express the decision. We found four such areas in this study: the left posterior DLPFC, the left PCC, the left intraparietal sulcus, and the left FG/PHG. Most importantly, this increase in BOLD activity was independent of the motor system the subjects used to express their decision. 
+
+The IPL did not show this response pattern in our previous study, in which subjects made perceptual decisions about degraded faces and houses, in line with previous findings that the IPL is involved in spatial vision tasks, such as the direction-of-motion discrimination task ( ). However, the other three regions, namely, the posterior DLPFC, PCC, and FG/PHG, also showed a greater response to high- relative to low-coherence stimuli in that previous study ( ). However, in that study, activation of the PCC was right lateralized, but activation was left lateralized in this study. Furthermore, in that study, activation in the FG/PHG was bilateral, but activation was left lateralized and more inferior in this study. Thus, the involvement of these two regions may similarly not generalize across tasks. The only region that was virtually identical in the two studies was the region in the depth of the SFS in the posterior portion of the left DLPFC (this study:   x   = −23,   y   = 29,   z   = 37; previous study:   x   = −24,   y   = 24,   z   = 36). Thus, activation of this region generalizes across both stimulus input and response output. 
+
+Notably, in our previous study, the only region that responded more to high- relative to low-coherence stimuli and also showed characteristics of a “comparator” area was the posterior portion of the left DLPFC. When subjects make categorical decisions about degraded face and house stimuli, this brain region appears to integrate the outputs from lower-level sensory regions and use a subtraction operation to compute perceptual decisions. 
+
+Recording from neurons in DLPFC while monkeys performed the direction-of-motion discrimination task used in this study, Kim and Shadlen ( ) found that neural activity increased proportionally to the strength of the motion signal in the stimulus. Similarly, in our study, the fMRI response in the posterior DLPFC was greater during trials with a stronger motion signal. However, unlike the single-unit studies, ours was unable to distinguish the activity from discrete cortical columns sensitive to leftward and rightward motion. Therefore, we could not directly confirm our previous observation that activity in the posterior DLPFC is proportional to the difference in BOLD signal measured from separately tuned cortical areas ( ). The location of the region in the DLPFC we identified here is identical to the one identified in our earlier study, in which subjects made perceptual decisions about faces and houses. In that study, we found that activity in the left DLPFC was greater during decisions about high-coherence stimuli than during decisions about low-coherence stimuli, covaried with the difference signal between face- and house-selective regions in the ventral temporal cortex, and predicted behavioral performance in the categorization task ( ). This result argues for a comparison operation arising from outputs of selectively tuned cells. In this study, we would assume that outputs from motion-sensitive cortical areas, such as the middle temporal area or the medial superior temporal area, would feed into the DLPFC to provide sensory evidence for the comparison operation. 
+
+A recent fMRI study found that activity in a frontal–striatal—thalamic network, including the medial frontal gyrus, was modulated by categorization uncertainty ( ). Another study showed that the left prefrontal cortex and ventral posterior cortical regions are involved in nonspatial-response selection ( ). Other previous fMRI and positron-emission tomography (PET) studies have indirectly suggested a role for the posterior DLPFC (SFS) in response selection based on task contingencies and sensorimotor context ( ) rather than being directly related to preparation of a specific motor response. More specifically, the same region in the left posterior DLPFC was activated in a PET study when subjects performed a visual conditional task, such as “if you see a red cue, point to the pattern with stripes, but if you see a blue cue point to the pattern with red circles” ( ). In addition, Petrides   et al.   ( ) reported a series of experiments with monkeys and humans with lesions in the posterior DLPFC and found impairments in conditional discrimination tasks in both species. These findings support our view that, in humans, this region represents a decision variable independent of the response modality during perceptual decision-making processes. In that sense, this region appears to be distinct from the DLPFC region identified in the aforementioned monkey single-unit studies, in which the region shows decision-related activity only when the decision is associated with a specific oculomotor response ( ). 
+
+Sensory physiologists have described perceptual decision making as a multistage process that includes the processing of sensory signals, the formation of a decision, and the planning and execution of a motor response. Single-unit recording studies in monkeys have used two different motor responses for the same task to investigate the lateral intraparietal area and the parietal-reach region ( – ). Our key goal was to isolate the decision variable from motor planning in the human brain. Therefore, we used two different response modalities for the same task. 
+
+To date, neurophysiological studies in monkeys have not found prefrontal neurons reflecting decisions independent of response modality. From the neurophysiological studies by Newsome   et al.   and Shadlen   et al.  , in monkeys, one could conclude that “to see and decide is, in effect, to plan a motor response” ( ). In contrast, we found regions of human cortex that respond independent of motor response. Based on these findings, one could speculate that humans may have evolved a more abstract decision-making network that is supraordinate to response-specific brain regions, thereby allowing a more flexible link between decision and action. The human left posterior DLPFC may be a critical component of this decision-making network. 
+
+
+## Materials and Methods 
+  
+### Subjects. 
+  
+Ten right-handed healthy volunteers participated in the behavioral pilot study (mean age 27.4 years; 4 females), and 10 other volunteers participated in the imaging experiment (mean age 28.3 years; 2 females). All had normal or corrected vision, no past neurological or psychiatric history, and no structural brain abnormality. Written informed consent was obtained, according to procedures approved by the National Institute of Mental Health Intramural Research Program Internal Review Board. 
+
+
+### Stimuli and Task. 
+  
+RDS were presented by using the Psychophysics Toolbox (  www.psychtoolbox.org  ) ( ,  ) under   (Mathworks, Natick, MA), with modified scripts from Shadlen   et al.   (  http://psychtoolbox.org/library.html  ). The stimuli were similar to those used by Newsome   et al.   ( ) and Shadlen   et al.   ( ). Dots were white on a black background and were drawn in a circular aperture (diameter ≈5°) for the duration of one video frame (60 Hz). Dots were redrawn after ≈50 ms at either a random location or a neighboring spatial location to induce apparent motion. The resultant motion effect appeared to move between 3° and 7°/s, and dots were drawn at a density of 16.7 dots per degree/second. Coherence level was determined by the fraction of dots displaced in apparent motion. In the scanner, stimuli were projected for 1 s via a goggle-based video system (Silent Vision SV-4021; Avotec, Stuart, FL). Based on a pilot study, we chose the two coherence levels at which subjects reached 95% correct (51.2% coherence, suprathreshold) and 75% correct (12.8% coherence, perithreshold). Note that these values correspond well with human data from the literature ( ). 
+
+RDS were presented in a 2 × 2 factorial design, with either 12.8% or 51.2% coherence and BPs or SACs as response modality. Subjects decided whether the net direction of motion was leftward or rightward and indicated the direction of motion with either a BP or a SAC on alternating blocks of trials. A color target presented at the beginning of each trial block indicated whether to use BPs or eye movements ( ). Each block contained 10 trials, thus task periods of 16-s duration alternated with rest periods of 16 s. Each run contained, on average, three blocks per condition, and the sequence of blocks was randomized. 
+
+
+### Data Acquisition and Analysis. 
+  
+#### Response-time and eye-movement data. 
+  
+Eye movements were recorded from the right eye by using a charge-coupled device-based infrared video system (iView; SensoMotoric Instruments, Berlin) that was integrated into the goggle-based fiber optic projection system. Eye-movement data analysis was performed with   software ( ). 
+
+Response times, defined as the time between the onset of the RDS and the BP or the SAC, were measured while subjects were in the scanner. We used paired   t   tests to compare reaction times between conditions (post hoc Bonferroni corrected). 
+
+
+#### MRI data. 
+  
+Whole-brain MRI data were collected on a 3T GE Signa (GE Medical Systems, Milwaukee, WI). Echoplanar data were acquired by using standard parameters (field of view, 200 mm; matrix 64 × 64; 25 axial slices, 5-mm-thick; in-plane resolution, 3.125 mm; repetition time, 2.0 s; echo time, 30 ms; flip angle, 90°). Five to eight runs of 162 volumes each were acquired. The first four volumes were discarded to allow for magnetization equilibration. To minimize head motion, we used both a bite bar and a vacuum head pad. A high-resolution T1-weighted volume (magnetization-prepared rapid gradient echo) was acquired for anatomical comparison. 
+
+
+
+### fMRI Data Analysis. 
+  
+fMRI data were analyzed by using a mixed-effects approach within the framework of the general linear model (GLM as implemented in   5.0,   www.fmrib.ox.ac.uk/fsl  ) ( ). We applied the following preprocessing steps: slice time correction ( ;   http://afni.nimh.nih.gov   ( ), motion correction using   ( ), non-brain-removal using   ( ), spatial smoothing using a Gaussian kernel of 8 mm full width at half maximum, mean-based intensity normalization of all volumes by the same factor; high-pass temporal filtering (Gaussian-weighted line-spread function straight-line fitting, with Σ = 50.0 s). 
+
+Data of two subjects had to be discarded because of uncorrectable motion artifacts; therefore imaging results are reported for eight subjects. Time-series statistical analysis was carried out by using   (Functional Magnetic Resonance Imaging of the Brain (FMRIB)’s Improved Linear Model) with local autocorrelation correction ( ). Time series were modeled by using regressors for each of the four conditions and convolved with the hemodynamic response function (γ-variate). Contrast images were computed for each condition and the contrasts of interest for each subject. After spatial normalization, contrast images were transformed into standard (MNI152) space ( ). Group effects (  n   = 8) were computed by using the transformed contrast images in a mixed-effects model treating subjects as random. Higher-level analysis was carried out by using   (FMRIB’s Local Analysis of Mixed Effects). Z (Gaussianized T) statistic images were thresholded by using clusters determined by Z &gt; 2.58 with a cluster size &gt;1,000 mm  ( – ). Coordinates of the voxels used in the region-of-interest analyses were based on those specified by the Talairach Daemon database ( ) as implemented in   ( ). 
+
+
+ </div>
+</div>
+</div>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment-1'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>
