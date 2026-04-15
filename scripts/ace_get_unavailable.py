@@ -5,6 +5,8 @@ import random
 import re
 import shutil
 import socket
+import subprocess
+import sys
 import time
 from pathlib import Path
 from ace import scrape
@@ -568,6 +570,17 @@ class ChallengeAwareScraper(scrape.Scraper):
         return last_html
 
 
+def _run_ingest_and_export(scrape_path):
+    ingest_script = Path(__file__).resolve().parent / "ace_ingest_and_export.py"
+    if not ingest_script.exists():
+        raise FileNotFoundError(f"Ingest/export script not found: {ingest_script}")
+
+    command = [sys.executable, str(ingest_script), str(scrape_path)]
+    print("\nRunning ingest/export with default parameters...")
+    print(f"Command: {' '.join(command)}")
+    subprocess.run(command, check=True)
+
+
 def main():
     def _parse_prefer_pmc_source(value):
         if isinstance(value, bool):
@@ -710,6 +723,11 @@ def main():
         action='store_true',
         help='Shortcut to skip Elsevier URLs (adds: elsevier, sciencedirect, linkinghub).'
     )
+    parser.add_argument(
+        '--no-ingest-export',
+        action='store_true',
+        help='Do not run ace_ingest_and_export.py after retrieval completes.'
+    )
     verbosity_group = parser.add_mutually_exclusive_group()
     verbosity_group.add_argument(
         '--log-level',
@@ -804,6 +822,16 @@ def main():
             for pmid in invalid_articles:
                 f.write(f"{pmid}\n")
         print(f"Invalid PMIDs saved to {invalid_file}")
+
+    if not args.no_ingest_export:
+        try:
+            _run_ingest_and_export(scrape_path)
+        except subprocess.CalledProcessError as exc:
+            print(f"Ingest/export step failed with exit code {exc.returncode}.")
+            raise SystemExit(exc.returncode)
+        except FileNotFoundError as exc:
+            print(str(exc))
+            raise SystemExit(1)
 
 
 if __name__ == '__main__':
