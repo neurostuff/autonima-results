@@ -39,7 +39,7 @@ screening:
   fulltext:
     model: "gpt-5-mini-2025-08-07"
     confidence_reporting: true
-    objective: "Meta-analysis of fMRI studies of drug and natural reward-related cue-reactivity using visual stimuli."
+    objective: "Meta-analysis of fMRI studies of risky, ambiguous, and perceptual decision-making."
     inclusion_criteria:
       - Functional MRI scan conducted while human participants performed a risky, ambiguous, or perceptual decision-making task
       - At least one within-task or between-task contrast related to risky, ambiguous, or perceptual decision-making (e.g., “risky > safe”, “high-risk > low-risk”, “risk > certainty”, “riskier > surer” or “experimental task (risk) > control task” for risky-DM studies; “high uncertainty > low uncertainty”, “ambiguity > ignorance”, “ambiguous > non-ambiguous” or “ambiguous task > control task” for ambiguous-DM studies; and “hard > easy”, “low coherence > high coherence”, or “perceptual task > control task” for perceptual-DM studies.
@@ -55,9 +55,8 @@ parsing:
   parse_coordinates: true 
   coordinate_model: "gpt-5-mini-2025-08-07"  
 
-# In progress below:
 annotation:
-  enabled: false
+  enabled: true
   model: "gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
   prompt_type: "multi_analysis"
@@ -68,35 +67,41 @@ annotation:
     - "study_title"
     - "study_fulltext"
   inclusion_criteria:
-    - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is from the healthy/control group and is generalizable to the healthy adult population.
-    - Contrast or analysis must be relevant to drug or natural reward-related cue-reactivity using visual stimuli (e.g., drug cues>neutral cues, sexual cues>neutral cues, food cues>neutral cues).
+    - Task-evoked contrasts related to decision-making
+    - Whole-brain evidence- Must be a group-level, whole-brain (voxelwise) task-evoked statistical map 
   exclusion_criteria:
     - Region-of-interest (ROI) analyses
     - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) 
-    - Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control)
-    - "Analyses on non-appetitive cue contrasts"
   annotations:
-    - name: "pooled_cue_reactivity"
-      description: "Appetitive cue reactivity across both drug and natural reward-related cues"
+    - name: "common_dm"
+      description: "decision making contrasts that are common across risky, ambiguous, and perceptual decision-making studies"
       inclusion_criteria:
-        - "Analyses must be on a task measuring drug or natural reward-related cue-reactivity using visual stimuli (example tasks: Drug cue reactivity; Food cue reactivity; Sexual cue reactivity)"
-        - "The analysis/contrast must measure drug or natural reward-related cue reactivity compared to control stimuli (example contrast: Drug cues>neutral cues; Food cues>neutral cues; Sexual cues>neutral cues)"
-    - name: "natural_reward_cue_reactivity"
-      description: "Natural reward cue reactivity is characterized by the detection of and attention to natural reward-related cues, such as food or social stimuli."
+        - "contrasts related to risky, ambiguous, or perceptual decision-making"
+        - "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+    - name: "ambiguous_dm"
+      description: "ambiguous decision-making contrasts"
       inclusion_criteria:
-        - "Analyses must be on a task measuring natural reward-related cue-reactivity (example tasks: Food cue reactivity; Social cue reactivity, Sexual cue reactivity)"
-        - "The analysis/contrast must measure natural reward-related cue reactivity compared to control stimuli (example contrast: Food cues>neutral cues; Social cues>neutral cues; Sexual cues>neutral cues)"
-      exclusion_criteria:
-        - "Drug cue contrasts (e.g., Drug cues>neutral cues) should not be included in this annotation"
-    - name: "drug_cue_reactivity"
-      description: "Drug cue reactivity as characterized by the detection of and attention to drug-related cues."
+        - "contrasts related to ambiguous decision-making (e.g., “ambiguous > certain”, “high-ambiguity > low-ambiguity”, “uncertain > certain” or “experimental task (ambiguity) > control task” for ambiguous-DM studies)"
+        - "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+    - name: "perceptual_dm"
+      description: "perceptual decision-making contrasts"
       inclusion_criteria:
-        - "Analyses must be on a task measuring drug-related cue-reactivity (example tasks: Drug cue reactivity)"
-        - "The analysis/contrast must measure drug-related cue reactivity compared to control stimuli (example contrast: Drug cues>neutral cues)"
-      exclusion_criteria:
-        - "Analyses on natural reward-related cue contrasts (e.g., Food cues>neutral cues) should not be included in this annotation"
-output:
-  formats:
-    - csv
+        - "contrasts related to perceptual decision-making (e.g., “perceptual > control”, “high-perceptual > low-perceptual” or “experimental task (perceptual) > control task” for perceptual-DM studies)"
+        - "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+    - name: "risky_dm"
+      description: "risky decision-making contrasts"
+      inclusion_criteria:
+        - "contrasts related to risky decision-making (e.g., “risky > safe”, “high-risk > low-risk”, “risk > certainty”, “riskier > surer” or “experimental task (risk) > control task” for risky-DM studies)"
+        - "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+    - name: "non_using_risky"
+      description: "contrasts related to risky decision-making in non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions)"
+      inclusion_criteria:
+        - "contrasts related to risky decision-making (e.g., “risky > safe”, “high-risk > low-risk”, “risk > certainty”, “riskier > surer” or “experimental task (risk) > control task” for risky-DM studies)"
+        - "non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions) compared to substance using populations (e.g., drug users, patients with substance use disorders)"
+    - name: "using_risky"
+      description: "contrasts related to risky decision-making in substance using populations (e.g., drug users, patients with substance use disorders)"
+      inclusion_criteria:
+        - "contrasts related to risky decision-making (e.g., “risky > safe”, “high-risk > low-risk”, “risk > certainty”, “riskier > surer” or “experimental task (risk) > control task” for risky-DM studies)"
+        - "substance using populations (e.g., drug users, patients with substance use disorders) compared to non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions)"
   nimads: true
   export_excluded_studies: true
