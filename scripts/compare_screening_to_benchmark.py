@@ -158,7 +158,8 @@ def load_meta_pmids(meta_pmids_path: str, meta_analysis_pmid: str | None = None)
             if not meta_analysis_pmid:
                 raise ValueError(
                     "CSV input with columns 'meta_pmid' and 'study_pmid' requires "
-                    "--meta-analysis-pmid (or <project_dir>/nmb_mappings.json with 'meta_pmid')."
+                    "--meta-analysis-pmid (or nmb_mappings.json with 'meta_pmid' in "
+                    "<directory>/ or its parent directory)."
                 )
 
             filtered = df[df["meta_pmid"].astype(str) == str(meta_analysis_pmid)]
@@ -183,28 +184,39 @@ def resolve_meta_analysis_pmid(
     directory: str,
     explicit_meta_analysis_pmid: str | None,
 ) -> str | None:
-    """Resolve meta-analysis PMID from CLI arg, else project nmb_mappings.json."""
+    """Resolve meta-analysis PMID from CLI arg, else nmb_mappings.json in directory or parent."""
     if explicit_meta_analysis_pmid is not None:
         resolved = normalize_pmid(explicit_meta_analysis_pmid)
         if resolved is None:
             raise ValueError("--meta-analysis-pmid was provided but is empty or invalid.")
         return resolved
 
-    mapping_path = Path(directory).expanduser().resolve() / "nmb_mappings.json"
-    if not mapping_path.exists():
-        return None
+    target_dir = Path(directory).expanduser().resolve()
+    mapping_dirs = [target_dir, target_dir.parent]
+    seen_paths: set[Path] = set()
 
-    with mapping_path.open("r", encoding="utf-8") as f:
-        payload = json.load(f)
-    if not isinstance(payload, dict):
-        raise ValueError(f"Invalid mapping format at {mapping_path}: expected JSON object")
+    for mapping_dir in mapping_dirs:
+        mapping_path = mapping_dir / "nmb_mappings.json"
+        if mapping_path in seen_paths:
+            continue
+        seen_paths.add(mapping_path)
 
-    resolved = normalize_pmid(payload.get("meta_pmid"))
-    if resolved is None:
-        return None
+        if not mapping_path.exists():
+            continue
 
-    print(f"Auto-selected meta-analysis PMID from {mapping_path}: {resolved}")
-    return resolved
+        with mapping_path.open("r", encoding="utf-8") as f:
+            payload = json.load(f)
+        if not isinstance(payload, dict):
+            raise ValueError(f"Invalid mapping format at {mapping_path}: expected JSON object")
+
+        resolved = normalize_pmid(payload.get("meta_pmid"))
+        if resolved is None:
+            continue
+
+        print(f"Auto-selected meta-analysis PMID from {mapping_path}: {resolved}")
+        return resolved
+
+    return None
 
 
 def wilson_score_interval(
@@ -1830,7 +1842,8 @@ if __name__ == "__main__":
             "Path to gold-standard PMIDs input. Supports either: "
             "(1) text file with one PMID per line, or "
             "(2) included_studies.csv with 'meta_pmid' and 'study_pmid' columns "
-            "(requires --meta-analysis-pmid or auto-detects from <directory>/nmb_mappings.json)."
+            "(requires --meta-analysis-pmid or auto-detects from nmb_mappings.json "
+            "in <directory>/ or its parent directory)."
         ),
     )
     parser.add_argument(
@@ -1863,7 +1876,8 @@ if __name__ == "__main__":
         help=(
             "Meta-analysis PMID used to filter included_studies CSV input and extract "
             "the corresponding included study PMIDs. If omitted, attempts to read "
-            "<directory>/nmb_mappings.json['meta_pmid']."
+            "<directory>/nmb_mappings.json['meta_pmid'] (or parent directory when "
+            "<directory> is a run/version folder)."
         ),
         default=None,
     )
