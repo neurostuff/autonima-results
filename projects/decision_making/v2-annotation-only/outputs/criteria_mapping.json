@@ -1,0 +1,85 @@
+{
+  "screening": {
+    "abstract": {
+      "inclusion": {},
+      "exclusion": {}
+    },
+    "fulltext": {
+      "inclusion": {},
+      "exclusion": {}
+    }
+  },
+  "annotation": {
+    "global": {
+      "inclusion": {
+        "GLOBAL_I1": "Task-evoked contrasts related to decision-making",
+        "GLOBAL_I2": "Whole-brain evidence- Must be a group-level, whole-brain (voxelwise) task-evoked statistical map",
+        "GLOBAL_I3": "If an analysis label is generic/truncated (e.g., analysis_0), use table caption, neighboring contrasts, and study_fulltext to infer eligibility; do not fail only because the label text is sparse.",
+        "GLOBAL_I4": "Resolve subtype overlaps by primary uncertainty source- sensory evidence uncertainty -> perceptual_dm; uncertainty/ambiguity in contingencies or information -> ambiguous_dm; explicit known-risk vs safe/certain choice -> risky_dm.",
+        "GLOBAL_I5": "Study-level subtype mutual exclusivity is required- for each study/PMID, assign exactly one subtype among ambiguous_dm, perceptual_dm, and risky_dm.",
+        "GLOBAL_I6": "Once a study-level subtype is chosen, all included analyses from that study must follow that same subtype; do not split analyses from one study across multiple subtypes."
+      },
+      "exclusion": {}
+    },
+    "annotations": {
+      "common_dm": {
+        "inclusion": {
+          "COMMON_DM_I1": "contrasts related to risky, ambiguous, or perceptual decision-making",
+          "COMMON_DM_I2": "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {}
+      },
+      "ambiguous_dm": {
+        "inclusion": {
+          "AMBIGUOUS_DM_I1": "assign this annotation only if ambiguous_dm is the single study-level subtype for that PMID.",
+          "AMBIGUOUS_DM_I2": "contrasts where uncertainty/ambiguity is central to the decision (e.g., \u201cambiguous > certain\u201d, \u201chigh uncertainty > low uncertainty\u201d, \u201cambiguity > risk\u201d, uncertainty-driven information sampling/decision contrasts).",
+          "AMBIGUOUS_DM_I3": "include uncertainty-based choice contrasts even when labels are generic (analysis_0/analysis_1) if study/table context shows they are uncertainty decision maps.",
+          "AMBIGUOUS_DM_I4": "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {
+          "AMBIGUOUS_DM_E1": "exclude sensory-perceptual difficulty contrasts (e.g., low coherence > high coherence, noisy > clear, hard > easy perceptual discrimination); those belong in perceptual_dm.",
+          "AMBIGUOUS_DM_E2": "exclude purely outcome/feedback contrasts unless the contrast directly indexes uncertainty during the decision phase.",
+          "AMBIGUOUS_DM_E3": "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+        }
+      },
+      "perceptual_dm": {
+        "inclusion": {
+          "PERCEPTUAL_DM_I1": "assign this annotation only if perceptual_dm is the single study-level subtype for that PMID.",
+          "PERCEPTUAL_DM_I2": "contrasts where decisions are based on sensory/perceptual evidence (e.g., coherence/noise/category discrimination, hard > easy perceptual judgments, perceptual task > control).",
+          "PERCEPTUAL_DM_I3": "include low-coherence/noisy > high-coherence/clear contrasts as perceptual_dm, not ambiguous_dm.",
+          "PERCEPTUAL_DM_I4": "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {
+          "PERCEPTUAL_DM_E1": "exclude economic/probability uncertainty, reward prediction, or gambling ambiguity/risk contrasts even if stimuli are visual."
+        }
+      },
+      "risky_dm": {
+        "inclusion": {
+          "RISKY_DM_I1": "assign this annotation only if risky_dm is the single study-level subtype for that PMID.",
+          "RISKY_DM_I2": "contrasts with explicit known-risk manipulation focused on risky vs safe/certain choice (e.g., risky > safe, high-risk > low-risk, risk > certainty, riskier > surer, risk task > control).",
+          "RISKY_DM_I3": "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {
+          "RISKY_DM_E1": "exclude ambiguity-dominant contrasts (e.g., ambiguity > risk, mixed risk-vs-ambiguity contrasts where ambiguity is the target); route these to ambiguous_dm.",
+          "RISKY_DM_E2": "exclude generic uncertainty/prediction contrasts without a clear risky-vs-safe decision manipulation."
+        }
+      },
+      "non_using_risky": {
+        "inclusion": {
+          "NON_USING_RISKY_I1": "only apply when the study-level subtype for that PMID is risky_dm.",
+          "NON_USING_RISKY_I2": "same risky_dm contrast rules: explicit known-risk vs safe/certain choice contrasts; exclude ambiguity-dominant or generic uncertainty-only contrasts.",
+          "NON_USING_RISKY_I3": "non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions) compared to substance using populations (e.g., drug users, patients with substance use disorders)"
+        },
+        "exclusion": {}
+      },
+      "using_risky": {
+        "inclusion": {
+          "USING_RISKY_I1": "only apply when the study-level subtype for that PMID is risky_dm.",
+          "USING_RISKY_I2": "same risky_dm contrast rules: explicit known-risk vs safe/certain choice contrasts; exclude ambiguity-dominant or generic uncertainty-only contrasts.",
+          "USING_RISKY_I3": "substance using populations (e.g., drug users, patients with substance use disorders) compared to non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {}
+      }
+    }
+  }
+}

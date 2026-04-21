@@ -1,0 +1,104 @@
+# Used ChatGPT to refine annotations using reports
+# Ensure annotations were mututally exclusive at the study level
+search:
+  database: "pubmed"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/decision_making/annotation-only-ids.txt"
+  
+retrieval:
+  load_excluded: false
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/projects/decision_making/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/projects/decision_making/ace_outputs/processed/"
+
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+
+parsing:
+  parse_coordinates: true 
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  prompt_type: "multi_analysis"
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - Task-evoked contrasts related to decision-making
+    - Whole-brain evidence- Must be a group-level, whole-brain (voxelwise) task-evoked statistical map 
+    - If an analysis label is generic/truncated (e.g., analysis_0), use table caption, neighboring contrasts, and study_fulltext to infer eligibility; do not fail only because the label text is sparse.
+    - Resolve subtype overlaps by primary uncertainty source- sensory evidence uncertainty -> perceptual_dm; uncertainty/ambiguity in contingencies or information -> ambiguous_dm; explicit known-risk vs safe/certain choice -> risky_dm.
+    - Study-level subtype mutual exclusivity is required- for each study/PMID, assign exactly one subtype among ambiguous_dm, perceptual_dm, and risky_dm.
+    - Once a study-level subtype is chosen, all included analyses from that study must follow that same subtype; do not split analyses from one study across multiple subtypes.
+  exclusion_criteria/home/zorro/repos/autonima-results/projects/decision_making/v1.yaml:
+    - Region-of-interest (ROI) analyses
+    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) 
+  annotations:
+    - name: "common_dm"
+      description: "decision making contrasts that are common across risky, ambiguous, and perceptual decision-making studies"
+      inclusion_criteria:
+        - "contrasts related to risky, ambiguous, or perceptual decision-making"
+        - "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+    - name: "ambiguous_dm"
+      description: "ambiguous decision-making contrasts"
+      inclusion_criteria:
+        - "assign this annotation only if ambiguous_dm is the single study-level subtype for that PMID."
+        - "contrasts where uncertainty/ambiguity is central to the decision (e.g., “ambiguous > certain”, “high uncertainty > low uncertainty”, “ambiguity > risk”, uncertainty-driven information sampling/decision contrasts)."
+        - "include uncertainty-based choice contrasts even when labels are generic (analysis_0/analysis_1) if study/table context shows they are uncertainty decision maps."
+        - "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"  
+      exclusion_criteria:
+        - "exclude sensory-perceptual difficulty contrasts (e.g., low coherence > high coherence, noisy > clear, hard > easy perceptual discrimination); those belong in perceptual_dm."
+        - "exclude purely outcome/feedback contrasts unless the contrast directly indexes uncertainty during the decision phase."
+        - "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+    - name: "perceptual_dm"
+      description: "perceptual decision-making contrasts"
+      inclusion_criteria:
+        - "assign this annotation only if perceptual_dm is the single study-level subtype for that PMID."
+        - "contrasts where decisions are based on sensory/perceptual evidence (e.g., coherence/noise/category discrimination, hard > easy perceptual judgments, perceptual task > control)."
+        - "include low-coherence/noisy > high-coherence/clear contrasts as perceptual_dm, not ambiguous_dm."
+        - "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+      exclusion_criteria:
+        - "exclude economic/probability uncertainty, reward prediction, or gambling ambiguity/risk contrasts even if stimuli are visual."
+    - name: "risky_dm"
+      description: "risky decision-making contrasts"
+      inclusion_criteria:
+        - "assign this annotation only if risky_dm is the single study-level subtype for that PMID."
+        - "contrasts with explicit known-risk manipulation focused on risky vs safe/certain choice (e.g., risky > safe, high-risk > low-risk, risk > certainty, riskier > surer, risk task > control)."
+        - "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+      exclusion_criteria:
+        - "exclude ambiguity-dominant contrasts (e.g., ambiguity > risk, mixed risk-vs-ambiguity contrasts where ambiguity is the target); route these to ambiguous_dm."
+        - "exclude generic uncertainty/prediction contrasts without a clear risky-vs-safe decision manipulation."
+    - name: "non_using_risky"
+      description: "contrasts related to risky decision-making in non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions)"
+      inclusion_criteria:
+        - "only apply when the study-level subtype for that PMID is risky_dm."
+        - "same risky_dm contrast rules: explicit known-risk vs safe/certain choice contrasts; exclude ambiguity-dominant or generic uncertainty-only contrasts."
+        - "non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions) compared to substance using populations (e.g., drug users, patients with substance use disorders)"
+    - name: "using_risky"
+      description: "contrasts related to risky decision-making in substance using populations (e.g., drug users, patients with substance use disorders)"
+      inclusion_criteria:
+        - "only apply when the study-level subtype for that PMID is risky_dm."
+        - "same risky_dm contrast rules: explicit known-risk vs safe/certain choice contrasts; exclude ambiguity-dominant or generic uncertainty-only contrasts."
+        - "substance using populations (e.g., drug users, patients with substance use disorders) compared to non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions)"
+
+output:
+  nimads: true
+  export_excluded_studies: true

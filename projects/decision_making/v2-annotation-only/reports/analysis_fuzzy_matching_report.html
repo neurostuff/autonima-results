@@ -1,0 +1,1117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fuzzy Matching Report</title>
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --panel: #ffffff;
+      --ink: #1d2730;
+      --line: #d8dde3;
+    }
+    body { margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .top-nav { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 0.5rem; background: #eef3f2; border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem; margin-bottom: 1rem; }
+    .top-nav a { display: inline-block; padding: 0.35rem 0.6rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; text-decoration: none; font-size: 0.9rem; color: #0e4f85; }
+    .review-toolbar { margin-top: 0.85rem; padding: 0.75rem; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfe; }
+    .review-toolbar p { margin: 0 0 0.45rem 0; }
+    .review-toolbar-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .review-btn { border: 1px solid #1f5f94; color: #1f5f94; background: #fff; border-radius: 999px; padding: 0.28rem 0.65rem; font-size: 0.86rem; cursor: pointer; }
+    .review-btn:hover { background: #eef6ff; }
+    .review-btn-muted { border-color: #7a8692; color: #48555f; }
+    section { margin-bottom: 1rem; }
+    .bucket > summary, .doc-card > summary, .inner-accordion > summary { cursor: pointer; }
+    .doc-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.85rem; margin-bottom: 0.85rem; }
+    .pmid-chip-list { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.45rem 0 0.2rem 0; }
+    .pmid-chip { display: inline-block; border: 1px solid #bed2e5; background: #f3f8ff; color: #0f4978; border-radius: 999px; padding: 0.2rem 0.55rem; font-size: 0.84rem; text-decoration: none; }
+    .pmid-chip:hover { background: #e7f1ff; border-color: #98bbdc; }
+    .unavailable-raw { margin-top: 0.55rem; }
+    .unavailable-raw > summary { cursor: pointer; color: #0e4f85; }
+    .unavailable-raw code { display: block; margin-top: 0.35rem; white-space: normal; line-height: 1.45; background: #f7f9fc; border: 1px solid var(--line); border-radius: 7px; padding: 0.45rem; }
+    .doc-links { margin: 0.45rem 0 0.25rem 0; font-size: 0.92rem; }
+    .inner-accordion { margin-top: 0.6rem; border-top: 1px dashed var(--line); padding-top: 0.4rem; }
+    .resource-box { background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.55rem; }
+    .resource-note { font-size: 0.85rem; color: #3b4b5a; }
+    .table-accordion { margin: 0.45rem 0; border-top: 1px solid #e3e8ed; padding-top: 0.3rem; }
+    .table-accordion > summary { cursor: pointer; color: #0e4f85; }
+    .extracted-table { margin-top: 0.4rem; }
+    .analysis-coords > summary { cursor: pointer; color: #0e4f85; }
+    .coord-list { white-space: pre-wrap; margin-top: 0.35rem; background: #fbfcfe; border: 1px solid var(--line); border-radius: 6px; padding: 0.35rem; font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.82rem; max-height: 10rem; overflow-y: auto; }
+    .review-box { margin-top: 0.4rem; background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem; }
+    .review-decision-group { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.45rem 0 0.6rem 0; }
+    .review-reasons { margin: 0.35rem 0 0.6rem 0; }
+    .review-reason-option { display: inline-flex; align-items: center; gap: 0.35rem; margin: 0.2rem 0.7rem 0.2rem 0; font-size: 0.88rem; }
+    .review-note-label { display: inline-block; margin-bottom: 0.25rem; }
+    textarea[data-role="review-note"] { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; padding: 0.45rem; font-family: inherit; font-size: 0.9rem; background: #fff; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }
+    th { background: #edf2f5; }
+    td.score-discrepancy { background: #ffefc2 !important; border-color: #d69700; font-weight: 700; }
+    a { color: #0e4f85; }
+    .st-accepted td { background: #e6f7eb; }
+    .st-uncertain td { background: #fff7dd; }
+    .st-unmatched td { background: #fdecec; }
+    .st-auto-unmatched td { background: #f1f2f4; }
+  </style>
+</head>
+<body>
+  <header>
+    <a id="top"></a>
+    <h1>Fuzzy Matching Report</h1>
+    <p>Coordinate-first matching (70%) + name similarity (30%), one-to-one Hungarian assignment, accepted &gt;= 0.75, uncertain &gt;= 0.55, coordinate override when coord score &gt;= 0.90. Metrics include overlap PMIDs only (manual ∩ auto).</p>
+    <p><strong>Decimal manual coordinate handling:</strong> convert decimal manual coordinates MNI→Talairach |
+       <strong>Converted decimal analyses:</strong> 4 | <strong>Converted exact-set axis tolerance:</strong> ±1.000</p>
+    <p><strong>Overlap PMIDs:</strong> 17 |
+       <strong>Manual analyses:</strong> 35 |
+       <strong>Accepted:</strong> 31 |
+       <strong>Uncertain:</strong> 0 |
+       <strong>Unmatched:</strong> 4</p>
+    <p><strong>Study categories:</strong> All correct=13 |
+       Mixed=0 |
+       All incorrect=4</p>
+    <p><strong>Unavailable Manual Studies (decimal coordinates):</strong> 0</p>
+    <p><strong>Accepted by coordinate-score override:</strong> 6 |
+       <strong>Coordinate-override matches with low name score:</strong> 11</p>
+    <p><strong>PMIDs with Pubget docs:</strong> 2 |
+       <strong>Extracted tables available:</strong> 2</p>
+    <p><strong>All Correct exact same # analyses:</strong> 3 / 13</p>
+    <p><strong>Score distribution:</strong> mean=0.798 |
+       p25=0.740 |
+       median=0.878 |
+       p75=0.979</p>
+    <div class="review-toolbar"><p><strong>Human review workflow:</strong> annotate Mixed/All Incorrect studies as <code>Annotation Error</code> or <code>Extraction Error</code>, then add notes.</p><p id="review-progress"><strong>Review progress:</strong> 0 / 4 completed</p><div class="review-toolbar-actions"><button type="button" class="review-btn" id="review-export-json">Download Review JSON</button><button type="button" class="review-btn" id="review-export-csv">Download Review CSV</button><button type="button" class="review-btn review-btn-muted" id="review-clear">Clear Saved Review</button></div></div>
+  </header>
+  <nav class="top-nav">
+    <a href="#bucket-all-correct">All Correct (13)</a>
+    <a href="#bucket-mixed">Mixed (0)</a>
+    <a href="#bucket-all-incorrect">All Incorrect (4)</a>
+    
+    <a href="#top">Top</a>
+  </nav>
+  <section id="bucket-all-correct"><details class="bucket"><summary><h2>All Correct (13)</h2></summary><p><strong>Exact same # of analyses within All Correct:</strong> 3 / 13</p><details class="doc-card" data-pmid="16033924" data-study-category="all_correct"><summary><strong>PMID 16033924</strong> | (17)dreher, 2006 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=6 | <strong>auto&gt;manual = 5</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/16033924/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>16033924_1 (4)</summary><pre class="coord-list">-30.0, 0.0, -11.0
+23.0, 8.0, -11.0
+-4.0, -8.0, -11.0
+-4.0, -19.0, -15.0</pre></details></td><td>reward prediction error during delay</td><td>4</td><td>accepted</td><td>16033924_analysis_2</td><td>Reward uncertainty during the delay: P = 0.5 $20 &gt; P = 0.25 $20</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.465</td><td>1.000</td><td>0.839</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-auto-unmatched"><td>0</td><td><details class="analysis-coords"><summary>16033924_analysis_0 (11)</summary><pre class="coord-list">-4.0, -23.0, -15.0
+-46.0, 19.0, 30.0
+-38.0, 34.0, 0.0
+42.0, 23.0, -19.0
+-46.0, 8.0, 57.0
+38.0, 11.0, 53.0
+-11.0, 27.0, 19.0
+4.0, 15.0, 27.0
+-4.0, 23.0, 65.0
+-42.0, -49.0, 42.0
+27.0, -61.0, 42.0</pre></details></td><td>Error prediction at S1: P = 0.5 $20 &gt; P = 0.25 $20</td><td>11</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>16033924_analysis_1 (9)</summary><pre class="coord-list">8.0, -19.0, -15.0
+-8.0, -15.0, -15.0
+-34.0, 27.0, 34.0
+-38.0, 27.0, 4.0
+27.0, 27.0, -15.0
+-11.0, 15.0, 61.0
+-53.0, 15.0, 8.0
+-49.0, -42.0, 57.0
+-39.0, -20.0, 59.0</pre></details></td><td>Error prediction at S2: $20 in slot A &gt; $20 in slot B</td><td>9</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-accepted"><td>2</td><td><details class="analysis-coords"><summary>16033924_analysis_2 (4)</summary><pre class="coord-list">-4.0, -19.0, -15.0
+-4.0, -8.0, -11.0
+23.0, 8.0, -11.0
+-30.0, 0.0, -11.0</pre></details></td><td>Reward uncertainty during the delay: P = 0.5 $20 &gt; P = 0.25 $20</td><td>4</td><td>16033924_1</td><td>reward prediction error during delay</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.465</td><td>1.000</td><td>0.839</td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>16033924_analysis_3 (8)</summary><pre class="coord-list">0.0, -23.0, -15.0
+-42.0, 23.0, 34.0
+-38.0, 27.0, 0.0
+-53.0, 19.0, -8.0
+42.0, 23.0, -8.0
+-11.0, 8.0, 65.0
+-46.0, -27.0, 38.0
+30.0, -57.0, 57.0</pre></details></td><td>Conjunction Error prediction at S1 and S2</td><td>8</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>4</td><td><details class="analysis-coords"><summary>16033924_analysis_4 (4)</summary><pre class="coord-list">-8.0, 15.0, 8.0
+-11.0, -46.0, 11.0
+-30.0, -15.0, 68.0
+-4.0, -8.0, 46.0</pre></details></td><td>Error prediction at S2 (no reward): P = 0.75 &gt; P = 0.5</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>5</td><td><details class="analysis-coords"><summary>16033924_analysis_5 (9)</summary><pre class="coord-list">-30.0, 15.0, 46.0
+-46.0, 23.0, 8.0
+42.0, 23.0, 4.0
+23.0, 30.0, 38.0
+15.0, 61.0, -8.0
+46.0, -42.0, -4.0
+-38.0, -46.0, -8.0
+-57.0, -30.0, 30.0
+42.0, -38.0, 30.0</pre></details></td><td>Error prediction at S2 (no reward): P = 0.5 &gt; P = 0.75</td><td>9</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="16504951" data-study-category="all_correct"><summary><strong>PMID 16504951</strong> | (6)Huettel et al., 2006 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=1 | <strong>auto=manual = 0</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/16504951/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>16504951_1 (5)</summary><pre class="coord-list">-36.0, -57.0, 50.0
+41.0, 19.0, 9.0
+40.0, 6.0, 44.0
+39.0, 16.0, 33.0
+51.0, 16.0, 45.0</pre></details></td><td>ambiguity</td><td>5</td><td>accepted</td><td>16504951_analysis_0</td><td>Correlations between Cortical Activation and Behavioral Preferences</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.132</td><td>1.000</td><td>0.739</td><td>accepted_coord_override, exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>16504951_analysis_0 (5)</summary><pre class="coord-list">39.0, 16.0, 33.0
+51.0, 16.0, 45.0
+40.0, 6.0, 44.0
+41.0, 19.0, 9.0
+-36.0, -57.0, 50.0</pre></details></td><td>Correlations between Cortical Activation and Behavioral Preferences</td><td>5</td><td>16504951_1</td><td>ambiguity</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.132</td><td>1.000</td><td>0.739</td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="16785427" data-study-category="all_correct"><summary><strong>PMID 16785427</strong> | (5)Heekeren, 2006 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=2 | <strong>auto&gt;manual = 1</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/16785427/" target="_blank" rel="noopener noreferrer">PubMed</a> | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1479865/" target="_blank" rel="noopener noreferrer">PMC full text</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>16785427_1 (5)</summary><pre class="coord-list">-46.0, -4.0, 39.0
+4.0, 16.0, 49.0
+-26.0, 29.0, -2.0
+50.0, 19.0, 12.0
+46.0, 20.0, 5.0</pre></details></td><td>Hard&gt;easy</td><td>5</td><td>accepted</td><td>16785427_analysis_1</td><td>Low coherence &gt; high coherence</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.293</td><td>1.000</td><td>0.788</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-auto-unmatched"><td>0</td><td><details class="analysis-coords"><summary>16785427_analysis_0 (10)</summary><pre class="coord-list">-23.0, 29.0, 37.0
+-13.0, 44.0, 35.0
+-30.0, 76.0, 14.0
+-67.0, -6.0, 15.0
+-6.0, -56.0, 26.0
+-36.0, -70.0, 28.0
+52.0, -9.0, 8.0
+-34.0, -72.0, 22.0
+-22.0, -57.0, -19.0
+-32.0, -14.0, -31.0</pre></details></td><td>High coherence &gt; low coherence</td><td>10</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>16785427_analysis_1 (5)</summary><pre class="coord-list">-46.0, -4.0, 39.0
+4.0, 16.0, 49.0
+-26.0, 29.0, -2.0
+50.0, 19.0, 12.0
+46.0, 20.0, 5.0</pre></details></td><td>Low coherence &gt; high coherence</td><td>5</td><td>16785427_1</td><td>Hard&gt;easy</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.293</td><td>1.000</td><td>0.788</td></tr></tbody></table></div></details><details class="inner-accordion"><summary>Pubget full text + extracted tables</summary><div class="resource-box"><p><strong>PMCID:</strong> PMC1479865 | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1479865/" target="_blank" rel="noopener noreferrer">PubMedCentral full text</a></p><p><strong>Extracted tables:</strong> 1</p><details class="table-accordion"><summary>Table 1. (t1)</summary><p><strong>Caption:</strong> Anatomical locations and coordinates of activations</p><p><strong>Footnote:</strong> L, left; R, right; MNI, Montreal Neurological Institute.</p><p class="resource-note"><strong>Source:</strong> <code>articles/9da/pmcid_1479865/tables/table_000.csv</code></p><div class="table-wrap"><table class="extracted-table"><thead><tr><th>Region</th><th>Left/right</th><th>BA</th><th>Z max</th><th>Peak MNI coordinates</th><th>Peak MNI coordinates</th><th>Peak MNI coordinates</th></tr><tr><th>Region</th><th>Left/right</th><th>BA</th><th>Z max</th><th>x</th><th>y</th><th>z</th></tr></thead><tbody><tr><td>High coherence &gt; low coherence</td><td>High coherence &gt; low coherence</td><td>High coherence &gt; low coherence</td><td>High coherence &gt; low coherence</td><td>High coherence &gt; low coherence</td><td>High coherence &gt; low coherence</td><td>High coherence &gt; low coherence</td></tr><tr><td>SFS</td><td>L</td><td>8/9</td><td>3.36</td><td>−23</td><td>29</td><td>37</td></tr><tr><td>Superior frontal gyrus</td><td>L</td><td>9</td><td>4.31</td><td>−13</td><td>44</td><td>35</td></tr><tr><td></td><td>L</td><td>10</td><td>4.55</td><td>−30</td><td>76</td><td>14</td></tr><tr><td>Postcentral gyrus</td><td>L</td><td>43</td><td>4.36</td><td>−67</td><td>−6</td><td>15</td></tr><tr><td>PCC</td><td>L</td><td>31</td><td>4.25</td><td>−6</td><td>−56</td><td>26</td></tr><tr><td>IPL</td><td>L</td><td>39</td><td>4.29</td><td>−36</td><td>−70</td><td>28</td></tr><tr><td>Superior temporal gyrus, precentral gyrus</td><td>R</td><td>6</td><td>4.94</td><td>52</td><td>−9</td><td>8</td></tr><tr><td>Middle temporal gyrus</td><td>L</td><td>39, 19</td><td>4.29</td><td>−34</td><td>−72</td><td>22</td></tr><tr><td>FG</td><td>L</td><td>19, 37</td><td>6.56</td><td>−22</td><td>−57</td><td>−19</td></tr><tr><td>PHG</td><td>L</td><td>35</td><td>4.23</td><td>−32</td><td>−14</td><td>−31</td></tr><tr><td>Low coherence &gt; high coherence</td><td>Low coherence &gt; high coherence</td><td>Low coherence &gt; high coherence</td><td>Low coherence &gt; high coherence</td><td>Low coherence &gt; high coherence</td><td>Low coherence &gt; high coherence</td><td>Low coherence &gt; high coherence</td></tr><tr><td>Precentral gyrus, FEF</td><td>L</td><td>6</td><td>3.95</td><td>−46</td><td>−4</td><td>39</td></tr><tr><td>Medial frontal gyrus, SEF</td><td>R</td><td>6</td><td>4.39</td><td>4</td><td>16</td><td>49</td></tr><tr><td>Inferior frontal gyrus</td><td>L</td><td>47</td><td>4.55</td><td>−26</td><td>29</td><td>−2</td></tr><tr><td></td><td>R</td><td>45, 44</td><td>6.54</td><td>50</td><td>19</td><td>12</td></tr><tr><td></td><td>R</td><td>45</td><td>4.84</td><td>46</td><td>20</td><td>5</td></tr></tbody></table></div></details></div></details></details><details class="doc-card" data-pmid="20472072" data-study-category="all_correct"><summary><strong>PMID 20472072</strong> | (31)Hosseini, 2010 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=2 | <strong>auto&gt;manual = 1</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/20472072/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>20472072_1 (19)</summary><pre class="coord-list">38.0, 52.0, -4.0
+-46.0, -42.0, 42.0
+-52.0, -54.0, 44.0
+-14.0, -98.0, -10.0
+44.0, 46.0, -10.0
+46.0, -38.0, 40.0
+6.0, 30.0, 42.0
+50.0, -54.0, 48.0
+-32.0, -66.0, -38.0
+38.0, 24.0, 52.0
+46.0, 36.0, 32.0
+42.0, -72.0, 40.0
+-18.0, -88.0, -26.0
+16.0, -88.0, -12.0
+16.0, -100.0, 0.0
+30.0, 22.0, -2.0
+62.0, -26.0, -22.0
+8.0, -68.0, 42.0
+-38.0, 52.0, 10.0</pre></details></td><td>prediction task related activation</td><td>19</td><td>accepted</td><td>20472072_analysis_0</td><td>Activations in the prediction task which were common in both the older and young adults.</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.393</td><td>1.000</td><td>0.818</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>20472072_analysis_0 (19)</summary><pre class="coord-list">46.0, 36.0, 32.0
+38.0, 24.0, 52.0
+6.0, 30.0, 42.0
+50.0, -54.0, 48.0
+42.0, -72.0, 40.0
+46.0, -38.0, 40.0
+38.0, 52.0, -4.0
+44.0, 46.0, -10.0
+-14.0, -98.0, -10.0
+-52.0, -54.0, 44.0
+-46.0, -42.0, 42.0
+-32.0, -66.0, -38.0
+-18.0, -88.0, -26.0
+16.0, -88.0, -12.0
+16.0, -100.0, 0.0
+30.0, 22.0, -2.0
+62.0, -26.0, -22.0
+8.0, -68.0, 42.0
+-38.0, 52.0, 10.0</pre></details></td><td>Activations in the prediction task which were common in both the older and young adults.</td><td>19</td><td>20472072_1</td><td>prediction task related activation</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.393</td><td>1.000</td><td>0.818</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>20472072_analysis_1 (1)</summary><pre class="coord-list">48.0, -32.0, 40.0</pre></details></td><td>Age-related decreases</td><td>1</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="22309791" data-study-category="all_correct"><summary><strong>PMID 22309791</strong> | (35)Claus,2012 | accepted=2 uncertain=0 unmatched=0 manual=2 auto=6 | <strong>auto&gt;manual = 4</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/22309791/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>22309791_1 (6)</summary><pre class="coord-list">8.0, -24.0, -14.0
+-30.0, 22.0, 2.0
+-44.0, -28.0, 4.0
+-18.0, -104.0, 12.0
+8.0, 28.0, 30.0
+14.0, -98.0, 2.0</pre></details></td><td>linear color pumps&gt; linear white pumps</td><td>6</td><td>accepted</td><td>22309791_analysis_1</td><td>analysis_1</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.122</td><td>1.000</td><td>0.737</td><td>accepted_coord_override, exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>22309791_2 (5)</summary><pre class="coord-list">-52.0, -24.0, 4.0
+-12.0, -100.0, 10.0
+28.0, -90.0, 14.0
+-4.0, -8.0, 62.0
+10.0, 4.0, -2.0</pre></details></td><td>mean color pumps&gt; mean white pumps</td><td>5</td><td>accepted</td><td>22309791_analysis_0</td><td>analysis_0</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.267</td><td>1.000</td><td>0.780</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>22309791_analysis_0 (5)</summary><pre class="coord-list">-4.0, -8.0, 62.0
+28.0, -90.0, 14.0
+-12.0, -100.0, 10.0
+-52.0, -24.0, 4.0
+10.0, 4.0, -2.0</pre></details></td><td>analysis_0</td><td>5</td><td>22309791_2</td><td>mean color pumps&gt; mean white pumps</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.267</td><td>1.000</td><td>0.780</td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>22309791_analysis_1 (6)</summary><pre class="coord-list">8.0, 28.0, 30.0
+8.0, -24.0, -14.0
+-18.0, -104.0, 12.0
+14.0, -98.0, 2.0
+-44.0, -28.0, 4.0
+-30.0, 22.0, 2.0</pre></details></td><td>analysis_1</td><td>6</td><td>22309791_1</td><td>linear color pumps&gt; linear white pumps</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.122</td><td>1.000</td><td>0.737</td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>22309791_analysis_2 (6)</summary><pre class="coord-list">-24.0, -84.0, -14.0
+-54.0, -34.0, -4.0
+50.0, -28.0, -8.0
+0.0, 10.0, 60.0
+-48.0, 2.0, 44.0
+54.0, 4.0, 46.0</pre></details></td><td>Explosion &gt; Cashout</td><td>6</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>22309791_analysis_3 (5)</summary><pre class="coord-list">-30.0, -76.0, 46.0
+50.0, -42.0, 46.0
+-52.0, -42.0, 52.0
+-20.0, -4.0, 22.0
+-16.0, 18.0, 8.0</pre></details></td><td>Cashout &gt; Explosion</td><td>5</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>4</td><td><details class="analysis-coords"><summary>22309791_analysis_4 (6)</summary><pre class="coord-list">-18.0, -100.0, 16.0
+-52.0, -16.0, 60.0
+-20.0, 0.0, -6.0
+16.0, 0.0, -8.0
+10.0, 4.0, 56.0
+4.0, -26.0, -16.0</pre></details></td><td>Linear color &gt; linear white</td><td>6</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>5</td><td><details class="analysis-coords"><summary>22309791_analysis_5 (8)</summary><pre class="coord-list">-4.0, -102.0, -12.0
+52.0, -34.0, 2.0
+-44.0, 16.0, -4.0
+-4.0, 18.0, 56.0
+52.0, 14.0, -18.0
+-12.0, -80.0, -18.0
+28.0, -60.0, -20.0
+-40.0, -54.0, -26.0</pre></details></td><td>Explosion &gt; Cashout</td><td>8</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="22922368" data-study-category="all_correct"><summary><strong>PMID 22922368</strong> | (31)Hebart 2012 | accepted=2 uncertain=0 unmatched=0 manual=2 auto=2 | <strong>auto=manual = 0</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/22922368/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>22922368_1 (15)</summary><pre class="coord-list">-30.0, 20.0, 4.0
+30.0, 23.0, 4.0
+12.0, -10.0, 4.0
+-30.0, -4.0, 64.0
+33.0, -1.0, 61.0
+18.0, -64.0, 58.0
+-6.0, 17.0, 43.0
+-30.0, -79.0, 22.0
+-39.0, -58.0, 10.0
+-45.0, 2.0, 31.0
+-15.0, 2.0, 31.0
+-15.0, -70.0, 43.0
+-12.0, -91.0, -11.0
+-39.0, -40.0, 43.0
+-33.0, 53.0, 13.0</pre></details></td><td>negative parametric effect</td><td>15</td><td>accepted</td><td>22922368_analysis_1</td><td>Negative parametric effect</td><td class="">1.000</td><td>0.933</td><td>0.953</td><td>coord_count_mismatch, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>22922368_2 (10)</summary><pre class="coord-list">63.0, -16.0, -8.0
+9.0, -22.0, 46.0
+-21.0, 5.0, -8.0
+18.0, 8.0, -8.0
+45.0, -61.0, 37.0
+6.0, 32.0, -5.0
+-12.0, -40.0, 34.0
+-54.0, -49.0, 31.0
+-42.0, -64.0, 52.0
+-21.0, 29.0, 49.0</pre></details></td><td>positive parametric effect</td><td>10</td><td>accepted</td><td>22922368_analysis_0</td><td>Positive parametric effect</td><td class="">1.000</td><td>1.000</td><td>1.000</td><td>exact_coord_set, high_coord_match</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>22922368_analysis_0 (10)</summary><pre class="coord-list">-54.0, -49.0, 31.0
+-12.0, -40.0, 34.0
+6.0, 32.0, -5.0
+45.0, -61.0, 37.0
+18.0, 8.0, -8.0
+-21.0, 29.0, 49.0
+63.0, -16.0, -8.0
+-42.0, -64.0, 52.0
+-21.0, 5.0, -8.0
+9.0, -22.0, 46.0</pre></details></td><td>Positive parametric effect</td><td>10</td><td>22922368_2</td><td>positive parametric effect</td><td>accepted</td><td class="">1.000</td><td>1.000</td><td>1.000</td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>22922368_analysis_1 (14)</summary><pre class="coord-list">-6.0, 17.0, 43.0
+33.0, -1.0, 61.0
+-30.0, 20.0, 4.0
+30.0, 23.0, 4.0
+18.0, -64.0, 58.0
+-30.0, -4.0, 64.0
+-12.0, -91.0, -11.0
+-30.0, -79.0, 22.0
+-33.0, 53.0, 13.0
+-39.0, -58.0, 10.0
+-45.0, 2.0, 31.0
+-15.0, -70.0, 43.0
+12.0, -10.0, 4.0
+-39.0, -40.0, 43.0</pre></details></td><td>Negative parametric effect</td><td>14</td><td>22922368_1</td><td>negative parametric effect</td><td>accepted</td><td class="">1.000</td><td>0.933</td><td>0.953</td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="23313780" data-study-category="all_correct"><summary><strong>PMID 23313780</strong> | (2)Clausse(2013) | accepted=5 uncertain=0 unmatched=0 manual=5 auto=6 | <strong>auto&gt;manual = 1</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/23313780/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>23313780_1 (6)</summary><pre class="coord-list">-30.0, 60.0, -2.0
+-27.0, -59.0, -1.0
+-21.0, -94.0, -5.0
+27.0, -97.0, 1.0
+-3.0, -33.0, 8.0
+50.0, -71.0, -6.0</pre></details></td><td>effects of financial vs neutral incentive under high uncertainty</td><td>6</td><td>accepted</td><td>23313780_analysis_4</td><td>(C) Effects of financial vs. neutral incentive under high uncertainty</td><td class="">0.962</td><td>1.000</td><td>0.989</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>23313780_2 (9)</summary><pre class="coord-list">-33.0, 17.0, 8.0
+-9.0, -15.0, 7.0
+33.0, 22.0, 3.0
+33.0, -79.0, 21.0
+6.0, 21.0, 38.0
+33.0, 25.0, 0.0
+48.0, 9.0, 25.0
+-48.0, 6.0, 28.0
+9.0, -12.0, 7.0</pre></details></td><td>high uncertain</td><td>9</td><td>accepted</td><td>23313780_analysis_0</td><td>analysis_0</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.083</td><td>1.000</td><td>0.725</td><td>accepted_coord_override, exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>23313780_3 (9)</summary><pre class="coord-list">-42.0, 30.0, 24.0
+9.0, 21.0, 25.0
+-27.0, 21.0, 30.0
+48.0, 15.0, 22.0
+18.0, 11.0, -5.0
+-18.0, 13.0, -2.0
+21.0, -15.0, 7.0
+3.0, -32.0, -33.0
+-9.0, 23.0, 11.0</pre></details></td><td>high vs low uncertainty during financial incentive</td><td>9</td><td>accepted</td><td>23313780_analysis_3</td><td>(B) High vs. low uncertainty during financial incentive</td><td class="">0.952</td><td>1.000</td><td>0.986</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>23313780_4 (15)</summary><pre class="coord-list">-9.0, 32.0, 21.0
+-33.0, 3.0, 23.0
+-39.0, -31.0, 36.0
+60.0, 5.0, -7.0
+45.0, -79.0, 21.0
+-24.0, -63.0, 37.0
+30.0, -81.0, 35.0
+-21.0, 20.0, 14.0
+12.0, 17.0, 11.0
+48.0, 15.0, 25.0
+24.0, 8.0, 53.0
+-18.0, 10.0, 47.0
+-33.0, 47.0, 18.0
+-21.0, -51.0, 45.0
+3.0, 0.0, 29.0</pre></details></td><td>high vs low uncertainty during neutral incentive</td><td>15</td><td>accepted</td><td>23313780_analysis_2</td><td>(A) High vs. low uncertainty during neutral incentive</td><td class="">0.950</td><td>1.000</td><td>0.985</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>23313780_5 (24)</summary><pre class="coord-list">50.0, -28.0, 38.0
+-39.0, 46.0, 10.0
+27.0, 16.0, 44.0
+-33.0, 6.0, 25.0
+46.0, 15.0, 22.0
+9.0, 21.0, 25.0
+-6.0, 19.0, 41.0
+-45.0, -59.0, 1.0
+-21.0, 4.0, 48.0
+21.0, 4.0, 50.0
+-24.0, -63.0, 40.0
+30.0, -78.0, 35.0
+24.0, -51.0, 42.0
+-33.0, -88.0, 16.0
+24.0, -88.0, 0.0
+-15.0, -53.0, 0.0
+12.0, -29.0, 24.0
+15.0, -45.0, 3.0
+18.0, 11.0, -5.0
+-59.0, -4.0, -4.0
+-15.0, 8.0, -2.0
+21.0, -12.0, 18.0
+9.0, -18.0, 7.0
+54.0, -68.0, -3.0</pre></details></td><td>high&gt;low uncertain</td><td>24</td><td>accepted</td><td>23313780_analysis_1</td><td>analysis_1</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.067</td><td>0.958</td><td>0.691</td><td>accepted_coord_override, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>23313780_analysis_0 (9)</summary><pre class="coord-list">-48.0, 6.0, 28.0
+48.0, 9.0, 25.0
+33.0, 25.0, 0.0
+6.0, 21.0, 38.0
+33.0, -79.0, 21.0
+-33.0, 17.0, 8.0
+33.0, 22.0, 3.0
+-9.0, -15.0, 7.0
+9.0, -12.0, 7.0</pre></details></td><td>analysis_0</td><td>9</td><td>23313780_2</td><td>high uncertain</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.083</td><td>1.000</td><td>0.725</td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>23313780_analysis_1 (24)</summary><pre class="coord-list">-39.0, 46.0, 10.0
+27.0, 16.0, 44.0
+-33.0, 6.0, 25.0
+46.0, 15.0, 22.0
+9.0, 21.0, 25.0
+-6.0, 19.0, 41.0
+-21.0, 4.0, 48.0
+21.0, 4.0, 50.0
+50.0, -28.0, 38.0
+-24.0, -63.0, 40.0
+-45.0, -59.0, 1.0
+-59.0, -4.0, -4.0
+54.0, -68.0, -3.0
+30.0, -78.0, 35.0
+24.0, -51.0, 42.0
+-33.0, -88.0, 16.0
+24.0, -88.0, 0.0
+-15.0, -53.0, 9.0
+12.0, -29.0, 24.0
+15.0, -45.0, 3.0
+18.0, 11.0, -5.0
+-15.0, 8.0, -2.0
+21.0, -12.0, 18.0
+9.0, -18.0, 7.0</pre></details></td><td>analysis_1</td><td>24</td><td>23313780_5</td><td>high&gt;low uncertain</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.067</td><td>0.958</td><td>0.691</td></tr><tr class="st-accepted"><td>2</td><td><details class="analysis-coords"><summary>23313780_analysis_2 (15)</summary><pre class="coord-list">48.0, 15.0, 25.0
+24.0, 8.0, 53.0
+-33.0, 47.0, 18.0
+3.0, 0.0, 29.0
+-18.0, 10.0, 47.0
+-9.0, 32.0, 21.0
+-33.0, 3.0, 23.0
+-39.0, -31.0, 36.0
+60.0, 5.0, -7.0
+45.0, -79.0, 21.0
+-24.0, -63.0, 37.0
+-21.0, -51.0, 45.0
+30.0, -81.0, 35.0
+-21.0, 20.0, 14.0
+12.0, 17.0, 11.0</pre></details></td><td>(A) High vs. low uncertainty during neutral incentive</td><td>15</td><td>23313780_4</td><td>high vs low uncertainty during neutral incentive</td><td>accepted</td><td class="">0.950</td><td>1.000</td><td>0.985</td></tr><tr class="st-accepted"><td>3</td><td><details class="analysis-coords"><summary>23313780_analysis_3 (9)</summary><pre class="coord-list">-27.0, 21.0, 30.0
+-42.0, 30.0, 24.0
+48.0, 15.0, 22.0
+9.0, 21.0, 25.0
+-18.0, 13.0, -2.0
+18.0, 11.0, -5.0
+-9.0, 23.0, 11.0
+21.0, -15.0, 7.0
+3.0, -32.0, -33.0</pre></details></td><td>(B) High vs. low uncertainty during financial incentive</td><td>9</td><td>23313780_3</td><td>high vs low uncertainty during financial incentive</td><td>accepted</td><td class="">0.952</td><td>1.000</td><td>0.986</td></tr><tr class="st-accepted"><td>4</td><td><details class="analysis-coords"><summary>23313780_analysis_4 (6)</summary><pre class="coord-list">-30.0, 60.0, -2.0
+50.0, -71.0, -6.0
+-27.0, -59.0, -1.0
+-21.0, -94.0, -5.0
+27.0, -97.0, 1.0
+-3.0, -33.0, 8.0</pre></details></td><td>(C) Effects of financial vs. neutral incentive under high uncertainty</td><td>6</td><td>23313780_1</td><td>effects of financial vs neutral incentive under high uncertainty</td><td>accepted</td><td class="">0.962</td><td>1.000</td><td>0.989</td></tr><tr class="st-auto-unmatched"><td>5</td><td><details class="analysis-coords"><summary>23313780_analysis_5 (13)</summary><pre class="coord-list">-36.0, 45.0, -14.0
+18.0, 44.0, 29.0
+39.0, 7.0, 42.0
+48.0, 42.0, -6.0
+-59.0, -49.0, 28.0
+27.0, -37.0, 30.0
+-62.0, -11.0, 24.0
+-45.0, -59.0, -1.0
+53.0, -39.0, -7.0
+42.0, -78.0, 32.0
+-18.0, -74.0, 46.0
+-12.0, -78.0, 32.0
+-21.0, -85.0, 8.0</pre></details></td><td>(B) Positive correlation with discriminability index (d&#x27;)</td><td>13</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="24355752" data-study-category="all_correct"><summary><strong>PMID 24355752</strong> | (14)krug, 2014 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=6 | <strong>auto&gt;manual = 5</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/24355752/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>24355752_1 (13)</summary><pre class="coord-list">-2.0, -50.0, 32.0
+0.0, -46.0, 32.0
+-4.0, -54.0, 22.0
+-12.0, 38.0, 54.0
+-18.0, 44.0, 44.0
+-16.0, 42.0, 48.0
+-34.0, 32.0, -14.0
+-10.0, 50.0, 2.0
+-2.0, 36.0, -14.0
+-2.0, 58.0, 26.0
+-6.0, 58.0, 16.0
+6.0, 60.0, 20.0
+0.0, 38.0, -12.0</pre></details></td><td>event decision&gt;count</td><td>13</td><td>accepted</td><td>24355752_analysis_1</td><td>Event decision &gt; count</td><td class="">1.000</td><td>1.000</td><td>1.000</td><td>exact_coord_set, high_coord_match</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-auto-unmatched"><td>0</td><td><details class="analysis-coords"><summary>24355752_analysis_0 (21)</summary><pre class="coord-list">4.0, 24.0, 44.0
+50.0, 14.0, 34.0
+4.0, 30.0, 40.0
+46.0, 28.0, 36.0
+40.0, 44.0, 26.0
+22.0, 12.0, 66.0
+44.0, -40.0, 44.0
+-48.0, -38.0, 54.0
+48.0, -38.0, 50.0
+40.0, -46.0, 44.0
+38.0, -48.0, 46.0
+-42.0, -38.0, 44.0
+-46.0, 28.0, 36.0
+-34.0, 58.0, 8.0
+-34.0, 56.0, 12.0
+-32.0, 24.0, -4.0
+-30.0, 22.0, -2.0
+-40.0, 52.0, -4.0
+58.0, -58.0, -14.0
+58.0, -48.0, -12.0
+60.0, -40.0, -12.0</pre></details></td><td>Block information gathering &gt; Count</td><td>21</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>24355752_analysis_1 (13)</summary><pre class="coord-list">-10.0, 50.0, 2.0
+-2.0, 58.0, 26.0
+-6.0, 58.0, 16.0
+6.0, 60.0, 20.0
+-2.0, 36.0, -14.0
+0.0, 38.0, -12.0
+-2.0, -50.0, 32.0
+0.0, -46.0, 32.0
+-4.0, -54.0, 22.0
+-12.0, 38.0, 54.0
+-18.0, 44.0, 44.0
+-16.0, 42.0, 48.0
+-34.0, 32.0, -14.0</pre></details></td><td>Event decision &gt; count</td><td>13</td><td>24355752_1</td><td>event decision&gt;count</td><td>accepted</td><td class="">1.000</td><td>1.000</td><td>1.000</td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>24355752_analysis_2 (1)</summary><pre class="coord-list">30.0, 6.0, 38.0</pre></details></td><td>Uncertainty avoidance ∩ Block information gathering &gt; count</td><td>1</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>24355752_analysis_3 (29)</summary><pre class="coord-list">0.0, 36.0, 32.0
+8.0, 26.0, 44.0
+10.0, 26.0, 52.0
+-2.0, 24.0, 40.0
+8.0, 24.0, 48.0
+10.0, 24.0, 40.0
+42.0, 18.0, -2.0
+34.0, 20.0, -12.0
+54.0, 16.0, 8.0
+52.0, 18.0, 6.0
+34.0, 16.0, -1.0
+34.0, 16.0, 52.0
+30.0, 16.0, 48.0
+36.0, 20.0, 52.0
+36.0, 38.0, 28.0
+40.0, 36.0, 30.0
+-32.0, -12.0, 60.0
+-34.0, -18.0, 54.0
+-38.0, -16.0, 62.0
+-34.0, -18.0, 68.0
+-30.0, -12.0, 60.0
+-26.0, -8.0, 68.0
+22.0, -72.0, 50.0
+28.0, -70.0, 48.0
+24.0, -64.0, 46.0
+18.0, -74.0, 56.0
+22.0, 52.0, 32.0
+28.0, 48.0, 28.0
+8.0, -64.0, 68.0</pre></details></td><td>Uncertainty acceptance ∩ Block information gathering &gt; count</td><td>29</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>4</td><td><details class="analysis-coords"><summary>24355752_analysis_4 (0)</summary><pre class="coord-list">No coordinates extracted.</pre></details></td><td>Later button press ∩ Event decision &gt; count</td><td>0</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>5</td><td><details class="analysis-coords"><summary>24355752_analysis_5 (0)</summary><pre class="coord-list">No coordinates extracted.</pre></details></td><td>Earlier button press ∩ Event decision &gt; count</td><td>0</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="26510176" data-study-category="all_correct"><summary><strong>PMID 26510176</strong> | (30)Pedersen 2015 | accepted=4 uncertain=0 unmatched=0 manual=4 auto=10 | <strong>auto&gt;manual = 6</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/26510176/" target="_blank" rel="noopener noreferrer">PubMed</a> | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4624809/" target="_blank" rel="noopener noreferrer">PMC full text</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>26510176_1 (2)</summary><pre class="coord-list">-38.0, -86.0, -12.0
+44.0, -72.0, -10.0</pre></details></td><td>face &gt; house</td><td>2</td><td>accepted</td><td>26510176_analysis_5</td><td>Face&gt;House</td><td class="">1.000</td><td>1.000</td><td>1.000</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>26510176_2 (4)</summary><pre class="coord-list">40.0, 8.0, 24.0
+-30.0, 22.0, -8.0
+34.0, 24.0, -6.0
+0.0, 34.0, 36.0</pre></details></td><td>hard &gt; easy: delayed time</td><td>4</td><td>accepted</td><td>26510176_analysis_2</td><td>Hard&gt;Easy</td><td class="">0.611</td><td>1.000</td><td>0.883</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>26510176_3 (9)</summary><pre class="coord-list">34.0, 26.0, -6.0
+32.0, -66.0, 24.0
+-32.0, 24.0, 2.0
+-42.0, 4.0, 32.0
+-24.0, -66.0, 32.0
+6.0, 26.0, 38.0
+38.0, 0.0, 46.0
+12.0, -72.0, 38.0
+-8.0, -80.0, 38.0</pre></details></td><td>hard &gt; easy: response time</td><td>9</td><td>accepted</td><td>26510176_analysis_0</td><td>Hard&gt;Easy</td><td class="">0.595</td><td>1.000</td><td>0.878</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>26510176_4 (2)</summary><pre class="coord-list">30.0, -48.0, -12.0
+-26.0, -50.0, -12.0</pre></details></td><td>house &gt; face</td><td>2</td><td>accepted</td><td>26510176_analysis_6</td><td>House&gt;Face</td><td class="">1.000</td><td>1.000</td><td>1.000</td><td>exact_coord_set, high_coord_match</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>26510176_analysis_0 (9)</summary><pre class="coord-list">34.0, 26.0, -6.0
+6.0, 26.0, 38.0
+-32.0, 24.0, 2.0
+-42.0, 4.0, 32.0
+-24.0, -66.0, 32.0
+38.0, 0.0, 46.0
+12.0, -72.0, 38.0
+-8.0, -80.0, 38.0
+32.0, -66.0, 24.0</pre></details></td><td>Hard&gt;Easy</td><td>9</td><td>26510176_3</td><td>hard &gt; easy: response time</td><td>accepted</td><td class="">0.595</td><td>1.000</td><td>0.878</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>26510176_analysis_1 (2)</summary><pre class="coord-list">-24.0, 32.0, 46.0
+-46.0, -62.0, 28.0</pre></details></td><td>Easy&gt;Hard</td><td>2</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-accepted"><td>2</td><td><details class="analysis-coords"><summary>26510176_analysis_2 (4)</summary><pre class="coord-list">0.0, 34.0, 36.0
+34.0, 24.0, -6.0
+-30.0, 22.0, -8.0
+40.0, 8.0, 24.0</pre></details></td><td>Hard&gt;Easy</td><td>4</td><td>26510176_2</td><td>hard &gt; easy: delayed time</td><td>accepted</td><td class="">0.611</td><td>1.000</td><td>0.883</td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>26510176_analysis_3 (4)</summary><pre class="coord-list">-44.0, -66.0, 36.0
+18.0, -90.0, 16.0
+50.0, -66.0, 32.0
+-14.0, -90.0, 24.0</pre></details></td><td>Easy&gt;Hard</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>4</td><td><details class="analysis-coords"><summary>26510176_analysis_4 (6)</summary><pre class="coord-list">-4.0, 58.0, 20.0
+-66.0, -14.0, -18.0
+-44.0, -62.0, 38.0
+-48.0, 36.0, -12.0
+-4.0, -58.0, 30.0
+62.0, -10.0, -26.0</pre></details></td><td>DR&gt;RT</td><td>6</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-accepted"><td>5</td><td><details class="analysis-coords"><summary>26510176_analysis_5 (2)</summary><pre class="coord-list">-38.0, -86.0, -12.0
+44.0, -72.0, -10.0</pre></details></td><td>Face&gt;House</td><td>2</td><td>26510176_1</td><td>face &gt; house</td><td>accepted</td><td class="">1.000</td><td>1.000</td><td>1.000</td></tr><tr class="st-accepted"><td>6</td><td><details class="analysis-coords"><summary>26510176_analysis_6 (2)</summary><pre class="coord-list">30.0, -48.0, -12.0
+-26.0, -50.0, -12.0</pre></details></td><td>House&gt;Face</td><td>2</td><td>26510176_4</td><td>house &gt; face</td><td>accepted</td><td class="">1.000</td><td>1.000</td><td>1.000</td></tr><tr class="st-auto-unmatched"><td>7</td><td><details class="analysis-coords"><summary>26510176_analysis_7 (3)</summary><pre class="coord-list">-38.0, -82.0, -16.0
+24.0, -86.0, -12.0
+44.0, -50.0, -26.0</pre></details></td><td>Face Drift Rate</td><td>3</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>8</td><td><details class="analysis-coords"><summary>26510176_analysis_8 (2)</summary><pre class="coord-list">26.0, -42.0, -18.0
+-24.0, -46.0, -16.0</pre></details></td><td>House Drift Rate</td><td>2</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>9</td><td><details class="analysis-coords"><summary>26510176_analysis_9 (5)</summary><pre class="coord-list">-10.0, -80.0, 6.0
+8.0, 18.0, 40.0
+38.0, 24.0, -8.0
+-32.0, 18.0, -10.0
+46.0, 10.0, 16.0</pre></details></td><td>Accumulation</td><td>5</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details><details class="inner-accordion"><summary>Pubget full text + extracted tables</summary><div class="resource-box"><p><strong>PMCID:</strong> PMC4624809 | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4624809/" target="_blank" rel="noopener noreferrer">PubMedCentral full text</a></p><p><strong>Extracted tables:</strong> 1</p><details class="table-accordion"><summary>Table 1 (pone.0140361.t001)</summary><p><strong>Caption:</strong> Areas with significant activation, in MNI coordinates.</p><p><strong>Footnote:</strong> Contrasts under RT and DR header were cluster corrected to p&lt;0.05 with 3dClustSim, while remaining contrasts were corrected for multiple comparisons at whole-brain level at p&lt;0.05. All clusters were obtained by thresholding at Z&gt;2.3. RT = reaction time; DR = delayed response; R = right; L = left; Hemi = hemisphere.</p><p class="resource-note"><strong>Source:</strong> <code>articles/81f/pmcid_4624809/tables/table_000.csv</code></p><div class="table-wrap"><table class="extracted-table"><thead><tr><th>Contrast</th><th>Area</th><th>Hemi</th><th>voxels</th><th>max z-score</th><th>Peak voxel</th><th>Peak voxel</th><th>Peak voxel</th></tr><tr><th>Contrast</th><th>Area</th><th>Hemi</th><th>voxels</th><th>max z-score</th><th>X</th><th>Y</th><th>Z</th></tr></thead><tbody><tr><td>RT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Hard&gt;Easy</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Insula and Inferior Frontal Gyrus</td><td>R</td><td>1970.0</td><td>4.32</td><td>34.0</td><td>26.0</td><td>-6.0</td></tr><tr><td></td><td>Dorsomedial Prefrontal Cortex</td><td>R</td><td>1598.0</td><td>4.07</td><td>6.0</td><td>26.0</td><td>38.0</td></tr><tr><td></td><td>Insula</td><td>L</td><td>763.0</td><td>4.32</td><td>-32.0</td><td>24.0</td><td>2.0</td></tr><tr><td></td><td>Inferior Frontal Gyrus</td><td>L</td><td>320.0</td><td>3.5</td><td>-42.0</td><td>4.0</td><td>32.0</td></tr><tr><td></td><td>Intra Parietal Sulcus</td><td>L</td><td>213.0</td><td>3.84</td><td>-24.0</td><td>-66.0</td><td>32.0</td></tr><tr><td></td><td>Middle Frontal Gyrus</td><td>R</td><td>171.0</td><td>3.14</td><td>38.0</td><td>0.0</td><td>46.0</td></tr><tr><td></td><td>Intra Parietal Sulcus</td><td>R</td><td>138.0</td><td>3.65</td><td>12.0</td><td>-72.0</td><td>38.0</td></tr><tr><td></td><td>Cuneal Cortex</td><td>L</td><td>78.0</td><td>3.07</td><td>-8.0</td><td>-80.0</td><td>38.0</td></tr><tr><td></td><td>Lateral Occipital Cortex</td><td>R</td><td>78.0</td><td>3.44</td><td>32.0</td><td>-66.0</td><td>24.0</td></tr><tr><td>Easy&gt;Hard</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Superior/Middle Frontal Gyrus</td><td>L</td><td>604.0</td><td>3.36</td><td>-24.0</td><td>32.0</td><td>46.0</td></tr><tr><td></td><td>Lateral Occipital Cortex</td><td>L</td><td>411.0</td><td>3.25</td><td>-46.0</td><td>-62.0</td><td>28.0</td></tr><tr><td>DR</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Hard&gt;Easy</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Dorsomedial Prefrontal Cortex</td><td></td><td>353.0</td><td>3.18</td><td>0.0</td><td>34.0</td><td>36.0</td></tr><tr><td></td><td>Insula</td><td>R</td><td>270.0</td><td>3.91</td><td>34.0</td><td>24.0</td><td>-6.0</td></tr><tr><td></td><td>Insula</td><td>L</td><td>169.0</td><td>3.11</td><td>-30.0</td><td>22.0</td><td>-8.0</td></tr><tr><td></td><td>Inferior Frontal Gyrus</td><td>R</td><td>77.0</td><td>3.16</td><td>40.0</td><td>8.0</td><td>24.0</td></tr><tr><td>Easy&gt;Hard</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Lateral Occipital Cortex</td><td>L</td><td>269.0</td><td>3.31</td><td>-44.0</td><td>-66.0</td><td>36.0</td></tr><tr><td></td><td>Occipital Pole</td><td>R</td><td>227.0</td><td>3.49</td><td>18.0</td><td>-90.0</td><td>16.0</td></tr><tr><td></td><td>Lateral Occipital Cortex</td><td>R</td><td>162.0</td><td>3.43</td><td>50.0</td><td>-66.0</td><td>32.0</td></tr><tr><td></td><td>Occipital Pole</td><td>L</td><td>64.0</td><td>3.08</td><td>-14.0</td><td>-90.0</td><td>24.0</td></tr><tr><td>DR&gt;RT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Frontal Pole</td><td>L</td><td>4235.0</td><td>6.36</td><td>-4.0</td><td>58.0</td><td>20.0</td></tr><tr><td></td><td>Temporal Gyrus</td><td>L</td><td>1067.0</td><td>5.7</td><td>-66.0</td><td>-14.0</td><td>-18.0</td></tr><tr><td></td><td>Lateral Occipital Cortex</td><td>L</td><td>867.0</td><td>6.2</td><td>-44.0</td><td>-62.0</td><td>38.0</td></tr><tr><td></td><td>Frontal Orbital Cortex</td><td>L</td><td>844.0</td><td>6.1</td><td>-48.0</td><td>36.0</td><td>-12.0</td></tr><tr><td></td><td>Precuneus</td><td>L</td><td>709.0</td><td>6.54</td><td>-4.0</td><td>-58.0</td><td>30.0</td></tr><tr><td></td><td>Middle Temporal Gyrus</td><td>R</td><td>609.0</td><td>5.6</td><td>62.0</td><td>-10.0</td><td>-26.0</td></tr><tr><td>Face&gt;House</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Lateral Occipital Cortex</td><td>L</td><td>511.0</td><td>3.98</td><td>-38.0</td><td>-86.0</td><td>-12.0</td></tr><tr><td></td><td>Lateral Occipital Cortex</td><td>R</td><td>194.0</td><td>3.69</td><td>44.0</td><td>-72.0</td><td>-10.0</td></tr><tr><td>House&gt;Face</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Temporal Occipital Fusiform Cortex</td><td>R</td><td>701.0</td><td>5.32</td><td>30.0</td><td>-48.0</td><td>-12.0</td></tr><tr><td></td><td>Temporal Occipital Fusiform Cortex</td><td>L</td><td>520.0</td><td>5.11</td><td>-26.0</td><td>-50.0</td><td>-12.0</td></tr><tr><td>Face Drift Rate</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Lateral Occipital Cortex</td><td>L</td><td>631.0</td><td>3.38</td><td>-38.0</td><td>-82.0</td><td>-16.0</td></tr><tr><td></td><td>Occipital Fusiform Gyrus</td><td>R</td><td>362.0</td><td>3.6</td><td>24.0</td><td>-86.0</td><td>-12.0</td></tr><tr><td></td><td>Temporal Occipital Fusiform Cortex</td><td>R</td><td>223.0</td><td>3.85</td><td>44.0</td><td>-50.0</td><td>-26.0</td></tr><tr><td>House Drift Rate</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Temporal Occipital Fusiform Cortex</td><td>R</td><td>614.0</td><td>3.87</td><td>26.0</td><td>-42.0</td><td>-18.0</td></tr><tr><td></td><td>Temporal Occipital Fusiform Cortex</td><td>L</td><td>229.0</td><td>3.35</td><td>-24.0</td><td>-46.0</td><td>-16.0</td></tr><tr><td>Accumulation</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Medial Occipital Cortex</td><td>L</td><td>4444.0</td><td>4.05</td><td>-10.0</td><td>-80.0</td><td>6.0</td></tr><tr><td></td><td>Dorsomedial Prefrontal Cortex</td><td>R</td><td>1533.0</td><td>4.02</td><td>8.0</td><td>18.0</td><td>40.0</td></tr><tr><td></td><td>Frontal Orbital Cortex and Insula</td><td>R</td><td>913.0</td><td>4.14</td><td>38.0</td><td>24.0</td><td>-8.0</td></tr><tr><td></td><td>Insula</td><td>L</td><td>530.0</td><td>3.66</td><td>-32.0</td><td>18.0</td><td>-10.0</td></tr><tr><td></td><td>Inferior Frontal Gyrus</td><td>R</td><td>425.0</td><td>3.41</td><td>46.0</td><td>10.0</td><td>16.0</td></tr></tbody></table></div></details></div></details></details><details class="doc-card" data-pmid="27177981" data-study-category="all_correct"><summary><strong>PMID 27177981</strong> | (27)Lamichanne 2016 | accepted=4 uncertain=0 unmatched=0 manual=4 auto=4 | <strong>auto=manual = 0</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/27177981/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>27177981_1 (8)</summary><pre class="coord-list">-33.0, -40.0, 46.0
+-27.0, -94.0, -5.0
+33.0, 20.0, 4.0
+-30.0, 20.0, 4.0
+3.0, -3.0, 1.0
+-60.0, 8.0, 28.0
+-6.0, 11.0, 52.0
+27.0, -97.0, -5.0</pre></details></td><td>audiovisual vs (beep plus flash)</td><td>8</td><td>accepted</td><td>27177981_analysis_2</td><td>Audiovisual vs. (beep+flash)</td><td class="">0.867</td><td>0.875</td><td>0.873</td><td>high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>27177981_2 (14)</summary><pre class="coord-list">-30.0, 20.0, 4.0
+-33.0, -7.0, 52.0
+30.0, -67.0, 25.0
+-51.0, 2.0, 34.0
+-6.0, 11.0, 52.0
+-42.0, -64.0, 4.0
+39.0, -40.0, 43.0
+24.0, -88.0, -11.0
+-21.0, -97.0, 7.0
+48.0, -67.0, 4.0
+30.0, 20.0, 4.0
+-30.0, -49.0, 46.0
+42.0, 11.0, 22.0
+36.0, -1.0, 49.0</pre></details></td><td>moving dots</td><td>14</td><td>accepted</td><td>27177981_analysis_3</td><td>Moving dots (12%+20%) C+(12%+20%) IC vs. 100% (C+IC)</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.349</td><td>1.000</td><td>0.805</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>27177981_3 (5)</summary><pre class="coord-list">45.0, 8.0, 25.0
+33.0, 20.0, 4.0
+-6.0, 17.0, 52.0
+-30.0, 23.0, 1.0
+-39.0, 5.0, 34.0</pre></details></td><td>noisy (faces+houses) vs. clear (faces+houses)</td><td>5</td><td>accepted</td><td>27177981_analysis_0</td><td>Noisy (faces+houses) vs. clear (faces+houses)</td><td class="">1.000</td><td>1.000</td><td>1.000</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>27177981_4 (3)</summary><pre class="coord-list">33.0, 20.0, 4.0
+0.0, 17.0, 52.0
+-30.0, 23.0, 4.0</pre></details></td><td>noisy vs. clear (happy plus angry faces)</td><td>3</td><td>accepted</td><td>27177981_analysis_1</td><td>Noisy vs. clear (happy+angry faces)</td><td class="">0.907</td><td>1.000</td><td>0.972</td><td>exact_coord_set, high_coord_match</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>27177981_analysis_0 (5)</summary><pre class="coord-list">33.0, 20.0, 4.0
+-6.0, 17.0, 52.0
+-30.0, 23.0, 1.0
+-39.0, 5.0, 34.0
+45.0, 8.0, 25.0</pre></details></td><td>Noisy (faces+houses) vs. clear (faces+houses)</td><td>5</td><td>27177981_3</td><td>noisy (faces+houses) vs. clear (faces+houses)</td><td>accepted</td><td class="">1.000</td><td>1.000</td><td>1.000</td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>27177981_analysis_1 (3)</summary><pre class="coord-list">33.0, 20.0, 4.0
+-30.0, 23.0, 4.0
+0.0, 17.0, 52.0</pre></details></td><td>Noisy vs. clear (happy+angry faces)</td><td>3</td><td>27177981_4</td><td>noisy vs. clear (happy plus angry faces)</td><td>accepted</td><td class="">0.907</td><td>1.000</td><td>0.972</td></tr><tr class="st-accepted"><td>2</td><td><details class="analysis-coords"><summary>27177981_analysis_2 (8)</summary><pre class="coord-list">-6.0, 11.0, 52.0
+27.0, -97.0, -5.0
+-60.0, 8.0, 28.0
+3.0, -3.0, 1.0
+-30.0, 20.0, 4.0
+33.0, 20.0, 4.0
+-27.0, -94.0, -5.0
+-33.0, -49.0, 46.0</pre></details></td><td>Audiovisual vs. (beep+flash)</td><td>8</td><td>27177981_1</td><td>audiovisual vs (beep plus flash)</td><td>accepted</td><td class="">0.867</td><td>0.875</td><td>0.873</td></tr><tr class="st-accepted"><td>3</td><td><details class="analysis-coords"><summary>27177981_analysis_3 (14)</summary><pre class="coord-list">24.0, -88.0, -11.0
+-21.0, -97.0, 7.0
+48.0, -67.0, 4.0
+30.0, 20.0, 4.0
+-30.0, 20.0, 4.0
+42.0, 11.0, 22.0
+36.0, -1.0, 49.0
+-30.0, -49.0, 46.0
+39.0, -40.0, 43.0
+-42.0, -64.0, 4.0
+-6.0, 11.0, 52.0
+-51.0, 2.0, 34.0
+30.0, -67.0, 25.0
+-33.0, -7.0, 52.0</pre></details></td><td>Moving dots (12%+20%) C+(12%+20%) IC vs. 100% (C+IC)</td><td>14</td><td>27177981_2</td><td>moving dots</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.349</td><td>1.000</td><td>0.805</td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="27975159" data-study-category="all_correct"><summary><strong>PMID 27975159</strong> | (60)lei,2016 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=3 | <strong>auto&gt;manual = 2</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/27975159/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>27975159_1 (1)</summary><pre class="coord-list">48.0, -42.0, -3.0</pre></details></td><td>active pumps vs control pumps</td><td>1</td><td>accepted</td><td>27975159_analysis_0</td><td>Active pump vs. control pump of risk modulation</td><td class="">0.737</td><td>1.000</td><td>0.921</td><td>exact_coord_set, high_coord_match</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>27975159_analysis_0 (1)</summary><pre class="coord-list">48.0, -42.0, -3.0</pre></details></td><td>Active pump vs. control pump of risk modulation</td><td>1</td><td>27975159_1</td><td>active pumps vs control pumps</td><td>accepted</td><td class="">0.737</td><td>1.000</td><td>0.921</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>27975159_analysis_1 (4)</summary><pre class="coord-list">-24.0, -15.0, -15.0
+9.0, -12.0, 3.0
+-3.0, 24.0, 0.0
+9.0, 78.0, -6.0</pre></details></td><td>Active pump vs. control pump of average activity of cash out</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>27975159_analysis_2 (1)</summary><pre class="coord-list">-54.0, 27.0, -6.0</pre></details></td><td>Active pump vs. control pump of average activity of explosion</td><td>1</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="29408323" data-study-category="all_correct"><summary><strong>PMID 29408323</strong> | (34)Blankestein, 2018 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=11 | <strong>auto&gt;manual = 10</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/29408323/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>29408323_1 (12)</summary><pre class="coord-list">45.0, -19.0, 16.0
+54.0, -19.0, 16.0
+57.0, -67.0, 34.0
+60.0, -10.0, -5.0
+3.0, -55.0, 34.0
+-12.0, -49.0, 37.0
+-69.0, -40.0, -2.0
+-63.0, -28.0, -2.0
+-30.0, 20.0, 49.0
+-36.0, 11.0, 58.0
+-21.0, 29.0, 52.0
+-42.0, -64.0, 31.0</pre></details></td><td>ambiguity gamble &gt; risky gamble</td><td>12</td><td>accepted</td><td>29408323_analysis_1</td><td>Ambiguity Gamble &gt; Risk Gamble</td><td class="">0.984</td><td>1.000</td><td>0.995</td><td>exact_coord_set, high_coord_match</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-auto-unmatched"><td>0</td><td><details class="analysis-coords"><summary>29408323_analysis_0 (8)</summary><pre class="coord-list">33.0, -85.0, 16.0
+0.0, -85.0, 1.0
+12.0, -91.0, 4.0
+48.0, 5.0, 31.0
+27.0, -4.0, 52.0
+24.0, 2.0, 70.0
+51.0, 38.0, 13.0
+45.0, 41.0, 1.0</pre></details></td><td>Risk Gamble &gt; Ambiguity Gamble</td><td>8</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>29408323_analysis_1 (12)</summary><pre class="coord-list">57.0, -67.0, 34.0
+-42.0, -64.0, 31.0
+54.0, -19.0, 16.0
+45.0, -19.0, 16.0
+60.0, -10.0, -5.0
+3.0, -55.0, 34.0
+-12.0, -49.0, 37.0
+-69.0, -40.0, -2.0
+-63.0, -28.0, -2.0
+-30.0, 20.0, 49.0
+-36.0, 11.0, 58.0
+-21.0, 29.0, 52.0</pre></details></td><td>Ambiguity Gamble &gt; Risk Gamble</td><td>12</td><td>29408323_1</td><td>ambiguity gamble &gt; risky gamble</td><td>accepted</td><td class="">0.984</td><td>1.000</td><td>0.995</td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>29408323_analysis_2 (14)</summary><pre class="coord-list">12.0, 17.0, -5.0
+-9.0, 17.0, -5.0
+-6.0, 44.0, 1.0
+-54.0, -49.0, -11.0
+-63.0, -7.0, -17.0
+-60.0, -58.0, -11.0
+42.0, -73.0, 40.0
+39.0, -67.0, 55.0
+33.0, -76.0, 52.0
+63.0, -4.0, 1.0
+63.0, -4.0, -23.0
+66.0, -4.0, -8.0
+30.0, -13.0, 7.0
+-48.0, 2.0, 22.0</pre></details></td><td>Gain &gt; No Gain, voxel-corrected</td><td>14</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>29408323_analysis_3 (4)</summary><pre class="coord-list">3.0, 38.0, 31.0
+18.0, 50.0, 40.0
+21.0, 59.0, 28.0
+45.0, -52.0, 46.0</pre></details></td><td>Interaction effect Condition * Outcome, cluster-corrected</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>4</td><td><details class="analysis-coords"><summary>29408323_analysis_4 (2)</summary><pre class="coord-list">-15.0, 2.0, 25.0
+6.0, 14.0, -5.0</pre></details></td><td>Positive effect of risky gambling on Risk Gamble &gt; Ambiguity Gamble</td><td>2</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>5</td><td><details class="analysis-coords"><summary>29408323_analysis_5 (13)</summary><pre class="coord-list">-9.0, 35.0, 19.0
+6.0, 38.0, 25.0
+-9.0, 32.0, 31.0
+-9.0, 11.0, 52.0
+-3.0, 26.0, 52.0
+0.0, 17.0, 64.0
+-27.0, 26.0, 4.0
+-30.0, 11.0, -14.0
+-30.0, 20.0, -11.0
+-36.0, 26.0, -5.0
+33.0, 29.0, -2.0
+39.0, 20.0, -20.0
+42.0, 29.0, -17.0</pre></details></td><td>Negative effect of ambiguous gambling on Ambiguity Gamble &gt; Risk Gamble</td><td>13</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>6</td><td><details class="analysis-coords"><summary>29408323_analysis_6 (10)</summary><pre class="coord-list">-54.0, -19.0, 13.0
+-54.0, -13.0, 40.0
+24.0, 20.0, 58.0
+45.0, 26.0, 37.0
+42.0, 35.0, 43.0
+39.0, -19.0, 58.0
+3.0, -31.0, 58.0
+36.0, -7.0, 13.0
+45.0, -7.0, 19.0
+48.0, -16.0, 13.0</pre></details></td><td>negative effect of ambiguous gambling on Gain &gt; No Gain</td><td>10</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>7</td><td><details class="analysis-coords"><summary>29408323_analysis_7 (1)</summary><pre class="coord-list">54.0, -52.0, 46.0</pre></details></td><td>Positive effect of BAS Drive on Ambiguity Gamble &gt; Risk Gamble</td><td>1</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>8</td><td><details class="analysis-coords"><summary>29408323_analysis_8 (3)</summary><pre class="coord-list">63.0, -28.0, 49.0
+51.0, -31.0, 40.0
+54.0, -34.0, 49.0</pre></details></td><td>Positive effect of BAS Fun seeking on Ambiguity Gamble &gt; Risk Gamble</td><td>3</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>9</td><td><details class="analysis-coords"><summary>29408323_analysis_9 (8)</summary><pre class="coord-list">39.0, 14.0, 52.0
+39.0, 26.0, 37.0
+-36.0, 2.0, 61.0
+-36.0, 5.0, 52.0
+-27.0, 14.0, 43.0
+6.0, -34.0, 73.0
+6.0, -46.0, 67.0
+15.0, -22.0, 64.0</pre></details></td><td>Negative effect of ARQ Rebellious on Gain &gt; No Gain</td><td>8</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>10</td><td><details class="analysis-coords"><summary>29408323_analysis_10 (6)</summary><pre class="coord-list">-57.0, -52.0, 40.0
+-42.0, -55.0, 25.0
+-60.0, -52.0, 28.0
+-42.0, 23.0, 49.0
+-39.0, 11.0, 49.0
+-33.0, 20.0, 43.0</pre></details></td><td>Negative effect of BAS Drive on Gain &gt; No Gain</td><td>6</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="29408524" data-study-category="all_correct"><summary><strong>PMID 29408524</strong> | (26)Bode 2018 | accepted=7 uncertain=0 unmatched=0 manual=7 auto=8 | <strong>auto&gt;manual = 1</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/29408524/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>29408524_1 (6)</summary><pre class="coord-list">9.0, 17.0, 61.0
+57.0, -49.0, 46.0
+-9.0, 17.0, 55.0
+42.0, 47.0, -11.0
+-42.0, 32.0, 37.0
+-57.0, -46.0, 46.0</pre></details></td><td>negative parametric modulation by stimulus quality</td><td>6</td><td>accepted</td><td>29408524_analysis_1</td><td>analysis_1</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.133</td><td>1.000</td><td>0.740</td><td>accepted_coord_override, exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>29408524_2 (2)</summary><pre class="coord-list">0.0, 29.0, -5.0
+-18.0, 35.0, 58.0</pre></details></td><td>negative parametric: high stimulus quality</td><td>2</td><td>accepted</td><td>29408524_analysis_5</td><td>High stimulus quality</td><td class="">0.667</td><td>1.000</td><td>0.900</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>29408524_3 (1)</summary><pre class="coord-list">-9.0, 53.0, -8.0</pre></details></td><td>negative parametric: low stimulus quality</td><td>1</td><td>accepted</td><td>29408524_analysis_7</td><td>Low stimulus quality</td><td class="">0.656</td><td>1.000</td><td>0.897</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>29408524_4 (4)</summary><pre class="coord-list">-18.0, 8.0, -11.0
+21.0, -34.0, -17.0
+-33.0, -40.0, -20.0
+21.0, 8.0, -8.0</pre></details></td><td>positive parametric modulation by stimulus quality</td><td>4</td><td>accepted</td><td>29408524_analysis_0</td><td>analysis_0</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.100</td><td>1.000</td><td>0.730</td><td>accepted_coord_override, exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>29408524_5 (5)</summary><pre class="coord-list">-36.0, 26.0, -2.0
+-6.0, 23.0, 49.0
+42.0, 23.0, 22.0
+-45.0, 8.0, 31.0
+36.0, 26.0, -2.0</pre></details></td><td>positive parametric: high stimulus quality</td><td>5</td><td>accepted</td><td>29408524_analysis_2</td><td>High stimulus quality</td><td class="">0.667</td><td>0.833</td><td>0.783</td><td>coord_count_mismatch, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>29408524_6 (6)</summary><pre class="coord-list">-42.0, 32.0, 37.0
+-51.0, 14.0, -2.0
+51.0, 20.0, -5.0
+-51.0, -43.0, 49.0
+51.0, -46.0, 49.0
+9.0, 14.0, 61.0</pre></details></td><td>positive parametric: low stimulus quality</td><td>6</td><td>accepted</td><td>29408524_analysis_4</td><td>Low stimulus quality</td><td class="">0.656</td><td>1.000</td><td>0.897</td><td>exact_coord_set, high_coord_match</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>29408524_7 (6)</summary><pre class="coord-list">-36.0, -49.0, 46.0
+-6.0, 23.0, 46.0
+33.0, -67.0, 40.0
+-45.0, 8.0, 31.0
+45.0, 26.0, 25.0
+36.0, 29.0, -2.0</pre></details></td><td>positive parametric: medium stimulus quality</td><td>6</td><td>accepted</td><td>29408524_analysis_3</td><td>Medium stimulus quality</td><td class="">0.687</td><td>1.000</td><td>0.906</td><td>exact_coord_set, high_coord_match</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>29408524_analysis_0 (4)</summary><pre class="coord-list">-18.0, 8.0, -11.0
+21.0, -34.0, -17.0
+-33.0, -40.0, -20.0
+21.0, 8.0, -8.0</pre></details></td><td>analysis_0</td><td>4</td><td>29408524_4</td><td>positive parametric modulation by stimulus quality</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.100</td><td>1.000</td><td>0.730</td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>29408524_analysis_1 (6)</summary><pre class="coord-list">9.0, 17.0, 61.0
+57.0, -49.0, 46.0
+-57.0, -46.0, 46.0
+-9.0, 17.0, 55.0
+42.0, 47.0, -11.0
+-42.0, 32.0, 37.0</pre></details></td><td>analysis_1</td><td>6</td><td>29408524_1</td><td>negative parametric modulation by stimulus quality</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.133</td><td>1.000</td><td>0.740</td></tr><tr class="st-accepted"><td>2</td><td><details class="analysis-coords"><summary>29408524_analysis_2 (6)</summary><pre class="coord-list">-45.0, 8.0, 31.0
+42.0, 23.0, 22.0
+-6.0, 23.0, 49.0
+-36.0, 26.0, -2.0
+36.0, 26.0, -2.0
+-33.0, -49.0, 43.0</pre></details></td><td>High stimulus quality</td><td>6</td><td>29408524_5</td><td>positive parametric: high stimulus quality</td><td>accepted</td><td class="">0.667</td><td>0.833</td><td>0.783</td></tr><tr class="st-accepted"><td>3</td><td><details class="analysis-coords"><summary>29408524_analysis_3 (6)</summary><pre class="coord-list">-45.0, 8.0, 31.0
+45.0, 26.0, 25.0
+-6.0, 23.0, 46.0
+-36.0, -49.0, 46.0
+33.0, -67.0, 40.0
+36.0, 29.0, -2.0</pre></details></td><td>Medium stimulus quality</td><td>6</td><td>29408524_7</td><td>positive parametric: medium stimulus quality</td><td>accepted</td><td class="">0.687</td><td>1.000</td><td>0.906</td></tr><tr class="st-accepted"><td>4</td><td><details class="analysis-coords"><summary>29408524_analysis_4 (6)</summary><pre class="coord-list">-51.0, 14.0, -2.0
+51.0, 20.0, -5.0
+-51.0, -43.0, 49.0
+51.0, -46.0, 49.0
+9.0, 14.0, 61.0
+-42.0, 32.0, 37.0</pre></details></td><td>Low stimulus quality</td><td>6</td><td>29408524_6</td><td>positive parametric: low stimulus quality</td><td>accepted</td><td class="">0.656</td><td>1.000</td><td>0.897</td></tr><tr class="st-accepted"><td>5</td><td><details class="analysis-coords"><summary>29408524_analysis_5 (2)</summary><pre class="coord-list">-18.0, 35.0, 58.0
+0.0, 29.0, -5.0</pre></details></td><td>High stimulus quality</td><td>2</td><td>29408524_2</td><td>negative parametric: high stimulus quality</td><td>accepted</td><td class="">0.667</td><td>1.000</td><td>0.900</td></tr><tr class="st-auto-unmatched"><td>6</td><td><details class="analysis-coords"><summary>29408524_analysis_6 (0)</summary><pre class="coord-list">No coordinates extracted.</pre></details></td><td>Medium stimulus quality</td><td>0</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-accepted"><td>7</td><td><details class="analysis-coords"><summary>29408524_analysis_7 (1)</summary><pre class="coord-list">-9.0, 53.0, -8.0</pre></details></td><td>Low stimulus quality</td><td>1</td><td>29408524_3</td><td>negative parametric: low stimulus quality</td><td>accepted</td><td class="">0.656</td><td>1.000</td><td>0.897</td></tr></tbody></table></div></details></details></details></section><section id="bucket-mixed"><details class="bucket" open><summary><h2>Mixed (0)</h2></summary><p>No studies in this category.</p></details></section><section id="bucket-all-incorrect"><details class="bucket" open><summary><h2>All Incorrect (4)</h2></summary><details class="doc-card" data-pmid="12655327" data-study-category="all_incorrect"><summary><strong>PMID 12655327</strong> | (29)Paulus, 2003 | accepted=0 uncertain=0 unmatched=1 manual=1 auto=2 | <strong>auto&gt;manual = 1</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/12655327/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion review-annotation" data-pmid="12655327" data-study-name="(29)Paulus, 2003" data-study-category="all_incorrect"><summary>Human adjudication</summary><div class="review-box"><p class="resource-note">Choose <strong>Annotation Error</strong> or <strong>Extraction Error</strong>, then optionally add notes. Saved automatically in browser localStorage.</p><div class="review-decision-group"><label><input type="radio" data-role="review-decision" name="review-decision-12655327" value="annotation_error"> Annotation Error</label><label><input type="radio" data-role="review-decision" name="review-decision-12655327" value="extraction_error"> Extraction Error</label><label><input type="radio" data-role="review-decision" name="review-decision-12655327" value=""> Clear selection</label></div><div class="review-reasons" data-role="extraction-reasons" hidden><p><strong>Extraction error reasons</strong></p><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="multiple_analyses_merged_into_one"> Multiple analyses merged into one</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="single_analysis_split_into_multiple"> Single analysis split into multiple</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="section_header_parsed_as_analysis"> Section/header parsed as analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinate_rows_assigned_wrong_analysis"> Coordinate rows assigned to wrong analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="contrast_label_missed_or_truncated"> Contrast label missed or truncated</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="table_structure_misparsed"> Table structure misparsed</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinates_missed_or_incomplete"> Coordinates missed or incomplete</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="other_extraction_issue"> Other extraction issue</label></div><label class="review-note-label" for="review-note-12655327"><strong>Note</strong></label><textarea id="review-note-12655327" data-role="review-note" rows="3" placeholder="Add evidence, rationale, or follow-up notes..."></textarea><p class="resource-note" data-role="review-status">Not reviewed yet.</p></div></details><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-unmatched"><td><details class="analysis-coords"><summary>12655327_1 (16)</summary><pre class="coord-list">44.7, -33.1, -4.0
+-18.8, -20.1, 16.1
+16.5, -45.6, 55.3
+18.6, -41.8, 39.7
+47.4, 20.0, 14.2
+-50.5, 10.8, 10.7
+-42.6, 2.9, 43.1
+41.5, -0.2, 41.7
+-10.4, 16.5, 2.1
+-41.0, -45.2, 31.6
+-4.4, -85.5, 5.3
+-1.6, -69.8, 3.1
+5.6, -48.0, 39.9
+14.4, -55.3, 30.7
+-26.4, -65.9, 26.9
+-50.4, -32.5, 31.1</pre></details></td><td>Task effect</td><td>16</td><td>unmatched</td><td>12655327_analysis_0</td><td>Task × error-rate effect</td><td class="">0.629</td><td>0.044</td><td>0.219</td><td>low_total_score</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-unmatched"><td>0</td><td><details class="analysis-coords"><summary>12655327_analysis_0 (16)</summary><pre class="coord-list">-27.0, -66.0, 38.0
+20.0, -53.0, 39.0
+10.0, -43.0, 49.0
+1.0, -75.0, 9.0
+-2.0, -92.0, 15.0
+-44.0, -42.0, 40.0
+-55.0, -28.0, 37.0
+-10.0, 21.0, -10.0
+51.0, 11.0, 40.0
+-46.0, 14.0, 44.0
+-56.0, 16.0, 3.0
+57.0, 28.0, 2.0
+25.0, -36.0, 47.0
+23.0, -37.0, 67.0
+-19.0, -17.0, 15.0
+54.0, -35.0, -9.0</pre></details></td><td>Task × error-rate effect</td><td>16</td><td>12655327_1</td><td>Task effect</td><td>unmatched</td><td class="">0.629</td><td>0.044</td><td>0.219</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>12655327_analysis_1 (8)</summary><pre class="coord-list">-13.0, -89.0, 36.0
+0.0, -48.0, 46.0
+5.0, -51.0, 62.0
+29.0, -70.0, 58.0
+-15.0, -53.0, 61.0
+-31.0, -70.0, 37.0
+36.0, -56.0, 44.0
+44.0, 0.0, -17.0</pre></details></td><td>Task × group × error-rate effect</td><td>8</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="15130588" data-study-category="all_incorrect"><summary><strong>PMID 15130588</strong> | (18)Blackwood,2004 | accepted=0 uncertain=0 unmatched=1 manual=1 auto=4 | <strong>auto&gt;manual = 3</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/15130588/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion review-annotation" data-pmid="15130588" data-study-name="(18)Blackwood,2004" data-study-category="all_incorrect"><summary>Human adjudication</summary><div class="review-box"><p class="resource-note">Choose <strong>Annotation Error</strong> or <strong>Extraction Error</strong>, then optionally add notes. Saved automatically in browser localStorage.</p><div class="review-decision-group"><label><input type="radio" data-role="review-decision" name="review-decision-15130588" value="annotation_error"> Annotation Error</label><label><input type="radio" data-role="review-decision" name="review-decision-15130588" value="extraction_error"> Extraction Error</label><label><input type="radio" data-role="review-decision" name="review-decision-15130588" value=""> Clear selection</label></div><div class="review-reasons" data-role="extraction-reasons" hidden><p><strong>Extraction error reasons</strong></p><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="multiple_analyses_merged_into_one"> Multiple analyses merged into one</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="single_analysis_split_into_multiple"> Single analysis split into multiple</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="section_header_parsed_as_analysis"> Section/header parsed as analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinate_rows_assigned_wrong_analysis"> Coordinate rows assigned to wrong analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="contrast_label_missed_or_truncated"> Contrast label missed or truncated</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="table_structure_misparsed"> Table structure misparsed</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinates_missed_or_incomplete"> Coordinates missed or incomplete</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="other_extraction_issue"> Other extraction issue</label></div><label class="review-note-label" for="review-note-15130588"><strong>Note</strong></label><textarea id="review-note-15130588" data-role="review-note" rows="3" placeholder="Add evidence, rationale, or follow-up notes..."></textarea><p class="resource-note" data-role="review-status">Not reviewed yet.</p></div></details><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-unmatched"><td><details class="analysis-coords"><summary>15130588_1 (6)</summary><pre class="coord-list">-7.7, -77.7, -2.5
+-10.5, -62.6, -26.2
+-29.5, -52.7, -25.0
+-11.2, -86.2, -4.9
+-47.1, -39.3, 34.1
+-42.6, -7.2, 39.8</pre></details></td><td>uncertain decisions&gt;certain decisions</td><td>6</td><td>unmatched</td><td>15130588_analysis_0</td><td>Uncertain decisions&gt;Certain decisions, Balls in a bottle+Personality survey tasks</td><td class="">0.639</td><td>0.000</td><td>0.192</td><td>low_total_score, name_only_signal</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-unmatched"><td>0</td><td><details class="analysis-coords"><summary>15130588_analysis_0 (6)</summary><pre class="coord-list">-32.0, -62.0, -28.0
+-10.0, -73.0, -28.0
+-46.0, 2.0, 42.0
+-51.0, -35.0, 42.0
+-10.0, -95.0, 3.0
+-6.0, -85.0, 4.0</pre></details></td><td>Uncertain decisions&gt;Certain decisions, Balls in a bottle+Personality survey tasks</td><td>6</td><td>15130588_1</td><td>uncertain decisions&gt;certain decisions</td><td>unmatched</td><td class="">0.639</td><td>0.000</td><td>0.192</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>15130588_analysis_1 (3)</summary><pre class="coord-list">-28.0, 38.0, 28.0
+10.0, -44.0, 43.0
+-24.0, -5.0, -18.0</pre></details></td><td>Certain decisions&gt;Uncertain decisions, Balls in a bottle+Personality survey tasks</td><td>3</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>15130588_analysis_2 (7)</summary><pre class="coord-list">-38.0, -58.0, 0.0
+-52.0, -26.0, 32.0
+34.0, -42.0, 48.0
+40.0, -30.0, 40.0
+40.0, -72.0, 6.0
+48.0, 2.0, 34.0
+26.0, -10.0, 56.0</pre></details></td><td>Uncertain decisions&gt;Certain decisions, Balls in a bottle&gt;Personality survey task</td><td>7</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>15130588_analysis_3 (4)</summary><pre class="coord-list">-44.0, 20.0, -16.0
+-36.0, -66.0, 48.0
+-64.0, -30.0, -8.0
+16.0, -96.0, 6.0</pre></details></td><td>Uncertain decisions&gt;Certain decisions, Personality survey&gt;Balls in a bottle task</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="18787233" data-study-category="all_incorrect"><summary><strong>PMID 18787233</strong> | (18)Lawrence, 2009 | accepted=0 uncertain=0 unmatched=1 manual=1 auto=6 | <strong>auto&gt;manual = 5</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/18787233/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion review-annotation" data-pmid="18787233" data-study-name="(18)Lawrence, 2009" data-study-category="all_incorrect"><summary>Human adjudication</summary><div class="review-box"><p class="resource-note">Choose <strong>Annotation Error</strong> or <strong>Extraction Error</strong>, then optionally add notes. Saved automatically in browser localStorage.</p><div class="review-decision-group"><label><input type="radio" data-role="review-decision" name="review-decision-18787233" value="annotation_error"> Annotation Error</label><label><input type="radio" data-role="review-decision" name="review-decision-18787233" value="extraction_error"> Extraction Error</label><label><input type="radio" data-role="review-decision" name="review-decision-18787233" value=""> Clear selection</label></div><div class="review-reasons" data-role="extraction-reasons" hidden><p><strong>Extraction error reasons</strong></p><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="multiple_analyses_merged_into_one"> Multiple analyses merged into one</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="single_analysis_split_into_multiple"> Single analysis split into multiple</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="section_header_parsed_as_analysis"> Section/header parsed as analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinate_rows_assigned_wrong_analysis"> Coordinate rows assigned to wrong analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="contrast_label_missed_or_truncated"> Contrast label missed or truncated</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="table_structure_misparsed"> Table structure misparsed</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinates_missed_or_incomplete"> Coordinates missed or incomplete</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="other_extraction_issue"> Other extraction issue</label></div><label class="review-note-label" for="review-note-18787233"><strong>Note</strong></label><textarea id="review-note-18787233" data-role="review-note" rows="3" placeholder="Add evidence, rationale, or follow-up notes..."></textarea><p class="resource-note" data-role="review-status">Not reviewed yet.</p></div></details><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-unmatched"><td><details class="analysis-coords"><summary>18787233_1 (5)</summary><pre class="coord-list">-57.1, -14.8, 28.2
+-4.4, 28.4, 10.1
+3.3, 14.8, 10.4
+6.0, 28.3, 10.4
+-57.0, -10.9, 21.5</pre></details></td><td>IGT&gt;control task</td><td>5</td><td>unmatched</td><td>18787233_analysis_5</td><td>Decision making per se</td><td class="">0.300</td><td>0.044</td><td>0.121</td><td>low_total_score</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-auto-unmatched"><td>0</td><td><details class="analysis-coords"><summary>18787233_analysis_0 (10)</summary><pre class="coord-list">-30.0, -93.0, 12.0
+-3.0, 42.0, 12.0
+-3.0, 51.0, 3.0
+-9.0, 48.0, 18.0
+-48.0, 21.0, -9.0
+-27.0, 21.0, -18.0
+-36.0, 6.0, -6.0
+-30.0, 12.0, -12.0
+51.0, 18.0, 3.0
+36.0, 27.0, 3.0</pre></details></td><td>Choices from risky versus safe decks</td><td>10</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>18787233_analysis_1 (9)</summary><pre class="coord-list">-3.0, 66.0, 15.0
+6.0, 66.0, 9.0
+0.0, 60.0, -6.0
+-3.0, 21.0, 51.0
+-6.0, 9.0, 60.0
+-6.0, 18.0, 66.0
+-54.0, -9.0, 9.0
+-42.0, 21.0, -9.0
+-36.0, 15.0, -6.0</pre></details></td><td>Positive correlation with score</td><td>9</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>18787233_analysis_2 (2)</summary><pre class="coord-list">-27.0, 21.0, -6.0
+-42.0, 15.0, -3.0</pre></details></td><td>Decreases in activation over time (linear)</td><td>2</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>18787233_analysis_3 (1)</summary><pre class="coord-list">-3.0, 21.0, 51.0</pre></details></td><td>In good performers only (n = 9)</td><td>1</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>4</td><td><details class="analysis-coords"><summary>18787233_analysis_4 (13)</summary><pre class="coord-list">24.0, -48.0, 21.0
+3.0, -12.0, 15.0
+36.0, -75.0, -45.0
+-21.0, -21.0, 27.0
+-18.0, 18.0, 12.0
+12.0, -42.0, -48.0
+-24.0, -48.0, 24.0
+27.0, -12.0, 30.0
+54.0, -39.0, 51.0
+-27.0, -63.0, -42.0
+-21.0, 18.0, 63.0
+18.0, 30.0, 3.0
+-27.0, -63.0, 54.0</pre></details></td><td>analysis_4</td><td>13</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-unmatched"><td>5</td><td><details class="analysis-coords"><summary>18787233_analysis_5 (5)</summary><pre class="coord-list">9.0, 36.0, -3.0
+6.0, 21.0, 0.0
+-3.0, 36.0, -3.0
+-63.0, -9.0, 30.0
+-63.0, -6.0, 21.0</pre></details></td><td>Decision making per se</td><td>5</td><td>18787233_1</td><td>IGT&gt;control task</td><td>unmatched</td><td class="">0.300</td><td>0.044</td><td>0.121</td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="28131862" data-study-category="all_incorrect"><summary><strong>PMID 28131862</strong> | (23)Krueger 2017 | accepted=0 uncertain=0 unmatched=1 manual=1 auto=1 | <strong>auto=manual = 0</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/28131862/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion review-annotation" data-pmid="28131862" data-study-name="(23)Krueger 2017" data-study-category="all_incorrect"><summary>Human adjudication</summary><div class="review-box"><p class="resource-note">Choose <strong>Annotation Error</strong> or <strong>Extraction Error</strong>, then optionally add notes. Saved automatically in browser localStorage.</p><div class="review-decision-group"><label><input type="radio" data-role="review-decision" name="review-decision-28131862" value="annotation_error"> Annotation Error</label><label><input type="radio" data-role="review-decision" name="review-decision-28131862" value="extraction_error"> Extraction Error</label><label><input type="radio" data-role="review-decision" name="review-decision-28131862" value=""> Clear selection</label></div><div class="review-reasons" data-role="extraction-reasons" hidden><p><strong>Extraction error reasons</strong></p><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="multiple_analyses_merged_into_one"> Multiple analyses merged into one</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="single_analysis_split_into_multiple"> Single analysis split into multiple</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="section_header_parsed_as_analysis"> Section/header parsed as analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinate_rows_assigned_wrong_analysis"> Coordinate rows assigned to wrong analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="contrast_label_missed_or_truncated"> Contrast label missed or truncated</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="table_structure_misparsed"> Table structure misparsed</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinates_missed_or_incomplete"> Coordinates missed or incomplete</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="other_extraction_issue"> Other extraction issue</label></div><label class="review-note-label" for="review-note-28131862"><strong>Note</strong></label><textarea id="review-note-28131862" data-role="review-note" rows="3" placeholder="Add evidence, rationale, or follow-up notes..."></textarea><p class="resource-note" data-role="review-status">Not reviewed yet.</p></div></details><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-unmatched"><td><details class="analysis-coords"><summary>28131862_1 (14)</summary><pre class="coord-list">27.2, 76.5, 21.9
+-30.2, 72.1, 25.0
+-33.3, -20.5, 5.1
+6.2, 64.3, -13.6
+22.9, 53.3, -12.6
+10.3, 60.4, -29.4
+-15.2, 3.5, 21.6
+20.9, 77.3, 32.5
+25.3, 54.9, -3.4
+37.8, 58.9, 1.7
+21.5, 55.1, -35.4
+-26.5, 59.1, -0.4
+30.5, -19.8, 6.4
+45.1, 59.1, 5.9</pre></details></td><td>experimentalmotion&gt;control conditions</td><td>14</td><td>unmatched</td><td>28131862_analysis_0</td><td>Areas showing both a main effect of trial type (dots vs. arrows) and an interaction between trial type and ramp regressor type (up-ramp vs. down-ramp).</td><td class="">0.242</td><td>0.170</td><td>0.192</td><td>low_total_score</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-unmatched"><td>0</td><td><details class="analysis-coords"><summary>28131862_analysis_0 (14)</summary><pre class="coord-list">-31.3, 79.4, 17.5
+-34.4, -20.3, 3.7
+7.3, 68.0, -25.0
+30.0, 84.1, 13.0
+33.8, -19.0, 4.3
+25.2, 56.6, -23.2
+11.6, 62.6, -42.2
+-15.0, 6.6, 19.6
+23.4, 85.8, 24.7
+49.1, 64.5, -3.5
+27.9, 59.1, -13.1
+41.2, 63.8, -8.0
+23.5, 56.5, -48.5
+-27.5, 63.5, -9.5</pre></details></td><td>Areas showing both a main effect of trial type (dots vs. arrows) and an interaction between trial type and ramp regressor type (up-ramp vs. down-ramp).</td><td>14</td><td>28131862_1</td><td>experimentalmotion&gt;control conditions</td><td>unmatched</td><td class="">0.242</td><td>0.170</td><td>0.192</td></tr></tbody></table></div></details></details></details></section>
+  
+  
+<script>
+(() => {
+  const STORAGE_KEY = "fuzzy_matching_human_review_v1";
+  const reviewPanels = Array.from(document.querySelectorAll(".review-annotation"));
+  if (!reviewPanels.length) {
+    return;
+  }
+
+  const REVIEW_TOTAL = 4;
+  const progressEl = document.getElementById("review-progress");
+  const exportJsonBtn = document.getElementById("review-export-json");
+  const exportCsvBtn = document.getElementById("review-export-csv");
+  const clearBtn = document.getElementById("review-clear");
+
+  function readStore() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        return { entries: {} };
+      }
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") {
+        return { entries: {} };
+      }
+      if (!parsed.entries || typeof parsed.entries !== "object") {
+        parsed.entries = {};
+      }
+      return parsed;
+    } catch (_err) {
+      return { entries: {} };
+    }
+  }
+
+  function writeStore(store) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    } catch (_err) {
+      // best-effort only
+    }
+  }
+
+  function escapeCsvValue(value) {
+    const text = String(value ?? "");
+    if (text.includes(",") || text.includes("\n") || text.includes("\"")) {
+      return "\""+text.replace(/\"/g, "\"\"")+"\"";
+    }
+    return text;
+  }
+
+  function buildCsv(entries) {
+    const header = [
+      "pmid",
+      "study_name",
+      "study_category",
+      "decision",
+      "extraction_reasons",
+      "note",
+      "updated_at"
+    ];
+    const lines = [header.join(",")];
+    for (const row of entries) {
+      lines.push([
+        escapeCsvValue(row.pmid),
+        escapeCsvValue(row.study_name),
+        escapeCsvValue(row.study_category),
+        escapeCsvValue(row.decision),
+        escapeCsvValue((row.extraction_reasons || []).join("|")),
+        escapeCsvValue(row.note || ""),
+        escapeCsvValue(row.updated_at || "")
+      ].join(","));
+    }
+    return lines.join("\n");
+  }
+
+  function downloadFile(filename, content, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function getDecision(panel) {
+    const selected = panel.querySelector('input[data-role="review-decision"]:checked');
+    return selected ? selected.value : "";
+  }
+
+  function setExtractionVisibility(panel) {
+    const reasonsWrap = panel.querySelector('[data-role="extraction-reasons"]');
+    if (!reasonsWrap) {
+      return;
+    }
+    const isExtraction = getDecision(panel) === "extraction_error";
+    reasonsWrap.hidden = !isExtraction;
+    const checkboxes = reasonsWrap.querySelectorAll('input[data-role="extraction-reason"]');
+    checkboxes.forEach((checkbox) => {
+      checkbox.disabled = !isExtraction;
+    });
+  }
+
+  function setStatus(panel, decision) {
+    const statusEl = panel.querySelector('[data-role="review-status"]');
+    if (!statusEl) {
+      return;
+    }
+    if (!decision) {
+      statusEl.textContent = "Not reviewed yet.";
+    } else if (decision === "annotation_error") {
+      statusEl.textContent = "Saved: Annotation Error";
+    } else if (decision === "extraction_error") {
+      statusEl.textContent = "Saved: Extraction Error";
+    } else {
+      statusEl.textContent = "Saved";
+    }
+  }
+
+  function collectEntry(panel) {
+    const pmid = panel.getAttribute("data-pmid") || "";
+    const studyName = panel.getAttribute("data-study-name") || "";
+    const studyCategory = panel.getAttribute("data-study-category") || "";
+    const decision = getDecision(panel);
+    const extractionReasons = Array.from(
+      panel.querySelectorAll('input[data-role="extraction-reason"]:checked')
+    ).map((node) => node.value);
+    const noteNode = panel.querySelector('textarea[data-role="review-note"]');
+    const note = noteNode ? noteNode.value.trim() : "";
+    return {
+      pmid,
+      study_name: studyName,
+      study_category: studyCategory,
+      decision,
+      extraction_reasons: decision === "extraction_error" ? extractionReasons : [],
+      note,
+      updated_at: new Date().toISOString(),
+    };
+  }
+
+  function loadPanel(panel, entry) {
+    if (!entry) {
+      setExtractionVisibility(panel);
+      setStatus(panel, "");
+      return;
+    }
+    const decision = entry.decision || "";
+    const radios = panel.querySelectorAll('input[data-role="review-decision"]');
+    radios.forEach((radio) => {
+      radio.checked = radio.value === decision;
+    });
+    const reasons = new Set(Array.isArray(entry.extraction_reasons) ? entry.extraction_reasons : []);
+    const reasonChecks = panel.querySelectorAll('input[data-role="extraction-reason"]');
+    reasonChecks.forEach((checkbox) => {
+      checkbox.checked = reasons.has(checkbox.value);
+    });
+    const noteNode = panel.querySelector('textarea[data-role="review-note"]');
+    if (noteNode) {
+      noteNode.value = entry.note || "";
+    }
+    setExtractionVisibility(panel);
+    setStatus(panel, decision);
+  }
+
+  function updateProgress(entries) {
+    if (!progressEl) {
+      return;
+    }
+    const completed = Object.values(entries).filter((entry) => {
+      return entry && (entry.decision === "annotation_error" || entry.decision === "extraction_error");
+    }).length;
+    progressEl.innerHTML = "<strong>Review progress:</strong> " + completed + " / " + REVIEW_TOTAL + " completed";
+  }
+
+  const store = readStore();
+  reviewPanels.forEach((panel) => {
+    const pmid = panel.getAttribute("data-pmid") || "";
+    loadPanel(panel, store.entries[pmid]);
+  });
+  updateProgress(store.entries);
+
+  function persistPanel(panel) {
+    const entry = collectEntry(panel);
+    if (!entry.pmid) {
+      return;
+    }
+    if (!entry.decision && !entry.note && entry.extraction_reasons.length === 0) {
+      delete store.entries[entry.pmid];
+      writeStore(store);
+      setExtractionVisibility(panel);
+      setStatus(panel, "");
+      updateProgress(store.entries);
+      return;
+    }
+    store.entries[entry.pmid] = entry;
+    writeStore(store);
+    setExtractionVisibility(panel);
+    setStatus(panel, entry.decision);
+    updateProgress(store.entries);
+  }
+
+  reviewPanels.forEach((panel) => {
+    panel.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+      if (target.matches('input[data-role="review-decision"]')) {
+        setExtractionVisibility(panel);
+      }
+      persistPanel(panel);
+    });
+    panel.addEventListener("input", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+      if (target.matches('textarea[data-role="review-note"]')) {
+        persistPanel(panel);
+      }
+    });
+  });
+
+  function getExportEntries() {
+    const entries = [];
+    for (const panel of reviewPanels) {
+      const pmid = panel.getAttribute("data-pmid") || "";
+      const stored = store.entries[pmid];
+      if (!stored) {
+        continue;
+      }
+      if (stored.decision === "annotation_error" || stored.decision === "extraction_error" || stored.note) {
+        entries.push(stored);
+      }
+    }
+    entries.sort((a, b) => {
+      const aP = String(a.pmid || "");
+      const bP = String(b.pmid || "");
+      if (aP.length !== bP.length) {
+        return aP.length - bP.length;
+      }
+      return aP.localeCompare(bP);
+    });
+    return entries;
+  }
+
+  if (exportJsonBtn) {
+    exportJsonBtn.addEventListener("click", () => {
+      const entries = getExportEntries();
+      const payload = {
+        generated_at: new Date().toISOString(),
+        total_review_studies: REVIEW_TOTAL,
+        completed_reviews: entries.filter((entry) => entry.decision).length,
+        entries,
+      };
+      downloadFile("fuzzy_matching_human_review.json", JSON.stringify(payload, null, 2), "application/json");
+    });
+  }
+
+  if (exportCsvBtn) {
+    exportCsvBtn.addEventListener("click", () => {
+      const entries = getExportEntries();
+      const csv = buildCsv(entries);
+      downloadFile("fuzzy_matching_human_review.csv", csv, "text/csv;charset=utf-8");
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      const ok = window.confirm("Clear all saved human review annotations for this report?");
+      if (!ok) {
+        return;
+      }
+      store.entries = {};
+      writeStore(store);
+      reviewPanels.forEach((panel) => {
+        loadPanel(panel, null);
+      });
+      updateProgress(store.entries);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
