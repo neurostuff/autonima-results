@@ -23,6 +23,7 @@ ELINK_PRLINKS_URL = (
 UT_EZPROXY_DOMAIN = "ezproxy.lib.utexas.edu"
 SCIENCEDIRECT_HOSTS = {"www.sciencedirect.com", "sciencedirect.com"}
 ELSEVIER_LINKING_HOSTS = {"linkinghub.elsevier.com"}
+PMC_HOSTS = {"pmc.ncbi.nlm.nih.gov"}
 DEFAULT_USER_AGENT = "open_pubmed_in_browser/2.0 (+manual-fulltext-workflow)"
 REDIRECT_PAGE_DIR = Path("downloaded_files/open_pubmed_redirects")
 SAVE_BOOKMARKLET = (
@@ -123,6 +124,15 @@ def parse_args() -> argparse.Namespace:
         help=(
             "Filter PMIDs by publisher when resolving publisher links: all (default), "
             "exclude Elsevier/ScienceDirect, or only Elsevier/ScienceDirect."
+        ),
+    )
+    parser.add_argument(
+        "--pmc-filter",
+        choices=["all", "exclude", "only"],
+        default="all",
+        help=(
+            "Filter PMIDs by publisher when resolving publisher links: all (default), "
+            "exclude PubMed Central links, or only PubMed Central links."
         ),
     )
     parser.add_argument(
@@ -302,6 +312,17 @@ def is_elsevier_publisher_url(url: str) -> bool:
     return "elsevier.com" in host or "sciencedirect.com" in host
 
 
+def is_pmc_publisher_url(url: str) -> bool:
+    parts = urlsplit(url)
+    host = (parts.hostname or "").lower()
+    path = (parts.path or "").lower()
+    if host in PMC_HOSTS:
+        return True
+    if host.endswith("ncbi.nlm.nih.gov") and path.startswith("/pmc/"):
+        return True
+    return False
+
+
 def maybe_wrap_proxy(url: str, proxy_prefix: str) -> str:
     if not proxy_prefix:
         return url
@@ -408,17 +429,25 @@ def build_target_records(args: argparse.Namespace, pmids: list[str]) -> list[dic
 
     records: list[dict[str, str]] = []
     unresolved_publisher_pmids: list[str] = []
-    excluded_by_filter: list[str] = []
+    excluded_by_elsevier_filter: list[str] = []
+    excluded_by_pmc_filter: list[str] = []
     for pmid in pmids:
         targets: list[tuple[str, str]] = []
         publisher_url = publisher_by_pmid.get(pmid) if args.mode in {"publisher", "both"} else None
         publisher_is_elsevier = bool(publisher_url and is_elsevier_publisher_url(publisher_url))
+        publisher_is_pmc = bool(publisher_url and is_pmc_publisher_url(publisher_url))
 
         if args.elsevier_filter == "exclude" and publisher_is_elsevier:
-            excluded_by_filter.append(pmid)
+            excluded_by_elsevier_filter.append(pmid)
             continue
         if args.elsevier_filter == "only" and not publisher_is_elsevier:
-            excluded_by_filter.append(pmid)
+            excluded_by_elsevier_filter.append(pmid)
+            continue
+        if args.pmc_filter == "exclude" and publisher_is_pmc:
+            excluded_by_pmc_filter.append(pmid)
+            continue
+        if args.pmc_filter == "only" and not publisher_is_pmc:
+            excluded_by_pmc_filter.append(pmid)
             continue
 
         if args.mode in {"pubmed", "both"}:
@@ -463,12 +492,28 @@ def build_target_records(args: argparse.Namespace, pmids: list[str]) -> list[dic
             f"{action}: {preview}{suffix}"
         )
 
-    if excluded_by_filter:
-        suffix = "" if len(excluded_by_filter) <= 10 else f" ... (+{len(excluded_by_filter) - 10} more)"
-        preview = ", ".join(excluded_by_filter[:10])
+    if excluded_by_elsevier_filter:
+        suffix = (
+            ""
+            if len(excluded_by_elsevier_filter) <= 10
+            else f" ... (+{len(excluded_by_elsevier_filter) - 10} more)"
+        )
+        preview = ", ".join(excluded_by_elsevier_filter[:10])
         print(
-            f"[INFO] Skipped {len(excluded_by_filter)} PMID(s) due to --elsevier-filter="
+            f"[INFO] Skipped {len(excluded_by_elsevier_filter)} PMID(s) due to --elsevier-filter="
             f"{args.elsevier_filter}: {preview}{suffix}"
+        )
+
+    if excluded_by_pmc_filter:
+        suffix = (
+            ""
+            if len(excluded_by_pmc_filter) <= 10
+            else f" ... (+{len(excluded_by_pmc_filter) - 10} more)"
+        )
+        preview = ", ".join(excluded_by_pmc_filter[:10])
+        print(
+            f"[INFO] Skipped {len(excluded_by_pmc_filter)} PMID(s) due to --pmc-filter="
+            f"{args.pmc_filter}: {preview}{suffix}"
         )
 
     return records
@@ -496,6 +541,8 @@ def main() -> None:
         raise ValueError("--elink-timeout must be positive.")
     if args.elsevier_filter != "all" and args.mode == "pubmed":
         raise ValueError("--elsevier-filter requires --mode publisher or --mode both.")
+    if args.pmc_filter != "all" and args.mode == "pubmed":
+        raise ValueError("--pmc-filter requires --mode publisher or --mode both.")
 
     if not pmid_file.exists():
         raise FileNotFoundError(f"PMID file not found: {pmid_file}")
