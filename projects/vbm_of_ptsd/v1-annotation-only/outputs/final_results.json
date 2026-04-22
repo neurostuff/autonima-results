@@ -1,0 +1,3792 @@
+{
+  "config": {
+    "search": {
+      "database": "pubmed",
+      "query": "",
+      "max_results": null,
+      "date_from": null,
+      "date_to": null,
+      "email": null,
+      "pmids_file": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/annotation-only-ids.txt",
+      "pmids_list": null
+    },
+    "screening": {
+      "abstract": {
+        "skip_stage": true
+      },
+      "fulltext": {
+        "skip_stage": true
+      }
+    },
+    "retrieval": {
+      "sources": [
+        "pubget"
+      ],
+      "timeout": 30,
+      "max_retries": 3,
+      "download_directory": "downloads",
+      "n_jobs": 1,
+      "load_excluded": true,
+      "full_text_sources": [
+        {
+          "root_path": "/home/zorro/repos/autonima-results/articles/elsevier_output/",
+          "pmid_source": "folder_name",
+          "text_path_templates": [
+            "text.txt"
+          ],
+          "coordinates_path_templates": [
+            "coordinates.json"
+          ]
+        },
+        {
+          "root_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+          "pmid_source": "file_name",
+          "allowed_extensions": [
+            ".html"
+          ],
+          "processed_data_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/"
+        }
+      ],
+      "parse_coordinates": false,
+      "coordinate_model": "gpt-4o-mini"
+    },
+    "parsing": {
+      "parse_coordinates": true,
+      "coordinate_model": "gpt-5-mini-2025-08-07"
+    },
+    "annotation": {
+      "model": "gpt-5-mini-2025-08-07",
+      "create_all_included_annotations": true,
+      "metadata_fields": [
+        "analysis_name",
+        "analysis_description",
+        "table_caption",
+        "study_title",
+        "study_abstract"
+      ],
+      "annotations": [
+        {
+          "name": "increased_gm",
+          "description": "Increased grey matter volume in PTSD patients relative to controls",
+          "inclusion_criteria": [
+            "Voxelwise whole-brain grey matter comparison between PTSD patients and controls, with a patients > controls contrast indicating increased grey matter in PTSD patients."
+          ],
+          "exclusion_criteria": []
+        },
+        {
+          "name": "decreased_gm",
+          "description": "Decreased grey matter volume in PTSD patients relative to controls",
+          "inclusion_criteria": [
+            "Voxelwise whole-brain grey matter comparison between PTSD patients and controls, with a patients < controls contrast indicating reduced grey matter in PTSD patients."
+          ],
+          "exclusion_criteria": []
+        }
+      ],
+      "enabled": true
+    },
+    "output": {
+      "directory": "projects/vbm_of_ptsd/v1-annotation-only",
+      "prisma_diagram": true,
+      "formats": [
+        "csv",
+        "json"
+      ],
+      "nimads": true,
+      "export_excluded_studies": true
+    }
+  },
+  "studies": [
+    {
+      "pmid": "28287194",
+      "pmcid": null,
+      "title": "Morphovolumetric changes after EMDR treatment in drug-na\u00efve PTSD patients.",
+      "abstract": "Few studies have investigated the effects of efficacious psychotherapy on structural alterations of discrete brain regions associated with posttraumatic stress disorder (PTSD). We therefore proposed to evaluate the neurobiological effects of eye movement desensitization and reprocessing (EMDR) on 19 patients with drug-na\u00efve PTSD without comorbidity, matched with 19 untreated healthy controls.",
+      "authors": [
+        "Letizia Bossini",
+        "Emiliano Santarnecchi",
+        "Ilaria Casolaro",
+        "Despoina Koukouna",
+        "Claudia Caterini",
+        "Federica Cecchini",
+        "Valentina Fortini",
+        "Giampaolo Vatti",
+        "Daniela Marino",
+        "Isabel Fernandez",
+        "Alessandro Rossi",
+        "Andrea Fagiolini"
+      ],
+      "journal": "Rivista di psichiatria",
+      "publication_date": "2017",
+      "doi": "10.1708/2631.27051",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.865964",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/28287194.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "22453299",
+      "pmcid": null,
+      "title": "Effects of post-traumatic stress disorder on occipital lobe function and structure.",
+      "abstract": "Although there is evidence for strong connectivity between the amygdala and the visual cortex and some evidence for reduced occipital lobe gray matter volume in patients with post-traumatic stress disorder (PTSD), few studies have directly examined the effects of PTSD on occipital function. The current study used functional and structural MRI to examine occipital cortex function and structure in male combat veterans with and without PTSD. Left occipital gray matter volume was reduced in PTSD patients relative to the controls and correlated negatively with the severity of PTSD symptoms. Functional activity in the lateral occipital complex to aversive and nonaversive pictures presented in novel and repeated presentations was not altered by PTSD. These findings suggest that PTSD adversely affects occipital lobe volume but not the reactivity of the lateral occipital complex to generally aversive, trauma nonspecific stimuli.",
+      "authors": [
+        "Linda L Chao",
+        "Maryann Lenoci",
+        "Thomas C Neylan"
+      ],
+      "journal": "Neuroreport",
+      "publication_date": "2012 May 09",
+      "doi": "10.1097/WNR.0b013e328352025e",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866040",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/22453299.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "19538748",
+      "pmcid": 2704184,
+      "title": "Insular cortex involvement in declarative memory deficits in patients with post-traumatic stress disorder.",
+      "abstract": "Neuroimaging studies have proved that hippocampus relate to the deficient of memory in patients with post-traumatic stress disorder (PTSD). Many studies in healthy subjects also shown that insular cortex (IC) be involved in the declarative memory. This study was designed to investigate whether insular cortex is involved in declarative memory deficits in patients with PTSD.",
+      "authors": [
+        "Shulin Chen",
+        "Lingjiang Li",
+        "Baihua Xu",
+        "Jun Liu"
+      ],
+      "journal": "BMC psychiatry",
+      "publication_date": "2009 Jun 18",
+      "doi": "10.1186/1471-244X-9-39",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:52.020624",
+      "screened_at": null,
+      "full_text_path": null,
+      "full_text_source": "pubget",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "23155380",
+      "pmcid": 3498281,
+      "title": "Different regional gray matter loss in recent onset PTSD and non PTSD after a single prolonged trauma exposure.",
+      "abstract": "Gray matter loss in the limbic structures was found in recent onset post traumatic stress disorder (PTSD) patients. In the present study, we measured regional gray matter volume in trauma survivors to verify the hypothesis that stress may cause different regional gray matter loss in trauma survivors with and without recent onset PTSD.",
+      "authors": [
+        "Yunchun Chen",
+        "Kuang Fu",
+        "Chen Feng",
+        "Lihua Tang",
+        "Jian Zhang",
+        "Yi Huan",
+        "Jinli Cui",
+        "Yunfeng Mu",
+        "Shun Qi",
+        "Lize Xiong",
+        "Cheng Ma",
+        "Huaihai Wang",
+        "Qingrong Tan",
+        "Hong Yin"
+      ],
+      "journal": "PloS one",
+      "publication_date": "2012",
+      "doi": "10.1371/journal.pone.0048298",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:52.020650",
+      "screened_at": null,
+      "full_text_path": null,
+      "full_text_source": "pubget",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "pone-0048298-t002",
+          "table_label": "Table 2",
+          "table_caption": "Gray matter volume differences between recent onset PTSD, non PTSD and normal Controls.",
+          "table_foot": "Corrected with Family Wise Error (FWE), p<0.05.MNI: Montreal Neurological Institute system.PTSD: Post Traumatic Stress Disorder.",
+          "table_data_path": "projects/vbm_of_ptsd/v1-annotation-only/retrieval/pubget_data/articles/92e/pmcid_3498281/tables/table_001.csv",
+          "table_raw_path": null
+        },
+        {
+          "table_id": "pone-0048298-t003",
+          "table_label": "Table 3",
+          "table_caption": "Correlations of Gray matter volume with CAPS score in trauma survivors, recent onset PTSD and non PTSD.",
+          "table_foot": "corrected at cluster level, p<0.05.MNI:Montreal Neurological Institute system.PTSD: Post Traumatic Stress Disorder.",
+          "table_data_path": "projects/vbm_of_ptsd/v1-annotation-only/retrieval/pubget_data/articles/92e/pmcid_3498281/tables/table_002.csv",
+          "table_raw_path": null
+        }
+      ],
+      "analyses": [
+        {
+          "name": "Normal control (n\n=20) > Recent onset PTSD (n\n=10)",
+          "description": null,
+          "table_id": "pone-0048298-t002",
+          "points": [
+            {
+              "coordinates": [
+                -6.0,
+                26.0,
+                20.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 5.25,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.004,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Normal control (n\n=20) > non PTSD (n\n=10)",
+          "description": null,
+          "table_id": "pone-0048298-t002",
+          "points": [
+            {
+              "coordinates": [
+                -27.0,
+                -15.0,
+                -3.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 4.92,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.013,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                21.0,
+                -24.0,
+                26.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 5.92,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.0001,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "trauma survivors",
+          "description": null,
+          "table_id": "pone-0048298-t003",
+          "points": [
+            {
+              "coordinates": [
+                18.0,
+                -67.0,
+                28.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 4.27,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.0001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                32.0,
+                -87.0,
+                5.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 3.74,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.0001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                4.0,
+                44.0,
+                27.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 3.97,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.0001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -13.0,
+                -69.0,
+                26.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 3.91,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.0001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -9.0,
+                -6.0,
+                32.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 3.92,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.0001,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "PTSD group",
+          "description": null,
+          "table_id": "pone-0048298-t003",
+          "points": [
+            {
+              "coordinates": [
+                5.0,
+                42.0,
+                30.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 4.83,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.0001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                12.0,
+                46.0,
+                2.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 4.83,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.003,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -6.0,
+                61.0,
+                12.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 4.1,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.004,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "non PTSD group",
+          "description": null,
+          "table_id": "pone-0048298-t003",
+          "points": []
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "26347628",
+      "pmcid": 4542504,
+      "title": "Gray Matter Alterations in Post-Traumatic Stress Disorder, Obsessive-Compulsive Disorder, and Social Anxiety Disorder.",
+      "abstract": "Post-traumatic stress disorder (PTSD), obsessive-compulsive disorder (OCD), and social anxiety disorder (SAD) all bear the core symptom of anxiety and are separately classified in the new DSM-5 system. The aim of the present study is to obtain evidence for neuroanatomical difference for these disorders. We applied voxel-based morphometry (VBM) with Diffeomorphic Anatomical Registration Through Exponentiated Lie to compare gray matter volume (GMV) in magnetic resonance images obtained for 30 patients with PTSD, 29 patients with OCD, 20 patients with SAD, and 30 healthy controls. GMV across all four groups differed in left hypothalamus and left inferior parietal lobule and post hoc analyses revealed that this difference is primarily due to reduced GMV in the PTSD group relative to the other groups. Further analysis revealed that the PTSD group also showed reduced GMV in frontal lobe, temporal lobe, and cerebellum compared to the OCD group, and reduced GMV in frontal lobes bilaterally compared to SAD group. A significant negative correlation with anxiety symptoms is observed for GMV in left hypothalamus in three disorder groups. We have thus found evidence for brain structure differences that in future could provide biomarkers to potentially support classification of these disorders using MRI.",
+      "authors": [
+        "Bochao Cheng",
+        "Xiaoqi Huang",
+        "Shiguang Li",
+        "Xinyu Hu",
+        "Ya Luo",
+        "Xiuli Wang",
+        "Xun Yang",
+        "Changjian Qiu",
+        "Yanchun Yang",
+        "Wei Zhang",
+        "Feng Bi",
+        "Neil Roberts",
+        "Qiyong Gong"
+      ],
+      "journal": "Frontiers in behavioral neuroscience",
+      "publication_date": "2015",
+      "doi": "10.3389/fnbeh.2015.00219",
+      "keywords": [
+        "gray matter volume",
+        "obsessive\u2013compulsive disorder",
+        "post-traumatic stress disorders",
+        "social anxiety disorder"
+      ],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:52.020652",
+      "screened_at": null,
+      "full_text_path": null,
+      "full_text_source": "pubget",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "T2",
+          "table_label": "Table 2",
+          "table_caption": "Significant differences in GMV observed between the four groups.",
+          "table_foot": "p(FWE-corrected)\u2009<\u20090.05.ANCOVA, analysis of covariance; FWE, family-wise error; MNI, Montreal Neurological Institute.",
+          "table_data_path": "projects/vbm_of_ptsd/v1-annotation-only/retrieval/pubget_data/articles/70e/pmcid_4542504/tables/table_001.csv",
+          "table_raw_path": null
+        },
+        {
+          "table_id": "T3",
+          "table_label": "Table 3",
+          "table_caption": "Post hoc whole-brain analysis of GMV differences between groups.",
+          "table_foot": "p(FWE-corrected)\u2009<\u20090.05.HC, healthy control; ITG, inferior temporal gyrus; MTG, middle temporal gyrus; PHG, parahippocampal gyrus; OFC, orbitofrontal cortex; MFG, middle frontal gyrus; CPL, cerebellum posterior lobe.",
+          "table_data_path": "projects/vbm_of_ptsd/v1-annotation-only/retrieval/pubget_data/articles/70e/pmcid_4542504/tables/table_002.csv",
+          "table_raw_path": null
+        }
+      ],
+      "analyses": [
+        {
+          "name": "Significant differences in GMV observed between the four groups.",
+          "description": null,
+          "table_id": "T2",
+          "points": [
+            {
+              "coordinates": [
+                -5.0,
+                -4.0,
+                -9.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 11.91,
+                  "kind": "f-statistic"
+                },
+                {
+                  "value": 0.012,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -57.0,
+                -45.0,
+                42.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 11.66,
+                  "kind": "f-statistic"
+                },
+                {
+                  "value": 0.015,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "HC\u2009>\u2009PTSD",
+          "description": null,
+          "table_id": "T3",
+          "points": [
+            {
+              "coordinates": [
+                -5.0,
+                -4.0,
+                -9.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.92,
+                  "kind": "t-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -54.0,
+                -45.0,
+                40.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.68,
+                  "kind": "t-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                53.0,
+                -25.0,
+                -23.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.003,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.38,
+                  "kind": "t-statistic"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "OCD\u2009>\u2009PTSD",
+          "description": null,
+          "table_id": "T3",
+          "points": [
+            {
+              "coordinates": [
+                -20.0,
+                20.0,
+                17.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.55,
+                  "kind": "t-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -53.0,
+                -61.0,
+                -29.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.004,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.5,
+                  "kind": "t-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                29.0,
+                11.0,
+                -26.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.41,
+                  "kind": "t-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -54.0,
+                -58.0,
+                -5.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.29,
+                  "kind": "t-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -62.0,
+                -51.0,
+                36.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.19,
+                  "kind": "t-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                54.0,
+                -17.0,
+                -30.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.002,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 4.94,
+                  "kind": "t-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -53.0,
+                -15.0,
+                -18.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.008,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 4.93,
+                  "kind": "t-statistic"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "SAD\u2009>\u2009PTSD",
+          "description": null,
+          "table_id": "T3",
+          "points": [
+            {
+              "coordinates": [
+                39.0,
+                39.0,
+                -20.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.007,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.33,
+                  "kind": "t-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -45.0,
+                26.0,
+                42.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.002,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 5.24,
+                  "kind": "t-statistic"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "16038682",
+      "pmcid": null,
+      "title": "Size versus shape differences: contrasting voxel-based and volumetric analyses of the anterior cingulate cortex in individuals with acute posttraumatic stress disorder.",
+      "abstract": "Two studies found morphological differences in the anterior cingulate cortex (ACC) of individuals with chronic posttraumatic stress disorder (PTSD). We sought to replicate and extend these findings in a sample of individuals with acute PTSD.",
+      "authors": [
+        "Vincent Corbo",
+        "Marie-H\u00e9l\u00e8ne Cl\u00e9ment",
+        "Jorge L Armony",
+        "Jens C Pruessner",
+        "Alain Brunet"
+      ],
+      "journal": "Biological psychiatry",
+      "publication_date": "2005 Jul 15",
+      "doi": "10.1016/j.biopsych.2005.02.032",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866336",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/16038682.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "21118656",
+      "pmcid": null,
+      "title": "Structural alterations in lateral prefrontal, parietal and posterior midline regions of men with chronic posttraumatic stress disorder.",
+      "abstract": "So far, the neural network associated with posttraumatic stress disorder (PTSD) has been suggested to mainly involve the amygdala, hippocampus and medial prefrontal cortex. However, increasing evidence indicates that cortical regions extending beyond this network might also be implicated in the pathophysiology of PTSD. We aimed to investigate PTSD-related structural alterations in some of these regions.",
+      "authors": [
+        "Cindy Eckart",
+        "Christian Stoppel",
+        "J\u00f6rn Kaufmann",
+        "Claus Tempelmann",
+        "Hermann Hinrichs",
+        "Thomas Elbert",
+        "Hans-Jochen Heinze",
+        "Iris-Tatjana Kolassa"
+      ],
+      "journal": "Journal of psychiatry & neuroscience : JPN",
+      "publication_date": "2011 May",
+      "doi": "10.1503/jpn.100010",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866399",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/21118656.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "19794316",
+      "pmcid": null,
+      "title": "Duration of posttraumatic stress disorder predicts hippocampal grey matter loss.",
+      "abstract": "To examine the impact of environmental stress on grey matter volume in posttraumatic stress disorder (PTSD), we investigated the relationship between duration of PTSD and grey matter volume of hippocampus and anterior cingulate cortex. Twenty-one participants with PTSD and 17 trauma-exposed controls, matched for age and sex and with no history of substance dependence, underwent a T1-weighted structural MRI scan and voxel-based morphometry was employed. After controlling for age, depression and whole-brain volume, analysis of covariance revealed significant reductions in hippocampus and rostral anterior cingulate cortex in PTSD, and there was a significant negative correlation between right hippocampal volume and PTSD duration. This pattern suggests that prolonged PTSD may have cumulative adverse effects on hippocampal volume, highlighting the potential role of genetic-environmental interactions.",
+      "authors": [
+        "Kim Felmingham",
+        "Leanne M Williams",
+        "Thomas J Whitford",
+        "Erin Falconer",
+        "Andrew H Kemp",
+        "Anthony Peduto",
+        "Richard A Bryant"
+      ],
+      "journal": "Neuroreport",
+      "publication_date": "2009 Oct 28",
+      "doi": "10.1097/WNR.0b013e3283300fbc",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866443",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/19794316.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "17923164",
+      "pmcid": null,
+      "title": "Structure of orbitofrontal cortex and its longitudinal course in cancer-related post-traumatic stress disorder.",
+      "abstract": "The neurobiological basis of cancer-related post-traumatic stress disorder (PTSD) has never been studied. We investigated brain structural alterations and the longitudinal courses in patients with cancer-related PTSD. Baseline scans using magnetic resonance imaging were performed in 14 cancer survivors with PTSD, 100 without PTSD, and 70 healthy subjects. Follow-up scans were performed 2 years later in 76 cancer survivors (PTSD, n=9; non-PTSD, n=67). Using voxel-based morphometry, the gray matter volume (GMV) of the cancer survivors with PTSD was compared with the GMVs of those without PTSD and of the healthy subjects. The effects of the interactions between the diagnosis and the timing of the GMV measurements were examined. The GMV of the right orbitofrontal cortex (OFC) was significantly smaller in cancer survivors with PTSD than in those without PTSD or healthy subjects. The interaction between the diagnosis and the timing of the right OFC's GMV measurement was not significant. The OFC, which is thought to be involved in the extinction of fear conditioning and the retrieval of emotional memory, might play an important role in the pathophysiology of PTSD. Moreover, the OFC's GMV may remain constant after the development of cancer-related PTSD.",
+      "authors": [
+        "Yuko Hakamata",
+        "Yutaka Matsuoka",
+        "Masatoshi Inagaki",
+        "Mitsue Nagamine",
+        "Eriko Hara",
+        "Shigeru Imoto",
+        "Koji Murakami",
+        "Yoshiharu Kim",
+        "Yosuke Uchitomi"
+      ],
+      "journal": "Neuroscience research",
+      "publication_date": "2007 Dec",
+      "doi": "10.1016/j.neures.2007.08.012",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866492",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/17923164.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "23021615",
+      "pmcid": null,
+      "title": "Post-traumatic stress symptoms correlate with smaller subgenual cingulate, caudate, and insula volumes in unmedicated combat veterans.",
+      "abstract": "Prior studies have examined differences in brain volume between patients with post-traumatic stress disorder (PTSD) and control subjects. Convergent findings include smaller hippocampus and medial prefrontal cortex volumes in PTSD. However, post-traumatic stress symptoms (PTSS) exist on a spectrum, and neural changes may occur beyond the diagnostic threshold of PTSD. We examined the relationship between PTSS and gray matter among combat-exposed U.S. military veterans. Structural brain magnetic resonance imaging (MRI) was obtained on 28 combat veterans from Operations Enduring and Iraqi Freedom. PTSS were assessed using the Clinician-Administered PTSD Scale (CAPS). Thirteen subjects met criteria for PTSD. Subjects were unmedicated, and free of major comorbid psychiatric disorders. Images were analyzed using voxel-based morphometry, and regressed against the total CAPS score and trauma load. Images were subsequently analyzed by diagnosis of PTSD vs. non-PTSD. CAPS scores were inversely correlated with volumes of the subgenual cingulate (sgACC), caudate, hypothalamus, insula, and left middle temporal gyrus (MTG). Group contrast revealed smaller sgACC, caudate, hypothalamus, left insula, left MTG, and right MFG in the PTSD group. PTSS are associated with abnormalities in limbic structures that may underlie the pathophysiology of PTSD. These abnormalities exist on a continuum with PTSS, beyond a diagnosis of PTSD.",
+      "authors": [
+        "Ryan Herringa",
+        "Mary Phillips",
+        "Jorge Almeida",
+        "Salvatore Insana",
+        "Anne Germain"
+      ],
+      "journal": "Psychiatry research",
+      "publication_date": "2012",
+      "doi": "10.1016/j.pscychresns.2012.02.005",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866563",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/23021615.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "1",
+          "table_label": "Table 2",
+          "table_caption": ". Regional gray matter findings.",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/23021615/1.html"
+        }
+      ],
+      "analyses": [
+        {
+          "name": "\u2191CAPS, \u2193GMV",
+          "description": null,
+          "table_id": "1",
+          "points": [
+            {
+              "coordinates": [
+                6.0,
+                -4.0,
+                -8.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 4.0,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -32.0,
+                -12.0,
+                16.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.87,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                36.0,
+                -10.0,
+                20.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.89,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -60.0,
+                -26.0,
+                -10.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.78,
+                  "kind": "z-statistic"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "\u2191Child Trauma, \u2193GMV",
+          "description": null,
+          "table_id": "1",
+          "points": [
+            {
+              "coordinates": [
+                -44.0,
+                -70.0,
+                -54.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.98,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -28.0,
+                -68.0,
+                -26.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.35,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                16.0,
+                -76.0,
+                -52.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.39,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                36.0,
+                -70.0,
+                -26.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.49,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -42.0,
+                -30.0,
+                38.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.95,
+                  "kind": "z-statistic"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Non-PTSD > PTSD",
+          "description": null,
+          "table_id": "1",
+          "points": [
+            {
+              "coordinates": [
+                10.0,
+                8.0,
+                -14.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 4.44,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -32.0,
+                -12.0,
+                18.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.68,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                38.0,
+                42.0,
+                14.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 4.37,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -64.0,
+                -26.0,
+                -10.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.79,
+                  "kind": "z-statistic"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "17825801",
+      "pmcid": null,
+      "title": "Evidence for acquired pregenual anterior cingulate gray matter loss from a twin study of combat-related posttraumatic stress disorder.",
+      "abstract": "Controversy exists over the nature and origin of reduced regional brain volumes in posttraumatic stress disorder (PTSD). At issue is whether these reductions represent preexisting vulnerability factors for developing PTSD upon traumatic exposure or acquired PTSD signs due to the traumatic stress that caused the PTSD or the chronic stress of having the disorder (or both). We employed a case-control design in monozygotic twin pairs discordant for combat exposure to address the preexisting versus acquired origin of brain morphometric abnormalities in PTSD.",
+      "authors": [
+        "Kiyoto Kasai",
+        "Hidenori Yamasue",
+        "Mark W Gilbertson",
+        "Martha E Shenton",
+        "Scott L Rauch",
+        "Roger K Pitman"
+      ],
+      "journal": "Biological psychiatry",
+      "publication_date": "2008 Mar 15",
+      "doi": "10.1016/j.biopsych.2007.06.022",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866626",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/17825801.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "6",
+          "table_label": "Table 2",
+          "table_caption": "< .001",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/17825801/6.html"
+        },
+        {
+          "table_id": "7",
+          "table_label": "Table 3",
+          "table_caption": ". Results Adjusted for Potentially Confounding Variables",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/17825801/7.html"
+        }
+      ],
+      "analyses": [
+        {
+          "name": null,
+          "description": null,
+          "table_id": "6",
+          "points": [
+            {
+              "coordinates": [
+                44.0,
+                -2.0,
+                -14.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 4.5,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -62.0,
+                -56.0,
+                -4.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 4.47,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                34.0,
+                -28.0,
+                -16.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 4.39,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -36.0,
+                10.0,
+                -4.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.95,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.005,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                0.0,
+                46.0,
+                10.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.71,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.004,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -46.0,
+                42.0,
+                -14.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.52,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -64.0,
+                -44.0,
+                10.0
+              ],
+              "space": null,
+              "values": [
+                {
+                  "value": 3.47,
+                  "kind": "z-statistic"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Combat-Exposed Twins: PTSD vs. non-PTSD",
+          "description": null,
+          "table_id": "7",
+          "points": []
+        },
+        {
+          "name": "Diagnosis \u00d7 Combat Exposure Interaction",
+          "description": null,
+          "table_id": "7",
+          "points": []
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "21418787",
+      "pmcid": null,
+      "title": "Structural brain abnormalities common to posttraumatic stress disorder and depression.",
+      "abstract": "Posttraumatic stress disorder (PTSD) and major depression are reliably associated with reductions in brain volume in markedly similar areas. To our knowledge, no volumetric studies have directly contrasted these conditions. We investigated which, if any, grey matter reductions would be uniquely associated with each disorder. We also investigated more subtle independent effects: specifically, correlations between brain volume and self-report measures of psychopathology.",
+      "authors": [
+        "Marijn C W Kroes",
+        "Michael D Rugg",
+        "Matthew G Whalley",
+        "Chris R Brewin"
+      ],
+      "journal": "Journal of psychiatry & neuroscience : JPN",
+      "publication_date": "2011 Jul",
+      "doi": "10.1503/jpn.100077",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866694",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/21418787.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "16838824",
+      "pmcid": null,
+      "title": "Magnetic resonance imaging and magnetic resonance spectroscopy study of deficits in hippocampal structure in fire victims with recent-onset posttraumatic stress disorder.",
+      "abstract": "To explore hippocampal structural abnormalities in fire victims with recent-onset posttraumatic stress disorder (PTSD).",
+      "authors": [
+        "Lingjiang Li",
+        "Shulin Chen",
+        "Jun Liu",
+        "Jinli Zhang",
+        "Zhong He",
+        "Xu Lin"
+      ],
+      "journal": "Canadian journal of psychiatry. Revue canadienne de psychiatrie",
+      "publication_date": "2006 Jun",
+      "doi": "10.1177/070674370605100704",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866733",
+      "screened_at": null,
+      "full_text_path": null,
+      "full_text_source": "pubget",
+      "fulltext_available": false,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "19942229",
+      "pmcid": null,
+      "title": "Gray matter density in limbic and paralimbic cortices is associated with trauma load and EMDR outcome in PTSD patients.",
+      "abstract": "There is converging evidence of gray matter (GM) structural alterations in different limbic structures in Post-Traumatic Stress Disorder (PTSD) patients. The aim of this study was to evaluate GM density in PTSD in relation to trauma load, and to assess the GM differences between responders (R) and non-responders (NR) to EMDR therapy. Magnetic Resonance Imaging (MRI) scans of 21 subjects exposed to occupational trauma, who developed PTSD (S), and of 22 who did not (NS), were compared by means of an optimized Voxel-Based Morphometry (VBM) analysis as implemented in SPM. Within S, further comparisons were made between 10 R and 5 NR. A regression analysis between GM density and the Traumatic Antecedents Questionnaire (TAQ) was also performed on all 43 subjects. Results showed a significantly lower GM density in S as compared to NS in the left posterior cingulate and the left posterior parahippocampal gyrus. Moreover, NR showed a significantly lower GM density as compared to R in bilateral posterior cingulate, as well as anterior insula, anterior parahippocampal gyrus and amygdala in the right hemisphere. Regression analysis showed that GM density negatively correlated with trauma load in bilateral posterior cingulate, left anterior insula, and right anterior parahippocampal gyrus. In conclusion, a GM lower density in limbic and paralimbic cortices were found to be associated with PTSD diagnosis, trauma load, and EMDR treatment outcome, suggesting a view of PTSD characterized by memory and dissociative disturbances.",
+      "authors": [
+        "Davide Nardo",
+        "G\u00f6ran H\u00f6gberg",
+        "Jeffrey Chee Leong Looi",
+        "Stig Larsson",
+        "Tore H\u00e4llstr\u00f6m",
+        "Marco Pagani"
+      ],
+      "journal": "Journal of psychiatric research",
+      "publication_date": "2010 May",
+      "doi": "10.1016/j.jpsychires.2009.10.014",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866817",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/19942229.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "2",
+          "table_label": "Table 2",
+          "table_caption": ". Regions in which GM density was significantly lower in S as compared to NS (NS > S).",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/19942229/2.html"
+        },
+        {
+          "table_id": "3",
+          "table_label": "Table 3",
+          "table_caption": ". Regions in which GM density was significantly lower in NR as compared to R (R > NR).",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/19942229/3.html"
+        },
+        {
+          "table_id": "4",
+          "table_label": "Table 4",
+          "table_caption": ". Regions in which GM density negatively correlated with TAQ-.",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/19942229/4.html"
+        }
+      ],
+      "analyses": [
+        {
+          "name": "NS > S",
+          "description": "Regions in which GM density was significantly lower in S as compared to NS (NS > S).",
+          "table_id": "2",
+          "points": [
+            {
+              "coordinates": [
+                -10.0,
+                -60.0,
+                3.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.59,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.054,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -23.0,
+                -57.0,
+                -2.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.18,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -17.0,
+                -55.0,
+                32.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.05,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -3.0,
+                -61.0,
+                33.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.0,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                7.0,
+                -50.0,
+                2.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 2.99,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Regions in which GM density was significantly lower in NR as compared to R (R > NR).",
+          "description": null,
+          "table_id": "3",
+          "points": [
+            {
+              "coordinates": [
+                1.0,
+                -27.0,
+                36.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 4.54,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.036,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -3.0,
+                -27.0,
+                33.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.78,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -2.0,
+                -32.0,
+                31.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.4,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -35.0,
+                9.0,
+                58.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 4.03,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.029,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -46.0,
+                -10.0,
+                57.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.18,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -3.0,
+                0.0,
+                50.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.0,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                41.0,
+                12.0,
+                7.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.16,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.025,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                31.0,
+                -5.0,
+                -11.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.09,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Regions in which GM density negatively correlated with TAQ-.",
+          "description": null,
+          "table_id": "4",
+          "points": [
+            {
+              "coordinates": [
+                -44.0,
+                4.0,
+                -4.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 4.67,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -47.0,
+                -9.0,
+                1.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 4.63,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -65.0,
+                -13.0,
+                15.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 4.42,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                12.0,
+                -3.0,
+                -13.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 4.01,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                17.0,
+                7.0,
+                -14.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.55,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                5.0,
+                -9.0,
+                -12.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.27,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                4.0,
+                23.0,
+                30.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.92,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                10.0,
+                50.0,
+                36.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.86,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -5.0,
+                15.0,
+                38.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.74,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                48.0,
+                30.0,
+                27.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.88,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                57.0,
+                5.0,
+                3.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.69,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -8.0,
+                -16.0,
+                47.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.67,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.032,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -6.0,
+                -21.0,
+                33.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.08,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -9.0,
+                -34.0,
+                53.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.04,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                7.0,
+                59.0,
+                9.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.65,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.003,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                4.0,
+                45.0,
+                -23.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.58,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                10.0,
+                -15.0,
+                3.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.54,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                57.0,
+                -14.0,
+                -24.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.42,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.014,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                52.0,
+                -27.0,
+                -22.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.32,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                17.0,
+                -60.0,
+                -34.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 4.36,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -11.0,
+                -50.0,
+                -31.0
+              ],
+              "space": "TAL",
+              "values": [
+                {
+                  "value": 3.5,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                },
+                {
+                  "value": 0.005,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "28549317",
+      "pmcid": null,
+      "title": "Frontal and subcortical grey matter reductions in PTSD.",
+      "abstract": "Post-traumatic stress disorder (PTSD) is characterised by a range of debilitating psychological, physical and cognitive symptoms. PTSD has been associated with grey matter atrophy in limbic and frontal cortical brain regions. However, previous studies have reported heterogeneous findings, with grey matter changes observed beyond limbic/frontal areas. Seventy-five adults were recruited from the community, 25 diagnosed with PTSD along with 25 healthy and 25 trauma exposed age and gender matched controls. Participants underwent clinical assessment and magnetic resonance imaging. The data-analyses method Voxel Based Morphometry (VBM) was used to estimate cortical grey matter volumes. When compared to both healthy and trauma exposed controls, PTSD subjects demonstrated decreased grey matter volumes within subcortical brain regions-including the hippocampus and amygdala-along with reductions in the anterior cingulate cortex, frontal medial cortex, middle frontal gyrus, superior frontal gyrus, paracingulate gyrus, and precuneus cortex. Significant negative correlations were found between total CAPS lifetime clinical scores/sub-scores and GM volume of both the PTSD and TC groups. GM volumes of the left rACC and right amygdala showed a significant negative correlation within PTSD diagnosed subjects.",
+      "authors": [
+        "Daniel C M O'Doherty",
+        "Ashleigh Tickell",
+        "Will Ryder",
+        "Charles Chan",
+        "Daniel F Hermens",
+        "Maxwell R Bennett",
+        "Jim Lagopoulos"
+      ],
+      "journal": "Psychiatry research. Neuroimaging",
+      "publication_date": "2017 Aug 30",
+      "doi": "10.1016/j.pscychresns.2017.05.008",
+      "keywords": [
+        "MRI",
+        "Posttraumatic stress disorder",
+        "VBM"
+      ],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.866859",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/28549317.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "17",
+          "table_label": "Table 2",
+          "table_caption": ". PTSD<HC: Whole Brain VBM grey matter results.",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/28549317/17.html"
+        },
+        {
+          "table_id": "18",
+          "table_label": "Table 3",
+          "table_caption": ". PTSD<TC: Whole Brain VBM grey matter results.",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/28549317/18.html"
+        },
+        {
+          "table_id": "19",
+          "table_label": "Table 4",
+          "table_caption": "=25).",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/28549317/19.html"
+        }
+      ],
+      "analyses": [
+        {
+          "name": "PTSD<HC: Whole Brain VBM grey matter results.",
+          "description": null,
+          "table_id": "17",
+          "points": [
+            {
+              "coordinates": [
+                -22.0,
+                -2.0,
+                -28.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.496 (0.06)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.592 (0.06)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                28.0,
+                -2.0,
+                -28.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.504 (0.06)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.594 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                0.0,
+                34.0,
+                -8.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.559 (0.11)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.646 (0.09)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                2.0,
+                32.0,
+                -8.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.578 (0.10)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.658 (0.10)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -4.0,
+                -26.0,
+                38.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.560 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.638 (0.08)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                2.0,
+                -28.0,
+                40.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.575 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.654 (0.08)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                8.0,
+                44.0,
+                -22.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.596 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.677 (0.10)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.005",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -36.0,
+                28.0,
+                -22.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.462 (0.04)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.536 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.004",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                36.0,
+                28.0,
+                -22.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.419 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.503 (0.06)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -2.0,
+                58.0,
+                4.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.389 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.458 (0.03)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.005",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                16.0,
+                70.0,
+                2.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.393 (0.04)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.465 (0.04)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -22.0,
+                -8.0,
+                -28.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.526 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.609 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                28.0,
+                -10.0,
+                -28.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.518 (0.04)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.586 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -40.0,
+                -4.0,
+                0.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.610 (0.08)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.687 (0.08)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                38.0,
+                -6.0,
+                -6.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.611 (0.06)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.695 (0.08)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -42.0,
+                6.0,
+                48.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.384 (0.06)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.471 (0.08)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                48.0,
+                30.0,
+                22.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.395 (0.06)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.465 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                0.0,
+                34.0,
+                -12.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.617 (0.09)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.718 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                2.0,
+                48.0,
+                6.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.549 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.652 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -6.0,
+                -76.0,
+                30.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.468 (0.04)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.548 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.007",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                8.0,
+                -72.0,
+                34.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.485 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.568 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -16.0,
+                6.0,
+                -12.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.466 (0.10)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.560 (0.08)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                20.0,
+                8.0,
+                -12.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.462 (0.08)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.542 (0.07)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -4.0,
+                56.0,
+                22.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.449 (0.06)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.541 (0.06)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                4.0,
+                54.0,
+                24.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.436 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.528 (0.05)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -2.0,
+                -4.0,
+                -2.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "0.177 (0.04)",
+                  "kind": "other"
+                },
+                {
+                  "value": "0.210 (0.03)",
+                  "kind": "other"
+                },
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "PTSD<TC: Whole Brain VBM grey matter results.",
+          "description": null,
+          "table_id": "18",
+          "points": [
+            {
+              "coordinates": [
+                -18.0,
+                -2.0,
+                -24.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                26.0,
+                -2.0,
+                -28.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -4.0,
+                34.0,
+                2.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.005,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -4.0,
+                -48.0,
+                18.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                6.0,
+                -50.0,
+                12.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                6.0,
+                48.0,
+                -26.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -44.0,
+                26.0,
+                -16.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.002,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                46.0,
+                22.0,
+                -8.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -2.0,
+                60.0,
+                -20.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                8.0,
+                56.0,
+                -26.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -24.0,
+                -12.0,
+                -28.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                28.0,
+                -10.0,
+                -28.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -42.0,
+                14.0,
+                -10.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                38.0,
+                -4.0,
+                -2.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -44.0,
+                6.0,
+                52.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                36.0,
+                0.0,
+                56.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -4.0,
+                56.0,
+                6.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                6.0,
+                10.0,
+                48.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                0.0,
+                -76.0,
+                32.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                4.0,
+                -56.0,
+                8.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -16.0,
+                6.0,
+                -12.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                16.0,
+                8.0,
+                -12.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -4.0,
+                48.0,
+                42.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                4.0,
+                54.0,
+                38.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": "<0.001",
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                18.0,
+                -30.0,
+                -4.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Amygdala (right) (cog 26, -2, -28)",
+          "description": null,
+          "table_id": "19",
+          "points": []
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "32490056",
+      "pmcid": 7256056,
+      "title": "Social support modulates the association between PTSD diagnosis and medial frontal volume in Chinese adults who lost their only child.",
+      "abstract": "Losing an only child is a devastating life event that a parent can experience and may lead to post-traumatic stress disorder (PTSD). Social support could buffer against the negative influence of this trauma, but the neural mechanism underlying this alleviation effect remains poorly understood. In this study, voxel-based morphometry was conducted on brain MRI of 220 Han Chinese adults who had lost their only child. We performed multiple regression analysis to investigate the associations between social support scores - along with PTSD diagnosis, age, sex, body mass index (BMI) - and brain grey matter (GM) volumes in these bereaved parents. For all trauma-exposed adults, social support-by-diagnosis interaction was significantly associated with medial prefrontal volume (multiple comparisons corrected ",
+      "authors": [
+        "Rongfeng Qi",
+        "Yifeng Luo",
+        "Li Zhang",
+        "Yifei Weng",
+        "Wesley Surento",
+        "Neda Jahanshad",
+        "Qiang Xu",
+        "Yan Yin",
+        "Lingjiang Li",
+        "Zhihong Cao",
+        "Paul M Thompson",
+        "Guang Ming Lu"
+      ],
+      "journal": "Neurobiology of stress",
+      "publication_date": "2020 Nov",
+      "doi": "10.1016/j.ynstr.2020.100227",
+      "keywords": [
+        "Age",
+        "Post-traumatic stress disorder",
+        "Sex",
+        "Social support",
+        "Voxel-based morphometry"
+      ],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:52.020654",
+      "screened_at": null,
+      "full_text_path": null,
+      "full_text_source": "pubget",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "22952599",
+      "pmcid": 3432060,
+      "title": "Decreased premotor cortex volume in victims of urban violence with posttraumatic stress disorder.",
+      "abstract": "Studies addressing posttraumatic stress disorder (PTSD) have demonstrated that PTSD patients exhibit structural abnormalities in brain regions that relate to stress regulation and fear responses, such as the hippocampus, amygdala, anterior cingulate cortex, and ventromedial prefrontal cortex. Premotor cortical areas are involved in preparing to respond to a threatening situation and in representing the peripersonal space. Urban violence is an important and pervasive cause of human suffering, especially in large urban centers in the developing world. Violent events, such as armed robbery, are very frequent in certain cities, and these episodes increase the risk of PTSD. Assaultive trauma is characterized by forceful invasion of the peripersonal space; therefore, could this traumatic event be associated with structural alteration of premotor areas in PTSD?",
+      "authors": [
+        "Vanessa Rocha-Rego",
+        "Mirtes G Pereira",
+        "Leticia Oliveira",
+        "Mauro V Mendlowicz",
+        "Adriana Fiszman",
+        "Carla Marques-Portella",
+        "William Berger",
+        "Carlton Chu",
+        "Mateus Joffily",
+        "Jorge Moll",
+        "Jair J Mari",
+        "Ivan Figueira",
+        "Eliane Volchan"
+      ],
+      "journal": "PloS one",
+      "publication_date": "2012",
+      "doi": "10.1371/journal.pone.0042560",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:52.020655",
+      "screened_at": null,
+      "full_text_path": null,
+      "full_text_source": "pubget",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "pone-0042560-t002",
+          "table_label": "Table 2",
+          "table_caption": "Results of t-tests comparing PTSD and control groups.",
+          "table_foot": "Stereotactic coordinates are quoted within MNI space.*p<0.05 corrected,\u2020For a more lenient statistical significance threshold of p<0.001 (uncorrected).",
+          "table_data_path": "projects/vbm_of_ptsd/v1-annotation-only/retrieval/pubget_data/articles/6a2/pmcid_3432060/tables/table_001.csv",
+          "table_raw_path": null
+        }
+      ],
+      "analyses": [
+        {
+          "name": null,
+          "description": "Results of t-tests comparing PTSD and control groups. Stereotactic coordinates are quoted within MNI space.*p<0.05 corrected,\u2020For a more lenient statistical significance threshold of p<0.001 (uncorrected).",
+          "table_id": "pone-0042560-t002",
+          "points": [
+            {
+              "coordinates": [
+                53.0,
+                -1.0,
+                35.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 5.01,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -12.0,
+                54.0,
+                10.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 4.14,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                31.0,
+                -76.0,
+                47.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 4.16,
+                  "kind": "z-statistic"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                53.0,
+                -25.0,
+                -3.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 3.37,
+                  "kind": "z-statistic"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "26952803",
+      "pmcid": null,
+      "title": "Abnormal grey matter in victims of rape with PTSD in Mainland China: a voxel-based morphometry study.",
+      "abstract": "Sui SG, Wu MX, King ME, Zhang Y, Ling L, Xu JM, Weng XC, Duan L, Shan BC, Li LJ. Abnormal grey matter in victims of rape with PTSD in Mainland China: a voxel-based morphometry study.",
+      "authors": [
+        "Shuang Ge Sui",
+        "Ming Xiang Wu",
+        "Mark E King",
+        "Yan Zhang",
+        "Li Ling",
+        "Jian Min Xu",
+        "Xu Chu Weng",
+        "Lian Duan",
+        "Bao Ci Shan",
+        "Ling Jiang Li"
+      ],
+      "journal": "Acta neuropsychiatrica",
+      "publication_date": "2010 Jun",
+      "doi": "10.1111/j.1601-5215.2010.00459.x",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.867073",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/26952803.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "21710131",
+      "pmcid": null,
+      "title": "Evidence of diffuse damage in frontal and occipital cortex in the brain of patients with post-traumatic stress disorder.",
+      "abstract": "A number of MRI studies have shown focal or diffuse cortical gray matter (GM) abnormalities in patients with post-traumatic stress disorder (PTSD). However, the results of these studies are unclear regarding the cortical regions involved in this condition, perhaps due to the heterogeneity of the PTSD population included or to the differences in the methodology used for the quantification of the brain structures. In this study, we assessed differences in cortical GM volumes between a selected group of 25 drug-naive PTSD patients with history of adulthood trauma and 25 matched non-traumatized controls. Analyses were performed by using two different automated methods: the structural image evaluation using normalization of atrophy (SIENAX) and the voxel-based morphometry (VBM), as we trusted that if these complementary techniques provided similar results, it would increase the confidence in the validity of the assessment. Results of SIENAX and VBM analyses similarly showed that cortical GM volume decreases in PTSD patients when compared to healthy controls, particularly in the frontal and occipital lobes. These decreases seem to correlate with clinical measures. Our findings suggest that in drug-na\u00efve PTSD patients with a history of adulthood trauma, brain structural damage is diffuse, with a particular prevalence for the frontal and occipital lobes, and is clinically relevant.",
+      "authors": [
+        "Maricla Tavanti",
+        "Marco Battaglini",
+        "Federico Borgogni",
+        "Letizia Bossini",
+        "Sara Calossi",
+        "Daniela Marino",
+        "Gianpaolo Vatti",
+        "Fulvio Pieraccini",
+        "Antonio Federico",
+        "Paolo Castrogiovanni",
+        "Nicola De Stefano"
+      ],
+      "journal": "Neurological sciences : official journal of the Italian Neurological Society and of the Italian Society of Clinical Neurophysiology",
+      "publication_date": "2012 Feb",
+      "doi": "10.1007/s10072-011-0659-4",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.867132",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/21710131.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "12853571",
+      "pmcid": null,
+      "title": "Voxel-based analysis of MRI reveals anterior cingulate gray-matter volume reduction in posttraumatic stress disorder due to terrorism.",
+      "abstract": "MRI studies using the manual tracing method have shown a smaller-than-normal hippocampal volume in patients with posttraumatic stress disorder (PTSD). However, these studies have yielded inconsistent results, and brain structures other than the hippocampus have not been well investigated. A recently developed, fully automated method called voxel-based morphometry enables an exploration of structural changes throughout the brain by applying statistical parametric mapping to high-resolution MRI. Here we first used this technology in patients with PTSD. Participants were 9 victims of the Tokyo subway sarin attack with PTSD and 16 matched victims of the same traumatic event without PTSD. The voxel-based morphometry showed a significant gray-matter volume reduction in the left anterior cingulate cortex (ACC) in trauma survivors with PTSD compared with those without PTSD. The severity of the disorder was negatively correlated with the gray-matter volume of the left ACC in PTSD subjects. There were no significant differences in other gray-matter regions or any of the white-matter regions between two groups. The present study demonstrates evidence for structural abnormalities of ACC in patients with PTSD. Together with previous functional neuroimaging studies showing a dysfunction of this region, the present findings provide further support for the important role of ACC, which is pivotally involved in attention, emotional regulation, and conditioned fear, in the pathology of PTSD.",
+      "authors": [
+        "H Yamasue",
+        "K Kasai",
+        "A Iwanami",
+        "T Ohtani",
+        "H Yamada",
+        "O Abe",
+        "N Kuroki",
+        "R Fukuda",
+        "M Tochigi",
+        "S Furukawa",
+        "M Sadamatsu",
+        "T Sasaki",
+        "S Aoki",
+        "K Ohtomo",
+        "N Asukai",
+        "N Kato"
+      ],
+      "journal": "Proceedings of the National Academy of Sciences of the United States of America",
+      "publication_date": "2003 Jul 22",
+      "doi": "10.1073/pnas.1530467100",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.867205",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/12853571.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "21498053",
+      "pmcid": null,
+      "title": "Decreased gray matter volume in the left hippocampus and bilateral calcarine cortex in coal mine flood disaster survivors with recent onset PTSD.",
+      "abstract": "Although limbic structure changes have been found in chronic and recent onset post-traumatic stress disorder (PTSD) patients, there are few studies about brain structure changes in recent onset PTSD patients after a single extreme and prolonged trauma. In the current study, 20 coal mine flood disaster survivors underwent magnetic resonance imaging (MRI). Voxel-based morphometry (VBM) and region of interest (ROI) techniques were used to detect the gray matter and white matter volume changes in 10 survivors with recent onset PTSD and 10 survivors without PTSD. The correlation between the Clinician-Administered PTSD Scale (CAPS) and gray matter density in the ROI was also studied. Compared with survivors without PTSD, survivors with PTSD had significantly decreased gray matter volume and density in left anterior hippocampus, left parahippocampal gyrus, and bilateral calcarine cortex. The CAPS score correlated negatively with the gray matter density in bilateral calcarine cortex and left hippocampus in coal mine disaster survivors. Our study suggests that the gray matter volume and density of limbic structure decreased in recent onset PTSD patients who were exposed to extreme trauma. PTSD symptom severity was associated with gray matter density in calcarine cortex and hippocampus.",
+      "authors": [
+        "Jian Zhang",
+        "Qingrong Tan",
+        "Hong Yin",
+        "Xiaoliang Zhang",
+        "Yi Huan",
+        "Lihua Tang",
+        "Huaihai Wang",
+        "Junqing Xu",
+        "Lingjiang Li"
+      ],
+      "journal": "Psychiatry research",
+      "publication_date": "2011 May 31",
+      "doi": "10.1016/j.pscychresns.2010.09.001",
+      "keywords": [],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.867255",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/21498053.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [
+        {
+          "table_id": "11",
+          "table_label": "Table 2",
+          "table_caption": ". Coordinates and significance values of the gray matter decrease in PTSD patients compared with non-PTSD subjects.",
+          "table_foot": null,
+          "table_data_path": null,
+          "table_raw_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/processed/tables/21498053/11.html"
+        }
+      ],
+      "analyses": [
+        {
+          "name": "Coordinates and significance values of the gray matter decrease in PTSD patients compared with non-PTSD subjects.",
+          "description": null,
+          "table_id": "11",
+          "points": [
+            {
+              "coordinates": [
+                -17.0,
+                -9.0,
+                -26.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 4.1,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.01,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                5.0,
+                -81.0,
+                15.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 3.4,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.01,
+                  "kind": "p-value"
+                }
+              ]
+            },
+            {
+              "coordinates": [
+                -12.0,
+                -67.0,
+                17.0
+              ],
+              "space": "MNI",
+              "values": [
+                {
+                  "value": 3.4,
+                  "kind": "z-statistic"
+                },
+                {
+                  "value": 0.001,
+                  "kind": "p-value"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    },
+    {
+      "pmid": "29740753",
+      "pmcid": null,
+      "title": "Facial Expression Enhances Emotion Perception Compared to Vocal Prosody: Behavioral and fMRI Studies.",
+      "abstract": "Facial and vocal expressions are essential modalities mediating the perception of emotion and social communication. Nonetheless, currently little is known about how emotion perception and its neural substrates differ across facial expression and vocal prosody. To clarify this issue, functional MRI scans were acquired in Study 1, in which participants were asked to discriminate the valence of emotional expression (angry, happy or neutral) from facial, vocal, or bimodal stimuli. In Study 2, we used an affective priming task (unimodal materials as primers and bimodal materials as target) and participants were asked to rate the intensity, valence, and arousal of the targets. Study 1 showed higher accuracy and shorter response latencies in the facial than in the vocal modality for a happy expression. Whole-brain analysis showed enhanced activation during facial compared to vocal emotions in the inferior temporal-occipital regions. Region of interest analysis showed a higher percentage signal change for facial than for vocal anger in the superior temporal sulcus. Study 2 showed that facial relative to vocal priming of anger had a greater influence on perceived emotion for bimodal targets, irrespective of the target valence. These findings suggest that facial expression is associated with enhanced emotion perception compared to equivalent vocal prosodies.",
+      "authors": [
+        "Heming Zhang",
+        "Xuhai Chen",
+        "Shengdong Chen",
+        "Yansong Li",
+        "Changming Chen",
+        "Quanshan Long",
+        "Jiajin Yuan"
+      ],
+      "journal": "Neuroscience bulletin",
+      "publication_date": "2018 Oct",
+      "doi": "10.1007/s12264-018-0231-9",
+      "keywords": [
+        "Emotion perception",
+        "Facial expression",
+        "Modality",
+        "Vocal prosody",
+        "fMRI"
+      ],
+      "status": "included_fulltext",
+      "abstract_screening_reason": null,
+      "fulltext_screening_reason": null,
+      "metadata": {},
+      "abstract_screening_score": null,
+      "fulltext_screening_score": null,
+      "retrieved_at": "2026-04-22T14:55:50.867337",
+      "screened_at": null,
+      "full_text_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/manual/29740753.html",
+      "full_text_source": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/ace_outputs/html/",
+      "fulltext_available": true,
+      "retrieval_in_scope": true,
+      "in_included_set": true,
+      "coordinate_space": null,
+      "activation_tables": [],
+      "analyses": [],
+      "abstract_inclusion_criteria_applied": [],
+      "abstract_exclusion_criteria_applied": [],
+      "fulltext_inclusion_criteria_applied": [],
+      "fulltext_exclusion_criteria_applied": []
+    }
+  ],
+  "abstract_screening_results": [],
+  "fulltext_screening_results": [],
+  "execution_stats": {
+    "stop_after_stage": "full",
+    "search_completed": "2026-04-22T14:55:51.368405",
+    "studies_found": 22,
+    "search_engine": "pubmed",
+    "search_query": "",
+    "pmids_file": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/annotation-only-ids.txt",
+    "pmids_list": null,
+    "retrieval": {
+      "scope": "included + excluded",
+      "total_considered": 22,
+      "local_found": 16,
+      "retrieved_or_cached": 21,
+      "missing_full_text": 1
+    },
+    "coordinate_parsing": {
+      "enabled": true,
+      "studies_with_tables": 8,
+      "tables_processed": 15
+    },
+    "annotation": {
+      "enabled": true,
+      "decisions": 115
+    },
+    "output_completed": "2026-04-22T14:57:31.693989",
+    "prisma_stats": {
+      "total_identified": 22,
+      "abstract_screened": 22,
+      "abstract_excluded": 0,
+      "fulltext_assessed": 22,
+      "fulltext_excluded": 0,
+      "fulltext_incomplete": 0,
+      "final_included": 22
+    },
+    "final_included_count": 22
+  },
+  "errors": [],
+  "started_at": "2026-04-22T14:55:50.401215",
+  "completed_at": null
+}
