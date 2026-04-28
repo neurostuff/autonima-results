@@ -1,7 +1,12 @@
 search:
   database: "pubmed"
   pmids_file: "/home/zorro/repos/autonima-results/projects/social/validation_ids/all_pmids.txt"
-
+  query: "( ('functional MRI'[Title/Abstract] OR 'functional magnetic resonance imaging'[Title/Abstract] OR 'fMRI'[Title/Abstract] ) AND ( 'social communication'[Title/Abstract] OR 'social processing'[Title/Abstract] OR 'social interaction'[Title/Abstract] OR 'affiliation'[Title/Abstract] OR 'social attachment'[Title/Abstract] OR 'social cognition'[Title/Abstract] OR 'understanding others'[Title/Abstract] ) AND 'Humans'[MeSH])"
+  max_results: 5000
+  email: "delavega@utexas.edu"  # Optional but recommended for NCBI API access
+  date_from: "1995/01/01"
+  date_to: "2020/03/01"
+  
 retrieval:
   load_excluded: true
   sources:
@@ -13,22 +18,22 @@ retrieval:
         - 'text.txt'
       coordinates_path_templates:
         - 'coordinates.json'
-    - root_path: "/home/zorro/repos/autonima-results/articles/ace_scrape/articles/html"
+    - root_path: "/home/zorro/repos/autonima-results/articles/ace_outputs/"
       pmid_source: "file_name"
       allowed_extensions: [".html"]
-      processed_data_path: "/home/zorro/repos/autonima-results/articles/ace_scrape/processed/"
-      
+      processed_data_path: "/home/zorro/repos/autonima-results/articles/ace_outputs/processed/"
+        
 screening:
   objective: "Identify fMRI studies of social related processing in healthy adults"
   abstract:
     model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
     objective: "Identify fMRI studies of social related processing in healthy adults"
     inclusion_criteria:
       - Functional MRI scan conducted while human participants performed a social-related task. Relevant constructs include (but are not limited to) Affiliation and Attachment, Social Communication, Perception and Understanding of Self, and Perception and Understanding of Others.
       - At least one group of healthy participants, age 18–65, even if other groups include participants with psychiatric or neurological disorders.
     exclusion_criteria:
       - systematic reviews or meta-analyses
-    confidence_reporting: true
 
   fulltext:
     model: "gpt-5-mini-2025-08-07"
@@ -47,8 +52,8 @@ screening:
       - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.
 
 parsing:
-  parse_coordinates: true  # Enable coordinate parsing for studies with activation tables
-  coordinate_model: "gpt-5-mini-2025-08-07"  # Model to use for coordinate parsing
+  parse_coordinates: true 
+  coordinate_model: "gpt-5-mini-2025-08-07"  
 
 annotation:
   enabled: true
@@ -60,8 +65,6 @@ annotation:
     - "table_caption"
     - "study_title"
     - "study_abstract"
-    - "study_fulltext"
-  prompt_type: "multi_analysis"
   inclusion_criteria:
     - Sample- The analysis must be on a healthy adult participants (alone, not a clinical or special group, or a comparison between healthy and clinical/special groups).
     - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is from the healthy/control group and is generalizable to the healthy adult population.
