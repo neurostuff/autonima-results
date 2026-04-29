@@ -1,0 +1,76 @@
+{
+  "screening": {
+    "abstract": {
+      "inclusion": {},
+      "exclusion": {}
+    },
+    "fulltext": {
+      "inclusion": {},
+      "exclusion": {}
+    }
+  },
+  "annotation": {
+    "global": {
+      "inclusion": {
+        "GLOBAL_I1": "Sample: The analysis must be on healthy adult participants (alone, or healthy/control subgroup reported separately from clinical/special groups).",
+        "GLOBAL_I2": "Whole-brain evidence: The analysis must be from a group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) from the healthy/control group.",
+        "GLOBAL_I3": "Contrast-level requirement: Include only when the specific reported analysis/contrast itself measures the target construct; do not include only because the study is generally social.",
+        "GLOBAL_I4": "Sparse-label handling: If analysis labels are generic/truncated (e.g., analysis_0), use table caption, analysis description, neighboring contrasts, and full text context before deciding.",
+        "GLOBAL_I5": "Multi-label policy: Multiple annotations are allowed, but each assigned annotation must be independently justified by contrast-level evidence from the same analysis."
+      },
+      "exclusion": {
+        "GLOBAL_E1": "Region-of-interest (ROI) analyses.",
+        "GLOBAL_E2": "Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents), unless a separate qualifying univariate task-evoked map is explicitly the analyzed row.",
+        "GLOBAL_E3": "Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without a qualifying within-group healthy/control task-evoked map.",
+        "GLOBAL_E4": "Contrasts dominated by task-irrelevant controls/baselines (e.g., rest > task, noise-only controls, landmark/place-dominant controls) when they do not index the target social construct."
+      }
+    },
+    "annotations": {
+      "social_processing_all": {
+        "inclusion": {
+          "SOCIAL_PROCESSING_ALL_I1": "Analyses must come from social-related tasks (including, but not limited to, affiliation/attachment, social communication, perception/understanding of self, and perception/understanding of others).",
+          "SOCIAL_PROCESSING_ALL_I2": "The specific analysis/contrast must index social processing at contrast level."
+        },
+        "exclusion": {
+          "SOCIAL_PROCESSING_ALL_E1": "Exclude clearly non-social control-dominant contrasts (e.g., landmarks/places/noise/rest controls) when social processing is not the measured effect."
+        }
+      },
+      "affiliation_attachment": {
+        "inclusion": {
+          "AFFILIATION_ATTACHMENT_I1": "Analyses must isolate affiliation/attachment-related processing at contrast level (e.g., bonding/closeness/liking/attachment traits/relationship relevance/kinship relevance).",
+          "AFFILIATION_ATTACHMENT_I2": "Task context alone is insufficient; the reported map/contrast must specifically measure affiliation/attachment."
+        },
+        "exclusion": {
+          "AFFILIATION_ATTACHMENT_E1": "Exclude generic competition, aggression, deception, fairness, or broad social-context effects when affiliation/attachment is not the measured variable in the specific contrast."
+        }
+      },
+      "social_communication": {
+        "inclusion": {
+          "SOCIAL_COMMUNICATION_I1": "Analyses must isolate communicative signals or communication exchange at contrast level (e.g., facial expression communication, gaze communication, prosodic communication, speech/sign/gesture communication).",
+          "SOCIAL_COMMUNICATION_I2": "The specific reported contrast must measure social communication, not just social context."
+        },
+        "exclusion": {
+          "SOCIAL_COMMUNICATION_E1": "Exclude generic person perception, social decision/reward, theory-of-mind-only contrasts, or social scene contrasts without communication-variable isolation."
+        }
+      },
+      "perception_self": {
+        "inclusion": {
+          "PERCEPTION_SELF_I1": "Analyses must explicitly isolate self-referential/self-knowledge/agency processing at contrast level (e.g., self vs other/non-self; self-evaluation; self-attribution; agency-related self processing).",
+          "PERCEPTION_SELF_I2": "Self-report presence alone is insufficient unless the specific analysis isolates self-processing."
+        },
+        "exclusion": {
+          "PERCEPTION_SELF_E1": "Exclude contrasts where self-related context is present but the reported map primarily indexes non-self processes."
+        }
+      },
+      "perception_others": {
+        "inclusion": {
+          "PERCEPTION_OTHERS_I1": "Analyses must isolate representation, inference, or reasoning about others at contrast level (e.g., others' mental states, intentions, emotions, traits, or actions).",
+          "PERCEPTION_OTHERS_I2": "The specific contrast must index perception/understanding of others, not only broad social exposure."
+        },
+        "exclusion": {
+          "PERCEPTION_OTHERS_E1": "Exclude person/fame/attractiveness/object-identity contrasts lacking explicit inference/representation of others' states or intentions."
+        }
+      }
+    }
+  }
+}
