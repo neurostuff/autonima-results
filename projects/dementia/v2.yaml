@@ -13,7 +13,7 @@ retrieval:
   sources:
     - pubget
   full_text_sources:
-    - root_path: "/Users/riyalouis/Documents/GitHub/autonima-results/projects/dementia/elsevier_output_dementia"
+    - root_path: "/Users/riyalouis/Documents/GitHub/autonima-results/projects/dementia/elsevier_output"
       pmid_source: "folder_name"
       text_path_templates:
         - 'text.txt'
@@ -46,7 +46,7 @@ screening:
       - Study uses Voxel-Based Morphometry (VBM), fMRI (resting‐state or task based), or FDG‐PET as the imaging modality
       - Sample- participants included clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) or picks disease patients 
       - Sample- At least 6 participants in the patient group, and if there is a healthy/control group, at least 6 particpants in the control group
-      - Studies that reported at least one result of a between‐group contrast in a defined stochastic space (i.e., Montreal Neurological Institute [MNI] or Talairach)
+      - Studies that reported at least one result of a between‐group contrast in a defined stochastic space (i.e., Montreal Neurological Institute [MNI] or Talairach) comparing bvFTD group to controls, where bvFTD group is not pooled with other patient groups in this result.
       - Whole-brain evidence- The paper must report at least one group-level, whole-brain (voxelwise) result that is clearly identified as coming from the target sample group.
       - It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.
     exclusion_criteria:
@@ -63,8 +63,7 @@ parsing:
 annotation:
   enabled: false
   model: "gpt-5-mini-2025-08-07"
-  create_all_from_search_annotation: true
-  create_all_included_annotation: true
+  create_all_included_annotations: true
   metadata_fields:
     - "analysis_name"
     - "analysis_description"

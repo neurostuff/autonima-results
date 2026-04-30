@@ -1,3 +1,4 @@
+#v2: changes in inclusion for full text
 search:
   database: "pubmed"
   pmids_file: "/Users/riyalouis/Documents/GitHub/autonima-results/projects/dementia/Dementia_All.txt"
@@ -23,10 +24,13 @@ screening:
     model: "gpt-5-mini-2025-08-07"
     objective: "identify studies related to behavioral variant frontotemporal dementia (bvFTD) by their abstract"
     inclusion_criteria:
-      - Study uses Voxel-Based Morphometry (VBM), fMRI (resting‐state or task based), or FDG‐PET as the imaging modality
-      - Sample- participants included clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) patients 
+      - Study uses Voxel-Based Morphometry (VBM), fMRI (resting‐state or task based), or FDG‐PET as the imaging modality to analyze whole brain
+      - Sample- participants included at least 6 human, clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) patients 
     exclusion_criteria:
-      - systematic reviews or meta-analyses
+      - Systematic reviews or meta-analyses
+      - Study should not focus on Parkinson's disease
+      - Study does not use neuroimaging
+      - studies with less than 6 participants
     confidence_reporting: true
 
   fulltext:
@@ -35,9 +39,9 @@ screening:
     objective: "identify studies related to behavioral variant frontotemporal dementia (bvFTD)"
     inclusion_criteria:
       - Study uses Voxel-Based Morphometry (VBM), fMRI (resting‐state or task based), or FDG‐PET as the imaging modality
-      - Sample- participants included clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) patients 
-      - Sample- At least 6 participants in either the patient or healthy group
-      - Studies that reported at least one result of a between‐group contrast in a defined stochastic space (i.e., Montreal Neurological Institute [MNI] or Talairach)
+      - Sample- participants included clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) or picks disease patients 
+      - Sample- At least 6 participants in the patient group, and if there is a healthy/control group, at least 6 particpants in the control group
+      - Studies that reported at least one result of a between‐group contrast in a defined stochastic space (i.e., Montreal Neurological Institute [MNI] or Talairach) comparing bvFTD group to controls, where bvFTD group is not pooled with other patient groups in this result.
       - Whole-brain evidence- The paper must report at least one group-level, whole-brain (voxelwise) result that is clearly identified as coming from the target sample group.
       - It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.
     exclusion_criteria:
@@ -52,7 +56,7 @@ parsing:
   coordinate_model: "gpt-5-mini-2025-08-07"  
 
 annotation:
-  enabled: true
+  enabled: false
   model: "gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
   metadata_fields:
@@ -63,35 +67,19 @@ annotation:
     - "study_abstract"
   inclusion_criteria:
     # - Sample- The analysis must be on a healthy adult participants (alone, not a clinical or special group, or a comparison between healthy and clinical/special groups).
-    - uses Voxel-Based Morphometry, fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
-    - Sample- participants included clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) patients with no concurrent psychiatric diagnosis (e.g., major depressive disorder and bipolar mood disorder), other forms of dementia or neurological symptoms, and no history of alcohol and substance abuse
-    - Whole-brain evidence- The analysis must be from a group-level, whole-brain (voxelwise) map
-    # potential addition: should be a comparison b/w healthy and bvFTD groups
+    - uses Voxel-Based Morphometry, fMRI (resting‐state or task based), and  (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
+    - Sample- At least 6 participants
+    - Sample- particpants included clinically diagnosed behavioral variant frontotemporal dementia patients with no concurrent psychiatric diagnosis (e.g., major depressive disorder and bipolar mood disorder),other forms of dementia or neurological symptoms, and no history of alcohol and substance abuse
+    - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is from the healthy/control group and is generalizable to the healthy adult population.
   exclusion_criteria:
     - Region-of-interest (ROI) analyses
-    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses
+    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) 
     - Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control)
-  
   annotations:
     - name: "dementia_all"
-      description: "All experiments"
-
-    - name: "dementia_decreasing_activity"
-      description: "Experiments reporting decreases in activity/connectivity, metabolism, or gray matter volume for bvFTD group (e.g. Control > bvFTD or bvFTD < Control)"
+      description: "???"
       inclusion_criteria:
-        - Analyses on experiments reporting any decreases in activity/connectivity, metabolism, or gray matter volume for bvFTD group (e.g. Control > bvFTD or bvFTD < Control)
-      exclusion_criteria:
-        - Analyses that show control group has decreases in activity, connectivity, metabolism, or in gray matter volume relative to bvFTD group
-
-    - name: "structural"
-      description: "VBM experiments"
-      inclusion_criteria:
-        - Analses using Voxel-based morphometry (VBM) for imaging
-         
-    - name: "functional"
-      description: "fdg pet & fmri"
-      inclusion_criteria:
-        - Analyses that use one or more of the following imaging modalities- functional imaging (FDG-PET, resting-state fMRI (rs-fMRI), task-based fMRI (t-fMRI)) imaging
+        - Analyses performed a XXXX
 
 output:
   formats:
