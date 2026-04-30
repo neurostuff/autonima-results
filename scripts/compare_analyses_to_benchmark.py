@@ -15,6 +15,7 @@ import re
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from difflib import SequenceMatcher
 from html import escape
 from pathlib import Path
@@ -2275,6 +2276,9 @@ ANNOTATION_SECTION_MODE_ORDER = ["accepted", "uncertain"]
 
 OVERALL_SUMMARY_MODE_ORDER = ["accepted", "combined"]
 
+EXHAUSTED_MANUAL_ASSUMPTION_RULE_ID = "paper_all_manual_accepted_unassigned_auto_as_negatives"
+MATCHED_ONLY_RULE_ID = "matched_only_evaluable_auto_indices"
+
 @dataclass
 class Decision:
     include: bool
@@ -3013,6 +3017,13 @@ def build_manual_truth_from_match_results(
         for pmid, pmid_result in match_results.get("pmids", {}).items():
             manual_analyses = list(pmid_result.get("manual_analyses", []))
             review_match_diagnostics = list(manual_analyses)
+            unassigned_auto_indices: list[int] = []
+            for value in pmid_result.get("unassigned_auto_indices", []):
+                try:
+                    unassigned_auto_indices.append(int(value))
+                except Exception:
+                    continue
+            unassigned_auto_indices = sorted(set(unassigned_auto_indices))
             if overall_fallback and manual_annotation_membership:
                 filtered_analyses: list[dict[str, Any]] = []
                 for entry in manual_analyses:
@@ -3032,6 +3043,11 @@ def build_manual_truth_from_match_results(
                     if include_for_annotation:
                         filtered_analyses.append(entry)
                 manual_analyses = filtered_analyses
+
+            paper_all_manual_accepted = bool(review_match_diagnostics) and all(
+                str(entry.get("match_status", "")).strip().lower() == "accepted"
+                for entry in review_match_diagnostics
+            )
 
             accepted_indices = {
                 int(entry["best_auto_index"])
@@ -3076,6 +3092,8 @@ def build_manual_truth_from_match_results(
                     "unmatched": int(status_counts.get("unmatched", 0)),
                     "mean_combined_score": float(status_counts.get("mean_combined_score", 0.0)),
                 },
+                "paper_all_manual_accepted": bool(paper_all_manual_accepted),
+                "unassigned_auto_indices": list(unassigned_auto_indices),
                 "manual_missing_in_auto": bool(pmid_result.get("manual_missing_in_auto", False))
                 if not overall_fallback
                 else False,
@@ -3099,8 +3117,12 @@ def make_document_row(
     evaluable_auto_indices: set[int] | None,
     status_counts: dict[str, Any],
     manual_missing_in_auto: bool,
+    classification_rule_id: str,
+    classification_rule_activated: bool,
+    added_assumed_negative_indices: set[int] | None = None,
 ) -> dict[str, Any]:
     evaluable_indices = None if evaluable_auto_indices is None else set(evaluable_auto_indices)
+    assumed_negative_indices = set(added_assumed_negative_indices or set())
     pred_indices = {
         idx
         for idx, decision in decisions_by_idx.items()
@@ -3124,6 +3146,8 @@ def make_document_row(
     max_idx = len(parsed_analyses) - 1
     if decisions_by_idx:
         max_idx = max(max_idx, max(decisions_by_idx.keys()))
+    if evaluable_indices:
+        max_idx = max(max_idx, max(evaluable_indices))
 
     analysis_rows: list[dict[str, Any]] = []
     for idx in range(max_idx + 1):
@@ -3131,14 +3155,18 @@ def make_document_row(
         name = clean_text(parsed_info.get("name") or f"analysis_{idx}")
         decision = decisions_by_idx.get(idx)
         model_include = None if decision is None else decision.include
+        is_evaluable = evaluable_indices is None or idx in evaluable_indices
         matched_for_review = idx in matched_auto_indices
         match_status_for_idx = match_status_by_auto_idx.get(idx, "")
         manual_include = idx in true_indices_eval
 
-        if matched_for_review and match_status_for_idx == "unmatched":
+        if not is_evaluable:
+            confusion_label = "-"
+            confusion_class = "confusion-na"
+        elif matched_for_review and match_status_for_idx == "unmatched":
             confusion_label = "*"
             confusion_class = "confusion-na"
-        elif matched_for_review and model_include is not None:
+        elif model_include is not None:
             if model_include and manual_include:
                 confusion_label = "TP"
                 confusion_class = "confusion-good"
@@ -3177,6 +3205,7 @@ def make_document_row(
                 "confusion_label": confusion_label,
                 "confusion_class": confusion_class,
                 "matched_for_review": matched_for_review,
+                "assumed_negative_for_review": idx in assumed_negative_indices,
                 "reasoning": "" if decision is None else decision.reasoning,
                 "inclusion_criteria_applied": (
                     []
@@ -3210,6 +3239,9 @@ def make_document_row(
         "review_match_diagnostics": review_match_diagnostics,
         "status_counts": status_counts,
         "manual_missing_in_auto": manual_missing_in_auto,
+        "classification_rule_id": clean_text(classification_rule_id).strip(),
+        "classification_rule_activated": bool(classification_rule_activated),
+        "added_assumed_negative_indices": sorted(assumed_negative_indices),
     }
 
 def compute_prf(tp: int, fp: int, fn: int) -> dict[str, Any]:
@@ -3236,6 +3268,41 @@ def extract_evaluable_auto_indices(
         if entry.get("best_auto_index") is not None
         and str(entry.get("match_status", "")).strip().lower() in normalized_statuses
     }
+
+
+def build_evaluable_auto_indices(
+    truth_entry: dict[str, Any],
+    allowed_statuses: set[str],
+    allow_exhausted_manual_expansion: bool,
+) -> tuple[set[int], set[int], set[int], bool]:
+    review_match_rows = truth_entry.get(
+        "review_match_diagnostics",
+        truth_entry.get("match_diagnostics", []),
+    )
+    matched_auto_indices = extract_evaluable_auto_indices(
+        review_match_rows,
+        allowed_statuses=allowed_statuses,
+    )
+    expanded_auto_indices = set(matched_auto_indices)
+    paper_all_manual_accepted = bool(truth_entry.get("paper_all_manual_accepted", False))
+    added_assumed_negative_indices: set[int] = set()
+
+    if allow_exhausted_manual_expansion and paper_all_manual_accepted:
+        unassigned_auto_indices: set[int] = set()
+        for value in truth_entry.get("unassigned_auto_indices", []):
+            try:
+                unassigned_auto_indices.add(int(value))
+            except Exception:
+                continue
+        added_assumed_negative_indices = unassigned_auto_indices - expanded_auto_indices
+        expanded_auto_indices |= added_assumed_negative_indices
+
+    return (
+        matched_auto_indices,
+        expanded_auto_indices,
+        added_assumed_negative_indices,
+        paper_all_manual_accepted,
+    )
 
 
 def derive_true_indices_for_mode(
@@ -3288,6 +3355,8 @@ def classify_documents(
     docs = {bucket: [] for bucket in REVIEW_BUCKET_ORDER}
     ann_decisions = model_decisions.get(annotation_name, {})
     ann_truth = manual_truth.get(annotation_name, {})
+    normalized_mode_statuses = {str(status).strip().lower() for status in allowed_match_statuses}
+    allow_exhausted_manual_expansion = "accepted" in normalized_mode_statuses
     run_pmids = set(parsed_analyses.keys())
     doc_overlap_pmids = run_pmids & set(ann_truth.keys())
     pmids = doc_overlap_pmids
@@ -3305,6 +3374,8 @@ def classify_documents(
                 "unmatched_manual_names": [],
                 "match_diagnostics": [],
                 "status_counts": {"accepted": 0, "uncertain": 0, "unmatched": 0, "mean_combined_score": 0.0},
+                "paper_all_manual_accepted": False,
+                "unassigned_auto_indices": [],
                 "manual_missing_in_auto": False,
             },
         )
@@ -3313,9 +3384,15 @@ def classify_documents(
             "review_match_diagnostics",
             truth_entry.get("match_diagnostics", []),
         )
-        evaluable_auto_indices = extract_evaluable_auto_indices(
-            review_match_diagnostics,
+        (
+            matched_auto_indices,
+            evaluable_auto_indices,
+            added_assumed_negative_indices,
+            paper_all_manual_accepted,
+        ) = build_evaluable_auto_indices(
+            truth_entry=truth_entry,
             allowed_statuses=allowed_match_statuses,
+            allow_exhausted_manual_expansion=allow_exhausted_manual_expansion,
         )
         if not evaluable_auto_indices:
             continue
@@ -3357,6 +3434,17 @@ def classify_documents(
                 evaluable_auto_indices=evaluable_auto_indices,
                 status_counts=truth_entry.get("status_counts", {}),
                 manual_missing_in_auto=bool(truth_entry.get("manual_missing_in_auto", False)),
+                classification_rule_id=(
+                    EXHAUSTED_MANUAL_ASSUMPTION_RULE_ID
+                    if allow_exhausted_manual_expansion
+                    else MATCHED_ONLY_RULE_ID
+                ),
+                classification_rule_activated=(
+                    bool(allow_exhausted_manual_expansion)
+                    and bool(paper_all_manual_accepted)
+                    and bool(added_assumed_negative_indices)
+                ),
+                added_assumed_negative_indices=added_assumed_negative_indices,
             )
         )
 
@@ -3403,9 +3491,12 @@ def classify_documents(
     study_metrics["run_pmids"] = len(run_pmids)
     study_metrics["overlap_pmids"] = len(study_universe)
 
-    # Analysis-level metrics are computed over the set of AUTO analyses that have
-    # evaluable manual-to-auto matches for the current mode (accepted/uncertain).
-    # Positives are mode-specific manual truth positives.
+    # Analysis-level metrics:
+    # 1) Baseline matched-only universe (existing behavior).
+    # 2) Exhausted-manual assumption universe (matched + unassigned auto), enabled
+    #    only when mode includes accepted statuses and all paper-level manual
+    #    analyses are accepted for that PMID.
+
     analysis_tp = 0
     analysis_fp = 0
     analysis_fn = 0
@@ -3414,20 +3505,34 @@ def classify_documents(
     manual_accepted_matched = 0
     predicted_positive_on_matched = 0
 
+    expanded_analysis_tp = 0
+    expanded_analysis_fp = 0
+    expanded_analysis_fn = 0
+    expanded_analysis_tn = 0
+    expanded_auto_universe = 0
+    expanded_manual_accepted = 0
+    expanded_predicted_positive = 0
+
+    assumption_activated_pmids = 0
+    added_assumed_negative_analyses = 0
+    pmids_with_paper_all_manual_accepted = 0
+
     for pmid in doc_overlap_pmids:
         decisions_for_pmid = ann_decisions.get(pmid, {})
         truth_for_pmid = ann_truth.get(pmid, {})
-        review_match_rows = truth_for_pmid.get(
-            "review_match_diagnostics",
-            truth_for_pmid.get("match_diagnostics", []),
-        )
-        matched_auto_indices = extract_evaluable_auto_indices(
-            review_match_rows,
+        (
+            matched_auto_indices,
+            expanded_auto_indices,
+            added_indices,
+            paper_all_manual_accepted,
+        ) = build_evaluable_auto_indices(
+            truth_entry=truth_for_pmid,
             allowed_statuses=allowed_match_statuses,
+            allow_exhausted_manual_expansion=allow_exhausted_manual_expansion,
         )
-        if not matched_auto_indices:
+        if not matched_auto_indices and not expanded_auto_indices:
             continue
-        true_indices = derive_true_indices_for_mode(
+        true_indices_matched = derive_true_indices_for_mode(
             truth_entry=truth_for_pmid,
             allowed_statuses=allowed_match_statuses,
             evaluable_auto_indices=matched_auto_indices,
@@ -3437,7 +3542,7 @@ def classify_documents(
             matched_auto_universe += 1
             decision = decisions_for_pmid.get(idx_int)
             pred_include = bool(decision.include) if decision is not None else False
-            true_include = idx_int in true_indices
+            true_include = idx_int in true_indices_matched
 
             if true_include:
                 manual_accepted_matched += 1
@@ -3453,6 +3558,38 @@ def classify_documents(
             else:
                 analysis_tn += 1
 
+        if paper_all_manual_accepted:
+            pmids_with_paper_all_manual_accepted += 1
+
+        if added_indices:
+            assumption_activated_pmids += 1
+            added_assumed_negative_analyses += len(added_indices)
+
+        true_indices_expanded = derive_true_indices_for_mode(
+            truth_entry=truth_for_pmid,
+            allowed_statuses=allowed_match_statuses,
+            evaluable_auto_indices=expanded_auto_indices,
+        )
+        for idx_int in expanded_auto_indices:
+            expanded_auto_universe += 1
+            decision = decisions_for_pmid.get(idx_int)
+            pred_include = bool(decision.include) if decision is not None else False
+            true_include = idx_int in true_indices_expanded
+
+            if true_include:
+                expanded_manual_accepted += 1
+            if pred_include:
+                expanded_predicted_positive += 1
+
+            if pred_include and true_include:
+                expanded_analysis_tp += 1
+            elif pred_include and not true_include:
+                expanded_analysis_fp += 1
+            elif (not pred_include) and true_include:
+                expanded_analysis_fn += 1
+            else:
+                expanded_analysis_tn += 1
+
     analysis_metrics = compute_prf(tp=analysis_tp, fp=analysis_fp, fn=analysis_fn)
     analysis_metrics["tn"] = int(analysis_tn)
     analysis_metrics["accuracy"] = (
@@ -3463,6 +3600,30 @@ def classify_documents(
     analysis_metrics["manual_accepted_analyses"] = int(manual_accepted_matched)
     analysis_metrics["predicted_analyses"] = int(predicted_positive_on_matched)
     analysis_metrics["analysis_universe"] = int(matched_auto_universe)
+
+    analysis_metrics_exhausted_manual_assumption = compute_prf(
+        tp=expanded_analysis_tp,
+        fp=expanded_analysis_fp,
+        fn=expanded_analysis_fn,
+    )
+    analysis_metrics_exhausted_manual_assumption["tn"] = int(expanded_analysis_tn)
+    analysis_metrics_exhausted_manual_assumption["accuracy"] = (
+        float((expanded_analysis_tp + expanded_analysis_tn) / expanded_auto_universe)
+        if expanded_auto_universe
+        else 0.0
+    )
+    analysis_metrics_exhausted_manual_assumption["manual_accepted_analyses"] = int(expanded_manual_accepted)
+    analysis_metrics_exhausted_manual_assumption["predicted_analyses"] = int(expanded_predicted_positive)
+    analysis_metrics_exhausted_manual_assumption["analysis_universe"] = int(expanded_auto_universe)
+
+    assumed_negative_expansion = {
+        "activation_rule_id": EXHAUSTED_MANUAL_ASSUMPTION_RULE_ID,
+        "mode_allowed_match_statuses": sorted(normalized_mode_statuses),
+        "mode_supports_expansion": bool(allow_exhausted_manual_expansion),
+        "pmids_with_paper_all_manual_accepted": int(pmids_with_paper_all_manual_accepted),
+        "activated_pmids": int(assumption_activated_pmids),
+        "added_assumed_negative_analyses": int(added_assumed_negative_analyses),
+    }
 
     bucket_match_counts: dict[str, dict[str, int]] = {}
     for bucket, bucket_docs in docs.items():
@@ -3498,6 +3659,8 @@ def classify_documents(
         "document_metrics": document_metrics,
         "study_metrics": study_metrics,
         "analysis_metrics": analysis_metrics,
+        "analysis_metrics_exhausted_manual_assumption": analysis_metrics_exhausted_manual_assumption,
+        "assumed_negative_expansion": assumed_negative_expansion,
         "bucket_match_counts": bucket_match_counts,
         "missing_manual_pmids": missing_manual_pmids,
         "criteria_error_analysis": criteria_error_analysis,
@@ -3621,10 +3784,18 @@ def render_doc_card(
         f"uncertain={int(status_counts.get('uncertain', 0))}, "
         f"unmatched={int(status_counts.get('unmatched', 0))}"
     )
+    classification_rule_id = clean_text(str(doc.get("classification_rule_id", MATCHED_ONLY_RULE_ID))).strip()
+    classification_rule_activated = bool(doc.get("classification_rule_activated", False))
+    added_assumed_negative = len(doc.get("added_assumed_negative_indices", []))
+    classification_rule_meta = (
+        f"{classification_rule_id} (activated={str(classification_rule_activated).lower()}, "
+        f"added_assumed_negative={added_assumed_negative})"
+    )
     meta = (
-        f"Pred included (matched analyses only): {len(doc['pred_indices'])} | "
+        f"Pred included (classification universe): {len(doc['pred_indices'])} | "
         f"Manual included (mode truth positives): {len(doc['true_indices'])} | "
         f"Correct overlaps: {len(doc['correct_indices'])} | "
+        f"Rule: {classification_rule_meta} | "
         f"Match statuses: {status_meta}"
     )
 
@@ -3894,6 +4065,13 @@ def render_html(
         document_metrics = metrics.get("document_metrics", {})
         study_metrics = metrics.get("study_metrics", {})
         analysis_metrics = metrics.get("analysis_metrics", {})
+        analysis_metrics_exhausted = metrics.get(
+            "analysis_metrics_exhausted_manual_assumption",
+            analysis_metrics,
+        )
+        assumed_negative_expansion = metrics.get("assumed_negative_expansion", {})
+        if not isinstance(assumed_negative_expansion, dict):
+            assumed_negative_expansion = {}
 
         document_tp = int(document_metrics.get("tp", metrics.get("tp", 0)))
         document_fp = int(document_metrics.get("fp", metrics.get("fp", 0)))
@@ -3901,6 +4079,16 @@ def render_html(
         document_precision = float(document_metrics.get("precision", metrics.get("precision", 0.0)))
         document_recall = float(document_metrics.get("recall", metrics.get("recall", 0.0)))
         document_f1 = float(document_metrics.get("f1", metrics.get("f1", 0.0)))
+        assumption_rule_id = clean_text(
+            str(assumed_negative_expansion.get("activation_rule_id", EXHAUSTED_MANUAL_ASSUMPTION_RULE_ID))
+        ).strip()
+        assumption_activated_pmids = int(assumed_negative_expansion.get("activated_pmids", 0))
+        assumption_added = int(assumed_negative_expansion.get("added_assumed_negative_analyses", 0))
+        assumption_label = (
+            "Analysis inclusion (exhausted-manual assumption; "
+            f"activated_pmids={assumption_activated_pmids}, added_assumed_negative={assumption_added}, "
+            f"rule={assumption_rule_id})"
+        )
 
         return (
             "<tr>"
@@ -3931,7 +4119,7 @@ def render_html(
             "</tr>"
             "<tr>"
             f"<td>{escape(mode_label)}</td>"
-            "<td>Analysis inclusion</td>"
+            "<td>Analysis inclusion (matched-only baseline)</td>"
             f"<td>{int(analysis_metrics.get('tp', 0))}</td>"
             f"<td>{int(analysis_metrics.get('fp', 0))}</td>"
             f"<td>{int(analysis_metrics.get('fn', 0))}</td>"
@@ -3941,6 +4129,19 @@ def render_html(
             f"<td>{int(analysis_metrics.get('manual_accepted_analyses', 0))}</td>"
             f"<td>{int(analysis_metrics.get('predicted_analyses', 0))}</td>"
             f"<td>{int(analysis_metrics.get('analysis_universe', 0))}</td>"
+            "</tr>"
+            "<tr>"
+            f"<td>{escape(mode_label)}</td>"
+            f"<td>{escape(assumption_label)}</td>"
+            f"<td>{int(analysis_metrics_exhausted.get('tp', 0))}</td>"
+            f"<td>{int(analysis_metrics_exhausted.get('fp', 0))}</td>"
+            f"<td>{int(analysis_metrics_exhausted.get('fn', 0))}</td>"
+            f"<td>{float(analysis_metrics_exhausted.get('precision', 0.0)):.3f}</td>"
+            f"<td>{float(analysis_metrics_exhausted.get('recall', 0.0)):.3f}</td>"
+            f"<td>{float(analysis_metrics_exhausted.get('f1', 0.0)):.3f}</td>"
+            f"<td>{int(analysis_metrics_exhausted.get('manual_accepted_analyses', 0))}</td>"
+            f"<td>{int(analysis_metrics_exhausted.get('predicted_analyses', 0))}</td>"
+            f"<td>{int(analysis_metrics_exhausted.get('analysis_universe', 0))}</td>"
             "</tr>"
         )
 
@@ -4184,6 +4385,7 @@ def render_html(
     <a id="top"></a>
     <h1>{escape(annotation_name)} report</h1>
     <p>Manual benchmark is sliced to the auto PMID universe from <code>outputs/nimads_annotation.json</code>. This report shows ACCEPTED and UNCERTAIN matches in separate sections.</p>
+    <p class="muted">Analysis-level metrics below include both matched-only baseline and an exhausted-manual assumption view (adds unmatched auto analyses as negatives only when all manual analyses in a PMID are accepted). Document buckets/cards default to the exhausted-manual assumption rule when the mode supports accepted matches and the PMID-level guard is satisfied.</p>
     <p class="muted">Unmet Criteria is computed from explicit model outputs in <code>outputs/annotation_results.json</code> and shows only <code>exclusion_criteria_applied</code> entries (no inferred unmet inclusion criteria).</p>
     <div class="table-wrap">
       <table>
@@ -4352,11 +4554,19 @@ def render_overall_summary_html(
         metrics_by_annotation = metrics_by_annotation_by_mode.get(mode_id, {})
 
         rows: list[dict[str, Any]] = []
-        analysis_rows: list[dict[str, Any]] = []
+        analysis_rows_baseline: list[dict[str, Any]] = []
+        analysis_rows_exhausted: list[dict[str, Any]] = []
         for annotation_name in ACTIVE_ANNOTATION_NAMES:
             metrics = metrics_by_annotation.get(annotation_name, {})
             study = metrics.get("study_metrics", {})
-            analysis = metrics.get("analysis_metrics", {})
+            analysis_baseline = metrics.get("analysis_metrics", {})
+            analysis_exhausted = metrics.get(
+                "analysis_metrics_exhausted_manual_assumption",
+                analysis_baseline,
+            )
+            assumption_meta = metrics.get("assumed_negative_expansion", {})
+            if not isinstance(assumption_meta, dict):
+                assumption_meta = {}
             rows.append(
                 {
                     "annotation": annotation_name,
@@ -4373,20 +4583,40 @@ def render_overall_summary_html(
                     "predicted_studies": int(study.get("predicted_studies", 0)),
                 }
             )
-            analysis_rows.append(
+            analysis_rows_baseline.append(
                 {
                     "annotation": annotation_name,
-                    "tp": int(analysis.get("tp", 0)),
-                    "fp": int(analysis.get("fp", 0)),
-                    "fn": int(analysis.get("fn", 0)),
-                    "tn": int(analysis.get("tn", 0)),
-                    "precision": float(analysis.get("precision", 0.0)),
-                    "recall": float(analysis.get("recall", 0.0)),
-                    "f1": float(analysis.get("f1", 0.0)),
-                    "accuracy": float(analysis.get("accuracy", 0.0)),
-                    "manual_accepted_analyses": int(analysis.get("manual_accepted_analyses", 0)),
-                    "predicted_analyses": int(analysis.get("predicted_analyses", 0)),
-                    "analysis_universe": int(analysis.get("analysis_universe", 0)),
+                    "tp": int(analysis_baseline.get("tp", 0)),
+                    "fp": int(analysis_baseline.get("fp", 0)),
+                    "fn": int(analysis_baseline.get("fn", 0)),
+                    "tn": int(analysis_baseline.get("tn", 0)),
+                    "precision": float(analysis_baseline.get("precision", 0.0)),
+                    "recall": float(analysis_baseline.get("recall", 0.0)),
+                    "f1": float(analysis_baseline.get("f1", 0.0)),
+                    "accuracy": float(analysis_baseline.get("accuracy", 0.0)),
+                    "manual_accepted_analyses": int(analysis_baseline.get("manual_accepted_analyses", 0)),
+                    "predicted_analyses": int(analysis_baseline.get("predicted_analyses", 0)),
+                    "analysis_universe": int(analysis_baseline.get("analysis_universe", 0)),
+                }
+            )
+            analysis_rows_exhausted.append(
+                {
+                    "annotation": annotation_name,
+                    "tp": int(analysis_exhausted.get("tp", 0)),
+                    "fp": int(analysis_exhausted.get("fp", 0)),
+                    "fn": int(analysis_exhausted.get("fn", 0)),
+                    "tn": int(analysis_exhausted.get("tn", 0)),
+                    "precision": float(analysis_exhausted.get("precision", 0.0)),
+                    "recall": float(analysis_exhausted.get("recall", 0.0)),
+                    "f1": float(analysis_exhausted.get("f1", 0.0)),
+                    "accuracy": float(analysis_exhausted.get("accuracy", 0.0)),
+                    "manual_accepted_analyses": int(analysis_exhausted.get("manual_accepted_analyses", 0)),
+                    "predicted_analyses": int(analysis_exhausted.get("predicted_analyses", 0)),
+                    "analysis_universe": int(analysis_exhausted.get("analysis_universe", 0)),
+                    "activated_pmids": int(assumption_meta.get("activated_pmids", 0)),
+                    "added_assumed_negative_analyses": int(
+                        assumption_meta.get("added_assumed_negative_analyses", 0)
+                    ),
                 }
             )
 
@@ -4409,10 +4639,10 @@ def render_overall_summary_html(
         micro_total = micro_tp + micro_fp + micro_fn + micro_tn
         micro_accuracy = (micro_tp + micro_tn) / micro_total if micro_total else 0.0
 
-        analysis_micro_tp = sum(r["tp"] for r in analysis_rows)
-        analysis_micro_fp = sum(r["fp"] for r in analysis_rows)
-        analysis_micro_fn = sum(r["fn"] for r in analysis_rows)
-        analysis_micro_tn = sum(r["tn"] for r in analysis_rows)
+        analysis_micro_tp = sum(r["tp"] for r in analysis_rows_baseline)
+        analysis_micro_fp = sum(r["fp"] for r in analysis_rows_baseline)
+        analysis_micro_fn = sum(r["fn"] for r in analysis_rows_baseline)
+        analysis_micro_tn = sum(r["tn"] for r in analysis_rows_baseline)
         analysis_micro_prf = compute_prf(tp=analysis_micro_tp, fp=analysis_micro_fp, fn=analysis_micro_fn)
         analysis_micro_total = analysis_micro_tp + analysis_micro_fp + analysis_micro_fn + analysis_micro_tn
         analysis_micro_accuracy = (
@@ -4420,6 +4650,29 @@ def render_overall_summary_html(
             if analysis_micro_total
             else 0.0
         )
+
+        analysis_exhausted_micro_tp = sum(r["tp"] for r in analysis_rows_exhausted)
+        analysis_exhausted_micro_fp = sum(r["fp"] for r in analysis_rows_exhausted)
+        analysis_exhausted_micro_fn = sum(r["fn"] for r in analysis_rows_exhausted)
+        analysis_exhausted_micro_tn = sum(r["tn"] for r in analysis_rows_exhausted)
+        analysis_exhausted_micro_prf = compute_prf(
+            tp=analysis_exhausted_micro_tp,
+            fp=analysis_exhausted_micro_fp,
+            fn=analysis_exhausted_micro_fn,
+        )
+        analysis_exhausted_micro_total = (
+            analysis_exhausted_micro_tp
+            + analysis_exhausted_micro_fp
+            + analysis_exhausted_micro_fn
+            + analysis_exhausted_micro_tn
+        )
+        analysis_exhausted_micro_accuracy = (
+            (analysis_exhausted_micro_tp + analysis_exhausted_micro_tn) / analysis_exhausted_micro_total
+            if analysis_exhausted_micro_total
+            else 0.0
+        )
+        assumption_activated_pmids_total = sum(r["activated_pmids"] for r in analysis_rows_exhausted)
+        assumption_added_total = sum(r["added_assumed_negative_analyses"] for r in analysis_rows_exhausted)
 
         row_html = []
         for row in rows:
@@ -4442,9 +4695,9 @@ def render_overall_summary_html(
                 "</tr>"
             )
 
-        analysis_row_html = []
-        for row in analysis_rows:
-            analysis_row_html.append(
+        analysis_baseline_row_html = []
+        for row in analysis_rows_baseline:
+            analysis_baseline_row_html.append(
                 "<tr>"
                 f"<td>{render_annotation_link(row['annotation'])}</td>"
                 f"<td>{row['analysis_universe']}</td>"
@@ -4458,6 +4711,29 @@ def render_overall_summary_html(
                 f"<td>{row['recall']:.3f}</td>"
                 f"<td>{row['f1']:.3f}</td>"
                 f"<td>{row['accuracy']:.3f}</td>"
+                f"<td>{render_metric_bars(row['precision'], row['recall'], row['f1'])}</td>"
+                f"<td>{render_confusion_plot(row['tp'], row['fp'], row['fn'], row['tn'])}</td>"
+                "</tr>"
+            )
+
+        analysis_exhausted_row_html = []
+        for row in analysis_rows_exhausted:
+            analysis_exhausted_row_html.append(
+                "<tr>"
+                f"<td>{render_annotation_link(row['annotation'])}</td>"
+                f"<td>{row['analysis_universe']}</td>"
+                f"<td>{row['manual_accepted_analyses']}</td>"
+                f"<td>{row['predicted_analyses']}</td>"
+                f"<td>{row['tp']}</td>"
+                f"<td>{row['fp']}</td>"
+                f"<td>{row['fn']}</td>"
+                f"<td>{row['tn']}</td>"
+                f"<td>{row['precision']:.3f}</td>"
+                f"<td>{row['recall']:.3f}</td>"
+                f"<td>{row['f1']:.3f}</td>"
+                f"<td>{row['accuracy']:.3f}</td>"
+                f"<td>{row['activated_pmids']}</td>"
+                f"<td>{row['added_assumed_negative_analyses']}</td>"
                 f"<td>{render_metric_bars(row['precision'], row['recall'], row['f1'])}</td>"
                 f"<td>{render_confusion_plot(row['tp'], row['fp'], row['fn'], row['tn'])}</td>"
                 "</tr>"
@@ -4506,7 +4782,7 @@ def render_overall_summary_html(
             <td>{micro_accuracy:.3f}</td>
           </tr>
           <tr>
-            <td>Matched analyses micro (pooled confusion)</td>
+            <td>Matched-only analyses micro (pooled confusion)</td>
             <td>{analysis_micro_tp}</td>
             <td>{analysis_micro_fp}</td>
             <td>{analysis_micro_fn}</td>
@@ -4515,6 +4791,17 @@ def render_overall_summary_html(
             <td>{float(analysis_micro_prf.get('recall', 0.0)):.3f}</td>
             <td>{float(analysis_micro_prf.get('f1', 0.0)):.3f}</td>
             <td>{analysis_micro_accuracy:.3f}</td>
+          </tr>
+          <tr>
+            <td>Exhausted-manual assumption analyses micro (pooled confusion; activated_pmids={assumption_activated_pmids_total}, added_assumed_negative={assumption_added_total})</td>
+            <td>{analysis_exhausted_micro_tp}</td>
+            <td>{analysis_exhausted_micro_fp}</td>
+            <td>{analysis_exhausted_micro_fn}</td>
+            <td>{analysis_exhausted_micro_tn}</td>
+            <td>{float(analysis_exhausted_micro_prf.get('precision', 0.0)):.3f}</td>
+            <td>{float(analysis_exhausted_micro_prf.get('recall', 0.0)):.3f}</td>
+            <td>{float(analysis_exhausted_micro_prf.get('f1', 0.0)):.3f}</td>
+            <td>{analysis_exhausted_micro_accuracy:.3f}</td>
           </tr>
         </tbody>
       </table>
@@ -4549,7 +4836,7 @@ def render_overall_summary_html(
     </div>
   </section>
   <section>
-    <h2>{escape(mode_label)} Per-Annotation Matched-Analysis Metrics</h2>
+    <h2>{escape(mode_label)} Per-Annotation Matched-Only Analysis Metrics</h2>
     <div class="table-wrap">
       <table>
         <thead>
@@ -4571,7 +4858,37 @@ def render_overall_summary_html(
           </tr>
         </thead>
         <tbody>
-          {''.join(analysis_row_html)}
+          {''.join(analysis_baseline_row_html)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>{escape(mode_label)} Per-Annotation Exhausted-Manual-Assumption Analysis Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Expanded Analysis Universe</th>
+            <th>Manual Accepted+</th>
+            <th>Predicted+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>Activated PMIDs</th>
+            <th>Added Assumed Negatives</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          {''.join(analysis_exhausted_row_html)}
         </tbody>
       </table>
     </div>
@@ -4627,6 +4944,7 @@ def render_overall_summary_html(
   <header>
     <h1>Overall Sub-Meta-Analysis Summary</h1>
     <p>Metrics are shown for STRICT (accepted only) and COMBINED (accepted + uncertain) evaluations.</p>
+    <p>Analysis-level sections report both matched-only baseline metrics and exhausted-manual-assumption metrics.</p>
   </section>
   {''.join(mode_sections)}
   <section>
@@ -4642,6 +4960,87 @@ def render_overall_summary_html(
 </body>
 </html>
 """
+
+
+def make_json_friendly(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(k): make_json_friendly(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [make_json_friendly(item) for item in value]
+    if isinstance(value, tuple):
+        return [make_json_friendly(item) for item in value]
+    if isinstance(value, set):
+        return [make_json_friendly(item) for item in sorted(value, key=lambda x: str(x))]
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return str(value)
+
+
+def build_annotation_metrics_export_payload(
+    *,
+    project_output_dir: Path,
+    metrics_by_annotation_by_mode: dict[str, dict[str, dict[str, Any]]],
+) -> dict[str, Any]:
+    mode_ids = ("accepted", "combined")
+    per_mode: dict[str, dict[str, dict[str, Any]]] = {}
+
+    for mode_id in mode_ids:
+        metrics_by_annotation = metrics_by_annotation_by_mode.get(mode_id, {})
+        per_mode[mode_id] = {}
+        for annotation_name, metrics in metrics_by_annotation.items():
+            per_mode[mode_id][annotation_name] = {
+                "document_metrics": make_json_friendly(metrics.get("document_metrics", {})),
+                "study_metrics": make_json_friendly(metrics.get("study_metrics", {})),
+                "analysis_metrics": make_json_friendly(metrics.get("analysis_metrics", {})),
+                "analysis_metrics_exhausted_manual_assumption": make_json_friendly(
+                    metrics.get(
+                        "analysis_metrics_exhausted_manual_assumption",
+                        metrics.get("analysis_metrics", {}),
+                    )
+                ),
+                "assumed_negative_expansion": make_json_friendly(
+                    metrics.get("assumed_negative_expansion", {})
+                ),
+            }
+
+    try:
+        project_name = infer_project_name(project_output_dir)
+    except Exception:
+        project_name = project_output_dir.name
+
+    return {
+        "generated_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "project_name": project_name,
+        "project_output_dir": str(project_output_dir.resolve()),
+        "mode_metadata": {
+            mode_id: {
+                "label": str(EVAL_MODE_CONFIGS.get(mode_id, {}).get("label", mode_id.upper())),
+                "allowed_statuses": sorted(
+                    str(status).strip().lower()
+                    for status in set(EVAL_MODE_CONFIGS.get(mode_id, {}).get("allowed_statuses", set()))
+                ),
+            }
+            for mode_id in mode_ids
+        },
+        "metrics_by_mode": per_mode,
+    }
+
+
+def write_annotation_metrics_export(
+    *,
+    project_output_dir: Path,
+    review_output_dir: Path,
+    metrics_by_annotation_by_mode: dict[str, dict[str, dict[str, Any]]],
+) -> Path:
+    payload = build_annotation_metrics_export_payload(
+        project_output_dir=project_output_dir,
+        metrics_by_annotation_by_mode=metrics_by_annotation_by_mode,
+    )
+    output_path = review_output_dir / "annotation_metrics_by_mode.json"
+    output_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    return output_path
 
 
 
@@ -4902,9 +5301,11 @@ def run_annotation_review_stage(
             f"strict_doc_f1={float(strict_metrics.get('f1', 0.0)):.3f} "
             f"strict_study_f1={float(strict_metrics.get('study_metrics', {}).get('f1', 0.0)):.3f} "
             f"strict_analysis_f1={float(strict_metrics.get('analysis_metrics', {}).get('f1', 0.0)):.3f} "
+            f"strict_analysis_f1_assumption={float(strict_metrics.get('analysis_metrics_exhausted_manual_assumption', {}).get('f1', strict_metrics.get('analysis_metrics', {}).get('f1', 0.0))):.3f} "
             f"combined_doc_f1={float(combined_metrics.get('f1', 0.0)):.3f} "
             f"combined_study_f1={float(combined_metrics.get('study_metrics', {}).get('f1', 0.0)):.3f} "
             f"combined_analysis_f1={float(combined_metrics.get('analysis_metrics', {}).get('f1', 0.0)):.3f} "
+            f"combined_analysis_f1_assumption={float(combined_metrics.get('analysis_metrics_exhausted_manual_assumption', {}).get('f1', combined_metrics.get('analysis_metrics', {}).get('f1', 0.0))):.3f} "
             f"missing_manual_pmids={len(strict_metrics.get('missing_manual_pmids', []))}"
         )
 
@@ -4912,6 +5313,12 @@ def run_annotation_review_stage(
     overall_summary_path = review_output_dir / "overall_submeta_summary.html"
     overall_summary_path.write_text(overall_summary_html, encoding="utf-8")
     print(f"Wrote {overall_summary_path}")
+    annotation_metrics_json_path = write_annotation_metrics_export(
+        project_output_dir=project_output_dir,
+        review_output_dir=review_output_dir,
+        metrics_by_annotation_by_mode=metrics_by_annotation_by_mode,
+    )
+    print(f"Wrote {annotation_metrics_json_path}")
 
 
 def main() -> None:

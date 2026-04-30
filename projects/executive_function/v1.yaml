@@ -1,0 +1,146 @@
+# Inital version
+# Used GPT to help draft inital draft, based on previously examples.
+search:
+  database: "pubmed"
+  query: >
+    (((("functional magnetic resonance imaging"[Mesh] OR fMRI[tiab] OR "magnetic resonance imaging"[tiab]
+    OR "positron emission tomography"[Mesh] OR PET[tiab]))
+    AND
+    (("executive function"[Mesh] OR "executive function*"[tiab] OR "cognitive control"[tiab]
+    OR "working memory"[Mesh] OR "working memory"[tiab]
+    OR inhibition[tiab] OR inhibitory[tiab]
+    OR "cognitive flexibility"[tiab] OR "set shifting"[tiab] OR "task switching"[tiab]
+    OR planning[tiab] OR vigilance[tiab] OR "sustained attention"[tiab]
+    OR initiation[tiab]
+    OR "go/no-go"[tiab] OR "go no go"[tiab] OR "stop signal"[tiab]
+    OR stroop[tiab] OR "n-back"[tiab] OR "tower of london"[tiab]
+    OR "tower of hanoi"[tiab] OR "wisconsin card sorting"[tiab]
+    OR "continuous performance task"[tiab])))
+    AND Humans[mh] AND English[lang])
+    NOT (review[pt] OR "systematic review"[tiab] OR meta-analysis[pt]))
+  date_from: "1990/01/01"
+  date_to: "2010/12/31"
+  max_results: 20000
+  email: "aid338@eid.utexas.edu"
+
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/articles/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/articles/ace_outputs/processed/"
+
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    objective: "Meta-analysis of executive function task activations in healthy adults"
+    inclusion_criteria:
+      - English-language peer-reviewed neuroimaging studies
+      - Healthy human participants
+      - Functional MRI (fMRI) or positron emission tomography (PET) studies
+      - Studies examining executive function or cognitive control tasks
+    exclusion_criteria:
+      - Non-human studies
+      - Non-English studies
+    confidence_reporting: true
+
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Meta-analysis of executive function task activations in healthy adults"
+    inclusion_criteria:
+      - Functional MRI (fMRI) or positron emission tomography (PET) study assessing executive function or cognitive control using task-based paradigms
+      - At least one analysis involving a within-participant contrast of an executive function task relative to an active control condition
+      - Whole-brain evidence- At least one analysis must be a group-level, whole-brain (voxelwise) task-evoked statistical map
+      - It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.
+      - Tasks must fall within established executive function domains (e.g., working memory, inhibition, cognitive flexibility, planning, vigilance, initiation)
+      - Relevant information was reported regarding participant age, confirmation of healthy sample status, imaging modality (fMRI or PET), and task paradigm
+    exclusion_criteria:
+      - Studies that report only region-of-interest (ROI) analyses with no whole-brain results.
+      - Studies that report only connectivity analyses (e.g., functional connectivity, PPI, DCM) or resting-state analyses without also reporting a whole-brain task activation map.
+      - Studies that report only between-group contrasts (e.g., patient vs control) without an accompanying within-group task activation contrast in healthy participants.
+      - Studies using rest or fixation as the only baseline condition without an active control task.
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human neuroimaging data.
+      - Studies including participants outside the age range of 18–60 years or not restricted to healthy individuals.
+      
+parsing:
+  parse_coordinates: true
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  prompt_type: "multi_analysis"
+  create_all_included_annotations: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_abstract"
+  inclusion_criteria:
+    - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast). Between-group contrasts are acceptable only if they include or clearly reflect a within-group task activation effect in healthy participants.
+    - Contrast or analysis must be relevant to executive function or cognitive control task performance.
+  exclusion_criteria:
+    - Region-of-interest (ROI) analyses
+    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents)
+    - Analyses not involving executive function or cognitive control processes
+  annotations:
+    - name: "pooled_executive_function"
+      description: "Executive function task activation across all domains"
+      inclusion_criteria:
+        - "Analyses must be on a task measuring executive function or cognitive control (example tasks: Working memory tasks, Go/No-Go, Stroop, Task switching, Planning tasks)"
+        - "The analysis/contrast must measure task-related activation compared to an active control condition (example contrast: Task>control condition)"
+
+    - name: "working_memory"
+      description: "Working memory involves the temporary maintenance and manipulation of information to guide behavior."
+      inclusion_criteria:
+        - "Analyses must be on a task measuring WORKING MEMORY (example tasks: n-back, delayed match-to-sample)"
+        - "The analysis/contrast must measure working memory-related activation compared to a control condition (example contrast: 2-back>0-back)"
+      
+    - name: "inhibition"
+      description: "Inhibition refers to the ability to suppress prepotent or automatic responses."
+      inclusion_criteria:
+        - "Analyses must be on a task measuring INHIBITORY CONTROL (example tasks: Go/No-Go, Stop-signal, Stroop)"
+        - "The analysis/contrast must measure inhibition-related activation compared to a control condition (example contrast: No-Go>Go, Incongruent>Congruent)"
+      
+    - name: "cognitive_flexibility"
+      description: "Cognitive flexibility involves the ability to shift between tasks, rules, or mental sets."
+      inclusion_criteria:
+        - "Analyses must be on a task measuring COGNITIVE FLEXIBILITY (example tasks: Task switching, Wisconsin Card Sorting Test)"
+        - "The analysis/contrast must measure flexibility-related activation compared to a control condition (example contrast: Switch>Repeat)"
+      
+    - name: "planning"
+      description: "Planning involves the ability to organize and sequence goal-directed actions."
+      inclusion_criteria:
+        - "Analyses must be on a task measuring PLANNING (example tasks: Tower of London, Tower of Hanoi)"
+        - "The analysis/contrast must measure planning-related activation compared to a control condition"
+      
+    - name: "vigilance"
+      description: "Vigilance refers to sustained attention over prolonged periods."
+      inclusion_criteria:
+        - "Analyses must be on a task measuring VIGILANCE or sustained attention (example tasks: Continuous Performance Task)"
+        - "The analysis/contrast must measure vigilance-related activation compared to a control condition"
+      
+    - name: "initiation"
+      description: "Initiation involves the ability to begin or generate goal-directed behavior."
+      inclusion_criteria:
+        - "Analyses must be on a task measuring INITIATION (example tasks: verbal fluency, action generation tasks)"
+        - "The analysis/contrast must measure initiation-related activation compared to a control condition"
+
+
+
+
+output:
+  nimads: true
+  export_excluded_studies: true
+

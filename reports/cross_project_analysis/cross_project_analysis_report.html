@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cross-Project Analysis Dashboard</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --ink: #1f2933;
+      --line: #d5dee8;
+      --accent: #0f766e;
+      --bar-bg: #edf2f7;
+      --bar-fill: linear-gradient(90deg, #0f766e 0%, #0284c7 100%);
+    }
+    body { margin: 0; padding: 1.1rem; background: var(--bg); color: var(--ink); font-family: "IBM Plex Sans", "Segoe UI", sans-serif; }
+    header, section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    h1, h2 { margin-top: 0; }
+    .kpis { display: grid; gap: 0.8rem; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-top: 0.75rem; }
+    .kpi { border: 1px solid var(--line); border-radius: 8px; background: #fbfdff; padding: 0.65rem; }
+    .kpi .label { color: #4a5b70; font-size: 0.84rem; }
+    .kpi .value { color: var(--accent); font-size: 1.35rem; font-weight: 700; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem; text-align: left; vertical-align: top; }
+    th { background: #e9eff6; }
+    .muted { color: #5b6b80; font-size: 0.84rem; }
+    .bar-wrap { position: relative; min-width: 170px; height: 1.05rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--bar-bg); }
+    .bar-fill { height: 100%; background: var(--bar-fill); }
+    .bar-label { position: absolute; right: 0.35rem; top: 50%; transform: translateY(-50%); font-size: 0.75rem; font-weight: 700; color: #0f172a; }
+    ul { margin: 0.5rem 0 0 1.15rem; }
+    li { margin: 0.25rem 0; }
+    code { background: #eef2f7; border: 1px solid #d7dee7; border-radius: 4px; padding: 0.05rem 0.25rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cross-Project Analysis Dashboard</h1>
+    <p>Generated at 2026-04-29T19:21:04.104438Z. This dashboard re-runs <code>compare_analyses_to_benchmark.py</code> for each selected strict annotation-only run and aggregates parsing + annotation metrics.</p>
+    <div class="kpis">
+      <div class="kpi"><div class="label">Projects Selected</div><div class="value">5</div></div>
+      <div class="kpi"><div class="label">Projects Skipped</div><div class="value">4</div></div>
+      <div class="kpi"><div class="label">Re-run Successes</div><div class="value">5</div></div>
+      <div class="kpi"><div class="label">Re-run Failures</div><div class="value">0</div></div>
+      <div class="kpi"><div class="label">Parsing Matched % (Weighted)</div><div class="value">0.777</div></div>
+      <div class="kpi"><div class="label">Parsing Matched % (Unweighted)</div><div class="value">0.771</div></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>Selection and Re-run Status</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Selection</th>
+            <th>Version</th>
+            <th>Selected Run</th>
+            <th>Re-run</th>
+            <th>Return Code</th>
+            <th>Reason</th>
+            <th>Log</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>cue_reactivity</td><td>selected</td><td>5</td><td><code>/home/zorro/repos/autonima-results/projects/cue_reactivity/v5-annotation-only</code></td><td>success</td><td>0</td><td>Selected highest strict vN-annotation-only candidate</td><td><a href="logs/cue_reactivity.log">log</a></td></tr><tr><td>decision_making</td><td>selected</td><td>2</td><td><code>/home/zorro/repos/autonima-results/projects/decision_making/v2-annotation-only</code></td><td>success</td><td>0</td><td>Selected highest strict vN-annotation-only candidate</td><td><a href="logs/decision_making.log">log</a></td></tr><tr><td>dementia</td><td>skipped</td><td></td><td><code></code></td><td>skipped</td><td></td><td>No directories matched strict pattern ^vN-annotation-only$</td><td><span class='muted'>n/a</span></td></tr><tr><td>executive_function</td><td>skipped</td><td></td><td><code></code></td><td>skipped</td><td></td><td>No directories matched strict pattern ^vN-annotation-only$</td><td><span class='muted'>n/a</span></td></tr><tr><td>problem_solving</td><td>skipped</td><td></td><td><code></code></td><td>skipped</td><td></td><td>No directories matched strict pattern ^vN-annotation-only$</td><td><span class='muted'>n/a</span></td></tr><tr><td>social</td><td>selected</td><td>3</td><td><code>/home/zorro/repos/autonima-results/projects/social/v3-annotation-only</code></td><td>success</td><td>0</td><td>Selected highest strict vN-annotation-only candidate</td><td><a href="logs/social.log">log</a></td></tr><tr><td>template_</td><td>skipped</td><td></td><td><code></code></td><td>skipped</td><td></td><td>No directories matched strict pattern ^vN-annotation-only$</td><td><span class='muted'>n/a</span></td></tr><tr><td>vbm_of_ptsd</td><td>selected</td><td>1</td><td><code>/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/v1-annotation-only</code></td><td>success</td><td>0</td><td>Selected highest strict vN-annotation-only candidate</td><td><a href="logs/vbm_of_ptsd.log">log</a></td></tr><tr><td>vbm_of_substance_use</td><td>selected</td><td>2</td><td><code>/home/zorro/repos/autonima-results/projects/vbm_of_substance_use/v2-annotation-only</code></td><td>success</td><td>0</td><td>Selected highest strict vN-annotation-only candidate</td><td><a href="logs/vbm_of_substance_use.log">log</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">CSV: <code>project_selection.csv</code></p>
+  </section>
+
+  <section>
+    <h2>Parsing Performance Across Projects</h2>
+    <p>Manual matched % is computed as <code>(accepted + uncertain) / manual_analyses_total</code> from <code>match_results_overall.json</code>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Matched % Bar</th>
+            <th>Matched %</th>
+            <th>Matched / Manual</th>
+            <th>Fuzzy Report</th>
+            <th>Annotation Summary</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>vbm_of_ptsd</td><td><div class="bar-wrap"><div class="bar-fill" style="width:90.91%"></div><span class="bar-label">0.909</span></div></td><td>0.909</td><td>10/11</td><td><a href="../../projects/vbm_of_ptsd/v1-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/vbm_of_ptsd/v1-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr><tr><td>social</td><td><div class="bar-wrap"><div class="bar-fill" style="width:81.66%"></div><span class="bar-label">0.817</span></div></td><td>0.817</td><td>472/578</td><td><a href="../../projects/social/v3-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/social/v3-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr><tr><td>vbm_of_substance_use</td><td><div class="bar-wrap"><div class="bar-fill" style="width:75.00%"></div><span class="bar-label">0.750</span></div></td><td>0.750</td><td>45/60</td><td><a href="../../projects/vbm_of_substance_use/v2-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/vbm_of_substance_use/v2-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr><tr><td>cue_reactivity</td><td><div class="bar-wrap"><div class="bar-fill" style="width:71.77%"></div><span class="bar-label">0.718</span></div></td><td>0.718</td><td>150/209</td><td><a href="../../projects/cue_reactivity/v5-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/cue_reactivity/v5-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr><tr><td>decision_making</td><td><div class="bar-wrap"><div class="bar-fill" style="width:66.29%"></div><span class="bar-label">0.663</span></div></td><td>0.663</td><td>59/89</td><td><a href="../../projects/decision_making/v2-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/decision_making/v2-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">CSV: <code>parsing_metrics_by_project.csv</code></p>
+  </section>
+
+  <section>
+    <h2>Annotation Aggregates (Micro-Pooled Across Projects and Annotations)</h2>
+    <p>Modes: strict (<code>accepted</code>) and combined. Levels: study and analysis. Analysis is shown for both matched-only baseline and exhausted-manual-assumption variants.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Metric Slice</th>
+            <th>Projects</th>
+            <th>Annotations</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>Activated PMIDs</th>
+            <th>Added Assumed Negatives</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Study (Strict)</td><td>5</td><td>18</td><td>579</td><td>88</td><td>86</td><td>590</td><td>0.868</td><td>0.871</td><td>0.869</td><td>0.870</td><td>0</td><td>0</td></tr><tr><td>Study (Combined)</td><td>5</td><td>18</td><td>595</td><td>89</td><td>86</td><td>608</td><td>0.870</td><td>0.874</td><td>0.872</td><td>0.873</td><td>0</td><td>0</td></tr><tr><td>Analysis Matched-Only (Strict)</td><td>5</td><td>18</td><td>1099</td><td>168</td><td>419</td><td>1492</td><td>0.867</td><td>0.724</td><td>0.789</td><td>0.815</td><td>0</td><td>0</td></tr><tr><td>Analysis Matched-Only (Combined)</td><td>5</td><td>18</td><td>1134</td><td>173</td><td>427</td><td>1533</td><td>0.868</td><td>0.726</td><td>0.791</td><td>0.816</td><td>0</td><td>0</td></tr><tr><td>Analysis Exhausted-Manual (Strict)</td><td>5</td><td>18</td><td>1099</td><td>809</td><td>419</td><td>3067</td><td>0.576</td><td>0.724</td><td>0.642</td><td>0.772</td><td>722</td><td>2216</td></tr><tr><td>Analysis Exhausted-Manual (Combined)</td><td>5</td><td>18</td><td>1134</td><td>814</td><td>427</td><td>3108</td><td>0.582</td><td>0.726</td><td>0.646</td><td>0.774</td><td>722</td><td>2216</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">CSV: <code>annotation_aggregates.csv</code></p>
+  </section>
+
+  <section>
+    <h2>Per-Project Annotation F1 Summary</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Study F1 (Strict)</th>
+            <th>Study F1 (Combined)</th>
+            <th>Analysis F1 Matched-Only (Strict)</th>
+            <th>Analysis F1 Exhausted-Manual (Strict)</th>
+            <th>Analysis F1 Matched-Only (Combined)</th>
+            <th>Analysis F1 Exhausted-Manual (Combined)</th>
+            <th>Fuzzy Report</th>
+            <th>Annotation Summary</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>cue_reactivity</td><td><div class="bar-wrap"><div class="bar-fill" style="width:97.17%"></div><span class="bar-label">0.972</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:97.27%"></div><span class="bar-label">0.973</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:98.07%"></div><span class="bar-label">0.981</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:62.91%"></div><span class="bar-label">0.629</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:98.15%"></div><span class="bar-label">0.981</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:63.89%"></div><span class="bar-label">0.639</span></div></td><td><a href="../../projects/cue_reactivity/v5-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/cue_reactivity/v5-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr><tr><td>decision_making</td><td><div class="bar-wrap"><div class="bar-fill" style="width:92.06%"></div><span class="bar-label">0.921</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:92.54%"></div><span class="bar-label">0.925</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:94.55%"></div><span class="bar-label">0.945</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:60.82%"></div><span class="bar-label">0.608</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:94.83%"></div><span class="bar-label">0.948</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:62.15%"></div><span class="bar-label">0.621</span></div></td><td><a href="../../projects/decision_making/v2-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/decision_making/v2-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr><tr><td>social</td><td><div class="bar-wrap"><div class="bar-fill" style="width:77.59%"></div><span class="bar-label">0.776</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:77.61%"></div><span class="bar-label">0.776</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:70.70%"></div><span class="bar-label">0.707</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:63.60%"></div><span class="bar-label">0.636</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:70.71%"></div><span class="bar-label">0.707</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:63.76%"></div><span class="bar-label">0.638</span></div></td><td><a href="../../projects/social/v3-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/social/v3-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr><tr><td>vbm_of_ptsd</td><td><div class="bar-wrap"><div class="bar-fill" style="width:94.12%"></div><span class="bar-label">0.941</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:94.12%"></div><span class="bar-label">0.941</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:94.74%"></div><span class="bar-label">0.947</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:85.71%"></div><span class="bar-label">0.857</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:94.74%"></div><span class="bar-label">0.947</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:85.71%"></div><span class="bar-label">0.857</span></div></td><td><a href="../../projects/vbm_of_ptsd/v1-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/vbm_of_ptsd/v1-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr><tr><td>vbm_of_substance_use</td><td><div class="bar-wrap"><div class="bar-fill" style="width:95.71%"></div><span class="bar-label">0.957</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:95.91%"></div><span class="bar-label">0.959</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:95.86%"></div><span class="bar-label">0.959</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:75.35%"></div><span class="bar-label">0.753</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:96.05%"></div><span class="bar-label">0.960</span></div></td><td><div class="bar-wrap"><div class="bar-fill" style="width:76.23%"></div><span class="bar-label">0.762</span></div></td><td><a href="../../projects/vbm_of_substance_use/v2-annotation-only/reports/analysis_fuzzy_matching_report.html">analysis_fuzzy_matching_report.html</a></td><td><a href="../../projects/vbm_of_substance_use/v2-annotation-only/reports/annotation_review_reports/overall_submeta_summary.html">overall_submeta_summary.html</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Skipped Projects</h2>
+    <ul><li><code>dementia</code>: No directories matched strict pattern ^vN-annotation-only$</li><li><code>executive_function</code>: No directories matched strict pattern ^vN-annotation-only$</li><li><code>problem_solving</code>: No directories matched strict pattern ^vN-annotation-only$</li><li><code>template_</code>: No directories matched strict pattern ^vN-annotation-only$</li></ul>
+  </section>
+
+  <section>
+    <h2>Failed Re-runs</h2>
+    <p class="muted">No re-run failures.</p>
+  </section>
+</body>
+</html>
