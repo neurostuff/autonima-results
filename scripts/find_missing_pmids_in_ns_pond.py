@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Find full-text paths for PMIDs that exist in a json-based hash-folder source.
+"""Find PMID HTML paths that exist in a json-based hash-folder source.
 
 The source layout is expected to be:
-  <root_path>/<hash_id>/processed/ace/text.txt
+  <root_path>/<hash_id>/source/ace/<pmid>.html
   <root_path>/<hash_id>/identifiers.json
 
 A folder only counts as an available hit if BOTH files exist and identifiers.json
@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import tarfile
 from pathlib import Path
 from typing import Iterator
 
@@ -37,9 +38,12 @@ def parse_args() -> argparse.Namespace:
         help="Root folder containing hash-id article directories.",
     )
     parser.add_argument(
-        "--text-path-template",
-        default="processed/ace/text.txt",
-        help="Relative path required inside each hash folder.",
+        "--html-path-template",
+        default="source/ace/{pmid}.html",
+        help=(
+            "Relative path to required HTML inside each hash folder. "
+            "Use {pmid} placeholder for PMID-specific filenames."
+        ),
     )
     parser.add_argument(
         "--json-filename",
@@ -56,6 +60,15 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=None,
         help="Optional output file path. Defaults to stdout.",
+    )
+    parser.add_argument(
+        "--archive-output",
+        type=Path,
+        default=None,
+        help=(
+            "Optional .tar.gz output path. When provided, all matched HTML files "
+            "are copied into a single archive using their original filenames."
+        ),
     )
     parser.add_argument(
         "--allow-nondigit-pmids",
@@ -105,9 +118,14 @@ def read_input_pmids(path: Path, allow_nondigit: bool) -> list[str]:
     return pmids
 
 
+def resolve_html_path(folder: Path, html_path_template: str, pmid: str) -> Path:
+    rel_path = html_path_template.format(pmid=pmid)
+    return folder / rel_path
+
+
 def build_found_pmid_path_map(
     root_path: Path,
-    text_path_template: str,
+    html_path_template: str,
     json_filename: str,
     json_pmid_key: str,
     target_pmids: set[str],
@@ -116,7 +134,7 @@ def build_found_pmid_path_map(
     found_paths_by_pmid: dict[str, str] = {}
     stats = {
         "hash_dirs": 0,
-        "with_required_text": 0,
+        "with_required_html": 0,
         "with_json": 0,
         "json_read_errors": 0,
         "folders_with_pmid": 0,
@@ -126,11 +144,6 @@ def build_found_pmid_path_map(
         if not child.is_dir():
             continue
         stats["hash_dirs"] += 1
-
-        text_path = child / text_path_template
-        if not text_path.is_file():
-            continue
-        stats["with_required_text"] += 1
 
         id_json = child / json_filename
         if not id_json.is_file():
@@ -150,7 +163,10 @@ def build_found_pmid_path_map(
                 continue
             found_any = True
             if pmid in target_pmids and pmid not in found_paths_by_pmid:
-                found_paths_by_pmid[pmid] = str(text_path)
+                html_path = resolve_html_path(child, html_path_template=html_path_template, pmid=pmid)
+                if html_path.is_file():
+                    stats["with_required_html"] += 1
+                    found_paths_by_pmid[pmid] = str(html_path)
 
         if found_any:
             stats["folders_with_pmid"] += 1
@@ -171,6 +187,14 @@ def write_output(lines: list[str], output_path: Path | None) -> None:
     output_path.write_text(content, encoding="utf-8")
 
 
+def write_archive(html_paths: list[str], archive_output: Path) -> None:
+    archive_output.parent.mkdir(parents=True, exist_ok=True)
+    with tarfile.open(archive_output, mode="w:gz") as tar:
+        for path_str in html_paths:
+            src = Path(path_str)
+            tar.add(src, arcname=src.name, recursive=False)
+
+
 def main() -> None:
     args = parse_args()
 
@@ -187,7 +211,7 @@ def main() -> None:
 
     found_paths_by_pmid, stats = build_found_pmid_path_map(
         root_path=root_path,
-        text_path_template=args.text_path_template,
+        html_path_template=args.html_path_template,
         json_filename=args.json_filename,
         json_pmid_key=args.json_pmid_key,
         target_pmids=input_pmid_set,
@@ -198,6 +222,8 @@ def main() -> None:
     found_paths = [found_paths_by_pmid[pmid] for pmid in found_pmids]
 
     write_output(found_paths, args.output)
+    if args.archive_output is not None:
+        write_archive(found_paths, args.archive_output.expanduser().resolve())
 
     print(
         (
@@ -205,11 +231,12 @@ def main() -> None:
             f"input_pmids={len(input_pmids)}\n"
             f"found_pmids={len(found_pmids)}\n"
             f"hash_dirs={stats['hash_dirs']}\n"
-            f"with_required_text={stats['with_required_text']}\n"
+            f"with_required_html={stats['with_required_html']}\n"
             f"with_json={stats['with_json']}\n"
             f"json_read_errors={stats['json_read_errors']}\n"
             f"folders_with_pmid={stats['folders_with_pmid']}\n"
-            f"unique_found_pmids_in_input={len(found_paths_by_pmid)}"
+            f"unique_found_pmids_in_input={len(found_paths_by_pmid)}\n"
+            f"archive_output={args.archive_output if args.archive_output is not None else ''}"
         ),
         file=__import__("sys").stderr,
     )
