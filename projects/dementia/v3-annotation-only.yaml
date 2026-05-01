@@ -1,6 +1,5 @@
-#v2: change to annotation: don't exclude between group contrasts (!)
-# also refined inclusion/exclusion wording (minor)
-# full text used for annotation only
+#v3: changed to remove disallowing resting state in annotation
+
 search:
   database: "pubmed"
   pmids_file: "/home/zorro/repos/autonima-results/projects/dementia/annotation-only-ids.txt"
@@ -43,11 +42,12 @@ annotation:
     - "study_fulltext"
   inclusion_criteria:
     - Whole-brain evidence- The analysis must be from a whole-brain (voxelwise) map
-    - Analysis must compare the target bvFTD group to healthy controls, where bvFTD group is not pooled with other patient groups
+    - Sample- analysis includes clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) or picks disease patients 
+    - Analysis must compare the target bvFTD group to healthy controls
   exclusion_criteria:
     - Region-of-interest (ROI) analyses
-    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses
-  
+    - Seed‐based functional connectivity (FC), diffusion tensor imaging (DTI), and cortical thickness methods
+    - Explicit evidence of pooling bvFTD group with other patient groups in the analysis (e.g. bvFTD + other dementia group vs controls)
   annotations:
     - name: "dementia_all"
       description: "All analyses"
