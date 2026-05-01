@@ -2284,6 +2284,7 @@ class Decision:
     include: bool
     reasoning: str
     analysis_id: str
+    table_caption: str
     inclusion_criteria_applied: list[str]
     exclusion_criteria_applied: list[str]
 
@@ -2891,6 +2892,7 @@ def load_model_decisions(path: Path) -> dict[str, dict[str, dict[int, Decision]]
             include=bool(row.get("include", False)),
             reasoning=clean_text(row.get("reasoning") or ""),
             analysis_id=analysis_id,
+            table_caption=clean_text(row.get("table_caption") or "").strip(),
             inclusion_criteria_applied=parse_applied_codes(row.get("inclusion_criteria_applied")),
             exclusion_criteria_applied=parse_applied_codes(row.get("exclusion_criteria_applied")),
         )
@@ -3207,6 +3209,7 @@ def make_document_row(
                 "matched_for_review": matched_for_review,
                 "assumed_negative_for_review": idx in assumed_negative_indices,
                 "reasoning": "" if decision is None else decision.reasoning,
+                "llm_table_caption": "" if decision is None else clean_text(decision.table_caption).strip(),
                 "inclusion_criteria_applied": (
                     []
                     if decision is None
@@ -3833,15 +3836,25 @@ def render_doc_card(
 
         table_meta = table_meta_by_id.get(table_id, {})
         table_label = str(table_meta.get("table_label", "")).strip()
+        llm_table_captions = dedupe_keep_order(
+            [
+                clean_text(str(row.get("llm_table_caption", ""))).strip()
+                for row in rows_for_table
+                if clean_text(str(row.get("llm_table_caption", ""))).strip()
+            ]
+        )
+        display_caption = clean_text(str(table_meta.get("table_caption", ""))).strip()
+        if not display_caption and llm_table_captions:
+            display_caption = llm_table_captions[0]
         table_heading = f"{group_index}) {table_label}" if table_label else f"{group_index}) Table"
         table_meta_lines = []
         if not table_label and table_id:
             table_meta_lines.append(
                 f"<li><strong>Table ID:</strong> {escape(table_id)}</li>"
             )
-        if table_meta.get("table_caption"):
+        if display_caption:
             table_meta_lines.append(
-                f"<li><strong>Caption:</strong> {escape(str(table_meta.get('table_caption', '')))}</li>"
+                f"<li><strong>Caption:</strong> {escape(display_caption)}</li>"
             )
         if table_meta.get("table_foot"):
             table_meta_lines.append(
@@ -3858,7 +3871,7 @@ def render_doc_card(
         if (
             len(table_meta_lines) == 1
             and not table_meta.get("table_label")
-            and not table_meta.get("table_caption")
+            and not display_caption
             and not table_meta.get("table_foot")
             and table_id
         ):
