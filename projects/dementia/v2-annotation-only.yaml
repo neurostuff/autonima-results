@@ -1,0 +1,78 @@
+#v2: change to annotation: don't exclude between group contrasts (!)
+# also refined inclusion/exclusion wording (minor)
+# enabled study_full_text as metadata field for annotation model 
+
+search:
+  database: "pubmed"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/dementia/annotation-only-ids.txt"
+  
+retrieval:
+  load_excluded: false
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/projects/dementia/elsevier_output"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/projects/dementia/ace_outputs/html"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/projects/dementia/ace_outputs/processed"
+
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+
+parsing:
+  parse_coordinates: true
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - Whole-brain evidence- The analysis must be from a whole-brain (voxelwise) map
+    - Analysis must compare the target bvFTD group to healthy controls, where bvFTD group is not pooled with other patient groups
+  exclusion_criteria:
+    - Region-of-interest (ROI) analyses
+    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses
+  
+  annotations:
+    - name: "dementia_all"
+      description: "All analyses"
+      inclusion_criteria:
+        - Uses Voxel-Based Morphometry, fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
+
+    - name: "dementia_decreasing_activity"
+      description: "Analyses reporting decreases for bvFTD group"
+      inclusion_criteria:
+        - Analyses reporting any decreases in activity/connectivity, metabolism, or gray matter volume for bvFTD group (e.g. Control > bvFTD or bvFTD < Control)
+        - Uses Voxel-Based Morphometry, fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
+
+    - name: "structural"
+      description: "VBM experiments"
+      inclusion_criteria:
+        - Uses Voxel-based morphometry (VBM) as the imaging modality
+         
+    - name: "functional"
+      description: "fdg pet & fmri"
+      inclusion_criteria:
+        - Uses fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
+
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true

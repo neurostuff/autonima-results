@@ -56,11 +56,11 @@ screening:
       - only reports seed‐based functional connectivity (FC), diffusion tensor imaging (DTI), or cortical thickness methods
 
 parsing:
-  parse_coordinates: false
+  parse_coordinates: true
   coordinate_model: "gpt-5-mini-2025-08-07"  
 
 annotation:
-  enabled: false
+  enabled: true
   model: "gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
   metadata_fields:
@@ -68,22 +68,35 @@ annotation:
     - "analysis_description"
     - "table_caption"
     - "study_title"
-    - "study_abstract"
+    - "study_fulltext"
   inclusion_criteria:
-    # - Sample- The analysis must be on a healthy adult participants (alone, not a clinical or special group, or a comparison between healthy and clinical/special groups).
-    - uses Voxel-Based Morphometry, fMRI (resting‐state or task based), and  (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
-    - Sample- At least 6 participants
-    - Sample- particpants included clinically diagnosed behavioral variant frontotemporal dementia patients with no concurrent psychiatric diagnosis (e.g., major depressive disorder and bipolar mood disorder),other forms of dementia or neurological symptoms, and no history of alcohol and substance abuse
-    - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is from the healthy/control group and is generalizable to the healthy adult population.
+    - Whole-brain evidence- The analysis must be from a whole-brain (voxelwise) map
+    - Analysis must compare the target bvFTD group to healthy controls, where bvFTD group is not pooled with other patient groups
   exclusion_criteria:
     - Region-of-interest (ROI) analyses
-    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) 
-    - Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control)
+    - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses
+  
   annotations:
     - name: "dementia_all"
-      description: "???"
+      description: "All analyses"
       inclusion_criteria:
-        - Analyses performed a XXXX
+        - Uses Voxel-Based Morphometry, fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
+
+    - name: "dementia_decreasing_activity"
+      description: "Analyses reporting decreases for bvFTD group"
+      inclusion_criteria:
+        - Analyses reporting any decreases in activity/connectivity, metabolism, or gray matter volume for bvFTD group (e.g. Control > bvFTD or bvFTD < Control)
+        - Uses Voxel-Based Morphometry, fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
+
+    - name: "structural"
+      description: "VBM experiments"
+      inclusion_criteria:
+        - Uses Voxel-based morphometry (VBM) as the imaging modality
+         
+    - name: "functional"
+      description: "fdg pet & fmri"
+      inclusion_criteria:
+        - Uses fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
 
 output:
   formats:
