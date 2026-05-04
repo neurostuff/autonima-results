@@ -1,0 +1,93 @@
+search:
+  database: "pubmed"
+  pmids_file: 'C:\Users\antho\Neuroinformatics-Lab\autonima-results\projects\problem_solving\annotation-only-ids.txt'
+  
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: 'C:\Users\antho\Neuroinformatics-Lab\autonima-results\projects\problem_solving\elsevier_output'
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: 'C:\Users\antho\Neuroinformatics-Lab\autonima-results\projects\problem_solving\ace_outputs'
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: 'C:\Users\antho\Neuroinformatics-Lab\autonima-results\projects\problem_solving\ace_outputs\processed'
+
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+
+parsing:
+  parse_coordinates: true 
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  prompt_type: "multi_analysis"
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - Voxelwise task evidence- The analysis must be a group-level, univariate task-evoked voxelwise map (typically whole-brain; small-volume-corrected maps are acceptable).
+    - Task-based problem solving- The contrast must reflect active problem solving, reasoning, or goal-directed cognitive processing (e.g., rule application, planning, relational reasoning, symbolic manipulation).
+    - Valid comparator condition- The analysis/contrast must compare problem solving against an appropriate baseline or control condition (e.g., rest, fixation, perceptual control, low-level baseline, or simpler task condition).
+    - Domain generality- Analyses may come from any representational domain (e.g., mathematical, verbal, visuospatial, logical), provided they isolate problem solving processes.
+    - Stereotactic reporting- Coordinates must be reported in standard stereotactic space (MNI or Talairach).
+  exclusion_criteria:
+    - ROI-only analyses without whole-brain voxelwise results or stereotactic coordinates.
+    - Connectivity analyses- Seed-based connectivity, effective connectivity, or resting-state analyses.
+    - Non-task or passive paradigms- Passive viewing, simple perception, or tasks not requiring active problem solving or reasoning.
+    - Motor or response-only contrasts that do not isolate cognitive problem solving processes.
+    - Clinical or between-group contrasts that do not isolate a within-task problem solving effect (unless a valid problem solving contrast is reported separately).
+  annotations:
+    - name: "domain_general_problem_solving"
+      description: "Core problem solving processes that generalize across representational domains."
+      inclusion_criteria:
+        - "Analyses must involve problem solving, reasoning, or goal-directed cognition independent of specific domain."
+        - "The contrast must isolate problem solving versus a valid control condition."
+      exclusion_criteria:
+        - "Exclude contrasts that are domain-specific without clear problem solving demands."
+    - name: "mathematical_problem_solving"
+      description: "Problem solving involving numerical or mathematical representations."
+      inclusion_criteria:
+        - "Analyses must involve active mathematical reasoning or computation."
+        - "Contrast must isolate mathematical problem solving versus a valid control."
+      exclusion_criteria:
+        - "Exclude simple number perception or rote calculation without problem solving demands."
+    - name: "verbal_problem_solving"
+      description: "Problem solving involving linguistic or semantic reasoning."
+      inclusion_criteria:
+        - "Analyses must involve language-based reasoning."
+        - "Contrast must isolate verbal reasoning versus a valid control."
+      exclusion_criteria:
+        - "Exclude passive reading or language comprehension without problem solving."
+    - name: "visuospatial_problem_solving"
+      description: "Problem solving involving spatial or visual representations."
+      inclusion_criteria:
+        - "Analyses must involve spatial reasoning or manipulation."
+        - "Contrast must isolate visuospatial problem solving versus a valid control."
+      exclusion_criteria:
+        - "Exclude simple visual perception or matching tasks without reasoning demands."
+    - name: "logical_reasoning"
+      description: "Problem solving involving formal logic or rule-based reasoning."
+      inclusion_criteria:
+        - "Analyses must involve logical inference or rule-based reasoning."
+        - "Contrast must isolate logical reasoning versus a valid control."
+      exclusion_criteria:
+        - "Exclude tasks that involve rule following without active reasoning or inference."
+
+output:
+  nimads: true
+  export_excluded_studies: true
