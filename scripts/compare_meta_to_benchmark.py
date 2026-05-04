@@ -736,11 +736,11 @@ def collect_aggregate_paths(
     included_run_infos: list[RunInfo],
     manual_meta_by_run: dict[str, bool],
     map_filename: str,
-) -> dict[str, dict[str, Path]]:
+) -> tuple[dict[str, dict[str, Path]], dict[str, str]]:
     run_aggregate_paths: dict[str, dict[str, Path]] = {
         run_info.name: {} for run_info in included_run_infos
     }
-    aggregate_missing_errors: list[str] = []
+    skipped_aggregate_runs: dict[str, str] = {}
 
     for run_info in included_run_infos:
         run_name = run_info.name
@@ -760,8 +760,8 @@ def collect_aggregate_paths(
             expected_variants = [
                 " + ".join(variant) for variant in AGGREGATE_ANALYSIS_NAME_VARIANTS
             ]
-            aggregate_missing_errors.append(
-                f"{run_name}: missing aggregate analysis maps. Expected one of: "
+            skipped_aggregate_runs[run_name] = (
+                "missing aggregate analysis maps. Expected one of: "
                 f"{'; '.join(expected_variants)}"
             )
             continue
@@ -771,14 +771,7 @@ def collect_aggregate_paths(
                 run_info.meta_results_dir / aggregate_name / map_filename
             )
 
-    if aggregate_missing_errors:
-        error_lines = "\n".join(f"- {error}" for error in aggregate_missing_errors)
-        raise FileNotFoundError(
-            "Automated meta-analysis runs must include a supported aggregate set.\n"
-            f"{error_lines}"
-        )
-
-    return run_aggregate_paths
+    return run_aggregate_paths, skipped_aggregate_runs
 
 
 def load_maps_and_vectors(
@@ -1690,6 +1683,7 @@ def print_configuration_summary(
 def print_run_selection_summary(
     included_run_infos: list[RunInfo],
     skipped_run_missing_pairs: dict[str, list[str]],
+    skipped_aggregate_runs: dict[str, str],
     manual_meta_by_run: dict[str, bool],
     run_aggregate_paths: dict[str, dict[str, Path]],
 ) -> None:
@@ -1704,6 +1698,10 @@ def print_run_selection_summary(
                 f"  - {run_name}: missing {len(missing_pairs)} mapped outputs: "
                 f"{format_missing_pairs(missing_pairs, max_items=4)}"
             )
+    if skipped_aggregate_runs:
+        print("\nSkipped aggregate analysis rows (missing supported aggregate set):")
+        for run_name, reason in skipped_aggregate_runs.items():
+            print(f"  - {run_name}: {reason}")
 
     print("\nAggregate analyses added as matrix rows")
     for run_info in included_run_infos:
@@ -1777,7 +1775,7 @@ def main() -> None:
         explicit_manual_meta_runs=args.manual_meta_run,
     )
 
-    run_aggregate_paths = collect_aggregate_paths(
+    run_aggregate_paths, skipped_aggregate_runs = collect_aggregate_paths(
         included_run_infos=included_run_infos,
         manual_meta_by_run=manual_meta_by_run,
         map_filename=args.map_filename,
@@ -1796,6 +1794,7 @@ def main() -> None:
     print_run_selection_summary(
         included_run_infos=included_run_infos,
         skipped_run_missing_pairs=skipped_run_missing_pairs,
+        skipped_aggregate_runs=skipped_aggregate_runs,
         manual_meta_by_run=manual_meta_by_run,
         run_aggregate_paths=run_aggregate_paths,
     )

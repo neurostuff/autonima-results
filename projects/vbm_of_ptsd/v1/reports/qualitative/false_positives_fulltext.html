@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Positives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .criteria-summary, .criteria-details {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .criteria-summary {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .criterion-list {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+        .criterion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }
+        .criterion-red {
+            background: #c0392b;
+        }
+        .criterion-green {
+            background: #1e8449;
+        }
+        .criterion-neutral {
+            background: #34495e;
+        }
+        .criterion-count {
+            color: #555;
+            font-size: 12px;
+        }
+        .annotation {
+            border-left: 3px solid #f39c12;
+            background-color: #fff8e1;
+            padding: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC';
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2';
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        @media (max-width: 900px) {
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+
+    function getAnnotationsFilename() {
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {
+            return "annotations.json";
+        }
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {
+            return "annotations.json";
+        }
+        return base + ".json";
+    }
+
+    async function saveAnnotations() {
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var pmid = study.getAttribute('data-pmid') || '';
+
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {
+            try {
+                var fileHandle = await window.showSaveFilePicker({
+                    suggestedName: outputFilename,
+                    types: [{
+                        description: "JSON Files",
+                        accept: { "application/json": [".json"] }
+                    }]
+                });
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            } catch (error) {
+                if (error && error.name === "AbortError") {
+                    return;
+                }
+                console.warn("Falling back to browser download.", error);
+            }
+        }
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", outputFilename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Positives Papers at Fulltext Stage</h1>
+<p>Total papers: 11</p>
+<div class='criteria-summary'>
+<h2>Stage Criteria Summary</h2>
+<p>Stage: <strong>Fulltext</strong>. Counts show criterion usage across all stage decisions and within this report subset.</p>
+<div class='criteria-grid'>
+<div>
+<h3>Inclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>I3</span> Empirical English language MRI studies assessing grey matter (GM) volume differences between PTSD patients and controls <span class='criterion-count'>(all stage: 42/49, this report: 11/11)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I4</span> Whole-brain evidence- The paper must report at least one whole-brain voxel-wise between-group contrast of PTSD patients vs controls comparing GM volume <span class='criterion-count'>(all stage: 28/49, this report: 11/11)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I5</span> It is acceptable for qualifying results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available. <span class='criterion-count'>(all stage: 33/49, this report: 11/11)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I6</span> Control populations may be healthy individuals or trauma-exposed individuals without PTS <span class='criterion-count'>(all stage: 44/49, this report: 11/11)</span></li>
+</ul>
+</div>
+<div>
+<h3>Exclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>E4</span> Studies that report only region-of-interest (ROI) analyses with no qualifying whole-brain results. <span class='criterion-count'>(all stage: 14/49, this report: 0/11)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E5</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human structural MRI data. <span class='criterion-count'>(all stage: 0/49, this report: 0/11)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E6</span> Studies about trauma or stressful life event studies not specifically measuring PTSD <span class='criterion-count'>(all stage: 0/49, this report: 0/11)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E7</span> Treatment and longitudinal studies without a qualifying between-group contrast of PTSD patients vs controls <span class='criterion-count'>(all stage: 2/49, this report: 0/11)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E8</span> Studies that report only within group results in PTSD patients without a qualifying between-group contrast of PTSD patients vs controls <span class='criterion-count'>(all stage: 5/49, this report: 0/11)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E9</span> Studies report only null results (i.e., no significant differences between PTSD patients and controls) <span class='criterion-count'>(all stage: 2/49, this report: 0/11)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='study-list'>
+<div class='study' id='study-1' data-pmid='23113800'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23113800/' target='_blank'>23113800</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical, English-language structural MRI study using voxel-based morphometry to compare gray matter volume between PTSD patients (n=15) and trauma-exposed non-PTSD controls (n=17). The paper reports whole-brain, voxel-wise between-group contrasts (NS &gt; S and S &gt; NS) and presents significant GMV differences (reductions in PTSD) with coordinates/tables/figures. Control group is trauma-exposed non-PTSD, which is acceptable. No exclusion criteria are met.</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment-1'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-2' data-pmid='30127342'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/30127342/' target='_blank'>30127342</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> A transdiagnostic neuroanatomical signature of psychiatric illness</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Neuropsychopharmacology</p>
+<p><strong>Publication Year:</strong> 2018</p>
+<p><strong>DOI:</strong> 10.1038/s41386-018-0175-9</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/6461829/' target='_blank'>6461829</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical, English-language structural MRI study that includes a PTSD group (n=91) and healthy controls, using voxel-based morphometry (VBM) with whole-brain voxel-wise between-group contrasts (PTSD vs HC) as part of diagnosis-specific analyses. The methods describe whole-brain ANCOVA and inclusive masking to identify regions surviving the PTSD vs HC contrast, and results report significant PTSD-related effects (putamen increases) with coordinates and FWE-corrected p-values and figures. Control group is healthy volunteers (acceptable). The full text contains Introduction, Methods, Results, and Discussion, and provides coordinate-level results and figures, satisfying I3, I4, I5, and I6. No exclusion criteria are met (not ROI-only; not non-empirical; PTSD explicitly measured; contains qualifying between-group contrasts with significant results).</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+Despite an increasing focus on transdiagnostic approaches to mental health, it remains unclear whether different diagnostic categories share a common neuronatomical basis. The current investigation sought to investigate whether a transdiagnostic set of structural alterations characterized schizophrenia, depression, post-traumatic stress disorder, and obsessive-compulsive disorder, and determine whether any such alterations reflected markers of psychiatric illness or pre-existing familial vulnerability. A total of 404 patients with a psychiatric diagnosis were recruited (psychosis,   n   = 129; unipolar depression,   n   = 92; post-traumatic stress disorder,   n   = 91; obsessive-compulsive disorder,   n   = 92) alongside   n   = 201 healthy controls and   n   = 20 unaffected first-degree relatives. We collected structural magnetic resonance imaging scans from each participant, and tested for transdiagnostic alterations using Voxel-based morphometry. Inferences were made at   p   &lt; 0.05 after family-wise error correction for multiple comparisons. The four psychiatric groups relative to healthy controls were all characterized by significantly greater gray matter volume in the putamen (right:   z  -score: 5.97,   p  -value &lt; 0.001; left:   z  -score: 4.97,   p  -value = 0.001); the volume of this region was positively correlated with severity of symptoms across groups (  r   = 0.313;   p   &lt; 0.001). Putamen enlargement was also evident in unaffected relatives compared to healthy controls (right:   z  -score: 8.13,   p  -value &lt; 0.001; left:   z  -score: 9.38,   p  -value &lt; 0.001). Taken collectively, these findings indicate that increased putamen volume may reflect a transdiagnostic marker of familial vulnerability to psychopathology. This is consistent with emerging conceptualizations of psychiatric illness, in which each disorder is understood as a combination of diagnosis-specific features and a transdiagnostic factor reflecting general psychopathology. 
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (25729 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## Introduction 
+  
+Modern psychiatry is based on the principle that mental disorders are separate categories with distinct etiologies and clinical presentations. However, it is well known that several individuals show clear signs of general psychopathology but do not fit neatly within the boundaries of any diagnostic categories [ ]. Furthermore, it has been recognized for several decades that comorbidity (the coexistence of two or more disorders) is the rule rather than the exception in mental health, with half of people who meet diagnostic criteria for one disorder also meeting criteria for at least one another disorder [ ]. Within existing diagnostic systems, therefore, it is acknowledged that there are not clear-cut boundaries between the different categories. For example, in the Diagnostic Statistical Manual of Mental Disorders (DSM), “there is no assumption that each category of mental disorder is a completely discrete entity with absolute boundaries dividing it from other mental disorders” [ ]. Consistent with this notion, an increasing number of genetic and epidemiological studies are pointing to large overlap between different psychiatric disorders. For example, similar sets of genes [ ] and environmental risk factors [ ] have been found to underlie a range of diagnostic categories, including schizophrenia, depression, obsessive-compulsive disorder (OCD), and post-traumatic stress disorder (PTSD). These findings have informed an emerging conceptualization of psychiatric illness, in which each disorder is best understood as a combination of diagnosis-specific as well as transdiagnostic features or mechanisms [ – ]. For example, in one influential model, this transdiagnostic factor—referred to as factor   p  —captures general psychopathology in a manner similar to how factor   g   of general intelligence measures performance across a wide range of seemingly disparate cognitive tasks [ ]. Understanding the nature of vulnerabilities across psychiatric disorders may be important in informing the development of transdiagnostic interventions aimed a decreasing risk of psychopathology across disorders—a key direction for intervention research [ ]. 
+
+If a transdiagnostic factor underlies multiple psychiatric disorders, then one would expect a common neuroanatomical signature to characterize different diagnostic categories. Currently, the neuroimaging literature comprises hundreds of studies on the neuroanatomical basis of psychiatric disease. The vast majority of these, however, have compared groups of patients who met criteria for a specific disorder with control groups of healthy individuals. Such studies, while valuable in shedding light on specific psychiatric disorders preclude any test as to whether neuroanatomical alterations are in fact shared across traditional diagnostic categories. Furthermore, because the vast majority of studies did not include unaffected relatives, it has generally not been possible to establish whether the observed alterations reflected the development of psychiatric illness or pre-existing familial vulnerability. 
+
+Our current understanding as to whether common neuroanatomical features characterize different disorders is based on meta-analyses of studies that were carried out on individual disorders using different methodologies [ ]. Consequently, at present, it is unclear whether different diagnostic categories have a common underlying neuroanatomical basis and whether any such marker reflects actual psychiatric illness or pre-existing familial vulnerability. A recent study investigate examined the neural basis of three psychiatric disorders (schizophrenia, bipolar disorder, and major depression). Critically, this study includes high percentages of medicated patients, ranging from 37% for major depression to 64% for schizophrenia [ ]. This raises the possibility that at least some of the findings might be attributed to treatment effects. The aim of the present investigation was therefore to examine neuroanatomical alterations across medication-naive individuals suffering from four psychiatric disorders, including schizophrenia, depression, PTSD, and OCD. We recruited a total of 404 patients with a psychiatric diagnosis, including psychosis (  n   = 129), unipolar depression (  n   = 92), PTSD (  n   = 91), and OCD (  n   = 92) and 201 healthy volunteers. In addition, in order to elucidate whether the transdiagnostic alterations were a marker of current psychiatric illness or reflects pre-existing familial vulnerability, we also recruited 20 unaffected first-degree relatives of patients with first-episode psychosis (FEP). All participants were scanned using the same scanner and acquisition sequence, ensuring comparability of the data across multiple diagnostic categories. We hypothesized that a common transdiagnostic neuroanatomical alteration would characterize all four disorders compared to healthy controls (HCs). Furthermore, we expected that that the degree of structural alteration would be related to severity of symptoms within each illness. Finally, we hypothesized that alterations in similar brain regions would, at least in part, be evident in unaffected relatives and therefore reflect underlying familial vulnerability rather than simply a marker of current psychiatric illness. 
+
+
+## Materials and methods 
+  
+### Participants 
+  
+All participants were recruited as part of a larger cohort study of psychiatric illness in the Chinese population of Han nationality. Subsets of the data used here have been used in previous studies [ – ]. The present investigation was approved by the local research ethics committee and all participants provided written informed consent. Exclusion criteria applicable to all participants included: (i) history of drug or alcohol abuse; (ii) pregnancy; and (iii) any physical illness such as hepatitis, cardiovascular disease, or neurological disorder, as assessed by interview and review of medical records. Further information on each group is provided below. 
+
+
+### First-episode psychosis 
+  
+In all, 129 patients with FEP were included (Table  ). Diagnosis of FEP and duration of illness were determined by the consensus of two experienced clinical psychiatrists using the Structured Interview for the DSM-IV Axis I Disorder, Patient Edition (SCID) [ ]. Psychopathology was measured on the day of scanning using the Positive and Negative Syndrome Scale (PANSS) [ ]. At the time of scanning, all patients were medication-naive; this was assessed by asking participants whether they had ever taken medication for mental health issues and examining their clinical records.   
+Demographic and clinical characteristics of participants 
+  
+ FEP   first-episode psychosis,   MDD   major depressive disorder,   PTSD   post-traumatic stress disorder,   OCD   obsessive-compulsive disorder,   HC   healthy control,   PANSS   Positive and Negative Syndrome Scale,   PCL   PTSD checklist,   CAPS   Clinician Administered PTSD Scale,   HAM-D   Hamilton Depression Rating Scale,   Y-BOCS   Yale-Brown Obsessive Compulsive Scale,   SEM   standard error of the mean,   M   males,   F   females 
+  
+
+
+### Major depressive disorder 
+  
+Ninety-two participants with major depressive disorder (MDD) were included (Table  ). Diagnosis of MDD was made with the SCID [ ]. Severity of depression was quantified using the 17-item Hamilton Depression Rating Scale (HAM-D [ ]). All participants had a total HAM-D score ≥ 18 on the day of testing. At the time of scanning, all patients were medication-naive; this was assessed by asking participants and examining their clinical records. 
+
+
+### Post-traumatic stress disorder 
+  
+Ninety-one participants with PTSD were included (Table  ). These participants were survivors of the 2008 Sichuan earthquake who had all physically experienced the earthquake, personally witnessed death, serious injury, or the collapse of buildings, and not suffered any physical injury. All participants were assessed using the PTSD Checklist (PCL) [ ] and met threshold criteria (PCL score ≥ 35) for diagnosis of PTSD on the day of scanning. Patients were also assessed using the Clinician Administered PTSD scale [ ]. At the time of scanning, all patients were medication-naive; this was assessed by asking participants and examining their clinical records. 
+
+
+### Obsessive-compulsive disorder 
+  
+Ninety-two participants with OCD were included (Table  ). Diagnosis of OCD and assessment of symptom severity were based on the Yale-Brown Obsessive-Compulsive Scale (Y-BOCS) and the clinician-rated Y-BOCS symptom checklist [ ]. At the time of scanning, all patients were medication-naive; this was assessed by asking participants and examining their clinical records. 
+
+
+### Healthy controls 
+  
+In all, 201 HC subjects were included (Table  ). All were recruited by poster advertisement, and screened using the non-patient edition of the SCID [ ] to confirm the lifetime absence of psychiatric illnesses. In addition, these subjects were interviewed to exclude individuals with a known history of psychiatric illness in first-degree relatives. 
+
+
+### Unaffected relatives 
+  
+To explore whether any transdiagnostic neuroanatomic alterations detected in the four diagnostic groups were a marker of current psychiatric illness or reflected pre-existing familial vulnerability, we also recruited 20 unaffected first-degree relatives of patients with a diagnosis of FEP. The absence of psychiatric illness in these participants was established using the non-patient edition of the SCID [ ]. 
+
+
+### Data acquisition 
+  
+High-resolution T1-weighted images were acquired using a 3 T magnetic resonance imaging (MRI) system (EXCITE, General Electric, Milwaukee, WI, USA) with a volumetric three-dimensional spoiled gradient recall sequence (TR = 8.5 ms, TE = 3.4 ms, flip angle = 12°, and slice thickness = 1.0 mm) with an eight-channel phase array head coil. A field of view of 24 cm  was used with an acquisition matrix comprising 256 readings of 128 phase-encoding steps, producing 156 contiguous coronal slices with slice thickness of 1.0 mm and in-plane resolution of 0.47 mm × 0.47 mm. 
+
+
+### Data analysis 
+  
+The T -weighted volumetric images were pre-processed using voxel-based morphometry as implemented in SPM12 software (  http://www.fil.ion.ucl.ac.uk/spm  ) running under Matlab 7.1 (Math Works, Natick, MA, USA). In particular we used the Diffeomorphic Anatomical Registration using Exponentiated Lie algebra (DARTEL) SPM8 toolbox [ ]; this involves the creation of a dataset-specific template and the segmentation of each individual image using such template, with the aim of maximizing accuracy and sensitivity [ ]. The following steps were followed: (1) checking for scanner artifacts and gross anatomical abnormalities for each subject; (2) setting the image origin to the anterior commissure; (3) using the DARTEL toolbox to produce a high-dimensional normalization protocol; (4) checking for homogeneity across the sample; and (5) using standard smoothing (i.e. 8 mm). A “modulation step” was also included in the normalization in order to preserve the information about the absolute gray matter values [ ]. After pre-processing, we obtained smoothed, modulated, normalized images for each of our four datasets. These were used to compare patients and controls using an analysis of covariance (ANCOVA), with age, gender, and total gray matter volume modeled as covariates of no interest. Neuroanatomical alterations common to the four diagnostic groups were identified by comparing FEP, PTSD, MDD, and OCD patients against HCs (e.g. FEP, PTSD, MDD, and OCD vs HC) and then using the inclusive masking option (at   p   &lt; 0.05 uncorrected) in SPM12 software to identify those regions that survived the diagnosis-specific comparisons (i.e. FEP vs HC; PTSD vs HC; MDD vs HC; and OCD vs HC). This enabled us to detect alterations in the FEP group that reflect a transdiagnostic feature of psychiatric illness. Statistical inferences were made at   p   &lt; 0.05 after family-wise error (FWE) correction with a minimum extent threshold of 10 voxels. Finally, in order to elucidate whether transdiagnostic alterations were a marker of current psychiatric illness or reflected pre-existing familial vulnerability, we performed statistical comparison between unaffected relatives and HCs, using a mask that comprised all voxels showing a transdiagnostic alteration in the ANCOVA. This mask was created using the Neuromorphometrics atlas (  http://www.neuromorphometrics.com/  ) as implemented in SPM12. This statistical comparison was carried out using a two-sample   t  -test and, once again, statistical inferences were made at   p   &lt; 0.05 after FWE correction with a minimum extent threshold of 10 voxels. 
+
+
+
+## Results 
+  
+There were no regions with lower gray matter volume in patients relative to HCs across all diagnostic groups. However, the putamen showed higher gray matter volume in all four psychiatric groups relative to HC; this effect was evident both in the right (cluster = 32 voxels;   x   = 32   y   = 6   z   = −2;   z  -score: 5.97;   p  -value &lt; 0.001 after FWE correction) and the left (cluster = 30 voxels;   x   = −30   y   = 5   z   = −7;   z  -score: 4.97;   p  -value = 0.001 after FWE correction) hemisphere (Fig.  ).   
+Transdiagnostic gray matter increases in patients relative to healthy controls. Left: mean gray matter volume in the five groups; the values on the   y  -axis refer to cubic millimeters per voxel with error bars representing SD. Right: regions of the left and right putamen where transdiagnostic increases were detected. FEP first-episode psychosis, OCD obsessive-compulsive disorder, PTSD post-traumatic stress disorder, MDD major depressive disorder, HC healthy controls, GMV gray matter volume measured as mm  of gray matter per voxel 
+  
+
+Next, we considered whether the neuroanatomical increase in the bilateral putamen of patients relative to HCs was associated with severity of symptoms. This involved performing partial correlation analyses between gray matter volume in the left and right putamen and clinical scores within each diagnostic group, controlling for age and gender. This revealed significant positive correlations in the whole patient sample as well as in each individual diagnostic group (Table   and Fig.  ); in other words, higher gray matter volume in the putamen was associated with higher severity of symptoms.   
+Association between gray matter volume in the bilateral putamen and severity of symptoms 
+  
+Symptoms were measured using PANSS total score for FEP; HAM-D score for MDD; CAPS score for PTSD; and Y-BOCS total score for OCD patients. The reported results refers to partial correlations, where age and gender were controlled in the correlation between GM and disease severity. 
+
+ FEP   first-episode psychosis,   MDD   major depressive disorder,   PTSD   post-traumatic stress disorder,   OCD   obsessive-compulsive disorder 
+    
+Partial correlation between gray matter volume in the right (  a  ) and left (  b  ) putamen and the disease severity, controlling for age and gender. To ensure disease severity scores were comparable across different disorders, these scores were normalized accordingly within each diagnostic group with the following formula: normalized individual value = (individual value − minimum score)/(maximum score − minimum score). Following the application of this formula, the disease severity score of each patient ranged between 0 and 1. GMV gray matter volume measured as mm  of gray matter per voxel 
+  
+
+To elucidate whether the transdiagnostic increase in the bilateral putamen is a marker of current psychiatric illness or reflected pre-existing familial vulnerability, we performed a region of interest analysis in 20 unaffected first-degree relatives of patients with a diagnosis of FEP. This involved creating a mask of the bilateral putamen (total size: 62 voxels) and then performing a two-sample   t  -test to compare unaffected relatives and our group of HCs within this bilateral mask. The putamen showed higher gray matter volume in the group of unaffected relatives compared to HCs; this effect was evident both in the left (cluster = 30 voxels;   x   = −32   y   = −8   z   = 2;   z  -score: 9.39;   p  -value &lt; 0.001 after FWE correction) and the right (cluster = 32 voxels;   x   = 32   y   = −6   z   = 2;   z  -score: 8.13;   p  -value &lt; 0.001 after FWE correction) hemisphere Fig.  .   
+Transdiagnostic gray matter increases in unaffected relatives relative to healthy controls. Left: mean gray matter volume in the two groups; the values on the   y  -axis refer to cubic millimeters per voxel with error bars representing SD. Right: regions of the left and right putamen where transdiagnostic increases were detected. GMV gray matter volume measured as mm  of gray matter per voxel 
+  
+
+
+## Discussion 
+  
+The aim of this study was to test for common underlying neuroanatomic alterations across several diagnostic categories. This was achieved by investigating brain structure in medication-naive individuals with a number of psychiatric disorders, including schizophrenia, depression, OCD, and PTSD. Our findings indicated a transdiagnostic neuroanatomic signature across different diagnostic categories: an increase in gray matter volume of the bilateral putamen in all patient groups relative to HCs. The degree of increase was correlated with symptom severity and was also evident in unaffected first-degree relatives. Critically, as the individuals included in the current study were all medication-naive at the time of the scanning, the current results cannot be explained by medication effects. 
+
+Consistent with our first hypothesis of transdiagnostic neuroanatomical alterations, our investigation revealed higher gray matter volume of the putamen across all four disorders. The putamen receives afferent inputs from several cortical regions and via the thalamus sends neural projections back to the neocortex [ ]. Through these cortico–striato–thalamo neural loops, the putamen serves as a center for the integration of high-level cognitive, motor, and limbic processes [ ]. Given its role in these processes, it is unsurprising that dysregulation of this region is thought to underlie the emergence of cognitive and clinical symptoms in psychiatric disease [ ]. Previous studies have reported higher gray matter volume in the putamen of patients relative to HCs in schizophrenia [ ,  ] and OCD [ ,  ]. As dopamine is a key neurotransmitter in the putamen and D2 dopamine receptors are a major target of typical antipsychotic medications, the observed increases have typically been interpreted as a consequence of D2 blockade induced by antipsychotic medication [ ]. However, it is not possible to determine the functional significance of increased putamen volume observed in the present study. Future studies using healthy high-risk samples, which systematically map structural and functional indices within a longitudinal design, are necessary to shed light on what these observed structural differences may mean at a mechanistic level of disease progression and presentation. 
+
+Consistent with our second hypothesis of an association between transdiagnostic neuroanatomical alteration and severity of symptoms, gray matter volume in the putamen was positively correlated with higher severity of symptoms; this correlation was evident when considering each diagnostic group separately as well when combining the four disorders into a single sample (  n   = 404). A similar positive association between gray matter volume in the putamen and severity of symptoms had been reported in individuals with OCD [ ] and PTSD [ ]; however, to our knowledge, this is not a common finding in psychiatric neuroimaging, and as such requires replication. A previous investigation had reported a progressive loss of gray matter volume in the putamen in patients with schizophrenia with poor long-term outcome relative to those with good long-term outcome [ ]. This had led to the suggestion that putamen enlargement may be a marker of responsiveness to antipsychotic treatment and even act as a protective factor against poor long-term outcome [ ]. Our investigation extends this interpretation by suggesting that higher gray matter volume of the putamen is associated with a more severe clinical presentation across diagnostic boundaries. Because disease-specific clinical scales were used to measure severity of symptoms in each diagnostic group, higher gray matter volume of the putamen is likely to reflect generic symptomatology rather than the correlate of specific symptoms that are common to all four disorders. 
+
+To elucidate whether the transdiagnostic increase in the bilateral putamen is a marker of current psychiatric illness or reflected pre-existing familial vulnerability we performed a region of interest analysis in 20 unaffected first-degree relatives of patients with a diagnosis of FEP. Consistent with our third hypothesis, we detected a significant gray matter volume increase in the left and right putamen within this sample. This suggests that putamen enlargement is marker of underlying familial vulnerability rather than the disease itself. Here the term “familial” refers to effects that are shared between family members, without necessarily assuming a genetic or environmental etiology. 
+
+Taken collectively, our findings are consistent with emerging conceptualizations of psychiatric illness, in which each disorder is best understood as a combination of diagnosis-specific features and a transdiagnostic factor reflecting general psychopathology [ – ]. In particular, the observation of putamen enlargement in patients as well as unaffected relatives provides neurobiological evidence, which supports conceptualizations of mental illness based on cross-diagnostic vulnerability [ ]. Given the role of the putamen in the integration of high-level cognitive, motor, and limbic processes, we speculate that disruption of these processes may represent a transdiagnostic feature of psychiatric disease. These processes could therefore be used as target in the development of novel transdiagnostic interventions aimed a decreasing risk for psychopathology across multiple disorders [ ]. We note that the term “transdiagnostic” can be used to mean “across diagnoses” as well as “above and beyond diagnosis”. Here we use this term to refer to effects that are evident across different psychiatric disorders; in other words, we are not referring to the idea of abandoning current categorical categories to go “above and beyond” them (for interesting discussions on this topic [ ,  ]). 
+
+A strength of the present investigation is that at the time of scanning, patients were experiencing their first episode of the illness and were still medication-naive. This means that the effects reported here cannot be explained by illness chronicity or medication—two common confounds in neuroimaging studies of psychiatric disease. A further strength is that all six groups were scanned using the same MRI scanner and image acquisition parameters over the same period of time, and therefore our results cannot be explained by systematic differences in the acquisition of the data. However, the present investigation has at least three limitations that warrant careful consideration. First, although we can exclude medication, age, and gender as potential confounds, there are other sources of neuroanatomical variability such as intelligence quotient and socioeconomic status that were not assessed and which may have contributed to the results. Second, because the data were acquired using a cross-sectional rather than a longitudinal design, it was not possible to unambiguously distinguish between correlates of vulnerability to psychiatric illness and correlates of psychiatric illness itself. However, the fact that we did detect a significant effect in unaffected relatives supports the notion that putamen enlargement is a marker of vulnerability rather than the illness itself. Third, the group of unaffected relatives (  n   = 20) was noticeably smaller than the other five groups. Nevertheless, we note that a group size of 20 is considered appropriate for a neuroimaging investigation [ ], and that the bilateral effect detected in this group relative to HCs would have been statistically significant even if we had used a more conservative whole-brain FWE correction for multiple comparisons. Finally, while the aim of the present investigation was to examine common underlying neuroanatomic alterations across several diagnostic categories, it was not our intention to assume or imply that there are no disorder-specific correlates. We are therefore reporting disease-specific effects in the Supplementary Material for completeness (see  ). 
+
+In conclusion, the present study has revealed putamen enlargement as a transdiagnostic marker of psychiatric illness; the observation of this difference in non-affected relatives suggests that this may reflect underlying familial vulnerability to general psychopathology. This raises the prospect that this region could be used to assess degree of familial vulnerability to psychopathology across traditional diagnostic boundaries, and thus adds to the development of psychoradiology (  https://radiopaedia.org/articles/psychoradiology  ). These findings are consistent with emerging conceptualizations of psychiatric illness, in which each disorder is best understood as a combination of diagnosis-specific features and a transdiagnostic factor reflecting general psychopathology [ ,  ]. 
+
+
+## Electronic supplementary material 
+  
+
+
+
+
+ </div>
+</div>
+</div>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-2' name='judgment-2' value='agree'>
+<label for='agree-2'>Agree</label>
+<input type='radio' id='disagree-2' name='judgment-2' value='disagree'>
+<label for='disagree-2'>Disagree</label>
+<br><br>
+<label for='comment-2'><strong>Comments:</strong></label>
+<textarea id='comment-2' name='comment-2' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-3' data-pmid='19349151'>
+<h2>3. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/19349151/' target='_blank'>19349151</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical English-language structural MRI study using voxel-based morphometry (SPM5) to compare gray matter volume between pediatric PTSD patients (n=24; 19 included in VBM) and matched healthy controls. The paper reports whole-brain, voxel-wise between-group contrasts (PTSD vs controls) with significant clusters (ventral prefrontal and occipital regions) presented in figures and tables. Control group is healthy. The full text contains introduction, methods, results, and discussion. Therefore it meets inclusion criteria I3, I4, I5, and I6 and does not violate any exclusion criteria.</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-3' name='judgment-3' value='agree'>
+<label for='agree-3'>Agree</label>
+<input type='radio' id='disagree-3' name='judgment-3' value='disagree'>
+<label for='disagree-3'>Disagree</label>
+<br><br>
+<label for='comment-3'><strong>Comments:</strong></label>
+<textarea id='comment-3' name='comment-3' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-4' data-pmid='25212487'>
+<h2>4. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25212487/' target='_blank'>25212487</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical, English-language structural MRI study using voxel-based morphometry (VBM) comparing pediatric PTSD patients (n=27) with non-traumatized healthy controls (n=27) reporting whole-brain voxel-wise between-group contrasts. The paper reports significant between-group GMV differences (reduced right anterior vmPFC and other clusters) and group×age interactions, with results presented in tables/figures. Control group is healthy individuals (acceptable). The full text includes introduction, methods, results, and discussion. Therefore it meets inclusion criteria I3, I4, I5, and I6 and does not meet any exclusion criteria (not ROI-only; not non-empirical; measures PTSD; is cross-sectional with between-group contrasts; reports significant between-group findings).</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-4' name='judgment-4' value='agree'>
+<label for='agree-4'>Agree</label>
+<input type='radio' id='disagree-4' name='judgment-4' value='disagree'>
+<label for='disagree-4'>Disagree</label>
+<br><br>
+<label for='comment-4'><strong>Comments:</strong></label>
+<textarea id='comment-4' name='comment-4' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-5' data-pmid='22948482'>
+<h2>5. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/22948482/' target='_blank'>22948482</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical English-language structural MRI study of traumatized adolescents (n=53) comparing PTSD (n=21) to trauma-exposed non-PTSD controls (n=32). The paper reports whole-brain voxel-based morphometry (VBM) between-group contrasts with significant grey-matter reductions (left insula, right precuneus, right cingulate) shown in Table 5 and Figures 1–3, and also presents Freesurfer/Qdec regional thickness/volume results. Control population is trauma-exposed non-PTSD participants. Thus it meets I3 (empirical MRI GM study), I4 (reports whole-brain voxel-wise between-group GM contrasts), I5 (results reported in tables/figures), and I6 (appropriate control group). No exclusion criteria apply (not ROI-only, not non-empirical, measures PTSD, includes a between-group contrast, and reports significant between-group results). The full text provided includes Introduction, Methods, Results, and Discussion and appears complete (VBM results are uncorrected p&lt;0.001 but this does not preclude inclusion under the stated criteria).</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-5' name='judgment-5' value='agree'>
+<label for='agree-5'>Agree</label>
+<input type='radio' id='disagree-5' name='judgment-5' value='disagree'>
+<label for='disagree-5'>Disagree</label>
+<br><br>
+<label for='comment-5'><strong>Comments:</strong></label>
+<textarea id='comment-5' name='comment-5' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-6' data-pmid='20673548'>
+<h2>6. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/20673548/' target='_blank'>20673548</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical, English-language structural MRI study using voxel-based morphometry that reports voxel-wise between-group contrasts of gray matter concentration comparing PTSD patients (child abuse–related complex PTSD, n=31) with healthy controls (n=28). The paper provides whole-brain VBM analyses (with small-volume correction for a priori ROIs) and reports significant between-group results in tables, coordinates, and figures (hippocampus, ACC, OFC, etc.). Controls are healthy nontraumatized individuals, which is acceptable. The full text includes introduction, methods, results, and discussion and appears complete. No exclusion criteria are met: this is not ROI-only (E4), not non-empirical (E5), measures PTSD specifically (not E6), is not a treatment/longitudinal study without between-group contrasts (E7), includes between-group contrasts (not E8), and reports significant group differences (not E9). Therefore it meets all required inclusion criteria and should be included in the meta-analysis.</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-6' name='judgment-6' value='agree'>
+<label for='agree-6'>Agree</label>
+<input type='radio' id='disagree-6' name='judgment-6' value='disagree'>
+<label for='disagree-6'>Disagree</label>
+<br><br>
+<label for='comment-6'><strong>Comments:</strong></label>
+<textarea id='comment-6' name='comment-6' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-7' data-pmid='32938511'>
+<h2>7. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/32938511/' target='_blank'>32938511</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical, English-language structural MRI voxel-based morphometry study comparing GM volume between PTSD patients and control groups (trauma-exposed controls and healthy controls). The paper reports whole-brain voxel-wise between-group contrasts (ANOVA and post hoc voxel-wise VBM results, with figures and supplementary tables) showing significant GM reductions in bilateral hippocampus and left lingual gyrus versus healthy controls. Results are presented as voxel-wise analyses and correlations with symptom severity. The study design, methods, results and discussion are present (full text provided). No exclusion criteria (ROI-only, non-empirical, treatment/longitudinal without between-group contrasts, null-only results, or studies not measuring PTSD) are met. Therefore it satisfies inclusion criteria I3, I4, I5 and I6.</p>
+<p><strong>Fulltext Confidence:</strong> 0.88</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-7' name='judgment-7' value='agree'>
+<label for='agree-7'>Agree</label>
+<input type='radio' id='disagree-7' name='judgment-7' value='disagree'>
+<label for='disagree-7'>Disagree</label>
+<br><br>
+<label for='comment-7'><strong>Comments:</strong></label>
+<textarea id='comment-7' name='comment-7' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-8' data-pmid='16371250'>
+<h2>8. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/16371250/' target='_blank'>16371250</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical, English-language structural MRI study using voxel-based morphometry that reports whole-brain voxel-wise between-group contrasts comparing PTSD patients (n=12) to trauma-exposed controls (n=12). The paper provides coordinates, tables and figures of significant gray-matter reductions (left hippocampus, left ACC, bilateral insula) from the between-group contrast. The full text includes Introduction, Methods (participants, MRI acquisition, VBM analysis), Results, and Discussion, so core content appears complete. Control group is trauma-exposed without PTSD, which fits acceptable controls. Therefore it meets inclusion criteria I3, I4, I5, and I6; no exclusion criteria apply.</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-8' name='judgment-8' value='agree'>
+<label for='agree-8'>Agree</label>
+<input type='radio' id='disagree-8' name='judgment-8' value='disagree'>
+<label for='disagree-8'>Disagree</label>
+<br><br>
+<label for='comment-8'><strong>Comments:</strong></label>
+<textarea id='comment-8' name='comment-8' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-9' data-pmid='28888350'>
+<h2>9. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28888350/' target='_blank'>28888350</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical English-language structural MRI VBM study comparing grey matter volume in adolescents with CSA-related PTSD (n=21, mostly meeting PTSD criteria) versus healthy non-traumatised controls (n=25). The paper reports voxel-wise ROI analyses and an exploratory whole-brain voxel-wise between-group GLM (whole-brain analysis was performed, albeit with null findings). A significant between-group GMV difference (reduced dorsal ACC volume) was reported and thresholded with TFCE FWE correction. Controls are healthy individuals. The full text includes introduction, methods, results and discussion. No exclusion criteria (ROI-only, non-empirical, non-PTSD, within-group only, treatment-only, or only-null-results) apply because the study contains between-group contrasts and at least one significant effect. Full text appears complete.</p>
+<p><strong>Fulltext Confidence:</strong> 0.88</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-9' name='judgment-9' value='agree'>
+<label for='agree-9'>Agree</label>
+<input type='radio' id='disagree-9' name='judgment-9' value='disagree'>
+<label for='disagree-9'>Disagree</label>
+<br><br>
+<label for='comment-9'><strong>Comments:</strong></label>
+<textarea id='comment-9' name='comment-9' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-10' data-pmid='30343133'>
+<h2>10. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/30343133/' target='_blank'>30343133</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an original, English-language empirical structural MRI study using whole-brain voxel-based morphometry (VBM) comparing gray matter volume between youths with PTSD and typically developing controls. The paper reports whole-brain voxelwise between-group contrasts with corrected clusters and peak coordinates, and supplementary/figure-based results are provided. Control population (nontraumatized typically developing youths) is appropriate. The full text includes introduction, methods, results, and discussion (longitudinal multimodal VBM and RSFC analyses). No exclusion criteria are met (not ROI-only, not non-empirical, measures PTSD, reports between-group contrasts, reports significant group differences). Therefore it meets inclusion criteria I3, I4, I5, and I6 and should be included in the meta-analysis of structural PTSD morphometry.</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-10' name='judgment-10' value='agree'>
+<label for='agree-10'>Agree</label>
+<input type='radio' id='disagree-10' name='judgment-10' value='disagree'>
+<label for='disagree-10'>Disagree</label>
+<br><br>
+<label for='comment-10'><strong>Comments:</strong></label>
+<textarea id='comment-10' name='comment-10' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-11' data-pmid='19996042'>
+<h2>11. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/19996042/' target='_blank'>19996042</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> included_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical, English-language MRI study that reports whole-brain comparisons of cortical gray-matter–related metrics between PTSD patients and controls. Inclusion criteria met: I3 (empirical MRI study assessing GM differences: cortical volume/thickness analyses reported), I4 (whole-brain between-group contrasts: vertex-wise cortical thickness analyses and parcelwise whole-brain cortical volume contrasts reported), I5 (results available in figures and voxel/vertex-wise maps described in text), and I6 (control group comprised veterans without PTSD, acceptable per criteria). The full text includes introduction, methods, results, and discussion; not incomplete. No exclusion criteria apply (not ROI-only, not nonempirical, measures PTSD vs controls with significant between-group effects). Therefore the study should be INCLUDED in the meta-analysis of morphometry studies of structural alterations associated with PTSD.</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-11' name='judgment-11' value='agree'>
+<label for='agree-11'>Agree</label>
+<input type='radio' id='disagree-11' name='judgment-11' value='disagree'>
+<label for='disagree-11'>Disagree</label>
+<br><br>
+<label for='comment-11'><strong>Comments:</strong></label>
+<textarea id='comment-11' name='comment-11' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

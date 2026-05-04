@@ -152,7 +152,7 @@ def main():
     if new_files:
         metadata_dir = ace_scrape_dir / 'metadata'
         missing_sources = add_articles(
-            db, new_files, metadata_dir=str(metadata_dir), pmid_filenames=True, force_ingest=False,
+            db, new_files, metadata_dir=str(metadata_dir), pmid_filenames=True, force_ingest=True,
             num_workers=args.num_workers
         )
 

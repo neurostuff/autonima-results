@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fuzzy Matching Report</title>
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --panel: #ffffff;
+      --ink: #1d2730;
+      --line: #d8dde3;
+    }
+    body { margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .top-nav { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 0.5rem; background: #eef3f2; border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem; margin-bottom: 1rem; }
+    .top-nav a { display: inline-block; padding: 0.35rem 0.6rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; text-decoration: none; font-size: 0.9rem; color: #0e4f85; }
+    .review-toolbar { margin-top: 0.85rem; padding: 0.75rem; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfe; }
+    .review-toolbar p { margin: 0 0 0.45rem 0; }
+    .review-toolbar-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .review-btn { border: 1px solid #1f5f94; color: #1f5f94; background: #fff; border-radius: 999px; padding: 0.28rem 0.65rem; font-size: 0.86rem; cursor: pointer; }
+    .review-btn:hover { background: #eef6ff; }
+    .review-btn-muted { border-color: #7a8692; color: #48555f; }
+    section { margin-bottom: 1rem; }
+    .bucket > summary, .doc-card > summary, .inner-accordion > summary { cursor: pointer; }
+    .doc-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.85rem; margin-bottom: 0.85rem; }
+    .pmid-chip-list { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.45rem 0 0.2rem 0; }
+    .pmid-chip { display: inline-block; border: 1px solid #bed2e5; background: #f3f8ff; color: #0f4978; border-radius: 999px; padding: 0.2rem 0.55rem; font-size: 0.84rem; text-decoration: none; }
+    .pmid-chip:hover { background: #e7f1ff; border-color: #98bbdc; }
+    .unavailable-raw { margin-top: 0.55rem; }
+    .unavailable-raw > summary { cursor: pointer; color: #0e4f85; }
+    .unavailable-raw code { display: block; margin-top: 0.35rem; white-space: normal; line-height: 1.45; background: #f7f9fc; border: 1px solid var(--line); border-radius: 7px; padding: 0.45rem; }
+    .doc-links { margin: 0.45rem 0 0.25rem 0; font-size: 0.92rem; }
+    .inner-accordion { margin-top: 0.6rem; border-top: 1px dashed var(--line); padding-top: 0.4rem; }
+    .resource-box { background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.55rem; }
+    .resource-note { font-size: 0.85rem; color: #3b4b5a; }
+    .table-accordion { margin: 0.45rem 0; border-top: 1px solid #e3e8ed; padding-top: 0.3rem; }
+    .table-accordion > summary { cursor: pointer; color: #0e4f85; }
+    .extracted-table { margin-top: 0.4rem; }
+    .analysis-coords > summary { cursor: pointer; color: #0e4f85; }
+    .coord-list { white-space: pre-wrap; margin-top: 0.35rem; background: #fbfcfe; border: 1px solid var(--line); border-radius: 6px; padding: 0.35rem; font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.82rem; max-height: 10rem; overflow-y: auto; }
+    .review-box { margin-top: 0.4rem; background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem; }
+    .review-decision-group { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.45rem 0 0.6rem 0; }
+    .review-reasons { margin: 0.35rem 0 0.6rem 0; }
+    .review-reason-option { display: inline-flex; align-items: center; gap: 0.35rem; margin: 0.2rem 0.7rem 0.2rem 0; font-size: 0.88rem; }
+    .review-note-label { display: inline-block; margin-bottom: 0.25rem; }
+    textarea[data-role="review-note"] { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; padding: 0.45rem; font-family: inherit; font-size: 0.9rem; background: #fff; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }
+    th { background: #edf2f5; }
+    td.score-discrepancy { background: #ffefc2 !important; border-color: #d69700; font-weight: 700; }
+    a { color: #0e4f85; }
+    .st-accepted td { background: #e6f7eb; }
+    .st-uncertain td { background: #fff7dd; }
+    .st-unmatched td { background: #fdecec; }
+    .st-auto-unmatched td { background: #f1f2f4; }
+  </style>
+</head>
+<body>
+  <header>
+    <a id="top"></a>
+    <h1>Fuzzy Matching Report</h1>
+    <p>Coordinate-first matching (70%) + name similarity (30%), one-to-one Hungarian assignment, accepted &gt;= 0.75, uncertain &gt;= 0.55, coordinate override when coord score &gt;= 0.90. Metrics include overlap PMIDs only (manual ∩ auto).</p>
+    <p><strong>Decimal manual coordinate handling:</strong> convert decimal manual coordinates MNI→Talairach |
+       <strong>Converted decimal analyses:</strong> 0 | <strong>Converted exact-set axis tolerance:</strong> ±1.000</p>
+    <p><strong>Overlap PMIDs:</strong> 7 |
+       <strong>Manual analyses:</strong> 8 |
+       <strong>Accepted:</strong> 8 |
+       <strong>Uncertain:</strong> 0 |
+       <strong>Unmatched:</strong> 0</p>
+    <p><strong>Study categories:</strong> All correct=7 |
+       Mixed=0 |
+       All incorrect=0</p>
+    <p><strong>Unavailable Manual Studies (decimal coordinates):</strong> 0</p>
+    <p><strong>Accepted by coordinate-score override:</strong> 3 |
+       <strong>Coordinate-override matches with low name score:</strong> 7</p>
+    <p><strong>PMIDs with Pubget docs:</strong> 2 |
+       <strong>Extracted tables available:</strong> 5</p>
+    <p><strong>All Correct exact same # analyses:</strong> 2 / 7</p>
+    <p><strong>Score distribution:</strong> mean=0.770 |
+       p25=0.747 |
+       median=0.752 |
+       p75=0.762</p>
+    
+  </header>
+  <nav class="top-nav">
+    <a href="#bucket-all-correct">All Correct (7)</a>
+    <a href="#bucket-mixed">Mixed (0)</a>
+    <a href="#bucket-all-incorrect">All Incorrect (0)</a>
+    
+    <a href="#top">Top</a>
+  </nav>
+  <section id="bucket-all-correct"><details class="bucket"><summary><h2>All Correct (7)</h2></summary><p><strong>Exact same # of analyses within All Correct:</strong> 2 / 7</p><details class="doc-card" data-pmid="17825801" data-study-category="all_correct"><summary><strong>PMID 17825801</strong> | 17825801 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=3 | <strong>auto&gt;manual = 2</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/17825801/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>17825801_1 (7)</summary><pre class="coord-list">-64.0, -44.0, 10.0
+44.0, -2.0, -14.0
+-62.0, -56.0, -4.0
+34.0, -28.0, -16.0
+-36.0, 10.0, -4.0
+0.0, 46.0, 10.0
+-46.0, 42.0, -14.0</pre></details></td><td>TrauE &gt; PTSD</td><td>7</td><td>accepted</td><td>17825801_analysis_0</td><td>analysis_0</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.182</td><td>1.000</td><td>0.755</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>17825801_analysis_0 (7)</summary><pre class="coord-list">44.0, -2.0, -14.0
+-62.0, -56.0, -4.0
+34.0, -28.0, -16.0
+-36.0, 10.0, -4.0
+0.0, 46.0, 10.0
+-46.0, 42.0, -14.0
+-64.0, -44.0, 10.0</pre></details></td><td>analysis_0</td><td>7</td><td>17825801_1</td><td>TrauE &gt; PTSD</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.182</td><td>1.000</td><td>0.755</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>17825801_analysis_1 (4)</summary><pre class="coord-list">44.0, -2.0, -14.0
+34.0, -28.0, -16.0
+-36.0, 10.0, -4.0
+0.0, 46.0, 10.0</pre></details></td><td>Combat-Exposed Twins: PTSD vs. non-PTSD</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>17825801_analysis_2 (1)</summary><pre class="coord-list">8.0, 50.0, 12.0</pre></details></td><td>Diagnosis × Combat Exposure Interaction</td><td>1</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="19942229" data-study-category="all_correct"><summary><strong>PMID 19942229</strong> | 19942229 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=3 | <strong>auto&gt;manual = 2</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/19942229/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>19942229_1 (5)</summary><pre class="coord-list">-10.0, -60.0, 3.0
+-23.0, -57.0, -2.0
+-17.0, -55.0, 32.0
+-3.0, -61.0, 33.0
+7.0, -50.0, 2.0</pre></details></td><td>TrauE &gt; PTSD</td><td>5</td><td>accepted</td><td>19942229_analysis_0</td><td>Regions in which GM density was significantly lower in S as compared to NS (NS &gt; S).</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.167</td><td>1.000</td><td>0.750</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>19942229_analysis_0 (5)</summary><pre class="coord-list">-10.0, -60.0, 3.0
+-23.0, -57.0, -2.0
+-17.0, -55.0, 32.0
+-3.0, -61.0, 33.0
+7.0, -50.0, 2.0</pre></details></td><td>Regions in which GM density was significantly lower in S as compared to NS (NS &gt; S).</td><td>5</td><td>19942229_1</td><td>TrauE &gt; PTSD</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.167</td><td>1.000</td><td>0.750</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>19942229_analysis_1 (8)</summary><pre class="coord-list">1.0, -27.0, 36.0
+-3.0, -27.0, 33.0
+-2.0, -32.0, 31.0
+-35.0, 9.0, 58.0
+-46.0, -10.0, 57.0
+-3.0, 0.0, 50.0
+41.0, 12.0, 7.0
+31.0, -5.0, -11.0</pre></details></td><td>Regions in which GM density was significantly lower in NR as compared to R (R &gt; NR).</td><td>8</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>19942229_analysis_2 (21)</summary><pre class="coord-list">-44.0, 4.0, -4.0
+-47.0, -9.0, 1.0
+-65.0, -13.0, 15.0
+12.0, -3.0, -13.0
+17.0, 7.0, -14.0
+5.0, -9.0, -12.0
+4.0, 23.0, 30.0
+10.0, 50.0, 36.0
+-5.0, 15.0, 38.0
+48.0, 30.0, 27.0
+57.0, 5.0, 3.0
+-8.0, -16.0, 47.0
+-6.0, -21.0, 33.0
+-9.0, -34.0, 53.0
+7.0, 59.0, 9.0
+4.0, 45.0, -23.0
+10.0, -15.0, 3.0
+57.0, -14.0, -24.0
+52.0, -27.0, -22.0
+17.0, -60.0, -34.0
+-11.0, -50.0, -31.0</pre></details></td><td>Regions in which GM density negatively correlated with TAQ-.</td><td>21</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="21498053" data-study-category="all_correct"><summary><strong>PMID 21498053</strong> | 21498053 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=1 | <strong>auto=manual = 0</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/21498053/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>21498053_1 (3)</summary><pre class="coord-list">-12.0, -67.0, 17.0
+5.0, -81.0, 15.0
+-17.0, -9.0, -26.0</pre></details></td><td>TrauE &gt; PTSD</td><td>3</td><td>accepted</td><td>21498053_analysis_0</td><td>Coordinates and significance values of the gray matter decrease in PTSD patients compared with non-PTSD subjects.</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.160</td><td>1.000</td><td>0.748</td><td>accepted_coord_override, exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>21498053_analysis_0 (3)</summary><pre class="coord-list">-17.0, -9.0, -26.0
+5.0, -81.0, 15.0
+-12.0, -67.0, 17.0</pre></details></td><td>Coordinates and significance values of the gray matter decrease in PTSD patients compared with non-PTSD subjects.</td><td>3</td><td>21498053_1</td><td>TrauE &gt; PTSD</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.160</td><td>1.000</td><td>0.748</td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="22952599" data-study-category="all_correct"><summary><strong>PMID 22952599</strong> | 22952599 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=1 | <strong>auto=manual = 0</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/22952599/" target="_blank" rel="noopener noreferrer">PubMed</a> | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3432060/" target="_blank" rel="noopener noreferrer">PMC full text</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>22952599_1 (4)</summary><pre class="coord-list">31.0, -76.0, 47.0
+53.0, -25.0, -3.0
+53.0, -1.0, 35.0
+-12.0, 54.0, 10.0</pre></details></td><td>TrauE &gt; PTSD</td><td>4</td><td>accepted</td><td>22952599_analysis_0</td><td>analysis_0</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.182</td><td>1.000</td><td>0.755</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>22952599_analysis_0 (4)</summary><pre class="coord-list">53.0, -1.0, 35.0
+-12.0, 54.0, 10.0
+31.0, -76.0, 47.0
+53.0, -25.0, -3.0</pre></details></td><td>analysis_0</td><td>4</td><td>22952599_1</td><td>TrauE &gt; PTSD</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.182</td><td>1.000</td><td>0.755</td></tr></tbody></table></div></details><details class="inner-accordion"><summary>Pubget full text + extracted tables</summary><div class="resource-box"><p><strong>PMCID:</strong> PMC3432060 | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3432060/" target="_blank" rel="noopener noreferrer">PubMedCentral full text</a></p><p><strong>Extracted tables:</strong> 2</p><details class="table-accordion"><summary>Table 1 (pone-0042560-t001)</summary><p><strong>Caption:</strong> Characteristics of the sample population.</p><p class="resource-note"><strong>Source:</strong> <code>articles/6a2/pmcid_3432060/tables/table_000.csv</code></p><div class="table-wrap"><table class="extracted-table"><thead><tr><th>Characteristics</th><th>PTSD</th><th>PTSD</th><th>Controls</th><th>Controls</th></tr><tr><th>Unnamed: 0_level_1</th><th>N</th><th>%</th><th>N</th><th>%</th></tr></thead><tbody><tr><td>Gender</td><td></td><td></td><td></td><td></td></tr><tr><td>Women</td><td>9</td><td>56.2</td><td>9</td><td>56.2</td></tr><tr><td>Men</td><td>7</td><td>43.8</td><td>7</td><td>43.8</td></tr><tr><td>Relationship status</td><td></td><td></td><td></td><td></td></tr><tr><td>Single</td><td>1</td><td>6.3</td><td>2</td><td>12.4</td></tr><tr><td>Married/living with partner</td><td>12</td><td>75.0</td><td>13</td><td>81.2</td></tr><tr><td>Divorced/widower</td><td>3</td><td>10.8</td><td>1</td><td>6.3</td></tr><tr><td>Type of traumatic event</td><td></td><td></td><td></td><td></td></tr><tr><td>Armed violence</td><td>13</td><td>81.2</td><td>12</td><td>75.0</td></tr><tr><td>Motor vehicle accidents</td><td>3</td><td>10.8</td><td>2</td><td>12.4</td></tr><tr><td>Assault without gun</td><td>-</td><td></td><td>1</td><td>6.3</td></tr><tr><td>Sexual abuse</td><td>-</td><td></td><td>1</td><td>6.3</td></tr><tr><td></td><td>Mean</td><td>SD</td><td>Mean</td><td>SD</td></tr><tr><td>Age</td><td>43.3</td><td>5.78</td><td>44.9</td><td>6.60</td></tr><tr><td>Education level (years)</td><td>10.5</td><td>2.59</td><td>11.8</td><td>3.56</td></tr><tr><td>Time elapsed since trauma (in years)</td><td>3.0</td><td>4.8</td><td>11</td><td>9.8</td></tr></tbody></table></div></details><details class="table-accordion"><summary>Table 2 (pone-0042560-t002)</summary><p><strong>Caption:</strong> Results of t-tests comparing PTSD and control groups.</p><p><strong>Footnote:</strong> Stereotactic coordinates are quoted within MNI space.*p&lt;0.05 corrected,†For a more lenient statistical significance threshold of p&lt;0.001 (uncorrected).</p><p class="resource-note"><strong>Source:</strong> <code>articles/6a2/pmcid_3432060/tables/table_001.csv</code></p><div class="table-wrap"><table class="extracted-table"><thead><tr><th>Brain region</th><th>Laterality</th><th>Coordinates</th><th>Coordinates</th><th>Coordinates</th><th>Cluster size</th><th>Z-score</th></tr><tr><th>Unnamed: 0_level_1</th><th>Unnamed: 1_level_1</th><th>X</th><th>Y</th><th>Z</th><th>Unnamed: 5_level_1</th><th>Unnamed: 6_level_1</th></tr></thead><tbody><tr><td>Ventral premotor cortex???</td><td>R</td><td>53</td><td>−1</td><td>35</td><td>975</td><td>5.01</td></tr><tr><td>Pregenual anterior cingulate cortex???</td><td>L</td><td>−12</td><td>54</td><td>10</td><td>242</td><td>4.14</td></tr><tr><td>Superior parietal sulcus???</td><td>R</td><td>31</td><td>−76</td><td>47</td><td>83</td><td>4.16</td></tr><tr><td>Superior temporal sulcus???</td><td>R</td><td>53</td><td>−25</td><td>−3</td><td>52</td><td>3.37</td></tr></tbody></table></div></details></div></details></details><details class="doc-card" data-pmid="23021615" data-study-category="all_correct"><summary><strong>PMID 23021615</strong> | 23021615 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=3 | <strong>auto&gt;manual = 2</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/23021615/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>23021615_1 (4)</summary><pre class="coord-list">10.0, 8.0, -14.0
+-32.0, -12.0, 18.0
+38.0, 42.0, 14.0
+-64.0, -26.0, -10.0</pre></details></td><td>TrauE &gt; PTSD</td><td>4</td><td>accepted</td><td>23021615_analysis_2</td><td>Non-PTSD &gt; PTSD</td><td class="">0.593</td><td>1.000</td><td>0.878</td><td>exact_coord_set, high_coord_match</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-auto-unmatched"><td>0</td><td><details class="analysis-coords"><summary>23021615_analysis_0 (4)</summary><pre class="coord-list">6.0, -4.0, -8.0
+-32.0, -12.0, 16.0
+36.0, -10.0, 20.0
+-60.0, -26.0, -10.0</pre></details></td><td>↑CAPS, ↓GMV</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>23021615_analysis_1 (5)</summary><pre class="coord-list">-44.0, -70.0, -54.0
+-28.0, -68.0, -26.0
+16.0, -76.0, -52.0
+36.0, -70.0, -26.0
+-42.0, -30.0, 38.0</pre></details></td><td>↑Child Trauma, ↓GMV</td><td>5</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-accepted"><td>2</td><td><details class="analysis-coords"><summary>23021615_analysis_2 (4)</summary><pre class="coord-list">10.0, 8.0, -14.0
+-32.0, -12.0, 18.0
+38.0, 42.0, 14.0
+-64.0, -26.0, -10.0</pre></details></td><td>Non-PTSD &gt; PTSD</td><td>4</td><td>23021615_1</td><td>TrauE &gt; PTSD</td><td>accepted</td><td class="">0.593</td><td>1.000</td><td>0.878</td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="23155380" data-study-category="all_correct"><summary><strong>PMID 23155380</strong> | 23155380 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=5 | <strong>auto&gt;manual = 4</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/23155380/" target="_blank" rel="noopener noreferrer">PubMed</a> | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3498281/" target="_blank" rel="noopener noreferrer">PMC full text</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>23155380_1 (1)</summary><pre class="coord-list">-6.0, 26.0, 20.0</pre></details></td><td>HCs &gt; PTSD</td><td>1</td><td>accepted</td><td>23155380_analysis_0</td><td>Normal control (n20) &gt; Recent onset PTSD (n10)</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.286</td><td>1.000</td><td>0.786</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>23155380_analysis_0 (1)</summary><pre class="coord-list">-6.0, 26.0, 20.0</pre></details></td><td>Normal control (n20) &gt; Recent onset PTSD (n10)</td><td>1</td><td>23155380_1</td><td>HCs &gt; PTSD</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.286</td><td>1.000</td><td>0.786</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>23155380_analysis_1 (2)</summary><pre class="coord-list">-27.0, -15.0, -3.0
+21.0, -24.0, 26.0</pre></details></td><td>Normal control (n20) &gt; non PTSD (n10)</td><td>2</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>23155380_analysis_2 (5)</summary><pre class="coord-list">18.0, -67.0, 28.0
+32.0, -87.0, 5.0
+4.0, 44.0, 27.0
+-13.0, -69.0, 26.0
+-9.0, -6.0, 32.0</pre></details></td><td>trauma survivors</td><td>5</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>23155380_analysis_3 (3)</summary><pre class="coord-list">5.0, 42.0, 30.0
+12.0, 46.0, 2.0
+-6.0, 61.0, 12.0</pre></details></td><td>PTSD group</td><td>3</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>4</td><td><details class="analysis-coords"><summary>23155380_analysis_4 (0)</summary><pre class="coord-list">No coordinates extracted.</pre></details></td><td>non PTSD group</td><td>0</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details><details class="inner-accordion"><summary>Pubget full text + extracted tables</summary><div class="resource-box"><p><strong>PMCID:</strong> PMC3498281 | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3498281/" target="_blank" rel="noopener noreferrer">PubMedCentral full text</a></p><p><strong>Extracted tables:</strong> 3</p><details class="table-accordion"><summary>Table 1 (pone-0048298-t001)</summary><p><strong>Caption:</strong> Sociodemographic and Volumetric Characteristic of the Sample.</p><p><strong>Footnote:</strong> aThere is no significant difference in gray matter volume between PTSD group and normal controls, p = 0.07.bThere is no significant difference in gray matter volume between non PTSD group and normal controls, p = 0.08.PTSD: Post Traumatic Stress Disorder.</p><p class="resource-note"><strong>Source:</strong> <code>articles/92e/pmcid_3498281/tables/table_000.csv</code></p><div class="table-wrap"><table class="extracted-table"><thead><tr><th>Variable</th><th>trauma survivors</th><th>trauma survivors</th><th>Unnamed: 3_level_0</th><th>Unnamed: 4_level_0</th><th>Unnamed: 5_level_0</th></tr><tr><th>Unnamed: 0_level_1</th><th>PTSD (n = 10) Mean±SD</th><th>non PTSD (n = 10) Mean±SD</th><th>p</th><th>normal control Mean±SD</th><th>P</th></tr></thead><tbody><tr><td>Age,yrs</td><td>40.8±6.8</td><td>34.3±5.6</td><td>0.032</td><td>37.6±7.0</td><td>0.64</td></tr><tr><td>Length of education,yrs</td><td>7.2±1.7</td><td>8.2±1.5</td><td>0.19</td><td>14.1±2.6</td><td>0.001</td></tr><tr><td>Caps</td><td>78.7±17.3</td><td>34.4±18.6</td><td>0.0</td><td></td><td></td></tr><tr><td>SCL90</td><td>25.02±10.8</td><td>15.8±5.02</td><td>0.026</td><td></td><td></td></tr><tr><td>Reexp</td><td>23.6±4.14</td><td>15.4±5.46</td><td>0.001</td><td></td><td></td></tr><tr><td>Avoid</td><td>20.7±4.55</td><td>12.9±3.69</td><td>0.001</td><td></td><td></td></tr><tr><td>Arous</td><td>19.4±3.966</td><td>13.3±5.9</td><td>0.008</td><td></td><td></td></tr><tr><td>impair</td><td>7.8±1.67</td><td>3.9±1.96</td><td>0.001</td><td></td><td></td></tr><tr><td>Gray matter volume (cm3)</td><td>634.34±49.01???</td><td>661.36±66.72???</td><td>0.93</td><td>687.71±57.96</td><td>0.03</td></tr><tr><td>White matter volume (cm3)</td><td>577.75±55.98</td><td>588.86±63.77</td><td>0.76</td><td>572.06±51.12</td><td>0.48</td></tr><tr><td>CSF volume (cm3)</td><td>200.91±13.49</td><td>201.35±22.93</td><td>0.96</td><td>240.94±23.59</td><td>0.004</td></tr></tbody></table></div></details><details class="table-accordion"><summary>Table 2 (pone-0048298-t002)</summary><p><strong>Caption:</strong> Gray matter volume differences between recent onset PTSD, non PTSD and normal Controls.</p><p><strong>Footnote:</strong> Corrected with Family Wise Error (FWE), p&lt;0.05.MNI: Montreal Neurological Institute system.PTSD: Post Traumatic Stress Disorder.</p><p class="resource-note"><strong>Source:</strong> <code>articles/92e/pmcid_3498281/tables/table_001.csv</code></p><div class="table-wrap"><table class="extracted-table"><thead><tr><th>Group</th><th>Brain regions</th><th>MNI coordinates</th><th>MNI coordinates</th><th>MNI coordinates</th><th>Clustersize</th><th>Zscore</th><th>p value</th></tr><tr><th>Unnamed: 0_level_1</th><th>Unnamed: 1_level_1</th><th>X</th><th>Y</th><th>Z</th><th>Unnamed: 5_level_1</th><th>Unnamed: 6_level_1</th><th>Unnamed: 7_level_1</th></tr></thead><tbody><tr><td>Normal control (n = 20) &gt; Recent onset PTSD (n = 10)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Left rostral anterior cingulate cortex</td><td>−6</td><td>26</td><td>20</td><td>207.0</td><td>5.25</td><td>0.004</td></tr><tr><td>Normal control (n = 20) &gt; non PTSD (n = 10)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>left pallidum</td><td>−27</td><td>−15</td><td>−3</td><td>131.0</td><td>4.92</td><td>0.013</td></tr><tr><td></td><td>right pulvinar</td><td>21</td><td>−24</td><td>26</td><td>813.0</td><td>5.92</td><td>0.0001</td></tr></tbody></table></div></details><details class="table-accordion"><summary>Table 3 (pone-0048298-t003)</summary><p><strong>Caption:</strong> Correlations of Gray matter volume with CAPS score in trauma survivors, recent onset PTSD and non PTSD.</p><p><strong>Footnote:</strong> corrected at cluster level, p&lt;0.05.MNI:Montreal Neurological Institute system.PTSD: Post Traumatic Stress Disorder.</p><p class="resource-note"><strong>Source:</strong> <code>articles/92e/pmcid_3498281/tables/table_002.csv</code></p><div class="table-wrap"><table class="extracted-table"><thead><tr><th>Unnamed: 0_level_0</th><th>Brain regions</th><th>MNI coordinates</th><th>MNI coordinates</th><th>MNI coordinates</th><th>Clustersize</th><th>Zscore</th><th>Unnamed: 7_level_0</th></tr><tr><th>Unnamed: 0_level_1</th><th>Unnamed: 1_level_1</th><th>X</th><th>Y</th><th>Z</th><th>Unnamed: 5_level_1</th><th>Unnamed: 6_level_1</th><th>p value</th></tr></thead><tbody><tr><td>trauma survivors</td><td>trauma survivors</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>right cuneus</td><td>18</td><td>−67</td><td>28.0</td><td>5261.0</td><td>4.27</td><td>0.0001</td></tr><tr><td></td><td>right middle occipital lobe</td><td>32</td><td>−87</td><td>5.0</td><td>152.0</td><td>3.74</td><td>0.0001</td></tr><tr><td></td><td>right frontal lobe</td><td>4</td><td>44</td><td>27.0</td><td>1150.0</td><td>3.97</td><td>0.0001</td></tr><tr><td></td><td>left cunes</td><td>−13</td><td>−69</td><td>26.0</td><td>1025.0</td><td>3.91</td><td>0.0001</td></tr><tr><td></td><td>left anterior and middle cingulate cortex</td><td>−9</td><td>−6</td><td>32.0</td><td>2010.0</td><td>3.92</td><td>0.0001</td></tr><tr><td>PTSD group</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>right superior medial frontal lobe</td><td>5</td><td>42</td><td>30.0</td><td>1361.0</td><td>4.83</td><td>0.0001</td></tr><tr><td></td><td>right anterior cingulate cortex</td><td>12</td><td>46</td><td>2.0</td><td>495.0</td><td>4.83</td><td>0.003</td></tr><tr><td></td><td>left superior medial frontal lobe</td><td>−6</td><td>61</td><td>12.0</td><td>891.0</td><td>4.1</td><td>0.004</td></tr><tr><td>non PTSD group</td><td>no</td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div></details></div></details></details><details class="doc-card" data-pmid="28549317" data-study-category="all_correct"><summary><strong>PMID 28549317</strong> | 28549317 | accepted=2 uncertain=0 unmatched=0 manual=2 auto=3 | <strong>auto&gt;manual = 1</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/28549317/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>28549317_1 (26)</summary><pre class="coord-list">-2.0, -4.0, -2.0
+-2.0, 58.0, 4.0
+36.0, 28.0, -22.0
+-36.0, 28.0, -22.0
+8.0, 44.0, -22.0
+2.0, 32.0, -8.0
+-4.0, -26.0, 38.0
+16.0, 70.0, 2.0
+0.0, 34.0, -8.0
+28.0, -2.0, -28.0
+2.0, -28.0, 40.0
+-22.0, -8.0, -28.0
+-42.0, 6.0, 48.0
+-40.0, -4.0, 0.0
+38.0, -6.0, -6.0
+48.0, 30.0, 22.0
+0.0, 34.0, -12.0
+2.0, 48.0, 6.0
+-6.0, -76.0, 30.0
+8.0, -72.0, 34.0
+-16.0, 6.0, -12.0
+20.0, 8.0, -12.0
+-4.0, 56.0, 22.0
+4.0, 54.0, 24.0
+28.0, -10.0, -28.0
+-22.0, -2.0, -28.0</pre></details></td><td>HCs &gt; PTSD</td><td>26</td><td>accepted</td><td>28549317_analysis_0</td><td>PTSD&lt;HC: Whole Brain VBM grey matter results.</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.145</td><td>1.000</td><td>0.744</td><td>accepted_coord_override, exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr><tr class="st-accepted"><td><details class="analysis-coords"><summary>28549317_2 (25)</summary><pre class="coord-list">-16.0, 6.0, -12.0
+4.0, 54.0, 38.0
+-18.0, -2.0, -24.0
+26.0, -2.0, -28.0
+-4.0, 34.0, 2.0
+-4.0, -48.0, 18.0
+6.0, -50.0, 12.0
+6.0, 48.0, -26.0
+-44.0, 26.0, -16.0
+46.0, 22.0, -8.0
+-2.0, 60.0, -20.0
+8.0, 56.0, -26.0
+-24.0, -12.0, -28.0
+28.0, -10.0, -28.0
+-42.0, 14.0, -10.0
+38.0, -4.0, -2.0
+-44.0, 6.0, 52.0
+36.0, 0.0, 56.0
+6.0, 10.0, 48.0
+0.0, -76.0, 32.0
+4.0, -56.0, 8.0
+16.0, 8.0, -12.0
+-4.0, 48.0, 42.0
+18.0, -30.0, -4.0
+-4.0, 56.0, 6.0</pre></details></td><td>TrauE &gt; PTSD</td><td>25</td><td>accepted</td><td>28549317_analysis_1</td><td>PTSD&lt;TC: Whole Brain VBM grey matter results.</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.140</td><td>1.000</td><td>0.742</td><td>accepted_coord_override, exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>28549317_analysis_0 (26)</summary><pre class="coord-list">-22.0, -2.0, -28.0
+28.0, -2.0, -28.0
+0.0, 34.0, -8.0
+2.0, 32.0, -8.0
+-4.0, -26.0, 38.0
+2.0, -28.0, 40.0
+8.0, 44.0, -22.0
+-36.0, 28.0, -22.0
+36.0, 28.0, -22.0
+-2.0, 58.0, 4.0
+16.0, 70.0, 2.0
+-22.0, -8.0, -28.0
+28.0, -10.0, -28.0
+-40.0, -4.0, 0.0
+38.0, -6.0, -6.0
+-42.0, 6.0, 48.0
+48.0, 30.0, 22.0
+0.0, 34.0, -12.0
+2.0, 48.0, 6.0
+-6.0, -76.0, 30.0
+8.0, -72.0, 34.0
+-16.0, 6.0, -12.0
+20.0, 8.0, -12.0
+-4.0, 56.0, 22.0
+4.0, 54.0, 24.0
+-2.0, -4.0, -2.0</pre></details></td><td>PTSD&lt;HC: Whole Brain VBM grey matter results.</td><td>26</td><td>28549317_1</td><td>HCs &gt; PTSD</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.145</td><td>1.000</td><td>0.744</td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>28549317_analysis_1 (25)</summary><pre class="coord-list">-18.0, -2.0, -24.0
+26.0, -2.0, -28.0
+-4.0, 34.0, 2.0
+-4.0, -48.0, 18.0
+6.0, -50.0, 12.0
+6.0, 48.0, -26.0
+-44.0, 26.0, -16.0
+46.0, 22.0, -8.0
+-2.0, 60.0, -20.0
+8.0, 56.0, -26.0
+-24.0, -12.0, -28.0
+28.0, -10.0, -28.0
+-42.0, 14.0, -10.0
+38.0, -4.0, -2.0
+-44.0, 6.0, 52.0
+36.0, 0.0, 56.0
+-4.0, 56.0, 6.0
+6.0, 10.0, 48.0
+0.0, -76.0, 32.0
+4.0, -56.0, 8.0
+-16.0, 6.0, -12.0
+16.0, 8.0, -12.0
+-4.0, 48.0, 42.0
+4.0, 54.0, 38.0
+18.0, -30.0, -4.0</pre></details></td><td>PTSD&lt;TC: Whole Brain VBM grey matter results.</td><td>25</td><td>28549317_2</td><td>TrauE &gt; PTSD</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.140</td><td>1.000</td><td>0.742</td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>28549317_analysis_2 (0)</summary><pre class="coord-list">No coordinates extracted.</pre></details></td><td>Amygdala (right) (cog 26, -2, -28)</td><td>0</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details></details></section><section id="bucket-mixed"><details class="bucket" open><summary><h2>Mixed (0)</h2></summary><p>No studies in this category.</p></details></section><section id="bucket-all-incorrect"><details class="bucket" open><summary><h2>All Incorrect (0)</h2></summary><p>No studies in this category.</p></details></section>
+  
+  
+</body>
+</html>

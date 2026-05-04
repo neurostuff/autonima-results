@@ -1,0 +1,90 @@
+search:
+  database: "pubmed"
+  query: (((("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab] OR "grey mattr volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab]) AND ("magnetic resonance imaging"[Mesh] OR MRI[tiab] OR "structural MRI"[tiab])) AND (PTSD[tiab] OR "post-traumatic stress disorder"[tiab]) AND Humans[mh] AND English[lang] NOT (review[pt] OR "systematic review"[tiab] OR meta-analysis[pt]))
+  date_from: "1990/01/01"
+  date_to: "2020/12/31"
+  max_results: 15000
+  email: delavega@utexas.edu
+
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/articles/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/articles/ace_outputs/processed/"
+
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    objective: "Meta-analysis of morphometry studies of structural alterations associated with PTSD"
+    inclusion_criteria:
+      - Empirical English language MRI studies assessing grey matter (GM) volume differences between PTSD patients and controls
+      - Control populations may be healthy individuals or trauma-exposed individuals without PTSD
+    exclusion_criteria:
+      - Studies using pharmacological manipulations
+      - Brain lesion studies
+      - Systematic reviews or meta-analyses 
+    confidence_reporting: true
+
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Meta-analysis of morphometry studies of structural alterations associated with PTSD"
+    inclusion_criteria:
+      - Empirical English language MRI studies assessing grey matter (GM) volume differences between PTSD patients and controls
+      - Whole-brain evidence- The paper must report at least one whole-brain voxel-wise between-group contrast of PTSD patients vs controls comparing GM volume
+      - It is acceptable for qualifying results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.
+      - Control populations may be healthy individuals or trauma-exposed individuals without PTS
+    exclusion_criteria:
+      - Studies that report only region-of-interest (ROI) analyses with no qualifying whole-brain results.
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human structural MRI data.
+      - Studies about trauma or stressful life event studies not specifically measuring PTSD
+      - Treatment and longitudinal studies without a qualifying between-group contrast of PTSD patients vs controls
+      - Studies that report only within group results in PTSD patients without a qualifying between-group contrast of PTSD patients vs controls
+      - Studies report only null results (i.e., no significant differences between PTSD patients and controls)
+
+parsing:
+  parse_coordinates: true
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  prompt_type: "multi_analysis"
+  create_all_included_annotations: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_abstract"
+  inclusion_criteria:
+    - Must be a voxelwise whole brain analysis of grey matter volume
+  exclusion_criteria:
+    - Region of interest (ROI) or small volume correction (SVC) analyses 
+    - Analyses of other modalities (e.g., functional MRI, diffusion tensor imaging) or other structural measures 
+    - Within group analyses that do not compare PTSD patients to controls
+    - Analyses of treatment effects or longitudinal changes
+  annotations:
+    - name: increased_gm
+      description: Increased grey matter volume in PTSD patients relative to controls
+      inclusion_criteria:
+        - Voxelwise whole-brain grey matter comparison between PTSD patients and controls, with a patients > controls contrast indicating increased grey matter in PTSD patients.
+    - name: decreased_gm
+      description: Decreased grey matter volume in PTSD patients relative to controls
+      inclusion_criteria:
+        - Voxelwise whole-brain grey matter comparison between PTSD patients and controls, with a patients < controls contrast indicating reduced grey matter in PTSD patients.
+
+output:
+  nimads: true
+  export_excluded_studies: true
+

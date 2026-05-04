@@ -308,6 +308,9 @@ def classify_studies(
     fulltext_with_coords_true_positives = meta_in_search_available & fulltext_with_coords_set
     fulltext_with_coords_false_negatives = meta_in_search_available - fulltext_with_coords_set
     fulltext_with_coords_false_positives = fulltext_with_coords_set - meta_in_search_available
+    fulltext_with_coords_missing_analyses_or_coordinates = (
+        fulltext_true_positives - fulltext_with_coords_set
+    )
 
     return {
         "search": {
@@ -335,6 +338,9 @@ def classify_studies(
             "true_positives": list(fulltext_with_coords_true_positives),
             "false_negatives": list(fulltext_with_coords_false_negatives),
             "false_positives": list(fulltext_with_coords_false_positives),
+            "false_negatives_missing_analyses_or_coordinates": list(
+                fulltext_with_coords_missing_analyses_or_coordinates
+            ),
         },
         "fulltext_incomplete_omitted": list(fulltext_incomplete_omitted),
         "fulltext_missing_omitted": list(missing_fulltext_omitted),
