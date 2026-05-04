@@ -1,13 +1,9 @@
 search:
   database: "pubmed"
-  query: ("problem solving"[Title/Abstract] OR "calculation"[Title/Abstract] OR "number"[Title/Abstract] OR "picture"[Title/Abstract] OR "task"[Title/Abstract] OR "reasoning"[Title/Abstract] OR "math"[Title/Abstract] OR "cognitive process"[Title/Abstract] OR "verbal"[Title/Abstract] OR "visuospatial"[Title/Abstract]) AND ("fMRI"[Title/Abstract] OR "functional magnetic resonance imaging"[Title/Abstract] OR "PET"[Title/Abstract] OR "positron emission tomography"[Title/Abstract])
-  max_results: 5000
-  email: "anthonyang2027@utexas.edu"  
-  date_from: "1997/01/01"
-  date_to: "2015/03/14"
+  pmids_file: 'C:\Users\antho\Neuroinformatics-Lab\autonima-results\projects\problem_solving\annotation-only-ids.txt'
   
 retrieval:
-  load_excluded: false
+  load_excluded: true
   sources:
     - pubget
   full_text_sources:
@@ -24,36 +20,12 @@ retrieval:
 
 screening:
   abstract:
-    model: "gpt-5-mini-2025-08-07"
-    objective: "Identify task-based fMRI or PET studies of problem solving in healthy adults."
-    inclusion_criteria:
-      - Task-based fMRI or PET study.
-      - Human partcipants performing a problem-solving or reasoning task.
-      - Includes at least one group of healthy adults.
-      - Reports task-related brain activation results.
-    exclusion_criteria:
-      - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
-      - Doesn't include at least one healthy adult sample.
-    confidence_reporting: true
-
-  fulltext: 
-    model: "gpt-5-mini-2025-08-07"
-    confidence_reporting: true
-    objective: "Identify whole-brain, task-based fMRI or PET studies examining problem-solving across domains in healthy adults."
-    inclusion_criteria:
-      - Task-based fMRI or PET study studying a problem solving task-- defined as first having a goal, followed by a need to figure out a way to reach it or a more specific definition of the problem solving task-- defined as identifying and/or performing critical thinking processes related to evaluating the problem, planning or sequencing actions to solve it, and executing oeprations that conform to some rule set (e.g. semnatic, algebraic, logical, mechanical, or other delimiting frameworks) to arrive at a correct, or sometimes more appropriate, previously unknown solution 
-      - Includes at least one whole-brain analysis with group-level effects in healthy adult individuals.
-      - Reports task-related increases as stereotactic coordinate results in either Talairach or Montreal Neurological Institute (MNI) standardized space.
-      - Reports at least one blood oxygen level dependent (BOLD) or regional cerebral blood flow (rCBF) analysis.
-      - It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available. 
-    exclusion_criteria:
-      - Reports only region of interest (ROI) results.
-      - Only reports disease, age, and gender-related group comparisons.
-      - Includes only between-group contrasts or doesn't include any healthy-group task effect.
-      - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+    skip_stage: true
+  fulltext:
+    skip_stage: true
 
 parsing:
-  parse_coordinates: true
+  parse_coordinates: true 
   coordinate_model: "gpt-5-mini-2025-08-07"  
 
 annotation:
@@ -117,7 +89,5 @@ annotation:
         - "Exclude tasks that involve rule following without active reasoning or inference."
 
 output:
-  formats:
-    - csv
   nimads: true
   export_excluded_studies: true
