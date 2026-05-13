@@ -122,13 +122,6 @@ def sanitize_file(path: Path, pmids: set[str]) -> tuple[int, int]:
     return original_count, kept_count
 
 
-def validate_source_dir(path: Path) -> None:
-    missing = [name for name in FILES_TO_COPY if not (path / name).exists()]
-    if missing:
-        names = ", ".join(missing)
-        raise FileNotFoundError(f"Missing required source file(s) in {path}: {names}")
-
-
 def main() -> None:
     args = parse_args()
 
@@ -141,7 +134,6 @@ def main() -> None:
     if not pmids_file.exists() or not pmids_file.is_file():
         raise FileNotFoundError(f"PMIDs file does not exist: {pmids_file}")
 
-    validate_source_dir(source_dir)
     destination_dir.mkdir(parents=True, exist_ok=True)
 
     pmids = load_pmids(pmids_file)
@@ -150,6 +142,10 @@ def main() -> None:
     for file_name in FILES_TO_COPY:
         source_path = source_dir / file_name
         destination_path = destination_dir / file_name
+
+        if not source_path.exists():
+            print(f"{file_name}: source file not found, skipping")
+            continue
 
         shutil.copy2(source_path, destination_path)
         before, after = sanitize_file(destination_path, pmids)

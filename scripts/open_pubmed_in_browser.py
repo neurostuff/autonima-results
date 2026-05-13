@@ -16,14 +16,18 @@ from urllib.request import Request, urlopen
 
 PMID_RE = re.compile(r"^\d+$")
 PUBMED_URL = "https://pubmed.ncbi.nlm.nih.gov/{pmid}"
+PMC_ARTICLE_URL = "https://pmc.ncbi.nlm.nih.gov/articles/PMC{pmcid}/"
 ELINK_PRLINKS_URL = (
     "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi"
     "?dbfrom=pubmed&retmode=json&cmd=prlinks&id={joined_pmids}"
 )
+PMC_IDCONV_URL = (
+    "https://pmc.ncbi.nlm.nih.gov/tools/idconv/api/v1/articles/"
+    "?ids={joined_pmids}&idtype=pmid&format=json"
+)
 UT_EZPROXY_DOMAIN = "ezproxy.lib.utexas.edu"
 SCIENCEDIRECT_HOSTS = {"www.sciencedirect.com", "sciencedirect.com"}
 ELSEVIER_LINKING_HOSTS = {"linkinghub.elsevier.com"}
-PMC_HOSTS = {"pmc.ncbi.nlm.nih.gov"}
 DEFAULT_USER_AGENT = "open_pubmed_in_browser/2.0 (+manual-fulltext-workflow)"
 REDIRECT_PAGE_DIR = Path("downloaded_files/open_pubmed_redirects")
 SAVE_BOOKMARKLET = (
@@ -131,8 +135,9 @@ def parse_args() -> argparse.Namespace:
         choices=["all", "exclude", "only"],
         default="all",
         help=(
-            "Filter PMIDs by publisher when resolving publisher links: all (default), "
-            "exclude PubMed Central links, or only PubMed Central links."
+            "Filter PMIDs by PubMed Central availability: all (default), "
+            "exclude PubMed Central links, or only PubMed Central links. "
+            "Whenever PMCID is available, direct PMC article URLs are opened."
         ),
     )
     parser.add_argument(
@@ -265,6 +270,47 @@ def resolve_primary_publisher_urls(
     return url_by_pmid
 
 
+def normalize_pmcid(value: object) -> str | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    if text.upper().startswith("PMC"):
+        text = text[3:]
+    if not text:
+        return None
+    if not re.fullmatch(r"[A-Za-z0-9]+", text):
+        return None
+    return text
+
+
+def resolve_pmcids(pmids: list[str], *, batch_size: int, timeout: float) -> dict[str, str | None]:
+    pmcid_by_pmid: dict[str, str | None] = {pmid: None for pmid in pmids}
+    headers = {"User-Agent": DEFAULT_USER_AGENT}
+
+    for batch in chunked(pmids, batch_size):
+        joined_pmids = ",".join(batch)
+        endpoint = PMC_IDCONV_URL.format(joined_pmids=joined_pmids)
+        request = Request(endpoint, headers=headers)
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+        except Exception as exc:
+            print(f"[WARN] Failed to resolve PMCID for batch starting PMID {batch[0]}: {exc}")
+            continue
+
+        for record in payload.get("records", []):
+            pmid = str(record.get("pmid") or record.get("requested-id") or "").strip()
+            if pmid not in pmcid_by_pmid:
+                continue
+            pmcid_by_pmid[pmid] = normalize_pmcid(record.get("pmcid"))
+
+    return pmcid_by_pmid
+
+
+def pmcid_to_pmc_url(pmcid: str) -> str:
+    return PMC_ARTICLE_URL.format(pmcid=pmcid)
+
+
 def attach_pmid_fragment(url: str, pmid: str, enabled: bool) -> str:
     if not enabled:
         return url
@@ -310,17 +356,6 @@ def is_elsevier_publisher_url(url: str) -> bool:
     if not host:
         return False
     return "elsevier.com" in host or "sciencedirect.com" in host
-
-
-def is_pmc_publisher_url(url: str) -> bool:
-    parts = urlsplit(url)
-    host = (parts.hostname or "").lower()
-    path = (parts.path or "").lower()
-    if host in PMC_HOSTS:
-        return True
-    if host.endswith("ncbi.nlm.nih.gov") and path.startswith("/pmc/"):
-        return True
-    return False
 
 
 def maybe_wrap_proxy(url: str, proxy_prefix: str) -> str:
@@ -422,6 +457,7 @@ def write_manifest(path: Path, records: list[dict[str, str]]) -> None:
 def build_target_records(args: argparse.Namespace, pmids: list[str]) -> list[dict[str, str]]:
     pubmed_by_pmid = {pmid: PUBMED_URL.format(pmid=pmid) for pmid in pmids}
     publisher_by_pmid: dict[str, str | None] = {}
+    pmcid_by_pmid = resolve_pmcids(pmids, batch_size=args.elink_batch_size, timeout=args.elink_timeout)
     if args.mode in {"publisher", "both"}:
         publisher_by_pmid = resolve_primary_publisher_urls(
             pmids, batch_size=args.elink_batch_size, timeout=args.elink_timeout
@@ -433,9 +469,11 @@ def build_target_records(args: argparse.Namespace, pmids: list[str]) -> list[dic
     excluded_by_pmc_filter: list[str] = []
     for pmid in pmids:
         targets: list[tuple[str, str]] = []
+        seen_target_urls: set[str] = set()
         publisher_url = publisher_by_pmid.get(pmid) if args.mode in {"publisher", "both"} else None
         publisher_is_elsevier = bool(publisher_url and is_elsevier_publisher_url(publisher_url))
-        publisher_is_pmc = bool(publisher_url and is_pmc_publisher_url(publisher_url))
+        pmcid = pmcid_by_pmid.get(pmid)
+        pmc_available = bool(pmcid)
 
         if args.elsevier_filter == "exclude" and publisher_is_elsevier:
             excluded_by_elsevier_filter.append(pmid)
@@ -443,18 +481,28 @@ def build_target_records(args: argparse.Namespace, pmids: list[str]) -> list[dic
         if args.elsevier_filter == "only" and not publisher_is_elsevier:
             excluded_by_elsevier_filter.append(pmid)
             continue
-        if args.pmc_filter == "exclude" and publisher_is_pmc:
+        if args.pmc_filter == "exclude" and pmc_available:
             excluded_by_pmc_filter.append(pmid)
             continue
-        if args.pmc_filter == "only" and not publisher_is_pmc:
+        if args.pmc_filter == "only" and not pmc_available:
             excluded_by_pmc_filter.append(pmid)
             continue
 
         if args.mode in {"pubmed", "both"}:
-            targets.append(("pubmed", pubmed_by_pmid[pmid]))
+            if pmcid:
+                pmc_url = pmcid_to_pmc_url(pmcid)
+                targets.append(("pmc", pmc_url))
+                seen_target_urls.add(pmc_url)
+            else:
+                targets.append(("pubmed", pubmed_by_pmid[pmid]))
 
         if args.mode in {"publisher", "both"}:
-            if publisher_url:
+            if pmcid:
+                pmc_url = pmcid_to_pmc_url(pmcid)
+                if pmc_url not in seen_target_urls:
+                    targets.append(("pmc", pmc_url))
+                    seen_target_urls.add(pmc_url)
+            elif publisher_url:
                 targets.append(("publisher", publisher_url))
             elif args.fallback_to_pubmed:
                 targets.append(("pubmed_fallback", pubmed_by_pmid[pmid]))
@@ -541,8 +589,6 @@ def main() -> None:
         raise ValueError("--elink-timeout must be positive.")
     if args.elsevier_filter != "all" and args.mode == "pubmed":
         raise ValueError("--elsevier-filter requires --mode publisher or --mode both.")
-    if args.pmc_filter != "all" and args.mode == "pubmed":
-        raise ValueError("--pmc-filter requires --mode publisher or --mode both.")
 
     if not pmid_file.exists():
         raise FileNotFoundError(f"PMID file not found: {pmid_file}")

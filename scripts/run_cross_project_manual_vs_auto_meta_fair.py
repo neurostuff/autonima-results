@@ -45,6 +45,7 @@ REQUIRED_RUN_OUTPUTS = (
     "outputs/meta_analysis_results",
     "outputs/coordinate_parsing_results.json",
 )
+TEMPLATE_PROJECT_NAME = "template_"
 MISSING_HTML = '<span class="muted">missing</span>'
 
 
@@ -165,6 +166,28 @@ def read_pmid_file(path: Path) -> set[str]:
                 continue
             pmids.add(value)
     return pmids
+
+
+def extract_study_pmids(study: dict[str, Any]) -> set[str]:
+    raw_id = study.get("id")
+    if raw_id is None or str(raw_id).strip() == "":
+        raw_id = study.get("pmid")
+    if raw_id is None:
+        return set()
+
+    if isinstance(raw_id, (list, tuple, set)):
+        pmids: set[str] = set()
+        for value in raw_id:
+            token = str(value).strip()
+            if token:
+                pmids.add(token)
+        return pmids
+
+    raw_text = str(raw_id).strip()
+    if not raw_text:
+        return set()
+
+    return {token for token in (part.strip() for part in raw_text.split(",")) if token}
 
 
 def extract_output_ids_with_points(coordinate_parsing_results_path: Path) -> set[str]:
@@ -434,8 +457,8 @@ def build_filtered_manual_nimads_subset(
     for study in studies:
         if not isinstance(study, dict):
             continue
-        study_id = str(study.get("id") or study.get("pmid") or "").strip()
-        if not study_id or study_id not in include_pmids:
+        study_pmids = extract_study_pmids(study)
+        if not study_pmids or study_pmids.isdisjoint(include_pmids):
             continue
         analyses = study.get("analyses", [])
         if not isinstance(analyses, list):
@@ -625,6 +648,29 @@ def read_matrix_row_mean(matrix_path: Path, row_name: str) -> float | None:
     return None
 
 
+def read_matrix_row_values(matrix_path: Path, row_name: str) -> dict[str, float]:
+    if not matrix_path.exists():
+        return {}
+    with matrix_path.open("r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        if not reader.fieldnames:
+            return {}
+        index_key = reader.fieldnames[0]
+        for row in reader:
+            if str(row.get(index_key, "")).strip() != row_name:
+                continue
+            values: dict[str, float] = {}
+            for key, value in row.items():
+                if key == index_key:
+                    continue
+                try:
+                    values[str(key)] = float(value)
+                except Exception:
+                    continue
+            return values
+    return {}
+
+
 def read_all_analyses_baseline(project_report_dir: Path, run_name: str) -> tuple[float | None, float | None]:
     safe_run_name = sanitize_name(run_name)
     tables_dir = project_report_dir / "tables"
@@ -722,13 +768,22 @@ def read_run_summary_rows(
     return rows
 
 
-def read_diagonal_metric_rows(diagonal_metrics_path: Path, project_name: str) -> list[dict[str, Any]]:
+def read_diagonal_metric_rows(
+    diagonal_metrics_path: Path,
+    project_name: str,
+    project_report_dir: Path | None = None,
+) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     if not diagonal_metrics_path.exists():
         return rows
+    dice_baseline_by_run_manual: dict[str, dict[str, float]] = {}
+    pearson_baseline_by_run_manual: dict[str, dict[str, float]] = {}
+    tables_dir = project_report_dir / "tables" if project_report_dir is not None else None
     with diagonal_metrics_path.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
+            run_name = str(row.get("run", ""))
+            manual_name = str(row.get("manual_name", ""))
             try:
                 dice = float(row.get("dice", "nan"))
             except Exception:
@@ -737,17 +792,104 @@ def read_diagonal_metric_rows(diagonal_metrics_path: Path, project_name: str) ->
                 pearson = float(row.get("pearson_r", "nan"))
             except Exception:
                 continue
+
+            dice_baseline: float | None = None
+            pearson_baseline: float | None = None
+            if tables_dir is not None and run_name:
+                if run_name not in dice_baseline_by_run_manual:
+                    safe_run_name = sanitize_name(run_name)
+                    dice_baseline_by_run_manual[run_name] = read_matrix_row_values(
+                        tables_dir / f"dice_matrix_{safe_run_name}.csv",
+                        "all_analyses",
+                    )
+                    pearson_baseline_by_run_manual[run_name] = read_matrix_row_values(
+                        tables_dir / f"pearson_matrix_{safe_run_name}.csv",
+                        "all_analyses",
+                    )
+                dice_baseline = dice_baseline_by_run_manual.get(run_name, {}).get(manual_name)
+                pearson_baseline = pearson_baseline_by_run_manual.get(run_name, {}).get(manual_name)
+
+            dice_delta = (dice - dice_baseline) if dice_baseline is not None else None
+            pearson_delta = (pearson - pearson_baseline) if pearson_baseline is not None else None
             rows.append(
                 {
                     "project_name": project_name,
-                    "run": str(row.get("run", "")),
-                    "manual_name": str(row.get("manual_name", "")),
+                    "run": run_name,
+                    "manual_name": manual_name,
                     "auto_name": str(row.get("auto_name", "")),
                     "dice": dice,
                     "pearson_r": pearson,
+                    "all_analyses_dice_for_manual": dice_baseline,
+                    "all_analyses_pearson_for_manual": pearson_baseline,
+                    "dice_minus_all_analyses": dice_delta,
+                    "pearson_minus_all_analyses": pearson_delta,
                 }
             )
     return rows
+
+
+def parse_annotation_only_version(run_name: str) -> int | None:
+    match = ANNOTATION_ONLY_RUN_RE.fullmatch(run_name)
+    if not match:
+        return None
+    try:
+        return int(match.group("version"))
+    except Exception:
+        return None
+
+
+def select_chart_runs_by_project(run_rows: list[dict[str, Any]]) -> dict[str, str]:
+    selected: dict[str, tuple[int, int, str]] = {}
+    for row in run_rows:
+        project = str(row.get("project_name", "")).strip()
+        run = str(row.get("run", "")).strip()
+        if not project or not run:
+            continue
+
+        version = parse_annotation_only_version(run)
+        if version is None:
+            version = -1
+        is_plain_annotation_only = int(bool(re.fullmatch(r"^v\d+-annotation-only$", run)))
+        # Sort key: highest version first, then plain annotation-only, then lexical run name.
+        # This yields one deterministic representative run per project for charting.
+        key = (version, is_plain_annotation_only, run)
+        current = selected.get(project)
+        if current is None or key > current:
+            selected[project] = key
+
+    return {project: key[2] for project, key in selected.items()}
+
+
+def filter_rows_for_chart_primary_runs(
+    run_rows: list[dict[str, Any]],
+    diagonal_rows: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    selected_runs = select_chart_runs_by_project(run_rows)
+    if not selected_runs:
+        return run_rows, diagonal_rows
+
+    filtered_run_rows = [
+        row
+        for row in run_rows
+        if selected_runs.get(str(row.get("project_name", ""))) == str(row.get("run", ""))
+    ]
+    filtered_diagonal_rows = [
+        row
+        for row in diagonal_rows
+        if selected_runs.get(str(row.get("project_name", ""))) == str(row.get("run", ""))
+    ]
+    return filtered_run_rows, filtered_diagonal_rows
+
+
+def select_primary_run_rows(run_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    selected_runs = select_chart_runs_by_project(run_rows)
+    if not selected_runs:
+        return run_rows
+    return [
+        row
+        for row in run_rows
+        if selected_runs.get(str(row.get("project_name", ""))) == str(row.get("run", ""))
+    ]
 
 
 def build_cross_project_html(
@@ -759,6 +901,10 @@ def build_cross_project_html(
     global_summary: dict[str, float],
     run_metrics_dice_plot_path: Path | None,
     run_metrics_pearson_plot_path: Path | None,
+    run_metrics_dice_delta_plot_path: Path | None,
+    run_metrics_pearson_delta_plot_path: Path | None,
+    run_metrics_dice_version_delta_plot_path: Path | None,
+    run_metrics_pearson_version_delta_plot_path: Path | None,
 ) -> str:
     project_rows_html: list[str] = []
     for row in sorted(project_rows, key=lambda item: str(item["project_name"])):
@@ -797,6 +943,42 @@ def build_cross_project_html(
             "</tr>"
         )
 
+    primary_run_rows = select_primary_run_rows(run_rows)
+    if primary_run_rows:
+        n_primary = len(primary_run_rows)
+        mean_dice = sum(float(row.get("dice_mean_diagonal", 0.0)) for row in primary_run_rows) / n_primary
+        mean_pearson = sum(float(row.get("pearson_mean_diagonal", 0.0)) for row in primary_run_rows) / n_primary
+
+        dice_baselines = [
+            float(row["all_analyses_dice"])
+            for row in primary_run_rows
+            if row.get("all_analyses_dice") is not None
+        ]
+        pearson_baselines = [
+            float(row["all_analyses_pearson"])
+            for row in primary_run_rows
+            if row.get("all_analyses_pearson") is not None
+        ]
+        mean_dice_baseline = float(sum(dice_baselines) / len(dice_baselines)) if dice_baselines else None
+        mean_pearson_baseline = (
+            float(sum(pearson_baselines) / len(pearson_baselines)) if pearson_baselines else None
+        )
+
+        run_rows_html.append(
+            "<tr>"
+            "<td><strong>ALL_PROJECTS</strong></td>"
+            "<td><strong>TOP-V SUMMARY</strong></td>"
+            f"<td><strong>{mean_dice:.4f}</strong></td>"
+            f"<td><strong>{mean_pearson:.4f}</strong></td>"
+            f"<td><strong>{f'{mean_dice_baseline:.4f}' if mean_dice_baseline is not None else 'n/a'}</strong></td>"
+            f"<td><strong>{f'{mean_pearson_baseline:.4f}' if mean_pearson_baseline is not None else 'n/a'}</strong></td>"
+            "<td><strong>n/a</strong></td>"
+            "<td><strong>n/a</strong></td>"
+            f"<td><strong>{n_primary}</strong></td>"
+            "<td><strong>n/a</strong></td>"
+            "</tr>"
+        )
+
     run_metrics_plot_html = ""
     if run_metrics_dice_plot_path is not None and run_metrics_dice_plot_path.exists():
         rel = os.path.relpath(run_metrics_dice_plot_path.resolve(), output_root.resolve())
@@ -813,6 +995,45 @@ def build_cross_project_html(
             '<section>'
             '<h2>Per-Run Pearson Chart</h2>'
             f'<img src="{escape(rel)}" alt="Per-run Pearson chart" '
+            'style="max-width: 100%; height: auto; border: 1px solid #d5dee8; border-radius: 8px;">'
+            '</section>'
+        )
+    if run_metrics_dice_delta_plot_path is not None and run_metrics_dice_delta_plot_path.exists():
+        rel = os.path.relpath(run_metrics_dice_delta_plot_path.resolve(), output_root.resolve())
+        run_metrics_plot_html += (
+            '<section>'
+            '<h2>Per-Diagonal Dice Difference vs Baseline</h2>'
+            f'<img src="{escape(rel)}" alt="Per-diagonal Dice difference vs baseline chart" '
+            'style="max-width: 100%; height: auto; border: 1px solid #d5dee8; border-radius: 8px;">'
+            '</section>'
+        )
+    if run_metrics_pearson_delta_plot_path is not None and run_metrics_pearson_delta_plot_path.exists():
+        rel = os.path.relpath(run_metrics_pearson_delta_plot_path.resolve(), output_root.resolve())
+        run_metrics_plot_html += (
+            '<section>'
+            '<h2>Per-Diagonal Pearson Difference vs Baseline</h2>'
+            f'<img src="{escape(rel)}" alt="Per-diagonal Pearson difference vs baseline chart" '
+            'style="max-width: 100%; height: auto; border: 1px solid #d5dee8; border-radius: 8px;">'
+            '</section>'
+        )
+    if run_metrics_dice_version_delta_plot_path is not None and run_metrics_dice_version_delta_plot_path.exists():
+        rel = os.path.relpath(run_metrics_dice_version_delta_plot_path.resolve(), output_root.resolve())
+        run_metrics_plot_html += (
+            '<section>'
+            '<h2>Across-Version Mean Dice Difference (Per Run)</h2>'
+            f'<img src="{escape(rel)}" alt="Across-version mean Dice difference by project and run chart" '
+            'style="max-width: 100%; height: auto; border: 1px solid #d5dee8; border-radius: 8px;">'
+            '</section>'
+        )
+    if (
+        run_metrics_pearson_version_delta_plot_path is not None
+        and run_metrics_pearson_version_delta_plot_path.exists()
+    ):
+        rel = os.path.relpath(run_metrics_pearson_version_delta_plot_path.resolve(), output_root.resolve())
+        run_metrics_plot_html += (
+            '<section>'
+            '<h2>Across-Version Mean Pearson Difference (Per Run)</h2>'
+            f'<img src="{escape(rel)}" alt="Across-version mean Pearson difference by project and run chart" '
             'style="max-width: 100%; height: auto; border: 1px solid #d5dee8; border-radius: 8px;">'
             '</section>'
         )
@@ -906,6 +1127,8 @@ def build_cross_project_html(
       </table>
     </div>
     <p class="muted">Primary summary metrics are mapped diagonal means. Off-diagonal excludes mapped diagonals and the all_analyses baseline row.</p>
+    <p class="muted">Bottom row aggregates one top-V annotation-only run per project and reports diagonal means versus mean all_analyses baselines.</p>
+    <p class="muted">Chart views below use one run per project by default: the highest-numbered annotation-only run (with deterministic tie-breaking).</p>
   </section>
   {run_metrics_plot_html}
 </body>
@@ -921,9 +1144,13 @@ def write_run_metrics_plots(
     if not run_rows and not diagonal_rows:
         return None, None
 
-    rows = sorted(run_rows, key=lambda item: (str(item["project_name"]), str(item["run"])))
+    chart_run_rows, chart_diagonal_rows = filter_rows_for_chart_primary_runs(
+        run_rows=run_rows,
+        diagonal_rows=diagonal_rows,
+    )
+    rows = sorted(chart_run_rows, key=lambda item: (str(item["project_name"]), str(item["run"])))
     project_names_from_rows = {str(row.get("project_name", "")) for row in rows}
-    project_names_from_diags = {str(row.get("project_name", "")) for row in diagonal_rows}
+    project_names_from_diags = {str(row.get("project_name", "")) for row in chart_diagonal_rows}
     unique_project_names = sorted(project_names_from_rows | project_names_from_diags)
     projects = unique_project_names
     fig_w = max(10, 1.6 * len(unique_project_names))
@@ -940,8 +1167,8 @@ def write_run_metrics_plots(
 
     project_to_dice_vals: dict[str, list[float]] = {project: [] for project in unique_projects}
     project_to_pearson_vals: dict[str, list[float]] = {project: [] for project in unique_projects}
-    if diagonal_rows:
-        for row in diagonal_rows:
+    if chart_diagonal_rows:
+        for row in chart_diagonal_rows:
             project = str(row.get("project_name", ""))
             if project not in project_to_dice_vals:
                 continue
@@ -1156,6 +1383,275 @@ def write_run_metrics_plots(
     return dice_plot_path, pearson_plot_path
 
 
+def write_diagonal_delta_plots(
+    output_root: Path,
+    run_rows: list[dict[str, Any]],
+    diagonal_rows: list[dict[str, Any]],
+) -> tuple[Path | None, Path | None]:
+    if not run_rows or not diagonal_rows:
+        return None, None
+
+    _chart_run_rows, chart_diagonal_rows = filter_rows_for_chart_primary_runs(
+        run_rows=run_rows,
+        diagonal_rows=diagonal_rows,
+    )
+    if not chart_diagonal_rows:
+        return None, None
+
+    def _plot_delta(metric_key: str, title: str, xlabel: str, out_name: str) -> Path | None:
+        filtered = [
+            row
+            for row in chart_diagonal_rows
+            if row.get(metric_key) is not None and str(row.get("project_name", "")).strip()
+        ]
+        if not filtered:
+            return None
+
+        projects = sorted({str(row["project_name"]) for row in filtered})
+        project_to_vals: dict[str, list[float]] = {project: [] for project in projects}
+        for row in filtered:
+            project = str(row["project_name"])
+            project_to_vals[project].append(float(row[metric_key]))
+
+        all_vals = [value for values in project_to_vals.values() for value in values]
+        if not all_vals:
+            return None
+
+        mean_delta = float(sum(all_vals) / len(all_vals))
+        fig_h = max(4.0, 0.9 * len(projects) + 1.8)
+        fig, ax = plt.subplots(figsize=(11, fig_h))
+        cmap = plt.get_cmap("tab20")
+        project_to_color = {project: cmap(idx % cmap.N) for idx, project in enumerate(projects)}
+
+        positions = list(range(len(projects)))
+        for pos, project in enumerate(projects):
+            vals = project_to_vals.get(project, [])
+            n_vals = len(vals)
+            if n_vals == 1:
+                ys = [pos]
+            else:
+                span = 0.34
+                ys = [pos - span + (2 * span) * (idx / (n_vals - 1)) for idx in range(n_vals)]
+            ax.scatter(
+                vals,
+                ys,
+                s=38,
+                color=project_to_color[project],
+                edgecolor="#111827",
+                linewidth=0.6,
+                alpha=0.95,
+                zorder=3,
+            )
+            project_mean = float(sum(vals) / len(vals))
+            ax.scatter(
+                [project_mean],
+                [pos],
+                marker="o",
+                s=88,
+                facecolors="none",
+                edgecolors="#111827",
+                linewidth=2.0,
+                zorder=4,
+            )
+
+        ax.axvline(0.0, color="#374151", linewidth=1.5, alpha=0.9, zorder=1)
+        ax.axvline(
+            mean_delta,
+            color="#b91c1c",
+            linestyle=":",
+            linewidth=2.2,
+            alpha=0.95,
+            zorder=2,
+            label=f"Mean difference = {mean_delta:.4f}",
+        )
+
+        max_abs = max(abs(min(all_vals)), abs(max(all_vals)), abs(mean_delta), 0.02)
+        xpad = max(0.01, 0.12 * max_abs)
+        ax.set_xlim(-max_abs - xpad, max_abs + xpad)
+        ax.set_yticks(positions)
+        ax.set_yticklabels(projects)
+        ax.set_xlabel(xlabel)
+        ax.set_title(title, fontweight="bold")
+        ax.grid(axis="x", alpha=0.28)
+        ax.legend(loc="upper right")
+        fig.tight_layout()
+
+        output_path = output_root / out_name
+        fig.savefig(output_path, dpi=200, bbox_inches="tight")
+        plt.close(fig)
+        return output_path
+
+    dice_path = _plot_delta(
+        metric_key="dice_minus_all_analyses",
+        title="Dice Difference vs all_analyses Baseline (Per Diagonal, Top-V Run per Project)",
+        xlabel="Diagonal Dice - Corresponding all_analyses Dice",
+        out_name="run_metrics_dice_delta_plot.png",
+    )
+    pearson_path = _plot_delta(
+        metric_key="pearson_minus_all_analyses",
+        title="Pearson Difference vs all_analyses Baseline (Per Diagonal, Top-V Run per Project)",
+        xlabel="Diagonal Pearson - Corresponding all_analyses Pearson",
+        out_name="run_metrics_pearson_delta_plot.png",
+    )
+    return dice_path, pearson_path
+
+
+def build_run_level_mean_delta_rows(diagonal_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[tuple[str, str], dict[str, Any]] = {}
+    for row in diagonal_rows:
+        project = str(row.get("project_name", "")).strip()
+        run = str(row.get("run", "")).strip()
+        if not project or not run:
+            continue
+        key = (project, run)
+        if key not in grouped:
+            grouped[key] = {
+                "project_name": project,
+                "run": run,
+                "dice_deltas": [],
+                "pearson_deltas": [],
+            }
+        dice_delta = row.get("dice_minus_all_analyses")
+        pearson_delta = row.get("pearson_minus_all_analyses")
+        if dice_delta is not None:
+            grouped[key]["dice_deltas"].append(float(dice_delta))
+        if pearson_delta is not None:
+            grouped[key]["pearson_deltas"].append(float(pearson_delta))
+
+    rows: list[dict[str, Any]] = []
+    for payload in grouped.values():
+        dice_vals = payload["dice_deltas"]
+        pearson_vals = payload["pearson_deltas"]
+        rows.append(
+            {
+                "project_name": payload["project_name"],
+                "run": payload["run"],
+                "mean_dice_delta": (float(sum(dice_vals) / len(dice_vals)) if dice_vals else None),
+                "mean_pearson_delta": (float(sum(pearson_vals) / len(pearson_vals)) if pearson_vals else None),
+                "n_pairs_dice": len(dice_vals),
+                "n_pairs_pearson": len(pearson_vals),
+                "version": (
+                    parse_annotation_only_version(str(payload["run"]))
+                    if parse_annotation_only_version(str(payload["run"])) is not None
+                    else -1
+                ),
+            }
+        )
+    rows.sort(key=lambda item: (str(item["project_name"]), int(item["version"]), str(item["run"])))
+    return rows
+
+
+def write_run_version_delta_plots(
+    output_root: Path,
+    diagonal_rows: list[dict[str, Any]],
+) -> tuple[Path | None, Path | None]:
+    run_delta_rows = build_run_level_mean_delta_rows(diagonal_rows)
+    if not run_delta_rows:
+        return None, None
+
+    def _plot(metric_key: str, title: str, ylabel: str, out_name: str) -> Path | None:
+        filtered = [row for row in run_delta_rows if row.get(metric_key) is not None]
+        if not filtered:
+            return None
+
+        projects = sorted({str(row["project_name"]) for row in filtered})
+        if not projects:
+            return None
+        positions = {project: idx + 1 for idx, project in enumerate(projects)}
+        cmap = plt.get_cmap("tab20")
+        project_to_color = {project: cmap(idx % cmap.N) for idx, project in enumerate(projects)}
+        fig_w = max(10, 1.4 * len(projects))
+        fig, ax = plt.subplots(figsize=(fig_w, 6))
+
+        all_vals: list[float] = []
+        for project in projects:
+            project_rows = [row for row in filtered if str(row["project_name"]) == project]
+            project_rows.sort(key=lambda item: (int(item["version"]), str(item["run"])))
+            vals = [float(row[metric_key]) for row in project_rows]
+            all_vals.extend(vals)
+            n_vals = len(vals)
+            center = positions[project]
+            if n_vals == 1:
+                xs = [center]
+            else:
+                span = 0.28
+                xs = [center - span + (2 * span) * (idx / (n_vals - 1)) for idx in range(n_vals)]
+            ax.plot(
+                xs,
+                vals,
+                color=project_to_color[project],
+                linewidth=1.5,
+                alpha=0.85,
+                zorder=2,
+            )
+            ax.scatter(
+                xs,
+                vals,
+                s=44,
+                color=project_to_color[project],
+                edgecolor="#111827",
+                linewidth=0.6,
+                zorder=3,
+            )
+            for x, row, y in zip(xs, project_rows, vals):
+                ax.text(
+                    x,
+                    y,
+                    str(row["run"]),
+                    fontsize=7,
+                    ha="center",
+                    va="bottom",
+                    color="#374151",
+                    rotation=35,
+                )
+
+        if not all_vals:
+            plt.close(fig)
+            return None
+
+        mean_val = float(sum(all_vals) / len(all_vals))
+        ax.axhline(0.0, color="#374151", linewidth=1.5, alpha=0.9, zorder=1)
+        ax.axhline(
+            mean_val,
+            color="#b91c1c",
+            linestyle=":",
+            linewidth=2.2,
+            alpha=0.95,
+            zorder=1,
+            label=f"Mean difference = {mean_val:.4f}",
+        )
+        ypad = max(0.01, 0.12 * max(abs(min(all_vals)), abs(max(all_vals)), abs(mean_val), 0.02))
+        ax.set_ylim(min(all_vals) - ypad, max(all_vals) + ypad)
+        ax.set_xlim(0.5, len(projects) + 0.5)
+        ax.set_xticks([positions[project] for project in projects])
+        ax.set_xticklabels(projects, rotation=0, ha="center")
+        ax.set_ylabel(ylabel)
+        ax.set_xlabel("Project")
+        ax.set_title(title, fontweight="bold")
+        ax.grid(axis="y", alpha=0.28)
+        ax.legend(loc="upper right")
+        fig.tight_layout()
+
+        output_path = output_root / out_name
+        fig.savefig(output_path, dpi=200, bbox_inches="tight")
+        plt.close(fig)
+        return output_path
+
+    dice_path = _plot(
+        metric_key="mean_dice_delta",
+        title="Across-Version Mean Dice Difference by Project (Per Run)",
+        ylabel="Mean (Diagonal Dice - Corresponding all_analyses Dice)",
+        out_name="run_metrics_dice_version_delta_plot.png",
+    )
+    pearson_path = _plot(
+        metric_key="mean_pearson_delta",
+        title="Across-Version Mean Pearson Difference by Project (Per Run)",
+        ylabel="Mean (Diagonal Pearson - Corresponding all_analyses Pearson)",
+        out_name="run_metrics_pearson_version_delta_plot.png",
+    )
+    return dice_path, pearson_path
+
+
 def main() -> int:
     args = parse_args()
     projects_root = args.projects_root.expanduser().resolve()
@@ -1188,6 +1684,11 @@ def main() -> int:
         print(f"\n{'=' * 90}")
         print(f"Project: {project_name}")
         print(f"{'=' * 90}")
+        if project_name == TEMPLATE_PROJECT_NAME:
+            reason = "template project is not a real run target"
+            print(f"[SKIP] {project_name}: {reason}")
+            project_results.append(ProjectResult(project_name=project_name, status="skipped", reason=reason))
+            continue
         try:
             mapping_path = resolve_mapping_path(project_dir)
             mapping_pairs = load_mapping_pairs(mapping_path)
@@ -1378,6 +1879,7 @@ def main() -> int:
                 read_diagonal_metric_rows(
                     diagonal_metrics_path=diag_summary_path,
                     project_name=project_name,
+                    project_report_dir=project_report_dir,
                 )
             )
 
@@ -1502,6 +2004,17 @@ def main() -> int:
         run_rows=all_run_summary_rows,
         diagonal_rows=all_diagonal_rows,
     )
+    run_metrics_dice_delta_plot_path, run_metrics_pearson_delta_plot_path = write_diagonal_delta_plots(
+        output_root=output_root,
+        run_rows=all_run_summary_rows,
+        diagonal_rows=all_diagonal_rows,
+    )
+    run_metrics_dice_version_delta_plot_path, run_metrics_pearson_version_delta_plot_path = (
+        write_run_version_delta_plots(
+            output_root=output_root,
+            diagonal_rows=all_diagonal_rows,
+        )
+    )
 
     n_runs = len(all_run_summary_rows)
     dice_global = (
@@ -1540,6 +2053,10 @@ def main() -> int:
         },
         run_metrics_dice_plot_path=run_metrics_dice_plot_path,
         run_metrics_pearson_plot_path=run_metrics_pearson_plot_path,
+        run_metrics_dice_delta_plot_path=run_metrics_dice_delta_plot_path,
+        run_metrics_pearson_delta_plot_path=run_metrics_pearson_delta_plot_path,
+        run_metrics_dice_version_delta_plot_path=run_metrics_dice_version_delta_plot_path,
+        run_metrics_pearson_version_delta_plot_path=run_metrics_pearson_version_delta_plot_path,
     )
     html_path = output_root / "cross_project_manual_vs_auto_meta_fair_report.html"
     html_path.write_text(html, encoding="utf-8")

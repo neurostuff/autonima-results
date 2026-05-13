@@ -347,6 +347,7 @@ def load_retrieval_context(
             "pmid": pmid,
             "pmcid": pmcid,
             "title": clean_text(row.get("title", "")).strip(),
+            "last_author_et_al": "",
             "journal": clean_text(row.get("journal", "")).strip(),
             "publication_year": clean_text(row.get("publication_year", "")).strip(),
             "abstract": "",
@@ -384,6 +385,51 @@ def load_retrieval_context(
         )
 
     return study_meta_by_pmid, dict(tables_by_pmid)
+
+
+def first_author_et_al_from_authors(authors: Any) -> str:
+    if not isinstance(authors, list) or not authors:
+        return ""
+    first_raw = clean_text(authors[0]).strip()
+    if not first_raw:
+        return ""
+    parts = [part for part in re.split(r"\s+", first_raw) if part]
+    last_name = parts[-1] if parts else first_raw
+    last_name = re.sub(r"[.,;:]+$", "", last_name).strip()
+    if not last_name:
+        return ""
+    return f"{last_name} et al"
+
+
+def extract_year_from_text(value: Any) -> str:
+    text = clean_text(value).strip()
+    if not text:
+        return ""
+    match = re.search(r"\b(19|20)\d{2}\b", text)
+    return match.group(0) if match else ""
+
+
+def load_search_metadata(project_output_dir: Path) -> dict[str, dict[str, str]]:
+    search_results_path = project_output_dir / "outputs" / "search_results.json"
+    if not search_results_path.exists():
+        return {}
+    payload = load_json(search_results_path)
+    studies = payload.get("studies", []) if isinstance(payload, dict) else []
+    out: dict[str, dict[str, str]] = {}
+    for row in studies:
+        pmid = normalize_pmid(row.get("pmid", ""))
+        title = clean_text(row.get("title", "")).strip()
+        last_author_et_al = first_author_et_al_from_authors(row.get("authors"))
+        publication_year = clean_text(row.get("publication_year", "")).strip()
+        if not publication_year:
+            publication_year = extract_year_from_text(row.get("publication_date", ""))
+        if pmid:
+            out[pmid] = {
+                "title": title,
+                "last_author_et_al": last_author_et_al,
+                "publication_year": publication_year,
+            }
+    return out
 
 
 def parse_point_coords(points: list[dict[str, Any]]) -> tuple[list[tuple[float, float, float]], set[str], int]:
@@ -656,8 +702,6 @@ def render_analysis_annotation_rows(
     for annotation_name in annotation_names:
         decision = decision_map.get(annotation_name)
         criterion_meta = build_annotation_criteria_metadata(criteria, annotation_name)
-        confidence = decision.get("confidence") if decision is not None else None
-        confidence_text = "null" if confidence is None else escape(str(confidence))
         reasoning = clean_text(decision.get("reasoning", "") if decision else "").strip()
         if not reasoning:
             reasoning = "(no reasoning provided)"
@@ -666,7 +710,6 @@ def render_analysis_annotation_rows(
             "<tr>"
             f"<td><strong>{escape(annotation_name)}</strong></td>"
             f"<td>{render_decision_pill(decision)}</td>"
-            f"<td>{confidence_text}</td>"
             f"<td>{render_criteria_status(decision, criterion_meta)}</td>"
             f"<td><pre>{escape(reasoning)}</pre></td>"
             "</tr>"
@@ -675,57 +718,26 @@ def render_analysis_annotation_rows(
     return (
         '<div class="table-wrap">'
         '<table class="annotation-pairing-table">'
-        "<thead><tr><th>Annotation</th><th>Decision</th><th>Confidence</th><th>Criteria status</th><th>Reasoning</th></tr></thead>"
+        "<thead><tr><th>Annotation</th><th>Decision</th><th>Criteria status</th><th>Reasoning</th></tr></thead>"
         f"<tbody>{''.join(rows)}</tbody>"
         "</table>"
         "</div>"
     )
 
 
-def render_llm_metadata(
+def render_coordinates_block(
     *,
     analysis: dict[str, Any],
-    study_meta: dict[str, str],
-    table_meta: dict[str, str] | None,
-    metadata_fields: list[str],
     max_coordinate_preview: int,
 ) -> str:
-    raw_values: dict[str, str] = {
-        "analysis_name": clean_text(analysis.get("analysis_name", "")).strip(),
-        "analysis_description": clean_text(analysis.get("analysis_description", "")).strip(),
-        "table_caption": clean_text((table_meta or {}).get("table_caption", "")).strip(),
-        "study_title": clean_text(study_meta.get("title", "")).strip(),
-        "study_abstract": clean_text(study_meta.get("abstract", "")).strip(),
-    }
-    fields = metadata_fields or [
-        "analysis_name",
-        "analysis_description",
-        "table_caption",
-        "study_title",
-        "study_abstract",
-    ]
-
-    items: list[str] = []
-    for field in fields:
-        value = raw_values.get(field, "")
-        if not value:
-            continue
-        if field == "study_abstract":
-            items.append(
-                "<li><strong>study_abstract</strong><details><summary>Show abstract</summary>"
-                f"<pre>{escape(value)}</pre></details></li>"
-            )
-            continue
-        items.append(f"<li><strong>{escape(field)}</strong>: {escape(value)}</li>")
-
     coord_preview = coord_text(analysis.get("coordinates", []), max_rows=max_coordinate_preview)
     spaces = ", ".join(analysis.get("coordinate_spaces", [])) if analysis.get("coordinate_spaces") else "-"
-    items.append(
-        f"<li><strong>coordinates</strong>: {int(analysis.get('coordinate_count', 0))} points, spaces={escape(spaces)}"
-        f"<details><summary>Show coordinates</summary><pre>{escape(coord_preview)}</pre></details></li>"
+    return (
+        '<details class="inner-accordion">'
+        f"<summary>Show coordinates ({int(analysis.get('coordinate_count', 0))}; spaces={escape(spaces)})</summary>"
+        f"<pre>{escape(coord_preview)}</pre>"
+        "</details>"
     )
-
-    return "<ul class=\"metadata-list\">" + "".join(items) + "</ul>"
 
 
 def render_html(
@@ -842,14 +854,21 @@ def render_html(
         + "</div>"
     )
 
-    study_cards: list[str] = []
+    study_cards_no_true: list[str] = []
+    study_cards_with_true: list[str] = []
     for pmid in sorted(analyses_by_pmid.keys(), key=lambda x: (len(x), x)):
         study_rows = list(analyses_by_pmid.get(pmid, []))
+        study_has_any_true = any(
+            bool(decisions_by_analysis.get(str(row.get("analysis_id", "")), {}).get(annotation_name, {}).get("include", False))
+            for row in study_rows
+            for annotation_name in annotation_names
+        )
         study_meta = study_meta_by_pmid.get(
             pmid,
             {
                 "pmid": pmid,
                 "title": "",
+                "last_author_et_al": "",
                 "journal": "",
                 "publication_year": "",
                 "abstract": "",
@@ -897,11 +916,8 @@ def render_html(
 
             analysis_blocks: list[str] = []
             for analysis in rows_for_table:
-                llm_meta_html = render_llm_metadata(
+                coordinates_html = render_coordinates_block(
                     analysis=analysis,
-                    study_meta=study_meta,
-                    table_meta=table_meta,
-                    metadata_fields=metadata_fields,
                     max_coordinate_preview=max_coordinate_preview,
                 )
                 annotation_rows_html = render_analysis_annotation_rows(
@@ -916,8 +932,7 @@ def render_html(
                     '<div class="analysis-card">'
                     f"<h5><code>{escape(str(analysis.get('analysis_id', '')))}</code> | {escape(str(analysis.get('analysis_name', '')))}</h5>"
                     f"{description_html}"
-                    '<details class="inner-accordion" open><summary>LLM metadata fields</summary>'
-                    f"{llm_meta_html}</details>"
+                    f"{coordinates_html}"
                     '<details class="inner-accordion" open><summary>Annotation rows (decision + criteria + reasoning)</summary>'
                     f"{annotation_rows_html}</details>"
                     "</div>"
@@ -932,15 +947,32 @@ def render_html(
             )
 
         title_text = clean_text(study_meta.get("title", "")).strip()
-        header_suffix = f" | {escape(title_text)}" if title_text else ""
-        journal_text = clean_text(study_meta.get("journal", "")).strip()
+        last_author_et_al = clean_text(study_meta.get("last_author_et_al", "")).strip()
         year_text = clean_text(study_meta.get("publication_year", "")).strip()
+        author_year_label = (
+            f"{last_author_et_al} {year_text}".strip()
+            if last_author_et_al
+            else ""
+        )
+        header_parts = []
+        if author_year_label:
+            header_parts.append(escape(author_year_label))
+        if title_text:
+            header_parts.append(escape(title_text))
+        header_suffix = f" | {' | '.join(header_parts)}" if header_parts else ""
+        journal_text = clean_text(study_meta.get("journal", "")).strip()
         journal_meta = " | ".join(x for x in [journal_text, year_text] if x)
         pmc_link = ""
         if study_meta.get("pmc_url"):
             pmc_link = (
                 f' | <a href="{escape(study_meta["pmc_url"])}" target="_blank" rel="noopener noreferrer">PMC</a>'
             )
+        byline_parts = []
+        if author_year_label:
+            byline_parts.append(author_year_label)
+        if title_text:
+            byline_parts.append(title_text)
+        byline_text = " | ".join(byline_parts)
         abstract_text = clean_text(study_meta.get("abstract", "")).strip()
         abstract_html = (
             '<details class="inner-accordion"><summary>Study abstract</summary>'
@@ -948,17 +980,20 @@ def render_html(
             if abstract_text
             else ""
         )
-        study_cards.append(
+        study_card_html = (
             '<details class="doc-card">'
             f"<summary><strong>PMID {escape(pmid)}</strong>{header_suffix} | analyses={len(study_rows)}</summary>"
             f'<p><a href="https://pubmed.ncbi.nlm.nih.gov/{escape(pmid)}/" target="_blank" rel="noopener noreferrer">PubMed</a>{pmc_link}'
-            + (f' <span class="muted">| {escape(title_text)}</span>' if title_text else "")
+            + (f' <span class="muted">| {escape(journal_meta)}</span>' if journal_meta else "")
             + "</p>"
-            + (f"<p class=\"muted\">{escape(journal_meta)}</p>" if journal_meta else "")
             + abstract_html
             + "".join(table_groups_html)
             + "</details>"
         )
+        if study_has_any_true:
+            study_cards_with_true.append(study_card_html)
+        else:
+            study_cards_no_true.append(study_card_html)
 
     config_text = str(config_path) if config_path is not None else "(not found)"
     return f"""<!doctype html>
@@ -1162,7 +1197,10 @@ def render_html(
   <div class="card">
     <h2>Study-by-Study Review</h2>
     <p class="muted">Grouped by study and source table. Within each analysis, rows are annotation pairings with decision, criteria status (met/not met), and reasoning.</p>
-    {"".join(study_cards)}
+    <h3>Studies With No True Annotations ({len(study_cards_no_true)})</h3>
+    {"".join(study_cards_no_true) if study_cards_no_true else '<p class="muted">None.</p>'}
+    <h3>All Other Studies ({len(study_cards_with_true)})</h3>
+    {"".join(study_cards_with_true) if study_cards_with_true else '<p class="muted">None.</p>'}
   </div>
 </body>
 </html>
@@ -1318,6 +1356,30 @@ def main() -> None:
     analyses, by_pmid = load_parsed_analyses(coordinate_parsing_path)
     decisions_by_analysis, seen_annotations = load_annotation_decisions(annotation_results_path)
     study_meta_by_pmid, tables_by_pmid = load_retrieval_context(project_output_dir)
+    search_meta_by_pmid = load_search_metadata(project_output_dir)
+    for pmid, search_meta in search_meta_by_pmid.items():
+        title = clean_text(search_meta.get("title", "")).strip()
+        last_author_et_al = clean_text(search_meta.get("last_author_et_al", "")).strip()
+        publication_year = clean_text(search_meta.get("publication_year", "")).strip()
+        if pmid not in study_meta_by_pmid:
+            study_meta_by_pmid[pmid] = {
+                "pmid": pmid,
+                "pmcid": "",
+                "title": title,
+                "last_author_et_al": last_author_et_al,
+                "journal": "",
+                "publication_year": publication_year,
+                "abstract": "",
+                "pmc_url": "",
+                "pubmed_url": f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
+            }
+            continue
+        if not clean_text(study_meta_by_pmid[pmid].get("title", "")).strip():
+            study_meta_by_pmid[pmid]["title"] = title
+        if not clean_text(study_meta_by_pmid[pmid].get("last_author_et_al", "")).strip():
+            study_meta_by_pmid[pmid]["last_author_et_al"] = last_author_et_al
+        if not clean_text(study_meta_by_pmid[pmid].get("publication_year", "")).strip():
+            study_meta_by_pmid[pmid]["publication_year"] = publication_year
     criteria_mapping_path = (
         args.criteria_mapping_path.expanduser().resolve()
         if args.criteria_mapping_path is not None

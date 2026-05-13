@@ -16,6 +16,8 @@ from pathlib import Path
 import re
 from typing import Any
 
+import matplotlib.pyplot as plt
+
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
@@ -33,6 +35,7 @@ MATCH_RESULTS_FILE = "reports/match_results_overall.json"
 ANNOTATION_METRICS_FILE = "reports/annotation_review_reports/annotation_metrics_by_mode.json"
 ANALYSIS_REPORT_FILE = "reports/analysis_fuzzy_matching_report.html"
 ANNOTATION_SUMMARY_FILE = "reports/annotation_review_reports/overall_submeta_summary.html"
+ANALYSIS_ASSUMPTION_STRICT_ID = "analysis_assumption_strict"
 
 ANNOTATION_AGG_SPECS = [
     {
@@ -457,6 +460,168 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> 
             writer.writerow({k: row.get(k, "") for k in fieldnames})
 
 
+def collect_analysis_assumption_strict_rows(projects_root: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    if not projects_root.exists() or not projects_root.is_dir():
+        return rows
+
+    for project_dir in sorted(projects_root.iterdir(), key=lambda p: p.name):
+        if not project_dir.is_dir():
+            continue
+        for child in sorted(project_dir.iterdir(), key=lambda p: p.name):
+            if not child.is_dir():
+                continue
+            match = ANNOTATION_ONLY_RUN_RE.fullmatch(child.name)
+            if not match:
+                continue
+            version = safe_int(match.group("version"), default=-1)
+            metrics = aggregate_annotation_for_project(child)
+            if not metrics:
+                continue
+            strict_row = metrics.get(ANALYSIS_ASSUMPTION_STRICT_ID, {})
+            if not strict_row:
+                continue
+            rows.append(
+                {
+                    "project_name": project_dir.name,
+                    "run": child.name,
+                    "version": version,
+                    "f1": float(strict_row.get("f1", 0.0)),
+                }
+            )
+
+    rows.sort(key=lambda item: (str(item["project_name"]), int(item["version"]), str(item["run"])))
+    return rows
+
+
+def select_best_version_rows(version_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    best_by_project: dict[str, dict[str, Any]] = {}
+    for row in version_rows:
+        project = str(row.get("project_name", ""))
+        if not project:
+            continue
+        current = best_by_project.get(project)
+        if current is None:
+            best_by_project[project] = row
+            continue
+        row_key = (int(row.get("version", -1)), str(row.get("run", "")))
+        cur_key = (int(current.get("version", -1)), str(current.get("run", "")))
+        if row_key > cur_key:
+            best_by_project[project] = row
+    return sorted(best_by_project.values(), key=lambda item: str(item["project_name"]))
+
+
+def write_analysis_assumption_strict_plots(
+    output_dir: Path,
+    version_rows: list[dict[str, Any]],
+) -> tuple[Path | None, Path | None]:
+    if not version_rows:
+        return None, None
+
+    best_rows = select_best_version_rows(version_rows)
+    best_path: Path | None = None
+    trend_path: Path | None = None
+
+    if best_rows:
+        best_sorted = sorted(best_rows, key=lambda item: float(item.get("f1", 0.0)), reverse=True)
+        projects = [str(row["project_name"]) for row in best_sorted]
+        vals = [float(row["f1"]) for row in best_sorted]
+        colors = plt.get_cmap("tab20").colors
+        fig_h = max(4.5, 0.42 * len(projects) + 1.8)
+        fig, ax = plt.subplots(figsize=(10.5, fig_h))
+        ys = list(range(len(projects)))
+        bar_colors = [colors[idx % len(colors)] for idx in range(len(projects))]
+        ax.barh(ys, vals, color=bar_colors, alpha=0.85, edgecolor="#111827", linewidth=0.5)
+        ax.set_yticks(ys)
+        ax.set_yticklabels(projects)
+        ax.set_xlim(0.0, 1.0)
+        ax.set_xlabel("F1")
+        ax.set_title("Analysis F1 Exhausted-Manual (Strict): Best V per Project", fontweight="bold")
+        ax.grid(axis="x", alpha=0.28)
+        for y, row in zip(ys, best_sorted):
+            ax.text(
+                min(float(row["f1"]) + 0.01, 0.985),
+                y,
+                str(row["run"]),
+                va="center",
+                ha="left",
+                fontsize=8,
+                color="#374151",
+            )
+        fig.tight_layout()
+        best_path = output_dir / "analysis_assumption_strict_best_v_plot.png"
+        fig.savefig(best_path, dpi=200, bbox_inches="tight")
+        plt.close(fig)
+
+    projects = sorted({str(row["project_name"]) for row in version_rows})
+    if projects:
+        positions = {project: idx + 1 for idx, project in enumerate(projects)}
+        fig_w = max(10, 1.45 * len(projects))
+        fig, ax = plt.subplots(figsize=(fig_w, 6))
+        cmap = plt.get_cmap("tab20")
+        project_to_color = {project: cmap(idx % cmap.N) for idx, project in enumerate(projects)}
+
+        for project in projects:
+            rows = [row for row in version_rows if str(row["project_name"]) == project]
+            rows.sort(key=lambda item: (int(item.get("version", -1)), str(item.get("run", ""))))
+            vals = [float(row["f1"]) for row in rows]
+            n_vals = len(vals)
+            center = positions[project]
+            if n_vals == 1:
+                xs = [center]
+            else:
+                span = 0.30
+                xs = [center - span + (2 * span) * (idx / (n_vals - 1)) for idx in range(n_vals)]
+
+            ax.plot(xs, vals, color=project_to_color[project], linewidth=1.5, alpha=0.85, zorder=2)
+            ax.scatter(
+                xs,
+                vals,
+                s=42,
+                color=project_to_color[project],
+                edgecolor="#111827",
+                linewidth=0.55,
+                zorder=3,
+            )
+            for x, row, y in zip(xs, rows, vals):
+                ax.text(
+                    x,
+                    y,
+                    str(row["run"]),
+                    fontsize=7,
+                    ha="center",
+                    va="bottom",
+                    color="#374151",
+                    rotation=35,
+                )
+
+        overall_mean = float(sum(float(row["f1"]) for row in version_rows) / len(version_rows))
+        ax.axhline(
+            overall_mean,
+            color="#b91c1c",
+            linestyle=":",
+            linewidth=2.1,
+            alpha=0.95,
+            label=f"Mean F1 = {overall_mean:.4f}",
+            zorder=1,
+        )
+        ax.set_xlim(0.5, len(projects) + 0.5)
+        ax.set_ylim(0.0, 1.0)
+        ax.set_xticks([positions[project] for project in projects])
+        ax.set_xticklabels(projects)
+        ax.set_ylabel("F1")
+        ax.set_xlabel("Project")
+        ax.set_title("Analysis F1 Exhausted-Manual (Strict): Across Versions by Project", fontweight="bold")
+        ax.grid(axis="y", alpha=0.28)
+        ax.legend(loc="upper right")
+        fig.tight_layout()
+        trend_path = output_dir / "analysis_assumption_strict_across_versions_plot.png"
+        fig.savefig(trend_path, dpi=200, bbox_inches="tight")
+        plt.close(fig)
+
+    return best_path, trend_path
+
+
 def build_report_html(
     *,
     generated_at_utc: str,
@@ -468,6 +633,8 @@ def build_report_html(
     annotation_overall: dict[str, dict[str, Any]],
     annotation_project_rows: list[dict[str, Any]],
     output_dir: Path,
+    analysis_assumption_strict_best_plot_path: Path | None,
+    analysis_assumption_strict_trend_plot_path: Path | None,
 ) -> str:
     missing_html = "<span class='muted'>missing</span>"
     na_html = "<span class='muted'>n/a</span>"
@@ -563,6 +730,38 @@ def build_report_html(
         for result in sorted(results, key=lambda r: r.selection.project_name)
         if result.rerun_status == "failed"
     ]
+
+    analysis_plot_sections = ""
+    if (
+        analysis_assumption_strict_best_plot_path is not None
+        and analysis_assumption_strict_best_plot_path.exists()
+    ):
+        rel = os.path.relpath(
+            analysis_assumption_strict_best_plot_path.resolve(),
+            output_dir.resolve(),
+        )
+        analysis_plot_sections += (
+            '<section>'
+            '<h2>Analysis F1 Exhausted-Manual (Strict): Best V-Version</h2>'
+            f'<img src="{escape(rel)}" alt="Best V-version Analysis F1 Exhausted-Manual Strict plot" '
+            'style="max-width: 100%; height: auto; border: 1px solid #d5dee8; border-radius: 8px;">'
+            '</section>'
+        )
+    if (
+        analysis_assumption_strict_trend_plot_path is not None
+        and analysis_assumption_strict_trend_plot_path.exists()
+    ):
+        rel = os.path.relpath(
+            analysis_assumption_strict_trend_plot_path.resolve(),
+            output_dir.resolve(),
+        )
+        analysis_plot_sections += (
+            '<section>'
+            '<h2>Analysis F1 Exhausted-Manual (Strict): Across Versions by Project</h2>'
+            f'<img src="{escape(rel)}" alt="Across-version Analysis F1 Exhausted-Manual Strict plot" '
+            'style="max-width: 100%; height: auto; border: 1px solid #d5dee8; border-radius: 8px;">'
+            '</section>'
+        )
 
     return f"""<!doctype html>
 <html lang="en">
@@ -714,6 +913,7 @@ def build_report_html(
       </table>
     </div>
   </section>
+  {analysis_plot_sections}
 
   <section>
     <h2>Skipped Projects</h2>
@@ -993,6 +1193,28 @@ def main() -> None:
         ],
     )
 
+    analysis_assumption_strict_version_rows = collect_analysis_assumption_strict_rows(projects_root)
+    write_csv(
+        output_dir / "analysis_assumption_strict_by_version.csv",
+        [
+            {
+                "project_name": row["project_name"],
+                "run": row["run"],
+                "version": int(row["version"]),
+                "f1": f"{float(row['f1']):.6f}",
+            }
+            for row in analysis_assumption_strict_version_rows
+        ],
+        ["project_name", "run", "version", "f1"],
+    )
+    (
+        analysis_assumption_strict_best_plot_path,
+        analysis_assumption_strict_trend_plot_path,
+    ) = write_analysis_assumption_strict_plots(
+        output_dir=output_dir,
+        version_rows=analysis_assumption_strict_version_rows,
+    )
+
     html = build_report_html(
         generated_at_utc=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         selections=selections,
@@ -1003,6 +1225,8 @@ def main() -> None:
         annotation_overall=annotation_overall,
         annotation_project_rows=annotation_project_rows,
         output_dir=output_dir,
+        analysis_assumption_strict_best_plot_path=analysis_assumption_strict_best_plot_path,
+        analysis_assumption_strict_trend_plot_path=analysis_assumption_strict_trend_plot_path,
     )
     html_path = output_dir / "cross_project_analysis_report.html"
     html_path.write_text(html, encoding="utf-8")
@@ -1010,6 +1234,7 @@ def main() -> None:
     print(f"Wrote {output_dir / 'project_selection.csv'}")
     print(f"Wrote {output_dir / 'parsing_metrics_by_project.csv'}")
     print(f"Wrote {output_dir / 'annotation_aggregates.csv'}")
+    print(f"Wrote {output_dir / 'analysis_assumption_strict_by_version.csv'}")
     print(f"Wrote {html_path}")
 
 
