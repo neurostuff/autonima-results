@@ -100,7 +100,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--screening-width-px", type=int, default=640)
     parser.add_argument("--parsing-width-px", type=int, default=460)
     parser.add_argument("--annotation-width-px", type=int, default=500)
-    parser.add_argument("--map-width-px", type=int, default=750)
+    parser.add_argument("--map-width-px", type=int, default=700)
     parser.add_argument("--panel-height-px", type=int, default=440)
     parser.add_argument("--legend-width-px", type=int, default=420)
     parser.add_argument("--legend-height-px", type=int, default=650)
