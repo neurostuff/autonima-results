@@ -307,6 +307,17 @@ def load_parsing_metrics(run_dir: Path) -> dict[str, Any] | None:
     manual_total = safe_int(summary.get("manual_analyses_total", 0))
     matched_count = accepted + uncertain
     matched_pct = float(matched_count / manual_total) if manual_total else 0.0
+    table_baseline = payload.get("table_only_baseline", {}) if isinstance(payload, dict) else {}
+    if not isinstance(table_baseline, dict):
+        table_baseline = {}
+    table_baseline_available = bool(table_baseline.get("available"))
+    table_baseline_manual_total = safe_int(table_baseline.get("manual_analyses_total", 0))
+    table_baseline_matched_count = safe_int(table_baseline.get("matched_count", 0))
+    table_baseline_matched_pct = (
+        float(table_baseline.get("matched_pct"))
+        if table_baseline_available and table_baseline.get("matched_pct") is not None
+        else None
+    )
     return {
         "manual_analyses_total": manual_total,
         "accepted": accepted,
@@ -314,6 +325,16 @@ def load_parsing_metrics(run_dir: Path) -> dict[str, Any] | None:
         "unmatched": unmatched,
         "matched_count": matched_count,
         "matched_pct": matched_pct,
+        "table_only_baseline_available": table_baseline_available,
+        "table_only_baseline_manual_analyses_total": table_baseline_manual_total,
+        "table_only_baseline_accepted": safe_int(table_baseline.get("accepted", 0)),
+        "table_only_baseline_uncertain": safe_int(table_baseline.get("uncertain", 0)),
+        "table_only_baseline_unmatched": safe_int(table_baseline.get("unmatched", 0)),
+        "table_only_baseline_matched_count": table_baseline_matched_count,
+        "table_only_baseline_matched_pct": table_baseline_matched_pct,
+        "table_only_baseline_table_units": safe_int(table_baseline.get("table_units", 0)),
+        "table_only_baseline_coordinate_rows": safe_int(table_baseline.get("coordinate_rows", 0)),
+        "table_only_baseline_source": str(table_baseline.get("source", "")),
         "match_results_path": str(path),
     }
 
@@ -669,12 +690,28 @@ def build_report_html(
 
     parsing_plot_rows: list[str] = []
     for row in sorted(parsing_rows, key=lambda r: float(r.get("matched_pct", 0.0)), reverse=True):
+        table_baseline_pct = row.get("table_only_baseline_matched_pct")
+        if table_baseline_pct is None:
+            table_baseline_bar = na_html
+            table_baseline_pct_text = na_html
+            table_baseline_count_text = na_html
+        else:
+            table_baseline_pct_float = float(table_baseline_pct)
+            table_baseline_bar = bar_cell(table_baseline_pct_float)
+            table_baseline_pct_text = f"{table_baseline_pct_float:.3f}"
+            table_baseline_count_text = (
+                f"{int(row.get('table_only_baseline_matched_count', 0))}/"
+                f"{int(row.get('table_only_baseline_manual_analyses_total', 0))}"
+            )
         parsing_plot_rows.append(
             "<tr>"
             f"<td>{escape(str(row.get('project_name', '')))}</td>"
             f"<td>{bar_cell(float(row.get('matched_pct', 0.0)))}</td>"
             f"<td>{float(row.get('matched_pct', 0.0)):.3f}</td>"
             f"<td>{int(row.get('matched_count', 0))}/{int(row.get('manual_analyses_total', 0))}</td>"
+            f"<td>{table_baseline_bar}</td>"
+            f"<td>{table_baseline_pct_text}</td>"
+            f"<td>{table_baseline_count_text}</td>"
             f"<td>{row.get('analysis_report_link', missing_html)}</td>"
             f"<td>{row.get('annotation_summary_link', missing_html)}</td>"
             "</tr>"
@@ -840,6 +877,7 @@ def build_report_html(
   <section>
     <h2>Parsing Performance Across Projects</h2>
     <p>Manual matched % is computed as <code>(accepted + uncertain) / manual_analyses_total</code> from <code>match_results_overall.json</code>.</p>
+    <p>Table-only baseline groups raw extracted coordinates by source table before fuzzy matching, representing performance if table/contrast parsing were skipped.</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -848,6 +886,9 @@ def build_report_html(
             <th>Matched % Bar</th>
             <th>Matched %</th>
             <th>Matched / Manual</th>
+            <th>Table-Only % Bar</th>
+            <th>Table-Only %</th>
+            <th>Table-Only / Manual</th>
             <th>Fuzzy Report</th>
             <th>Annotation Summary</th>
           </tr>
@@ -1056,6 +1097,13 @@ def main() -> None:
                 "unmatched": safe_int(parsing.get("unmatched", 0)),
                 "matched_count": matched_count,
                 "matched_pct": matched_pct,
+                "table_only_baseline_matched_pct": parsing.get("table_only_baseline_matched_pct"),
+                "table_only_baseline_matched_count": safe_int(
+                    parsing.get("table_only_baseline_matched_count", 0)
+                ),
+                "table_only_baseline_manual_analyses_total": safe_int(
+                    parsing.get("table_only_baseline_manual_analyses_total", 0)
+                ),
                 "analysis_report_link": analysis_link,
                 "annotation_summary_link": annotation_link,
             }
@@ -1069,6 +1117,38 @@ def main() -> None:
                     "unmatched": parsing_row["unmatched"],
                     "matched_count": parsing_row["matched_count"],
                     "manual_matched_pct": f"{matched_pct:.6f}",
+                    "table_only_baseline_available": int(
+                        bool(parsing.get("table_only_baseline_available", False))
+                    ),
+                    "table_only_baseline_accepted": safe_int(
+                        parsing.get("table_only_baseline_accepted", 0)
+                    ),
+                    "table_only_baseline_uncertain": safe_int(
+                        parsing.get("table_only_baseline_uncertain", 0)
+                    ),
+                    "table_only_baseline_unmatched": safe_int(
+                        parsing.get("table_only_baseline_unmatched", 0)
+                    ),
+                    "table_only_baseline_matched_count": safe_int(
+                        parsing.get("table_only_baseline_matched_count", 0)
+                    ),
+                    "table_only_baseline_manual_analyses_total": safe_int(
+                        parsing.get("table_only_baseline_manual_analyses_total", 0)
+                    ),
+                    "table_only_baseline_matched_pct": (
+                        f"{float(parsing['table_only_baseline_matched_pct']):.6f}"
+                        if parsing.get("table_only_baseline_matched_pct") is not None
+                        else ""
+                    ),
+                    "table_only_baseline_table_units": safe_int(
+                        parsing.get("table_only_baseline_table_units", 0)
+                    ),
+                    "table_only_baseline_coordinate_rows": safe_int(
+                        parsing.get("table_only_baseline_coordinate_rows", 0)
+                    ),
+                    "table_only_baseline_source": str(
+                        parsing.get("table_only_baseline_source", "")
+                    ),
                 }
             )
             parsing_display_rows.append(parsing_row)
@@ -1166,6 +1246,16 @@ def main() -> None:
             "unmatched",
             "matched_count",
             "manual_matched_pct",
+            "table_only_baseline_available",
+            "table_only_baseline_accepted",
+            "table_only_baseline_uncertain",
+            "table_only_baseline_unmatched",
+            "table_only_baseline_matched_count",
+            "table_only_baseline_manual_analyses_total",
+            "table_only_baseline_matched_pct",
+            "table_only_baseline_table_units",
+            "table_only_baseline_coordinate_rows",
+            "table_only_baseline_source",
         ],
     )
     write_csv(

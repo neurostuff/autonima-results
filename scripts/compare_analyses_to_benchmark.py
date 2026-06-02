@@ -441,6 +441,256 @@ def load_auto_parsed_data(path: Path) -> dict[str, list[dict[str, Any]]]:
 
     return auto_by_pmid
 
+
+def resolve_retrieval_pubget_dir(project_output_dir: Path) -> Path | None:
+    def is_valid_retrieval_dir(path: Path) -> bool:
+        return (path / "metadata.csv").exists() and (path / "coordinates.csv").exists()
+
+    direct = project_output_dir / "retrieval" / "pubget_data"
+    if is_valid_retrieval_dir(direct):
+        return direct
+
+    run_name = project_output_dir.name
+    project_dir = project_output_dir.parent
+    sibling_names: list[str] = []
+    annotation_removed = re.sub(r"-annotation-only(?:-.+)?$", "", run_name)
+    if annotation_removed and annotation_removed != run_name:
+        sibling_names.append(annotation_removed)
+    version_match = re.match(r"^(v\d+)", run_name)
+    if version_match:
+        sibling_names.append(version_match.group(1))
+    sibling_names.extend([run_name.replace("-gpt", ""), run_name.replace("-annotation-only-gpt", "")])
+
+    for sibling_name in sibling_names:
+        sibling = project_dir / sibling_name / "retrieval" / "pubget_data"
+        if is_valid_retrieval_dir(sibling):
+            return sibling
+
+    candidates = sorted(project_dir.glob("*/retrieval/pubget_data"))
+    valid_candidates = [path for path in candidates if is_valid_retrieval_dir(path)]
+    if len(valid_candidates) == 1:
+        return valid_candidates[0]
+    return None
+
+
+def load_table_only_auto_data_from_coordinate_parsing(
+    coordinate_parsing_results_path: Path,
+) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+    if not coordinate_parsing_results_path.exists():
+        return {}, {
+            "available": False,
+            "source": "",
+            "reason": "Missing outputs/coordinate_parsing_results.json.",
+        }
+
+    payload = load_json(coordinate_parsing_results_path)
+    studies = payload.get("studies", []) if isinstance(payload, dict) else []
+    grouped_by_pmid_table: dict[tuple[str, str], dict[str, Any]] = {}
+    for study in studies:
+        if not isinstance(study, dict):
+            continue
+        pmid = str(study.get("pmid") or "").strip()
+        if not pmid:
+            continue
+        for analysis in study.get("analyses", []) or []:
+            if not isinstance(analysis, dict):
+                continue
+            table_id = clean_text(analysis.get("table_id") or "").strip() or "unknown_table"
+            key = (pmid, table_id)
+            payload_for_table = grouped_by_pmid_table.setdefault(
+                key,
+                {
+                    "pmid": pmid,
+                    "table_id": table_id,
+                    "names": [],
+                    "points": [],
+                },
+            )
+            analysis_name = clean_text(analysis.get("name") or "").strip()
+            if analysis_name and analysis_name not in payload_for_table["names"]:
+                payload_for_table["names"].append(analysis_name)
+            payload_for_table["points"].extend(parse_points(analysis.get("points", [])))
+
+    by_pmid: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for (_pmid, table_id), payload_for_table in grouped_by_pmid_table.items():
+        points = payload_for_table.get("points", [])
+        if not points:
+            continue
+        pmid = str(payload_for_table["pmid"])
+        names = payload_for_table.get("names", [])
+        table_name = f"Table {table_id}"
+        if names:
+            table_name = f"{table_name}: " + " | ".join(str(name) for name in names[:6])
+        by_pmid[pmid].append(
+            {
+                "index": len(by_pmid[pmid]),
+                "analysis_id": f"{pmid}_table_{sanitize_id(table_id)}",
+                "name": table_name,
+                "points": points,
+                "table_id": table_id,
+                "table_label": table_id,
+                "table_caption": "",
+                "source": "table_only_coordinate_parsing_results",
+            }
+        )
+
+    for entries in by_pmid.values():
+        entries.sort(key=lambda item: str(item.get("table_id") or ""))
+        for idx, entry in enumerate(entries):
+            entry["index"] = idx
+
+    table_count = sum(len(entries) for entries in by_pmid.values())
+    coord_count = sum(len(entry.get("points", [])) for entries in by_pmid.values() for entry in entries)
+    return dict(by_pmid), {
+        "available": bool(by_pmid),
+        "source": str(coordinate_parsing_results_path),
+        "pmids_with_table_coordinates": len(by_pmid),
+        "table_units": table_count,
+        "coordinate_rows": coord_count,
+        "reason": "" if by_pmid else "No table-coordinate groups found in coordinate_parsing_results.json.",
+    }
+
+
+def load_raw_retrieval_table_only_auto_data(
+    project_output_dir: Path,
+) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+    """Load a no-analysis-parsing baseline: one automated unit per source table.
+
+    The retrieval exporters normalize coordinate extraction into
+    retrieval/pubget_data/{metadata,tables,coordinates}.csv across Pubget-style,
+    Elsevier, and ACE-backed runs. This baseline keeps every coordinate extracted
+    from a paper, but splits only by the source table ID instead of by parsed
+    analysis rows.
+    """
+    retrieval_dir = resolve_retrieval_pubget_dir(project_output_dir)
+    if retrieval_dir is None:
+        return {}, {
+            "available": False,
+            "source": "",
+            "reason": "Missing retrieval/pubget_data metadata.csv and coordinates.csv.",
+        }
+    metadata_path = retrieval_dir / "metadata.csv"
+    tables_path = retrieval_dir / "tables.csv"
+    coordinates_path = retrieval_dir / "coordinates.csv"
+
+    pmcid_to_pmid: dict[str, str] = {}
+    with metadata_path.open("r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            pmcid = normalize_pmcid(row.get("pmcid"))
+            pmid = normalize_pmid(row.get("pmid"))
+            if pmcid and pmid:
+                pmcid_to_pmid[pmcid] = pmid
+
+    table_meta: dict[tuple[str, str], dict[str, str]] = {}
+    if tables_path.exists():
+        with tables_path.open("r", encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                pmcid = normalize_pmcid(row.get("pmcid"))
+                table_id = clean_text(row.get("table_id") or "").strip()
+                if pmcid and table_id:
+                    table_meta[(pmcid, table_id)] = row
+
+    grouped: dict[tuple[str, str, str], dict[str, Any]] = {}
+    with coordinates_path.open("r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            pmcid = normalize_pmcid(row.get("pmcid"))
+            pmid = pmcid_to_pmid.get(pmcid)
+            if not pmid:
+                continue
+            table_id = clean_text(row.get("table_id") or "").strip()
+            if not table_id:
+                table_id = "unknown_table"
+            table_label = clean_text(row.get("table_label") or "").strip()
+            key = (pmid, pmcid, table_id)
+            payload = grouped.setdefault(
+                key,
+                {
+                    "pmid": pmid,
+                    "pmcid": pmcid,
+                    "table_id": table_id,
+                    "table_label": table_label,
+                    "points": [],
+                },
+            )
+            if not payload.get("table_label") and table_label:
+                payload["table_label"] = table_label
+            try:
+                payload["points"].append((float(row.get("x")), float(row.get("y")), float(row.get("z"))))
+            except Exception:
+                continue
+
+    by_pmid: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for (_pmid, pmcid, table_id), payload in grouped.items():
+        points = payload.get("points", [])
+        if not points:
+            continue
+        meta = table_meta.get((pmcid, table_id), {})
+        table_label = clean_text(payload.get("table_label") or meta.get("table_label") or "").strip()
+        caption = clean_text(meta.get("table_caption") or "").strip()
+        foot = clean_text(meta.get("table_foot") or "").strip()
+        name_parts = [part for part in [table_label, caption, foot] if part]
+        table_name = " | ".join(name_parts) if name_parts else table_id
+        by_pmid[str(payload["pmid"])].append(
+            {
+                "index": len(by_pmid[str(payload["pmid"])]),
+                "analysis_id": f"{payload['pmid']}_table_{sanitize_id(table_id)}",
+                "name": table_name,
+                "points": points,
+                "table_id": table_id,
+                "table_label": table_label,
+                "table_caption": caption,
+                "source": "table_only_raw_coordinates",
+            }
+        )
+
+    for entries in by_pmid.values():
+        entries.sort(key=lambda item: (str(item.get("table_label") or ""), str(item.get("table_id") or "")))
+        for idx, entry in enumerate(entries):
+            entry["index"] = idx
+    table_count = sum(len(entries) for entries in by_pmid.values())
+    coord_count = sum(len(entry.get("points", [])) for entries in by_pmid.values() for entry in entries)
+    return dict(by_pmid), {
+        "available": bool(by_pmid),
+        "source": str(retrieval_dir),
+        "pmids_with_table_coordinates": len(by_pmid),
+        "table_units": table_count,
+        "coordinate_rows": coord_count,
+        "reason": "" if by_pmid else "No table-coordinate groups found in coordinates.csv.",
+    }
+
+
+def load_table_only_auto_data(project_output_dir: Path) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+    raw_by_pmid, raw_info = load_raw_retrieval_table_only_auto_data(project_output_dir)
+    parsed_by_pmid, parsed_info = load_table_only_auto_data_from_coordinate_parsing(
+        project_output_dir / "outputs" / "coordinate_parsing_results.json"
+    )
+    raw_coord_count = int(raw_info.get("coordinate_rows", 0) or 0)
+    parsed_coord_count = int(parsed_info.get("coordinate_rows", 0) or 0)
+    raw_pmid_count = int(raw_info.get("pmids_with_table_coordinates", 0) or 0)
+    parsed_pmid_count = int(parsed_info.get("pmids_with_table_coordinates", 0) or 0)
+
+    if parsed_by_pmid and (parsed_coord_count > raw_coord_count or parsed_pmid_count > raw_pmid_count):
+        parsed_info["preferred_over_raw_retrieval"] = bool(raw_by_pmid)
+        parsed_info["raw_retrieval_source"] = raw_info.get("source", "")
+        parsed_info["raw_retrieval_coordinate_rows"] = raw_coord_count
+        parsed_info["raw_retrieval_pmids_with_table_coordinates"] = raw_pmid_count
+        return parsed_by_pmid, parsed_info
+    if raw_by_pmid:
+        raw_info["preferred_over_coordinate_parsing_results"] = bool(parsed_by_pmid)
+        raw_info["coordinate_parsing_results_source"] = parsed_info.get("source", "")
+        raw_info["coordinate_parsing_results_coordinate_rows"] = parsed_coord_count
+        raw_info["coordinate_parsing_results_pmids_with_table_coordinates"] = parsed_pmid_count
+        return raw_by_pmid, raw_info
+    return parsed_by_pmid, parsed_info
+
+
+def sanitize_id(value: str) -> str:
+    text = re.sub(r"[^A-Za-z0-9._-]+", "_", str(value).strip())
+    return text or "unknown"
+
 def resolve_manual_merged_studyset_path(manual_dir: Path) -> Path:
     direct_studyset = manual_dir / "nimads_studyset.json"
     if direct_studyset.exists():
@@ -1048,8 +1298,69 @@ def build_match_results_overall(
         },
     }
 
+
+def build_table_only_baseline_summary(
+    *,
+    manual_analyses_by_pmid: dict[str, list[dict[str, Any]]],
+    manual_study_names_by_pmid: dict[str, str],
+    table_auto_by_pmid: dict[str, list[dict[str, Any]]],
+    table_source_info: dict[str, Any],
+    coord_accept_override_threshold: float,
+    decimal_manual_coordinate_handling: str,
+    converted_talairach_exact_axis_tolerance: float,
+) -> dict[str, Any]:
+    if not table_source_info.get("available") or not table_auto_by_pmid:
+        return {
+            "available": False,
+            "reason": table_source_info.get("reason", "No table-level coordinate source available."),
+            "source": table_source_info.get("source", ""),
+            "manual_analyses_total": 0,
+            "accepted": 0,
+            "uncertain": 0,
+            "unmatched": 0,
+            "matched_count": 0,
+            "matched_pct": None,
+        }
+
+    table_match_result = build_match_results_overall(
+        manual_analyses_by_pmid=manual_analyses_by_pmid,
+        manual_study_names_by_pmid=manual_study_names_by_pmid,
+        auto_parsed_by_pmid=table_auto_by_pmid,
+        coord_accept_override_threshold=coord_accept_override_threshold,
+        decimal_manual_coordinate_handling=decimal_manual_coordinate_handling,
+        converted_talairach_exact_axis_tolerance=converted_talairach_exact_axis_tolerance,
+    )
+    summary = table_match_result.get("summary", {})
+    manual_total = int(summary.get("manual_analyses_total", 0))
+    accepted = int(summary.get("accepted", 0))
+    uncertain = int(summary.get("uncertain", 0))
+    unmatched = int(summary.get("unmatched", 0))
+    matched_count = accepted + uncertain
+    matched_pct = (float(matched_count) / manual_total) if manual_total else None
+    return {
+        "available": True,
+        "source": table_source_info.get("source", ""),
+        "pmids_with_table_coordinates": int(table_source_info.get("pmids_with_table_coordinates", 0)),
+        "table_units": int(table_source_info.get("table_units", 0)),
+        "coordinate_rows": int(table_source_info.get("coordinate_rows", 0)),
+        "manual_analyses_total": manual_total,
+        "accepted": accepted,
+        "uncertain": uncertain,
+        "unmatched": unmatched,
+        "matched_count": matched_count,
+        "matched_pct": matched_pct,
+        "overlap_pmids": int(summary.get("overlap_pmids", 0)),
+        "manual_pmids_total": int(summary.get("manual_pmids_total", 0)),
+        "auto_pmids_total": int(summary.get("auto_pmids_total", 0)),
+        "excluded_manual_only_pmids": int(summary.get("excluded_manual_only_pmids", 0)),
+        "auto_only_pmids": int(summary.get("auto_only_pmids", 0)),
+        "decimal_manual_coordinate_handling": decimal_manual_coordinate_handling,
+        "policy": "Raw extracted coordinates grouped only by source table; fuzzy matched to manual analyses.",
+    }
+
 def render_matching_summary_html(match_result: dict[str, Any]) -> str:
     summary = match_result.get("summary", {})
+    table_baseline = match_result.get("table_only_baseline", {})
     unavailable_manual_decimal_pmids = int(summary.get("unavailable_manual_decimal_pmids", 0))
     overlap_pmids = int(summary.get("overlap_pmids", 0))
     manual_total = int(summary.get("manual_analyses_total", 0))
@@ -1064,6 +1375,20 @@ def render_matching_summary_html(match_result: dict[str, Any]) -> str:
     all_correct_pmids = int(summary.get("all_correct_pmids", 0))
     mixed_pmids = int(summary.get("mixed_pmids", 0))
     all_incorrect_pmids = int(summary.get("all_incorrect_pmids", 0))
+    if isinstance(table_baseline, dict) and table_baseline.get("available"):
+        table_baseline_html = (
+            "<p><strong>Table-only baseline matched %:</strong> "
+            f"{float(table_baseline.get('matched_pct', 0.0)):.3f} "
+            f"({int(table_baseline.get('matched_count', 0))}/"
+            f"{int(table_baseline.get('manual_analyses_total', 0))}) | "
+            f"<strong>Table units:</strong> {int(table_baseline.get('table_units', 0))} | "
+            f"<strong>Coordinate rows:</strong> {int(table_baseline.get('coordinate_rows', 0))}</p>"
+        )
+    else:
+        table_reason = ""
+        if isinstance(table_baseline, dict) and table_baseline.get("reason"):
+            table_reason = f" ({escape(str(table_baseline.get('reason', '')))})"
+        table_baseline_html = f"<p><strong>Table-only baseline:</strong> unavailable{table_reason}</p>"
 
     return f"""<!doctype html>
 <html lang="en">
@@ -1096,6 +1421,7 @@ def render_matching_summary_html(match_result: dict[str, Any]) -> str:
     <p><strong>Unavailable Manual Studies (decimal coordinates):</strong> {unavailable_manual_decimal_pmids}</p>
     <p><strong>Excluded manual-only PMIDs:</strong> {excluded_manual_only_pmids} |
        <strong>Auto-only PMIDs:</strong> {auto_only_pmids}</p>
+    {table_baseline_html}
   </header>
 
   <section>
@@ -5203,10 +5529,20 @@ def run_fuzzy_matching_stage(
     auto_by_pmid = load_auto_parsed_data(coordinate_parsing_results)
     manual_by_pmid, manual_study_names_by_pmid = load_manual_analyses_overall(manual_dir)
     pubget_by_pmid = build_pubget_index(project_output_dir)
+    table_auto_by_pmid, table_source_info = load_table_only_auto_data(project_output_dir)
     match_result = build_match_results_overall(
         manual_analyses_by_pmid=manual_by_pmid,
         manual_study_names_by_pmid=manual_study_names_by_pmid,
         auto_parsed_by_pmid=auto_by_pmid,
+        coord_accept_override_threshold=float(args.coord_accept_override_threshold),
+        decimal_manual_coordinate_handling=decimal_manual_coordinate_handling,
+        converted_talairach_exact_axis_tolerance=float(args.converted_talairach_exact_axis_tolerance),
+    )
+    match_result["table_only_baseline"] = build_table_only_baseline_summary(
+        manual_analyses_by_pmid=manual_by_pmid,
+        manual_study_names_by_pmid=manual_study_names_by_pmid,
+        table_auto_by_pmid=table_auto_by_pmid,
+        table_source_info=table_source_info,
         coord_accept_override_threshold=float(args.coord_accept_override_threshold),
         decimal_manual_coordinate_handling=decimal_manual_coordinate_handling,
         converted_talairach_exact_axis_tolerance=float(args.converted_talairach_exact_axis_tolerance),
@@ -5228,6 +5564,19 @@ def run_fuzzy_matching_stage(
         f"pmids_all_manual_accepted={summary['pmids_all_manual_accepted']} "
         f"pmids_with_pubget={summary.get('pmids_with_pubget', 0)}"
     )
+    table_baseline = match_result.get("table_only_baseline", {})
+    if table_baseline.get("available"):
+        print(
+            "table_only_baseline: "
+            f"matched_pct={float(table_baseline.get('matched_pct', 0.0)):.3f} "
+            f"accepted={int(table_baseline.get('accepted', 0))} "
+            f"uncertain={int(table_baseline.get('uncertain', 0))} "
+            f"unmatched={int(table_baseline.get('unmatched', 0))} "
+            f"table_units={int(table_baseline.get('table_units', 0))} "
+            f"source={table_baseline.get('source', '')}"
+        )
+    else:
+        print(f"table_only_baseline: unavailable ({table_baseline.get('reason', '')})")
     print(f"Wrote matching artifacts to {match_output_dir}")
     return match_result
 

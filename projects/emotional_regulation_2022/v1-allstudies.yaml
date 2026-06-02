@@ -1,0 +1,92 @@
+# Generic project config template for Autonima
+# Copy this file and replace all <...> placeholders.
+
+search:
+  database: "pubmed"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/pubmed_search_pmids.txt"
+  max_results: 5000
+  email: "delavega@utexas.edu"
+
+retrieval:
+  load_excluded: false
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: '/home/zorro/repos/autonima-results/articles/elsevier_output'
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: '/home/zorro/repos/autonima-results/articles/ace_outputs'
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: '/home/zorro/repos/autonima-results/articles/ace_outputs/processed'
+
+screening:
+  abstract:
+    model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+    objective: "Identify task-based fMRI studies of emotion regulation."
+    inclusion_criteria:
+      - Task-based fMRI study.
+      - Human participants performing an emotion regulation or reappraisal task, broadly defined. 
+      - Includes at least one group of healthy adults.
+      - Reports task-related brain activation results.
+    exclusion_criteria:
+      - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+      - Doesn't include at least one healthy adult sample.
+    confidence_reporting: true
+
+  fulltext:
+    model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Identify task-based fMRI studies of emotion regulation."
+    inclusion_criteria:
+      - Task-based fMRI study.
+      - fMRI Task- reappraisal of positive and negative emotions as emotion regulation strategy using up- and down-regulation of emotions as the regulation goal 
+      - Target sample- at least one group of healthy adults with no prior report of neurological, medical, or psychiatric disorders
+      - Analysis- Reports at least one within-task contrast related to emotion regulation (e.g., “reappraise > look”, “down-regulate > maintain”, “up-regulate > maintain”) for the target sample.
+      - Whole-brain evidence- The target analysis must be a group-level, whole-brain (voxelwise) task-evoked statistical map 
+      - It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.
+    exclusion_criteria:
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.
+      - Studies that report only region-of-interest (ROI) analyses or only report small-volume corrected results without an accompanying whole-brain map.
+      - Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a whole-brain task activation map.
+      - Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) 
+
+parsing:
+  parse_coordinates: false 
+  coordinate_model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+
+annotation:
+  enabled: false
+  model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  prompt_type: "multi_analysis"
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - "<ANNOTATION_INCLUSION_CRITERION_1>"
+    - "<ANNOTATION_INCLUSION_CRITERION_2>"
+  exclusion_criteria:
+    - "<ANNOTATION_EXCLUSION_CRITERION_1>"
+    - "<ANNOTATION_EXCLUSION_CRITERION_2>"
+  annotations:
+    - name: "<ANNOTATION_SLUG_1>"
+      description: "<SHORT_DESCRIPTION_1>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_1>"
+    - name: "<ANNOTATION_SLUG_2>"
+      description: "<SHORT_DESCRIPTION_2>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_2>"
+
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true
