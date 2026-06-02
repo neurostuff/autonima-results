@@ -25,7 +25,7 @@ PROJECTS_ROOT = REPO_ROOT / "projects"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "reports" / "cross_project_analysis"
 COMPARE_SCRIPT = SCRIPT_DIR / "compare_analyses_to_benchmark.py"
 
-ANNOTATION_ONLY_RUN_RE = re.compile(r"^v(?P<version>\d+)-annotation-only$")
+ANNOTATION_ONLY_RUN_RE = re.compile(r"^v(?P<version>\d+)-annotation-only(?P<suffix>.*)$")
 REQUIRED_RUN_FILES = (
     "outputs/annotation_results.json",
     "outputs/coordinate_parsing_results.json",
@@ -99,6 +99,7 @@ ANNOTATION_AGG_SPECS = [
 class CandidateRun:
     run_dir: Path
     version: int
+    is_strict: bool
     missing_required_files: list[str]
 
 
@@ -195,12 +196,14 @@ def discover_project_selections(projects_root: Path) -> list[ProjectSelection]:
             if not match:
                 continue
             version = safe_int(match.group("version"), default=-1)
+            is_strict = str(match.group("suffix") or "") == ""
             matched_names.append(child.name)
             missing_files = [name for name in REQUIRED_RUN_FILES if not (child / name).exists()]
             matched_candidates.append(
                 CandidateRun(
                     run_dir=child,
                     version=version,
+                    is_strict=is_strict,
                     missing_required_files=missing_files,
                 )
             )
@@ -210,7 +213,7 @@ def discover_project_selections(projects_root: Path) -> list[ProjectSelection]:
                 ProjectSelection(
                     project_name=project_dir.name,
                     status="skipped",
-                    reason="No directories matched strict pattern ^vN-annotation-only$",
+                    reason="No directories matched annotation-only pattern ^vN-annotation-only.*$",
                     matched_candidate_names=[],
                 )
             )
@@ -232,12 +235,19 @@ def discover_project_selections(projects_root: Path) -> list[ProjectSelection]:
             )
             continue
 
-        selected = max(valid_candidates, key=lambda c: c.version)
+        strict_candidates = [c for c in valid_candidates if c.is_strict]
+        candidate_pool = strict_candidates or valid_candidates
+        selected = max(candidate_pool, key=lambda c: (c.version, int(c.is_strict)))
+        reason = (
+            "Selected highest strict vN-annotation-only candidate"
+            if selected.is_strict
+            else "Selected highest annotation-only fallback candidate"
+        )
         selections.append(
             ProjectSelection(
                 project_name=project_dir.name,
                 status="selected",
-                reason="Selected highest strict vN-annotation-only candidate",
+                reason=reason,
                 selected_run_dir=selected.run_dir,
                 selected_version=selected.version,
                 matched_candidate_names=matched_names,
@@ -262,8 +272,11 @@ def run_compare_for_project(
         log_path.write_text("Skipped: no selected run directory.\n", encoding="utf-8")
         return "skipped", None, log_path
 
+    python_executable = REPO_ROOT / ".pixi" / "envs" / "default" / "bin" / "python"
+    if not python_executable.exists():
+        python_executable = Path(sys.executable)
     cmd = [
-        sys.executable,
+        str(python_executable),
         str(compare_script),
         "--project-output-dir",
         str(selection.selected_run_dir),
@@ -486,30 +499,23 @@ def collect_analysis_assumption_strict_rows(projects_root: Path) -> list[dict[st
     if not projects_root.exists() or not projects_root.is_dir():
         return rows
 
-    for project_dir in sorted(projects_root.iterdir(), key=lambda p: p.name):
-        if not project_dir.is_dir():
+    for selection in discover_project_selections(projects_root):
+        if selection.selected_run_dir is None:
             continue
-        for child in sorted(project_dir.iterdir(), key=lambda p: p.name):
-            if not child.is_dir():
-                continue
-            match = ANNOTATION_ONLY_RUN_RE.fullmatch(child.name)
-            if not match:
-                continue
-            version = safe_int(match.group("version"), default=-1)
-            metrics = aggregate_annotation_for_project(child)
-            if not metrics:
-                continue
-            strict_row = metrics.get(ANALYSIS_ASSUMPTION_STRICT_ID, {})
-            if not strict_row:
-                continue
-            rows.append(
-                {
-                    "project_name": project_dir.name,
-                    "run": child.name,
-                    "version": version,
-                    "f1": float(strict_row.get("f1", 0.0)),
-                }
-            )
+        metrics = aggregate_annotation_for_project(selection.selected_run_dir)
+        if not metrics:
+            continue
+        strict_row = metrics.get(ANALYSIS_ASSUMPTION_STRICT_ID, {})
+        if not strict_row:
+            continue
+        rows.append(
+            {
+                "project_name": selection.project_name,
+                "run": selection.selected_run_dir.name,
+                "version": selection.selected_version or -1,
+                "f1": float(strict_row.get("f1", 0.0)),
+            }
+        )
 
     rows.sort(key=lambda item: (str(item["project_name"]), int(item["version"]), str(item["run"])))
     return rows

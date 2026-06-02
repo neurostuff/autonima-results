@@ -574,8 +574,11 @@ def run_compare_meta(
     output_dir: Path,
     log_path: Path,
 ) -> tuple[str, int]:
+    python_executable = REPO_ROOT / ".pixi" / "envs" / "default" / "bin" / "python"
+    if not python_executable.exists():
+        python_executable = Path(sys.executable)
     cmd = [
-        sys.executable,
+        str(python_executable),
         str(compare_script),
         "--project-dir",
         str(project_dir),

@@ -62,8 +62,10 @@ PROJECT_ORDER = [
     "vbm_of_substance_use",
 ]
 
+LEGEND_EXCLUDED_PROJECTS = {"executive_function"}
+
 LEGEND_PROJECT_LABELS = {
-    "cue_reactivity": "Cue",
+    "cue_reactivity": "Cue Reactivity",
     "decision_making": "Decision-Making",
     "dementia": "Dementia",
     "executive_function": "Executive",
@@ -75,6 +77,7 @@ LEGEND_PROJECT_LABELS = {
 
 AXIS_PROJECT_LABELS = {
     **LEGEND_PROJECT_LABELS,
+    "cue_reactivity": "Cue",
     "decision_making": "DM",
     "problem_solving": "PS",
 }
@@ -97,10 +100,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--screening-width-px", type=int, default=640)
     parser.add_argument("--parsing-width-px", type=int, default=460)
     parser.add_argument("--annotation-width-px", type=int, default=500)
-    parser.add_argument("--map-width-px", type=int, default=720)
+    parser.add_argument("--map-width-px", type=int, default=612)
     parser.add_argument("--panel-height-px", type=int, default=440)
-    parser.add_argument("--legend-width-px", type=int, default=2400)
-    parser.add_argument("--legend-height-px", type=int, default=105)
+    parser.add_argument("--legend-width-px", type=int, default=420)
+    parser.add_argument("--legend-height-px", type=int, default=650)
     return parser.parse_args()
 
 
@@ -229,6 +232,8 @@ def plot_parsing(parsing_rows: list[dict[str, Any]], args: argparse.Namespace, o
     for row in parsing_rows:
         project = str(row.get("project_name", "")).strip()
         pct = float_or_none(row.get("manual_matched_pct"))
+        if project == "dementia":
+            continue
         if project and pct is not None:
             rows.append({"project": project, "pct": pct})
     values = [row["pct"] for row in rows]
@@ -236,7 +241,8 @@ def plot_parsing(parsing_rows: list[dict[str, Any]], args: argparse.Namespace, o
     table_values = [
         float(row["table_only_baseline_matched_pct"])
         for row in parsing_rows
-        if float_or_none(row.get("table_only_baseline_matched_pct")) is not None
+        if str(row.get("project_name", "")).strip() != "dementia"
+        and float_or_none(row.get("table_only_baseline_matched_pct")) is not None
     ]
     table_mean = sum(table_values) / len(table_values) if table_values else None
 
@@ -267,6 +273,7 @@ def plot_parsing(parsing_rows: list[dict[str, Any]], args: argparse.Namespace, o
 def plot_analysis_f1(version_rows: list[dict[str, Any]], args: argparse.Namespace, output_dir: Path) -> list[Path]:
     rows = select_highest_version_rows(version_rows)
     rows = [row for row in rows if float_or_none(row.get("f1")) is not None]
+    rows = [row for row in rows if str(row.get("project_name", "")).strip() != "dementia"]
     rows.sort(key=lambda row: float(row["f1"]))
     fig, _ = new_panel(args, args.annotation_width_px)
     ax = fig.add_axes([0.24, 0.20, 0.68, 0.67])
@@ -308,7 +315,7 @@ def plot_meta_pearson(
     )
 
     fig, _ = new_panel(args, args.map_width_px)
-    ax = fig.add_axes([0.10, 0.28, 0.88, 0.58])
+    ax = fig.add_axes([0.15, 0.28, 0.82, 0.58])
     xs = list(range(1, len(projects) + 1))
     for x, project in zip(xs, projects):
         pairs = project_to_pairs[project]
@@ -353,8 +360,9 @@ def plot_meta_pearson(
 
 
 def make_project_legend(projects: list[str], args: argparse.Namespace, output_dir: Path) -> list[Path]:
-    ordered = [project for project in PROJECT_ORDER if project in projects]
-    ordered.extend(sorted(project for project in projects if project not in ordered))
+    legend_projects = [project for project in projects if project not in LEGEND_EXCLUDED_PROJECTS]
+    ordered = [project for project in PROJECT_ORDER if project in legend_projects]
+    ordered.extend(sorted(project for project in legend_projects if project not in ordered))
     fig = plt.figure(
         figsize=(args.legend_width_px / args.layout_dpi, args.legend_height_px / args.layout_dpi),
         dpi=args.layout_dpi,
@@ -363,19 +371,27 @@ def make_project_legend(projects: list[str], args: argparse.Namespace, output_di
     ax = fig.add_axes([0.02, 0.08, 0.96, 0.84])
     ax.axis("off")
     handles: list[Any] = [
-            Line2D([0], [0], marker="o", linestyle="", markersize=6.0, markerfacecolor=project_color(project), markeredgecolor=POSTER_TEXT, label=legend_project_label(project))
+        Line2D(
+            [0],
+            [0],
+            marker="o",
+            linestyle="",
+            markersize=7.0,
+            markerfacecolor=project_color(project),
+            markeredgecolor=POSTER_TEXT,
+            label=legend_project_label(project),
+        )
         for project in ordered
     ]
     handles.extend(
         [
-            Line2D([0], [0], color=MEAN_COLOR, linewidth=2.7, label="Mean"),
-            Line2D([0], [0], color=TABLE_ONLY_COLOR, linestyle="-.", linewidth=2.4, label="Table-only"),
+            Line2D([0], [0], color=MEAN_COLOR, linewidth=2.8, label="Mean"),
             Line2D(
                 [0],
                 [0],
                 marker="o",
                 linestyle="",
-                markersize=6.0,
+                markersize=7.0,
                 markerfacecolor=POSTER_PANEL_BG,
                 markeredgecolor=POSTER_TEXT,
                 label="Baseline (All Studies)",
@@ -384,11 +400,11 @@ def make_project_legend(projects: list[str], args: argparse.Namespace, output_di
     )
     ax.legend(
         handles=handles,
-        loc="center",
-        ncol=min(len(handles), 11),
-        columnspacing=0.55,
-        handletextpad=0.25,
-        fontsize=8.1,
+        loc="center left",
+        ncol=1,
+        labelspacing=0.95,
+        handletextpad=0.55,
+        fontsize=9.2,
         frameon=False,
     )
     return save_exact(fig, output_dir, "00_shared_legend", args.dpi)
@@ -401,19 +417,16 @@ def make_preview(output_dir: Path) -> Path | None:
         return None
     panel_names = ["01_screening.png", "02_parsing.png", "03_analysis_f1.png", "04_map_similarity.png"]
     panels = [Image.open(output_dir / name).convert("RGB") for name in panel_names]
-    legend = Image.open(output_dir / "00_shared_legend.png").convert("RGB")
     gutter = 28
     margin = 18
     width = sum(panel.width for panel in panels) + gutter * 3 + margin * 2
-    height = max(panel.height for panel in panels) + legend.height + margin * 3
+    height = max(panel.height for panel in panels) + margin * 2
     canvas = Image.new("RGB", (width, height), POSTER_BG)
     x = margin
     y = margin
     for panel in panels:
         canvas.paste(panel, (x, y))
         x += panel.width + gutter
-    legend_x = (width - legend.width) // 2
-    canvas.paste(legend, (legend_x, margin * 2 + max(panel.height for panel in panels)))
     path = output_dir / "poster_bottom_row_preview.png"
     canvas.save(path)
     return path
