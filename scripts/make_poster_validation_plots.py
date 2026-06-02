@@ -91,7 +91,8 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_OUTPUT_DIR / "poster_validation_plots",
     )
-    parser.add_argument("--dpi", type=int, default=200)
+    parser.add_argument("--dpi", type=int, default=400)
+    parser.add_argument("--layout-dpi", type=int, default=200)
     parser.add_argument("--panel-width-px", type=int, default=580)
     parser.add_argument("--screening-width-px", type=int, default=640)
     parser.add_argument("--parsing-width-px", type=int, default=460)
@@ -156,8 +157,8 @@ def save_exact(fig: plt.Figure, output_dir: Path, stem: str, dpi: int) -> list[P
 def new_panel(args: argparse.Namespace, width_px: int | None = None) -> tuple[plt.Figure, Any]:
     width_px = width_px or args.panel_width_px
     fig = plt.figure(
-        figsize=(width_px / args.dpi, args.panel_height_px / args.dpi),
-        dpi=args.dpi,
+        figsize=(width_px / args.layout_dpi, args.panel_height_px / args.layout_dpi),
+        dpi=args.layout_dpi,
         facecolor=POSTER_BG,
     )
     return fig, None
@@ -347,7 +348,7 @@ def plot_meta_pearson(
     ax.set_ylabel("Pearson r", fontsize=8.0, labelpad=1)
     ax.tick_params(axis="y", labelsize=7.0)
     style_axes(ax)
-    fig.text(0.5, 0.91, "Final Map Similarity", ha="center", va="center", fontsize=13, fontweight="bold", color=POSTER_TEXT)
+    fig.text(0.5, 0.91, "Meta-Analytic Reproducibility", ha="center", va="center", fontsize=13, fontweight="bold", color=POSTER_TEXT)
     return save_exact(fig, output_dir, "04_map_similarity", args.dpi)
 
 
@@ -355,8 +356,8 @@ def make_project_legend(projects: list[str], args: argparse.Namespace, output_di
     ordered = [project for project in PROJECT_ORDER if project in projects]
     ordered.extend(sorted(project for project in projects if project not in ordered))
     fig = plt.figure(
-        figsize=(args.legend_width_px / args.dpi, args.legend_height_px / args.dpi),
-        dpi=args.dpi,
+        figsize=(args.legend_width_px / args.layout_dpi, args.legend_height_px / args.layout_dpi),
+        dpi=args.layout_dpi,
         facecolor=POSTER_BG,
     )
     ax = fig.add_axes([0.02, 0.08, 0.96, 0.84])
