@@ -100,7 +100,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--screening-width-px", type=int, default=640)
     parser.add_argument("--parsing-width-px", type=int, default=460)
     parser.add_argument("--annotation-width-px", type=int, default=500)
-    parser.add_argument("--map-width-px", type=int, default=612)
+    parser.add_argument("--map-width-px", type=int, default=750)
     parser.add_argument("--panel-height-px", type=int, default=440)
     parser.add_argument("--legend-width-px", type=int, default=420)
     parser.add_argument("--legend-height-px", type=int, default=650)
@@ -355,7 +355,7 @@ def plot_meta_pearson(
     ax.set_ylabel("Pearson r", fontsize=8.0, labelpad=1)
     ax.tick_params(axis="y", labelsize=7.0)
     style_axes(ax)
-    fig.text(0.5, 0.91, "Meta-Analytic Reproducibility", ha="center", va="center", fontsize=13, fontweight="bold", color=POSTER_TEXT)
+    fig.text(0.5, 0.91, "Meta-Analytic Similarity", ha="center", va="center", fontsize=13, fontweight="bold", color=POSTER_TEXT)
     return save_exact(fig, output_dir, "04_map_similarity", args.dpi)
 
 
@@ -394,7 +394,7 @@ def make_project_legend(projects: list[str], args: argparse.Namespace, output_di
                 markersize=7.0,
                 markerfacecolor=POSTER_PANEL_BG,
                 markeredgecolor=POSTER_TEXT,
-                label="Baseline (All Studies)",
+                label="Baseline (All Analyses)",
             ),
         ]
     )
