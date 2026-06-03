@@ -103,7 +103,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--map-width-px", type=int, default=670)
     parser.add_argument("--panel-height-px", type=int, default=440)
     parser.add_argument("--legend-width-px", type=int, default=420)
-    parser.add_argument("--legend-height-px", type=int, default=650)
+    parser.add_argument("--legend-height-px", type=int, default=700)
     return parser.parse_args()
 
 
@@ -176,11 +176,53 @@ def style_axes(ax: Any, *, xgrid: bool = False, ygrid: bool = True) -> None:
     ax.tick_params(length=3, width=0.8)
 
 
-def plot_screening(stage_rows: list[dict[str, Any]], args: argparse.Namespace, output_dir: Path) -> list[Path]:
+def load_ft_coords_precision_by_run(
+    screening_dir: Path,
+    selected_stage_rows: list[dict[str, Any]],
+) -> dict[tuple[str, str], float]:
+    project_runs = {
+        (str(row.get("project_name", "")).strip(), str(row.get("run_name", "")).strip())
+        for row in selected_stage_rows
+        if str(row.get("project_name", "")).strip() and str(row.get("run_name", "")).strip()
+    }
+    values: dict[tuple[str, str], float] = {}
+    for project, run_name in sorted(project_runs):
+        metrics_path = screening_dir / "evaluations" / project / run_name / "performance_metrics.csv"
+        if not metrics_path.exists():
+            continue
+        for row in read_csv_rows(metrics_path):
+            if (
+                str(row.get("stage", "")) == "fulltext_with_coords"
+                and str(row.get("metric", "")) == "precision"
+            ):
+                value = float_or_none(row.get("value"))
+                if value is not None:
+                    values[(project, run_name)] = value
+                break
+    return values
+
+
+def plot_screening(
+    stage_rows: list[dict[str, Any]],
+    dementia_allstudies_stage_rows: list[dict[str, Any]],
+    args: argparse.Namespace,
+    output_dir: Path,
+    *,
+    output_stem: str = "01_screening",
+    ft_coords_precision_by_run: dict[tuple[str, str], float] | None = None,
+) -> list[Path]:
     rows = [
         row
         for row in stage_rows
         if str(row.get("metric", "")) in {"recall", "precision"}
+        and str(row.get("stage", "")) in {"search", "abstract", "fulltext"}
+        and float_or_none(row.get("value")) is not None
+    ]
+    allstudies_rows = [
+        row
+        for row in dementia_allstudies_stage_rows
+        if str(row.get("project_name", "")) == "dementia"
+        and str(row.get("metric", "")) in {"recall", "precision"}
         and str(row.get("stage", "")) in {"search", "abstract", "fulltext"}
         and float_or_none(row.get("value")) is not None
     ]
@@ -192,39 +234,88 @@ def plot_screening(stage_rows: list[dict[str, Any]], args: argparse.Namespace, o
 
     projects = sorted({str(row["project_name"]) for row in rows})
     for ax, metric, label in zip(axes, ["recall", "precision"], ["Recall", "Precision"]):
-        stage_to_values: dict[str, list[float]] = {stage: [] for stage in stage_order}
+        show_ft_coords = metric == "precision" and ft_coords_precision_by_run is not None
+        axis_stage_order = list(stage_order)
+        axis_stage_labels = list(stage_labels)
+        axis_stage_x = dict(stage_x)
+        if show_ft_coords:
+            axis_stage_order.append("fulltext_with_coords")
+            axis_stage_labels = ["Search", "Abs.", "Full", "FT-Coords"]
+            axis_stage_x["fulltext_with_coords"] = len(axis_stage_order) - 1
+        stage_to_values: dict[str, list[float]] = {stage: [] for stage in axis_stage_order}
         for project in projects:
             vals = []
             xs = []
-            for row in sorted(
+            project_metric_rows = sorted(
                 [r for r in rows if r["project_name"] == project and r["metric"] == metric],
                 key=lambda r: stage_x[str(r["stage"])],
-            ):
+            )
+            for row in project_metric_rows:
                 xs.append(stage_x[str(row["stage"])])
                 value = float(row["value"])
                 vals.append(value)
                 stage_to_values[str(row["stage"])].append(value)
+            if show_ft_coords and project_metric_rows:
+                run_name = str(project_metric_rows[0].get("run_name", "")).strip()
+                ft_value = ft_coords_precision_by_run.get((project, run_name))
+                if ft_value is not None:
+                    xs.append(axis_stage_x["fulltext_with_coords"])
+                    vals.append(ft_value)
+                    stage_to_values["fulltext_with_coords"].append(ft_value)
             if vals:
                 ax.plot(xs, vals, marker="o", markersize=3.7, linewidth=1.35, color=project_color(project), alpha=0.9)
         mean_vals = []
         mean_xs = []
-        for stage in stage_order:
+        for stage in axis_stage_order:
             vals = stage_to_values[stage]
             if vals:
-                mean_xs.append(stage_x[stage])
+                mean_xs.append(axis_stage_x[stage])
                 mean_vals.append(sum(vals) / len(vals))
         if mean_vals:
             ax.plot(mean_xs, mean_vals, color=MEAN_COLOR, marker="D", markersize=3.8, linewidth=2.0, zorder=5)
+        dementia_allstudies_vals = []
+        dementia_allstudies_xs = []
+        for row in sorted(
+            [r for r in allstudies_rows if r["metric"] == metric],
+            key=lambda r: stage_x[str(r["stage"])],
+        ):
+            dementia_allstudies_xs.append(stage_x[str(row["stage"])])
+            dementia_allstudies_vals.append(float(row["value"]))
+        if show_ft_coords:
+            dementia_allstudies_run = next(
+                (str(row.get("run_name", "")).strip() for row in allstudies_rows if str(row.get("run_name", "")).strip()),
+                "",
+            )
+            dementia_allstudies_ft_value = ft_coords_precision_by_run.get(("dementia", dementia_allstudies_run))
+            if dementia_allstudies_ft_value is not None:
+                dementia_allstudies_xs.append(axis_stage_x["fulltext_with_coords"])
+                dementia_allstudies_vals.append(dementia_allstudies_ft_value)
+        if dementia_allstudies_vals:
+            ax.plot(
+                dementia_allstudies_xs,
+                dementia_allstudies_vals,
+                marker="o",
+                markersize=3.7,
+                linewidth=1.55,
+                linestyle="--",
+                color=project_color("dementia"),
+                alpha=0.98,
+                zorder=6,
+            )
         ax.set_title(label, pad=3, fontsize=9.5, fontweight="bold")
         ax.set_ylim(0.0, 1.02)
-        ax.set_xticks(range(3))
-        ax.set_xticklabels(stage_labels, fontsize=6.9)
+        ax.set_xlim(-0.12, len(axis_stage_order) - 0.88)
+        ax.set_xticks(range(len(axis_stage_order)))
+        if show_ft_coords:
+            ax.set_xticklabels(axis_stage_labels, fontsize=5.5, rotation=18, ha="right")
+        else:
+            ax.set_xticklabels(axis_stage_labels, fontsize=6.9)
         ax.tick_params(axis="y", labelsize=7.0)
         style_axes(ax)
     axes[0].set_ylabel("Score", fontsize=8.0, labelpad=1)
     axes[1].set_yticklabels([])
     fig.text(0.5, 0.91, "Screening", ha="center", va="center", fontsize=13, fontweight="bold", color=POSTER_TEXT)
-    return save_exact(fig, output_dir, "01_screening", args.dpi)
+    return save_exact(fig, output_dir, output_stem, args.dpi)
 
 
 def plot_parsing(parsing_rows: list[dict[str, Any]], args: argparse.Namespace, output_dir: Path) -> list[Path]:
@@ -389,6 +480,14 @@ def make_project_legend(projects: list[str], args: argparse.Namespace, output_di
             Line2D(
                 [0],
                 [0],
+                color=project_color("dementia"),
+                linestyle="--",
+                linewidth=2.4,
+                label="Dementia All Studies",
+            ),
+            Line2D(
+                [0],
+                [0],
                 marker="o",
                 linestyle="",
                 markersize=7.0,
@@ -443,6 +542,13 @@ def main() -> int:
     output_dir = args.output_dir.expanduser().resolve()
 
     screening_rows = read_csv_rows(screening_dir / "screening_metrics_top_v_stage_progression.csv")
+    dementia_allstudies_screening_rows = read_csv_rows(
+        screening_dir / "screening_metrics_top_v_allstudies_stage_progression.csv"
+    )
+    ft_coords_precision_by_run = load_ft_coords_precision_by_run(
+        screening_dir,
+        screening_rows + dementia_allstudies_screening_rows,
+    )
     parsing_rows = read_csv_rows(analysis_dir / "parsing_metrics_by_project.csv")
     analysis_rows = read_csv_rows(analysis_dir / "analysis_assumption_strict_by_version.csv")
     manual_run_rows = load_manual_run_rows(manual_meta_dir)
@@ -457,7 +563,17 @@ def main() -> int:
 
     outputs: list[Path] = []
     outputs.extend(make_project_legend(sorted(project_set), args, output_dir))
-    outputs.extend(plot_screening(screening_rows, args, output_dir))
+    outputs.extend(plot_screening(screening_rows, dementia_allstudies_screening_rows, args, output_dir))
+    outputs.extend(
+        plot_screening(
+            screening_rows,
+            dementia_allstudies_screening_rows,
+            args,
+            output_dir,
+            output_stem="01_screening_with_ft_coords",
+            ft_coords_precision_by_run=ft_coords_precision_by_run,
+        )
+    )
     outputs.extend(plot_parsing(parsing_rows, args, output_dir))
     outputs.extend(plot_analysis_f1(analysis_rows, args, output_dir))
     outputs.extend(plot_meta_pearson(manual_run_rows, manual_diagonal_rows, args, output_dir))

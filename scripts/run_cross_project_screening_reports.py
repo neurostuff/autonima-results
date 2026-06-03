@@ -37,6 +37,9 @@ SCREENING_ARTIFACTS = (
     "outputs/fulltext_screening_results.json",
     "outputs/final_results.json",
 )
+CANONICAL_SCREENING_RUN_OVERRIDES = {
+    "social": "v3-search-all_pmids-multi_analysis-ft",
+}
 
 
 @dataclass
@@ -319,10 +322,18 @@ def extract_run_metrics(performance_metrics_path: Path) -> tuple[str | None, flo
 
 
 def select_top_v_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    override_by_project = {
+        project: row
+        for row in rows
+        for project, run_name in CANONICAL_SCREENING_RUN_OVERRIDES.items()
+        if str(row.get("project_name", "")) == project and str(row.get("run_name", "")) == run_name
+    }
     best_by_project: dict[str, dict[str, Any]] = {}
     for row in rows:
         project = str(row.get("project_name", ""))
         if not project:
+            continue
+        if project in override_by_project:
             continue
         run_name = str(row.get("run_name", ""))
         if not is_canonical_version_run(run_name):
@@ -342,6 +353,7 @@ def select_top_v_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         if row_key > current_key:
             best_by_project[project] = row
 
+    best_by_project.update(override_by_project)
     return sorted(best_by_project.values(), key=lambda r: str(r.get("project_name", "")))
 
 
