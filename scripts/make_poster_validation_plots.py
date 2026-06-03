@@ -23,7 +23,9 @@ from make_cross_project_publication_plots import (
     int_or_none,
     load_manual_diagonal_rows,
     load_manual_run_rows,
+    read_matrix_row_values,
     read_csv_rows,
+    sanitize_name,
     select_highest_version_rows,
 )
 
@@ -202,6 +204,71 @@ def load_ft_coords_precision_by_run(
     return values
 
 
+def plot_stage_series(
+    ax: Any,
+    xs: list[int],
+    vals: list[float],
+    *,
+    dash_search_connection: bool = False,
+    search_x: int = 0,
+    marker: str = "o",
+    markersize: float = 3.7,
+    linewidth: float = 1.35,
+    linestyle: str = "-",
+    color: str,
+    alpha: float = 1.0,
+    zorder: int | None = None,
+) -> None:
+    if not dash_search_connection:
+        ax.plot(
+            xs,
+            vals,
+            marker=marker,
+            markersize=markersize,
+            linewidth=linewidth,
+            linestyle=linestyle,
+            color=color,
+            alpha=alpha,
+            zorder=zorder,
+        )
+        return
+
+    by_x = {x: val for x, val in zip(xs, vals)}
+    if search_x in by_x and search_x + 1 in by_x:
+        ax.plot(
+            [search_x, search_x + 1],
+            [by_x[search_x], by_x[search_x + 1]],
+            linewidth=linewidth,
+            linestyle="--",
+            color=color,
+            alpha=alpha,
+            zorder=zorder,
+        )
+    tail_pairs = [(x, val) for x, val in zip(xs, vals) if x >= search_x + 1]
+    if len(tail_pairs) > 1:
+        tail_xs, tail_vals = zip(*tail_pairs)
+        ax.plot(
+            list(tail_xs),
+            list(tail_vals),
+            marker="",
+            linewidth=linewidth,
+            linestyle=linestyle,
+            color=color,
+            alpha=alpha,
+            zorder=zorder,
+        )
+    ax.plot(
+        xs,
+        vals,
+        marker=marker,
+        markersize=markersize,
+        linestyle="",
+        color=color,
+        alpha=alpha,
+        zorder=zorder,
+    )
+
+
 def plot_screening(
     stage_rows: list[dict[str, Any]],
     dementia_allstudies_stage_rows: list[dict[str, Any]],
@@ -227,7 +294,7 @@ def plot_screening(
         and float_or_none(row.get("value")) is not None
     ]
     fig, _ = new_panel(args, args.screening_width_px)
-    axes = [fig.add_axes([0.12, 0.22, 0.36, 0.57]), fig.add_axes([0.58, 0.22, 0.36, 0.57])]
+    axes = [fig.add_axes([0.12, 0.22, 0.31, 0.57]), fig.add_axes([0.54, 0.22, 0.42, 0.57])]
     stage_order = ["search", "abstract", "fulltext"]
     stage_labels = ["Search", "Abstract", "Full"]
     stage_x = {stage: idx for idx, stage in enumerate(stage_order)}
@@ -263,7 +330,17 @@ def plot_screening(
                     vals.append(ft_value)
                     stage_to_values["fulltext_with_coords"].append(ft_value)
             if vals:
-                ax.plot(xs, vals, marker="o", markersize=3.7, linewidth=1.35, color=project_color(project), alpha=0.9)
+                plot_stage_series(
+                    ax,
+                    xs,
+                    vals,
+                    dash_search_connection=metric == "recall",
+                    marker="o",
+                    markersize=3.7,
+                    linewidth=1.35,
+                    color=project_color(project),
+                    alpha=0.9,
+                )
         mean_vals = []
         mean_xs = []
         for stage in axis_stage_order:
@@ -272,7 +349,17 @@ def plot_screening(
                 mean_xs.append(axis_stage_x[stage])
                 mean_vals.append(sum(vals) / len(vals))
         if mean_vals:
-            ax.plot(mean_xs, mean_vals, color=MEAN_COLOR, marker="D", markersize=3.8, linewidth=2.0, zorder=5)
+            plot_stage_series(
+                ax,
+                mean_xs,
+                mean_vals,
+                dash_search_connection=metric == "recall",
+                marker="D",
+                markersize=3.8,
+                linewidth=2.0,
+                color=MEAN_COLOR,
+                zorder=5,
+            )
         dementia_allstudies_vals = []
         dementia_allstudies_xs = []
         for row in sorted(
@@ -291,13 +378,15 @@ def plot_screening(
                 dementia_allstudies_xs.append(axis_stage_x["fulltext_with_coords"])
                 dementia_allstudies_vals.append(dementia_allstudies_ft_value)
         if dementia_allstudies_vals:
-            ax.plot(
+            plot_stage_series(
+                ax,
                 dementia_allstudies_xs,
                 dementia_allstudies_vals,
-                marker="o",
-                markersize=3.7,
+                dash_search_connection=metric == "recall",
+                marker="D",
+                markersize=4.0,
                 linewidth=1.55,
-                linestyle="--",
+                linestyle="-",
                 color=project_color("dementia"),
                 alpha=0.98,
                 zorder=6,
@@ -447,7 +536,110 @@ def plot_meta_pearson(
     ax.tick_params(axis="y", labelsize=7.0)
     style_axes(ax)
     fig.text(0.5, 0.91, "Meta-Analytic Similarity", ha="center", va="center", fontsize=13, fontweight="bold", color=POSTER_TEXT)
-    return save_exact(fig, output_dir, "04_map_similarity", args.dpi)
+    return save_exact(fig, output_dir, "04_map_similarity_annotation_only_fair", args.dpi)
+
+
+def load_top_v_allstudies_map_rows(
+    screening_top_v_rows: list[dict[str, Any]],
+    projects_root: Path,
+) -> list[dict[str, Any]]:
+    selected_runs = {
+        str(row.get("project_name", "")).strip(): str(row.get("run_name", "")).strip()
+        for row in screening_top_v_rows
+        if str(row.get("project_name", "")).strip() and str(row.get("run_name", "")).strip()
+    }
+    rows: list[dict[str, Any]] = []
+    for project, run_name in sorted(selected_runs.items()):
+        tables_dir = projects_root / project / "reports" / "manual_vs_auto_meta" / "tables"
+        diagonal_path = tables_dir / "diagonal_metrics.csv"
+        matrix_path = tables_dir / f"pearson_matrix_{sanitize_name(run_name)}.csv"
+        if not diagonal_path.exists() or not matrix_path.exists():
+            continue
+        all_studies_by_manual = read_matrix_row_values(matrix_path, "all_studies")
+        if not all_studies_by_manual:
+            continue
+        for row in read_csv_rows(diagonal_path):
+            if str(row.get("run", "")).strip() != run_name:
+                continue
+            manual_name = str(row.get("manual_name", "")).strip()
+            value = float_or_none(row.get("pearson_r"))
+            baseline = all_studies_by_manual.get(manual_name)
+            if manual_name and value is not None and baseline is not None:
+                rows.append(
+                    {
+                        "project_name": project,
+                        "run": run_name,
+                        "manual_name": manual_name,
+                        "auto_name": str(row.get("auto_name", "")).strip(),
+                        "pearson_r": value,
+                        "all_studies_pearson_for_manual": baseline,
+                    }
+                )
+    return rows
+
+
+def plot_top_v_vs_allstudies_map_similarity(
+    rows: list[dict[str, Any]],
+    args: argparse.Namespace,
+    output_dir: Path,
+) -> list[Path]:
+    project_to_pairs: dict[str, list[dict[str, float]]] = {}
+    for row in rows:
+        project = str(row.get("project_name", ""))
+        value = float_or_none(row.get("pearson_r"))
+        baseline = float_or_none(row.get("all_studies_pearson_for_manual"))
+        if project and value is not None and baseline is not None:
+            project_to_pairs.setdefault(project, []).append({"value": value, "baseline": baseline})
+    projects = [project for project, pairs in project_to_pairs.items() if pairs]
+    projects.sort(
+        key=lambda project: sum(pair["value"] for pair in project_to_pairs[project])
+        / len(project_to_pairs[project]),
+        reverse=True,
+    )
+
+    fig, _ = new_panel(args, args.map_width_px)
+    ax = fig.add_axes([0.15, 0.28, 0.82, 0.58])
+    xs = list(range(1, len(projects) + 1))
+    for x, project in zip(xs, projects):
+        pairs = project_to_pairs[project]
+        pairs.sort(key=lambda pair: (pair["value"], pair["baseline"]))
+        offsets = [0.0] if len(pairs) <= 1 else [-0.28 + 0.56 * (i / (len(pairs) - 1)) for i in range(len(pairs))]
+        for offset, pair in zip(offsets, pairs):
+            point_x = x + offset
+            ax.plot(
+                [point_x, point_x],
+                [pair["baseline"], pair["value"]],
+                color=PAIR_LINE_COLOR,
+                linewidth=1.7,
+                zorder=1,
+            )
+            ax.scatter(
+                [point_x],
+                [pair["baseline"]],
+                s=38,
+                facecolor=POSTER_PANEL_BG,
+                edgecolor=POSTER_TEXT,
+                linewidth=1.15,
+                zorder=3,
+            )
+            ax.scatter(
+                [point_x],
+                [pair["value"]],
+                s=28,
+                color=project_color(project),
+                edgecolor=POSTER_TEXT,
+                linewidth=0.65,
+                zorder=4,
+            )
+    ax.set_xlim(0.35, len(projects) + 0.65)
+    ax.set_ylim(0.0, 1.02)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([axis_project_label(project) for project in projects], rotation=25, ha="right", fontsize=6.4)
+    ax.set_ylabel("Pearson r", fontsize=8.0, labelpad=1)
+    ax.tick_params(axis="y", labelsize=7.0)
+    style_axes(ax)
+    fig.text(0.5, 0.91, "Top-V Map Similarity", ha="center", va="center", fontsize=13, fontweight="bold", color=POSTER_TEXT)
+    return save_exact(fig, output_dir, "04_map_similarity_top_v_vs_all_studies", args.dpi)
 
 
 def make_project_legend(projects: list[str], args: argparse.Namespace, output_dir: Path) -> list[Path]:
@@ -480,9 +672,11 @@ def make_project_legend(projects: list[str], args: argparse.Namespace, output_di
             Line2D(
                 [0],
                 [0],
-                color=project_color("dementia"),
-                linestyle="--",
-                linewidth=2.4,
+                marker="D",
+                linestyle="",
+                markersize=7.0,
+                markerfacecolor=project_color("dementia"),
+                markeredgecolor=POSTER_TEXT,
                 label="Dementia All Studies",
             ),
             Line2D(
@@ -514,7 +708,12 @@ def make_preview(output_dir: Path) -> Path | None:
         from PIL import Image
     except Exception:
         return None
-    panel_names = ["01_screening.png", "02_parsing.png", "03_analysis_f1.png", "04_map_similarity.png"]
+    panel_names = [
+        "01_screening.png",
+        "02_parsing.png",
+        "03_analysis_f1.png",
+        "04_map_similarity_annotation_only_fair.png",
+    ]
     panels = [Image.open(output_dir / name).convert("RGB") for name in panel_names]
     gutter = 28
     margin = 18
@@ -553,6 +752,7 @@ def main() -> int:
     analysis_rows = read_csv_rows(analysis_dir / "analysis_assumption_strict_by_version.csv")
     manual_run_rows = load_manual_run_rows(manual_meta_dir)
     manual_diagonal_rows = load_manual_diagonal_rows(manual_meta_dir, projects_root, manual_run_rows)
+    top_v_allstudies_map_rows = load_top_v_allstudies_map_rows(screening_rows, projects_root)
 
     project_set: set[str] = set()
     for group in (screening_rows, parsing_rows, analysis_rows, manual_run_rows, manual_diagonal_rows):
@@ -577,6 +777,7 @@ def main() -> int:
     outputs.extend(plot_parsing(parsing_rows, args, output_dir))
     outputs.extend(plot_analysis_f1(analysis_rows, args, output_dir))
     outputs.extend(plot_meta_pearson(manual_run_rows, manual_diagonal_rows, args, output_dir))
+    outputs.extend(plot_top_v_vs_allstudies_map_similarity(top_v_allstudies_map_rows, args, output_dir))
     preview = make_preview(output_dir)
     if preview is not None:
         outputs.append(preview)
