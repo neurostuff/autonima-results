@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parser Failure Contingency Report</title>
+  <style>
+    :root { --bg: #f7f6f2; --panel: #ffffff; --ink: #1d2730; --line: #d8dde3; }
+    body { margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header, section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .caution { background: #fff7e6; border: 1px solid #e8d8ad; border-radius: 8px; padding: 0.6rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--line); padding: 0.4rem; text-align: left; }
+    th { background: #edf2f5; }
+    tr.random-ish { color: #8a97a3; }
+    tr.systematic { font-weight: 600; background: #fff0f0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Parser Failure Contingency Report</h1>
+    <p class="caution">This is a simple rate-ratio heuristic (&gt;= 3.0x baseline rate with &gt;= 3 occurrences), not a statistical significance test. With small per-paper N, apparent concentration can be noise -- treat &#x27;systematic&#x27; flags as a prioritization signal for manual follow-up, not a proven causal claim.</p>
+    <p><strong>Reviewed units:</strong> 185 |
+    <strong>Parser-evaluable:</strong> 59 |
+    <strong>Not yet reviewed:</strong> 14 |
+    <strong>Systematic-rate multiple:</strong> 3.0 |
+    <strong>Systematic min count:</strong> 3</p>
+  </header>
+
+  <section>
+    <h2>Corrupted Pair Rate</h2>
+    <p class="resource-note">A unit counts as producing a corrupted contrast&lt;-&gt;map training pair if it carries any of: over_split, under_split_merge, misattribution, spurious_unit. Partial coordinate error and missed unit are excluded by design -- a partially wrong peak list or an absent analysis doesn&#x27;t corrupt an *existing* pair the way a wrong unit boundary or wrong coordinate attachment does.</p>
+    <p><strong>Overall:</strong> 32/59
+    = 0.542</p>
+    <h3>By project</h3>
+    <table><thead><tr><th>Project</th><th>Corrupted/Total</th><th>Rate</th></tr></thead>
+    <tbody><tr><td>cue_reactivity</td><td>10/20</td><td>0.500</td></tr><tr><td>problem_solving</td><td>2/6</td><td>0.333</td></tr><tr><td>social</td><td>16/29</td><td>0.552</td></tr><tr><td>vbm_of_substance_use</td><td>4/4</td><td>1.000</td></tr></tbody></table>
+    <h3>By trigger level</h3>
+    <table><thead><tr><th>Trigger variable</th><th>Level</th><th>Corrupted/Total</th><th>Rate</th></tr></thead>
+    <tbody><tr><td>crowding</td><td>1-2</td><td>1/1</td><td>1.000</td></tr><tr><td>crowding</td><td>11+</td><td>10/22</td><td>0.455</td></tr><tr><td>crowding</td><td>3-5</td><td>12/18</td><td>0.667</td></tr><tr><td>crowding</td><td>6-10</td><td>9/18</td><td>0.500</td></tr><tr><td>footnote_carried_context</td><td>false</td><td>32/59</td><td>0.542</td></tr><tr><td>multi_header</td><td>false</td><td>32/59</td><td>0.542</td></tr><tr><td>spans_multiple_tables</td><td>false</td><td>32/59</td><td>0.542</td></tr></tbody></table>
+  </section>
+
+  <section>
+    <h2>Contingency Table</h2>
+    <p class="resource-note">Rows classified "roughly uniform/random-ish" are shown grayed out.</p>
+    <table>
+      <thead><tr><th>Failure mode</th><th>Trigger variable</th><th>Trigger level</th>
+      <th>Num/Den</th><th>Rate</th><th>Overall mode rate</th><th>Verdict</th></tr></thead>
+      <tbody><tr class="random-ish"><td>over_split</td><td>multi_header</td><td>false</td><td>7/59</td><td>0.119</td><td>0.119</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>over_split</td><td>spans_multiple_tables</td><td>false</td><td>7/59</td><td>0.119</td><td>0.119</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>over_split</td><td>footnote_carried_context</td><td>false</td><td>7/59</td><td>0.119</td><td>0.119</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>over_split</td><td>crowding</td><td>1-2</td><td>0/1</td><td>0.000</td><td>0.119</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>over_split</td><td>crowding</td><td>11+</td><td>0/22</td><td>0.000</td><td>0.119</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>over_split</td><td>crowding</td><td>3-5</td><td>5/18</td><td>0.278</td><td>0.119</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>over_split</td><td>crowding</td><td>6-10</td><td>2/18</td><td>0.111</td><td>0.119</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>under_split_merge</td><td>multi_header</td><td>false</td><td>25/59</td><td>0.424</td><td>0.424</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>under_split_merge</td><td>spans_multiple_tables</td><td>false</td><td>25/59</td><td>0.424</td><td>0.424</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>under_split_merge</td><td>footnote_carried_context</td><td>false</td><td>25/59</td><td>0.424</td><td>0.424</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>under_split_merge</td><td>crowding</td><td>1-2</td><td>1/1</td><td>1.000</td><td>0.424</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>under_split_merge</td><td>crowding</td><td>11+</td><td>10/22</td><td>0.455</td><td>0.424</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>under_split_merge</td><td>crowding</td><td>3-5</td><td>7/18</td><td>0.389</td><td>0.424</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>under_split_merge</td><td>crowding</td><td>6-10</td><td>7/18</td><td>0.389</td><td>0.424</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>misattribution</td><td>multi_header</td><td>false</td><td>0/59</td><td>0.000</td><td>0.000</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>misattribution</td><td>spans_multiple_tables</td><td>false</td><td>0/59</td><td>0.000</td><td>0.000</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>misattribution</td><td>footnote_carried_context</td><td>false</td><td>0/59</td><td>0.000</td><td>0.000</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>misattribution</td><td>crowding</td><td>1-2</td><td>0/1</td><td>0.000</td><td>0.000</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>misattribution</td><td>crowding</td><td>11+</td><td>0/22</td><td>0.000</td><td>0.000</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>misattribution</td><td>crowding</td><td>3-5</td><td>0/18</td><td>0.000</td><td>0.000</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>misattribution</td><td>crowding</td><td>6-10</td><td>0/18</td><td>0.000</td><td>0.000</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>partial_coord_error</td><td>multi_header</td><td>false</td><td>18/59</td><td>0.305</td><td>0.305</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>partial_coord_error</td><td>spans_multiple_tables</td><td>false</td><td>18/59</td><td>0.305</td><td>0.305</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>partial_coord_error</td><td>footnote_carried_context</td><td>false</td><td>18/59</td><td>0.305</td><td>0.305</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>partial_coord_error</td><td>crowding</td><td>1-2</td><td>0/1</td><td>0.000</td><td>0.305</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>partial_coord_error</td><td>crowding</td><td>11+</td><td>4/22</td><td>0.182</td><td>0.305</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>partial_coord_error</td><td>crowding</td><td>3-5</td><td>4/18</td><td>0.222</td><td>0.305</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>partial_coord_error</td><td>crowding</td><td>6-10</td><td>10/18</td><td>0.556</td><td>0.305</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>missed_unit</td><td>multi_header</td><td>false</td><td>56/59</td><td>0.949</td><td>0.949</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>missed_unit</td><td>spans_multiple_tables</td><td>false</td><td>56/59</td><td>0.949</td><td>0.949</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>missed_unit</td><td>footnote_carried_context</td><td>false</td><td>56/59</td><td>0.949</td><td>0.949</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>missed_unit</td><td>crowding</td><td>1-2</td><td>1/1</td><td>1.000</td><td>0.949</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>missed_unit</td><td>crowding</td><td>11+</td><td>20/22</td><td>0.909</td><td>0.949</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>missed_unit</td><td>crowding</td><td>3-5</td><td>17/18</td><td>0.944</td><td>0.949</td><td>roughly uniform/random-ish</td></tr><tr class="random-ish"><td>missed_unit</td><td>crowding</td><td>6-10</td><td>18/18</td><td>1.000</td><td>0.949</td><td>roughly uniform/random-ish</td></tr></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Ranked Fix List (systematic only)</h2>
+    <p class="resource-note">Only &#x27;concentrated/systematic&#x27; cells are listed here. Cells classified as &#x27;roughly uniform/random-ish&#x27; are intentionally omitted -- see contingency.csv for the full table, and the plan&#x27;s guidance to fix only systematic modes.</p>
+    <table>
+      <thead><tr><th>Rank</th><th>Failure mode</th><th>Trigger variable</th><th>Trigger level</th>
+      <th>Count</th><th>Rate</th><th>Severity weight</th><th>Score</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+  
+</body>
+</html>

@@ -30,9 +30,10 @@ except Exception:  # pragma: no cover
     linear_sum_assignment = None
 
 try:
-    from nimare.utils import mni2tal
+    from nimare.utils import mni2tal, tal2mni
 except Exception:  # pragma: no cover
     mni2tal = None
+    tal2mni = None
 
 OVERALL_RESULT_NAME = "overall"
 
@@ -45,6 +46,18 @@ NAME_WEIGHT = 0.30
 COORD_WEIGHT = 0.70
 
 LOW_NAME_SCORE_HIGHLIGHT_THRESHOLD = UNCERTAIN_THRESHOLD
+
+DEFAULT_COORD_ACCEPT_OVERRIDE_THRESHOLD = 0.80
+
+STRONG_COORD_ACCEPT_OVERRIDE_THRESHOLD = 0.90
+
+HIGH_COVERAGE_MIN_COORDS = 3
+
+HIGH_COVERAGE_DISTANCE_MM = 8.0
+
+HIGH_COVERAGE_MATCH_FRACTION = 0.90
+
+HIGH_COVERAGE_MAX_MEDIAN_DISTANCE_MM = 6.0
 
 HUMAN_REVIEW_EXTRACTION_REASONS = [
     ("multiple_analyses_merged_into_one", "Multiple analyses merged into one"),
@@ -418,6 +431,20 @@ def convert_coords_mni_to_talairach(
     converted = np.array(mni2tal(arr), dtype=float)
     return [(float(x), float(y), float(z)) for x, y, z in converted.tolist()]
 
+def convert_coords_talairach_to_mni(
+    coords: list[tuple[float, float, float]],
+) -> list[tuple[float, float, float]]:
+    if not coords:
+        return []
+    if tal2mni is None:
+        raise ImportError(
+            "decimal manual coordinate handling mode 'match_best_space' requires NiMARE. "
+            "Install nimare to enable tal2mni conversion."
+        )
+    arr = np.array(coords, dtype=float)
+    converted = np.array(tal2mni(arr), dtype=float)
+    return [(float(x), float(y), float(z)) for x, y, z in converted.tolist()]
+
 def load_auto_parsed_data(path: Path) -> dict[str, list[dict[str, Any]]]:
     payload = load_json(path)
     studies = payload.get("studies", [])
@@ -778,6 +805,8 @@ def distance_to_similarity(distance: float) -> float:
         return 0.9 - ((distance - 2.0) * (0.3 / 2.0))
     if distance <= 8.0:
         return 0.6 - ((distance - 4.0) * (0.4 / 4.0))
+    if distance <= 12.0:
+        return 0.2 - ((distance - 8.0) * (0.2 / 4.0))
     return 0.0
 
 def assign_pairs(score_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -797,6 +826,38 @@ def assign_pairs(score_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     out_cols: list[int] = []
 
     for i, j, _score in pairs:
+        if i in used_rows or j in used_cols:
+            continue
+        used_rows.add(i)
+        used_cols.add(j)
+        out_rows.append(i)
+        out_cols.append(j)
+        if len(used_rows) == min(n_rows, n_cols):
+            break
+
+    return np.array(out_rows, dtype=int), np.array(out_cols, dtype=int)
+
+def assign_distance_pairs(distance_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    if distance_matrix.size == 0:
+        return np.array([], dtype=int), np.array([], dtype=int)
+
+    if linear_sum_assignment is not None:
+        return linear_sum_assignment(distance_matrix)
+
+    n_rows, n_cols = distance_matrix.shape
+    pairs = [
+        (i, j, float(distance_matrix[i, j]))
+        for i in range(n_rows)
+        for j in range(n_cols)
+    ]
+    pairs.sort(key=lambda item: item[2])
+
+    used_rows: set[int] = set()
+    used_cols: set[int] = set()
+    out_rows: list[int] = []
+    out_cols: list[int] = []
+
+    for i, j, _distance in pairs:
         if i in used_rows or j in used_cols:
             continue
         used_rows.add(i)
@@ -867,16 +928,34 @@ def compute_coord_score(
     dists = np.sqrt(np.sum((m[:, None, :] - a[None, :, :]) ** 2, axis=2))
     sim_matrix = np.vectorize(distance_to_similarity)(dists)
 
-    row_ind, col_ind = assign_pairs(sim_matrix)
+    # Minimize physical distance before scoring. This remains order-independent
+    # and preserves information for pairs beyond the similarity curve's cutoff.
+    row_ind, col_ind = assign_distance_pairs(dists)
     if row_ind.size == 0:
         reasons.append("low_total_score")
         return 0.0, {"exact_coord_set": False, "coverage_penalty": 0.0, "match_quality": 0.0}, reasons
 
     paired_sims = [float(sim_matrix[r, c]) for r, c in zip(row_ind, col_ind)]
+    paired_distances = [float(dists[r, c]) for r, c in zip(row_ind, col_ind)]
     match_quality = float(np.mean(paired_sims)) if paired_sims else 0.0
     coverage_penalty = min(len(manual_coords), len(auto_coords)) / max(len(manual_coords), len(auto_coords))
+    equal_coord_count = len(manual_coords) == len(auto_coords)
+    median_paired_distance = float(np.median(paired_distances))
+    matched_within_8mm = sum(
+        distance <= HIGH_COVERAGE_DISTANCE_MM for distance in paired_distances
+    )
+    matched_fraction_within_8mm = matched_within_8mm / max(
+        len(manual_coords),
+        len(auto_coords),
+    )
+    high_coverage_coord_set = (
+        equal_coord_count
+        and len(manual_coords) >= HIGH_COVERAGE_MIN_COORDS
+        and matched_fraction_within_8mm >= HIGH_COVERAGE_MATCH_FRACTION
+        and median_paired_distance <= HIGH_COVERAGE_MAX_MEDIAN_DISTANCE_MM
+    )
     strict_exact_coord_set = (
-        len(manual_coords) == len(auto_coords)
+        equal_coord_count
         and rounded_coords(manual_coords) == rounded_coords(auto_coords)
     )
     tolerance_exact_coord_set = (
@@ -899,6 +978,8 @@ def compute_coord_score(
         reasons.append("exact_coord_set_axis_tolerance")
     if len(manual_coords) != len(auto_coords):
         reasons.append("coord_count_mismatch")
+    if high_coverage_coord_set:
+        reasons.append("high_coverage_coord_set")
     if score >= 0.75:
         reasons.append("high_coord_match")
 
@@ -911,6 +992,12 @@ def compute_coord_score(
         ),
         "coverage_penalty": coverage_penalty,
         "match_quality": match_quality,
+        "equal_coord_count": equal_coord_count,
+        "mean_paired_distance_mm": float(np.mean(paired_distances)),
+        "median_paired_distance_mm": median_paired_distance,
+        "max_paired_distance_mm": float(np.max(paired_distances)),
+        "matched_fraction_within_8mm": matched_fraction_within_8mm,
+        "high_coverage_coord_set": high_coverage_coord_set,
     }, reasons
 
 def status_from_score(score: float) -> str:
@@ -932,17 +1019,75 @@ def score_pair(
     converted_talairach_exact_axis_tolerance: float,
 ) -> dict[str, Any]:
     name_score = compute_name_score(manual_analysis["name"], auto_analysis["name"])
-    exact_match_axis_tolerance: float | None = None
-    if bool(manual_analysis.get("converted_from_decimal_mni_to_talairach", False)):
-        exact_match_axis_tolerance = float(converted_talairach_exact_axis_tolerance)
-    coord_score, coord_meta, reasons = compute_coord_score(
-        manual_analysis["points"],
-        auto_analysis["points"],
-        exact_match_axis_tolerance=exact_match_axis_tolerance,
+    coordinate_variants = manual_analysis.get("coordinate_variants")
+    if not coordinate_variants:
+        coordinate_variants = [
+            {
+                "name": (
+                    "manual_mni_to_talairach"
+                    if bool(manual_analysis.get("converted_from_decimal_mni_to_talairach", False))
+                    else "manual_original"
+                ),
+                "points": manual_analysis["points"],
+                "use_exact_axis_tolerance": bool(
+                    manual_analysis.get("converted_from_decimal_mni_to_talairach", False)
+                ),
+            }
+        ]
+
+    variant_scores: list[dict[str, Any]] = []
+    for variant in coordinate_variants:
+        exact_match_axis_tolerance = (
+            float(converted_talairach_exact_axis_tolerance)
+            if bool(variant.get("use_exact_axis_tolerance", False))
+            else None
+        )
+        coord_score, coord_meta, reasons = compute_coord_score(
+            variant.get("points", []),
+            auto_analysis["points"],
+            exact_match_axis_tolerance=exact_match_axis_tolerance,
+        )
+        variant_scores.append(
+            {
+                "name": str(variant.get("name", "manual_original")),
+                "points": variant.get("points", []),
+                "coord_score": coord_score,
+                "coord_meta": coord_meta,
+                "reasons": reasons,
+            }
+        )
+
+    selected_variant = max(
+        variant_scores,
+        key=lambda item: (
+            float(item["coord_score"]),
+            bool(item["coord_meta"].get("high_coverage_coord_set", False)),
+        ),
     )
+    coord_score = float(selected_variant["coord_score"])
+    coord_meta = selected_variant["coord_meta"]
+    reasons = list(selected_variant["reasons"])
+    coordinate_variant = str(selected_variant["name"])
+    if coordinate_variant != "manual_original":
+        reasons.append(f"coordinate_variant_{coordinate_variant}")
     combined = (COORD_WEIGHT * coord_score) + (NAME_WEIGHT * name_score)
     exact_coord_set = bool(coord_meta.get("exact_coord_set", False))
-    coord_override_accepted = coord_score >= coord_accept_override_threshold
+    equal_coord_count = bool(coord_meta.get("equal_coord_count", False))
+    high_coverage_coord_set = bool(coord_meta.get("high_coverage_coord_set", False))
+    lowered_threshold_coord_override = (
+        equal_coord_count
+        and len(manual_analysis["points"]) >= HIGH_COVERAGE_MIN_COORDS
+        and coord_score >= coord_accept_override_threshold
+    )
+    strong_coord_override_threshold = max(
+        coord_accept_override_threshold,
+        STRONG_COORD_ACCEPT_OVERRIDE_THRESHOLD,
+    )
+    coord_override_accepted = (
+        coord_score >= strong_coord_override_threshold
+        or lowered_threshold_coord_override
+        or high_coverage_coord_set
+    )
     low_name_with_exact_coords = coord_override_accepted and name_score < LOW_NAME_SCORE_HIGHLIGHT_THRESHOLD
 
     if coord_score < 0.4 and name_score >= 0.75:
@@ -964,6 +1109,19 @@ def score_pair(
         "strict_exact_coord_set": bool(coord_meta.get("strict_exact_coord_set", False)),
         "tolerance_exact_coord_set": bool(coord_meta.get("tolerance_exact_coord_set", False)),
         "exact_match_axis_tolerance": coord_meta.get("exact_match_axis_tolerance"),
+        "equal_coord_count": equal_coord_count,
+        "mean_paired_distance_mm": coord_meta.get("mean_paired_distance_mm"),
+        "median_paired_distance_mm": coord_meta.get("median_paired_distance_mm"),
+        "max_paired_distance_mm": coord_meta.get("max_paired_distance_mm"),
+        "matched_fraction_within_8mm": coord_meta.get("matched_fraction_within_8mm"),
+        "high_coverage_coord_set": high_coverage_coord_set,
+        "lowered_threshold_coord_override": lowered_threshold_coord_override,
+        "strong_coord_override_threshold": strong_coord_override_threshold,
+        "coordinate_variant": coordinate_variant,
+        "coordinate_variants_considered": [
+            str(variant["name"]) for variant in variant_scores
+        ],
+        "manual_coordinates_used": selected_variant["points"],
         "coord_override_accepted": coord_override_accepted,
         "low_name_with_exact_coords": low_name_with_exact_coords,
         "reason_codes": sorted(set(reasons)),
@@ -997,6 +1155,14 @@ def match_with_hungarian(
                     "strict_exact_coord_set": False,
                     "tolerance_exact_coord_set": False,
                     "exact_match_axis_tolerance": None,
+                    "equal_coord_count": False,
+                    "mean_paired_distance_mm": None,
+                    "median_paired_distance_mm": None,
+                    "max_paired_distance_mm": None,
+                    "matched_fraction_within_8mm": 0.0,
+                    "high_coverage_coord_set": False,
+                    "coordinate_variant": None,
+                    "coordinate_variants_considered": [],
                     "coord_override_accepted": False,
                     "low_name_with_exact_coords": False,
                     "reason_codes": ["no_auto_analyses_for_pmid"],
@@ -1041,6 +1207,14 @@ def match_with_hungarian(
                     "strict_exact_coord_set": False,
                     "tolerance_exact_coord_set": False,
                     "exact_match_axis_tolerance": None,
+                    "equal_coord_count": False,
+                    "mean_paired_distance_mm": None,
+                    "median_paired_distance_mm": None,
+                    "max_paired_distance_mm": None,
+                    "matched_fraction_within_8mm": 0.0,
+                    "high_coverage_coord_set": False,
+                    "coordinate_variant": None,
+                    "coordinate_variants_considered": [],
                     "coord_override_accepted": False,
                     "low_name_with_exact_coords": False,
                     "reason_codes": ["unassigned_by_global_matching", "low_total_score"],
@@ -1069,10 +1243,25 @@ def match_with_hungarian(
                 "strict_exact_coord_set": bool(d.get("strict_exact_coord_set", False)),
                 "tolerance_exact_coord_set": bool(d.get("tolerance_exact_coord_set", False)),
                 "exact_match_axis_tolerance": d.get("exact_match_axis_tolerance"),
+                "equal_coord_count": bool(d.get("equal_coord_count", False)),
+                "mean_paired_distance_mm": d.get("mean_paired_distance_mm"),
+                "median_paired_distance_mm": d.get("median_paired_distance_mm"),
+                "max_paired_distance_mm": d.get("max_paired_distance_mm"),
+                "matched_fraction_within_8mm": d.get("matched_fraction_within_8mm"),
+                "high_coverage_coord_set": bool(d.get("high_coverage_coord_set", False)),
+                "lowered_threshold_coord_override": bool(
+                    d.get("lowered_threshold_coord_override", False)
+                ),
+                "coordinate_variant": d.get("coordinate_variant"),
+                "coordinate_variants_considered": d.get("coordinate_variants_considered", []),
                 "coord_override_accepted": bool(d.get("coord_override_accepted", False)),
                 "low_name_with_exact_coords": bool(d.get("low_name_with_exact_coords", False)),
                 "reason_codes": d["reason_codes"],
                 "manual_coordinates": [[float(x), float(y), float(z)] for x, y, z in m.get("points", [])],
+                "manual_coordinates_used": [
+                    [float(x), float(y), float(z)]
+                    for x, y, z in d.get("manual_coordinates_used", [])
+                ],
                 "best_auto_coordinates": [[float(x), float(y), float(z)] for x, y, z in a.get("points", [])],
             }
         )
@@ -1098,7 +1287,7 @@ def build_match_results_overall(
     decimal_manual_coordinate_handling: str,
     converted_talairach_exact_axis_tolerance: float,
 ) -> dict[str, Any]:
-    valid_decimal_handling = {"exclude", "convert_to_talairach", "keep"}
+    valid_decimal_handling = {"exclude", "convert_to_talairach", "keep", "match_best_space"}
     if decimal_manual_coordinate_handling not in valid_decimal_handling:
         raise ValueError(
             "decimal_manual_coordinate_handling must be one of: "
@@ -1110,6 +1299,7 @@ def build_match_results_overall(
     pmid_results: dict[str, dict[str, Any]] = {}
     unavailable_manual_decimal_pmids: list[str] = []
     converted_decimal_manual_analyses_total = 0
+    coordinate_space_variant_analyses_total = 0
 
     manual_pmids = set(manual_analyses_by_pmid.keys())
     auto_pmids = set(auto_parsed_by_pmid.keys())
@@ -1121,6 +1311,7 @@ def build_match_results_overall(
         manual_analyses_original = manual_analyses_by_pmid.get(pmid, [])
         excluded_decimal_analyses: list[dict[str, Any]] = []
         converted_decimal_analyses: list[dict[str, Any]] = []
+        coordinate_space_variant_analyses: list[dict[str, Any]] = []
         manual_analyses: list[dict[str, Any]] = []
         for analysis in manual_analyses_original:
             has_decimal_coordinates = bool(analysis.get("has_decimal_coordinates", False))
@@ -1138,6 +1329,30 @@ def build_match_results_overall(
                 converted_analysis["converted_from_decimal_mni_to_talairach"] = True
                 converted_decimal_analyses.append(converted_analysis)
                 manual_analyses.append(converted_analysis)
+                continue
+
+            if decimal_manual_coordinate_handling == "match_best_space":
+                variant_analysis = dict(analysis)
+                original_points = analysis.get("points", [])
+                variant_analysis["coordinate_variants"] = [
+                    {
+                        "name": "manual_original",
+                        "points": original_points,
+                        "use_exact_axis_tolerance": False,
+                    },
+                    {
+                        "name": "manual_talairach_to_mni",
+                        "points": convert_coords_talairach_to_mni(original_points),
+                        "use_exact_axis_tolerance": True,
+                    },
+                    {
+                        "name": "manual_mni_to_talairach",
+                        "points": convert_coords_mni_to_talairach(original_points),
+                        "use_exact_axis_tolerance": True,
+                    },
+                ]
+                coordinate_space_variant_analyses.append(variant_analysis)
+                manual_analyses.append(variant_analysis)
                 continue
 
             manual_analyses.append(analysis)
@@ -1186,6 +1401,14 @@ def build_match_results_overall(
                 }
                 for analysis in converted_decimal_analyses
             ],
+            "coordinate_space_variant_manual_analyses_decimal": [
+                {
+                    "id": str(analysis.get("id", "")),
+                    "name": str(analysis.get("name", "")),
+                    "coord_count": len(analysis.get("points", [])),
+                }
+                for analysis in coordinate_space_variant_analyses
+            ],
             "auto_analyses": [
                 {
                     "index": int(a["index"]),
@@ -1205,11 +1428,15 @@ def build_match_results_overall(
                 "manual_analysis_count_original": len(manual_analyses_original),
                 "excluded_manual_decimal_analysis_count": len(excluded_decimal_analyses),
                 "converted_manual_decimal_analysis_count": len(converted_decimal_analyses),
+                "coordinate_space_variant_manual_decimal_analysis_count": len(
+                    coordinate_space_variant_analyses
+                ),
                 "all_manual_accepted": bool(matched_entries) and int(counts["accepted"]) == len(matched_entries),
                 "mean_combined_score": round(mean_combined, 6),
             },
         }
         converted_decimal_manual_analyses_total += len(converted_decimal_analyses)
+        coordinate_space_variant_analyses_total += len(coordinate_space_variant_analyses)
 
     all_entries = [entry for data in pmid_results.values() for entry in data["manual_analyses"]]
     status_counts = defaultdict(int)
@@ -1252,17 +1479,35 @@ def build_match_results_overall(
             "name_weight": NAME_WEIGHT,
             "accepted_threshold": ACCEPTED_THRESHOLD,
             "uncertain_threshold": UNCERTAIN_THRESHOLD,
-            "coordinate_space_handling": "ignore_space_labels_use_raw_xyz",
+            "coordinate_space_handling": (
+                "best_of_original_talairach_to_mni_and_mni_to_talairach"
+                if decimal_manual_coordinate_handling == "match_best_space"
+                else "configured_single_representation"
+            ),
             "metric_truth_policy": "accepted_only",
             "pmid_scope_for_scoring": "overlap_only_manual_and_auto",
             "coord_accept_override": True,
             "coord_accept_override_threshold": coord_accept_override_threshold,
+            "strong_coord_accept_override_threshold": max(
+                coord_accept_override_threshold,
+                STRONG_COORD_ACCEPT_OVERRIDE_THRESHOLD,
+            ),
+            "lowered_coord_override_requires_equal_count": True,
+            "high_coverage_coord_set_override": {
+                "minimum_coordinate_count": HIGH_COVERAGE_MIN_COORDS,
+                "distance_mm": HIGH_COVERAGE_DISTANCE_MM,
+                "minimum_match_fraction": HIGH_COVERAGE_MATCH_FRACTION,
+                "maximum_median_distance_mm": HIGH_COVERAGE_MAX_MEDIAN_DISTANCE_MM,
+            },
             "exact_coord_accept_override": False,
             "low_name_highlight_threshold": LOW_NAME_SCORE_HIGHLIGHT_THRESHOLD,
             "decimal_manual_coordinate_handling": decimal_manual_coordinate_handling,
             "converted_talairach_exact_axis_tolerance": converted_talairach_exact_axis_tolerance,
             "exclude_decimal_manual_coordinates": decimal_manual_coordinate_handling == "exclude",
             "convert_decimal_manual_coordinates_to_talairach": decimal_manual_coordinate_handling == "convert_to_talairach",
+            "match_decimal_manual_coordinates_in_best_space": (
+                decimal_manual_coordinate_handling == "match_best_space"
+            ),
         },
         "pmids": pmid_results,
         "unavailable_manual_decimal_pmids": unavailable_manual_decimal_pmids,
@@ -1278,6 +1523,9 @@ def build_match_results_overall(
             "overlap_pmids_before_decimal_filter": len(overlap_pmids_all),
             "unavailable_manual_decimal_pmids": len(unavailable_manual_decimal_pmids),
             "converted_manual_decimal_analyses": int(converted_decimal_manual_analyses_total),
+            "coordinate_space_variant_manual_decimal_analyses": int(
+                coordinate_space_variant_analyses_total
+            ),
             "excluded_manual_only_pmids": len(excluded_manual_only_pmids),
             "auto_only_pmids": len(auto_only_pmids),
             "manual_analyses_total": len(all_entries),
@@ -5455,33 +5703,37 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--coord-accept-override-threshold",
         type=float,
-        default=0.9,
+        default=DEFAULT_COORD_ACCEPT_OVERRIDE_THRESHOLD,
         help=(
-            "Coordinate score threshold above which a matched pair is accepted regardless of "
-            "combined score/name (greater-than-or-equal). Default: 0.9."
+            "Coordinate score threshold above which an equal-count set with at least three "
+            "coordinates is accepted regardless of combined score/name. Unequal or smaller sets "
+            f"still require {STRONG_COORD_ACCEPT_OVERRIDE_THRESHOLD:.2f}. Default: "
+            f"{DEFAULT_COORD_ACCEPT_OVERRIDE_THRESHOLD:.2f}."
         ),
     )
     parser.add_argument(
         "--exclude-decimal-manual-coordinates",
         action=argparse.BooleanOptionalAction,
-        default=True,
+        default=None,
         help=(
-            "If enabled (default), manual analyses with non-zero decimal coordinate values are "
+            "Deprecated compatibility flag. If enabled, manual analyses with non-zero decimal "
+            "coordinate values are "
             "excluded from matching because they likely represent converted coordinates rather "
             "than raw extracted values. Values ending in .0 are not excluded by this heuristic. "
-            "Use --no-exclude-decimal-manual-coordinates to disable."
+            "Prefer --decimal-manual-coordinate-handling."
         ),
     )
     parser.add_argument(
         "--decimal-manual-coordinate-handling",
-        choices=("exclude", "convert_to_talairach", "keep"),
+        choices=("exclude", "convert_to_talairach", "keep", "match_best_space"),
         default=None,
         help=(
             "How to handle manual analyses that include non-zero decimal coordinates. "
             "'exclude' removes those analyses from matching. "
             "'convert_to_talairach' applies nimare.utils.mni2tal to those manual analyses and keeps them. "
             "'keep' keeps decimal manual coordinates as-is. "
-            "If omitted, behavior follows --exclude-decimal-manual-coordinates for backward compatibility."
+            "'match_best_space' scores the original coordinates and both plausible Talairach/MNI "
+            "transform directions, retaining the best-scoring representation (default)."
         ),
     )
     parser.add_argument(
@@ -5501,7 +5753,11 @@ def parse_args() -> argparse.Namespace:
 def resolve_decimal_coordinate_handling(args: argparse.Namespace) -> str:
     if args.decimal_manual_coordinate_handling:
         return str(args.decimal_manual_coordinate_handling)
-    return "exclude" if bool(args.exclude_decimal_manual_coordinates) else "keep"
+    if args.exclude_decimal_manual_coordinates is True:
+        return "exclude"
+    if args.exclude_decimal_manual_coordinates is False:
+        return "keep"
+    return "match_best_space"
 
 
 def run_fuzzy_matching_stage(
@@ -5519,6 +5775,15 @@ def run_fuzzy_matching_stage(
         raise ImportError(
             "--decimal-manual-coordinate-handling convert_to_talairach requires NiMARE "
             "(nimare.utils.mni2tal). Install nimare or choose a different handling mode."
+        )
+    if (
+        decimal_manual_coordinate_handling == "match_best_space"
+        and (mni2tal is None or tal2mni is None)
+    ):
+        raise ImportError(
+            "--decimal-manual-coordinate-handling match_best_space requires NiMARE "
+            "(nimare.utils.mni2tal and nimare.utils.tal2mni). Install nimare or choose "
+            "a different handling mode."
         )
 
     manual_dir = resolve_manual_dir(project_output_dir, args.manual_dir)
@@ -5559,6 +5824,8 @@ def run_fuzzy_matching_stage(
         f"excluded_manual_only_pmids={summary['excluded_manual_only_pmids']} "
         f"unavailable_manual_decimal_pmids={summary.get('unavailable_manual_decimal_pmids', 0)} "
         f"converted_manual_decimal_analyses={summary.get('converted_manual_decimal_analyses', 0)} "
+        "coordinate_space_variant_manual_decimal_analyses="
+        f"{summary.get('coordinate_space_variant_manual_decimal_analyses', 0)} "
         f"decimal_handling={decimal_manual_coordinate_handling} "
         f"converted_talairach_exact_axis_tolerance={float(args.converted_talairach_exact_axis_tolerance):.3f} "
         f"pmids_all_manual_accepted={summary['pmids_all_manual_accepted']} "
