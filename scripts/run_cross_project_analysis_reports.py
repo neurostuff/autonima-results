@@ -154,11 +154,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--decimal-manual-coordinate-handling",
-        choices=("exclude", "convert_to_talairach", "keep"),
-        default="convert_to_talairach",
+        choices=("exclude", "convert_to_talairach", "keep", "match_best_space"),
+        default="match_best_space",
         help=(
             "Forwarded to compare_analyses_to_benchmark.py. "
-            "Default is convert_to_talairach for cross-project reruns."
+            "Default is match_best_space for cross-project reruns."
         ),
     )
     parser.add_argument(

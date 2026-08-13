@@ -1,0 +1,78 @@
+{
+  "inputs": {
+    "review": "/home/zorro/repos/autonima-results/reports/parser_error_annotation/reviews/parser_failure_review_2.json",
+    "manifest": "/home/zorro/repos/autonima-results/reports/parser_error_annotation/manifest.json",
+    "baseline": "/home/zorro/repos/autonima-results/reports/cross_project_analysis/parsing_metrics_by_project.csv"
+  },
+  "annotation_coverage": {
+    "reviewed_units": 185,
+    "manifest_units": 199,
+    "coverage": 0.9296482412060302,
+    "reviewed_papers": 112,
+    "new_unit_annotations": 121,
+    "carried_forward_units": 64,
+    "prior_units_not_current": 138,
+    "changed_carried_forward_dispositions": 3,
+    "new_annotation_dispositions": {
+      "supplemental_data": 52,
+      "source_material_missing": 15,
+      "parser_missed": 35,
+      "gold_standard_error": 7,
+      "matching_error": 3,
+      "expected_difference": 7,
+      "out_of_scope": 2
+    }
+  },
+  "dispositions": {
+    "parser_missed": 56,
+    "gold_standard_error": 21,
+    "supplemental_data": 68,
+    "source_material_missing": 23,
+    "uncertain": 1,
+    "out_of_scope": 4,
+    "expected_difference": 9,
+    "matching_error": 3
+  },
+  "failure_modes_among_parser_missed": {
+    "partial_coord_error": 18,
+    "under_split_merge": 25,
+    "over_split": 7,
+    "no_failure_mode_selected": 7
+  },
+  "parsing_reasons_among_parser_missed": {
+    "table_structure_misparsed": 3,
+    "contrast_label_missed_or_truncated": 3
+  },
+  "accuracy_methodology": {
+    "review_adjusted": "Adds reviewed unmatched matching_error, gold_standard_error, and expected_difference units to the baseline correct count. It does not impute unreviewed or non-evaluable units.",
+    "parser_evaluable": "Assumes baseline accepted units are correct and includes only reviewed matching_error (correct) and parser_missed (incorrect) disagreements.",
+    "review_resolved": "Also treats reviewed gold_standard_error and expected_difference units as factually correct extraction outcomes."
+  },
+  "overall_accuracy": {
+    "project": "__all__",
+    "manual_analyses_total": 1040,
+    "baseline_accepted": 816,
+    "baseline_uncertain": 25,
+    "baseline_unmatched": 199,
+    "reviewed_unmatched": 185,
+    "confirmed_parser_missed": 56,
+    "matching_error_correct": 3,
+    "gold_standard_error_correct": 21,
+    "expected_difference_correct": 9,
+    "corrections_added": 33,
+    "review_adjusted_strict_correct": 849,
+    "review_adjusted_combined_correct": 874,
+    "parser_evaluable_correct": 819,
+    "parser_evaluable_total": 875,
+    "review_resolved_correct": 849,
+    "review_resolved_total": 905,
+    "review_coverage_of_unmatched": "0.929648",
+    "baseline_strict_rate": "0.784615",
+    "review_adjusted_strict_rate": "0.816346",
+    "baseline_combined_rate": "0.808654",
+    "review_adjusted_combined_rate": "0.840385",
+    "parser_evaluable_rate": "0.936000",
+    "review_resolved_rate": "0.938122"
+  },
+  "unresolved_annotations": []
+}
