@@ -57,6 +57,26 @@ HUMAN_REVIEW_EXTRACTION_REASONS = [
     ("other_extraction_issue", "Other extraction issue"),
 ]
 
+REVIEW_CREDITED_DISPOSITIONS = {
+    "matching_error",
+    "gold_standard_error",
+    "expected_difference",
+}
+
+REVIEW_EXCLUDED_DISPOSITIONS = {
+    "supplemental_data",
+    "source_material_missing",
+    "out_of_scope",
+    "uncertain",
+}
+
+LEGACY_REVIEW_DISPOSITIONS = {
+    "missed_unit_confirmed": "parser_missed",
+    "missed_unit_supplemental_data": "supplemental_data",
+    "missed_unit_out_of_scope": "out_of_scope",
+    "gold_standard_wrong": "gold_standard_error",
+}
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 REPO_ROOT = SCRIPT_DIR.parent
@@ -183,6 +203,262 @@ def resolve_output_dir(project_output_dir: Path, output_dir: Path | None) -> Pat
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
+
+def review_disposition(entry: dict[str, Any]) -> str:
+    current = clean_text(
+        str(entry.get("unmatched_gold_disposition") or "")
+    ).strip()
+    if current:
+        return current
+    legacy = clean_text(str(entry.get("missed_unit_disposition") or "")).strip()
+    return LEGACY_REVIEW_DISPOSITIONS.get(legacy, legacy)
+
+def load_parser_review_entries(
+    review_path: Path,
+    *,
+    project_name: str,
+) -> dict[str, dict[str, Any]]:
+    payload = load_json(review_path)
+    if not isinstance(payload, dict):
+        raise ValueError(f"Parser review must contain a JSON object: {review_path}")
+    raw_entries = payload.get("entries", []) or []
+    if not isinstance(raw_entries, list):
+        raise ValueError(
+            f"Parser review 'entries' must contain a list: {review_path}"
+        )
+
+    entries: dict[str, dict[str, Any]] = {}
+    prefix = f"{project_name}:"
+    for raw_entry in raw_entries:
+        if not isinstance(raw_entry, dict):
+            continue
+        unit_id = clean_text(str(raw_entry.get("unit_id") or "")).strip()
+        if not unit_id or not unit_id.startswith(prefix):
+            continue
+        if unit_id in entries:
+            raise ValueError(
+                f"Parser review contains duplicate unit ID for {project_name}: "
+                f"{unit_id}"
+            )
+        entries[unit_id] = raw_entry
+    return entries
+
+def refresh_match_result_summaries(match_result: dict[str, Any]) -> None:
+    """Recalculate counts after human-review adjustments."""
+    pmid_results = match_result.get("pmids", {}) or {}
+    all_entries: list[dict[str, Any]] = []
+    status_counts: defaultdict[str, int] = defaultdict(int)
+    combined_scores: list[float] = []
+    category_counts: defaultdict[str, int] = defaultdict(int)
+    perfect_pmids = 0
+    evaluable_pmids = 0
+    coord_override_accepted = 0
+    low_name_coord_override_matches = 0
+
+    for data in pmid_results.values():
+        entries = data.get("manual_analyses", []) or []
+        all_entries.extend(entries)
+        counts: defaultdict[str, int] = defaultdict(int)
+        for entry in entries:
+            status = str(entry.get("match_status", "unmatched"))
+            counts[status] += 1
+            status_counts[status] += 1
+            combined_scores.append(float(entry.get("combined_score", 0.0)))
+            if (
+                bool(entry.get("coord_override_accepted", False))
+                and float(entry.get("combined_score", 0.0)) < ACCEPTED_THRESHOLD
+            ):
+                coord_override_accepted += 1
+            if bool(entry.get("low_name_with_exact_coords", False)):
+                low_name_coord_override_matches += 1
+
+        pmid_summary = data.setdefault("pmid_summary", {})
+        pmid_summary["accepted"] = int(counts["accepted"])
+        pmid_summary["uncertain"] = int(counts["uncertain"])
+        pmid_summary["unmatched"] = int(counts["unmatched"])
+        pmid_summary["manual_analysis_count"] = len(entries)
+        pmid_summary["all_manual_accepted"] = bool(entries) and (
+            int(counts["accepted"]) == len(entries)
+        )
+        pmid_summary["mean_combined_score"] = round(
+            (
+                sum(float(entry.get("combined_score", 0.0)) for entry in entries)
+                / len(entries)
+            )
+            if entries
+            else 0.0,
+            6,
+        )
+        if entries:
+            category = classify_study_match_category(
+                accepted=int(counts["accepted"]),
+                manual_total=len(entries),
+            )
+            evaluable_pmids += 1
+            category_counts[category] += 1
+            if pmid_summary["all_manual_accepted"]:
+                perfect_pmids += 1
+        else:
+            category = "review_excluded"
+        pmid_summary["study_category"] = category
+
+    combined_arr = (
+        np.array(combined_scores, dtype=float)
+        if combined_scores
+        else np.array([], dtype=float)
+    )
+    summary = match_result.setdefault("summary", {})
+    summary.update(
+        {
+            "manual_analyses_total": len(all_entries),
+            "accepted": int(status_counts["accepted"]),
+            "uncertain": int(status_counts["uncertain"]),
+            "unmatched": int(status_counts["unmatched"]),
+            "accepted_coord_override": int(coord_override_accepted),
+            "low_name_coord_override_matches": int(
+                low_name_coord_override_matches
+            ),
+            "accepted_exact_coord_override": int(coord_override_accepted),
+            "low_name_exact_matches": int(low_name_coord_override_matches),
+            "review_evaluable_pmids": evaluable_pmids,
+            "pmids_all_manual_accepted": int(perfect_pmids),
+            "pmids_all_manual_accepted_rate": (
+                float(perfect_pmids) / evaluable_pmids
+                if evaluable_pmids
+                else 0.0
+            ),
+            "all_correct_pmids": int(category_counts["all_correct"]),
+            "mixed_pmids": int(category_counts["mixed"]),
+            "all_incorrect_pmids": int(category_counts["all_incorrect"]),
+            "review_excluded_pmids": sum(
+                1
+                for data in pmid_results.values()
+                if data.get("pmid_summary", {}).get("study_category")
+                == "review_excluded"
+            ),
+            "mean_combined_score": (
+                float(np.mean(combined_arr)) if combined_arr.size else 0.0
+            ),
+            "median_combined_score": (
+                float(np.median(combined_arr)) if combined_arr.size else 0.0
+            ),
+            "p25_combined_score": (
+                float(np.percentile(combined_arr, 25))
+                if combined_arr.size
+                else 0.0
+            ),
+            "p75_combined_score": (
+                float(np.percentile(combined_arr, 75))
+                if combined_arr.size
+                else 0.0
+            ),
+        }
+    )
+
+def apply_parser_review_adjustments(
+    match_result: dict[str, Any],
+    *,
+    review_entries: dict[str, dict[str, Any]],
+    project_name: str,
+    review_path: Path,
+) -> dict[str, Any]:
+    """Apply reviewed dispositions to parser-scoring outcomes.
+
+    Confirmed parser misses remain penalties. Benchmark/matching/expected
+    differences are credited as accepted. Cases whose source was unavailable or
+    outside the parser's evaluable scope are removed from the denominator.
+    """
+    credited = 0
+    excluded = 0
+    parser_missed = 0
+    matched_review_entries = 0
+    dispositions: defaultdict[str, int] = defaultdict(int)
+
+    for pmid, data in (match_result.get("pmids", {}) or {}).items():
+        retained: list[dict[str, Any]] = []
+        excluded_entries: list[dict[str, Any]] = []
+        entries = data.get("manual_analyses", []) or []
+        pmid_summary = data.setdefault("pmid_summary", {})
+        pmid_summary["manual_analysis_count_before_review"] = len(entries)
+
+        for match_entry in entries:
+            manual_id = clean_text(
+                str(match_entry.get("manual_analysis_id") or "")
+            ).strip()
+            unit_id = f"{project_name}:{pmid}:{manual_id}"
+            review_entry = review_entries.get(unit_id)
+            if review_entry is None:
+                retained.append(match_entry)
+                continue
+
+            matched_review_entries += 1
+            disposition = review_disposition(review_entry)
+            dispositions[disposition or "(blank)"] += 1
+            match_entry["review_unit_id"] = unit_id
+            match_entry["review_disposition"] = disposition
+            match_entry["review_note"] = clean_text(
+                str(review_entry.get("note") or "")
+            ).strip()
+
+            if disposition in REVIEW_CREDITED_DISPOSITIONS:
+                match_entry["raw_match_status"] = str(
+                    match_entry.get("match_status", "unmatched")
+                )
+                match_entry["match_status"] = "accepted"
+                match_entry["review_adjustment"] = "credited_as_accepted"
+                credited += 1
+                retained.append(match_entry)
+            elif disposition in REVIEW_EXCLUDED_DISPOSITIONS:
+                match_entry["raw_match_status"] = str(
+                    match_entry.get("match_status", "unmatched")
+                )
+                match_entry["review_adjustment"] = (
+                    "excluded_non_parser_evaluable"
+                )
+                excluded += 1
+                excluded_entries.append(match_entry)
+            else:
+                if disposition == "parser_missed":
+                    parser_missed += 1
+                    match_entry["review_adjustment"] = (
+                        "confirmed_parser_evaluable"
+                    )
+                retained.append(match_entry)
+
+        data["manual_analyses"] = retained
+        data["review_excluded_manual_analyses"] = excluded_entries
+        pmid_summary["review_excluded_manual_analysis_count"] = len(
+            excluded_entries
+        )
+
+    refresh_match_result_summaries(match_result)
+    summary = match_result.setdefault("summary", {})
+    summary["review_credited_manual_analyses"] = credited
+    summary["review_excluded_manual_analyses"] = excluded
+    summary["review_confirmed_parser_misses"] = parser_missed
+    adjustment = {
+        "enabled": True,
+        "review_path": str(review_path),
+        "project": project_name,
+        "review_entries_for_project": len(review_entries),
+        "matched_review_entries": matched_review_entries,
+        "unmatched_review_entries": len(review_entries) - matched_review_entries,
+        "credited_as_accepted": credited,
+        "excluded_non_parser_evaluable": excluded,
+        "confirmed_parser_misses": parser_missed,
+        "credited_dispositions": sorted(REVIEW_CREDITED_DISPOSITIONS),
+        "excluded_dispositions": sorted(REVIEW_EXCLUDED_DISPOSITIONS),
+        "disposition_counts": dict(sorted(dispositions.items())),
+    }
+    match_result["parser_review_adjustment"] = adjustment
+    match_result.setdefault("matching_policy", {})[
+        "human_review_adjustment"
+    ] = {
+        "confirmed_parser_misses_remain_penalties": True,
+        "credited_dispositions": sorted(REVIEW_CREDITED_DISPOSITIONS),
+        "excluded_from_denominator": sorted(REVIEW_EXCLUDED_DISPOSITIONS),
+    }
+    return adjustment
 
 def normalize_pmid(value: Any) -> str:
     text = clean_text(str(value or "")).strip()
@@ -1361,6 +1637,7 @@ def build_table_only_baseline_summary(
 def render_matching_summary_html(match_result: dict[str, Any]) -> str:
     summary = match_result.get("summary", {})
     table_baseline = match_result.get("table_only_baseline", {})
+    review_adjustment = match_result.get("parser_review_adjustment", {})
     unavailable_manual_decimal_pmids = int(summary.get("unavailable_manual_decimal_pmids", 0))
     overlap_pmids = int(summary.get("overlap_pmids", 0))
     manual_total = int(summary.get("manual_analyses_total", 0))
@@ -1389,6 +1666,18 @@ def render_matching_summary_html(match_result: dict[str, Any]) -> str:
         if isinstance(table_baseline, dict) and table_baseline.get("reason"):
             table_reason = f" ({escape(str(table_baseline.get('reason', '')))})"
         table_baseline_html = f"<p><strong>Table-only baseline:</strong> unavailable{table_reason}</p>"
+    review_adjustment_html = ""
+    if isinstance(review_adjustment, dict) and review_adjustment.get("enabled"):
+        review_adjustment_html = (
+            "<p><strong>Human-review adjustment:</strong> "
+            f"{int(review_adjustment.get('credited_as_accepted', 0))} "
+            "benchmark/matching/expected-difference analyses credited as accepted; "
+            f"{int(review_adjustment.get('excluded_non_parser_evaluable', 0))} "
+            "source/scope/uncertain analyses excluded from the parser denominator; "
+            f"{int(review_adjustment.get('confirmed_parser_misses', 0))} "
+            "confirmed parser misses retained as evaluable outcomes. "
+            "Raw statuses remain available in the JSON output.</p>"
+        )
 
     return f"""<!doctype html>
 <html lang="en">
@@ -1421,6 +1710,7 @@ def render_matching_summary_html(match_result: dict[str, Any]) -> str:
     <p><strong>Unavailable Manual Studies (decimal coordinates):</strong> {unavailable_manual_decimal_pmids}</p>
     <p><strong>Excluded manual-only PMIDs:</strong> {excluded_manual_only_pmids} |
        <strong>Auto-only PMIDs:</strong> {auto_only_pmids}</p>
+    {review_adjustment_html}
     {table_baseline_html}
   </header>
 
@@ -5495,6 +5785,17 @@ def parse_args() -> argparse.Namespace:
             "the set is treated as exact. Default: 1.0."
         ),
     )
+    parser.add_argument(
+        "--parser-review",
+        type=Path,
+        default=None,
+        help=(
+            "Optional parser-failure review JSON. Confirmed parser misses remain "
+            "penalties; matching/gold/expected differences are credited; "
+            "non-evaluable source/scope dispositions are excluded from the "
+            "parser-scoring denominator."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -5538,6 +5839,31 @@ def run_fuzzy_matching_stage(
         decimal_manual_coordinate_handling=decimal_manual_coordinate_handling,
         converted_talairach_exact_axis_tolerance=float(args.converted_talairach_exact_axis_tolerance),
     )
+    if args.parser_review is not None:
+        parser_review_path = args.parser_review.expanduser().resolve()
+        if not parser_review_path.exists():
+            raise FileNotFoundError(
+                f"--parser-review does not exist: {parser_review_path}"
+            )
+        project_name = infer_project_name(project_output_dir)
+        review_entries = load_parser_review_entries(
+            parser_review_path,
+            project_name=project_name,
+        )
+        adjustment = apply_parser_review_adjustments(
+            match_result,
+            review_entries=review_entries,
+            project_name=project_name,
+            review_path=parser_review_path,
+        )
+        print(
+            "parser_review_adjustment: "
+            f"project={project_name} "
+            f"matched={adjustment['matched_review_entries']} "
+            f"credited={adjustment['credited_as_accepted']} "
+            f"excluded={adjustment['excluded_non_parser_evaluable']} "
+            f"parser_misses={adjustment['confirmed_parser_misses']}"
+        )
     match_result["table_only_baseline"] = build_table_only_baseline_summary(
         manual_analyses_by_pmid=manual_by_pmid,
         manual_study_names_by_pmid=manual_study_names_by_pmid,

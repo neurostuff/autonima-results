@@ -6,17 +6,40 @@
     "name_weight": 0.3,
     "accepted_threshold": 0.75,
     "uncertain_threshold": 0.55,
-    "coordinate_space_handling": "ignore_space_labels_use_raw_xyz",
+    "coordinate_space_handling": "best_of_original_talairach_to_mni_and_mni_to_talairach",
     "metric_truth_policy": "accepted_only",
     "pmid_scope_for_scoring": "overlap_only_manual_and_auto",
     "coord_accept_override": true,
-    "coord_accept_override_threshold": 0.9,
+    "coord_accept_override_threshold": 0.8,
+    "strong_coord_accept_override_threshold": 0.9,
+    "lowered_coord_override_requires_equal_count": true,
+    "high_coverage_coord_set_override": {
+      "minimum_coordinate_count": 3,
+      "distance_mm": 8.0,
+      "minimum_match_fraction": 0.9,
+      "maximum_median_distance_mm": 6.0
+    },
     "exact_coord_accept_override": false,
     "low_name_highlight_threshold": 0.55,
-    "decimal_manual_coordinate_handling": "convert_to_talairach",
+    "decimal_manual_coordinate_handling": "match_best_space",
     "converted_talairach_exact_axis_tolerance": 1.0,
     "exclude_decimal_manual_coordinates": false,
-    "convert_decimal_manual_coordinates_to_talairach": true
+    "convert_decimal_manual_coordinates_to_talairach": false,
+    "match_decimal_manual_coordinates_in_best_space": true,
+    "human_review_adjustment": {
+      "confirmed_parser_misses_remain_penalties": true,
+      "credited_dispositions": [
+        "expected_difference",
+        "gold_standard_error",
+        "matching_error"
+      ],
+      "excluded_from_denominator": [
+        "out_of_scope",
+        "source_material_missing",
+        "supplemental_data",
+        "uncertain"
+      ]
+    }
   },
   "pmids": {
     "14527604": {
@@ -37,14 +60,68 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "exact_coord_set",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              0.0,
+              56.0,
+              0.0
+            ],
+            [
+              -2.0,
+              36.0,
+              20.0
+            ],
+            [
+              0.0,
+              18.0,
+              -16.0
+            ],
+            [
+              -14.0,
+              60.0,
+              22.0
+            ],
+            [
+              -22.0,
+              24.0,
+              46.0
+            ],
+            [
+              -46.0,
+              18.0,
+              30.0
+            ],
+            [
+              -64.0,
+              -20.0,
+              -22.0
+            ],
+            [
+              -10.0,
+              10.0,
+              2.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               0.0,
               56.0,
@@ -132,6 +209,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -228,11 +306,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.764865,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "Salmon_2003",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -255,14 +337,123 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "exact_coord_set",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              -2.0,
+              44.0,
+              -10.0
+            ],
+            [
+              0.0,
+              26.0,
+              -10.0
+            ],
+            [
+              -38.0,
+              30.0,
+              2.0
+            ],
+            [
+              -32.0,
+              22.0,
+              10.0
+            ],
+            [
+              4.0,
+              6.0,
+              -6.0
+            ],
+            [
+              -52.0,
+              8.0,
+              18.0
+            ],
+            [
+              18.0,
+              -10.0,
+              -14.0
+            ],
+            [
+              -62.0,
+              -28.0,
+              -24.0
+            ],
+            [
+              8.0,
+              18.0,
+              -18.0
+            ],
+            [
+              -4.0,
+              50.0,
+              24.0
+            ],
+            [
+              -18.0,
+              -10.0,
+              -14.0
+            ],
+            [
+              38.0,
+              22.0,
+              8.0
+            ],
+            [
+              14.0,
+              20.0,
+              -2.0
+            ],
+            [
+              -4.0,
+              32.0,
+              18.0
+            ],
+            [
+              -8.0,
+              14.0,
+              38.0
+            ],
+            [
+              18.0,
+              -6.0,
+              -22.0
+            ],
+            [
+              10.0,
+              22.0,
+              36.0
+            ],
+            [
+              8.0,
+              34.0,
+              26.0
+            ],
+            [
+              -4.0,
+              46.0,
+              24.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -2.0,
               44.0,
@@ -460,6 +651,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -574,11 +766,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.751724,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "Boccardi_2005",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -596,11 +792,22 @@
           "name_score": 0.25,
           "coord_score": 0.16129,
           "combined_score": 0.187903,
-          "match_status": "unmatched",
+          "match_status": "accepted",
           "exact_coord_set": false,
           "strict_exact_coord_set": false,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": false,
+          "mean_paired_distance_mm": 3.1175323999058633,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 34.292856398964496,
+          "matched_fraction_within_8mm": 0.16129032258064516,
+          "high_coverage_coord_set": false,
+          "lowered_threshold_coord_override": false,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": false,
           "low_name_with_exact_coords": false,
           "reason_codes": [
@@ -608,6 +815,318 @@
             "low_total_score"
           ],
           "manual_coordinates": [
+            [
+              -6.0,
+              44.0,
+              22.0
+            ],
+            [
+              -6.0,
+              44.0,
+              23.0
+            ],
+            [
+              -6.0,
+              44.0,
+              24.0
+            ],
+            [
+              -6.0,
+              44.0,
+              25.0
+            ],
+            [
+              -6.0,
+              44.0,
+              26.0
+            ],
+            [
+              -6.0,
+              44.0,
+              27.0
+            ],
+            [
+              -6.0,
+              44.0,
+              28.0
+            ],
+            [
+              -6.0,
+              44.0,
+              29.0
+            ],
+            [
+              -6.0,
+              44.0,
+              30.0
+            ],
+            [
+              -6.0,
+              44.0,
+              31.0
+            ],
+            [
+              -6.0,
+              44.0,
+              32.0
+            ],
+            [
+              -6.0,
+              44.0,
+              33.0
+            ],
+            [
+              -6.0,
+              44.0,
+              34.0
+            ],
+            [
+              -6.0,
+              44.0,
+              35.0
+            ],
+            [
+              -6.0,
+              44.0,
+              36.0
+            ],
+            [
+              -6.0,
+              44.0,
+              37.0
+            ],
+            [
+              -6.0,
+              44.0,
+              38.0
+            ],
+            [
+              -6.0,
+              44.0,
+              39.0
+            ],
+            [
+              -6.0,
+              44.0,
+              40.0
+            ],
+            [
+              -6.0,
+              44.0,
+              41.0
+            ],
+            [
+              -6.0,
+              44.0,
+              42.0
+            ],
+            [
+              -6.0,
+              44.0,
+              43.0
+            ],
+            [
+              -6.0,
+              44.0,
+              44.0
+            ],
+            [
+              -6.0,
+              44.0,
+              45.0
+            ],
+            [
+              -6.0,
+              44.0,
+              46.0
+            ],
+            [
+              -6.0,
+              44.0,
+              47.0
+            ],
+            [
+              -6.0,
+              44.0,
+              48.0
+            ],
+            [
+              -6.0,
+              44.0,
+              49.0
+            ],
+            [
+              -6.0,
+              44.0,
+              50.0
+            ],
+            [
+              8.0,
+              40.0,
+              28.0
+            ],
+            [
+              8.0,
+              40.0,
+              29.0
+            ],
+            [
+              8.0,
+              40.0,
+              30.0
+            ],
+            [
+              8.0,
+              40.0,
+              31.0
+            ],
+            [
+              8.0,
+              40.0,
+              32.0
+            ],
+            [
+              8.0,
+              40.0,
+              33.0
+            ],
+            [
+              8.0,
+              40.0,
+              34.0
+            ],
+            [
+              8.0,
+              40.0,
+              35.0
+            ],
+            [
+              8.0,
+              40.0,
+              36.0
+            ],
+            [
+              8.0,
+              40.0,
+              37.0
+            ],
+            [
+              8.0,
+              40.0,
+              38.0
+            ],
+            [
+              8.0,
+              40.0,
+              39.0
+            ],
+            [
+              8.0,
+              40.0,
+              40.0
+            ],
+            [
+              8.0,
+              40.0,
+              41.0
+            ],
+            [
+              8.0,
+              40.0,
+              42.0
+            ],
+            [
+              8.0,
+              40.0,
+              43.0
+            ],
+            [
+              8.0,
+              40.0,
+              44.0
+            ],
+            [
+              8.0,
+              40.0,
+              45.0
+            ],
+            [
+              8.0,
+              40.0,
+              46.0
+            ],
+            [
+              8.0,
+              40.0,
+              47.0
+            ],
+            [
+              8.0,
+              40.0,
+              48.0
+            ],
+            [
+              8.0,
+              40.0,
+              49.0
+            ],
+            [
+              8.0,
+              40.0,
+              50.0
+            ],
+            [
+              -16.0,
+              64.0,
+              -4.0
+            ],
+            [
+              16.0,
+              64.0,
+              0.0
+            ],
+            [
+              -2.0,
+              42.0,
+              -24.0
+            ],
+            [
+              4.0,
+              40.0,
+              -24.0
+            ],
+            [
+              -52.0,
+              16.0,
+              20.0
+            ],
+            [
+              -42.0,
+              12.0,
+              0.0
+            ],
+            [
+              58.0,
+              20.0,
+              24.0
+            ],
+            [
+              44.0,
+              6.0,
+              2.0
+            ],
+            [
+              -2.0,
+              -16.0,
+              4.0
+            ],
+            [
+              12.0,
+              -22.0,
+              6.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -6.0,
               44.0,
@@ -975,7 +1494,12 @@
               -22.0,
               6.0
             ]
-          ]
+          ],
+          "review_unit_id": "dementia:15668960:Franceschi_2005_1",
+          "review_disposition": "expected_difference",
+          "review_note": "Original table encoded coordinates strangely, expected failure, e.g.: \u22126 \t44 \t22 to 50",
+          "raw_match_status": "unmatched",
+          "review_adjustment": "credited_as_accepted"
         },
         {
           "manual_analysis_id": "Franceschi_2005_2",
@@ -987,11 +1511,22 @@
           "name_score": 0.2,
           "coord_score": 0.26087,
           "combined_score": 0.242609,
-          "match_status": "unmatched",
+          "match_status": "accepted",
           "exact_coord_set": false,
           "strict_exact_coord_set": false,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": false,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 0.2608695652173913,
+          "high_coverage_coord_set": false,
+          "lowered_threshold_coord_override": false,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": false,
           "low_name_with_exact_coords": false,
           "reason_codes": [
@@ -999,6 +1534,238 @@
             "low_total_score"
           ],
           "manual_coordinates": [
+            [
+              -10.0,
+              12.0,
+              -24.0
+            ],
+            [
+              12.0,
+              24.0,
+              -28.0
+            ],
+            [
+              -8.0,
+              38.0,
+              18.0
+            ],
+            [
+              8.0,
+              34.0,
+              20.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -2.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -3.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -4.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -5.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -6.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -7.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -8.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -9.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -10.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -11.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -12.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -13.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -14.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -15.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -16.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -17.0
+            ],
+            [
+              -10.0,
+              12.0,
+              -18.0
+            ],
+            [
+              10.0,
+              14.0,
+              -2.0
+            ],
+            [
+              10.0,
+              14.0,
+              -3.0
+            ],
+            [
+              10.0,
+              14.0,
+              -4.0
+            ],
+            [
+              10.0,
+              14.0,
+              -5.0
+            ],
+            [
+              10.0,
+              14.0,
+              -6.0
+            ],
+            [
+              10.0,
+              14.0,
+              -7.0
+            ],
+            [
+              10.0,
+              14.0,
+              -8.0
+            ],
+            [
+              10.0,
+              14.0,
+              -9.0
+            ],
+            [
+              10.0,
+              14.0,
+              -10.0
+            ],
+            [
+              10.0,
+              14.0,
+              -11.0
+            ],
+            [
+              10.0,
+              14.0,
+              -12.0
+            ],
+            [
+              10.0,
+              14.0,
+              -13.0
+            ],
+            [
+              10.0,
+              14.0,
+              -14.0
+            ],
+            [
+              10.0,
+              14.0,
+              -15.0
+            ],
+            [
+              10.0,
+              14.0,
+              -16.0
+            ],
+            [
+              10.0,
+              14.0,
+              -17.0
+            ],
+            [
+              10.0,
+              14.0,
+              -18.0
+            ],
+            [
+              -46.0,
+              6.0,
+              0.0
+            ],
+            [
+              -4.0,
+              -18.0,
+              8.0
+            ],
+            [
+              10.0,
+              -20.0,
+              6.0
+            ],
+            [
+              -48.0,
+              -18.0,
+              -36.0
+            ],
+            [
+              48.0,
+              -16.0,
+              -36.0
+            ],
+            [
+              -24.0,
+              -12.0,
+              -30.0
+            ],
+            [
+              20.0,
+              -8.0,
+              -30.0
+            ],
+            [
+              46.0,
+              8.0,
+              -2.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -10.0,
               12.0,
@@ -1291,11 +2058,17 @@
               8.0,
               -2.0
             ]
-          ]
+          ],
+          "review_unit_id": "dementia:15668960:Franceschi_2005_2",
+          "review_disposition": "expected_difference",
+          "review_note": "Original table encoded coordinates strangely, expected failure",
+          "raw_match_status": "unmatched",
+          "review_adjustment": "credited_as_accepted"
         }
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -1525,18 +2298,22 @@
         3
       ],
       "pmid_summary": {
-        "accepted": 0,
+        "accepted": 2,
         "uncertain": 0,
-        "unmatched": 2,
+        "unmatched": 0,
         "manual_analysis_count": 2,
         "manual_analysis_count_original": 2,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
-        "all_manual_accepted": false,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
+        "all_manual_accepted": true,
         "mean_combined_score": 0.215256,
-        "study_category": "all_incorrect"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 2,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "Franceschi_2005",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -1552,13 +2329,26 @@
           "best_auto_analysis_id": "18661129_analysis_0",
           "best_auto_name": "NC > FTD",
           "name_score": 0.2,
-          "coord_score": 0.127657,
-          "combined_score": 0.14936,
-          "match_status": "unmatched",
+          "coord_score": 0.375,
+          "combined_score": 0.3225,
+          "match_status": "accepted",
           "exact_coord_set": false,
           "strict_exact_coord_set": false,
           "tolerance_exact_coord_set": false,
-          "exact_match_axis_tolerance": 1.0,
+          "exact_match_axis_tolerance": null,
+          "equal_coord_count": false,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 0.375,
+          "high_coverage_coord_set": false,
+          "lowered_threshold_coord_override": false,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original",
+            "manual_talairach_to_mni",
+            "manual_mni_to_talairach"
+          ],
           "coord_override_accepted": false,
           "low_name_with_exact_coords": false,
           "reason_codes": [
@@ -1567,124 +2357,246 @@
           ],
           "manual_coordinates": [
             [
-              -8.383700000000001,
-              9.2156,
-              -10.030100000000001
+              -8.0,
+              10.0,
+              -16.0
             ],
             [
-              -8.311499999999999,
-              19.047200000000004,
-              -14.6583
+              -8.0,
+              20.0,
+              -22.0
             ],
             [
-              8.3169,
-              33.156800000000004,
-              20.058600000000002
+              10.0,
+              38.0,
+              15.0
             ],
             [
-              -8.401,
-              8.130799999999999,
-              -8.311900000000001
+              -8.0,
+              9.0,
+              -14.0
             ],
             [
-              -16.9404,
-              6.0881,
-              5.8674
+              -17.0,
+              8.0,
+              2.0
             ],
             [
-              -42.097199999999994,
-              31.9232,
-              4.0329
+              -44.0,
+              35.0,
+              -2.0
             ],
             [
-              27.101799999999997,
-              49.2178,
-              18.8529
+              30.0,
+              55.0,
+              12.0
             ],
             [
-              -58.099000000000004,
-              -28.0965,
-              -12.6873
+              -61.0,
+              -30.0,
+              -15.0
             ],
             [
-              56.154700000000005,
-              -10.6015,
-              -15.382100000000001
+              61.0,
+              -11.0,
+              -21.0
             ],
             [
-              27.666099999999997,
-              -80.1631,
-              4.8988000000000005
+              31.0,
+              -83.0,
+              8.0
             ],
             [
-              -14.413039999999999,
-              -79.59472,
-              1.0278399999999999
+              -14.0,
+              -83.0,
+              4.2
             ],
             [
-              -15.0883,
-              -20.5199,
-              -4.3631
+              -15.0,
+              -21.0,
+              -7.0
             ],
             [
-              -44.142599999999995,
-              -24.439799999999998,
-              -0.4996999999999998
+              -46.0,
+              -25.0,
+              -2.0
             ],
             [
-              18.6186,
-              -15.9833,
-              -4.513000000000001
+              21.0,
+              -16.0,
+              -8.0
             ],
             [
-              59.5514,
-              -36.8763,
-              16.8537
+              65.0,
+              -36.0,
+              17.0
             ],
             [
-              -10.392799999999998,
-              32.4198,
-              18.8807
+              -10.0,
+              37.0,
+              14.0
             ],
             [
-              -57.04879999999999,
-              6.7348,
-              -10.7913
+              -60.0,
+              7.0,
+              -16.0
             ],
             [
-              31.918599999999994,
-              53.310900000000004,
-              2.9894
+              35.0,
+              58.0,
+              -6.0
             ],
             [
-              -30.978,
-              41.6684,
-              22.992900000000002
+              -32.0,
+              47.0,
+              18.0
             ],
             [
-              -35.61279999999999,
-              -0.6453,
-              -3.0105000000000004
+              -37.0,
+              0.0,
+              -7.0
             ],
             [
-              38.314600000000006,
-              -5.639,
-              -5.262900000000001
+              42.0,
+              -5.0,
+              -10.0
             ],
             [
-              -24.3284,
-              -7.4415000000000004,
-              -13.3522
+              -25.0,
+              -8.0,
+              -18.0
             ],
             [
-              26.2066,
-              -7.719900000000001,
-              -13.692699999999999
+              29.0,
+              -8.0,
+              -19.0
             ],
             [
-              50.6213,
-              -2.4649,
-              -22.015900000000002
+              55.0,
+              -3.0,
+              -29.0
+            ]
+          ],
+          "manual_coordinates_used": [
+            [
+              -8.0,
+              10.0,
+              -16.0
+            ],
+            [
+              -8.0,
+              20.0,
+              -22.0
+            ],
+            [
+              10.0,
+              38.0,
+              15.0
+            ],
+            [
+              -8.0,
+              9.0,
+              -14.0
+            ],
+            [
+              -17.0,
+              8.0,
+              2.0
+            ],
+            [
+              -44.0,
+              35.0,
+              -2.0
+            ],
+            [
+              30.0,
+              55.0,
+              12.0
+            ],
+            [
+              -61.0,
+              -30.0,
+              -15.0
+            ],
+            [
+              61.0,
+              -11.0,
+              -21.0
+            ],
+            [
+              31.0,
+              -83.0,
+              8.0
+            ],
+            [
+              -14.0,
+              -83.0,
+              4.2
+            ],
+            [
+              -15.0,
+              -21.0,
+              -7.0
+            ],
+            [
+              -46.0,
+              -25.0,
+              -2.0
+            ],
+            [
+              21.0,
+              -16.0,
+              -8.0
+            ],
+            [
+              65.0,
+              -36.0,
+              17.0
+            ],
+            [
+              -10.0,
+              37.0,
+              14.0
+            ],
+            [
+              -60.0,
+              7.0,
+              -16.0
+            ],
+            [
+              35.0,
+              58.0,
+              -6.0
+            ],
+            [
+              -32.0,
+              47.0,
+              18.0
+            ],
+            [
+              -37.0,
+              0.0,
+              -7.0
+            ],
+            [
+              42.0,
+              -5.0,
+              -10.0
+            ],
+            [
+              -25.0,
+              -8.0,
+              -18.0
+            ],
+            [
+              29.0,
+              -8.0,
+              -19.0
+            ],
+            [
+              55.0,
+              -3.0,
+              -29.0
             ]
           ],
           "best_auto_coordinates": [
@@ -1733,11 +2645,17 @@
               -11.0,
               -21.0
             ]
-          ]
+          ],
+          "review_unit_id": "dementia:18661129:Kanda_2008_1",
+          "review_disposition": "gold_standard_error",
+          "review_note": "Merged multiple anlyses",
+          "raw_match_status": "unmatched",
+          "review_adjustment": "credited_as_accepted"
         }
       ],
       "excluded_manual_analyses_decimal": [],
-      "converted_manual_analyses_decimal": [
+      "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [
         {
           "id": "Kanda_2008_1",
           "name": "Kanda_2008_1",
@@ -2159,18 +3077,22 @@
         8
       ],
       "pmid_summary": {
-        "accepted": 0,
+        "accepted": 1,
         "uncertain": 0,
-        "unmatched": 1,
+        "unmatched": 0,
         "manual_analysis_count": 1,
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
-        "converted_manual_decimal_analysis_count": 1,
-        "all_manual_accepted": false,
-        "mean_combined_score": 0.14936,
-        "study_category": "all_incorrect"
+        "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 1,
+        "all_manual_accepted": true,
+        "mean_combined_score": 0.3225,
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "Kanda_2008",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -2193,15 +3115,69 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "accepted_coord_override",
             "exact_coord_set",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              4.0,
+              28.0,
+              38.0
+            ],
+            [
+              4.0,
+              66.0,
+              2.0
+            ],
+            [
+              4.0,
+              64.0,
+              20.0
+            ],
+            [
+              -8.0,
+              8.0,
+              4.0
+            ],
+            [
+              -14.0,
+              0.0,
+              16.0
+            ],
+            [
+              0.0,
+              30.0,
+              -24.0
+            ],
+            [
+              -10.0,
+              20.0,
+              -26.0
+            ],
+            [
+              20.0,
+              6.0,
+              10.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               4.0,
               28.0,
@@ -2289,6 +3265,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -2536,11 +3513,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.7,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "Raczka_2010",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -2563,6 +3544,17 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": false,
+          "lowered_threshold_coord_override": false,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
@@ -2572,6 +3564,13 @@
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              1.0,
+              -29.0,
+              -24.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               1.0,
               -29.0,
@@ -2589,6 +3588,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -2666,11 +3666,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.746154,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "Agustus_2015",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": true,
         "pmcid": "4402026",
@@ -2700,6 +3704,17 @@
           "strict_exact_coord_set": false,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": false,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 0.7931034482758621,
+          "high_coverage_coord_set": false,
+          "lowered_threshold_coord_override": false,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": false,
           "low_name_with_exact_coords": false,
           "reason_codes": [
@@ -2707,6 +3722,153 @@
             "high_coord_match"
           ],
           "manual_coordinates": [
+            [
+              51.0,
+              9.0,
+              18.0
+            ],
+            [
+              48.0,
+              15.0,
+              25.0
+            ],
+            [
+              -6.0,
+              -25.0,
+              3.0
+            ],
+            [
+              -30.0,
+              -39.0,
+              -3.0
+            ],
+            [
+              -16.0,
+              -37.0,
+              6.0
+            ],
+            [
+              -36.0,
+              -4.0,
+              8.0
+            ],
+            [
+              -36.0,
+              53.0,
+              14.0
+            ],
+            [
+              -14.0,
+              12.0,
+              12.0
+            ],
+            [
+              8.0,
+              10.0,
+              12.0
+            ],
+            [
+              18.0,
+              62.0,
+              -3.0
+            ],
+            [
+              6.0,
+              12.0,
+              9.0
+            ],
+            [
+              -44.0,
+              42.0,
+              24.0
+            ],
+            [
+              -10.0,
+              55.0,
+              10.0
+            ],
+            [
+              10.0,
+              9.0,
+              18.0
+            ],
+            [
+              38.0,
+              21.0,
+              -4.0
+            ],
+            [
+              6.0,
+              18.0,
+              6.0
+            ],
+            [
+              -51.0,
+              16.0,
+              7.0
+            ],
+            [
+              -53.0,
+              10.0,
+              1.0
+            ],
+            [
+              -51.0,
+              27.0,
+              6.0
+            ],
+            [
+              -28.0,
+              58.0,
+              1.0
+            ],
+            [
+              26.0,
+              58.0,
+              25.0
+            ],
+            [
+              28.0,
+              46.0,
+              29.0
+            ],
+            [
+              36.0,
+              24.0,
+              8.0
+            ],
+            [
+              -8.0,
+              4.0,
+              -4.0
+            ],
+            [
+              2.0,
+              8.0,
+              36.0
+            ],
+            [
+              -10.0,
+              10.0,
+              36.0
+            ],
+            [
+              -14.0,
+              12.0,
+              38.0
+            ],
+            [
+              -6.0,
+              6.0,
+              0.0
+            ],
+            [
+              50.0,
+              -47.0,
+              36.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               51.0,
               9.0,
@@ -2974,6 +4136,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -3309,18 +4472,98 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": false,
         "mean_combined_score": 0.609718,
-        "study_category": "all_incorrect"
+        "study_category": "all_incorrect",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "Morbelli_2016",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
     },
     "27567867": {
       "manual_missing_in_auto": false,
-      "manual_analyses": [
+      "manual_analyses": [],
+      "excluded_manual_analyses_decimal": [],
+      "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
+      "auto_analyses": [
+        {
+          "index": 0,
+          "analysis_id": "27567867_analysis_0",
+          "name": "VBM differences between DbvFTD >AbvFTD groups in selected ROIs",
+          "coord_count": 9,
+          "coordinates": [
+            [
+              52.5,
+              9.9,
+              24.3
+            ],
+            [
+              49.4,
+              12.9,
+              17.6
+            ],
+            [
+              62.5,
+              19.9,
+              14.3
+            ],
+            [
+              39.6,
+              61.2,
+              0.8
+            ],
+            [
+              29.6,
+              69.3,
+              0.9
+            ],
+            [
+              -1.8,
+              30.6,
+              24.3
+            ],
+            [
+              -8.1,
+              12.6,
+              -1.5
+            ],
+            [
+              -34.2,
+              9.9,
+              -24.3
+            ],
+            [
+              -37.8,
+              10.8,
+              -24.2
+            ]
+          ]
+        }
+      ],
+      "unassigned_auto_indices": [],
+      "pmid_summary": {
+        "accepted": 0,
+        "uncertain": 0,
+        "unmatched": 0,
+        "manual_analysis_count": 0,
+        "manual_analysis_count_original": 2,
+        "excluded_manual_decimal_analysis_count": 0,
+        "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
+        "all_manual_accepted": false,
+        "mean_combined_score": 0.0,
+        "study_category": "review_excluded",
+        "manual_analysis_count_before_review": 2,
+        "review_excluded_manual_analysis_count": 2
+      },
+      "study_name": "Santamaria-Garcia_2016",
+      "review_excluded_manual_analyses": [
         {
           "manual_analysis_id": "Santamaria-Garcia_2016_1",
           "manual_name": "Santamaria-Garcia_2016_1",
@@ -3336,6 +4579,17 @@
           "strict_exact_coord_set": false,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": false,
+          "mean_paired_distance_mm": 38.23413615029095,
+          "median_paired_distance_mm": 43.33993539450653,
+          "max_paired_distance_mm": 58.38373061050484,
+          "matched_fraction_within_8mm": 0.05555555555555555,
+          "high_coverage_coord_set": false,
+          "lowered_threshold_coord_override": false,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": false,
           "low_name_with_exact_coords": false,
           "reason_codes": [
@@ -3343,6 +4597,98 @@
             "low_total_score"
           ],
           "manual_coordinates": [
+            [
+              -22.0,
+              -7.0,
+              -15.0
+            ],
+            [
+              27.0,
+              -6.0,
+              -15.0
+            ],
+            [
+              -38.0,
+              -22.0,
+              -26.0
+            ],
+            [
+              -54.0,
+              -64.0,
+              24.0
+            ],
+            [
+              -38.0,
+              -1.0,
+              7.0
+            ],
+            [
+              -2.0,
+              3.0,
+              45.0
+            ],
+            [
+              16.0,
+              -33.0,
+              1.0
+            ],
+            [
+              58.0,
+              -15.0,
+              -11.0
+            ],
+            [
+              -3.0,
+              38.0,
+              -15.0
+            ],
+            [
+              -6.0,
+              -48.0,
+              9.0
+            ],
+            [
+              -12.0,
+              14.0,
+              4.0
+            ],
+            [
+              -15.0,
+              8.0,
+              13.0
+            ],
+            [
+              -54.0,
+              -67.0,
+              -11.0
+            ],
+            [
+              62.0,
+              -43.0,
+              7.0
+            ],
+            [
+              -4.0,
+              -63.0,
+              12.0
+            ],
+            [
+              -28.0,
+              60.0,
+              3.0
+            ],
+            [
+              -2.0,
+              3.0,
+              45.0
+            ],
+            [
+              -2.0,
+              3.0,
+              45.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -22.0,
               -7.0,
@@ -3480,7 +4826,12 @@
               10.8,
               -24.2
             ]
-          ]
+          ],
+          "review_unit_id": "dementia:27567867:Santamaria-Garcia_2016_1",
+          "review_disposition": "supplemental_data",
+          "review_note": "",
+          "raw_match_status": "unmatched",
+          "review_adjustment": "excluded_non_parser_evaluable"
         },
         {
           "manual_analysis_id": "Santamaria-Garcia_2016_2",
@@ -3497,6 +4848,14 @@
           "strict_exact_coord_set": false,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": false,
+          "mean_paired_distance_mm": null,
+          "median_paired_distance_mm": null,
+          "max_paired_distance_mm": null,
+          "matched_fraction_within_8mm": 0.0,
+          "high_coverage_coord_set": false,
+          "coordinate_variant": null,
+          "coordinate_variants_considered": [],
           "coord_override_accepted": false,
           "low_name_with_exact_coords": false,
           "reason_codes": [
@@ -3590,80 +4949,14 @@
               57.0
             ]
           ],
-          "best_auto_coordinates": []
+          "best_auto_coordinates": [],
+          "review_unit_id": "dementia:27567867:Santamaria-Garcia_2016_2",
+          "review_disposition": "supplemental_data",
+          "review_note": "",
+          "raw_match_status": "unmatched",
+          "review_adjustment": "excluded_non_parser_evaluable"
         }
       ],
-      "excluded_manual_analyses_decimal": [],
-      "converted_manual_analyses_decimal": [],
-      "auto_analyses": [
-        {
-          "index": 0,
-          "analysis_id": "27567867_analysis_0",
-          "name": "VBM differences between DbvFTD >AbvFTD groups in selected ROIs",
-          "coord_count": 9,
-          "coordinates": [
-            [
-              52.5,
-              9.9,
-              24.3
-            ],
-            [
-              49.4,
-              12.9,
-              17.6
-            ],
-            [
-              62.5,
-              19.9,
-              14.3
-            ],
-            [
-              39.6,
-              61.2,
-              0.8
-            ],
-            [
-              29.6,
-              69.3,
-              0.9
-            ],
-            [
-              -1.8,
-              30.6,
-              24.3
-            ],
-            [
-              -8.1,
-              12.6,
-              -1.5
-            ],
-            [
-              -34.2,
-              9.9,
-              -24.3
-            ],
-            [
-              -37.8,
-              10.8,
-              -24.2
-            ]
-          ]
-        }
-      ],
-      "unassigned_auto_indices": [],
-      "pmid_summary": {
-        "accepted": 0,
-        "uncertain": 0,
-        "unmatched": 2,
-        "manual_analysis_count": 2,
-        "manual_analysis_count_original": 2,
-        "excluded_manual_decimal_analysis_count": 0,
-        "converted_manual_decimal_analysis_count": 0,
-        "all_manual_accepted": false,
-        "mean_combined_score": 0.026744,
-        "study_category": "all_incorrect"
-      },
-      "study_name": "Santamaria-Garcia_2016",
       "pubget": {
         "available": false
       }
@@ -3686,6 +4979,17 @@
           "strict_exact_coord_set": false,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": false,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 0.8181818181818182,
+          "high_coverage_coord_set": false,
+          "lowered_threshold_coord_override": false,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": false,
           "low_name_with_exact_coords": false,
           "reason_codes": [
@@ -3693,6 +4997,118 @@
             "high_coord_match"
           ],
           "manual_coordinates": [
+            [
+              -13.0,
+              40.0,
+              39.0
+            ],
+            [
+              12.0,
+              15.0,
+              57.0
+            ],
+            [
+              37.0,
+              49.0,
+              -13.0
+            ],
+            [
+              7.0,
+              38.0,
+              4.0
+            ],
+            [
+              -6.0,
+              -39.0,
+              31.0
+            ],
+            [
+              -53.0,
+              8.0,
+              -11.0
+            ],
+            [
+              39.0,
+              18.0,
+              -25.0
+            ],
+            [
+              56.0,
+              -2.0,
+              -5.0
+            ],
+            [
+              -38.0,
+              -48.0,
+              24.0
+            ],
+            [
+              -56.0,
+              -18.0,
+              -19.0
+            ],
+            [
+              33.0,
+              -42.0,
+              31.0
+            ],
+            [
+              -7.0,
+              -64.0,
+              52.0
+            ],
+            [
+              16.0,
+              -46.0,
+              37.0
+            ],
+            [
+              -7.0,
+              -74.0,
+              8.0
+            ],
+            [
+              -39.0,
+              -25.0,
+              -14.0
+            ],
+            [
+              -3.0,
+              -36.0,
+              -17.0
+            ],
+            [
+              36.0,
+              -32.0,
+              -25.0
+            ],
+            [
+              -10.0,
+              -16.0,
+              4.0
+            ],
+            [
+              -38.0,
+              13.0,
+              -16.0
+            ],
+            [
+              30.0,
+              11.0,
+              -21.0
+            ],
+            [
+              -2.0,
+              7.0,
+              27.0
+            ],
+            [
+              -14.0,
+              8.0,
+              11.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -13.0,
               40.0,
@@ -3900,6 +5316,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -4236,11 +5653,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": false,
         "mean_combined_score": 0.635227,
-        "study_category": "all_incorrect"
+        "study_category": "all_incorrect",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "Devencchio_2018",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -4310,28 +5731,61 @@
     "overlap_pmids": 9,
     "overlap_pmids_before_decimal_filter": 9,
     "unavailable_manual_decimal_pmids": 0,
-    "converted_manual_decimal_analyses": 1,
+    "converted_manual_decimal_analyses": 0,
+    "coordinate_space_variant_manual_decimal_analyses": 1,
     "excluded_manual_only_pmids": 20,
     "auto_only_pmids": 30,
-    "manual_analyses_total": 11,
-    "accepted": 4,
+    "manual_analyses_total": 9,
+    "accepted": 7,
     "uncertain": 2,
-    "unmatched": 5,
+    "unmatched": 0,
     "accepted_coord_override": 2,
     "low_name_coord_override_matches": 4,
     "accepted_exact_coord_override": 2,
     "low_name_exact_matches": 4,
-    "pmids_all_manual_accepted": 4,
-    "pmids_all_manual_accepted_rate": 0.4444444444444444,
-    "all_correct_pmids": 4,
+    "pmids_all_manual_accepted": 6,
+    "pmids_all_manual_accepted_rate": 0.75,
+    "all_correct_pmids": 6,
     "mixed_pmids": 0,
-    "all_incorrect_pmids": 5,
-    "mean_combined_score": 0.4400952727272726,
-    "median_combined_score": 0.609718,
-    "p25_combined_score": 0.1686315,
-    "p75_combined_score": 0.723077,
+    "all_incorrect_pmids": 2,
+    "mean_combined_score": 0.5511888888888888,
+    "median_combined_score": 0.635227,
+    "p25_combined_score": 0.3225,
+    "p75_combined_score": 0.746154,
+    "review_evaluable_pmids": 8,
+    "review_excluded_pmids": 1,
+    "review_credited_manual_analyses": 3,
+    "review_excluded_manual_analyses": 2,
+    "review_confirmed_parser_misses": 0,
     "pmids_with_pubget": 1,
     "pubget_tables_total": 1
+  },
+  "parser_review_adjustment": {
+    "enabled": true,
+    "review_path": "/home/zorro/repos/autonima-results/reports/parser_error_annotation/reviews/parser_failure_review_2.json",
+    "project": "dementia",
+    "review_entries_for_project": 5,
+    "matched_review_entries": 5,
+    "unmatched_review_entries": 0,
+    "credited_as_accepted": 3,
+    "excluded_non_parser_evaluable": 2,
+    "confirmed_parser_misses": 0,
+    "credited_dispositions": [
+      "expected_difference",
+      "gold_standard_error",
+      "matching_error"
+    ],
+    "excluded_dispositions": [
+      "out_of_scope",
+      "source_material_missing",
+      "supplemental_data",
+      "uncertain"
+    ],
+    "disposition_counts": {
+      "expected_difference": 2,
+      "gold_standard_error": 1,
+      "supplemental_data": 2
+    }
   },
   "table_only_baseline": {
     "available": true,
@@ -4350,7 +5804,7 @@
     "auto_pmids_total": 39,
     "excluded_manual_only_pmids": 20,
     "auto_only_pmids": 30,
-    "decimal_manual_coordinate_handling": "convert_to_talairach",
+    "decimal_manual_coordinate_handling": "match_best_space",
     "policy": "Raw extracted coordinates grouped only by source table; fuzzy matched to manual analyses."
   }
 }

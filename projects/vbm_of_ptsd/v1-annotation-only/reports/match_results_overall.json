@@ -6,17 +6,40 @@
     "name_weight": 0.3,
     "accepted_threshold": 0.75,
     "uncertain_threshold": 0.55,
-    "coordinate_space_handling": "ignore_space_labels_use_raw_xyz",
+    "coordinate_space_handling": "best_of_original_talairach_to_mni_and_mni_to_talairach",
     "metric_truth_policy": "accepted_only",
     "pmid_scope_for_scoring": "overlap_only_manual_and_auto",
     "coord_accept_override": true,
-    "coord_accept_override_threshold": 0.9,
+    "coord_accept_override_threshold": 0.8,
+    "strong_coord_accept_override_threshold": 0.9,
+    "lowered_coord_override_requires_equal_count": true,
+    "high_coverage_coord_set_override": {
+      "minimum_coordinate_count": 3,
+      "distance_mm": 8.0,
+      "minimum_match_fraction": 0.9,
+      "maximum_median_distance_mm": 6.0
+    },
     "exact_coord_accept_override": false,
     "low_name_highlight_threshold": 0.55,
-    "decimal_manual_coordinate_handling": "convert_to_talairach",
+    "decimal_manual_coordinate_handling": "match_best_space",
     "converted_talairach_exact_axis_tolerance": 1.0,
     "exclude_decimal_manual_coordinates": false,
-    "convert_decimal_manual_coordinates_to_talairach": true
+    "convert_decimal_manual_coordinates_to_talairach": false,
+    "match_decimal_manual_coordinates_in_best_space": true,
+    "human_review_adjustment": {
+      "confirmed_parser_misses_remain_penalties": true,
+      "credited_dispositions": [
+        "expected_difference",
+        "gold_standard_error",
+        "matching_error"
+      ],
+      "excluded_from_denominator": [
+        "out_of_scope",
+        "source_material_missing",
+        "supplemental_data",
+        "uncertain"
+      ]
+    }
   },
   "pmids": {
     "17825801": {
@@ -37,14 +60,63 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "exact_coord_set",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              -64.0,
+              -44.0,
+              10.0
+            ],
+            [
+              44.0,
+              -2.0,
+              -14.0
+            ],
+            [
+              -62.0,
+              -56.0,
+              -4.0
+            ],
+            [
+              34.0,
+              -28.0,
+              -16.0
+            ],
+            [
+              -36.0,
+              10.0,
+              -4.0
+            ],
+            [
+              0.0,
+              46.0,
+              10.0
+            ],
+            [
+              -46.0,
+              42.0,
+              -14.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -64.0,
               -44.0,
@@ -122,6 +194,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -220,11 +293,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.754545,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "17825801",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -247,14 +324,53 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "exact_coord_set",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              -10.0,
+              -60.0,
+              3.0
+            ],
+            [
+              -23.0,
+              -57.0,
+              -2.0
+            ],
+            [
+              -17.0,
+              -55.0,
+              32.0
+            ],
+            [
+              -3.0,
+              -61.0,
+              33.0
+            ],
+            [
+              7.0,
+              -50.0,
+              2.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -10.0,
               -60.0,
@@ -312,6 +428,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -520,11 +637,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.75,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "19942229",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -547,14 +668,88 @@
           "strict_exact_coord_set": false,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 1.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 12.0,
+          "matched_fraction_within_8mm": 0.9166666666666666,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "accepted_coord_override",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              -6.0,
+              46.0,
+              7.0
+            ],
+            [
+              -66.0,
+              -3.0,
+              -6.0
+            ],
+            [
+              45.0,
+              -38.0,
+              32.0
+            ],
+            [
+              -35.0,
+              24.0,
+              -26.0
+            ],
+            [
+              -19.0,
+              -21.0,
+              63.0
+            ],
+            [
+              -21.0,
+              -70.0,
+              50.0
+            ],
+            [
+              50.0,
+              -32.0,
+              58.0
+            ],
+            [
+              6.0,
+              -7.0,
+              77.0
+            ],
+            [
+              2.0,
+              -7.0,
+              41.0
+            ],
+            [
+              3.0,
+              54.0,
+              30.0
+            ],
+            [
+              34.0,
+              25.0,
+              52.0
+            ],
+            [
+              55.0,
+              -55.0,
+              37.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -6.0,
               46.0,
@@ -682,6 +877,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -913,11 +1109,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.692436,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "21418787",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -940,14 +1140,43 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "exact_coord_set",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              -12.0,
+              -67.0,
+              17.0
+            ],
+            [
+              5.0,
+              -81.0,
+              15.0
+            ],
+            [
+              -17.0,
+              -9.0,
+              -26.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -12.0,
               -67.0,
@@ -985,6 +1214,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -1019,11 +1249,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.766667,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "21498053",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -1046,14 +1280,48 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "exact_coord_set",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              31.0,
+              -76.0,
+              47.0
+            ],
+            [
+              53.0,
+              -25.0,
+              -3.0
+            ],
+            [
+              53.0,
+              -1.0,
+              35.0
+            ],
+            [
+              -12.0,
+              54.0,
+              10.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               31.0,
               -76.0,
@@ -1101,6 +1369,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -1140,11 +1409,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.764615,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "22952599",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": true,
         "pmcid": "3432060",
@@ -1174,13 +1447,47 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": false,
           "reason_codes": [
             "exact_coord_set",
-            "high_coord_match"
+            "high_coord_match",
+            "high_coverage_coord_set"
           ],
           "manual_coordinates": [
+            [
+              10.0,
+              8.0,
+              -14.0
+            ],
+            [
+              -32.0,
+              -12.0,
+              18.0
+            ],
+            [
+              38.0,
+              42.0,
+              14.0
+            ],
+            [
+              -64.0,
+              -26.0,
+              -10.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               10.0,
               8.0,
@@ -1228,6 +1535,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -1331,11 +1639,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.877778,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "23021615",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
@@ -1358,6 +1670,17 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": false,
+          "lowered_threshold_coord_override": false,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
@@ -1366,6 +1689,13 @@
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              -6.0,
+              26.0,
+              20.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -6.0,
               26.0,
@@ -1383,6 +1713,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -1493,11 +1824,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.777419,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "23155380",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": true,
         "pmcid": "3498281",
@@ -1527,13 +1862,42 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": false,
           "reason_codes": [
             "exact_coord_set",
-            "high_coord_match"
+            "high_coord_match",
+            "high_coverage_coord_set"
           ],
           "manual_coordinates": [
+            [
+              53.0,
+              -25.0,
+              -23.0
+            ],
+            [
+              -54.0,
+              -45.0,
+              40.0
+            ],
+            [
+              -5.0,
+              -4.0,
+              -9.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               53.0,
               -25.0,
@@ -1571,6 +1935,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -1688,11 +2053,15 @@
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.984211,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "26347628",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": true,
         "pmcid": "4542504",
@@ -1722,15 +2091,159 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "accepted_coord_override",
             "exact_coord_set",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              -2.0,
+              -4.0,
+              -2.0
+            ],
+            [
+              -2.0,
+              58.0,
+              4.0
+            ],
+            [
+              36.0,
+              28.0,
+              -22.0
+            ],
+            [
+              -36.0,
+              28.0,
+              -22.0
+            ],
+            [
+              8.0,
+              44.0,
+              -22.0
+            ],
+            [
+              2.0,
+              32.0,
+              -8.0
+            ],
+            [
+              -4.0,
+              -26.0,
+              38.0
+            ],
+            [
+              16.0,
+              70.0,
+              2.0
+            ],
+            [
+              0.0,
+              34.0,
+              -8.0
+            ],
+            [
+              28.0,
+              -2.0,
+              -28.0
+            ],
+            [
+              2.0,
+              -28.0,
+              40.0
+            ],
+            [
+              -22.0,
+              -8.0,
+              -28.0
+            ],
+            [
+              -42.0,
+              6.0,
+              48.0
+            ],
+            [
+              -40.0,
+              -4.0,
+              0.0
+            ],
+            [
+              38.0,
+              -6.0,
+              -6.0
+            ],
+            [
+              48.0,
+              30.0,
+              22.0
+            ],
+            [
+              0.0,
+              34.0,
+              -12.0
+            ],
+            [
+              2.0,
+              48.0,
+              6.0
+            ],
+            [
+              -6.0,
+              -76.0,
+              30.0
+            ],
+            [
+              8.0,
+              -72.0,
+              34.0
+            ],
+            [
+              -16.0,
+              6.0,
+              -12.0
+            ],
+            [
+              20.0,
+              8.0,
+              -12.0
+            ],
+            [
+              -4.0,
+              56.0,
+              22.0
+            ],
+            [
+              4.0,
+              54.0,
+              24.0
+            ],
+            [
+              28.0,
+              -10.0,
+              -28.0
+            ],
+            [
+              -22.0,
+              -2.0,
+              -28.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -2.0,
               -4.0,
@@ -2010,15 +2523,154 @@
           "strict_exact_coord_set": true,
           "tolerance_exact_coord_set": false,
           "exact_match_axis_tolerance": null,
+          "equal_coord_count": true,
+          "mean_paired_distance_mm": 0.0,
+          "median_paired_distance_mm": 0.0,
+          "max_paired_distance_mm": 0.0,
+          "matched_fraction_within_8mm": 1.0,
+          "high_coverage_coord_set": true,
+          "lowered_threshold_coord_override": true,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
           "coord_override_accepted": true,
           "low_name_with_exact_coords": true,
           "reason_codes": [
             "accepted_coord_override",
             "exact_coord_set",
             "high_coord_match",
+            "high_coverage_coord_set",
             "low_name_with_coord_override"
           ],
           "manual_coordinates": [
+            [
+              -16.0,
+              6.0,
+              -12.0
+            ],
+            [
+              4.0,
+              54.0,
+              38.0
+            ],
+            [
+              -18.0,
+              -2.0,
+              -24.0
+            ],
+            [
+              26.0,
+              -2.0,
+              -28.0
+            ],
+            [
+              -4.0,
+              34.0,
+              2.0
+            ],
+            [
+              -4.0,
+              -48.0,
+              18.0
+            ],
+            [
+              6.0,
+              -50.0,
+              12.0
+            ],
+            [
+              6.0,
+              48.0,
+              -26.0
+            ],
+            [
+              -44.0,
+              26.0,
+              -16.0
+            ],
+            [
+              46.0,
+              22.0,
+              -8.0
+            ],
+            [
+              -2.0,
+              60.0,
+              -20.0
+            ],
+            [
+              8.0,
+              56.0,
+              -26.0
+            ],
+            [
+              -24.0,
+              -12.0,
+              -28.0
+            ],
+            [
+              28.0,
+              -10.0,
+              -28.0
+            ],
+            [
+              -42.0,
+              14.0,
+              -10.0
+            ],
+            [
+              38.0,
+              -4.0,
+              -2.0
+            ],
+            [
+              -44.0,
+              6.0,
+              52.0
+            ],
+            [
+              36.0,
+              0.0,
+              56.0
+            ],
+            [
+              6.0,
+              10.0,
+              48.0
+            ],
+            [
+              0.0,
+              -76.0,
+              32.0
+            ],
+            [
+              4.0,
+              -56.0,
+              8.0
+            ],
+            [
+              16.0,
+              8.0,
+              -12.0
+            ],
+            [
+              -4.0,
+              48.0,
+              42.0
+            ],
+            [
+              18.0,
+              -30.0,
+              -4.0
+            ],
+            [
+              -4.0,
+              56.0,
+              6.0
+            ]
+          ],
+          "manual_coordinates_used": [
             [
               -16.0,
               6.0,
@@ -2276,6 +2928,7 @@
       ],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -2567,132 +3220,25 @@
         "manual_analysis_count_original": 2,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": true,
         "mean_combined_score": 0.74287,
-        "study_category": "all_correct"
+        "study_category": "all_correct",
+        "manual_analysis_count_before_review": 2,
+        "review_excluded_manual_analysis_count": 0
       },
       "study_name": "28549317",
+      "review_excluded_manual_analyses": [],
       "pubget": {
         "available": false
       }
     },
     "29740753": {
       "manual_missing_in_auto": false,
-      "manual_analyses": [
-        {
-          "manual_analysis_id": "29740753_1",
-          "manual_name": "TrauE > PTSD",
-          "manual_coord_count": 1,
-          "best_auto_index": 1,
-          "best_auto_analysis_id": "29740753_analysis_1",
-          "best_auto_name": "Main effect of emotion",
-          "name_score": 0.176471,
-          "coord_score": 0.0,
-          "combined_score": 0.052941,
-          "match_status": "unmatched",
-          "exact_coord_set": false,
-          "strict_exact_coord_set": false,
-          "tolerance_exact_coord_set": false,
-          "exact_match_axis_tolerance": null,
-          "coord_override_accepted": false,
-          "low_name_with_exact_coords": false,
-          "reason_codes": [
-            "coord_count_mismatch",
-            "low_total_score"
-          ],
-          "manual_coordinates": [
-            [
-              48.0,
-              24.0,
-              -29.0
-            ]
-          ],
-          "best_auto_coordinates": [
-            [
-              51.0,
-              -33.0,
-              3.0
-            ],
-            [
-              54.0,
-              -15.0,
-              -6.0
-            ],
-            [
-              60.0,
-              -6.0,
-              -9.0
-            ],
-            [
-              51.0,
-              -30.0,
-              0.0
-            ],
-            [
-              51.0,
-              -15.0,
-              -12.0
-            ],
-            [
-              54.0,
-              -24.0,
-              -6.0
-            ],
-            [
-              -57.0,
-              -21.0,
-              -3.0
-            ],
-            [
-              -42.0,
-              27.0,
-              -9.0
-            ],
-            [
-              -30.0,
-              21.0,
-              -18.0
-            ],
-            [
-              48.0,
-              30.0,
-              0.0
-            ],
-            [
-              -51.0,
-              21.0,
-              6.0
-            ],
-            [
-              -48.0,
-              27.0,
-              0.0
-            ],
-            [
-              27.0,
-              39.0,
-              33.0
-            ],
-            [
-              -12.0,
-              -81.0,
-              3.0
-            ],
-            [
-              12.0,
-              -63.0,
-              -9.0
-            ],
-            [
-              -9.0,
-              -81.0,
-              0.0
-            ]
-          ]
-        }
-      ],
+      "manual_analyses": [],
       "excluded_manual_analyses_decimal": [],
       "converted_manual_analyses_decimal": [],
+      "coordinate_space_variant_manual_analyses_decimal": [],
       "auto_analyses": [
         {
           "index": 0,
@@ -2976,16 +3522,155 @@
       "pmid_summary": {
         "accepted": 0,
         "uncertain": 0,
-        "unmatched": 1,
-        "manual_analysis_count": 1,
+        "unmatched": 0,
+        "manual_analysis_count": 0,
         "manual_analysis_count_original": 1,
         "excluded_manual_decimal_analysis_count": 0,
         "converted_manual_decimal_analysis_count": 0,
+        "coordinate_space_variant_manual_decimal_analysis_count": 0,
         "all_manual_accepted": false,
-        "mean_combined_score": 0.052941,
-        "study_category": "all_incorrect"
+        "mean_combined_score": 0.0,
+        "study_category": "review_excluded",
+        "manual_analysis_count_before_review": 1,
+        "review_excluded_manual_analysis_count": 1
       },
       "study_name": "29740753",
+      "review_excluded_manual_analyses": [
+        {
+          "manual_analysis_id": "29740753_1",
+          "manual_name": "TrauE > PTSD",
+          "manual_coord_count": 1,
+          "best_auto_index": 1,
+          "best_auto_analysis_id": "29740753_analysis_1",
+          "best_auto_name": "Main effect of emotion",
+          "name_score": 0.176471,
+          "coord_score": 0.0,
+          "combined_score": 0.052941,
+          "match_status": "unmatched",
+          "exact_coord_set": false,
+          "strict_exact_coord_set": false,
+          "tolerance_exact_coord_set": false,
+          "exact_match_axis_tolerance": null,
+          "equal_coord_count": false,
+          "mean_paired_distance_mm": 29.614185789921695,
+          "median_paired_distance_mm": 29.614185789921695,
+          "max_paired_distance_mm": 29.614185789921695,
+          "matched_fraction_within_8mm": 0.0,
+          "high_coverage_coord_set": false,
+          "lowered_threshold_coord_override": false,
+          "coordinate_variant": "manual_original",
+          "coordinate_variants_considered": [
+            "manual_original"
+          ],
+          "coord_override_accepted": false,
+          "low_name_with_exact_coords": false,
+          "reason_codes": [
+            "coord_count_mismatch",
+            "low_total_score"
+          ],
+          "manual_coordinates": [
+            [
+              48.0,
+              24.0,
+              -29.0
+            ]
+          ],
+          "manual_coordinates_used": [
+            [
+              48.0,
+              24.0,
+              -29.0
+            ]
+          ],
+          "best_auto_coordinates": [
+            [
+              51.0,
+              -33.0,
+              3.0
+            ],
+            [
+              54.0,
+              -15.0,
+              -6.0
+            ],
+            [
+              60.0,
+              -6.0,
+              -9.0
+            ],
+            [
+              51.0,
+              -30.0,
+              0.0
+            ],
+            [
+              51.0,
+              -15.0,
+              -12.0
+            ],
+            [
+              54.0,
+              -24.0,
+              -6.0
+            ],
+            [
+              -57.0,
+              -21.0,
+              -3.0
+            ],
+            [
+              -42.0,
+              27.0,
+              -9.0
+            ],
+            [
+              -30.0,
+              21.0,
+              -18.0
+            ],
+            [
+              48.0,
+              30.0,
+              0.0
+            ],
+            [
+              -51.0,
+              21.0,
+              6.0
+            ],
+            [
+              -48.0,
+              27.0,
+              0.0
+            ],
+            [
+              27.0,
+              39.0,
+              33.0
+            ],
+            [
+              -12.0,
+              -81.0,
+              3.0
+            ],
+            [
+              12.0,
+              -63.0,
+              -9.0
+            ],
+            [
+              -9.0,
+              -81.0,
+              0.0
+            ]
+          ],
+          "review_unit_id": "vbm_of_ptsd:29740753:29740753_1",
+          "review_disposition": "out_of_scope",
+          "review_note": "Incorrect PMID",
+          "raw_match_status": "unmatched",
+          "review_adjustment": "excluded_non_parser_evaluable"
+        }
+      ],
       "pubget": {
         "available": false
       }
@@ -3017,27 +3702,58 @@
     "overlap_pmids_before_decimal_filter": 10,
     "unavailable_manual_decimal_pmids": 0,
     "converted_manual_decimal_analyses": 0,
+    "coordinate_space_variant_manual_decimal_analyses": 0,
     "excluded_manual_only_pmids": 12,
     "auto_only_pmids": 0,
-    "manual_analyses_total": 11,
+    "manual_analyses_total": 10,
     "accepted": 10,
     "uncertain": 0,
-    "unmatched": 1,
+    "unmatched": 0,
     "accepted_coord_override": 3,
     "low_name_coord_override_matches": 8,
     "accepted_exact_coord_override": 3,
     "low_name_exact_matches": 8,
     "pmids_all_manual_accepted": 9,
-    "pmids_all_manual_accepted_rate": 0.9,
+    "pmids_all_manual_accepted_rate": 1.0,
     "all_correct_pmids": 9,
     "mixed_pmids": 0,
-    "all_incorrect_pmids": 1,
-    "mean_combined_score": 0.7187593636363636,
-    "median_combined_score": 0.754545,
-    "p25_combined_score": 0.7428705,
-    "p75_combined_score": 0.772043,
+    "all_incorrect_pmids": 0,
+    "mean_combined_score": 0.7853412000000001,
+    "median_combined_score": 0.75958,
+    "p25_combined_score": 0.745227,
+    "p75_combined_score": 0.774731,
+    "review_evaluable_pmids": 9,
+    "review_excluded_pmids": 1,
+    "review_credited_manual_analyses": 0,
+    "review_excluded_manual_analyses": 1,
+    "review_confirmed_parser_misses": 0,
     "pmids_with_pubget": 3,
     "pubget_tables_total": 8
+  },
+  "parser_review_adjustment": {
+    "enabled": true,
+    "review_path": "/home/zorro/repos/autonima-results/reports/parser_error_annotation/reviews/parser_failure_review_2.json",
+    "project": "vbm_of_ptsd",
+    "review_entries_for_project": 1,
+    "matched_review_entries": 1,
+    "unmatched_review_entries": 0,
+    "credited_as_accepted": 0,
+    "excluded_non_parser_evaluable": 1,
+    "confirmed_parser_misses": 0,
+    "credited_dispositions": [
+      "expected_difference",
+      "gold_standard_error",
+      "matching_error"
+    ],
+    "excluded_dispositions": [
+      "out_of_scope",
+      "source_material_missing",
+      "supplemental_data",
+      "uncertain"
+    ],
+    "disposition_counts": {
+      "out_of_scope": 1
+    }
   },
   "table_only_baseline": {
     "available": true,
@@ -3056,7 +3772,7 @@
     "auto_pmids_total": 10,
     "excluded_manual_only_pmids": 12,
     "auto_only_pmids": 0,
-    "decimal_manual_coordinate_handling": "convert_to_talairach",
+    "decimal_manual_coordinate_handling": "match_best_space",
     "policy": "Raw extracted coordinates grouped only by source table; fuzzy matched to manual analyses."
   }
 }

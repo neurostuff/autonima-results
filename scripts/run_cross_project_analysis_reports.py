@@ -23,6 +23,13 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
 PROJECTS_ROOT = REPO_ROOT / "projects"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "reports" / "cross_project_analysis"
+DEFAULT_PARSER_REVIEW = (
+    REPO_ROOT
+    / "reports"
+    / "parser_error_annotation"
+    / "reviews"
+    / "parser_failure_review_2.json"
+)
 COMPARE_SCRIPT = SCRIPT_DIR / "compare_analyses_to_benchmark.py"
 
 ANNOTATION_ONLY_RUN_RE = re.compile(r"^v(?P<version>\d+)-annotation-only(?P<suffix>.*)$")
@@ -154,6 +161,15 @@ def parse_args() -> argparse.Namespace:
             "Default is convert_to_talairach for cross-project reruns."
         ),
     )
+    parser.add_argument(
+        "--parser-review",
+        type=Path,
+        default=DEFAULT_PARSER_REVIEW,
+        help=(
+            "Parser-failure review JSON used to credit benchmark disagreements "
+            "and exclude non-parser-evaluable cases."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -263,6 +279,7 @@ def run_compare_for_project(
     compare_script: Path,
     output_dir: Path,
     decimal_manual_coordinate_handling: str,
+    parser_review: Path | None,
 ) -> tuple[str, int | None, Path]:
     logs_dir = output_dir / "logs"
     logs_dir.mkdir(parents=True, exist_ok=True)
@@ -283,6 +300,8 @@ def run_compare_for_project(
         "--decimal-manual-coordinate-handling",
         str(decimal_manual_coordinate_handling),
     ]
+    if parser_review is not None:
+        cmd.extend(["--parser-review", str(parser_review)])
     proc = subprocess.run(
         cmd,
         cwd=str(REPO_ROOT),
@@ -982,12 +1001,19 @@ def main() -> None:
     compare_script = args.compare_script.expanduser().resolve()
     output_dir = args.output_dir.expanduser().resolve()
     decimal_manual_coordinate_handling = str(args.decimal_manual_coordinate_handling)
+    parser_review = (
+        args.parser_review.expanduser().resolve()
+        if args.parser_review is not None
+        else None
+    )
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not compare_script.exists():
         raise FileNotFoundError(f"Compare script not found: {compare_script}")
     if not projects_root.exists():
         raise FileNotFoundError(f"Projects root not found: {projects_root}")
+    if parser_review is not None and not parser_review.exists():
+        raise FileNotFoundError(f"Parser review not found: {parser_review}")
 
     selections = discover_project_selections(projects_root)
     print(f"Discovered {len(selections)} project directories under {projects_root}")
@@ -1027,6 +1053,7 @@ def main() -> None:
             compare_script=compare_script,
             output_dir=output_dir,
             decimal_manual_coordinate_handling=decimal_manual_coordinate_handling,
+            parser_review=parser_review,
         )
         print(f"[{rerun_status.upper():7}] {selection.project_name}: return_code={return_code}")
 
