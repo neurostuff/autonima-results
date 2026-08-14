@@ -1,0 +1,123 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: null
+  date_from: null
+  date_to: null
+  email: null
+  pmids_file: /home/zorro/repos/autonima-results/projects/social/validation_ids/official.txt
+  pmids_list: null
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output/
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed/
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: gpt-5-mini-2025-08-07
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations:
+  - name: social_processing_all
+    description: Social Processing encompasses processes that enable individuals to
+      perceive, interpret, and respond to social information, including social cues,
+      emotions, social interaction, and social bonds.
+    inclusion_criteria:
+    - Analyses must come from social-related tasks (including, but not limited to,
+      affiliation/attachment, social communication, perception/understanding of self,
+      and perception/understanding of others).
+    - The specific analysis/contrast must index social processing at contrast level.
+    exclusion_criteria:
+    - Exclude clearly non-social control-dominant contrasts (e.g., landmarks/places/noise/rest
+      controls) when social processing is not the measured effect.
+  - name: affiliation_attachment
+    description: Affiliation and Attachment involves social bonding, closeness, affiliative
+      valuation, and relationship-oriented social learning (e.g., attachment style,
+      bonding, closeness, kinship relevance).
+    inclusion_criteria:
+    - Analyses must isolate affiliation/attachment-related processing at contrast
+      level (e.g., bonding/closeness/liking/attachment traits/relationship relevance/kinship
+      relevance).
+    - Task context alone is insufficient; the reported map/contrast must specifically
+      measure affiliation/attachment.
+    exclusion_criteria:
+    - Exclude generic competition, aggression, deception, fairness, or broad social-context
+      effects when affiliation/attachment is not the measured variable in the specific
+      contrast.
+  - name: social_communication
+    description: Social Communication involves exchange of socially relevant information,
+      including receptive and expressive communication signals (facial expression,
+      gaze, prosody, speech/sign/gesture communication).
+    inclusion_criteria:
+    - Analyses must isolate communicative signals or communication exchange at contrast
+      level (e.g., facial expression communication, gaze communication, prosodic communication,
+      speech/sign/gesture communication).
+    - The specific reported contrast must measure social communication, not just social
+      context.
+    exclusion_criteria:
+    - Exclude generic person perception, social decision/reward, theory-of-mind-only
+      contrasts, or social scene contrasts without communication-variable isolation.
+  - name: perception_self
+    description: Perception and Understanding of Self includes awareness, judgments,
+      and representations about oneself, including self-knowledge and agency.
+    inclusion_criteria:
+    - Analyses must explicitly isolate self-referential/self-knowledge/agency processing
+      at contrast level (e.g., self vs other/non-self; self-evaluation; self-attribution;
+      agency-related self processing).
+    - Self-report presence alone is insufficient unless the specific analysis isolates
+      self-processing.
+    exclusion_criteria:
+    - Exclude contrasts where self-related context is present but the reported map
+      primarily indexes non-self processes.
+  - name: perception_others
+    description: Perception and Understanding of Others includes representations and
+      inferences about others' emotional states, intentions, traits, and actions.
+    inclusion_criteria:
+    - Analyses must isolate representation, inference, or reasoning about others at
+      contrast level (e.g., others' mental states, intentions, emotions, traits, or
+      actions).
+    - The specific contrast must index perception/understanding of others, not only
+      broad social exposure.
+    exclusion_criteria:
+    - Exclude person/fame/attractiveness/object-identity contrasts lacking explicit
+      inference/representation of others' states or intentions.
+  enabled: true
+output:
+  directory: /home/zorro/repos/autonima-results/projects/social/v3-annotation-only
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: true

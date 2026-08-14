@@ -1,0 +1,174 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: null
+  date_from: null
+  date_to: null
+  email: null
+  pmids_file: /home/zorro/repos/autonima-results/projects/dementia/Dementia_All.txt
+  pmids_list: null
+screening:
+  abstract:
+    model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+    threshold: null
+    confidence_reporting: true
+    objective: identify studies related to behavioral variant frontotemporal dementia
+      (bvFTD) by their abstract
+    inclusion_criteria:
+    - "Study uses Voxel-Based Morphometry (VBM), fMRI (resting\u2010state or task\
+      \ based), or FDG\u2010PET as the imaging modality to analyze whole brain"
+    - Sample- participants included at least 6 human, clinically diagnosed behavioral
+      variant frontotemporal dementia (bvFTD) patients
+    exclusion_criteria:
+    - Systematic reviews or meta-analyses
+    - Study should not focus on Parkinson's disease
+    - Study does not use neuroimaging
+    - studies with less than 6 participants
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I1: "Study uses Voxel-Based Morphometry (VBM), fMRI (resting\u2010state or\
+          \ task based), or FDG\u2010PET as the imaging modality to analyze whole\
+          \ brain"
+        I2: Sample- participants included at least 6 human, clinically diagnosed behavioral
+          variant frontotemporal dementia (bvFTD) patients
+      exclusion:
+        E1: Systematic reviews or meta-analyses
+        E2: Study should not focus on Parkinson's disease
+        E3: Study does not use neuroimaging
+        E4: studies with less than 6 participants
+  fulltext:
+    model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+    threshold: null
+    confidence_reporting: true
+    objective: identify studies related to behavioral variant frontotemporal dementia
+      (bvFTD)
+    inclusion_criteria:
+    - "Study uses Voxel-Based Morphometry (VBM), fMRI (resting\u2010state or task\
+      \ based), or FDG\u2010PET as the imaging modality"
+    - Sample- participants included clinically diagnosed behavioral variant frontotemporal
+      dementia (bvFTD) or picks disease patients
+    - Sample- At least 6 participants in the patient group, and if there is a healthy/control
+      group, at least 6 particpants in the control group
+    - "Studies that reported at least one result of a between\u2010group contrast\
+      \ in a defined stochastic space (i.e., Montreal Neurological Institute [MNI]\
+      \ or Talairach) comparing bvFTD group to controls, where bvFTD group is not\
+      \ pooled with other patient groups in this result."
+    - Whole-brain evidence- The paper must report at least one group-level, whole-brain
+      (voxelwise) result that is clearly identified as coming from the target sample
+      group.
+    - It is acceptable for qualifying whole-brain results to be reported in tables
+      of coordinates, figures, or supplementary materials, as long as they are clearly
+      described in the text.
+    exclusion_criteria:
+    - systematic reviews or meta-analyses
+    - Studies that report only region-of-interest (ROI) analyses with no whole-brain
+      results.
+    - Sample- with no concurrent psychiatric diagnosis (e.g., major depressive disorder
+      and bipolar mood disorder), other forms of dementia or neurological symptoms,
+      and no history of alcohol or substance abuse
+    - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+      without original data.
+    - "only reports seed\u2010based functional connectivity (FC), diffusion tensor\
+      \ imaging (DTI), or cortical thickness methods"
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I3: "Study uses Voxel-Based Morphometry (VBM), fMRI (resting\u2010state or\
+          \ task based), or FDG\u2010PET as the imaging modality"
+        I4: Sample- participants included clinically diagnosed behavioral variant
+          frontotemporal dementia (bvFTD) or picks disease patients
+        I5: Sample- At least 6 participants in the patient group, and if there is
+          a healthy/control group, at least 6 particpants in the control group
+        I6: "Studies that reported at least one result of a between\u2010group contrast\
+          \ in a defined stochastic space (i.e., Montreal Neurological Institute [MNI]\
+          \ or Talairach) comparing bvFTD group to controls, where bvFTD group is\
+          \ not pooled with other patient groups in this result."
+        I7: Whole-brain evidence- The paper must report at least one group-level,
+          whole-brain (voxelwise) result that is clearly identified as coming from
+          the target sample group.
+        I8: It is acceptable for qualifying whole-brain results to be reported in
+          tables of coordinates, figures, or supplementary materials, as long as they
+          are clearly described in the text.
+      exclusion:
+        E5: systematic reviews or meta-analyses
+        E6: Studies that report only region-of-interest (ROI) analyses with no whole-brain
+          results.
+        E7: Sample- with no concurrent psychiatric diagnosis (e.g., major depressive
+          disorder and bipolar mood disorder), other forms of dementia or neurological
+          symptoms, and no history of alcohol or substance abuse
+        E8: Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+          without original data.
+        E9: "only reports seed\u2010based functional connectivity (FC), diffusion\
+          \ tensor imaging (DTI), or cortical thickness methods"
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: false
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/projects/dementia/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/projects/dementia/ace_outputs/html
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/projects/dementia/ace_outputs/processed
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations:
+  - name: dementia_all
+    description: All analyses
+    inclusion_criteria:
+    - "Uses Voxel-Based Morphometry, fMRI (resting\u2010state or task based), and\
+      \ FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality"
+    exclusion_criteria: []
+  - name: dementia_decreasing_activity
+    description: Analyses reporting decreases for bvFTD group
+    inclusion_criteria:
+    - Analyses reporting any decreases in activity/connectivity, metabolism, or gray
+      matter volume for bvFTD group (e.g. Control > bvFTD or bvFTD < Control)
+    - "Uses Voxel-Based Morphometry, fMRI (resting\u2010state or task based), and\
+      \ FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality"
+    exclusion_criteria: []
+  - name: structural
+    description: VBM experiments
+    inclusion_criteria:
+    - Uses Voxel-based morphometry (VBM) as the imaging modality
+    exclusion_criteria: []
+  - name: functional
+    description: fdg pet & fmri
+    inclusion_criteria:
+    - "Uses fMRI (resting\u2010state or task based), and FDG-PET (Fluorodeoxyglucose\
+      \ Positron Emission Tomography) as the imaging modality"
+    exclusion_criteria: []
+  enabled: true
+output:
+  directory: /home/zorro/repos/autonima-results/projects/dementia/v2-allstudies
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: true

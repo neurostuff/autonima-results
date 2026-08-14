@@ -1,0 +1,126 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: null
+  date_from: null
+  date_to: null
+  email: null
+  pmids_file: /home/zorro/repos/autonima-results/projects/social/validation_ids/official.txt
+  pmids_list: null
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output/
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs/
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed/
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: gpt-5-mini-2025-08-07
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations:
+  - name: social_processing_all
+    description: Social Processing encompasses a broad range of processes that enable
+      individuals to perceive, interpret, and respond to social information. This
+      includes understanding social cues, recognizing emotions in others, engaging
+      in social interactions, and forming social bonds. Social processing is fundamental
+      to human behavior and is crucial for effective communication and relationship-building.
+    inclusion_criteria:
+    - Analyses performed a social-related task. Relevant constructs include (but are
+      not limited to) Affiliation and Attachment, Social Communication, Perception
+      and Understanding of Self, and Perception and Understanding of Others.
+    - The analysis/contrast must measure Social Processing
+    exclusion_criteria: []
+  - name: affiliation_attachment
+    description: Affiliation and Attachment is characterized by positive interactions
+      and social bonds, and typically involves the detection of and attention to social
+      cues, as well as social learning associated with the formation of relationships.
+      Assessment measures generally relate to attachment styles, close relationship
+      scales, and parental and peer bonding.
+    inclusion_criteria:
+    - 'Analyses must be on a task measuring affiliation and attachment (example tasks:
+      Kinship-related social scenarios; Cooperation and competition; Social comparison)'
+    - 'The analysis/contrast must measure Affiliation and Attachment (example contrast:
+      Loved one vs Stranger)'
+    exclusion_criteria: []
+  - name: social_communication
+    description: 'Social Communication involves the exchange of socially relevant
+      information and involves both receptive (e.g., affect recognition, facial recognition,
+      and characterization) and productive (e.g., eye contact, expressive reciprocation,
+      gaze following) aspects of communication. Within this construct, there exist
+      four subconstructs: (i) Reception of Facial Communication, (ii) Production of
+      Facial Communication, (iii) Reception of Non-Facial Communication, and (iv)
+      Production of Non-Facial Communication. '
+    inclusion_criteria:
+    - 'Analyses from tasks measuring Social Communication (example tasks: Viewing
+      picures of faces; Emotion, Auditory Stimuli; Direct or aveted eye gaze; Hand
+      mimmicking)'
+    - 'The analysis/contrast must measure Social Communication (example contrast:
+      Faces > non-faces)'
+    exclusion_criteria: []
+  - name: perception_self
+    description: 'Perception and Understanding of Self includes processes involved
+      in being aware of, accessing knowledge, or making judgments about the self,
+      and can include current cognitive or emotional internal states, traits, and/or
+      abilities, as well as mechanisms that support self-awareness, self-monitoring,
+      and self-knowledge. Within this construct, there exist two subconstructs: (i)
+      Agency and (ii) Self-knowledge. '
+    inclusion_criteria:
+    - 'Analyses from tasks measuring Perception and Understanding of Self (example
+      tasks: Self-judgment; Viewing pictures of self; Detecting affective touch; Thinking
+      about the self vs others)'
+    - 'The analysis/contrast must measure Perception and Understanding of Self (example
+      contrast: Self > Other)'
+    exclusion_criteria: []
+  - name: perception_others
+    description: "Perception and Understanding of Others are the representations involved\
+      \ in being aware of, assessing knowledge about, and reasoning about others\u2019\
+      \ emotional states, traits, or abilities. Among this construct exist three subconstructs:\
+      \ (i) Animacy Perception, (ii) Action Perception, and (iii) Understanding Mental\
+      \ States."
+    inclusion_criteria:
+    - 'Analyses from tasks measuring Perception and Understanding of Others (example
+      tasks: Empathy related; Theory of Mind; Compassion ratings; Point-light biological
+      motion)'
+    - 'The analysis/contrast must measure Perception and Understanding of Others (example
+      contrast: Cooperative > Neutral)'
+    exclusion_criteria: []
+  enabled: true
+output:
+  directory: /home/zorro/repos/autonima-results/projects/social/v2-annotation-only
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: true

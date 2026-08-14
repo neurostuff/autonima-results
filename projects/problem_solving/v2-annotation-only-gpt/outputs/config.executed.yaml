@@ -1,0 +1,126 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: null
+  date_from: null
+  date_to: null
+  email: null
+  pmids_file: /home/zorro/repos/autonima-results/projects/problem_solving/annotation-only-ids.txt
+  pmids_list: null
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+annotation:
+  model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations:
+  - name: domain_general_problem_solving
+    description: Core problem solving processes that generalize across representational
+      domains.
+    inclusion_criteria:
+    - Include only primary contrasts that directly isolate problem solving/reasoning
+      demand regardless of domain.
+    - Accept task>control, hard>easy, or reasoning>baseline contrasts only when they
+      are direct within-sample maps.
+    exclusion_criteria:
+    - Exclude secondary/derived analyses (covariates, interactions, decomposition
+      maps, prior-study summaries) even if the study overall is about problem solving.
+  - name: mathematical_problem_solving
+    description: Problem solving involving numerical or mathematical representations.
+    inclusion_criteria:
+    - Include direct mathematical problem-solving contrasts (e.g., arithmetic reasoning/calculation
+      demand vs control or simpler math condition).
+    - Require clear isolation of mathematical problem-solving demand, not only math-related
+      context.
+    exclusion_criteria:
+    - Exclude simple number perception, rote fact retrieval, or passive number processing
+      without problem-solving demand.
+    - Exclude math-performance covariate maps (ability/accuracy/RT/age) and between-group-only
+      math contrasts.
+  - name: verbal_problem_solving
+    description: Problem solving involving linguistic or semantic reasoning.
+    inclusion_criteria:
+    - Include direct language/semantic reasoning contrasts where verbal problem-solving
+      demand is explicitly isolated versus baseline/control or lower-demand reasoning.
+    - Prioritize primary verbal reasoning contrasts over within-reasoning content
+      decomposition contrasts.
+    exclusion_criteria:
+    - Exclude passive reading/language comprehension without problem solving.
+    - Exclude secondary manipulations where both sides are verbal reasoning conditions
+      but the contrast isolates content/familiarity/determinacy nuances rather than
+      core verbal problem solving.
+    - Exclude verbalization-style covariate/regression maps unless they are part of
+      a direct task-isolation contrast.
+  - name: visuospatial_problem_solving
+    description: Problem solving involving spatial or visual representations.
+    inclusion_criteria:
+    - Include direct spatial reasoning/navigation/manipulation contrasts versus baseline/control
+      or clearly lower-demand spatial conditions.
+    - Require that the contrast isolates core visuospatial problem-solving demand,
+      not merely differences between two spatial task variants.
+    exclusion_criteria:
+    - Exclude simple visual perception/matching without reasoning demands.
+    - Exclude condition-vs-condition variant contrasts (e.g., one navigation variant
+      vs another) when both conditions are problem-solving and no clear control isolation
+      exists.
+    - Exclude phase-only contrasts (e.g., initial vs execution), performance-correlation
+      maps, and strategy-use covariate maps.
+  - name: logical_reasoning
+    description: Problem solving involving formal logic or rule-based reasoning.
+    inclusion_criteria:
+    - Include direct formal logical inference or rule-complexity contrasts that isolate
+      logical reasoning demand versus control/simpler reasoning.
+    - Favor primary logical task contrasts (e.g., complex>simple deduction, reasoning>control)
+      over derived or descriptive tables.
+    exclusion_criteria:
+    - Exclude tasks that involve rule following without active inference.
+    - Exclude stimulus/content split maps, higher-order interactions, simple effects,
+      and previously published/reference coordinate tables when they are not direct
+      primary logical task-isolation contrasts.
+    - Exclude between-group logical contrasts unless a valid within-group logical
+      task contrast is separately reported.
+  enabled: true
+output:
+  directory: /home/zorro/repos/autonima-results/projects/problem_solving/v2-annotation-only-gpt
+  prisma_diagram: true
+  formats:
+  - csv
+  - json
+  nimads: true
+  export_excluded_studies: true

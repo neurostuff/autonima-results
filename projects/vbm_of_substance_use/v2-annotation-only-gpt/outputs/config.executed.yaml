@@ -1,0 +1,160 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: null
+  date_from: null
+  date_to: null
+  email: null
+  pmids_file: /home/zorro/repos/autonima-results/projects/vbm_of_substance_use/official_pmids.txt
+  pmids_list: null
+screening:
+  abstract:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: 'identify consistent regions of structurally altered grey matter (GM)
+      between substance users and controls across five pharmacological classes of
+      drugs: alcohol, nicotine, opioids, cannabis, and stimulants.'
+    inclusion_criteria:
+    - Empirical English language MRI studies assessing grey matter (GM) volume differences
+      between substance users and controls
+    exclusion_criteria:
+    - Studies using pharmacological manipulations
+    - Brain lesion studies
+    - Studies including participants with reports of mental and/or neurological disorders
+    - Systematic reviews or meta-analyses
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I1: Empirical English language MRI studies assessing grey matter (GM) volume
+          differences between substance users and controls
+      exclusion:
+        E1: Studies using pharmacological manipulations
+        E2: Brain lesion studies
+        E3: Studies including participants with reports of mental and/or neurological
+          disorders
+        E4: Systematic reviews or meta-analyses
+  fulltext:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: 'identify consistent regions of structurally altered grey matter (GM)
+      between substance users and controls across five pharmacological classes of
+      drugs: alcohol, nicotine, opioids, cannabis, and stimulants.'
+    inclusion_criteria:
+    - Empirical English language MRI studies assessing grey matter (GM) volume differences
+      (e.g., volume, density, or concentration) between substance users and controls
+    - Whole-brain evidence- The paper must report at least one whole-brain between-group
+      contrast of substance users vs controls comparing GM volume
+    - It is acceptable for qualifying voxelwise results to be reported in tables of
+      coordinates, figures, or supplementary materials when the main text clearly
+      indicates those results are available.
+    - Reporting of participant age/sex, substance use characteristics, MRI field strength,
+      and preprocessing/statistical software is preferred; missing one or more of
+      these details alone should not exclude an otherwise qualifying study.
+    exclusion_criteria:
+    - Studies that report only region-of-interest (ROI) analyses with no qualifying
+      whole-brain results.
+    - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+      without original human structural MRI data.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I2: Empirical English language MRI studies assessing grey matter (GM) volume
+          differences (e.g., volume, density, or concentration) between substance
+          users and controls
+        I3: Whole-brain evidence- The paper must report at least one whole-brain between-group
+          contrast of substance users vs controls comparing GM volume
+        I4: It is acceptable for qualifying voxelwise results to be reported in tables
+          of coordinates, figures, or supplementary materials when the main text clearly
+          indicates those results are available.
+        I5: Reporting of participant age/sex, substance use characteristics, MRI field
+          strength, and preprocessing/statistical software is preferred; missing one
+          or more of these details alone should not exclude an otherwise qualifying
+          study.
+      exclusion:
+        E5: Studies that report only region-of-interest (ROI) analyses with no qualifying
+          whole-brain results.
+        E6: Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+          without original human structural MRI data.
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output/
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed/
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: gpt-5-mini-2025-08-07
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations:
+  - name: all_drug_classes
+    description: convergent lower GM common across all substances
+    inclusion_criteria:
+    - Comparison of drug users of any class to controls
+    exclusion_criteria: []
+  - name: alcohol
+    description: lower GM in alcohol users relative to controls
+    inclusion_criteria:
+    - Comparison of alcohol users to controls
+    exclusion_criteria:
+    - Comparison of users of other drug classes to controls
+  - name: nicotine
+    description: lower GM in nicotine users relative to controls
+    inclusion_criteria:
+    - Comparison of nicotine users to controls
+    exclusion_criteria:
+    - Comparison of users of other drug classes to controls
+  - name: opioids
+    description: lower GM in opioid users relative to controls
+    inclusion_criteria:
+    - Comparison of opioid users to controls
+    exclusion_criteria:
+    - Comparison of users of other drug classes to controls
+  - name: stimulants
+    description: lower GM in stimulant users relative to controls
+    inclusion_criteria:
+    - Comparison of stimulant users to controls
+    exclusion_criteria:
+    - Comparison of users of other drug classes to controls
+  - name: cannabis
+    description: lower GM in cannabis users relative to controls
+    inclusion_criteria:
+    - Comparison of cannabis users to controls
+    exclusion_criteria:
+    - Comparison of users of other drug classes to controls
+  enabled: true
+output:
+  directory: /home/zorro/repos/autonima-results/projects/vbm_of_substance_use/v2-annotation-only-gpt
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: true

@@ -1,0 +1,99 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: null
+  date_from: null
+  date_to: null
+  email: null
+  pmids_file: /data/alejandro/projects/autonima-results/projects/problem_solving/annotation-only-ids.txt
+  pmids_list: null
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /data/alejandro/projects/autonima-results/projects/problem_solving/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /data/alejandro/projects/autonima-results/projects/problem_solving/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /data/alejandro/projects/autonima-results/projects/problem_solving/ace_outputs/processed
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+annotation:
+  model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations:
+  - name: domain_general_problem_solving
+    description: Core problem solving processes that generalize across representational
+      domains.
+    inclusion_criteria:
+    - Analyses must involve problem solving, reasoning, or goal-directed cognition
+      independent of specific domain.
+    - The contrast must isolate problem solving versus a valid control condition.
+    exclusion_criteria:
+    - Exclude contrasts that are domain-specific without clear problem solving demands.
+  - name: mathematical_problem_solving
+    description: Problem solving involving numerical or mathematical representations.
+    inclusion_criteria:
+    - Analyses must involve active mathematical reasoning or computation.
+    - Contrast must isolate mathematical problem solving versus a valid control.
+    exclusion_criteria:
+    - Exclude simple number perception or rote calculation without problem solving
+      demands.
+  - name: verbal_problem_solving
+    description: Problem solving involving linguistic or semantic reasoning.
+    inclusion_criteria:
+    - Analyses must involve language-based reasoning.
+    - Contrast must isolate verbal reasoning versus a valid control.
+    exclusion_criteria:
+    - Exclude passive reading or language comprehension without problem solving.
+  - name: visuospatial_problem_solving
+    description: Problem solving involving spatial or visual representations.
+    inclusion_criteria:
+    - Analyses must involve spatial reasoning or manipulation.
+    - Contrast must isolate visuospatial problem solving versus a valid control.
+    exclusion_criteria:
+    - Exclude simple visual perception or matching tasks without reasoning demands.
+  - name: logical_reasoning
+    description: Problem solving involving formal logic or rule-based reasoning.
+    inclusion_criteria:
+    - Analyses must involve logical inference or rule-based reasoning.
+    - Contrast must isolate logical reasoning versus a valid control.
+    exclusion_criteria:
+    - Exclude tasks that involve rule following without active reasoning or inference.
+  enabled: true
+output:
+  directory: /home/zorro/repos/autonima-results/projects/problem_solving/v1-annotation-only
+  prisma_diagram: true
+  formats:
+  - csv
+  - json
+  nimads: true
+  export_excluded_studies: true

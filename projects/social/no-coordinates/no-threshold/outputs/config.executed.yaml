@@ -1,0 +1,95 @@
+search:
+  database: pubmed
+  query: ( ('functional MRI'[Title/Abstract] OR 'functional magnetic resonance imaging'[Title/Abstract]
+    OR 'fMRI'[Title/Abstract] ) AND ( 'social communication'[Title/Abstract] OR 'social
+    processing'[Title/Abstract] OR 'social interaction'[Title/Abstract] OR 'affiliation'[Title/Abstract]
+    OR 'social attachment'[Title/Abstract] OR 'social cognition'[Title/Abstract] OR
+    'understanding others'[Title/Abstract] ) AND 'Humans'[MeSH])
+  max_results: 5000
+  date_from: 1995/01/01
+  date_to: 2020/03/01
+  email: delavega@utexas.edu
+  pmids_file: null
+  pmids_list: null
+screening:
+  abstract:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Identify fMRI studies of social related processing in healthy adults
+    inclusion_criteria: &id001
+    - functional MRI scan while a human was completing a social-related task
+    - healthy participants, age 18-60
+    - whole-brain results
+    exclusion_criteria: &id002
+    - results of region of interest (ROI) analyses
+    - systematic reviews or meta-analyses
+    - studies reporting results among participants with psychiatric and/or neurological
+      disorders
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I1: functional MRI scan while a human was completing a social-related task
+        I2: healthy participants, age 18-60
+        I3: whole-brain results
+      exclusion:
+        E1: results of region of interest (ROI) analyses
+        E2: systematic reviews or meta-analyses
+        E3: studies reporting results among participants with psychiatric and/or neurological
+          disorders
+  fulltext:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Identify fMRI studies of social related processing in healthy adults
+    inclusion_criteria: *id001
+    exclusion_criteria: *id002
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I4: functional MRI scan while a human was completing a social-related task
+        I5: healthy participants, age 18-60
+        I6: whole-brain results
+      exclusion:
+        E4: results of region of interest (ROI) analyses
+        E5: systematic reviews or meta-analyses
+        E6: studies reporting results among participants with psychiatric and/or neurological
+          disorders
+retrieval:
+  sources:
+  - pubget
+  - ace
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: false
+  full_text_sources: []
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+annotation:
+  model: gpt-4o-mini
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations: []
+  enabled: true
+output:
+  directory: /home/zorro/repos/autonima-results/projects/social/no-coordinates/no-threshold
+  prisma_diagram: true
+  formats:
+  - csv
+  - json
+  - pdf
+  nimads: false
+  export_excluded_studies: false
