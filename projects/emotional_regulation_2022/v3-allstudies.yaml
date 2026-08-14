@@ -1,0 +1,152 @@
+# Autonima config for emotional_regulation_2022 (Morawetz et al., 2022, NeuroImage 255:119194)
+#
+# Target: the emotion regulation arm only. The paper's Section 2.1 lists six criteria;
+# 1-4 are shared across both arms, 5 and 6 fork into (a) reappraisal / (b) empathy.
+# This config encodes 1, 2, 3, 4, 5(a), 6(a).
+#
+# The 275-PMID pool is the PubMed slice of the paper's emotion-regulation search
+# (p. 3: EMBASE 315, PsychINFO 219, Medline 42, PubMed 275). It is NOT the empathy arm,
+# and it holds only 56 of the 88 gold studies -- the rest came from the other databases.
+#
+# ---- v2 -> v3 -------------------------------------------------------------------
+# v2 lifted full-text recall 0.404 -> 0.840 and precision 0.467 -> 0.568, almost entirely
+# via the disjunctive I6 rewrite (23 of v1's 31 I6-cluster false negatives recovered).
+# v3 keeps every v2 criterion and changes only things with no fidelity cost:
+#
+#   A. Dropped the empathy exclusions added in v2. They were premised on a
+#      mis-identification of the pool: the abstract one fired on 1 of 273 studies, the
+#      full-text one on 0 of 145. Dead weight. The "perspective-taking and distancing
+#      count as reappraisal" carve-out in I2/I6 is retained -- that part does real work.
+#   B. The stimulus restriction moved from the abstract `objective` string into a declared
+#      exclusion criterion. In v2 it was enforced only via the objective, which made the
+#      model exclude studies while reporting "Exclusion IDs met: none" (e.g. 25698699:
+#      all of I1-I4 met, excluded anyway for using film clips). Same behaviour, now
+#      auditable. 
+#   C. I11 now requires coordinates to be verifiable in the text actually provided.
+#      v2 let a bare citation to an unseen supplement satisfy it -- 30946860 was included
+#      on the reasoning that "absence of supplemental files is acceptable".
+#   D. E7 now states that PPI/DCM/seed-selection peaks are not whole-brain task
+#      activation coordinates (29931375 credited PPI peaks toward I10).
+#   E. (no config change -- see below). 33 gold studies passed full-text screening and then
+#      died at the coordinate stage; 32 were sourced from ace_outputs/html/Manual/, which
+#      has a 0/106 coordinate-extraction rate (vs 28/34 for pubget). The activation tables
+#      ARE present in that HTML (3-9 coordinate-like tables per paper, some with explicit
+#      x/y/z headers), so this is recoverable data, not missing data. parse_coordinates is
+#      gated on pre-extraction and so cannot rescue it; the fix is upstream -- re-run ACE's
+#      coordinate extraction over that batch with the current (higher-recall) table logic
+#      and regenerate ace_outputs/processed/coordinates.csv.
+#
+# ---- deliberately unchanged (fidelity to the published criteria) ------------------
+# The "healthy adults" restriction stays, though the gold standard includes child,
+# adolescent and mixed 10-25 samples: costs 5 false negatives (21686071, 24646887,
+# 28372994 at abstract; 25439326, 26596970 at full text).
+# The static-visual-stimuli rule stays, though 4 gold studies use film clips: costs
+# 25631055, 17888411, 24782800, 17588776, plus 25698699 at abstract.
+# Also unchanged: no date filter, and the authors' verbatim wording on prior
+# neurological/medical/psychiatric history.
+#
+# ---- known evaluation artefacts (do not tune against these) -----------------------
+# Full-text precision has a floor well under 1.0. Fig. 1 shows the ER arm ran 115 eligible
+# -> 90 included, so ~25 criteria-eligible studies were dropped by the original authors for
+# want of usable coordinates/contrasts. Several v2 "false positives" are canonical
+# reappraisal-of-IAPS papers of exactly that profile (19400679, 22345383, 20226799).
+
+search:
+  database: "pubmed"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/pubmed_search_pmids.txt"
+  max_results: 5000
+  email: "delavega@utexas.edu"
+
+retrieval:
+  load_excluded: false
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: '/home/zorro/repos/autonima-results/articles/elsevier_output'
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: '/home/zorro/repos/autonima-results/articles/ace_outputs'
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: '/home/zorro/repos/autonima-results/articles/ace_outputs/processed'
+
+screening:
+  abstract:
+    model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+    objective: "Identify task-based fMRI studies in which participants regulated their own emotional responses to static pictures, using reappraisal."
+    additional_instructions: >-
+      Base every include/exclude decision solely on the enumerated inclusion and exclusion
+      criteria. The objective is context only, never itself a criterion. Do not exclude a
+      study unless you can name the specific inclusion criterion it fails or the exclusion
+      criterion it triggers. If all inclusion criteria are met and no exclusion criterion is
+      triggered, the decision must be include. This is a first-pass screen: where an abstract
+      is silent or ambiguous on a criterion, include the study for full-text review rather
+      than excluding it.
+    inclusion_criteria:
+      - Task-based fMRI study.
+      - Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing.
+      - Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group.
+      - Reports task-related brain activation results.
+    exclusion_criteria:
+      - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+      - Doesn't include at least one healthy adult sample.
+      - "The abstract clearly indicates that the emotional stimuli being regulated are something other than static pictures - e.g. film or video clips, music or other audio, odours, narrative scripts, recalled autobiographical memories, imagined scenarios, monetary or social decision outcomes, or delivered pain. Apply this only when the abstract states the stimulus type; if the stimulus type is not stated, do NOT exclude on this basis."
+    confidence_reporting: true
+
+  fulltext:
+    model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Identify task-based fMRI studies in which healthy adults used reappraisal to regulate emotional responses to static visual stimuli, with whole-brain coordinates reported."
+    inclusion_criteria:
+      - Task-based fMRI study.
+      - "fMRI Task- reappraisal used as the emotion regulation strategy, construed broadly to include reinterpretation, perspective-taking, and distancing tactics. The regulation goal may be up-regulation (increase) OR down-regulation (decrease) of emotion, and the emotional stimuli may be positive OR negative. A study qualifies if it implements EITHER regulation direction with EITHER stimulus valence; it does NOT need to include both directions or both valences."
+      - "Stimuli- the emotional stimuli being regulated are static visual images (e.g., IAPS pictures, photographs of faces or scenes). Exclude studies in which the regulated stimuli are film or video clips, audio, narrative scripts, imagined or recalled autobiographical scenarios, monetary or social decision outcomes, anticipatory cues, or delivered pain/shock."
+      - Target sample- at least one group of healthy adults with no prior report of neurological, medical, or psychiatric disorders. A study of a patient or clinical population qualifies only if results for the healthy control group are reported separately; only that group is of interest.
+      - Analysis- Reports at least one within-task contrast related to emotion regulation (e.g., “reappraise > look”, “down-regulate > maintain”, “up-regulate > maintain”) for the target sample.
+      - Whole-brain evidence- The target analysis must be a group-level, whole-brain (voxelwise) task-evoked statistical map, with peak coordinates reported in a standard anatomical reference space (Talairach/Tournoux or MNI).
+      - "Verifiability- the qualifying whole-brain coordinates must be present in the text you have been given: a table of peak coordinates, or coordinates quoted in the Results narrative. Coordinates in tables, figures, or supplementary materials qualify only if their actual values appear in the provided text. A citation to a supplementary table, appendix, or online resource whose contents are NOT in the provided text does not satisfy this criterion."
+    exclusion_criteria:
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.
+      - Studies that report only region-of-interest (ROI) analyses, only small-volume corrected results, or that used partial brain coverage, without an accompanying whole-brain map.
+      - "Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a whole-brain task activation map. Peak coordinates originating from PPI, DCM, seed-selection, or mediation analyses are not whole-brain task activation coordinates and do not satisfy the whole-brain evidence criterion."
+      - Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control, gender differences)
+
+parsing:
+  parse_coordinates: false
+  coordinate_model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+
+annotation:
+  enabled: false
+  model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  prompt_type: "multi_analysis"
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - "<ANNOTATION_INCLUSION_CRITERION_1>"
+    - "<ANNOTATION_INCLUSION_CRITERION_2>"
+  exclusion_criteria:
+    - "<ANNOTATION_EXCLUSION_CRITERION_1>"
+    - "<ANNOTATION_EXCLUSION_CRITERION_2>"
+  annotations:
+    - name: "<ANNOTATION_SLUG_1>"
+      description: "<SHORT_DESCRIPTION_1>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_1>"
+    - name: "<ANNOTATION_SLUG_2>"
+      description: "<SHORT_DESCRIPTION_2>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_2>"
+
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true

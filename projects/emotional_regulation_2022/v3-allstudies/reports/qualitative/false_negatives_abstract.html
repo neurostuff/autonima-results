@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Abstract Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .criteria-summary, .criteria-details {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .criteria-summary {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .criterion-list {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+        .criterion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }
+        .criterion-red {
+            background: #c0392b;
+        }
+        .criterion-green {
+            background: #1e8449;
+        }
+        .criterion-neutral {
+            background: #34495e;
+        }
+        .criterion-count {
+            color: #555;
+            font-size: 12px;
+        }
+        .annotation {
+            border-left: 3px solid #f39c12;
+            background-color: #fff8e1;
+            padding: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC';
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2';
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        @media (max-width: 900px) {
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+
+    function getAnnotationsFilename() {
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {
+            return "annotations.json";
+        }
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {
+            return "annotations.json";
+        }
+        return base + ".json";
+    }
+
+    async function saveAnnotations() {
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var pmid = study.getAttribute('data-pmid') || '';
+
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {
+            try {
+                var fileHandle = await window.showSaveFilePicker({
+                    suggestedName: outputFilename,
+                    types: [{
+                        description: "JSON Files",
+                        accept: { "application/json": [".json"] }
+                    }]
+                });
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            } catch (error) {
+                if (error && error.name === "AbortError") {
+                    return;
+                }
+                console.warn("Falling back to browser download.", error);
+            }
+        }
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", outputFilename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Negatives Papers at Abstract Stage</h1>
+<p>Total papers: 6</p>
+<div class='criteria-summary'>
+<h2>Stage Criteria Summary</h2>
+<p>Stage: <strong>Abstract</strong>. Counts show criterion usage across all stage decisions and within this report subset.</p>
+<div class='criteria-grid'>
+<div>
+<h3>Inclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>I1</span> Task-based fMRI study. <span class='criterion-count'>(all stage: 181/273, this report: 5/6)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I2</span> Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing. <span class='criterion-count'>(all stage: 182/273, this report: 5/6)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I3</span> Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group. <span class='criterion-count'>(all stage: 131/273, this report: 1/6)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I4</span> Reports task-related brain activation results. <span class='criterion-count'>(all stage: 197/273, this report: 5/6)</span></li>
+</ul>
+</div>
+<div>
+<h3>Exclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data. <span class='criterion-count'>(all stage: 22/273, this report: 0/6)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E2</span> Doesn&#x27;t include at least one healthy adult sample. <span class='criterion-count'>(all stage: 30/273, this report: 3/6)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E3</span> The abstract clearly indicates that the emotional stimuli being regulated are something other than static pictures - e.g. film or video clips, music or other audio, odours, narrative scripts, recalled autobiographical memories, imagined scenarios, monetary or social decision outcomes, or delivered pain. Apply this only when the abstract states the stimulus type; if the stimulus type is not stated, do NOT exclude on this basis. <span class='criterion-count'>(all stage: 34/273, this report: 2/6)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='study-list'>
+<div class='study' id='study-1' data-pmid='28372994'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28372994/' target='_blank'>28372994</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> Excluded because the sample is described as &quot;girls&quot; (adolescents) and the abstract does not include or indicate a healthy adult sample, failing E2. The abstract indicates a task-based fMRI cognitive reappraisal study (I1, I2) and discusses neural activation (I4), but it does not meet I3 (healthy adults not included).</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I1</span> Task-based fMRI study.</li>
+<li><span class='criterion-tag criterion-green'>I2</span> Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing.</li>
+<li><span class='criterion-tag criterion-green'>I4</span> Reports task-related brain activation results.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I3</span> Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E2</span> Doesn&#x27;t include at least one healthy adult sample.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data.</li>
+<li><span class='criterion-tag criterion-green'>E3</span> The abstract clearly indicates that the emotional stimuli being regulated are something other than static pictures - e.g. film or video clips, music or other audio, odours, narrative scripts, recalled autobiographical memories, imagined scenarios, monetary or social decision outcomes, or delivered pain. Apply this only when the abstract states the stimulus type; if the stimulus type is not stated, do NOT exclude on this basis.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Although emotion dysregulation, one of the core features of depression, has long been thought to be a vulnerability factor for major depressive disorder (MDD), surprisingly few functional magnetic resonance imaging (fMRI) studies have investigated neural correlates of emotion regulation strategies in unaffected high risk individuals.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment-1'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-2' data-pmid='24782800'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24782800/' target='_blank'>24782800</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> E3: Abstract states stimuli were film clips (not static pictures), so excluded per exclusion criterion. Inclusion criteria met: I1 (task-based fMRI), I2 (emotion regulation/reappraisal task), I3 (healthy adult groups), I4 (reports task-related brain activation). Inclusion criteria not met/not demonstrated: none (stimulus type incompatible with review).</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E3</span> The abstract clearly indicates that the emotional stimuli being regulated are something other than static pictures - e.g. film or video clips, music or other audio, odours, narrative scripts, recalled autobiographical memories, imagined scenarios, monetary or social decision outcomes, or delivered pain. Apply this only when the abstract states the stimulus type; if the stimulus type is not stated, do NOT exclude on this basis.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data.</li>
+<li><span class='criterion-tag criterion-green'>E2</span> Doesn&#x27;t include at least one healthy adult sample.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The present study examined age differences in the timing and neural recruitment within lateral and medial PFC while younger and older adults hedonically regulated their responses to unpleasant film clips. When analyses focused on activity during the emotional peak of the film clip (the most emotionally salient portion of the film), several age differences emerged. When comparing regulation to passive viewing (combined effects of selective attention and reappraisal) younger adults showed greater regulation related activity in lateral PFC (DLPFC, VLPFC, OFC) and medial PFC (ACC) while older adults showed greater activation within a region DLPFC. When assessing distinct effects of the regulation conditions, an ANOVA revealed a significant Age × Regulation Condition interaction within bilateral DLPFC and ACC; older adults but not young adults showed greater recruitment within these regions for reappraisal than selective attention. When examining activity at the onset of the film clip and at its emotional peak, the timing of reappraisal-related activity within VLPFC differed between age groups: younger adults showed greater activity at film onset while older adults showed heightened activity during the peak. Our results suggest that older adults rely more heavily on PFC recruitment when engaging cognitively demanding reappraisal strategies while PFC-mediated regulation might not be as task-specific for younger adults. Older adults&#x27; greater reliance on cognitive control processing during emotion regulation may also be reflected in the time needed to implement these strategies.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-2' name='judgment-2' value='agree'>
+<label for='agree-2'>Agree</label>
+<input type='radio' id='disagree-2' name='judgment-2' value='disagree'>
+<label for='disagree-2'>Disagree</label>
+<br><br>
+<label for='comment-2'><strong>Comments:</strong></label>
+<textarea id='comment-2' name='comment-2' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-3' data-pmid='25631055'>
+<h2>3. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25631055/' target='_blank'>25631055</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> E3 met: abstract states regulation of emotions in response to highly arousing film clips (not static pictures). Inclusion met: I1 (task-based fMRI with DCM), I2 (participants performed reappraisal/up- and downregulation), I4 (reports task-related brain connectivity/activation results). Inclusion not demonstrated: I3 (abstract does not specify inclusion of healthy adult participants).</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I1</span> Task-based fMRI study.</li>
+<li><span class='criterion-tag criterion-green'>I2</span> Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing.</li>
+<li><span class='criterion-tag criterion-green'>I4</span> Reports task-related brain activation results.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I3</span> Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E3</span> The abstract clearly indicates that the emotional stimuli being regulated are something other than static pictures - e.g. film or video clips, music or other audio, odours, narrative scripts, recalled autobiographical memories, imagined scenarios, monetary or social decision outcomes, or delivered pain. Apply this only when the abstract states the stimulus type; if the stimulus type is not stated, do NOT exclude on this basis.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data.</li>
+<li><span class='criterion-tag criterion-green'>E2</span> Doesn&#x27;t include at least one healthy adult sample.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Reappraisal, the cognitive reevaluation of a potentially emotionally arousing event, has been proposed to be based upon top-down appraisal systems within the prefrontal cortex (PFC). It still remains unclear, however, how different prefrontal regions interact to control and regulate emotional responses. We used fMRI and dynamic causal modeling (DCM) to characterize the functional interrelationships among dorsal and ventral PFC regions involved in reappraisal. Specifically, we examined the effective connectivity between the inferior frontal gyrus (IFG), dorsolateral PFC (DLPFC), and other reappraisal-related regions (supplementary motor area, supramarginal gyrus) during the up- and downregulation of emotions in response to highly arousing extreme sports film clips. We found DLPFC to be the central node of the prefrontal emotion regulation network, strongly interconnected with the IFG. The DCM analysis further revealed excitatory changes of connection strength from the DLPFC to the IFG and strong inhibitory changes of connection strength between the IFG and DLPFC during reappraisal. These bidirectional changes in connectivity strength indicate a feedback mechanism by which the IFG may select one out of several possible goal-appropriate reappraisals held active in working memory (represented in the DLPFC) and inhibits the DLPFC once the selection process is completed.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-3' name='judgment-3' value='agree'>
+<label for='agree-3'>Agree</label>
+<input type='radio' id='disagree-3' name='judgment-3' value='disagree'>
+<label for='disagree-3'>Disagree</label>
+<br><br>
+<label for='comment-3'><strong>Comments:</strong></label>
+<textarea id='comment-3' name='comment-3' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-4' data-pmid='24646887'>
+<h2>4. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24646887/' target='_blank'>24646887</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> E2: The study includes only psychiatrically healthy schoolchildren and does not include a healthy adult sample. It meets I1 (task-based fMRI), I2 (reappraisal/CER task), and I4 (reports task-related brain activation) but does not meet I3 (no healthy adult participants).</p>
+<p><strong>Abstract Confidence:</strong> 0.95</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I1</span> Task-based fMRI study.</li>
+<li><span class='criterion-tag criterion-green'>I2</span> Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing.</li>
+<li><span class='criterion-tag criterion-green'>I4</span> Reports task-related brain activation results.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I3</span> Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E2</span> Doesn&#x27;t include at least one healthy adult sample.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data.</li>
+<li><span class='criterion-tag criterion-green'>E3</span> The abstract clearly indicates that the emotional stimuli being regulated are something other than static pictures - e.g. film or video clips, music or other audio, odours, narrative scripts, recalled autobiographical memories, imagined scenarios, monetary or social decision outcomes, or delivered pain. Apply this only when the abstract states the stimulus type; if the stimulus type is not stated, do NOT exclude on this basis.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> When used effectively, cognitive reappraisal of distressing events is a highly adaptive cognitive emotion regulation (CER) strategy, with impairments in cognitive reappraisal associated with greater risk for psychopathology. Despite extensive literature examining the neural correlates of cognitive reappraisal in healthy and psychiatrically ill adults, there is a dearth of data to inform the neural bases of CER in children, a key gap in the literature necessary to map the developmental trajectory of cognitive reappraisal. In this fMRI study, psychiatrically healthy schoolchildren were instructed to use cognitive reappraisal to modulate their emotional reactions and responses of negative affect after viewing sad photos. Consistent with the adult literature, when actively engaged in reappraisal compared to passively viewing sad photos, children showed increased activation in the vlPFC, dlPFC, and dmPFC as well as in parietal and temporal lobe regions. When children used cognitive reappraisal to minimize their experience of negative affect after viewing sad stimuli they exhibited dampened amygdala responses. Results are discussed in relation to the importance of identifying and characterizing neural processes underlying adaptive CER strategies in typically developing children in order to understand how these systems go awry and relate to the risk and occurrence of affective disorders.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-4' name='judgment-4' value='agree'>
+<label for='agree-4'>Agree</label>
+<input type='radio' id='disagree-4' name='judgment-4' value='disagree'>
+<label for='disagree-4'>Disagree</label>
+<br><br>
+<label for='comment-4'><strong>Comments:</strong></label>
+<textarea id='comment-4' name='comment-4' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-5' data-pmid='25698699'>
+<h2>5. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25698699/' target='_blank'>25698699</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> E3 met: abstract states stimuli were film clips (videos) rather than static pictures. Inclusion met: I1 (task-based fMRI), I2 (used Reappraisal emotion regulation), I4 (reports task-related brain activation). I3 met/demonstrated: includes human adult practitioners (no patient population indicated). Inclusion not unmet: none.</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>all inclusion criteria not met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Emotion regulation research has primarily focused on techniques that attenuate or modulate the impact of emotional stimuli. Recent evidence suggests that this mode regulation can be problematic in the context of regulation of emotion elicited by the suffering of others, resulting in reduced emotional connectedness. Here, we investigated the effects of an alternative emotion regulation technique based on the up-regulation of positive affect via Compassion-meditation on experiential and neural affective responses to depictions of individuals in distress, and compared these with the established emotion regulation strategy of Reappraisal. Using fMRI, we scanned 15 expert practitioners of Compassion-meditation either passively viewing, or using Compassion-meditation or Reappraisal to modulate their emotional reactions to film clips depicting people in distress. Both strategies effectively, but differentially regulated experienced affect, with Compassion primarily increasing positive and Reappraisal primarily decreasing negative affect. Imaging results showed that Compassion, relative to both passive-viewing and Reappraisal increased activation in regions involved in affiliation, positive affect and reward processing including ventral striatum and medial orbitfrontal cortex. This network was shown to be active prior to stimulus presentation, suggesting that the regulatory mechanism of Compassion is the stimulus-independent endogenous generation of positive affect.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-5' name='judgment-5' value='agree'>
+<label for='agree-5'>Agree</label>
+<input type='radio' id='disagree-5' name='judgment-5' value='disagree'>
+<label for='disagree-5'>Disagree</label>
+<br><br>
+<label for='comment-5'><strong>Comments:</strong></label>
+<textarea id='comment-5' name='comment-5' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-6' data-pmid='21686071'>
+<h2>6. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/21686071/' target='_blank'>21686071</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> Exclusion E2: sample comprises children/adolescents only; no healthy adult group reported. Inclusion met: I1 (task-based fMRI), I2 (human emotion regulation/reappraisal task regulating responses to disgust images), I4 (reports task-related brain activation). Inclusion not met: I3 (no healthy adult sample).</p>
+<p><strong>Abstract Confidence:</strong> 0.92</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I1</span> Task-based fMRI study.</li>
+<li><span class='criterion-tag criterion-green'>I2</span> Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing.</li>
+<li><span class='criterion-tag criterion-green'>I4</span> Reports task-related brain activation results.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I3</span> Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E2</span> Doesn&#x27;t include at least one healthy adult sample.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data.</li>
+<li><span class='criterion-tag criterion-green'>E3</span> The abstract clearly indicates that the emotional stimuli being regulated are something other than static pictures - e.g. film or video clips, music or other audio, odours, narrative scripts, recalled autobiographical memories, imagined scenarios, monetary or social decision outcomes, or delivered pain. Apply this only when the abstract states the stimulus type; if the stimulus type is not stated, do NOT exclude on this basis.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The ability to regulate one&#x27;s emotions is critical to mental health and well-being, and is impaired in a wide range of psychopathologies, some of which initially manifest in childhood or adolescence. Cognitive reappraisal is a particular approach to emotion regulation frequently utilized in behavioral psychotherapies. Despite a wealth of research on cognitive reappraisal in adults, little is known about the developmental trajectory of brain mechanisms subserving this form of emotion regulation in children. In this functional magnetic resonance imaging study, we asked children and adolescents to up-and down-regulate their response to disgusting images, as the experience of disgust has been linked to anxiety disorders. We demonstrate distinct patterns of brain activation during successful up- and down-regulation of emotion, as well as an inverse correlation between activity in ventromedial prefrontal cortex (vmPFC) and limbic structures during down-regulation, suggestive of a potential regulatory role for vmPFC. Further, we show age-related effects on activity in PFC and amygdala. These findings have important clinical implications for the understanding of cognitive-based therapies in anxiety disorders in childhood and adolescence.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-6' name='judgment-6' value='agree'>
+<label for='agree-6'>Agree</label>
+<input type='radio' id='disagree-6' name='judgment-6' value='disagree'>
+<label for='disagree-6'>Disagree</label>
+<br><br>
+<label for='comment-6'><strong>Comments:</strong></label>
+<textarea id='comment-6' name='comment-6' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+# Autonima config for emotional_regulation_2022 (Morawetz et al., 2022, NeuroImage 255:119194)
+#
+# Target: the emotion regulation arm only (90 studies). The paper's Section 2.1 lists six
+# criteria; 1-4 are shared across both arms, 5 and 6 fork into (a) reappraisal / (b) empathy.
+# This config encodes 1, 2, 3, 4, 5(a), 6(a).
+#
+# Changes vs v1 (each corrects a clear misreading or an outright omission of a stated criterion):
+#   1. Fulltext I6 is now disjunctive, not conjunctive. A study qualifies with EITHER
+#      regulation direction and EITHER stimulus valence. v1 required all four. Criteria 5/6
+#      enumerate the review's scope, not per-study requirements -- cf. Fig. 1, where the ER
+#      arm has 130 decrease vs 24 increase experiments across 90 studies, and the empathy
+#      arm splits into separate OOP (137) / SOP (63) categories despite identical "X- and Y-"
+#      phrasing in 6(b).
+#   2. Added the static-visual-stimuli requirement (criterion 4), absent from v1 entirely.
+#      Excludes film, audio, scripts, imagery, decision outcomes, anticipatory cues, pain.
+#   3. Patient studies now qualify when healthy-control results are reported separately
+#      (criterion 1); v1 read this as a blanket exclusion.
+#   4. Whole-brain results must report coordinates in Talairach/MNI space (criterion 2);
+#      v1 required a whole-brain map but not standard-space coordinates.
+#   5. "Reappraisal" defined broadly as reinterpretation, perspective-taking, and distancing,
+#      per the authors' own gloss (p. 4, citing McRae et al. 2012).
+#   6. Added an empathy-arm exclusion at both stages. Scoping, not a correction: the PMID pool
+#      (275) spans both arms (90 ER + 187 empathy), while the gold standard is ER only.
+#      Carve-out preserves reappraisal-via-perspective-taking / distancing.
+#
+# Deliberately unchanged from v1: the "healthy adults" age restriction, no date filter, and
+# the authors' verbatim "no prior report of neurological, medical, or psychiatric disorders"
+# (its treatment of subclinical samples is their imprecision, not a misreading on our part).
+
+search:
+  database: "pubmed"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/pubmed_search_pmids.txt"
+  max_results: 5000
+  email: "delavega@utexas.edu"
+
+retrieval:
+  load_excluded: false
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: '/home/zorro/repos/autonima-results/articles/elsevier_output'
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: '/home/zorro/repos/autonima-results/articles/ace_outputs'
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: '/home/zorro/repos/autonima-results/articles/ace_outputs/processed'
+
+screening:
+  abstract:
+    model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+    objective: "Identify task-based fMRI studies in which participants regulated their own emotional responses to pictures, using reappraisal."
+    inclusion_criteria:
+      - Task-based fMRI study.
+      - Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing.
+      - Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group.
+      - Reports task-related brain activation results.
+    exclusion_criteria:
+      - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+      - Doesn't include at least one healthy adult sample.
+      - Empathy or perspective-taking studies in which participants adopt a self-oriented or other-oriented perspective toward a depicted person WITHOUT being instructed to amplify or attenuate their own emotional response. These belong to the empathy arm of the literature, not the emotion regulation arm. If the abstract indicates an explicit regulation goal (increase/decrease/maintain one's own emotion), include it.
+    confidence_reporting: true
+
+  fulltext:
+    model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "Identify task-based fMRI studies in which healthy adults used reappraisal to regulate emotional responses to static visual stimuli, with whole-brain coordinates reported."
+    inclusion_criteria:
+      - Task-based fMRI study.
+      - "fMRI Task- reappraisal used as the emotion regulation strategy, construed broadly to include reinterpretation, perspective-taking, and distancing tactics. The regulation goal may be up-regulation (increase) OR down-regulation (decrease) of emotion, and the emotional stimuli may be positive OR negative. A study qualifies if it implements EITHER regulation direction with EITHER stimulus valence; it does NOT need to include both directions or both valences."
+      - "Stimuli- the emotional stimuli being regulated are static visual images (e.g., IAPS pictures, photographs of faces or scenes). Exclude studies in which the regulated stimuli are film or video clips, audio, narrative scripts, imagined or recalled autobiographical scenarios, monetary or social decision outcomes, anticipatory cues, or delivered pain/shock."
+      - Target sample- at least one group of healthy adults with no prior report of neurological, medical, or psychiatric disorders. A study of a patient or clinical population qualifies only if results for the healthy control group are reported separately; only that group is of interest.
+      - Analysis- Reports at least one within-task contrast related to emotion regulation (e.g., “reappraise > look”, “down-regulate > maintain”, “up-regulate > maintain”) for the target sample.
+      - Whole-brain evidence- The target analysis must be a group-level, whole-brain (voxelwise) task-evoked statistical map, with peak coordinates reported in a standard anatomical reference space (Talairach/Tournoux or MNI).
+      - It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.
+    exclusion_criteria:
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.
+      - Studies that report only region-of-interest (ROI) analyses, only small-volume corrected results, or that used partial brain coverage, without an accompanying whole-brain map.
+      - Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a whole-brain task activation map.
+      - Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control, gender differences)
+      - Empathy or perspective-taking studies in which participants take a self-oriented or other-oriented perspective toward a depicted person with no instruction to amplify or attenuate their own emotional response. A perspective-taking or distancing manipulation WITH an explicit regulation goal is reappraisal and qualifies.
+
+parsing:
+  parse_coordinates: false
+  coordinate_model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+
+annotation:
+  enabled: false
+  model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  prompt_type: "multi_analysis"
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - "<ANNOTATION_INCLUSION_CRITERION_1>"
+    - "<ANNOTATION_INCLUSION_CRITERION_2>"
+  exclusion_criteria:
+    - "<ANNOTATION_EXCLUSION_CRITERION_1>"
+    - "<ANNOTATION_EXCLUSION_CRITERION_2>"
+  annotations:
+    - name: "<ANNOTATION_SLUG_1>"
+      description: "<SHORT_DESCRIPTION_1>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_1>"
+    - name: "<ANNOTATION_SLUG_2>"
+      description: "<SHORT_DESCRIPTION_2>"
+      inclusion_criteria:
+        - "<ANNOTATION_SPECIFIC_CRITERION_2>"
+
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true

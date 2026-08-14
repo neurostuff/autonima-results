@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Abstract Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .criteria-summary, .criteria-details {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .criteria-summary {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .criterion-list {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+        .criterion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }
+        .criterion-red {
+            background: #c0392b;
+        }
+        .criterion-green {
+            background: #1e8449;
+        }
+        .criterion-neutral {
+            background: #34495e;
+        }
+        .criterion-count {
+            color: #555;
+            font-size: 12px;
+        }
+        .annotation {
+            border-left: 3px solid #f39c12;
+            background-color: #fff8e1;
+            padding: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC';
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2';
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        @media (max-width: 900px) {
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+
+    function getAnnotationsFilename() {
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {
+            return "annotations.json";
+        }
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {
+            return "annotations.json";
+        }
+        return base + ".json";
+    }
+
+    async function saveAnnotations() {
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var pmid = study.getAttribute('data-pmid') || '';
+
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {
+            try {
+                var fileHandle = await window.showSaveFilePicker({
+                    suggestedName: outputFilename,
+                    types: [{
+                        description: "JSON Files",
+                        accept: { "application/json": [".json"] }
+                    }]
+                });
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            } catch (error) {
+                if (error && error.name === "AbortError") {
+                    return;
+                }
+                console.warn("Falling back to browser download.", error);
+            }
+        }
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", outputFilename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Negatives Papers at Abstract Stage</h1>
+<p>Total papers: 4</p>
+<div class='criteria-summary'>
+<h2>Stage Criteria Summary</h2>
+<p>Stage: <strong>Abstract</strong>. Counts show criterion usage across all stage decisions and within this report subset.</p>
+<div class='criteria-grid'>
+<div>
+<h3>Inclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>I1</span> Task-based fMRI study. <span class='criterion-count'>(all stage: 186/273, this report: 4/4)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I2</span> Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing. <span class='criterion-count'>(all stage: 168/273, this report: 4/4)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I3</span> Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group. <span class='criterion-count'>(all stage: 132/273, this report: 1/4)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I4</span> Reports task-related brain activation results. <span class='criterion-count'>(all stage: 196/273, this report: 4/4)</span></li>
+</ul>
+</div>
+<div>
+<h3>Exclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data. <span class='criterion-count'>(all stage: 21/273, this report: 0/4)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E2</span> Doesn&#x27;t include at least one healthy adult sample. <span class='criterion-count'>(all stage: 34/273, this report: 3/4)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E3</span> Empathy or perspective-taking studies in which participants adopt a self-oriented or other-oriented perspective toward a depicted person WITHOUT being instructed to amplify or attenuate their own emotional response. These belong to the empathy arm of the literature, not the emotion regulation arm. If the abstract indicates an explicit regulation goal (increase/decrease/maintain one&#x27;s own emotion), include it. <span class='criterion-count'>(all stage: 1/273, this report: 0/4)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='study-list'>
+<div class='study' id='study-1' data-pmid='25698699'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25698699/' target='_blank'>25698699</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> Excluded: study used film clips (videos) rather than pictures, so it does not meet the review objective requiring regulation of responses to pictures. Exclusion IDs met: none. Inclusion IDs met: I1, I2, I3, I4. Inclusion IDs not met/not demonstrated: stimulus type requirement (pictures) of the review objective is not met.</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Emotion regulation research has primarily focused on techniques that attenuate or modulate the impact of emotional stimuli. Recent evidence suggests that this mode regulation can be problematic in the context of regulation of emotion elicited by the suffering of others, resulting in reduced emotional connectedness. Here, we investigated the effects of an alternative emotion regulation technique based on the up-regulation of positive affect via Compassion-meditation on experiential and neural affective responses to depictions of individuals in distress, and compared these with the established emotion regulation strategy of Reappraisal. Using fMRI, we scanned 15 expert practitioners of Compassion-meditation either passively viewing, or using Compassion-meditation or Reappraisal to modulate their emotional reactions to film clips depicting people in distress. Both strategies effectively, but differentially regulated experienced affect, with Compassion primarily increasing positive and Reappraisal primarily decreasing negative affect. Imaging results showed that Compassion, relative to both passive-viewing and Reappraisal increased activation in regions involved in affiliation, positive affect and reward processing including ventral striatum and medial orbitfrontal cortex. This network was shown to be active prior to stimulus presentation, suggesting that the regulatory mechanism of Compassion is the stimulus-independent endogenous generation of positive affect.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment-1'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-2' data-pmid='24646887'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24646887/' target='_blank'>24646887</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> E2 met: sample comprises psychiatrically healthy children only—no healthy adult group. Inclusion met: I1 (task-based fMRI), I2 (participants performed cognitive reappraisal), I4 (reports task-related brain activation). I3 not met (no healthy adult sample).</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I1</span> Task-based fMRI study.</li>
+<li><span class='criterion-tag criterion-green'>I2</span> Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing.</li>
+<li><span class='criterion-tag criterion-green'>I4</span> Reports task-related brain activation results.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I3</span> Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E2</span> Doesn&#x27;t include at least one healthy adult sample.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data.</li>
+<li><span class='criterion-tag criterion-green'>E3</span> Empathy or perspective-taking studies in which participants adopt a self-oriented or other-oriented perspective toward a depicted person WITHOUT being instructed to amplify or attenuate their own emotional response. These belong to the empathy arm of the literature, not the emotion regulation arm. If the abstract indicates an explicit regulation goal (increase/decrease/maintain one&#x27;s own emotion), include it.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> When used effectively, cognitive reappraisal of distressing events is a highly adaptive cognitive emotion regulation (CER) strategy, with impairments in cognitive reappraisal associated with greater risk for psychopathology. Despite extensive literature examining the neural correlates of cognitive reappraisal in healthy and psychiatrically ill adults, there is a dearth of data to inform the neural bases of CER in children, a key gap in the literature necessary to map the developmental trajectory of cognitive reappraisal. In this fMRI study, psychiatrically healthy schoolchildren were instructed to use cognitive reappraisal to modulate their emotional reactions and responses of negative affect after viewing sad photos. Consistent with the adult literature, when actively engaged in reappraisal compared to passively viewing sad photos, children showed increased activation in the vlPFC, dlPFC, and dmPFC as well as in parietal and temporal lobe regions. When children used cognitive reappraisal to minimize their experience of negative affect after viewing sad stimuli they exhibited dampened amygdala responses. Results are discussed in relation to the importance of identifying and characterizing neural processes underlying adaptive CER strategies in typically developing children in order to understand how these systems go awry and relate to the risk and occurrence of affective disorders.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-2' name='judgment-2' value='agree'>
+<label for='agree-2'>Agree</label>
+<input type='radio' id='disagree-2' name='judgment-2' value='disagree'>
+<label for='disagree-2'>Disagree</label>
+<br><br>
+<label for='comment-2'><strong>Comments:</strong></label>
+<textarea id='comment-2' name='comment-2' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-3' data-pmid='21686071'>
+<h2>3. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/21686071/' target='_blank'>21686071</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> Excluded (E2): study reports task-based fMRI of children/adolescents instructed to up- and down-regulate responses to disgusting pictures (I1, I2, I4 satisfied) but does not include a healthy adult sample (I3 not met).</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I1</span> Task-based fMRI study.</li>
+<li><span class='criterion-tag criterion-green'>I2</span> Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing.</li>
+<li><span class='criterion-tag criterion-green'>I4</span> Reports task-related brain activation results.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I3</span> Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E2</span> Doesn&#x27;t include at least one healthy adult sample.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data.</li>
+<li><span class='criterion-tag criterion-green'>E3</span> Empathy or perspective-taking studies in which participants adopt a self-oriented or other-oriented perspective toward a depicted person WITHOUT being instructed to amplify or attenuate their own emotional response. These belong to the empathy arm of the literature, not the emotion regulation arm. If the abstract indicates an explicit regulation goal (increase/decrease/maintain one&#x27;s own emotion), include it.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The ability to regulate one&#x27;s emotions is critical to mental health and well-being, and is impaired in a wide range of psychopathologies, some of which initially manifest in childhood or adolescence. Cognitive reappraisal is a particular approach to emotion regulation frequently utilized in behavioral psychotherapies. Despite a wealth of research on cognitive reappraisal in adults, little is known about the developmental trajectory of brain mechanisms subserving this form of emotion regulation in children. In this functional magnetic resonance imaging study, we asked children and adolescents to up-and down-regulate their response to disgusting images, as the experience of disgust has been linked to anxiety disorders. We demonstrate distinct patterns of brain activation during successful up- and down-regulation of emotion, as well as an inverse correlation between activity in ventromedial prefrontal cortex (vmPFC) and limbic structures during down-regulation, suggestive of a potential regulatory role for vmPFC. Further, we show age-related effects on activity in PFC and amygdala. These findings have important clinical implications for the understanding of cognitive-based therapies in anxiety disorders in childhood and adolescence.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-3' name='judgment-3' value='agree'>
+<label for='agree-3'>Agree</label>
+<input type='radio' id='disagree-3' name='judgment-3' value='disagree'>
+<label for='disagree-3'>Disagree</label>
+<br><br>
+<label for='comment-3'><strong>Comments:</strong></label>
+<textarea id='comment-3' name='comment-3' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-4' data-pmid='28372994'>
+<h2>4. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28372994/' target='_blank'>28372994</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Abstract Decision:</strong> excluded_abstract</p>
+<p><strong>Abstract Reasoning:</strong> Excluded because the sample consists of &#x27;girls&#x27; (minors) and the abstract does not indicate inclusion of a healthy adult sample, so E2 is met. The abstract does describe a task-based fMRI study of reappraisal and reports neural activation (I1, I2, I4 are satisfied), but I3 (includes at least one group of healthy adults) is not met or demonstrated.</p>
+<p><strong>Abstract Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I1</span> Task-based fMRI study.</li>
+<li><span class='criterion-tag criterion-green'>I2</span> Human participants performing an emotion regulation or reappraisal task, broadly defined. Reappraisal covers a wide spectrum of tactics including reinterpretation, perspective-taking, and distancing.</li>
+<li><span class='criterion-tag criterion-green'>I4</span> Reports task-related brain activation results.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I3</span> Includes at least one group of healthy adults. A study of a patient population qualifies if it also includes a healthy control group.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E2</span> Doesn&#x27;t include at least one healthy adult sample.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E1</span> Non-empirical papers (e.g., reviews, meta-analyses) without original human data.</li>
+<li><span class='criterion-tag criterion-green'>E3</span> Empathy or perspective-taking studies in which participants adopt a self-oriented or other-oriented perspective toward a depicted person WITHOUT being instructed to amplify or attenuate their own emotional response. These belong to the empathy arm of the literature, not the emotion regulation arm. If the abstract indicates an explicit regulation goal (increase/decrease/maintain one&#x27;s own emotion), include it.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Although emotion dysregulation, one of the core features of depression, has long been thought to be a vulnerability factor for major depressive disorder (MDD), surprisingly few functional magnetic resonance imaging (fMRI) studies have investigated neural correlates of emotion regulation strategies in unaffected high risk individuals.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-4' name='judgment-4' value='agree'>
+<label for='agree-4'>Agree</label>
+<input type='radio' id='disagree-4' name='judgment-4' value='disagree'>
+<label for='disagree-4'>Disagree</label>
+<br><br>
+<label for='comment-4'><strong>Comments:</strong></label>
+<textarea id='comment-4' name='comment-4' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

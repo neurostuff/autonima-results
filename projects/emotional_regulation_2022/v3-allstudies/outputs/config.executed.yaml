@@ -1,0 +1,214 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: 5000
+  date_from: null
+  date_to: null
+  email: delavega@utexas.edu
+  pmids_file: /home/zorro/repos/autonima-results/projects/emotional_regulation_2022/pubmed_search_pmids.txt
+  pmids_list: null
+screening:
+  abstract:
+    model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+    threshold: null
+    confidence_reporting: true
+    objective: Identify task-based fMRI studies in which participants regulated their
+      own emotional responses to static pictures, using reappraisal.
+    inclusion_criteria:
+    - Task-based fMRI study.
+    - Human participants performing an emotion regulation or reappraisal task, broadly
+      defined. Reappraisal covers a wide spectrum of tactics including reinterpretation,
+      perspective-taking, and distancing.
+    - Includes at least one group of healthy adults. A study of a patient population
+      qualifies if it also includes a healthy control group.
+    - Reports task-related brain activation results.
+    exclusion_criteria:
+    - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+    - Doesn't include at least one healthy adult sample.
+    - The abstract clearly indicates that the emotional stimuli being regulated are
+      something other than static pictures - e.g. film or video clips, music or other
+      audio, odours, narrative scripts, recalled autobiographical memories, imagined
+      scenarios, monetary or social decision outcomes, or delivered pain. Apply this
+      only when the abstract states the stimulus type; if the stimulus type is not
+      stated, do NOT exclude on this basis.
+    additional_instructions: 'Base every include/exclude decision solely on the enumerated
+      inclusion and exclusion criteria. The objective is context only, never itself
+      a criterion. Do not exclude a study unless you can name the specific inclusion
+      criterion it fails or the exclusion criterion it triggers. If all inclusion
+      criteria are met and no exclusion criterion is triggered, the decision must
+      be include. This is a first-pass screen: where an abstract is silent or ambiguous
+      on a criterion, include the study for full-text review rather than excluding
+      it.'
+    criteria_mapping:
+      inclusion:
+        I1: Task-based fMRI study.
+        I2: Human participants performing an emotion regulation or reappraisal task,
+          broadly defined. Reappraisal covers a wide spectrum of tactics including
+          reinterpretation, perspective-taking, and distancing.
+        I3: Includes at least one group of healthy adults. A study of a patient population
+          qualifies if it also includes a healthy control group.
+        I4: Reports task-related brain activation results.
+      exclusion:
+        E1: Non-empirical papers (e.g., reviews, meta-analyses) without original human
+          data.
+        E2: Doesn't include at least one healthy adult sample.
+        E3: The abstract clearly indicates that the emotional stimuli being regulated
+          are something other than static pictures - e.g. film or video clips, music
+          or other audio, odours, narrative scripts, recalled autobiographical memories,
+          imagined scenarios, monetary or social decision outcomes, or delivered pain.
+          Apply this only when the abstract states the stimulus type; if the stimulus
+          type is not stated, do NOT exclude on this basis.
+  fulltext:
+    model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+    threshold: null
+    confidence_reporting: true
+    objective: Identify task-based fMRI studies in which healthy adults used reappraisal
+      to regulate emotional responses to static visual stimuli, with whole-brain coordinates
+      reported.
+    inclusion_criteria:
+    - Task-based fMRI study.
+    - fMRI Task- reappraisal used as the emotion regulation strategy, construed broadly
+      to include reinterpretation, perspective-taking, and distancing tactics. The
+      regulation goal may be up-regulation (increase) OR down-regulation (decrease)
+      of emotion, and the emotional stimuli may be positive OR negative. A study qualifies
+      if it implements EITHER regulation direction with EITHER stimulus valence; it
+      does NOT need to include both directions or both valences.
+    - Stimuli- the emotional stimuli being regulated are static visual images (e.g.,
+      IAPS pictures, photographs of faces or scenes). Exclude studies in which the
+      regulated stimuli are film or video clips, audio, narrative scripts, imagined
+      or recalled autobiographical scenarios, monetary or social decision outcomes,
+      anticipatory cues, or delivered pain/shock.
+    - Target sample- at least one group of healthy adults with no prior report of
+      neurological, medical, or psychiatric disorders. A study of a patient or clinical
+      population qualifies only if results for the healthy control group are reported
+      separately; only that group is of interest.
+    - "Analysis- Reports at least one within-task contrast related to emotion regulation\
+      \ (e.g., \u201Creappraise > look\u201D, \u201Cdown-regulate > maintain\u201D\
+      , \u201Cup-regulate > maintain\u201D) for the target sample."
+    - Whole-brain evidence- The target analysis must be a group-level, whole-brain
+      (voxelwise) task-evoked statistical map, with peak coordinates reported in a
+      standard anatomical reference space (Talairach/Tournoux or MNI).
+    - 'Verifiability- the qualifying whole-brain coordinates must be present in the
+      text you have been given: a table of peak coordinates, or coordinates quoted
+      in the Results narrative. Coordinates in tables, figures, or supplementary materials
+      qualify only if their actual values appear in the provided text. A citation
+      to a supplementary table, appendix, or online resource whose contents are NOT
+      in the provided text does not satisfy this criterion.'
+    exclusion_criteria:
+    - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+      without original fMRI data in healthy adults.
+    - Studies that report only region-of-interest (ROI) analyses, only small-volume
+      corrected results, or that used partial brain coverage, without an accompanying
+      whole-brain map.
+    - Studies that report only seed-based connectivity, effective connectivity (e.g.,
+      PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without
+      also reporting a whole-brain task activation map. Peak coordinates originating
+      from PPI, DCM, seed-selection, or mediation analyses are not whole-brain task
+      activation coordinates and do not satisfy the whole-brain evidence criterion.
+    - Studies that report only between-group contrasts or interactions (e.g., subgroup
+      vs subgroup, patient vs control, gender differences)
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I5: Task-based fMRI study.
+        I6: fMRI Task- reappraisal used as the emotion regulation strategy, construed
+          broadly to include reinterpretation, perspective-taking, and distancing
+          tactics. The regulation goal may be up-regulation (increase) OR down-regulation
+          (decrease) of emotion, and the emotional stimuli may be positive OR negative.
+          A study qualifies if it implements EITHER regulation direction with EITHER
+          stimulus valence; it does NOT need to include both directions or both valences.
+        I7: Stimuli- the emotional stimuli being regulated are static visual images
+          (e.g., IAPS pictures, photographs of faces or scenes). Exclude studies in
+          which the regulated stimuli are film or video clips, audio, narrative scripts,
+          imagined or recalled autobiographical scenarios, monetary or social decision
+          outcomes, anticipatory cues, or delivered pain/shock.
+        I8: Target sample- at least one group of healthy adults with no prior report
+          of neurological, medical, or psychiatric disorders. A study of a patient
+          or clinical population qualifies only if results for the healthy control
+          group are reported separately; only that group is of interest.
+        I9: "Analysis- Reports at least one within-task contrast related to emotion\
+          \ regulation (e.g., \u201Creappraise > look\u201D, \u201Cdown-regulate >\
+          \ maintain\u201D, \u201Cup-regulate > maintain\u201D) for the target sample."
+        I10: Whole-brain evidence- The target analysis must be a group-level, whole-brain
+          (voxelwise) task-evoked statistical map, with peak coordinates reported
+          in a standard anatomical reference space (Talairach/Tournoux or MNI).
+        I11: 'Verifiability- the qualifying whole-brain coordinates must be present
+          in the text you have been given: a table of peak coordinates, or coordinates
+          quoted in the Results narrative. Coordinates in tables, figures, or supplementary
+          materials qualify only if their actual values appear in the provided text.
+          A citation to a supplementary table, appendix, or online resource whose
+          contents are NOT in the provided text does not satisfy this criterion.'
+      exclusion:
+        E4: Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+          without original fMRI data in healthy adults.
+        E5: Studies that report only region-of-interest (ROI) analyses, only small-volume
+          corrected results, or that used partial brain coverage, without an accompanying
+          whole-brain map.
+        E6: Studies that report only seed-based connectivity, effective connectivity
+          (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents)
+          without also reporting a whole-brain task activation map. Peak coordinates
+          originating from PPI, DCM, seed-selection, or mediation analyses are not
+          whole-brain task activation coordinates and do not satisfy the whole-brain
+          evidence criterion.
+        E7: Studies that report only between-group contrasts or interactions (e.g.,
+          subgroup vs subgroup, patient vs control, gender differences)
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: false
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: false
+  coordinate_model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+annotation:
+  model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria:
+  - <ANNOTATION_INCLUSION_CRITERION_1>
+  - <ANNOTATION_INCLUSION_CRITERION_2>
+  exclusion_criteria:
+  - <ANNOTATION_EXCLUSION_CRITERION_1>
+  - <ANNOTATION_EXCLUSION_CRITERION_2>
+  annotations:
+  - name: <ANNOTATION_SLUG_1>
+    description: <SHORT_DESCRIPTION_1>
+    inclusion_criteria:
+    - <ANNOTATION_SPECIFIC_CRITERION_1>
+    exclusion_criteria: []
+  - name: <ANNOTATION_SLUG_2>
+    description: <SHORT_DESCRIPTION_2>
+    inclusion_criteria:
+    - <ANNOTATION_SPECIFIC_CRITERION_2>
+    exclusion_criteria: []
+  enabled: false
+output:
+  directory: projects/emotional_regulation_2022/v3-allstudies
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: true

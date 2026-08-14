@@ -127,8 +127,14 @@ annotation:
   - study_title
   - study_abstract
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Must be a voxelwise whole brain analysis of grey matter volume
+  exclusion_criteria:
+  - Region of interest (ROI) or small volume correction (SVC) analyses
+  - Analyses of other modalities (e.g., functional MRI, diffusion tensor imaging)
+    or other structural measures
+  - Within group analyses that do not compare PTSD patients to controls
+  - Analyses of treatment effects or longitudinal changes
   annotations:
   - name: increased_gm
     description: Increased grey matter volume in PTSD patients relative to controls
@@ -145,7 +151,7 @@ annotation:
     exclusion_criteria: []
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/vbm_of_ptsd/v1
+  directory: projects/vbm_of_ptsd/v1
   prisma_diagram: true
   formats:
   - csv
