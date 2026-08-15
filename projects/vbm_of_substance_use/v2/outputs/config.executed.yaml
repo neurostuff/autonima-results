@@ -9,7 +9,7 @@ search:
     OR marijuana[tiab] OR marihuana[tiab] OR THC[tiab]) OR (stimulant*[tiab] OR cocaine[tiab]
     OR amphetamine*[tiab] OR methamphetamine[tiab] OR "Cocaine-Related Disorders"[Mesh]
     OR "Amphetamine-Related Disorders"[Mesh]))
-  max_results: 10000
+  max_results: null
   date_from: null
   date_to: 2019/7/31
   email: delavega@utexas.edu
@@ -120,8 +120,19 @@ annotation:
   - study_title
   - study_abstract
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Voxelwise whole-brain grey matter comparison between substance users and controls,
+    with a users < controls contrast indicating reduced grey matter in substance users.
+  - Must be a voxelwise whole brain analysis of grey matter volume
+  - Multiple experiments from the same article may be included only when they share
+    the same control group but involve non-overlapping substance-user groups. For
+    example, moderate smoker<control, and separately severe smoker<control include
+    two different samples of cigarette smokers.
+  exclusion_criteria:
+  - Region of interest (ROI) or small volume correction (SVC) analyses
+  - Analyses other than substance users < controls (e.g., user > control contrasts)
+  - Analyses of other modalities (e.g., functional MRI, diffusion tensor imaging)
+    or other structural measures
   annotations:
   - name: all_drug_classes
     description: convergent lower GM common across all substances
@@ -160,7 +171,7 @@ annotation:
     - Comparison of users of other drug classes to controls
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/vbm_of_substance_use/v2
+  directory: projects/vbm_of_substance_use/v2
   prisma_diagram: true
   formats:
   - csv

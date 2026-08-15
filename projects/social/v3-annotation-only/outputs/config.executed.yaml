@@ -47,8 +47,30 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - 'Sample: The analysis must be on healthy adult participants (alone, or healthy/control
+    subgroup reported separately from clinical/special groups).'
+  - 'Whole-brain evidence: The analysis must be from a group-level, univariate whole-brain
+    (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast)
+    from the healthy/control group.'
+  - 'Contrast-level requirement: Include only when the specific reported analysis/contrast
+    itself measures the target construct; do not include only because the study is
+    generally social.'
+  - 'Sparse-label handling: If analysis labels are generic/truncated (e.g., analysis_0),
+    use table caption, analysis description, neighboring contrasts, and full text
+    context before deciding.'
+  - 'Multi-label policy: Multiple annotations are allowed, but each assigned annotation
+    must be independently justified by contrast-level evidence from the same analysis.'
+  exclusion_criteria:
+  - Region-of-interest (ROI) analyses.
+  - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state
+    analyses (e.g., ICA, PLE, Hurst exponents), unless a separate qualifying univariate
+    task-evoked map is explicitly the analyzed row.
+  - Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs
+    control) without a qualifying within-group healthy/control task-evoked map.
+  - Contrasts dominated by task-irrelevant controls/baselines (e.g., rest > task,
+    noise-only controls, landmark/place-dominant controls) when they do not index
+    the target social construct.
   annotations:
   - name: social_processing_all
     description: Social Processing encompasses processes that enable individuals to
@@ -115,7 +137,7 @@ annotation:
       inference/representation of others' states or intentions.
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/social/v3-annotation-only
+  directory: projects/social/v3-annotation-only
   prisma_diagram: true
   formats:
   - csv

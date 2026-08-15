@@ -1,30 +1,142 @@
 {
-  "cache_policy": "auto",
-  "changed_stages": [],
-  "completed_at": "2026-08-13T13:46:54-05:00",
-  "completed_stage": "full",
-  "config_hash": "387e43931758c797ec36c4ac0725b2282644bb02dc11b79888c984709a266982",
-  "copied_cache": [],
-  "created_at": "2026-08-13T13:46:54-05:00",
-  "executed_config_path": "/home/zorro/repos/autonima-results/projects/dementia/v3-annotation-only/outputs/config.executed.yaml",
-  "execution_id": "migration-0d7b58b1d33f801400e9d3b4",
-  "invalidated": [],
-  "migration": {
-    "kind": "one_time_committed_cache_v2",
-    "source_commit": "6ba5b5a598b88c696f9b5abc920bb535cc92f621"
+  "cache_plan": {
+    "changed_stages": [
+      "annotation"
+    ],
+    "copyable_stages": [
+      "search",
+      "retrieval",
+      "parsing"
+    ],
+    "has_cache_artifacts": true,
+    "has_previous_execution": true,
+    "recompute_stages": [
+      "abstract",
+      "fulltext",
+      "annotation",
+      "output"
+    ],
+    "schema_version": 2,
+    "source_output": "/home/zorro/repos/autonima-results/projects/dementia/v3-annotation-only",
+    "stage_hashes": {
+      "abstract": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
+      "annotation": "519260049c71f96a4cc20e1c2265bd1c2161f25ddffa1b52b596b318ca8c9168",
+      "fulltext": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
+      "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
+      "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
+      "retrieval": "8ec5ac194f8f687f7ada63a44554e96619620e9d2630104e76616a74a5feb92c",
+      "search": "b203319038f306ea48adc1831fc713f52d38ebc28ad4a23f403b7b3553307617"
+    },
+    "stages": {
+      "abstract": {
+        "action": "recompute",
+        "artifact_is_modern": false,
+        "config_changed": false,
+        "copy_artifact": false,
+        "has_artifact": false,
+        "reason": "no cache artifact is available"
+      },
+      "annotation": {
+        "action": "recompute",
+        "artifact_is_modern": true,
+        "config_changed": true,
+        "copy_artifact": false,
+        "has_artifact": true,
+        "reason": "annotation configuration changed"
+      },
+      "fulltext": {
+        "action": "recompute",
+        "artifact_is_modern": false,
+        "config_changed": false,
+        "copy_artifact": false,
+        "has_artifact": false,
+        "reason": "no cache artifact is available"
+      },
+      "output": {
+        "action": "recompute",
+        "artifact_is_modern": false,
+        "config_changed": false,
+        "copy_artifact": false,
+        "has_artifact": true,
+        "reason": "derived outputs are regenerated"
+      },
+      "parsing": {
+        "action": "incremental",
+        "artifact_is_modern": true,
+        "config_changed": false,
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
+      },
+      "retrieval": {
+        "action": "incremental",
+        "artifact_is_modern": true,
+        "config_changed": false,
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "retrieval cache is valid and missing texts will be fetched"
+      },
+      "search": {
+        "action": "incremental",
+        "artifact_is_modern": true,
+        "config_changed": false,
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "metadata cache is valid and new PMIDs will be fetched"
+      }
+    },
+    "unsupported_cache": false,
+    "unverified_stages": []
   },
-  "parent_execution_id": null,
+  "cache_policy": "auto",
+  "changed_stages": [
+    "annotation"
+  ],
+  "completed_at": "2026-08-15T00:50:37.287205+00:00",
+  "completed_stage": "full",
+  "config_hash": "660ec516c7f667db9fed6f25b5089a3b468da2104e4a558244befcbd2fd765a4",
+  "copied_cache": [],
+  "created_at": "2026-08-15T00:47:30.138474+00:00",
+  "executed_config_path": "/home/zorro/repos/autonima-results/projects/dementia/v3-annotation-only/outputs/config.executed.yaml",
+  "execution_id": "3d99f550-c5e0-442f-b694-1e9e067ad4cd",
+  "invalidated": [
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/dementia/v3-annotation-only/outputs/annotation_results.json",
+      "stage": "annotation"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/dementia/v3-annotation-only/outputs/final_results.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/dementia/v3-annotation-only/outputs/nimads_studyset.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/dementia/v3-annotation-only/outputs/nimads_annotation.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/dementia/v3-annotation-only/outputs/missing_fulltexts.csv",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/dementia/v3-annotation-only/outputs/missing_fulltexts.txt",
+      "stage": "output"
+    }
+  ],
+  "parent_execution_id": "migration-0d7b58b1d33f801400e9d3b4",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
-    "annotation": "6cb984179c0c2757d7951c1f1e2bf737998f39487292e75c3a228e51e8ecaf24",
+    "annotation": "519260049c71f96a4cc20e1c2265bd1c2161f25ddffa1b52b596b318ca8c9168",
     "fulltext": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
     "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
     "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
     "retrieval": "8ec5ac194f8f687f7ada63a44554e96619620e9d2630104e76616a74a5feb92c",
     "search": "b203319038f306ea48adc1831fc713f52d38ebc28ad4a23f403b7b3553307617"
   },
-  "started_at": "2026-08-13T13:46:54-05:00",
+  "started_at": "2026-08-15T00:47:30.138489+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

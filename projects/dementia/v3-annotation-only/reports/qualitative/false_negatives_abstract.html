@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Abstract Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .criteria-summary, .criteria-details {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .criteria-summary {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .criterion-list {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+        .criterion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }
+        .criterion-red {
+            background: #c0392b;
+        }
+        .criterion-green {
+            background: #1e8449;
+        }
+        .criterion-neutral {
+            background: #34495e;
+        }
+        .criterion-count {
+            color: #555;
+            font-size: 12px;
+        }
+        .annotation {
+            border-left: 3px solid #f39c12;
+            background-color: #fff8e1;
+            padding: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC';
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2';
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        @media (max-width: 900px) {
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+
+    function getAnnotationsFilename() {
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {
+            return "annotations.json";
+        }
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {
+            return "annotations.json";
+        }
+        return base + ".json";
+    }
+
+    async function saveAnnotations() {
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var pmid = study.getAttribute('data-pmid') || '';
+
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {
+            try {
+                var fileHandle = await window.showSaveFilePicker({
+                    suggestedName: outputFilename,
+                    types: [{
+                        description: "JSON Files",
+                        accept: { "application/json": [".json"] }
+                    }]
+                });
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            } catch (error) {
+                if (error && error.name === "AbortError") {
+                    return;
+                }
+                console.warn("Falling back to browser download.", error);
+            }
+        }
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", outputFilename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Negatives Papers at Abstract Stage</h1>
+<p>Total papers: 73</p>
+<div class='criteria-summary'>
+<h2>Stage Criteria Summary</h2>
+<p>Stage: <strong>Abstract</strong>. Counts show criterion usage across all stage decisions and within this report subset.</p>
+<div class='criteria-grid'>
+<div>
+<h3>Inclusion Criteria</h3>
+<ul class='criterion-list'>
+<li>No inclusion criteria available.</li>
+</ul>
+</div>
+<div>
+<h3>Exclusion Criteria</h3>
+<ul class='criterion-list'>
+<li>No exclusion criteria available.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class='study-list'>
+<div class='study' id='study-1' data-pmid='23670951'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23670951/' target='_blank'>23670951</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Conflicting evidence exists regarding the integrity of episodic memory in the behavioral variant of frontotemporal dementia (bvFTD). Recent converging evidence suggests that episodic memory in progressive cases of bvFTD is compromised to the same extent as in Alzheimer&#x27;s disease (AD). The underlying neural substrates of these episodic memory deficits, however, likely differ contingent on dementia type. In this study we sought to elucidate the neural substrates of episodic memory performance, across recall and recognition tasks, in both patient groups using voxel-based morphometry (VBM) analyses. We predicted that episodic memory dysfunction would be apparent in both patient groups but would relate to divergent patterns of neural atrophy specific to each dementia type. We assessed episodic memory, across verbal and visual domains, in 19 bvFTD, 18 AD patients, and 19 age- and education-matched controls. Behaviorally, patient groups were indistinguishable for immediate and delayed recall, across verbal and visual domains. Whole-brain VBM analyses revealed regions commonly implicated in episodic retrieval across groups, namely the right temporal pole, right frontal lobe, left paracingulate gyrus, and right anterior hippocampus. Divergent neural networks specific to each group were also identified. Whereas a widespread network including posterior regions such as the posterior cingulate cortex, parietal and occipital cortices was exclusively implicated in AD, the frontal and anterior temporal lobes underpinned the episodic memory deficits in bvFTD. Our results point to distinct neural changes underlying episodic memory decline specific to each dementia syndrome.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment-1'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-2' data-pmid='25619850'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25619850/' target='_blank'>25619850</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> For social interactions to be successful, individuals must establish shared mental representations that allow them to reach a common understanding and &quot;get on the same page&quot;. We refer to this process as social coordination. While examples of social coordination are ubiquitous in daily life, relatively little is known about the neuroanatomic basis of this complex behavior. This is particularly true in a language context, as previous studies have used overly complex paradigms to study this. Although traditional views of language processing and the recent interactive-alignment account of conversation focus on peri-Sylvian regions, our model of social coordination predicts prefrontal involvement. To test this hypothesis, we examine the neural basis of social coordination during conversational exchanges in non-aphasic patients with behavioral variant frontotemporal degeneration (bvFTD). bvFTD patients show impairments in executive function and social comportment due to disease in frontal and anterior temporal regions. To investigate social coordination in bvFTD, we developed a novel language-based task that assesses patients&#x27; ability to convey an object&#x27;s description to a conversational partner. Experimental conditions manipulated the amount of information shared by the participant and the conversational partner, and the associated working memory demands. Our results indicate that, although patients did not have difficulty identifying the features of the objects, they did produce descriptions that included insufficient or inappropriate adjectives and thus struggled to communicate effectively. Impaired performance was related to gray matter atrophy particularly in medial prefrontal and orbitofrontal cortices. Our findings suggest an important role for non-language brain areas that belong to a large-scale neurocognitive network for social coordination.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-2' name='judgment-2' value='agree'>
+<label for='agree-2'>Agree</label>
+<input type='radio' id='disagree-2' name='judgment-2' value='disagree'>
+<label for='disagree-2'>Disagree</label>
+<br><br>
+<label for='comment-2'><strong>Comments:</strong></label>
+<textarea id='comment-2' name='comment-2' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-3' data-pmid='19164761'>
+<h2>3. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/19164761/' target='_blank'>19164761</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Apolipoprotein epsilon4 (apoE4) has been strongly linked with Alzheimer&#x27;s disease (AD) and contributes to several other neurological disorders. We investigated the influence of epsilon4 allele carrier status on the pattern of gray matter atrophy and disease severity in 51 patients with probable AD and 31 patients with behavioral variant frontotemporal dementia (bvFTD), compared with 56 healthy controls. Voxel-based morphometry was performed by using statistical parametric mapping. The epsilon4 allele frequency was higher in the AD group (P &lt; 0.001) than the controls but not in the bvFTD group. No differences in demographic or cognitive profiles were observed between epsilon4 allele carriers and noncarriers within any of the diagnostic groups. However, epsilon4 carrier status was associated with more severe brain atrophy in disease-specific regions compared with noncarriers in both AD and bvFTD. AD epsilon4 carriers showed greater atrophy in the bilateral parietal cortex and right hippocampus, and bvFTD epsilon4 carriers demonstrated greater atrophy in the bilateral medial, dorsolateral, and orbital frontal cortex, anterior insula, and cingulate cortex with right predominance. This regional epsilon4 effect is consistent with the hypothesis that apoE may affect the morphologic expression uniquely in different neurodegenerative diseases. The atrophy patterns in epsilon4 carriers may indicate that they are at greater risk for clinical progression.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-3' name='judgment-3' value='agree'>
+<label for='agree-3'>Agree</label>
+<input type='radio' id='disagree-3' name='judgment-3' value='disagree'>
+<label for='disagree-3'>Disagree</label>
+<br><br>
+<label for='comment-3'><strong>Comments:</strong></label>
+<textarea id='comment-3' name='comment-3' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-4' data-pmid='21930136'>
+<h2>4. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/21930136/' target='_blank'>21930136</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Quantifiers are very common in everyday speech, but we know little about their cognitive basis or neural representation. The present study examined comprehension of three classes of quantifiers that depend on different cognitive components in patients with focal neurodegenerative diseases. Patients evaluated the truth-value of a sentence containing a quantifier relative to a picture illustrating a small number of familiar objects, and performance was related to MRI grey matter atrophy using voxel-based morphometry. We found that patients with corticobasal syndrome (CBS) and posterior cortical atrophy (PCA) are significantly impaired in their comprehension of cardinal quantifiers (e.g. &quot;At least three birds are on the branch&quot;), due in part to their deficit in quantity knowledge. MRI analyses related this deficit to temporal-parietal atrophy found in CBS/PCA. We also found that patients with behavioral variant frontotemporal dementia (bvFTD) are significantly impaired in their comprehension of logical quantifiers (e.g. &quot;Some of the birds are on the branch&quot;), associated with a simple form of perceptual logic, and this correlated with their deficit on executive measures. This deficit was related to disease in rostral prefrontal cortex in bvFTD. These patients were also impaired in their comprehension of majority quantifiers (e.g. &quot;At least half of the birds are on the branch&quot;), and this too was correlated with their deficit on executive measures. This was related to disease in the basal ganglia interrupting a frontal-striatal loop critical for executive functioning. These findings suggest that a large-scale frontal-parietal neural network plays a crucial role in quantifier comprehension, and that comprehension of specific classes of quantifiers may be selectively impaired in patients with focal neurodegenerative conditions in these areas.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-4' name='judgment-4' value='agree'>
+<label for='agree-4'>Agree</label>
+<input type='radio' id='disagree-4' name='judgment-4' value='disagree'>
+<label for='disagree-4'>Disagree</label>
+<br><br>
+<label for='comment-4'><strong>Comments:</strong></label>
+<textarea id='comment-4' name='comment-4' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-5' data-pmid='19687454'>
+<h2>5. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/19687454/' target='_blank'>19687454</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> To test the hypothesis that different neurocognitive networks underlie verbal fluency deficits in frontotemporal lobar degeneration (FTLD).</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-5' name='judgment-5' value='agree'>
+<label for='agree-5'>Agree</label>
+<input type='radio' id='disagree-5' name='judgment-5' value='disagree'>
+<label for='disagree-5'>Disagree</label>
+<br><br>
+<label for='comment-5'><strong>Comments:</strong></label>
+<textarea id='comment-5' name='comment-5' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-6' data-pmid='31273672'>
+<h2>6. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/31273672/' target='_blank'>31273672</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Neuroanatomical correlates of apathy and disinhibition, behavioral abnormalities in behavioral variant Frontotemporal dementia (bvFTD) remain unclear. In this study 45 participants (25 bvFTD patients and 20 controls) provided data on clinical, neuropsychological, behavioral (on Frontal Systems Behavior (FrSBe) Scale), cortical volume (on voxel-based morphometry (VBM)) and tract based spatial fractional anisotropy ((FA) on magnetic resonance imaging (MRI), allowing examination of the neural correlates of apathy and disinhibition. The patients with bvFTD had predominant grey matter loss and corresponding white matter fractional anisotropy reduction in the frontal and temporal lobe compared to the controls. Grey matter loss in frontal, temporal and limbic structures correlated with apathy and degeneration in temporal limbic brain areas correlated with disinhibition. FA changes in inferior fronto-occipital fasciculus and forceps minor correlated with apathy and fibre integrity changes in the superior longitudinal fasciculus correlated with disinhibition. The current study suggests that apathy and disinhibition arises due to changes in the frontal, temporal and limbic brain areas  in bvFTD.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-6' name='judgment-6' value='agree'>
+<label for='agree-6'>Agree</label>
+<input type='radio' id='disagree-6' name='judgment-6' value='disagree'>
+<label for='disagree-6'>Disagree</label>
+<br><br>
+<label for='comment-6'><strong>Comments:</strong></label>
+<textarea id='comment-6' name='comment-6' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-7' data-pmid='29748771'>
+<h2>7. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/29748771/' target='_blank'>29748771</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The ability to reject an automatic tendency, i.e. inhibition, has been linked to the prefrontal cortex, but its neural underpinnings are still controversial. Neurodegenerative diseases represent an interesting model to explore this issue, given its frequent impairment in these disorders. We investigated the inhibitory impairment and its neural basis using four different tests, which evaluate the presence of inhibitory dysfunction (Stroop test, Hayling test, and two graphical perseveration tests), and assessed their correlation with brain metabolism using </p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-7' name='judgment-7' value='agree'>
+<label for='agree-7'>Agree</label>
+<input type='radio' id='disagree-7' name='judgment-7' value='disagree'>
+<label for='disagree-7'>Disagree</label>
+<br><br>
+<label for='comment-7'><strong>Comments:</strong></label>
+<textarea id='comment-7' name='comment-7' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-8' data-pmid='15668960'>
+<h2>8. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/15668960/' target='_blank'>15668960</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> In patients with the frontal variant of frontotemporal lobar degeneration (fv-FTLD), behavioral abnormalities may vary from apathy with motor slowness (apathetic form) to disinhibition with agitation (disinhibited form). These clinical presentations may be related to specific regional cerebral dysfunction and to deficit in the serotoninergic system. We studied cerebral glucose uptake using (18)F-fluorodeoxyglucose and positron emission tomography in 18 patients fulfilling clinical criteria for fv-FTLD and showing, respectively, an apathetic or disinhibited behavioral syndrome. In eight of these patients, we also evaluated the 5-hydroxytryptamine-2A receptor cerebral receptor distribution with [(11)C]MDL and positron emission tomography. We found a reduction of frontal glucose metabolism in the whole group of fv-FTLD patients. Apathetic syndrome was associated with a prevalent dorsolateral and frontal medial hypometabolism, whereas the disinhibited syndrome demonstrated a selective hypometabolism in interconnected limbic structures (the cingulate cortex, hippocampus/amygdala, and accumbens nucleus). The in vivo measurements of [(11)C]MDL indicated a significant reduction of 5-hydroxytryptamine-2A receptors in orbitofrontal, frontal medial, and cingulate cortices. These (18)F-fluorodeoxyglucose positron emission tomography changes can be considered as specific functional markers of the different behavioral presentations in fv-FTLD. The serotoninergic system dysfunction provides a rationale for therapeutic trials with selective serotonin reuptake inhibitors.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-8' name='judgment-8' value='agree'>
+<label for='agree-8'>Agree</label>
+<input type='radio' id='disagree-8' name='judgment-8' value='disagree'>
+<label for='disagree-8'>Disagree</label>
+<br><br>
+<label for='comment-8'><strong>Comments:</strong></label>
+<textarea id='comment-8' name='comment-8' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-9' data-pmid='14527604'>
+<h2>9. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/14527604/' target='_blank'>14527604</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> In a multicenter study, FDG-PET images in a population of 29 patients with frontotemporal dementia (FTD) were compared to controls with similar age from each center. A conjunction analysis led to identification of the ventromedial frontopolar cortex as the single region affected in each and every FTD patients. This precise regional metabolic impairment should be integrated with recent neuropsychological researches, such as those showing that the ventromedial frontal cortex is critically involved in decision-making processes based on personal experience, feelings of rightness or social knowledge, processes that are characteristically impaired in FTD.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-9' name='judgment-9' value='agree'>
+<label for='agree-9'>Agree</label>
+<input type='radio' id='disagree-9' name='judgment-9' value='disagree'>
+<label for='disagree-9'>Disagree</label>
+<br><br>
+<label for='comment-9'><strong>Comments:</strong></label>
+<textarea id='comment-9' name='comment-9' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-10' data-pmid='25797589'>
+<h2>10. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25797589/' target='_blank'>25797589</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The ability to perceive, learn and recognise faces is a complex ability, which is key to successful social interactions. This ability is proposed to be coordinated by neural regions in the occipital and temporal lobes, specialised for face perception and memory. While previous studies have suggested that memory for faces is compromised in some dementia syndromes, it remains unclear whether this simply reflects more generalised memory deficits. Here, we examined basic face perception (Identity-Matching), face recognition (Cambridge Face Memory Task) and object recognition (Cambridge Car Memory Task) in 11 semantic dementia (SD) patients (8 left-lateralised, 3 right-lateralised) and 13 behavioural-variant frontotemporal dementia (bvFTD) patients, compared with 11 controls. On the Identity-Matching task, bvFTD were impaired compared to controls, with a similar trend observed in the SD group. Importantly, both bvFTD and SD also demonstrated impaired face recognition. In contrast, only bvFTD showed impaired object recognition, with SD performing within normal limits on this task. Voxel-based morphometry analyses revealed that Identity-Matching and face recognition were associated with partly dissociable regions including the fusiform cortex and anterior temporal lobe. Object-memory was associated with thalamic integrity in the bvFTD group only. These results reveal that face perception and face memory deficits are common in bvFTD and SD, and have been previously underestimated. These deficits are due to neurodegeneration of key regions within the &#x27;core&#x27; and &#x27;extended&#x27; face processing system, providing convergent evidence of the neural regions supporting face perception. From a clinical perspective, impaired ability to recognise faces is common in bvFTD and SD and therefore strategies to improve face perception and memory may be beneficial for these patients.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-10' name='judgment-10' value='agree'>
+<label for='agree-10'>Agree</label>
+<input type='radio' id='disagree-10' name='judgment-10' value='disagree'>
+<label for='disagree-10'>Disagree</label>
+<br><br>
+<label for='comment-10'><strong>Comments:</strong></label>
+<textarea id='comment-10' name='comment-10' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-11' data-pmid='15084791'>
+<h2>11. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/15084791/' target='_blank'>15084791</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The aim of this study was to examine the pattern of glucose uptake and the changes over time of metabolic deficits in patients with frontotemporal dementia (FTD).</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-11' name='judgment-11' value='agree'>
+<label for='agree-11'>Agree</label>
+<input type='radio' id='disagree-11' name='judgment-11' value='disagree'>
+<label for='disagree-11'>Disagree</label>
+<br><br>
+<label for='comment-11'><strong>Comments:</strong></label>
+<textarea id='comment-11' name='comment-11' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-12' data-pmid='26944874'>
+<h2>12. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26944874/' target='_blank'>26944874</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> We examine the anatomic basis for abstract and concrete lexical representations in semantic memory by assessing patients with focal neurodegenerative disease. Prior evidence from healthy adult studies suggests that there may be an anatomical dissociation between abstract and concrete representations: abstract words more strongly activate the left inferior frontal gyrus relative to concrete words, while concrete words more strongly activate left anterior-inferior temporal regions. However, this double dissociation has not been directly examined. We test this dissociation in two patient groups with focal cortical atrophy in each of these regions, the behavioral variant of Frontotemporal Degeneration (bvFTD) and the semantic variant of Primary Progressive Aphasia (svPPA). We administered an associativity judgment task for abstract and concrete words, where subjects select which of two words is best associated with a given target word. Both bvFTD and svPPA patients were significantly impaired in their overall performance compared to controls. While controls treated concrete and abstract words equally, we found a category-specific double dissociation in patients&#x27; judgments: bvFTD patients showed a concreteness effect (CE), with significantly worse performance for abstract compared to concrete words, while svPPA patients showed reversal of the CE, with significantly worse performance for concrete over abstract words. Regression analyses also revealed an anatomic double dissociation: The CE is associated with inferior frontal atrophy in bvFTD, while reversal of the CE is associated with left anterior-inferior temporal atrophy in svPPA. These results support a cognitive and anatomic model of semantic memory organization where abstract and concrete representations are supported by dissociable neuroanatomic substrates.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-12' name='judgment-12' value='agree'>
+<label for='agree-12'>Agree</label>
+<input type='radio' id='disagree-12' name='judgment-12' value='disagree'>
+<label for='disagree-12'>Disagree</label>
+<br><br>
+<label for='comment-12'><strong>Comments:</strong></label>
+<textarea id='comment-12' name='comment-12' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-13' data-pmid='27567867'>
+<h2>13. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/27567867/' target='_blank'>27567867</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Previous works highlight the neurocognitive differences between apathetic and disinhibited clinical presentations of the behavioral variant frontotemporal dementia (bvFTD). However, little is known regarding how the early presentation (i.e., first symptom) is associated to the neurocognitive correlates of the disease&#x27;s clinical presentation at future stages of disease.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-13' name='judgment-13' value='agree'>
+<label for='agree-13'>Agree</label>
+<input type='radio' id='disagree-13' name='judgment-13' value='disagree'>
+<label for='disagree-13'>Disagree</label>
+<br><br>
+<label for='comment-13'><strong>Comments:</strong></label>
+<textarea id='comment-13' name='comment-13' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-14' data-pmid='24278277'>
+<h2>14. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24278277/' target='_blank'>24278277</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Are Frontal Cognitive and Atrophy Patterns Different in PSP and bvFTD? A Comparative Neuropsychological and VBM Study</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> PLoS One</p>
+<p><strong>Publication Year:</strong> 2013</p>
+<p><strong>DOI:</strong> 10.1371/journal.pone.0080353</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/3835584/' target='_blank'>3835584</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Progressive supranuclear palsy (PSP) and frontotemporal lobar degeneration (FTD) are two clinicohistological entities that share a severe prefrontal syndrome. To what extent do the cognitive syndrome and the location of the underlying brain atrophy unify or segregate these entities? Here, we examined the clinical and radiological patterns of frontal involvement and the neural bases of the cognitive dysfunctions observed in the Richardson form of PSP and the behavioral variant of FTD (bvFTD). The cognitive profile and grey and white matter volume of PSP (n = 19) and bvFTD (n = 16) patients and control participants (n = 18) were compared using a standard battery of neuropsychological tests and voxel-based morphometry (VBM), respectively. Analyses of correlations between neuropsychological and morphometric data were additionally performed. The severity and qualitative pattern of cognitive dysfunction was globally similar between the two patient groups. Grey matter volume was decreased in widespread frontal areas and in the temporal uncus in bvFTD, while it was decreased in the frontal and temporal lobes as well as in the thalamus in PSP. We also found an unexpected involvement of the frontal rectal gyrus in PSP patients compared to controls. Correlation analyses yielded different results in the two groups, with no area showing significant correlations in PSP patients, while several frontal and some temporal areas did so in bvFTD patients. In spite of minor neuropsychological and morphological differences, this study shows that the patterns of cognitive dysfunction and atrophy are very similar in PSP and bvFTD. However, executive dysfunction in these diseases may stem from partially divergent cortical and subcortical neural circuits.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-14' name='judgment-14' value='agree'>
+<label for='agree-14'>Agree</label>
+<input type='radio' id='disagree-14' name='judgment-14' value='disagree'>
+<label for='disagree-14'>Disagree</label>
+<br><br>
+<label for='comment-14'><strong>Comments:</strong></label>
+<textarea id='comment-14' name='comment-14' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-15' data-pmid='26185182'>
+<h2>15. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26185182/' target='_blank'>26185182</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Stroke and neurodegeneration cause significant brain damage and cognitive impairment, especially if the insular cortex is compromised. This study explores for the first time whether these 2 causes differentially alter connectivity patterns in the insular cortex.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-15' name='judgment-15' value='agree'>
+<label for='agree-15'>Agree</label>
+<input type='radio' id='disagree-15' name='judgment-15' value='disagree'>
+<label for='disagree-15'>Disagree</label>
+<br><br>
+<label for='comment-15'><strong>Comments:</strong></label>
+<textarea id='comment-15' name='comment-15' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-16' data-pmid='25273996'>
+<h2>16. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25273996/' target='_blank'>25273996</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Hexanucleotide repeat expansion in C9orf72 represents the most common genetic cause of familial and sporadic behavioural variant frontotemporal dementia. Previous studies show that some C9orf72 carriers with behavioural variant frontotemporal dementia exhibit distinctive atrophy patterns whereas others show mild or undetectable atrophy despite severe behavioural impairment. To explore this observation, we examined intrinsic connectivity network integrity in patients with or without the C9orf72 expansion. We studied 28 patients with behavioural variant frontotemporal dementia, including 14 C9orf72 mutation carriers (age 58.3 ± 7.7 years, four females) and 14 non-carriers (age 60.8 ± 6.9 years, four females), and 14 age- and sex-matched healthy controls. Both patient groups included five patients with comorbid motor neuron disease. Neuropsychological data, structural brain magnetic resonance imaging, and task-free functional magnetic resonance imaging were obtained. Voxel-based morphometry delineated atrophy patterns, and seed-based intrinsic connectivity analyses enabled group comparisons of the salience, sensorimotor, and default mode networks. Single-patient analyses were used to explore network imaging as a potential biomarker. Despite contrasting atrophy patterns in C9orf72 carriers versus non-carriers, patient groups showed topographically similar connectivity reductions in the salience and sensorimotor networks. Patients without C9orf72 expansions exhibited increases in default mode network connectivity compared to controls and mutation carriers. Across all patients, behavioural symptom severity correlated with diminished salience network connectivity and heightened default mode network connectivity. In C9orf72 carriers, salience network connectivity reduction correlated with atrophy in the left medial pulvinar thalamic nucleus, and this region further showed diminished connectivity with key salience network hubs. Single-patient analyses revealed salience network disruption and default mode network connectivity enhancement in C9orf72 carriers with early-stage or slowly progressive symptoms. The findings suggest that patients with behavioural variant frontotemporal dementia with or without the C9orf72 expansion show convergent large-scale network breakdowns despite distinctive atrophy patterns. Medial pulvinar degeneration may contribute to the behavioural variant frontotemporal dementia syndrome in C9orf72 carriers by disrupting salience network connectivity. Task-free functional magnetic resonance imaging shows promise in detecting early-stage disease in C9orf72 carriers and may provide a unifying biomarker across diverse anatomical variants.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-16' name='judgment-16' value='agree'>
+<label for='agree-16'>Agree</label>
+<input type='radio' id='disagree-16' name='judgment-16' value='disagree'>
+<label for='disagree-16'>Disagree</label>
+<br><br>
+<label for='comment-16'><strong>Comments:</strong></label>
+<textarea id='comment-16' name='comment-16' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-17' data-pmid='28219620'>
+<h2>17. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28219620/' target='_blank'>28219620</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> An early stage of behavioral variant frontotemporal dementia (bvFTD) often displays a mix of behavioral disturbances and personality changes hindering a differential diagnosis from elderly bipolar disorder (BD), making this process a big challenge. However, no studies have compared these pathologies from neuropsychological and neuroanatomical perspectives. The aim of the present study was to compare the executive functions (EF) and social cognition profiles as well as the structural neuroimaging of bvFTD and elderly patients with BD. First, we compared the executive and social cognition performances of 16 bvFTD patients, 13 BD patients and 22 healthy controls. Second, we compared grey matter volumes in both groups of patients and controls using voxel-based morphometry. Lastly, we examined the brain regions where atrophy might be associated with specific impairments in bvFTD and BD patients. Compared to controls, bvFTD patients showed deficits in working memory, abstraction capacity, inhibitory control, cognitive flexibility, verbal fluency and theory of mind (ToM). Patients with BD showed lower performance than controls in terms of abstraction capacity and verbal inhibitory control. In bvFTD patients, atrophy of frontal, temporal and insular cortices was related to EF deficits. Atrophy of the amygdala, the hippocampus, the parahippocampal gyrus, the putamen, the insula, the precuneus, the right temporo-parietal junction and superior temporal pole was associated to ToM impairments. No significant associations between atrophy and EF performance were observed in BD patients. BvFTD patients showed greater EF and ToM deficits than BD patients. Moreover, compared to BD, bvFTD patients exhibited a significant decrease in GM volume in frontal, temporal and parietal regions. Our results provide the first comparison of EF, social cognition and neuroanatomical profiles of bvFTD and elderly BD patients. These findings shed light on differential diagnosis of these disorders and may have important clinical implications.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-17' name='judgment-17' value='agree'>
+<label for='agree-17'>Agree</label>
+<input type='radio' id='disagree-17' name='judgment-17' value='disagree'>
+<label for='disagree-17'>Disagree</label>
+<br><br>
+<label for='comment-17'><strong>Comments:</strong></label>
+<textarea id='comment-17' name='comment-17' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-18' data-pmid='23986673'>
+<h2>18. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23986673/' target='_blank'>23986673</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> GroupICA dual regression analysis of resting state networks in a behavioral variant of frontotemporal dementia</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Front Hum Neurosci</p>
+<p><strong>Publication Year:</strong> 2013</p>
+<p><strong>DOI:</strong> 10.3389/fnhum.2013.00461</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/3752460/' target='_blank'>3752460</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Functional MRI studies have revealed changes in default-mode and salience networks in neurodegenerative dementias, especially in Alzheimer&#x27;s disease (AD). The purpose of this study was to analyze the whole brain cortex resting state networks (RSNs) in patients with behavioral variant frontotemporal dementia (bvFTD) by using resting state functional MRI (rfMRI). The group specific RSNs were identified by high model order independent component analysis (ICA) and a dual regression technique was used to detect between-group differences in the RSNs with p &lt; 0.05 threshold corrected for multiple comparisons. A y-concatenation method was used to correct for multiple comparisons for multiple independent components, gray matter differences as well as the voxel level. We found increased connectivity in several networks within patients with bvFTD compared to the control group. The most prominent enhancement was seen in the right frontotemporal area and insula. A significant increase in functional connectivity was also detected in the left dorsal attention network (DAN), in anterior paracingulate-a default mode sub-network as well as in the anterior parts of the frontal pole. Notably the increased patterns of connectivity were seen in areas around atrophic regions. The present results demonstrate abnormal increased connectivity in several important brain networks including the DAN and default-mode network (DMN) in patients with bvFTD. These changes may be associated with decline in executive functions and attention as well as apathy, which are the major cognitive and neuropsychiatric defects in patients with frontotemporal dementia.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-18' name='judgment-18' value='agree'>
+<label for='agree-18'>Agree</label>
+<input type='radio' id='disagree-18' name='judgment-18' value='disagree'>
+<label for='disagree-18'>Disagree</label>
+<br><br>
+<label for='comment-18'><strong>Comments:</strong></label>
+<textarea id='comment-18' name='comment-18' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-19' data-pmid='25899416'>
+<h2>19. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25899416/' target='_blank'>25899416</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Cerebral perfusion and glucose metabolism in Alzheimer’s disease and frontotemporal dementia: two sides of the same coin?</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Eur Radiol</p>
+<p><strong>Publication Year:</strong> 2015</p>
+<p><strong>DOI:</strong> 10.1007/s00330-015-3696-1</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/4562004/' target='_blank'>4562004</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Alzheimer&#x27;s disease (AD) and frontotemporal (FTD) dementia can be differentiated using [(18)F]-2-deoxy-2-fluoro-D-glucose (FDG)-PET. Since cerebral blood flow (CBF) is related to glucose metabolism, our aim was to investigate the extent of overlap of abnormalities between AD and FTD.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-19' name='judgment-19' value='agree'>
+<label for='agree-19'>Agree</label>
+<input type='radio' id='disagree-19' name='judgment-19' value='disagree'>
+<label for='disagree-19'>Disagree</label>
+<br><br>
+<label for='comment-19'><strong>Comments:</strong></label>
+<textarea id='comment-19' name='comment-19' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-20' data-pmid='17898350'>
+<h2>20. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/17898350/' target='_blank'>17898350</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The microtubule-associated protein tau gene (MAPT) contains two extended haplotypes, H1 and H2, which have been linked with sporadic tauopathies. However, there is little evidence as to how these haplotypes may influence the clinical features of the disease. The aim of this study was to investigate the MAPT haplotypes in relation to risk for, and functional alterations of glucose metabolism in, patients with frontotemporal dementia (FTD).</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-20' name='judgment-20' value='agree'>
+<label for='agree-20'>Agree</label>
+<input type='radio' id='disagree-20' name='judgment-20' value='disagree'>
+<label for='disagree-20'>Disagree</label>
+<br><br>
+<label for='comment-20'><strong>Comments:</strong></label>
+<textarea id='comment-20' name='comment-20' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-21' data-pmid='26401935'>
+<h2>21. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26401935/' target='_blank'>26401935</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Skills such as empathy and emotion recognition rely on a multi-dimensional socio-emotional system. Increasingly, evidence suggests that socio-emotional cognition is affected in frontotemporal dementia and Alzheimer&#x27;s disease (AD), to varying degrees. However, the specific dimensions of socio-emotional behavior and their neuroanatomical correlates have been relatively unexplored.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-21' name='judgment-21' value='agree'>
+<label for='agree-21'>Agree</label>
+<input type='radio' id='disagree-21' name='judgment-21' value='disagree'>
+<label for='disagree-21'>Disagree</label>
+<br><br>
+<label for='comment-21'><strong>Comments:</strong></label>
+<textarea id='comment-21' name='comment-21' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-22' data-pmid='17219132'>
+<h2>22. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/17219132/' target='_blank'>17219132</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The association of the regional cerebral metabolic rate of glucose utilisation (rCMRglc) and years of schooling has been extensively studied in Alzheimer&#x27;s disease (AD). The results suggest that brain reserve capacity (BRC) allows patients with more years of schooling to cope better with AD pathology. The objective of this study was to provide initial evidence for BRC in frontotemporal dementia (FTD).</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-22' name='judgment-22' value='agree'>
+<label for='agree-22'>Agree</label>
+<input type='radio' id='disagree-22' name='judgment-22' value='disagree'>
+<label for='disagree-22'>Disagree</label>
+<br><br>
+<label for='comment-22'><strong>Comments:</strong></label>
+<textarea id='comment-22' name='comment-22' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-23' data-pmid='23565102'>
+<h2>23. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23565102/' target='_blank'>23565102</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Converging Evidence for the Processing Costs Associated with Ambiguous Quantifier Comprehension</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Front Psychol</p>
+<p><strong>Publication Year:</strong> 2013</p>
+<p><strong>DOI:</strong> 10.3389/fpsyg.2013.00153</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/3613595/' target='_blank'>3613595</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Traditional neuroanatomic models of language comprehension have emphasized a core language network situated in peri-Sylvian cortex. More recent evidence appears to extend the neuroanatomic network beyond peri-Sylvian cortex to encompass other aspects of sentence processing. In this study, we evaluate the neuroanatomic basis for processing the ambiguity in doubly-quantified sentences. For example, a sentence like &quot;All the dogs jumped in a lake&quot; can be interpreted with a collective interpretation (e.g., several dogs jumping into a single lake) or a distributive interpretation (e.g., several dogs each jumping into a different lake). In Experiment 1, we used BOLD fMRI to investigate neuroanatomic recruitment by young adults during the interpretation of ambiguous doubly-quantified sentences in a sentence-picture verification task. We observed that young adults exhibited a processing cost associated with interpreting ambiguous sentences and this was related to frontal and parietal cortex recruitment. In Experiment 2, we investigate ambiguous sentence processing with the identical materials in non-aphasic patients with behavioral variant frontotemporal dementia (bvFTD) who have frontal cortex disease and executive and decision-making limitations. bvFTD patients are insensitive to ambiguity associated with doubly-quantified sentences, and this is related to the magnitude of their frontal cortex disease. These studies provide converging evidence that cortical regions that extend beyond peri-Sylvian cortex help support the processing costs associated with the interpretation of ambiguous doubly-quantified sentences.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-23' name='judgment-23' value='agree'>
+<label for='agree-23'>Agree</label>
+<input type='radio' id='disagree-23' name='judgment-23' value='disagree'>
+<label for='disagree-23'>Disagree</label>
+<br><br>
+<label for='comment-23'><strong>Comments:</strong></label>
+<textarea id='comment-23' name='comment-23' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-24' data-pmid='27679483'>
+<h2>24. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/27679483/' target='_blank'>27679483</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Recursive social decision-making requires the use of flexible, context-sensitive long-term strategies for negotiation. To succeed in social bargaining, participants&#x27; own perspectives must be dynamically integrated with those of interactors to maximize self-benefits and adapt to the other&#x27;s preferences, respectively. This is a prerequisite to develop a successful long-term self-other integration strategy. While such form of strategic interaction is critical to social decision-making, little is known about its neurocognitive correlates. To bridge this gap, we analysed social bargaining behaviour in relation to its structural neural correlates, ongoing brain dynamics (oscillations and related source space), and functional connectivity signatures in healthy subjects and patients offering contrastive lesion models of neurodegeneration and focal stroke: behavioural variant frontotemporal dementia, Alzheimer&#x27;s disease, and frontal lesions. All groups showed preserved basic bargaining indexes. However, impaired self-other integration strategy was found in patients with behavioural variant frontotemporal dementia and frontal lesions, suggesting that social bargaining critically depends on the integrity of prefrontal regions. Also, associations between behavioural performance and data from voxel-based morphometry and voxel-based lesion-symptom mapping revealed a critical role of prefrontal regions in value integration and strategic decisions for self-other integration strategy. Furthermore, as shown by measures of brain dynamics and related sources during the task, the self-other integration strategy was predicted by brain anticipatory activity (alpha/beta oscillations with sources in frontotemporal regions) associated with expectations about others&#x27; decisions. This pattern was reduced in all clinical groups, with greater impairments in behavioural variant frontotemporal dementia and frontal lesions than Alzheimer&#x27;s disease. Finally, connectivity analysis from functional magnetic resonance imaging evidenced a fronto-temporo-parietal network involved in successful self-other integration strategy, with selective compromise of long-distance connections in frontal disorders. In sum, this work provides unprecedented evidence of convergent behavioural and neurocognitive signatures of strategic social bargaining in different lesion models. Our findings offer new insights into the critical roles of prefrontal hubs and associated temporo-parietal networks for strategic social negotiation.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-24' name='judgment-24' value='agree'>
+<label for='agree-24'>Agree</label>
+<input type='radio' id='disagree-24' name='judgment-24' value='disagree'>
+<label for='disagree-24'>Disagree</label>
+<br><br>
+<label for='comment-24'><strong>Comments:</strong></label>
+<textarea id='comment-24' name='comment-24' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-25' data-pmid='26673947'>
+<h2>25. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26673947/' target='_blank'>26673947</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The non-fluent/agrammatic variant of primary progressive aphasia (nfvPPA) and the behavioral variant frontotemporal dementia (bvFTD) are focal neurodegenerative disorders belonging to the FTD-spectrum clinical syndromes. NfvPPA is characterized by effortful speech and/or agrammatism and left frontal atrophy, while bvFTD is characterized by social-emotional dysfunction often accompanied by right-lateralized frontal damage. Despite their contrasting clinical presentations, both disorders show prominent left anterior insula atrophy. We investigated differential patterns of insular sub-region atrophy in nfvPPA and bvFTD. Based on knowledge of insular connectivity and physiology, we hypothesized that the left superior precentral region of the dorsal anterior insula (SPGI) would be more atrophic in nvfPPA due to its critical role in motor speech, whereas the ventral anterior region would be more atrophied in bvFTD reflecting its known role in social-emotional-autonomic functions. Early stage nfvPPA and bvFTD patients matched for disease severity, age, gender and education and healthy controls participated in the study. Detailed clinical history, neurological examination, neuropsychological screening evaluation, and high-resolution T1-weighted brain magnetic resonance imaging (MRI) were collected. Voxel-based morphometry (VBM) was applied to perform group comparisons across the whole brain and in bilateral insula region of interest (ROI). Correlation analyses between insular sub-region atrophy and relevant clinical features were performed. Whole brain group comparisons between nfvPPA and bvFTD showed the expected predominantly left or right anterior insular atrophy pattern. ROI analysis of bilateral insula showed that the left SPGI was significantly more atrophied in nfvPPA compared to bvFTD, while the bilateral ventral anterior and right dorsal anterior insula sub-regions were more atrophied in bvFTD than nfvPPA. Only left SPGI volume correlated with speech production abilities, while left and right ventral anterior insula volumes correlated with ratings of aberrant eating behavior. These two FTD clinical variants show different patterns of insular sub-region atrophy in the left precentral dorsal anterior and bilateral ventral anterior regions, providing further evidence for the role of these sub-regions in speech production and social-emotional function.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-25' name='judgment-25' value='agree'>
+<label for='agree-25'>Agree</label>
+<input type='radio' id='disagree-25' name='judgment-25' value='disagree'>
+<label for='disagree-25'>Disagree</label>
+<br><br>
+<label for='comment-25'><strong>Comments:</strong></label>
+<textarea id='comment-25' name='comment-25' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-26' data-pmid='25518957'>
+<h2>26. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25518957/' target='_blank'>25518957</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Concept formation is the ability to create an abstract link between dissimilar objects or thoughts and is crucial for abstract and creative thinking. This process is related to the integrity of the prefrontal cortex, given the altered performances reported in patients with frontal damage, particularly those suffering from the behavioural variant of frontotemporal dementia. However, the cognitive mechanisms and neural bases of verbal concept formation are not clearly understood. The present study was aimed at addressing the following unresolved issues regarding concept formation in the field of neurology and cognitive neuroscience: (i) Are alterations in concept formation specific to frontotemporal dementia or are they also present in other cortical neurodegenerative disorders such as Alzheimer&#x27;s disease? (ii) Is impaired performance in concept formation due to cortical lesions specific to frontotemporal dementia or to a cortico-subcortical frontal syndrome? and (iii) What are the cognitive mechanisms and neural bases underlying concept formation? To address these questions, we designed the Verbal Concept Formation Task, an experimental paradigm based on the similarities test. Patients presenting with severe frontal dysfunction (frontotemporal dementia, n = 18, and the Richardson form of progressive supranuclear palsy, n = 21) or with medial temporal pathology (amnestic mild cognitive impairment or Alzheimer&#x27;s disease, n = 14) and healthy participants (n = 18) were given the Verbal Concept Formation Task and a large battery of neuropsychological tests. In addition, all participants underwent 3D T1-weighted MRI to analyse grey matter volume using voxel-based morphometry. Frontal patients were significantly impaired on the Verbal Concept Formation Task as compared to non-frontal participants (P = 0.00001). Global performance score was positively correlated with scores in cognitive tasks assessing executive functions and with grey matter volume in several areas, mostly in the frontal-basal-ganglion network. Two types of errors were observed in frontal patients. The most frequent was discriminating instead of grouping items (&#x27;linking deficit&#x27;). Patients also linked items on a concrete instead of an abstract basis (&#x27;abstraction deficit&#x27;). Linking and abstraction deficits were related to partially different areas: the linking deficit to the dorsal anterior cingulate cortex, right middle frontal gyrus and both inferior parietal lobules and the abstraction deficit to the head of the caudate nuclei and the left superior frontal gyrus. These data suggest that verbal concept formation requires the integrity of the prefrontal-basal-ganglion functional network. In addition, it can be divided into two distinct cognitive processes, which are underlain by two partially different neural networks.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-26' name='judgment-26' value='agree'>
+<label for='agree-26'>Agree</label>
+<input type='radio' id='disagree-26' name='judgment-26' value='disagree'>
+<label for='disagree-26'>Disagree</label>
+<br><br>
+<label for='comment-26'><strong>Comments:</strong></label>
+<textarea id='comment-26' name='comment-26' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-27' data-pmid='25396740'>
+<h2>27. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25396740/' target='_blank'>25396740</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Grey and White Matter Correlates of Recent and Remote Autobiographical Memory Retrieval – Insights from the Dementias</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> PLoS One</p>
+<p><strong>Publication Year:</strong> 2014</p>
+<p><strong>DOI:</strong> 10.1371/journal.pone.0113081</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/4232597/' target='_blank'>4232597</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The capacity to remember self-referential past events relies on the integrity of a distributed neural network. Controversy exists, however, regarding the involvement of specific brain structures for the retrieval of recently experienced versus more distant events. Here, we explored how characteristic patterns of atrophy in neurodegenerative disorders differentially disrupt remote versus recent autobiographical memory. Eleven behavioural-variant frontotemporal dementia, 10 semantic dementia, 15 Alzheimer&#x27;s disease patients and 14 healthy older Controls completed the Autobiographical Interview. All patient groups displayed significant remote memory impairments relative to Controls. Similarly, recent period retrieval was significantly compromised in behavioural-variant frontotemporal dementia and Alzheimer&#x27;s disease, yet semantic dementia patients scored in line with Controls. Voxel-based morphometry and diffusion tensor imaging analyses, for all participants combined, were conducted to investigate grey and white matter correlates of remote and recent autobiographical memory retrieval. Neural correlates common to both recent and remote time periods were identified, including the hippocampus, medial prefrontal, and frontopolar cortices, and the forceps minor and left hippocampal portion of the cingulum bundle. Regions exclusively implicated in each time period were also identified. The integrity of the anterior temporal cortices was related to the retrieval of remote memories, whereas the posterior cingulate cortex emerged as a structure significantly associated with recent autobiographical memory retrieval. This study represents the first investigation of the grey and white matter correlates of remote and recent autobiographical memory retrieval in neurodegenerative disorders. Our findings demonstrate the importance of core brain structures, including the medial prefrontal cortex and hippocampus, irrespective of time period, and point towards the contribution of discrete regions in mediating successful retrieval of distant versus recently experienced events.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-27' name='judgment-27' value='agree'>
+<label for='agree-27'>Agree</label>
+<input type='radio' id='disagree-27' name='judgment-27' value='disagree'>
+<label for='disagree-27'>Disagree</label>
+<br><br>
+<label for='comment-27'><strong>Comments:</strong></label>
+<textarea id='comment-27' name='comment-27' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-28' data-pmid='27301638'>
+<h2>28. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/27301638/' target='_blank'>27301638</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Quantifiers such as many and some are thought to depend in part on the conceptual representation of number knowledge, while object nouns such as cookie and boy appear to depend in part on visual feature knowledge associated with object concepts. Further, number knowledge is associated with a frontal-parietal network while object knowledge is related in part to anterior and ventral portions of the temporal lobe. We examined the cognitive and anatomic basis for the spontaneous speech production of quantifiers and object nouns in non-aphasic patients with focal neurodegenerative disease associated with corticobasal syndrome (CBS, n=33), behavioral variant frontotemporal degeneration (bvFTD, n=54), and semantic variant primary progressive aphasia (svPPA, n=19). We recorded a semi-structured speech sample elicited from patients and healthy seniors (n=27) during description of the Cookie Theft scene. We observed a dissociation: CBS and bvFTD were significantly impaired in the production of quantifiers but not object nouns, while svPPA were significantly impaired in the production of object nouns but not quantifiers. MRI analysis revealed that quantifier production deficits in CBS and bvFTD were associated with disease in a frontal-parietal network important for number knowledge, while impaired production of object nouns in all patient groups was related to disease in inferior temporal regions important for representations of visual feature knowledge of objects. These findings imply that partially dissociable representations in semantic memory may underlie different segments of the lexicon.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-28' name='judgment-28' value='agree'>
+<label for='agree-28'>Agree</label>
+<input type='radio' id='disagree-28' name='judgment-28' value='disagree'>
+<label for='disagree-28'>Disagree</label>
+<br><br>
+<label for='comment-28'><strong>Comments:</strong></label>
+<textarea id='comment-28' name='comment-28' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-29' data-pmid='15695781'>
+<h2>29. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/15695781/' target='_blank'>15695781</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Frontotemporal dementia (FTD) is a common cause of presenile dementia. The aim of the current study was 2-fold: (a) to delineate the brain regions with reduction of glucose metabolism, and (b) to investigate the hemispheric asymmetry of glucose metabolism in FTD using (18)F-FDG PET.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-29' name='judgment-29' value='agree'>
+<label for='agree-29'>Agree</label>
+<input type='radio' id='disagree-29' name='judgment-29' value='disagree'>
+<label for='disagree-29'>Disagree</label>
+<br><br>
+<label for='comment-29'><strong>Comments:</strong></label>
+<textarea id='comment-29' name='comment-29' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-30' data-pmid='31497638'>
+<h2>30. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/31497638/' target='_blank'>31497638</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Robust automated computational approach for classifying frontotemporal neurodegeneration: Multimodal/multicenter neuroimaging</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Alzheimers Dement (Amst)</p>
+<p><strong>Publication Year:</strong> 2019</p>
+<p><strong>DOI:</strong> 10.1016/j.dadm.2019.06.002</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/6719282/' target='_blank'>6719282</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Timely diagnosis of behavioral variant frontotemporal dementia (bvFTD) remains challenging because it depends on clinical expertise and potentially ambiguous diagnostic guidelines. Recent recommendations highlight the role of multimodal neuroimaging and machine learning methods as complementary tools to address this problem.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-30' name='judgment-30' value='agree'>
+<label for='agree-30'>Agree</label>
+<input type='radio' id='disagree-30' name='judgment-30' value='disagree'>
+<label for='disagree-30'>Disagree</label>
+<br><br>
+<label for='comment-30'><strong>Comments:</strong></label>
+<textarea id='comment-30' name='comment-30' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-31' data-pmid='18268196'>
+<h2>31. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/18268196/' target='_blank'>18268196</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Behavioral variant frontotemporal dementia (bvFTD) strikes hardest at the frontal lobes, but the sites of earliest injury remain unclear.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-31' name='judgment-31' value='agree'>
+<label for='agree-31'>Agree</label>
+<input type='radio' id='disagree-31' name='judgment-31' value='disagree'>
+<label for='disagree-31'>Disagree</label>
+<br><br>
+<label for='comment-31'><strong>Comments:</strong></label>
+<textarea id='comment-31' name='comment-31' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-32' data-pmid='26810632'>
+<h2>32. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26810632/' target='_blank'>26810632</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Abnormal eating behaviors are common in patients with frontotemporal dementia (FTD), yet their exact prevalence, severity, and underlying biological mechanisms are not understood.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-32' name='judgment-32' value='agree'>
+<label for='agree-32'>Agree</label>
+<input type='radio' id='disagree-32' name='judgment-32' value='disagree'>
+<label for='disagree-32'>Disagree</label>
+<br><br>
+<label for='comment-32'><strong>Comments:</strong></label>
+<textarea id='comment-32' name='comment-32' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-33' data-pmid='25009480'>
+<h2>33. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25009480/' target='_blank'>25009480</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Frontal and temporal lobe contributions to emotional enhancement of memory in behavioral-variant frontotemporal dementia and Alzheimer&#x27;s disease</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Front Behav Neurosci</p>
+<p><strong>Publication Year:</strong> 2014</p>
+<p><strong>DOI:</strong> 10.3389/fnbeh.2014.00225</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/4067999/' target='_blank'>4067999</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Emotional events gain special priority in how they are remembered, with emotionally arousing events typically recalled more vividly and with greater confidence than non-emotional events. In dementia, memory and emotion processing are affected to varying degrees, however, whether emotional enhancement of memory for complex ecologically-valid events is differentially affected across dementia syndromes remains unclear, with previous studies examining effects of emotion on simple visual recognition only. Here, we examined memory for an emotionally arousing short story and a closely matched, emotionally neutral story in behavioral-variant frontotemporal dementia (bvFTD) (n = 13) and Alzheimer&#x27;s disease (AD) (n = 14), and contrasted their performance with healthy controls (n = 12). Multiple-choice recognition memory for specific details of the story was assessed after a 1-h delay. While AD and control groups showed enhanced memory for the emotional story, the bvFTD group recalled a similar number of details from the emotional and neutral stories. Voxel-based morphometry analyses revealed emotional enhancement of memory correlated with distinct brain regions in each patient group. In AD, emotional enhancement was associated with integrity of the bilateral hippocampus, parahippocampal gyri, temporal fusiform gyrus and frontal pole, regions typically implicated in memory processes. In contrast in bvFTD, integrity of emotion processing regions, including the orbitofrontal cortex, right amygdala and right insula, correlated with the extent emotion enhanced memory. Our results reveal that integrity of frontal and temporal regions determine the quality and nature of emotional memories. While emotional enhancement of memory is present in mild AD, in bvFTD emotion does not facilitate memory retrieval for complex realistic events. This attenuation of emotional enhancement is due to degradation of emotion processing regions, which may be important for modulating levels of arousal in response to emotional events in these patients.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-33' name='judgment-33' value='agree'>
+<label for='agree-33'>Agree</label>
+<input type='radio' id='disagree-33' name='judgment-33' value='disagree'>
+<label for='disagree-33'>Disagree</label>
+<br><br>
+<label for='comment-33'><strong>Comments:</strong></label>
+<textarea id='comment-33' name='comment-33' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-34' data-pmid='23092697'>
+<h2>34. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23092697/' target='_blank'>23092697</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Degraded social function, disinhibition, and stereotypy are defining characteristics of frontotemporal dementia (FTD), manifesting in both the behavioral variant of frontotemporal dementia (bvFTD) and semantic dementia (SD) subtypes. Recent neuroimaging research also associates FTD with alterations in the brain&#x27;s intrinsic connectivity networks. The present study explored the relationship between neural network connectivity and specific behavioral symptoms in FTD.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-34' name='judgment-34' value='agree'>
+<label for='agree-34'>Agree</label>
+<input type='radio' id='disagree-34' name='judgment-34' value='disagree'>
+<label for='disagree-34'>Disagree</label>
+<br><br>
+<label for='comment-34'><strong>Comments:</strong></label>
+<textarea id='comment-34' name='comment-34' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-35' data-pmid='29614645'>
+<h2>35. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/29614645/' target='_blank'>29614645</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Although a growing body of work has shown that behavioral variant frontotemporal dementia (bvFTD) could present with severe amnesia in approximately half of cases, memory assessment is currently the clinical standard to distinguish bvFTD from Alzheimer&#x27;s disease (AD). Thus, the concept of &quot;relatively preserved episodic memory&quot; in bvFTD remains the basis of its clinical distinction from AD and a criterion for bvFTD&#x27;s diagnosis. This view is supported by the idea that bvFTD is not characterized by genuine amnesia and hippocampal degeneration, by contrast to AD. In this multicenter study, we aimed to investigate the neural correlates of memory performance in bvFTD as assessed by the Free and Cued Selective Reminding Test (FCSRT). Imaging explorations followed a two-step procedure, first relying on a visual rating of atrophy of 35 bvFTD and 34 AD patients&#x27; MRI, contrasted with 29 controls; and then using voxel-based morphometry (VBM) in a subset of bvFTD patients. Results showed that 43% of bvFTD patients presented with a genuine amnesia. Data-driven analysis on visual rating data showed that, in bvFTD, memory recall &amp; storage performances were significantly predicted by atrophy in rostral prefrontal and hippocampal/perihippocampal regions, similar to mild AD. VBM results in bvFTD (pFWE&lt;0.05) showed similar prefrontal and hippocampal regions in addition to striatal and lateral temporal involvement. Our findings showed the involvement of prefrontal as well as medial/lateral temporal atrophy in memory deficits of bvFTD patients. This contradicts the common view that only frontal deficits explain memory impairment in this disease and plead for an updated view on memory dysfunctions in bvFTD.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-35' name='judgment-35' value='agree'>
+<label for='agree-35'>Agree</label>
+<input type='radio' id='disagree-35' name='judgment-35' value='disagree'>
+<label for='disagree-35'>Disagree</label>
+<br><br>
+<label for='comment-35'><strong>Comments:</strong></label>
+<textarea id='comment-35' name='comment-35' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-36' data-pmid='26682697'>
+<h2>36. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26682697/' target='_blank'>26682697</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Prospective memory (PM) refers to a future-oriented form of memory in which the individual must remember to execute an intended action either at a future point in time (Time-based) or in response to a specific event (Event-based). Lapses in PM are commonly exhibited in neurodegenerative disorders including Alzheimer&#x27;s disease (AD) and frontotemporal dementia (FTD), however, the neurocognitive mechanisms driving these deficits remain unknown.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-36' name='judgment-36' value='agree'>
+<label for='agree-36'>Agree</label>
+<input type='radio' id='disagree-36' name='judgment-36' value='disagree'>
+<label for='disagree-36'>Disagree</label>
+<br><br>
+<label for='comment-36'><strong>Comments:</strong></label>
+<textarea id='comment-36' name='comment-36' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-37' data-pmid='16534207'>
+<h2>37. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/16534207/' target='_blank'>16534207</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Orbitofrontal metabolic impairment is characteristic of the frontal variant of frontotemporal dementia (fv-FTD), as are early changes in emotional and social conduct. Two main types of behavioral disturbances have been distinguished in fv-FTD patients: apathetic and disinhibited manifestations. In this study, we searched for relationships between brain metabolism and presence of apathetic or disinhibited behavior. Metabolic activity and behavioral data were collected in 41 fv-FTD patients from European PET centers. A conjunction analysis of the PET data showed an expected impairment of metabolic activity in the anterior cingulate, ventromedial and orbital prefrontal cortex, the dorsolateral prefrontal cortex and the left anterior insula in fv-FTD subjects compared to matched controls. A correlation was observed between disinhibition scores on the Neuropsychiatric Inventory scale and a cluster of voxels located in the posterior orbitofrontal cortex (6, 28, -24). Comparison of brain activity between apathetic and nonapathetic fv-FTD patients from two centers also revealed a specific involvement of the posterior orbitofrontal cortex in apathetic subjects (4, 22, -22). The results confirm that the main cerebral metabolic impairment in fv-FTD patients affects areas specializing in emotional evaluation and demonstrate that decreased orbitofrontal activity is related to both disinhibited and apathetic syndromes in fv-FTD.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-37' name='judgment-37' value='agree'>
+<label for='agree-37'>Agree</label>
+<input type='radio' id='disagree-37' name='judgment-37' value='disagree'>
+<label for='disagree-37'>Disagree</label>
+<br><br>
+<label for='comment-37'><strong>Comments:</strong></label>
+<textarea id='comment-37' name='comment-37' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-38' data-pmid='19126572'>
+<h2>38. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/19126572/' target='_blank'>19126572</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Social interaction is profoundly affected in the behavioural form of frontotemporal dementia (bvFTD) yet there are few means of objectively assessing this. Diagnosis of bvFTD is based on informant report, however a number of individuals with a clinical profile consistent with the disease have no imaging abnormality and seem to remain stable, with doubt about the presence of underlying neurodegenerative pathology. We aimed to quantify aspects of the behavioural disorder and link it to the underlying level of atrophy in socially relevant brain regions. We tested individuals with either bvFTD (N = 26) or Alzheimer&#x27;s disease (N = 9) and 16 controls using The Awareness of Social Inference Test (TASIT) to assess their ability to identify emotion and sarcasm in video vignettes. A subset of bvFTD patients (N = 21) and controls (N = 12) were scanned using MRI within 6 months of assessment. There was marked impairment in the ability of bvFTD patients whose scans showed abnormalities to recognize sarcastic, but not sincere statements. Their capacity to interpret negative emotion was also impaired, and this appeared to be a major factor underlying the deficit in sarcasm recognition. Clinically diagnosed bvFTD patients whose scans were normal, Alzheimer&#x27;s disease patients and controls had no difficulty in appreciating both types of statement. In a multivariate imaging analysis it was shown that the sarcasm (and emotion recognition) deficit was dependent on a circuit involving the lateral orbitofrontal cortex, insula, amygdala and temporal pole, particularly on the right. Performance on a more global test of cognitive function, the Addenbrooke&#x27;s Cognitive Examination did not have a unique association with these regions. The TASIT is an objective test of social dysfunction in bvFTD which indexes the frontotemporal volume loss in bvFTD patients and provides an objective measure for separating behavioural patients who are likely to decline from those who may remain stable. These results provide additional evidence for the role of the orbitofrontal cortex and related structures in the processing of socially relevant signals, particularly those where negative emotion recognition is important.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-38' name='judgment-38' value='agree'>
+<label for='agree-38'>Agree</label>
+<input type='radio' id='disagree-38' name='judgment-38' value='disagree'>
+<label for='disagree-38'>Disagree</label>
+<br><br>
+<label for='comment-38'><strong>Comments:</strong></label>
+<textarea id='comment-38' name='comment-38' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-39' data-pmid='30718430'>
+<h2>39. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/30718430/' target='_blank'>30718430</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Mind wandering represents the human capacity for internally focused thought and relies upon the brain&#x27;s default network and its interactions with attentional networks. Studies have characterized mind wandering in healthy people, yet there is limited understanding of how this capacity is affected in clinical populations. This paper used a validated thought-sampling task to probe mind wandering capacity in two neurodegenerative disorders: behavioral variant frontotemporal dementia [(bvFTD); </p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-39' name='judgment-39' value='agree'>
+<label for='agree-39'>Agree</label>
+<input type='radio' id='disagree-39' name='judgment-39' value='disagree'>
+<label for='disagree-39'>Disagree</label>
+<br><br>
+<label for='comment-39'><strong>Comments:</strong></label>
+<textarea id='comment-39' name='comment-39' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-40' data-pmid='22952324'>
+<h2>40. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/22952324/' target='_blank'>22952324</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Previous work investigating deficits in self-appraisal in behavioural-variant frontotemporal degeneration (bvFTD) has focused on a single domain: social/behavioural processes. We examined whether a domain-specific versus multi-domain model best explains degraded self-appraisal in bvFTD.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-40' name='judgment-40' value='agree'>
+<label for='agree-40'>Agree</label>
+<input type='radio' id='disagree-40' name='judgment-40' value='disagree'>
+<label for='disagree-40'>Disagree</label>
+<br><br>
+<label for='comment-40'><strong>Comments:</strong></label>
+<textarea id='comment-40' name='comment-40' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-41' data-pmid='30488224'>
+<h2>41. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/30488224/' target='_blank'>30488224</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Early theories of emotion processing propose an interplay between autonomic function and cognitive appraisal of emotions. Patients with frontotemporal dementia show profound social cognition deficits and atrophy in regions implicated in autonomic emotional responses (insula, amygdala, prefrontal cortex), yet objective measures of facial expressiveness and physiological arousal have been relatively unexplored. We investigated psychophysiological responses (surface facial electromyography (EMG); skin conductance level (SCL)) to emotional stimuli in 25 behavioural-variant frontotemporal dementia (bvFTD) patients, 14 semantic dementia (SD) patients, and 24 healthy older controls, while viewing emotionally positive, neutral, or negative video clips. Voxel-based morphometry was conducted to identify neural correlates of responses. Unlike controls, patients with bvFTD did not show differential facial EMG responses according to emotion condition, whereas SD patients showed increased zygomaticus responses to both positive and neutral videos. Controls showed greater arousal (SCL) when viewing positive and negative videos; however, both bvFTD and SD groups showed no change in SCL across conditions. Regardless of group membership, right insula damage was associated with dampened zygomaticus responses to positive film stimuli. Change in arousal (SCL) was associated with lower integrity of the caudate, amygdala, and temporal pole. Our results demonstrate that while bvFTD patients show an overall dampening of responses, SD patients appear to show incongruous facial emotional expressions. Abnormal responding is related to cortical and subcortical brain atrophy. These results identify potential mechanisms for the abnormal social behaviour in bvFTD and SD and demonstrate that psychophysiological responses are an important mechanism underpinning normal socioemotional functioning.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-41' name='judgment-41' value='agree'>
+<label for='agree-41'>Agree</label>
+<input type='radio' id='disagree-41' name='judgment-41' value='disagree'>
+<label for='disagree-41'>Disagree</label>
+<br><br>
+<label for='comment-41'><strong>Comments:</strong></label>
+<textarea id='comment-41' name='comment-41' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-42' data-pmid='29394332'>
+<h2>42. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/29394332/' target='_blank'>29394332</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The importance of assessing social cognition to characterize dementia syndromes is increasingly recognized, with lower social cognition capacity associated with reduced functional independence and greater carer burden. Emotion recognition is impaired in both behavioural-variant frontotemporal dementia and semantic dementia, yet the social and behavioural changes observed in these syndromes in everyday situations varies. To date, most studies have investigated isolated, context-free stimuli indexing recognition of facial emotions only. Here, we aimed to investigate how contextual information (i.e. emotional body language) influences emotion recognition, within the framework of the Social Context Network Model. Thirty-one patients with frontotemporal dementia (19 behavioural-variant frontotemporal dementia; 12 semantic dementia) and 20 healthy age- and education-matched controls were assessed on three tasks which varied contextual cues: (i) face alone; (ii) context alone; and (iii) face embedded in context. Voxel-based morphometry was used to identify neural correlates of task performance. Our results demonstrated that both behavioural-variant frontotemporal dementia and semantic dementia patients performed worse than controls in recognizing emotions from face alone and context alone. Importantly, performance differed when faces were presented in context. While both behavioural-variant frontotemporal dementia and semantic dementia patients performed similarly to controls on congruent items (i.e. face emotion and body emotion are the same) (P-values &gt; 0.05), patients with behavioural-variant frontotemporal dementia performed worse than both controls (P &lt; 0.001) and patients with semantic dementia (P = 0.044) for incongruent items (i.e. face emotion and body emotion are different). Neuroimaging analyses revealed that abnormal contextual influence was associated with lower integrity of the right parahippocampal gyrus/amygdala and left precentral gyrus. Together, these results indicate that patients with behavioural-variant frontotemporal dementia are over-reliant on external contextual information. Conversely, in semantic dementia and controls, contextual influence varies, with the degree of contextual influence appearing to be mediated, at least in part, by the facial expression depicted. The profile in behavioural-variant frontotemporal dementia is reminiscent of the &#x27;environmental dependency syndrome&#x27; described in frontal lesion patients. It also converges with recent evidence of abnormal face perception in this group. From a theoretical perspective, our findings demonstrate that the capacity to incorporate contextual body language is dependent on the integrity of both contextual association brain regions (i.e. parahippocampal gyrus), as well as regions necessary for processing dynamic body movements. Clinically, these results open new avenues for rehabilitation of social impairments in dementia.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-42' name='judgment-42' value='agree'>
+<label for='agree-42'>Agree</label>
+<input type='radio' id='disagree-42' name='judgment-42' value='disagree'>
+<label for='disagree-42'>Disagree</label>
+<br><br>
+<label for='comment-42'><strong>Comments:</strong></label>
+<textarea id='comment-42' name='comment-42' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-43' data-pmid='25773639'>
+<h2>43. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25773639/' target='_blank'>25773639</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Functional MRI of music emotion processing in frontotemporal dementia</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Ann N Y Acad Sci</p>
+<p><strong>Publication Year:</strong> 2015</p>
+<p><strong>DOI:</strong> 10.1111/nyas.12620</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/4402026/' target='_blank'>4402026</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Frontotemporal dementia is an important neurodegenerative disorder of younger life led by profound emotional and social dysfunction. Here we used fMRI to assess brain mechanisms of music emotion processing in a cohort of patients with frontotemporal dementia (n = 15) in relation to healthy age-matched individuals (n = 11). In a passive-listening paradigm, we manipulated levels of emotion processing in simple arpeggio chords (mode versus dissonance) and emotion modality (music versus human emotional vocalizations). A complex profile of disease-associated functional alterations was identified with separable signatures of musical mode, emotion level, and emotion modality within a common, distributed brain network, including posterior and anterior superior temporal and inferior frontal cortices and dorsal brainstem effector nuclei. Separable functional signatures were identified post-hoc in patients with and without abnormal craving for music (musicophilia): a model for specific abnormal emotional behaviors in frontotemporal dementia. Our findings indicate the potential of music to delineate neural mechanisms of altered emotion processing in dementias, with implications for future disease tracking and therapeutic strategies.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-43' name='judgment-43' value='agree'>
+<label for='agree-43'>Agree</label>
+<input type='radio' id='disagree-43' name='judgment-43' value='disagree'>
+<label for='disagree-43'>Disagree</label>
+<br><br>
+<label for='comment-43'><strong>Comments:</strong></label>
+<textarea id='comment-43' name='comment-43' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-44' data-pmid='27252632'>
+<h2>44. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/27252632/' target='_blank'>27252632</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Neural Substrates of Semantic Prospection – Evidence from the Dementias</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Front Behav Neurosci</p>
+<p><strong>Publication Year:</strong> 2016</p>
+<p><strong>DOI:</strong> 10.3389/fnbeh.2016.00096</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/4877391/' target='_blank'>4877391</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The ability to envisage personally relevant events at a future time point represents an incredibly sophisticated cognitive endeavor and one that appears to be intimately linked to episodic memory integrity. Far less is known regarding the neurocognitive mechanisms underpinning the capacity to envisage non-personal future occurrences, known as semantic future thinking. Moreover the degree of overlap between the neural substrates supporting episodic and semantic forms of prospection remains unclear. To this end, we sought to investigate the capacity for episodic and semantic future thinking in Alzheimer&#x27;s disease (n = 15) and disease-matched behavioral-variant frontotemporal dementia (n = 15), neurodegenerative disorders characterized by significant medial temporal lobe (MTL) and frontal pathology. Participants completed an assessment of past and future thinking across personal (episodic) and non-personal (semantic) domains, as part of a larger neuropsychological battery investigating episodic and semantic processing, and their performance was contrasted with 20 age- and education-matched healthy older Controls. Participants underwent whole-brain T1-weighted structural imaging and voxel-based morphometry analysis was conducted to determine the relationship between gray matter integrity and episodic and semantic future thinking. Relative to Controls, both patient groups displayed marked future thinking impairments, extending across episodic and semantic domains. Analyses of covariance revealed that while episodic future thinking deficits could be explained solely in terms of episodic memory proficiency, semantic prospection deficits reflected the interplay between episodic and semantic processing. Distinct neural correlates emerged for each form of future simulation with differential involvement of prefrontal, lateral temporal, and medial temporal regions. Notably, the hippocampus was implicated irrespective of future thinking domain, with the suggestion of lateralization effects depending on the type of information being simulated. Whereas episodic future thinking related to right hippocampal integrity, semantic future thinking was found to relate to left hippocampal integrity. Our findings support previous observations of significant MTL involvement for semantic forms of prospection and point to distinct neurocognitive mechanisms which must be functional to support future-oriented forms of thought across personal and non-personal contexts.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-44' name='judgment-44' value='agree'>
+<label for='agree-44'>Agree</label>
+<input type='radio' id='disagree-44' name='judgment-44' value='disagree'>
+<label for='disagree-44'>Disagree</label>
+<br><br>
+<label for='comment-44'><strong>Comments:</strong></label>
+<textarea id='comment-44' name='comment-44' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-45' data-pmid='31873787'>
+<h2>45. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/31873787/' target='_blank'>31873787</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Apathy is one of the most prevalent and disabling non-cognitive symptoms of dementia. This loss of motivation and pervasive decline in goal-directed behaviour represents a core diagnostic feature of behavioural-variant frontotemporal dementia (bvFTD) and is also common in Alzheimer&#x27;s disease (AD). However, despite growing recognition of a multidimensional model, apathy has typically been examined as a unitary symptom. Here, we employed a cross-sectional design to characterise the multidimensional nature of apathy across syndromes and disease course. 92 participants (44 bvFTD, 20 AD, 28 controls) completed the Dimensional Apathy Scale (DAS) to quantify emotional, executive, and initiation apathy. Patients were divided into early and late stages based on time since symptom onset. All participants underwent structural MRI and voxel-based morphometry was used to identify neural correlates of apathy dimensions. In the early stage of the disease (&lt; 5 years since onset), emotional apathy was greater in bvFTD than AD. In contrast, in the late stage (&gt; 5 years since onset), executive apathy was greater in AD than bvFTD, although apathy was elevated across all dimensions compared to controls. Notably, apathy was observed in the absence of self-reported depression in 46.2% of patients, with no patients classified as depressed only. Neuroimaging analyses revealed both common and divergent prefrontal and subcortical neural correlates associated with apathy dimensions. Our results reveal differing profiles of apathy across the disease course, in AD and bvFTD, with distinct brain regions mediating these dimensions. These findings will inform the development of appropriate treatment targets to ameliorate the impact of apathy in dementia.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-45' name='judgment-45' value='agree'>
+<label for='agree-45'>Agree</label>
+<input type='radio' id='disagree-45' name='judgment-45' value='disagree'>
+<label for='disagree-45'>Disagree</label>
+<br><br>
+<label for='comment-45'><strong>Comments:</strong></label>
+<textarea id='comment-45' name='comment-45' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-46' data-pmid='23576128'>
+<h2>46. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23576128/' target='_blank'>23576128</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Large-scale brain networks are integral to the coordination of human behaviour, and their anatomy provides insights into the clinical presentation and progression of neurodegenerative illnesses such as Alzheimer&#x27;s disease, which targets the default mode network, and behavioural variant frontotemporal dementia, which targets a more anterior salience network. Although the default mode network is recruited when healthy subjects deliberate about &#x27;personal&#x27; moral dilemmas, patients with Alzheimer&#x27;s disease give normal responses to these dilemmas whereas patients with behavioural variant frontotemporal dementia give abnormal responses to these dilemmas. We hypothesized that this apparent discrepancy between activation- and patient-based studies of moral reasoning might reflect a modulatory role for the salience network in regulating default mode network activation. Using functional magnetic resonance imaging to characterize network activity of patients with behavioural variant frontotemporal dementia and healthy control subjects, we present four converging lines of evidence supporting a causal influence from the salience network to the default mode network during moral reasoning. First, as previously reported, the default mode network is recruited when healthy subjects deliberate about &#x27;personal&#x27; moral dilemmas, but patients with behavioural variant frontotemporal dementia producing atrophy in the salience network give abnormally utilitarian responses to these dilemmas. Second, patients with behavioural variant frontotemporal dementia have reduced recruitment of the default mode network compared with healthy control subjects when deliberating about these dilemmas. Third, a Granger causality analysis of functional neuroimaging data from healthy control subjects demonstrates directed functional connectivity from nodes of the salience network to nodes of the default mode network during moral reasoning. Fourth, this Granger causal influence is diminished in patients with behavioural variant frontotemporal dementia. These findings are consistent with a broader model in which the salience network modulates the activity of other large-scale networks, and suggest a revision to a previously proposed &#x27;dual-process&#x27; account of moral reasoning. These findings also characterize network interactions underlying abnormal moral reasoning in frontotemporal dementia, which may serve as a model for the aberrant judgement and interpersonal behaviour observed in this disease and in other disorders of social function. More broadly, these findings link recent work on the dynamic interrelationships between large-scale brain networks to observable impairments in dementia syndromes, which may shed light on how diseases that target one network also alter the function of interrelated networks.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-46' name='judgment-46' value='agree'>
+<label for='agree-46'>Agree</label>
+<input type='radio' id='disagree-46' name='judgment-46' value='disagree'>
+<label for='disagree-46'>Disagree</label>
+<br><br>
+<label for='comment-46'><strong>Comments:</strong></label>
+<textarea id='comment-46' name='comment-46' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-47' data-pmid='25511791'>
+<h2>47. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25511791/' target='_blank'>25511791</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Right-lateralised semantic dementia (right SD) and behavioural-variant frontotemporal dementia (bvFTD) appear clinically similar, despite different patterns of underlying brain changes. This study aimed to elucidate distinguishing clinical and cognitive features in right SD versus bvFTD, emphasising emotion processing and its associated neural correlates.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-47' name='judgment-47' value='agree'>
+<label for='agree-47'>Agree</label>
+<input type='radio' id='disagree-47' name='judgment-47' value='disagree'>
+<label for='disagree-47'>Disagree</label>
+<br><br>
+<label for='comment-47'><strong>Comments:</strong></label>
+<textarea id='comment-47' name='comment-47' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-48' data-pmid='21785117'>
+<h2>48. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/21785117/' target='_blank'>21785117</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Disinhibition is a common behavioural symptom in frontotemporal dementia but its neural correlates are still debated. In the current study, we investigated the grey and white matter neural correlates of disinhibition in a sample of behavioural variant frontotemporal dementia (n = 14) and patients with Alzheimer&#x27;s disease (n = 15). We employed an objective (Hayling Test of inhibitory functioning) and subjective/carer-based (Neuropsychiatric Inventory) measure of disinhibition to reveal convergent evidence of disinhibitory behaviour. Mean and overlap-based statistical analyses were conducted to investigate profiles of performance in patients with behavioural variant frontotemporal dementia, Alzheimer&#x27;s disease and controls. Hayling Test and Neuropsychiatric Inventory scores were entered as covariates in a grey matter voxel-based morphometry, as well as in a white matter diffusion tensor imaging analysis to determine the underlying grey and white matter correlates. Patients with behavioural variant frontotemporal dementia showed more disinhibition on both behavioural measures in comparison to patients with Alzheimer&#x27;s disease and controls. Voxel-based morphometry results revealed that atrophy in orbitofrontal/subgenual, medial prefrontal cortex and anterior temporal lobe areas covaried with total errors score of the Hayling Test. Similarly, the Neuropsychiatric Inventory disinhibition frequency score correlated with atrophy in orbitofrontal cortex and temporal pole brain regions. The orbitofrontal atrophy related to the objective (Hayling Test) and subjective (Neuropsychiatric Inventory) measures of disinhibition was partially overlapping. Diffusion tensor imaging analysis revealed that white matter integrity fractional anisotropy values of the white matter tracts connecting the identified grey matter regions, namely uncinate fasciculus, forceps minor and genu of the corpus callosum, correlated well with the total error score of the Hayling Test. Our results show that a network of orbitofrontal, anterior temporal and mesial frontal brain regions and their connecting white matter tracts are involved in inhibitory functioning. Further, we find convergent evidence for objective and subjective disinhibition measures that the orbitofrontal/subgenual brain region is critical for adapting and maintaining normal behaviour.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-48' name='judgment-48' value='agree'>
+<label for='agree-48'>Agree</label>
+<input type='radio' id='disagree-48' name='judgment-48' value='disagree'>
+<label for='disagree-48'>Disagree</label>
+<br><br>
+<label for='comment-48'><strong>Comments:</strong></label>
+<textarea id='comment-48' name='comment-48' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-49' data-pmid='30014499'>
+<h2>49. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/30014499/' target='_blank'>30014499</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Increasing evidence suggests that cerebellar damage impacts on cognitive functions. Frontotemporal dementias (FTDs) are neurodegenerative brain conditions, primarily affecting the frontal and/or temporal lobe. Three main phenotypes are recognized, each with a distinct clinical and cognitive profile: behavioral-variant FTD (bvFTD), semantic dementia (SD), and progressive nonfluent aphasia (PNFA). The severity of cerebellar changes and their relation to cognition in FTD, however, remain unclear. This study aimed to establish cerebellar gray matter changes on magnetic resonance imaging (MRI) and their relation to profiles of cognitive deficits in FTD subtypes.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-49' name='judgment-49' value='agree'>
+<label for='agree-49'>Agree</label>
+<input type='radio' id='disagree-49' name='judgment-49' value='disagree'>
+<label for='disagree-49'>Disagree</label>
+<br><br>
+<label for='comment-49'><strong>Comments:</strong></label>
+<textarea id='comment-49' name='comment-49' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-50' data-pmid='18661129'>
+<h2>50. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/18661129/' target='_blank'>18661129</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The aim of this study was to investigate the regional differences between the morphologic and functional changes in the same patients with frontotemporal dementia (FTD) using statistical parametric mapping and voxel-based morphometry (VBM).</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-50' name='judgment-50' value='agree'>
+<label for='agree-50'>Agree</label>
+<input type='radio' id='disagree-50' name='judgment-50' value='disagree'>
+<label for='disagree-50'>Disagree</label>
+<br><br>
+<label for='comment-50'><strong>Comments:</strong></label>
+<textarea id='comment-50' name='comment-50' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-51' data-pmid='28348957'>
+<h2>51. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28348957/' target='_blank'>28348957</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Frontotemporal lobar degeneration (FTLD) is a common cause of early onset dementia. Behavioral variant frontotemporal dementia (bvFTD), its most common subtype, is characterized by deep alterations in behavior and personality. In 2011, new diagnostic criteria were suggested that incorporate imaging criteria into diagnostic algorithms. The study aimed at validating the potential of imaging criteria to individually predict diagnosis with machine learning algorithms.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-51' name='judgment-51' value='agree'>
+<label for='agree-51'>Agree</label>
+<input type='radio' id='disagree-51' name='judgment-51' value='disagree'>
+<label for='disagree-51'>Disagree</label>
+<br><br>
+<label for='comment-51'><strong>Comments:</strong></label>
+<textarea id='comment-51' name='comment-51' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-52' data-pmid='26928581'>
+<h2>52. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26928581/' target='_blank'>26928581</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The diagnosis of behavioural variant frontotemporal dementia (bvFTD) is challenging during the predementia stage when symptoms are subtle and confounding. Morphological and functional neuroimaging can be particularly helpful during this stage but few data are available.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-52' name='judgment-52' value='agree'>
+<label for='agree-52'>Agree</label>
+<input type='radio' id='disagree-52' name='judgment-52' value='disagree'>
+<label for='disagree-52'>Disagree</label>
+<br><br>
+<label for='comment-52'><strong>Comments:</strong></label>
+<textarea id='comment-52' name='comment-52' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-53' data-pmid='27258418'>
+<h2>53. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/27258418/' target='_blank'>27258418</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Loss of empathy is a core presenting feature of the behavioral-variant of frontotemporal dementia (bvFTD), resulting in socioemotional difficulties and behavioral transgressions. In contrast, interpersonal functioning remains relatively intact in Alzheimer&#x27;s disease (AD), despite marked cognitive decline. The neural substrates mediating these patterns of loss and sparing in social functioning remain unclear, yet are relevant for our understanding of the social brain. We investigated cognitive versus affective aspects of empathy using the Interpersonal Reactivity Index (IRI) in 25 AD and 24 bvFTD patients and contrasted their performance with 22 age- and education-matched controls. Cognitive empathy was comparably compromised in AD and bvFTD, whereas affective empathy was impaired exclusively in bvFTD. While controlling for overall cognitive dysfunction ameliorated perspective-taking deficits in AD, empathy loss persisted across cognitive and affective domains in bvFTD. Voxel-based morphometry analyses revealed divergent neural substrates of empathy loss in each patient group. Perspective-taking deficits correlated with predominantly left-sided temporoparietal atrophy in AD, whereas widespread bilateral frontoinsular, temporal, parietal, and occipital atrophy was implicated in bvFTD. Reduced empathic concern in bvFTD was associated with atrophy in the left orbitofrontal, inferior frontal, and insular cortices, and the bilateral mid-cingulate gyrus. Our findings suggest that social cognitive deficits in AD arise largely as a consequence of global cognitive dysfunction, rather than a loss of empathy per se. In contrast, loss of empathy in bvFTD reflects the deterioration of a distributed network of frontoinsular and temporal structures that appear crucial for monitoring and processing social information.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-53' name='judgment-53' value='agree'>
+<label for='agree-53'>Agree</label>
+<input type='radio' id='disagree-53' name='judgment-53' value='disagree'>
+<label for='disagree-53'>Disagree</label>
+<br><br>
+<label for='comment-53'><strong>Comments:</strong></label>
+<textarea id='comment-53' name='comment-53' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-54' data-pmid='24523434'>
+<h2>54. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24523434/' target='_blank'>24523434</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Semantic dementia is a progressive neurodegenerative disorder characterized by the amodal and profound loss of semantic knowledge attributable to the degeneration of the left anterior temporal lobe. Although traditionally conceptualized as a language disorder, patients with semantic dementia display significant alterations in behaviour and socioemotional functioning. Recent evidence points to an impaired capacity for theory of mind in predominantly left-lateralized cases of semantic dementia; however, it remains unclear to what extent semantic impairments contribute to these deficits. Further the neuroanatomical signature of such disturbance remains unknown. Here, we sought to determine the neural correlates of theory of mind performance in patients with left predominant semantic dementia (n=11), in contrast with disease-matched cases with behavioural-variant frontotemporal dementia (n=10) and Alzheimer&#x27;s disease (n=10), and healthy older individuals (n=14) as control participants. Participants completed a simple cartoons task, in which they were required to describe physical and theory of mind scenarios. Irrespective of subscale, patients with semantic dementia exhibited marked impairments relative to control subjects; however, only theory of mind deficits persisted when we covaried for semantic comprehension. Voxel-based morphometry analyses revealed that atrophy in right anterior temporal lobe structures, including the right temporal fusiform cortex, right inferior temporal gyrus, bilateral temporal poles and amygdalae, correlated significantly with theory of mind impairments in the semantic dementia group. Our results point to the marked disruption of cognitive functions beyond the language domain in semantic dementia, not exclusively attributable to semantic processing impairments. The significant involvement of right anterior temporal structures suggests that with disease evolution, the encroachment of pathology into the contralateral hemisphere heralds the onset of social cognitive deficits in this syndrome.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-54' name='judgment-54' value='agree'>
+<label for='agree-54'>Agree</label>
+<input type='radio' id='disagree-54' name='judgment-54' value='disagree'>
+<label for='disagree-54'>Disagree</label>
+<br><br>
+<label for='comment-54'><strong>Comments:</strong></label>
+<textarea id='comment-54' name='comment-54' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-55' data-pmid='26594631'>
+<h2>55. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26594631/' target='_blank'>26594631</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> bvFTD patients display an impairment in the attribution of cognitive and affective states to others, reflecting GM atrophy in brain regions associated with social cognition, such as amygdala, superior temporal cortex and posterior insula. Distinctive patterns of abnormal brain functioning at rest have been reported in bvFTD, but their relationship with defective attribution of affective states has not been investigated.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-55' name='judgment-55' value='agree'>
+<label for='agree-55'>Agree</label>
+<input type='radio' id='disagree-55' name='judgment-55' value='disagree'>
+<label for='disagree-55'>Disagree</label>
+<br><br>
+<label for='comment-55'><strong>Comments:</strong></label>
+<textarea id='comment-55' name='comment-55' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-56' data-pmid='26859768'>
+<h2>56. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26859768/' target='_blank'>26859768</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Moral judgment has been proposed to rely on a distributed brain network. This function is impaired in behavioral variant frontotemporal dementia (bvFTD), a condition involving damage to some regions of this network. However, no studies have investigated moral judgment in bvFTD via structural neuroimaging.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-56' name='judgment-56' value='agree'>
+<label for='agree-56'>Agree</label>
+<input type='radio' id='disagree-56' name='judgment-56' value='disagree'>
+<label for='disagree-56'>Disagree</label>
+<br><br>
+<label for='comment-56'><strong>Comments:</strong></label>
+<textarea id='comment-56' name='comment-56' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-57' data-pmid='28119587'>
+<h2>57. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28119587/' target='_blank'>28119587</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> The Effect of Gray Matter ICA and Coefficient of Variation Mapping of BOLD Data on the Detection of Functional Connectivity Changes in Alzheimer’s Disease and bvFTD</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Front Hum Neurosci</p>
+<p><strong>Publication Year:</strong> 2016</p>
+<p><strong>DOI:</strong> 10.3389/fnhum.2016.00680</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/5220074/' target='_blank'>5220074</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Resting-state fMRI results in neurodegenerative diseases have been somewhat conflicting. This may be due to complex partial volume effects of CSF in BOLD signal in patients with brain atrophy. To encounter this problem, we used a coefficient of variation (CV) map to highlight artifacts in the data, followed by analysis of gray matter voxels in order to minimize brain volume effects between groups. The effects of these measures were compared to whole brain ICA dual regression results in Alzheimer&#x27;s disease (AD) and behavioral variant frontotemporal dementia (bvFTD). 23 AD patients, 21 bvFTD patients and 25 healthy controls were included. The quality of the data was controlled by CV mapping. For detecting functional connectivity (FC) differences whole brain ICA (wbICA) and also segmented gray matter ICA (gmICA) followed by dual regression were conducted, both of which were performed both before and after data quality control. Decreased FC was detected in posterior DMN in the AD group and in the Salience network in the bvFTD group after combining CV quality control with gmICA. Before CV quality control, the decreased connectivity finding was not detectable in gmICA in neither of the groups. Same finding recurred when exclusion was based on randomization. The subjects excluded due to artifacts noticed in the CV maps had significantly lower temporal signal-to-noise ratio than the included subjects. Data quality measure CV is an effective tool in detecting artifacts from resting state analysis. CV reflects temporal dispersion of the BOLD signal stability and may thus be most helpful for spatial ICA, which has a blind spot in spatially correlating widespread artifacts. CV mapping in conjunction with gmICA yields results suiting previous findings both in AD and bvFTD.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-57' name='judgment-57' value='agree'>
+<label for='agree-57'>Agree</label>
+<input type='radio' id='disagree-57' name='judgment-57' value='disagree'>
+<label for='disagree-57'>Disagree</label>
+<br><br>
+<label for='comment-57'><strong>Comments:</strong></label>
+<textarea id='comment-57' name='comment-57' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-58' data-pmid='23582296'>
+<h2>58. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23582296/' target='_blank'>23582296</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Remembering the past and imagining the future are complex endeavours proposed to rely on a core neurobiological brain system. In the behavioural variant of frontotemporal dementia (bvFTD), regional patterns of brain atrophy affect medial prefrontal and temporal cortices of this core network. While autobiographical memory impairments have been documented in bvFTD, it remains unknown whether the ability to imagine future events is also compromised. Here, we investigated episodic future thinking in 10 bvFTD patients and contrasted their performance with Alzheimer&#x27;s disease (AD, n = 10) and healthy matched Control (n = 10) participants. Participants were asked to remember 3 events from the previous year and to envisage 3 possible events that could occur in the next year. Both patient groups showed equivalent episodic detail performance for the retrieval of past events and the simulation of possible future episodes. Patients with bvFTD, however, showed additional impairments for the generation of external (non-episodic) details irrespective of condition. Voxel-based morphometry analyses revealed divergent neural correlates of episodic past and future thinking performance specific to each patient group. Atrophy in the posterior cingulate cortex was implicated in the disruption of past and future thinking in AD. In contrast, in bvFTD, disruption of past retrieval correlated with atrophy in medial prefrontal regions, whereas future thinking deficits were associated with atrophy of frontopolar, medial temporal regions including the right hippocampus, and lateral temporal and occipital cortices. Our results point to the involvement of multiple brain regions in facilitating retrieval of past, and simulation of future, events. Damage to any of these key regions thus adversely affects the ability to engage in personally relevant mental time travel.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-58' name='judgment-58' value='agree'>
+<label for='agree-58'>Agree</label>
+<input type='radio' id='disagree-58' name='judgment-58' value='disagree'>
+<label for='disagree-58'>Disagree</label>
+<br><br>
+<label for='comment-58'><strong>Comments:</strong></label>
+<textarea id='comment-58' name='comment-58' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-59' data-pmid='28724588'>
+<h2>59. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28724588/' target='_blank'>28724588</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> To help understand speech changes in behavioral variant frontotemporal dementia (bvFTD), we developed and implemented automatic methods of speech analysis for quantification of prosody, and evaluated clinical and anatomical correlations.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-59' name='judgment-59' value='agree'>
+<label for='agree-59'>Agree</label>
+<input type='radio' id='disagree-59' name='judgment-59' value='disagree'>
+<label for='disagree-59'>Disagree</label>
+<br><br>
+<label for='comment-59'><strong>Comments:</strong></label>
+<textarea id='comment-59' name='comment-59' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-60' data-pmid='26707083'>
+<h2>60. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26707083/' target='_blank'>26707083</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Perceiving and evaluating intentional harms in an interpersonal context engages both cognitive and emotional domains. This process involves inference of intentions, moral judgment, and, crucially, empathy towards others&#x27; suffering. This latter skill is notably impaired in behavioral variant frontotemporal dementia (bvFTD). However, the relationship between regional brain atrophy in bvFTD and deficits in the above-mentioned abilities is not well understood. The present study investigated how gray matter (GM) atrophy in bvFTD patients correlates with the perception and evaluation of harmful actions (attribution of intentionality, evaluation of harmful behavior, empathic concern, and moral judgment). First, we compared the behavioral performance of 26 bvFTD patients and 23 healthy controls on an experimental task (ET) indexing intentionality, empathy, and moral cognition during evaluation of harmful actions. Second, we compared GM volume in patients and controls using voxel-based morphometry (VBM). Third, we examined brain regions where atrophy might be associated with specific impairments in the patient group. Finally, we explored whether the patients&#x27; deficits in intentionality comprehension and empathic concern could be partially explained by regional GM atrophy or impairments in other relevant factors, such as executive functions (EFs). In bvFTD patients, atrophy of limbic structures (amygdala and anterior paracingulate cortex--APC) was related to impairments in intentionality comprehension, while atrophy of the orbitofrontal cortex (OFC) was associated with empathic concern deficits. Intentionality comprehension impairments were predicted by EFs and orbitofrontal atrophy predicted deficits in empathic concern. Thus, although the perception and evaluation of harmful actions are variously compromised in bvFTD, deficits in empathic concern may be central to this syndrome as they are associated with one of the earliest atrophied region. More generally, our results shed light on social cognition deficits in bvFTD and may have important clinical implications.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-60' name='judgment-60' value='agree'>
+<label for='agree-60'>Agree</label>
+<input type='radio' id='disagree-60' name='judgment-60' value='disagree'>
+<label for='disagree-60'>Disagree</label>
+<br><br>
+<label for='comment-60'><strong>Comments:</strong></label>
+<textarea id='comment-60' name='comment-60' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-61' data-pmid='27662284'>
+<h2>61. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/27662284/' target='_blank'>27662284</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Alzheimer&#x27;s disease (AD) and behavioral variant frontotemporal dementia (bvFTD) are the most common types of early-onset dementia. We applied longitudinal resting state functional magnetic resonance imaging (fMRI) to delineate functional brain connections relevant for disease progression and diagnostic accuracy.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-61' name='judgment-61' value='agree'>
+<label for='agree-61'>Agree</label>
+<input type='radio' id='disagree-61' name='judgment-61' value='disagree'>
+<label for='disagree-61'>Disagree</label>
+<br><br>
+<label for='comment-61'><strong>Comments:</strong></label>
+<textarea id='comment-61' name='comment-61' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-62' data-pmid='31887311'>
+<h2>62. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/31887311/' target='_blank'>31887311</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The capacity to generate naturalistic three-dimensional and spatially coherent representations of the world, i.e., scene construction, is posited to lie at the heart of a wide range of complex cognitive endeavours. Clinical populations with selective damage to key nodes of a putative scene construction network of the brain have provided important insights regarding the contribution of medial temporal and prefrontal regions in this regard. Here, we explored the capacity for atemporal scene construction, and its associated neural substrates, in the behavioural-variant of frontotemporal dementia (bvFTD); a neurodegenerative brain disorder in which atrophy systematically erodes medial and lateral prefrontal cortices with variable medial temporal lobe involvement. Nineteen bvFTD patients were compared to 18 typical Alzheimer&#x27;s Disease (AD), and 25 healthy older Control participants on a scene construction task. Relative to Controls, both patient groups displayed marked impairments in generating contextually detailed and spatially coherent scenes, with bvFTD indistinguishable from AD patients across the majority of task metrics. Voxel-based morphometry, based on structural brain MRI, revealed divergent neural substrates of scene construction performance in each patient group. Despite widespread medial and lateral prefrontal atrophy, the capacity to generate richly detailed and spatially coherent scenes in bvFTD was found to rely predominantly upon the integrity of right medial temporal structures, including the hippocampus and parahippocampal gyrus. Scene construction impairments in AD, by contrast, hinged upon the integrity of posterior parietal brain regions. Our findings in bvFTD resonate with a large body of work implicating the right hippocampus in the construction of spatially integrated scene imagery. How these impairments relate to changes in autobiographical memory and prospection in bvFTD will be an important question for future studies to address.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-62' name='judgment-62' value='agree'>
+<label for='agree-62'>Agree</label>
+<input type='radio' id='disagree-62' name='judgment-62' value='disagree'>
+<label for='disagree-62'>Disagree</label>
+<br><br>
+<label for='comment-62'><strong>Comments:</strong></label>
+<textarea id='comment-62' name='comment-62' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-63' data-pmid='28662418'>
+<h2>63. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28662418/' target='_blank'>28662418</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> The ability to recognise how other people are feeling and make judgements based on their inferred thoughts is essential for successful social interactions, and is thought to depend on a complex network of brain regions, commonly referred to as the &quot;social brain&quot;. These abilities, together referred to as social cognition, are increasingly recognised as being compromised in some dementia syndromes, particularly in behavioural-variant frontotemporal dementia (bvFTD), which is characterised by changes in personality and social conduct. Whether social cognition is impaired in other dementia syndromes, such as Alzheimer&#x27;s disease (AD), or whether lower performance reflects general cognitive impairment, is less well established. Furthermore, ecologically valid tests with known neurobiological correlates are currently lacking. Here, we investigated performance on a newly devised short version of The Awareness of Social Inference Test (TASIT-S) and associated neural correlates in 25 bvFTD patients, 23 AD patients and 25 healthy controls. On Part 1-Emotion Evaluation, only bvFTD were impaired (p = .033) (AD vs.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-63' name='judgment-63' value='agree'>
+<label for='agree-63'>Agree</label>
+<input type='radio' id='disagree-63' name='judgment-63' value='disagree'>
+<label for='disagree-63'>Disagree</label>
+<br><br>
+<label for='comment-63'><strong>Comments:</strong></label>
+<textarea id='comment-63' name='comment-63' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-64' data-pmid='28304289'>
+<h2>64. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28304289/' target='_blank'>28304289</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Episodic memory disturbance is still considered as an exclusion criterion for behavioral variant frontotemporal dementia (bvFTD), but growing evidence suggests that memory can be impaired.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-64' name='judgment-64' value='agree'>
+<label for='agree-64'>Agree</label>
+<input type='radio' id='disagree-64' name='judgment-64' value='disagree'>
+<label for='disagree-64'>Disagree</label>
+<br><br>
+<label for='comment-64'><strong>Comments:</strong></label>
+<textarea id='comment-64' name='comment-64' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-65' data-pmid='31461580'>
+<h2>65. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/31461580/' target='_blank'>31461580</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Neural networks associated with body composition in frontotemporal dementia</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Ann Clin Transl Neurol</p>
+<p><strong>Publication Year:</strong> 2019</p>
+<p><strong>DOI:</strong> 10.1002/acn3.50869</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/6764740/' target='_blank'>6764740</a></p>
+</div>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Frontotemporal dementia (FTD) is associated with complex changes in eating behavior and metabolism, which potentially affect disease pathogenesis and survival. It is currently not known if body composition changes and changes in fat deposition also exist in FTD, the relationship of these changes in eating behavior and appetite, and whether these changes are centrally mediated.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-65' name='judgment-65' value='agree'>
+<label for='agree-65'>Agree</label>
+<input type='radio' id='disagree-65' name='judgment-65' value='disagree'>
+<label for='disagree-65'>Disagree</label>
+<br><br>
+<label for='comment-65'><strong>Comments:</strong></label>
+<textarea id='comment-65' name='comment-65' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-66' data-pmid='26501846'>
+<h2>66. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/26501846/' target='_blank'>26501846</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> A gap in the literature exists regarding progression in behavioral variant frontotemporal dementia (BVFTD). Guidance is needed concerning markers that will enable clinicians to discriminate FTD more effectively from phenocopies and to identify factors that determine progression and thereby prognosis.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-66' name='judgment-66' value='agree'>
+<label for='agree-66'>Agree</label>
+<input type='radio' id='disagree-66' name='judgment-66' value='disagree'>
+<label for='disagree-66'>Disagree</label>
+<br><br>
+<label for='comment-66'><strong>Comments:</strong></label>
+<textarea id='comment-66' name='comment-66' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-67' data-pmid='14761903'>
+<h2>67. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/14761903/' target='_blank'>14761903</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Confrontation naming is impaired in neurodegenerative conditions like Alzheimer&#x27;s disease (AD), frontotemporal dementia (FTD) and corticobasal degeneration (CBD). Some behavioural observations suggest a common source of impaired naming across these patient groups, while others find partially unique patterns of naming difficulty. We hypothesized that a large-scale neural network underlies naming, and that patterns of impaired naming in AD, FTD and CBD reflect cortical atrophy that interrupts this network in a manner that is partially shared and partially unique across these patient groups. We tested this hypothesis by correlating naming impairments with voxel-based morphometric (VBM) analyses of cortical atrophy in structural MRIs of 50 patients. We found significant naming deficits in all patient groups. Naming also correlated with lexical retrieval in all patient groups, including subgroups of patients with FTD. VBM analyses showed significant cortical atrophy, which was shared across AD, FTD and CBD patients in the left lateral temporal cortex; this area correlated with naming accuracy in all groups. Left lateral temporal atrophy thus appears to interfere with a lexical retrieval component of naming in AD, FTD and CBD. Impaired naming also correlated with semantic memory and visual perceptual-spatial functioning in specific groups of patients and, correspondingly, naming correlated with cortical atrophy in partially distinct neuroanatomical distributions in AD, FTD, CBD and subgroups of patients with FTD. These partially unique correlation profiles appear to reflect selective interruption of other components of the naming process, including semantic and visual perceptual-spatial functioning. These findings are consistent with the hypothesis that a large-scale neural network supports naming, and that this network is interrupted in several distinct ways in patients with neurodegenerative diseases.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-67' name='judgment-67' value='agree'>
+<label for='agree-67'>Agree</label>
+<input type='radio' id='disagree-67' name='judgment-67' value='disagree'>
+<label for='disagree-67'>Disagree</label>
+<br><br>
+<label for='comment-67'><strong>Comments:</strong></label>
+<textarea id='comment-67' name='comment-67' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-68' data-pmid='15585344'>
+<h2>68. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/15585344/' target='_blank'>15585344</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Some brain structures atrophic in frontotemporal dementia (FTD) belong to the rostral limbic system (RLS), that regulates context-dependent behaviors after evaluation of the motivational content of stimuli. The clinical manifestations of FTD are consistent with its impairment. Aim of this study was to assess whole brain morphology in FTD using magnetic resonance imaging (MRI) and voxel-based morphometry with statistic parametric mapping (SPM99) to test the hypothesis that the RLS might be specifically targeted by FTD. Nine FTD patients and 26 healthy controls underwent high resolution 3D MRI. SPM99 performed (a) spatial normalization to a customized template, (b) segmentation, (c) smoothing, (d) voxel-by-voxel comparison of gray matter between cases and controls. P was set at 0.05 corrected for multiple comparisons. All but one regions of the RLS (the periaqueductal gray) were atrophic in FTD. At P&lt;0.001 uncorrected also the periaqueductal gray was atrophic. Atrophy outside the RLS was confined to a few voxels in the frontal and temporal gyri. FTD might be a neural-system disease where the RLS is predominantly damaged.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-68' name='judgment-68' value='agree'>
+<label for='agree-68'>Agree</label>
+<input type='radio' id='disagree-68' name='judgment-68' value='disagree'>
+<label for='disagree-68'>Disagree</label>
+<br><br>
+<label for='comment-68'><strong>Comments:</strong></label>
+<textarea id='comment-68' name='comment-68' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-69' data-pmid='20493673'>
+<h2>69. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/20493673/' target='_blank'>20493673</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Behavioral and executive dysfunctions are typical symptoms of frontotemporal lobar degeneration, associated with its subtypes frontotemporal and semantic dementia. Although both functions depend on the frontal lobes, no study has yet compared their neural correlates in frontotemporal lobar degeneration. Accordingly, we correlated clinical scores of behavioral and executive deficits with glucose utilization as measured by [(18)F]fluorodeoxyglucose positron emission tomography in 17 patients with frontotemporal lobar degeneration and 9 age- and sex-matched control subjects. Impairment in executive functions was measured by the Behavioral Assessment of the Dysexecutive Syndrome, a modified Stroop paradigm and/or the Tower of Toronto Test. Behavioral deficits were examined with the Neuropsychiatric Inventory. Executive dysfunction was correlated with diminished glucose utilization in frontomedial and frontolateral cortices. Brain regions included the anterior cingulate and midcingulate gyri, anterior medial frontal cortex, and left frontolateral cortex. Behavioral deficits were associated with mainly frontomedial networks, particularly the anterior medial frontal cortex, gyrus rectus, and area subcallosa. Our pilot study reveals partially overlapping neural correlates of executive and behavioral dysfunction in frontotemporal lobar degeneration. The results suggest that some behavioral deficits, namely disinhibition and appetite and eating abnormalities, are particularly related to executive dysfunction. This hypothesis might be further explored in studies involving larger patient groups.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-69' name='judgment-69' value='agree'>
+<label for='agree-69'>Agree</label>
+<input type='radio' id='disagree-69' name='judgment-69' value='disagree'>
+<label for='disagree-69'>Disagree</label>
+<br><br>
+<label for='comment-69'><strong>Comments:</strong></label>
+<textarea id='comment-69' name='comment-69' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-70' data-pmid='29704671'>
+<h2>70. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/29704671/' target='_blank'>29704671</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Apathy is the most prevalent and disabling non-cognitive symptom of dementia and affects 90% of patients across the disease course. Despite its pervasiveness, how apathy manifests across dementia syndromes and the neurobiological mechanisms driving these symptoms are poorly understood. Here, we applied the multidimensional ABC model of apathy, which recognizes Affective, Behavioural and Cognitive apathy, in Alzheimer&#x27;s disease (AD) and behavioural-variant frontotemporal dementia (bvFTD).</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-70' name='judgment-70' value='agree'>
+<label for='agree-70'>Agree</label>
+<input type='radio' id='disagree-70' name='judgment-70' value='disagree'>
+<label for='disagree-70'>Disagree</label>
+<br><br>
+<label for='comment-70'><strong>Comments:</strong></label>
+<textarea id='comment-70' name='comment-70' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-71' data-pmid='30545239'>
+<h2>71. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/30545239/' target='_blank'>30545239</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Elderly bipolar disorder (BD) and behavioural variant of frontotemporal dementia (bvFTD) may exhibit similar symptoms and both disorders are characterized by selective abnormalities in cortical and subcortical regions that are associated with cognitive and emotional impairments. We aimed to investigate common and distinct neural substrates of BD and bvFTD by coupling, for the first time, magnetic resonance imaging (MRI) and positron emission tomography (PET) techniques.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-71' name='judgment-71' value='agree'>
+<label for='agree-71'>Agree</label>
+<input type='radio' id='disagree-71' name='judgment-71' value='disagree'>
+<label for='disagree-71'>Disagree</label>
+<br><br>
+<label for='comment-71'><strong>Comments:</strong></label>
+<textarea id='comment-71' name='comment-71' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-72' data-pmid='15212830'>
+<h2>72. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/15212830/' target='_blank'>15212830</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> To determine the patterns of cerebral glucose metabolism in frontotemporal dementia (FTD) and semantic dementia (SD).</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-72' name='judgment-72' value='agree'>
+<label for='agree-72'>Agree</label>
+<input type='radio' id='disagree-72' name='judgment-72' value='disagree'>
+<label for='disagree-72'>Disagree</label>
+<br><br>
+<label for='comment-72'><strong>Comments:</strong></label>
+<textarea id='comment-72' name='comment-72' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-73' data-pmid='25913063'>
+<h2>73. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25913063/' target='_blank'>25913063</a></h2>
+<div class='content'>
+<h3>Abstract Content</h3>
+<p><strong>Abstract:</strong> Spatial disorientation is a prominent feature of early Alzheimer&#x27;s disease (AD) attributed to degeneration of medial temporal and parietal brain regions, including the retrosplenial cortex (RSC). By contrast, frontotemporal dementia (FTD) syndromes show generally intact spatial orientation at presentation. However, currently no clinical tasks are routinely administered to objectively assess spatial orientation in these neurodegenerative conditions. In this study we investigated spatial orientation in 58 dementia patients and 23 healthy controls using a novel virtual supermarket task as well as voxel-based morphometry (VBM). We compared performance on this task with visual and verbal memory function, which has traditionally been used to discriminate between AD and FTD. Participants viewed a series of videos from a first person perspective travelling through a virtual supermarket and were required to maintain orientation to a starting location. Analyses revealed significantly impaired spatial orientation in AD, compared to FTD patient groups. Spatial orientation performance was found to discriminate AD and FTD patient groups to a very high degree at presentation. More importantly, integrity of the RSC was identified as a key neural correlate of orientation performance. These findings confirm the notion that i) it is feasible to assess spatial orientation objectively via our novel Supermarket task; ii) impaired orientation is a prominent feature that can be applied clinically to discriminate between AD and FTD and iii) the RSC emerges as a critical biomarker to assess spatial orientation deficits in these neurodegenerative conditions.</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-73' name='judgment-73' value='agree'>
+<label for='agree-73'>Agree</label>
+<input type='radio' id='disagree-73' name='judgment-73' value='disagree'>
+<label for='disagree-73'>Disagree</label>
+<br><br>
+<label for='comment-73'><strong>Comments:</strong></label>
+<textarea id='comment-73' name='comment-73' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

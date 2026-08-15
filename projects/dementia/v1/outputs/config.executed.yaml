@@ -128,8 +128,21 @@ annotation:
   - study_title
   - study_abstract
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - "uses Voxel-Based Morphometry, fMRI (resting\u2010state or task based), and FDG-PET\
+    \ (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality"
+  - Sample- participants included clinically diagnosed behavioral variant frontotemporal
+    dementia (bvFTD) patients with no concurrent psychiatric diagnosis (e.g., major
+    depressive disorder and bipolar mood disorder), other forms of dementia or neurological
+    symptoms, and no history of alcohol and substance abuse
+  - Whole-brain evidence- The analysis must be from a group-level, whole-brain (voxelwise)
+    map
+  exclusion_criteria:
+  - Region-of-interest (ROI) analyses
+  - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state
+    analyses
+  - Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs
+    control)
   annotations:
   - name: dementia_all
     description: All experiments
@@ -157,7 +170,7 @@ annotation:
     exclusion_criteria: []
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/dementia/v1
+  directory: projects/dementia/v1
   prisma_diagram: true
   formats:
   - csv

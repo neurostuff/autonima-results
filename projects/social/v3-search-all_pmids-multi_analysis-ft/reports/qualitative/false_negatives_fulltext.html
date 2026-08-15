@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .criteria-summary, .criteria-details {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .criteria-summary {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .criterion-list {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+        .criterion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }
+        .criterion-red {
+            background: #c0392b;
+        }
+        .criterion-green {
+            background: #1e8449;
+        }
+        .criterion-neutral {
+            background: #34495e;
+        }
+        .criterion-count {
+            color: #555;
+            font-size: 12px;
+        }
+        .annotation {
+            border-left: 3px solid #f39c12;
+            background-color: #fff8e1;
+            padding: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC';
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2';
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        @media (max-width: 900px) {
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+
+    function getAnnotationsFilename() {
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {
+            return "annotations.json";
+        }
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {
+            return "annotations.json";
+        }
+        return base + ".json";
+    }
+
+    async function saveAnnotations() {
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var pmid = study.getAttribute('data-pmid') || '';
+
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {
+            try {
+                var fileHandle = await window.showSaveFilePicker({
+                    suggestedName: outputFilename,
+                    types: [{
+                        description: "JSON Files",
+                        accept: { "application/json": [".json"] }
+                    }]
+                });
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            } catch (error) {
+                if (error && error.name === "AbortError") {
+                    return;
+                }
+                console.warn("Falling back to browser download.", error);
+            }
+        }
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", outputFilename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Negatives Papers at Fulltext Stage</h1>
+<p>Total papers: 2</p>
+<div class='criteria-summary'>
+<h2>Stage Criteria Summary</h2>
+<p>Stage: <strong>Fulltext</strong>. Counts show criterion usage across all stage decisions and within this report subset.</p>
+<div class='criteria-grid'>
+<div>
+<h3>Inclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>I3</span> Study uses functional MRI during a social-related task. Relevant constructs include (but are not limited to)- Affiliation and Attachment, Social Communication, Perception and Understanding of Self, and Perception and Understanding of Others. <span class='criterion-count'>(all stage: 980/1066, this report: 3/3)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I4</span> Sample- At least one group of healthy adult participants (age 18–65). Studies that also include clinical or special groups are eligible only if results for the healthy group are reported separately. <span class='criterion-count'>(all stage: 973/1066, this report: 1/3)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I5</span> Whole-brain evidence- The paper must report at least one group-level, whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is clearly identified as coming from the healthy/control group (i.e., not limited to a narrowly defined subgroup). <span class='criterion-count'>(all stage: 895/1066, this report: 2/3)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I6</span> It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text. <span class='criterion-count'>(all stage: 897/1066, this report: 2/3)</span></li>
+</ul>
+</div>
+<div>
+<h3>Exclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>E2</span> Studies that report only region-of-interest (ROI) analyses with no whole-brain results. <span class='criterion-count'>(all stage: 42/1066, this report: 1/3)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E3</span> Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a healthy-group whole-brain task activation map. <span class='criterion-count'>(all stage: 33/1066, this report: 0/3)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E4</span> Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying unmasked, whole-brain healthy-group task effect. <span class='criterion-count'>(all stage: 65/1066, this report: 0/3)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E5</span> Studies that include only participants outside the age range of 18–65, unless a healthy adult subgroup in this range is analyzed and reported separately. <span class='criterion-count'>(all stage: 14/1066, this report: 2/3)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E6</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults. <span class='criterion-count'>(all stage: 12/1066, this report: 0/3)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='study-list'>
+<div class='study' id='study-1' data-pmid='24834034'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24834034/' target='_blank'>24834034</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This fMRI study uses an ultimatum game (social interaction) with healthy adult participants (mean age 25) and reports group-level task contrasts; however, all voxelwise analyses were performed within a predefined mask composed of 16 bilateral ROIs rather than as an unmasked whole-brain analysis. Inclusion criteria met: I3 (fMRI during a social-related task) and I4 (healthy adult sample). Inclusion criterion not met: I5 (no unmasked whole-brain group-level voxelwise task activation map was reported). Exclusion criterion met: E2 (analyses restricted to ROI/masked results with no whole-brain results). Full text appears complete. Therefore the study is excluded from the meta-analysis.</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I3</span> Study uses functional MRI during a social-related task. Relevant constructs include (but are not limited to)- Affiliation and Attachment, Social Communication, Perception and Understanding of Self, and Perception and Understanding of Others.</li>
+<li><span class='criterion-tag criterion-green'>I4</span> Sample- At least one group of healthy adult participants (age 18–65). Studies that also include clinical or special groups are eligible only if results for the healthy group are reported separately.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I5</span> Whole-brain evidence- The paper must report at least one group-level, whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is clearly identified as coming from the healthy/control group (i.e., not limited to a narrowly defined subgroup).</li>
+<li><span class='criterion-tag criterion-red'>I6</span> It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E2</span> Studies that report only region-of-interest (ROI) analyses with no whole-brain results.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E3</span> Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a healthy-group whole-brain task activation map.</li>
+<li><span class='criterion-tag criterion-green'>E4</span> Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying unmasked, whole-brain healthy-group task effect.</li>
+<li><span class='criterion-tag criterion-green'>E5</span> Studies that include only participants outside the age range of 18–65, unless a healthy adult subgroup in this range is analyzed and reported separately.</li>
+<li><span class='criterion-tag criterion-green'>E6</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment-1'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-2' data-pmid='27716474'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/27716474/' target='_blank'>27716474</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> The study uses task fMRI of social processing with whole-brain analyses and reports group-level voxelwise results (tables/figures), satisfying I3, I5, and I6. However, participant groups fall outside the review age range: the younger group includes participants aged 17–27 (includes minors &lt;18) and the older group is 65–75 (entirely &gt;65). No group is reported that is exclusively within the target 18–65 age range, nor is a healthy adult subgroup (18–65) analyzed separately. Therefore the study violates the age-range eligibility and meets exclusion criterion E5.</p>
+<p><strong>Fulltext Confidence:</strong> 0.92</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I3</span> Study uses functional MRI during a social-related task. Relevant constructs include (but are not limited to)- Affiliation and Attachment, Social Communication, Perception and Understanding of Self, and Perception and Understanding of Others.</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Whole-brain evidence- The paper must report at least one group-level, whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is clearly identified as coming from the healthy/control group (i.e., not limited to a narrowly defined subgroup).</li>
+<li><span class='criterion-tag criterion-green'>I6</span> It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I4</span> Sample- At least one group of healthy adult participants (age 18–65). Studies that also include clinical or special groups are eligible only if results for the healthy group are reported separately.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E5</span> Studies that include only participants outside the age range of 18–65, unless a healthy adult subgroup in this range is analyzed and reported separately.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E2</span> Studies that report only region-of-interest (ROI) analyses with no whole-brain results.</li>
+<li><span class='criterion-tag criterion-green'>E3</span> Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a healthy-group whole-brain task activation map.</li>
+<li><span class='criterion-tag criterion-green'>E4</span> Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying unmasked, whole-brain healthy-group task effect.</li>
+<li><span class='criterion-tag criterion-green'>E6</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-2' name='judgment-2' value='agree'>
+<label for='agree-2'>Agree</label>
+<input type='radio' id='disagree-2' name='judgment-2' value='disagree'>
+<label for='disagree-2'>Disagree</label>
+<br><br>
+<label for='comment-2'><strong>Comments:</strong></label>
+<textarea id='comment-2' name='comment-2' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

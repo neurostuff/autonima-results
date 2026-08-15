@@ -47,8 +47,23 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Voxelwise task evidence- The analysis must be a group-level, univariate task-evoked
+    voxelwise map (typically whole-brain; small-volume-corrected maps are acceptable).
+    Between-group contrasts/interactions are acceptable when they compare a qualifying
+    cue-reactivity effect across groups.
+  - ROI exception for benchmark compatibility- ROI-focused analyses may be included
+    only when they provide stereotactic coordinates for a qualifying visual cue-reactivity
+    contrast.
+  - Contrast or analysis must be relevant to reward-related cue-reactivity using visual
+    stimuli.
+  exclusion_criteria:
+  - ROI analyses that do not provide stereotactic coordinates for a qualifying cue-reactivity
+    contrast.
+  - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state
+    analyses (e.g., ICA, PLE, Hurst exponents)
+  - Analyses on non-appetitive cue contrasts, or regulation/control contrasts (e.g.,
+    reappraisal/decrease/increase, go/no-go) without a qualifying cue-reactivity contrast.
   annotations:
   - name: pooled_cue_reactivity
     description: Appetitive cue reactivity across reward-related cues
@@ -97,7 +112,7 @@ annotation:
       at the reported contrast/map level.
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/cue_reactivity/v5-annotation-only-gpt
+  directory: projects/cue_reactivity/v5-annotation-only-gpt
   prisma_diagram: true
   formats:
   - csv
