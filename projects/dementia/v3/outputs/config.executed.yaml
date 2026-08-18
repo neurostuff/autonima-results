@@ -111,7 +111,7 @@ retrieval:
   max_retries: 3
   download_directory: downloads
   n_jobs: 1
-  load_excluded: false
+  load_excluded: true
   full_text_sources:
   - root_path: /home/zorro/repos/autonima-results/projects/dementia/elsevier_output
     pmid_source: folder_name
@@ -139,8 +139,17 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Whole-brain evidence- The analysis must be from a whole-brain (voxelwise) map
+  - Sample- analysis includes clinically diagnosed behavioral variant frontotemporal
+    dementia (bvFTD) or picks disease patients
+  - Analysis must compare the target bvFTD group to healthy controls
+  exclusion_criteria:
+  - Region-of-interest (ROI) analyses
+  - "Seed\u2010based functional connectivity (FC), diffusion tensor imaging (DTI),\
+    \ and cortical thickness methods"
+  - Explicit evidence of pooling bvFTD group with other patient groups in the analysis
+    (e.g. bvFTD + other dementia group vs controls)
   annotations:
   - name: dementia_all
     description: All analyses
@@ -169,7 +178,7 @@ annotation:
     exclusion_criteria: []
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/dementia/v3
+  directory: projects/dementia/v3
   prisma_diagram: true
   formats:
   - csv

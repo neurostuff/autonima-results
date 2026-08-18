@@ -1,20 +1,17 @@
 {
   "cache_plan": {
-    "changed_stages": [
-      "search",
-      "annotation"
-    ],
+    "changed_stages": [],
     "copyable_stages": [
       "search",
       "retrieval",
-      "parsing"
+      "parsing",
+      "annotation"
     ],
     "has_cache_artifacts": true,
     "has_previous_execution": true,
     "recompute_stages": [
       "abstract",
       "fulltext",
-      "annotation",
       "output"
     ],
     "schema_version": 2,
@@ -25,7 +22,7 @@
       "fulltext": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
       "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
       "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
-      "retrieval": "64bda84f6b0c7734897eea229565962a176ec8726981b4f1186d03df7685903c",
+      "retrieval": "374764bab7e3cf3adc51473b44c338cb319c950e92f372ce8133d79a8a648925",
       "search": "3bb01ae40cd285f88f42662aeee609a6b590d56ad19cbc56c280f31ec7f22ab3"
     },
     "stages": {
@@ -38,12 +35,12 @@
         "reason": "no cache artifact is available"
       },
       "annotation": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "annotation configuration changed"
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "recompute",
@@ -58,7 +55,7 @@
         "artifact_is_modern": false,
         "config_changed": false,
         "copy_artifact": false,
-        "has_artifact": true,
+        "has_artifact": false,
         "reason": "derived outputs are regenerated"
       },
       "parsing": {
@@ -80,46 +77,26 @@
       "search": {
         "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
+        "config_changed": false,
         "copy_artifact": true,
         "has_artifact": true,
-        "reason": "search changed; cached metadata will be matched by PMID"
+        "reason": "metadata cache is valid and new PMIDs will be fetched"
       }
     },
     "unsupported_cache": false,
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [
-    "search",
-    "annotation"
-  ],
-  "completed_at": "2026-08-15T07:26:35.915494+00:00",
+  "changed_stages": [],
+  "completed_at": "2026-08-17T21:32:01.764707+00:00",
   "completed_stage": "full",
-  "config_hash": "9e806ce12c670944b047f44300bd979ae07104c0094170b25ff62c925eb250d1",
+  "config_hash": "1303afccec41de410fd4b0aad34ca82400822f36fdb5ba2f333d9cdadbc2f41a",
   "copied_cache": [],
-  "created_at": "2026-08-15T07:22:57.436430+00:00",
+  "created_at": "2026-08-17T21:22:41.016726+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/social/v1-annotation-only/outputs/config.executed.yaml",
-  "execution_id": "fbf7b196-a97b-4a12-be5e-0bfe226de191",
-  "invalidated": [
-    {
-      "path": "/home/zorro/repos/autonima-results/projects/social/v1-annotation-only/outputs/annotation_results.json",
-      "stage": "annotation"
-    },
-    {
-      "path": "/home/zorro/repos/autonima-results/projects/social/v1-annotation-only/outputs/final_results.json",
-      "stage": "output"
-    },
-    {
-      "path": "/home/zorro/repos/autonima-results/projects/social/v1-annotation-only/outputs/nimads_studyset.json",
-      "stage": "output"
-    },
-    {
-      "path": "/home/zorro/repos/autonima-results/projects/social/v1-annotation-only/outputs/nimads_annotation.json",
-      "stage": "output"
-    }
-  ],
-  "parent_execution_id": "migration-867c800242ca8e1ca34f49d9",
+  "execution_id": "19149a54-673c-43d3-bf30-487eb5809ddb",
+  "invalidated": [],
+  "parent_execution_id": "0e4afa64-3ab6-4d13-a3b4-b356d7d747fe",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
@@ -127,10 +104,10 @@
     "fulltext": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
     "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
     "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
-    "retrieval": "64bda84f6b0c7734897eea229565962a176ec8726981b4f1186d03df7685903c",
+    "retrieval": "374764bab7e3cf3adc51473b44c338cb319c950e92f372ce8133d79a8a648925",
     "search": "3bb01ae40cd285f88f42662aeee609a6b590d56ad19cbc56c280f31ec7f22ab3"
   },
-  "started_at": "2026-08-15T07:22:57.436443+00:00",
+  "started_at": "2026-08-17T21:22:41.016793+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

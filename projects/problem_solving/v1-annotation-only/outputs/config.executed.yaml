@@ -5,7 +5,7 @@ search:
   date_from: null
   date_to: null
   email: null
-  pmids_file: /data/alejandro/projects/autonima-results/projects/problem_solving/annotation-only-ids.txt
+  pmids_file: /home/zorro/repos/autonima-results/projects/problem_solving/annotation-only-ids.txt
   pmids_list: null
 screening:
   abstract:
@@ -21,17 +21,17 @@ retrieval:
   n_jobs: 1
   load_excluded: true
   full_text_sources:
-  - root_path: /data/alejandro/projects/autonima-results/projects/problem_solving/elsevier_output
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
     pmid_source: folder_name
     text_path_templates:
     - text.txt
     coordinates_path_templates:
     - coordinates.json
-  - root_path: /data/alejandro/projects/autonima-results/projects/problem_solving/ace_outputs
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
     pmid_source: file_name
     allowed_extensions:
     - .html
-    processed_data_path: /data/alejandro/projects/autonima-results/projects/problem_solving/ace_outputs/processed
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
   parse_coordinates: false
   coordinate_model: gpt-4o-mini
 parsing:
@@ -47,8 +47,29 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Voxelwise task evidence- The analysis must be a group-level, univariate task-evoked
+    voxelwise map (typically whole-brain; small-volume-corrected maps are acceptable).
+  - Task-based problem solving- The contrast must reflect active problem solving,
+    reasoning, or goal-directed cognitive processing (e.g., rule application, planning,
+    relational reasoning, symbolic manipulation).
+  - Valid comparator condition- The analysis/contrast must compare problem solving
+    against an appropriate baseline or control condition (e.g., rest, fixation, perceptual
+    control, low-level baseline, or simpler task condition).
+  - Domain generality- Analyses may come from any representational domain (e.g., mathematical,
+    verbal, visuospatial, logical), provided they isolate problem solving processes.
+  - Stereotactic reporting- Coordinates must be reported in standard stereotactic
+    space (MNI or Talairach).
+  exclusion_criteria:
+  - ROI-only analyses without whole-brain voxelwise results or stereotactic coordinates.
+  - Connectivity analyses- Seed-based connectivity, effective connectivity, or resting-state
+    analyses.
+  - Non-task or passive paradigms- Passive viewing, simple perception, or tasks not
+    requiring active problem solving or reasoning.
+  - Motor or response-only contrasts that do not isolate cognitive problem solving
+    processes.
+  - Clinical or between-group contrasts that do not isolate a within-task problem
+    solving effect (unless a valid problem solving contrast is reported separately).
   annotations:
   - name: domain_general_problem_solving
     description: Core problem solving processes that generalize across representational
@@ -90,7 +111,7 @@ annotation:
     - Exclude tasks that involve rule following without active reasoning or inference.
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/problem_solving/v1-annotation-only
+  directory: projects/problem_solving/v1-annotation-only
   prisma_diagram: true
   formats:
   - csv
