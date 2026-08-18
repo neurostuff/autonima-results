@@ -47,8 +47,14 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Whole-brain evidence- The analysis must be from a whole-brain (voxelwise) map
+  - Analysis must compare the target bvFTD group to healthy controls, where bvFTD
+    group is not pooled with other patient groups
+  exclusion_criteria:
+  - Region-of-interest (ROI) analyses
+  - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state
+    analyses
   annotations:
   - name: dementia_all
     description: All analyses
@@ -77,7 +83,7 @@ annotation:
     exclusion_criteria: []
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/dementia/v2-annotation-only
+  directory: projects/dementia/v2-annotation-only
   prisma_diagram: true
   formats:
   - csv

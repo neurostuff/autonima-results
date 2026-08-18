@@ -47,7 +47,21 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
+  inclusion_criteria:
+  - Task-evoked contrasts related to decision-making
+  - Whole-brain evidence- Must be a group-level, whole-brain (voxelwise) task-evoked
+    statistical map
+  - If an analysis label is generic/truncated (e.g., analysis_0), use table caption,
+    neighboring contrasts, and study_fulltext to infer eligibility; do not fail only
+    because the label text is sparse.
+  - Resolve subtype overlaps by primary uncertainty source- sensory evidence uncertainty
+    -> perceptual_dm; uncertainty/ambiguity in contingencies or information -> ambiguous_dm;
+    explicit known-risk vs safe/certain choice -> risky_dm.
+  - Study-level subtype mutual exclusivity is required- for each study/PMID, assign
+    exactly one subtype among ambiguous_dm, perceptual_dm, and risky_dm.
+  - Once a study-level subtype is chosen, all included analyses from that study must
+    follow that same subtype; do not split analyses from one study across multiple
+    subtypes.
   exclusion_criteria: []
   annotations:
   - name: common_dm
@@ -129,7 +143,7 @@ annotation:
     exclusion_criteria: []
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/decision_making/v2-annotation-only
+  directory: projects/decision_making/v2-annotation-only
   prisma_diagram: true
   formats:
   - csv

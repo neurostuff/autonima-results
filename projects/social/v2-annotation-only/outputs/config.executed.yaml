@@ -47,8 +47,19 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Sample- The analysis must be on a healthy adult participants (alone, not a clinical
+    or special group, or a comparison between healthy and clinical/special groups).
+  - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain
+    (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast)
+    that is from the healthy/control group and is generalizable to the healthy adult
+    population.
+  exclusion_criteria:
+  - Region-of-interest (ROI) analyses
+  - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state
+    analyses (e.g., ICA, PLE, Hurst exponents)
+  - Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs
+    control)
   annotations:
   - name: social_processing_all
     description: Social Processing encompasses a broad range of processes that enable
@@ -118,7 +129,7 @@ annotation:
     exclusion_criteria: []
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/social/v2-annotation-only
+  directory: projects/social/v2-annotation-only
   prisma_diagram: true
   formats:
   - csv

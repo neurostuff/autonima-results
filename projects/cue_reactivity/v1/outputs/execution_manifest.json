@@ -1,30 +1,150 @@
 {
-  "cache_policy": "auto",
-  "changed_stages": [],
-  "completed_at": "2026-08-13T13:46:54-05:00",
-  "completed_stage": "full",
-  "config_hash": "3477cfd766e374f850c4e39b80ddfe194915e6febb8fbc2c2e44400773f1f486",
-  "copied_cache": [],
-  "created_at": "2026-08-13T13:46:54-05:00",
-  "executed_config_path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/config.executed.yaml",
-  "execution_id": "migration-9bbebe5310c92f300f8900b9",
-  "invalidated": [],
-  "migration": {
-    "kind": "one_time_committed_cache_v2",
-    "source_commit": "6ba5b5a598b88c696f9b5abc920bb535cc92f621"
+  "cache_plan": {
+    "changed_stages": [
+      "search",
+      "retrieval",
+      "annotation"
+    ],
+    "copyable_stages": [
+      "search",
+      "abstract",
+      "fulltext",
+      "parsing"
+    ],
+    "has_cache_artifacts": true,
+    "has_previous_execution": true,
+    "recompute_stages": [
+      "retrieval",
+      "annotation",
+      "output"
+    ],
+    "schema_version": 2,
+    "source_output": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1",
+    "stage_hashes": {
+      "abstract": "3dcde89e8e2c73b65489044042b562e8f26d6b51bb076e25f5711439c78c0135",
+      "annotation": "e145d28348b67de2ad70a1c7e20c1b794a65a99106e21a661981ef34cb69c5b7",
+      "fulltext": "01737a3e44e6ee548cb3ef872fd345a0f5a387654d75eee6776525284d0117b9",
+      "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
+      "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
+      "retrieval": "90ce43e4210473a2489222bfa177ce50504ee9417c4de8053660c7abd8dbca38",
+      "search": "c26732983110f18a16c50ec3a630f45fdd9188b3739ac46352707efbdc7fbe67"
+    },
+    "stages": {
+      "abstract": {
+        "action": "incremental",
+        "artifact_is_modern": true,
+        "config_changed": false,
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
+      },
+      "annotation": {
+        "action": "recompute",
+        "artifact_is_modern": true,
+        "config_changed": true,
+        "copy_artifact": false,
+        "has_artifact": true,
+        "reason": "annotation configuration changed"
+      },
+      "fulltext": {
+        "action": "incremental",
+        "artifact_is_modern": true,
+        "config_changed": false,
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
+      },
+      "output": {
+        "action": "recompute",
+        "artifact_is_modern": false,
+        "config_changed": false,
+        "copy_artifact": false,
+        "has_artifact": true,
+        "reason": "derived outputs are regenerated"
+      },
+      "parsing": {
+        "action": "incremental",
+        "artifact_is_modern": true,
+        "config_changed": false,
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
+      },
+      "retrieval": {
+        "action": "recompute",
+        "artifact_is_modern": true,
+        "config_changed": true,
+        "copy_artifact": false,
+        "has_artifact": true,
+        "reason": "retrieval configuration changed"
+      },
+      "search": {
+        "action": "incremental",
+        "artifact_is_modern": true,
+        "config_changed": true,
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "search changed; cached metadata will be matched by PMID"
+      }
+    },
+    "unsupported_cache": false,
+    "unverified_stages": []
   },
-  "parent_execution_id": null,
+  "cache_policy": "auto",
+  "changed_stages": [
+    "search",
+    "retrieval",
+    "annotation"
+  ],
+  "completed_at": "2026-08-15T06:36:14.509385+00:00",
+  "completed_stage": "full",
+  "config_hash": "a7a771448d6747ebad2dd79baa0845af5f195b0cf190ed3ad09c99eda04a3c4a",
+  "copied_cache": [],
+  "created_at": "2026-08-15T06:24:56.988419+00:00",
+  "executed_config_path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/config.executed.yaml",
+  "execution_id": "bbe2eb45-8be0-4cef-be70-898fc665c56b",
+  "invalidated": [
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/fulltext_retrieval_results.json",
+      "stage": "retrieval"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/annotation_results.json",
+      "stage": "annotation"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/final_results.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/nimads_studyset.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/nimads_annotation.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/missing_fulltexts.csv",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/missing_fulltexts.txt",
+      "stage": "output"
+    }
+  ],
+  "parent_execution_id": "migration-9bbebe5310c92f300f8900b9",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "3dcde89e8e2c73b65489044042b562e8f26d6b51bb076e25f5711439c78c0135",
-    "annotation": "6a53c893b997b4eda6ad42b01a4719c953065bae9c6bdcdd62c39f04821ad3da",
+    "annotation": "e145d28348b67de2ad70a1c7e20c1b794a65a99106e21a661981ef34cb69c5b7",
     "fulltext": "01737a3e44e6ee548cb3ef872fd345a0f5a387654d75eee6776525284d0117b9",
     "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
     "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
-    "retrieval": "5eed17821fe6593539ff235eaebff9908574e4a7b426af7f04da25abad5212ef",
-    "search": "484296447d2734803c05776669e94ca137031734e82e822e458e69e6a021cbf0"
+    "retrieval": "90ce43e4210473a2489222bfa177ce50504ee9417c4de8053660c7abd8dbca38",
+    "search": "c26732983110f18a16c50ec3a630f45fdd9188b3739ac46352707efbdc7fbe67"
   },
-  "started_at": "2026-08-13T13:46:54-05:00",
+  "started_at": "2026-08-15T06:24:56.988437+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

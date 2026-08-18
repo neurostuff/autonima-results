@@ -1,15 +1,20 @@
 search:
   database: pubmed
-  query: ((("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab]
-    OR "grey matter volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab])
-    AND ("magnetic resonance imaging"[Mesh] OR MRI[tiab] OR "structural MRI"[tiab]))
-    AND ((alcohol[tiab] OR "Alcohol-Related Disorders"[Mesh]) OR (nicotine[tiab] OR
-    tobacco[tiab] OR smoking[tiab] OR "Tobacco Use Disorder"[Mesh]) OR (opioid*[tiab]
-    OR opiate*[tiab] OR heroin[tiab] OR "Opioid-Related Disorders"[Mesh]) OR (cannabis[tiab]
-    OR marijuana[tiab] OR marihuana[tiab] OR THC[tiab]) OR (stimulant*[tiab] OR cocaine[tiab]
-    OR amphetamine*[tiab] OR methamphetamine[tiab] OR "Cocaine-Related Disorders"[Mesh]
-    OR "Amphetamine-Related Disorders"[Mesh]))
-  max_results: 10000
+  query: (("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab]
+    OR "grey matter volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab]
+    OR "cortical thickness"[tiab] OR "gray matter reduc*"[tiab] OR "grey matter reduc*"[tiab]
+    OR "gray matter abnormal*"[tiab] OR "grey matter abnormal*"[tiab] OR "reduced
+    gray matter"[tiab] OR "reduced grey matter"[tiab] OR "tensor-based morphometr*"[tiab]
+    OR "brain volumetric"[tiab] OR "brain morphometr*"[tiab]) AND ("Substance-Related
+    Disorders"[Mesh] OR addiction[tiab] OR addict*[tiab] OR "substance use"[tiab]
+    OR "substance abuse"[tiab] OR alcoholism[tiab] OR "alcohol depend*"[tiab] OR "alcohol
+    use disorder*"[tiab] OR "alcohol abuse"[tiab] OR smoker*[tiab] OR "nicotine depend*"[tiab]
+    OR "cannabis use"[tiab] OR "cannabis depend*"[tiab] OR "marijuana use"[tiab] OR
+    "cocaine depend*"[tiab] OR "cocaine use"[tiab] OR "methamphetamine depend*"[tiab]
+    OR "heroin depend*"[tiab] OR "opioid use disorder*"[tiab] OR "betel quid"[tiab]
+    OR psychedelic*[tiab] OR stimulant*[tiab] OR amphetamine*[tiab])) NOT (Editorial[pt]
+    OR Letter[pt] OR Comment[pt] OR "Case Reports"[pt] OR News[pt])
+  max_results: null
   date_from: null
   date_to: 2019/7/31
   email: delavega@utexas.edu
@@ -118,8 +123,19 @@ annotation:
   - study_title
   - study_abstract
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Grey matter volume comparison between substance users and controls, with a users
+    < controls contrast indicating reduced GM in substance users.
+  - Must be a voxelwise whole brain analysis
+  - The inclusion of multiple experiments per article were only considered if the
+    experiments overlapped in the control group, but not the substance user group.
+    For example, moderate smoker<control, and separately severe smoker<control include
+    two different samples of cigarette smokers.
+  exclusion_criteria:
+  - Region of interest (ROI) or small volume correction (SVC) analyses
+  - Analyses other than substance users < controls (e.g., user > control contrasts)
+  - Analyses of other modalities (e.g., functional MRI, diffusion tensor imaging)
+    or other structural measures
   annotations:
   - name: all_drug_classes
     description: convergent lower GM common across all substances
@@ -158,7 +174,7 @@ annotation:
     - Comparison of users of other drug classes to controls
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/vbm_of_substance_use/v1
+  directory: projects/vbm_of_substance_use/v1
   prisma_diagram: true
   formats:
   - csv

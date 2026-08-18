@@ -47,8 +47,42 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Primary voxelwise task contrast- Include only group-level, univariate, task-evoked
+    voxelwise maps with stereotactic coordinates (MNI or Talairach).
+  - Direct isolation of problem-solving demand- The contrast must isolate active problem
+    solving/reasoning versus a baseline/control or versus a simpler condition with
+    lower reasoning demand.
+  - Explicit comparator required- Prefer contrasts with clear subtraction/comparison
+    semantics (e.g., A>B, hard>easy, task>control). If only a condition label is shown,
+    include only when caption/description explicitly states the underlying comparison.
+  - Conservative decision rule for precision- If analysis intent is ambiguous or appears
+    secondary/derived rather than a direct problem-solving contrast, exclude it.
+  - Generic label handling- If labels are sparse (e.g., analysis_0), use table caption,
+    neighboring contrasts, and study_fulltext to infer eligibility; do not include
+    unless direct problem-solving isolation is clear.
+  exclusion_criteria:
+  - ROI-only analyses without whole-brain voxelwise results or stereotactic coordinates.
+  - Connectivity analyses- Seed-based connectivity, effective connectivity, or resting-state
+    analyses.
+  - Non-task or passive paradigms- Passive viewing, simple perception, or tasks not
+    requiring active problem solving or reasoning.
+  - Motor or response-only contrasts that do not isolate cognitive problem solving
+    processes.
+  - Clinical, demographic, or between-group contrasts (e.g., patient>control, male>female,
+    blind>sighted) unless a valid within-group problem-solving contrast is reported
+    separately.
+  - Covariate/regression/parametric analyses that do not directly isolate task contrast
+    effects (e.g., age effects, performance correlations, RT effects, IQ, symptom
+    severity, strategy-use covariates such as visualization/verbalization scores).
+  - Secondary decomposition contrasts that are not primary task-isolation maps (e.g.,
+    conjunctions, simple effects, higher-order interactions, overlap maps, content/familiarity
+    splits where both sides are reasoning conditions).
+  - Null-result or no-activation comparisons explicitly reported as no significant
+    increase/decrease.
+  - Literature-summary or non-original coordinate tables (e.g., previously published
+    coordinates, pooled/reference coordinates not estimated from the current sample's
+    direct contrast).
   annotations:
   - name: domain_general_problem_solving
     description: Core problem solving processes that generalize across representational
@@ -117,7 +151,7 @@ annotation:
       task contrast is separately reported.
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/problem_solving/v2-annotation-only-gpt
+  directory: projects/problem_solving/v2-annotation-only-gpt
   prisma_diagram: true
   formats:
   - csv

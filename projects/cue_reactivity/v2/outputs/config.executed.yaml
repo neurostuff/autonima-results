@@ -18,7 +18,7 @@ search:
     magnetic resonance imaging"[tiab] OR BOLD[tiab] OR "blood oxygenation level dependent"[tiab]
     OR neuroimaging[tiab]) OR ("Meta-Analysis"[pt] OR meta-analy*[tiab] OR "Activation
     Likelihood Estimation"[tiab] OR ALE[tiab] OR GingerALE[tiab])))
-  max_results: 1000
+  max_results: null
   date_from: 1995/01/01
   date_to: 2020/08/31
   email: null
@@ -119,11 +119,11 @@ retrieval:
     - text.txt
     coordinates_path_templates:
     - coordinates.json
-  - root_path: /home/zorro/repos/autonima-results/projects/cue_reactivity/ace_outputs
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
     pmid_source: file_name
     allowed_extensions:
     - .html
-    processed_data_path: /home/zorro/repos/autonima-results/projects/cue_reactivity/ace_outputs/processed/
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed/
   parse_coordinates: false
   coordinate_model: gpt-4o-mini
 parsing:
@@ -139,8 +139,18 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain
+    (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast).
+  - Contrast or analysis must be relevant to reward-related cue-reactivity using visual
+    stimuli.
+  exclusion_criteria:
+  - Region-of-interest (ROI) analyses
+  - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state
+    analyses (e.g., ICA, PLE, Hurst exponents)
+  - Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs
+    control)
+  - Analyses on non-appetitive cue contrasts
   annotations:
   - name: pooled_cue_reactivity
     description: Appetitive cue reactivity across reward-related cues
@@ -177,7 +187,7 @@ annotation:
       should not be included in this annotation
   enabled: true
 output:
-  directory: /home/zorro/repos/autonima-results/projects/cue_reactivity/v2
+  directory: projects/cue_reactivity/v2
   prisma_diagram: true
   formats:
   - csv
