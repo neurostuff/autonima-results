@@ -5,7 +5,7 @@ search:
   date_from: null
   date_to: null
   email: null
-  pmids_file: /home/zorro/repos/autonima-results/projects/dementia/Dementia_All.txt
+  pmids_file: /home/zorro/repos/autonima-results/projects/dementia/Dementia_All_adjudicated.txt
   pmids_list: null
 screening:
   abstract:
@@ -97,19 +97,19 @@ retrieval:
   max_retries: 3
   download_directory: downloads
   n_jobs: 1
-  load_excluded: false
+  load_excluded: true
   full_text_sources:
-  - root_path: /home/zorro/repos/autonima-results/projects/dementia/elsevier_output
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
     pmid_source: folder_name
     text_path_templates:
     - text.txt
     coordinates_path_templates:
     - coordinates.json
-  - root_path: /home/zorro/repos/autonima-results/projects/dementia/ace_outputs/html
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
     pmid_source: file_name
     allowed_extensions:
     - .html
-    processed_data_path: /home/zorro/repos/autonima-results/projects/dementia/ace_outputs/processed
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
   parse_coordinates: false
   coordinate_model: gpt-4o-mini
 parsing:

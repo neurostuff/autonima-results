@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .criteria-summary, .criteria-details {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .criteria-summary {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .criterion-list {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+        .criterion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }
+        .criterion-red {
+            background: #c0392b;
+        }
+        .criterion-green {
+            background: #1e8449;
+        }
+        .criterion-neutral {
+            background: #34495e;
+        }
+        .criterion-count {
+            color: #555;
+            font-size: 12px;
+        }
+        .annotation {
+            border-left: 3px solid #f39c12;
+            background-color: #fff8e1;
+            padding: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC';
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2';
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        @media (max-width: 900px) {
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+
+    function getAnnotationsFilename() {
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {
+            return "annotations.json";
+        }
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {
+            return "annotations.json";
+        }
+        return base + ".json";
+    }
+
+    async function saveAnnotations() {
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var pmid = study.getAttribute('data-pmid') || '';
+
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {
+            try {
+                var fileHandle = await window.showSaveFilePicker({
+                    suggestedName: outputFilename,
+                    types: [{
+                        description: "JSON Files",
+                        accept: { "application/json": [".json"] }
+                    }]
+                });
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            } catch (error) {
+                if (error && error.name === "AbortError") {
+                    return;
+                }
+                console.warn("Falling back to browser download.", error);
+            }
+        }
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", outputFilename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Negatives Papers at Fulltext Stage</h1>
+<p>Total papers: 2</p>
+<div class='criteria-summary'>
+<h2>Stage Criteria Summary</h2>
+<p>Stage: <strong>Fulltext</strong>. Counts show criterion usage across all stage decisions and within this report subset.</p>
+<div class='criteria-grid'>
+<div>
+<h3>Inclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>I3</span> I1- Study uses Voxel-Based Morphometry (VBM), fMRI (resting‐state or task based), or FDG‐PET as the imaging modality <span class='criterion-count'>(all stage: 271/325, this report: 2/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I4</span> I2- Sample- participants included clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) or picks disease patients <span class='criterion-count'>(all stage: 276/325, this report: 2/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I5</span> I3- Sample- At least 6 participants in the patient group, and if there is a healthy/control group, at least 6 particpants in the control group <span class='criterion-count'>(all stage: 292/325, this report: 2/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I6</span> I4- CONTRAST- The paper must report at least one group-level analysis that DIRECTLY COMPARES the bvFTD patient group against a healthy control group (e.g. bvFTD &lt; controls, or controls &gt; bvFTD). The following do NOT satisfy this criterion on their own- within-group task activations or condition contrasts computed inside the patient group; comparisons between two patient groups or between patient subgroups (e.g. apathetic vs disinhibited, C9orf72-positive vs negative); correlations or regressions of imaging with behavioural, cognitive or clinical scores; genotype-by-diagnosis or other interaction effects; comparisons against a normative image database rather than a recruited control group. <span class='criterion-count'>(all stage: 186/325, this report: 1/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I7</span> I5- SAMPLE PURITY- In that bvFTD-versus-control comparison, the bvFTD group must not be pooled with other patient groups (e.g. not bvFTD combined with semantic dementia, PNFA, FTD-ALS/MND, or Alzheimer&#x27;s disease). A paper that reports several patient groups separately is acceptable provided one of those groups is bvFTD alone and is compared with controls. <span class='criterion-count'>(all stage: 198/325, this report: 1/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I8</span> I6- COORDINATES- The paper must report whole-brain results for that bvFTD-versus-control comparison in a defined stereotactic space (MNI or Talairach). It is acceptable for these results to appear in a table of coordinates, in figures, or in supplementary materials, as long as they are clearly described in the text. IMPORTANT- judge the PAPER, not the excerpt you were given. The full text supplied to you may be partial, may omit tables, or may not include supplementary files. Do NOT reject a study because the coordinates are not visible in the text provided; if the paper describes having performed and reported such a comparison, treat this criterion as met. When in doubt, INCLUDE- a qualifying study that turns out to lack usable coordinates is filtered later at the annotation stage, whereas a wrongly excluded study is lost for good. <span class='criterion-count'>(all stage: 177/325, this report: 1/2)</span></li>
+</ul>
+</div>
+<div>
+<h3>Exclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>E10</span> PET studies using a tracer other than FDG (18F-fluorodeoxyglucose). Amyloid and tau tracers such as 11C-PiB, 18F-florbetapir, 18F-florbetaben, 18F-flutemetamol, 18F-flortaucipir/AV-1451, MK-6240 and PBB3 do not qualify as an imaging modality for this review, even when whole-brain voxelwise results are reported. <span class='criterion-count'>(all stage: 3/325, this report: 0/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E11</span> Case reports and case series (single patients or small consecutive clinical series without a control group). <span class='criterion-count'>(all stage: 13/325, this report: 0/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E5</span> systematic reviews or meta-analyses <span class='criterion-count'>(all stage: 0/325, this report: 0/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E6</span> Studies that report only region-of-interest (ROI) analyses with no whole-brain results. <span class='criterion-count'>(all stage: 28/325, this report: 0/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E7</span> Sample- with no concurrent psychiatric diagnosis (e.g., major depressive disorder and bipolar mood disorder), other forms of dementia or neurological symptoms, and no history of alcohol or substance abuse <span class='criterion-count'>(all stage: 0/325, this report: 0/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E8</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original data. <span class='criterion-count'>(all stage: 2/325, this report: 0/2)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E9</span> only reports seed‐based functional connectivity (FC), diffusion tensor imaging (DTI), or cortical thickness methods <span class='criterion-count'>(all stage: 8/325, this report: 0/2)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='study-list'>
+<div class='study' id='study-1' data-pmid='29748771'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/29748771/' target='_blank'>29748771</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This study uses FDG-PET and includes a clinically diagnosed bvFTD group (n=19) plus healthy controls (n=19), and reports within-group and correlational voxelwise/ROI analyses. Inclusion criteria met: I3 (FDG-PET imaging), I4 (bvFTD group present), I5 (sample sizes ≥6 for patient and control groups), I7 (bvFTD group analyzed separately, not pooled). However, the paper does not report any group-level voxelwise or whole-brain stereotactic-space contrast directly comparing bvFTD versus healthy controls (e.g., bvFTD &lt; controls) with coordinate tables or reported between-group statistical maps. Therefore I6 (direct bvFTD vs control group comparison) is not satisfied, and I8 (reported coordinates for such a bvFTD-vs-control whole-brain comparison) is not satisfied. No exclusion criteria (E5–E11) are triggered by the available full text. Because at least one required inclusion criterion (I6 and I8) is not met, the study must be excluded.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I3</span> I1- Study uses Voxel-Based Morphometry (VBM), fMRI (resting‐state or task based), or FDG‐PET as the imaging modality</li>
+<li><span class='criterion-tag criterion-green'>I4</span> I2- Sample- participants included clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) or picks disease patients</li>
+<li><span class='criterion-tag criterion-green'>I5</span> I3- Sample- At least 6 participants in the patient group, and if there is a healthy/control group, at least 6 particpants in the control group</li>
+<li><span class='criterion-tag criterion-green'>I7</span> I5- SAMPLE PURITY- In that bvFTD-versus-control comparison, the bvFTD group must not be pooled with other patient groups (e.g. not bvFTD combined with semantic dementia, PNFA, FTD-ALS/MND, or Alzheimer&#x27;s disease). A paper that reports several patient groups separately is acceptable provided one of those groups is bvFTD alone and is compared with controls.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I6</span> I4- CONTRAST- The paper must report at least one group-level analysis that DIRECTLY COMPARES the bvFTD patient group against a healthy control group (e.g. bvFTD &lt; controls, or controls &gt; bvFTD). The following do NOT satisfy this criterion on their own- within-group task activations or condition contrasts computed inside the patient group; comparisons between two patient groups or between patient subgroups (e.g. apathetic vs disinhibited, C9orf72-positive vs negative); correlations or regressions of imaging with behavioural, cognitive or clinical scores; genotype-by-diagnosis or other interaction effects; comparisons against a normative image database rather than a recruited control group.</li>
+<li><span class='criterion-tag criterion-red'>I8</span> I6- COORDINATES- The paper must report whole-brain results for that bvFTD-versus-control comparison in a defined stereotactic space (MNI or Talairach). It is acceptable for these results to appear in a table of coordinates, in figures, or in supplementary materials, as long as they are clearly described in the text. IMPORTANT- judge the PAPER, not the excerpt you were given. The full text supplied to you may be partial, may omit tables, or may not include supplementary files. Do NOT reject a study because the coordinates are not visible in the text provided; if the paper describes having performed and reported such a comparison, treat this criterion as met. When in doubt, INCLUDE- a qualifying study that turns out to lack usable coordinates is filtered later at the annotation stage, whereas a wrongly excluded study is lost for good.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment-1'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-2' data-pmid='14527604'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/14527604/' target='_blank'>14527604</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This study uses FDG-PET and reports voxel-based, group-level comparisons between 29 clinically diagnosed FTD patients and age-matched controls with whole-brain voxel results (MNI coordinates provided). However, the patient sample is not pure bvFTD: three patients had mild associated signs of motor neuron disease (FTD-ALS/MND) and were included in the single pooled FTD group rather than analyzed separately. This violates inclusion criterion I7 (sample purity). Full text appears complete (includes introduction, methods, results, discussion). Therefore exclude because I7 is not satisfied, although I3, I4, I5, I6, and I8 are met.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I3</span> I1- Study uses Voxel-Based Morphometry (VBM), fMRI (resting‐state or task based), or FDG‐PET as the imaging modality</li>
+<li><span class='criterion-tag criterion-green'>I4</span> I2- Sample- participants included clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) or picks disease patients</li>
+<li><span class='criterion-tag criterion-green'>I5</span> I3- Sample- At least 6 participants in the patient group, and if there is a healthy/control group, at least 6 particpants in the control group</li>
+<li><span class='criterion-tag criterion-green'>I6</span> I4- CONTRAST- The paper must report at least one group-level analysis that DIRECTLY COMPARES the bvFTD patient group against a healthy control group (e.g. bvFTD &lt; controls, or controls &gt; bvFTD). The following do NOT satisfy this criterion on their own- within-group task activations or condition contrasts computed inside the patient group; comparisons between two patient groups or between patient subgroups (e.g. apathetic vs disinhibited, C9orf72-positive vs negative); correlations or regressions of imaging with behavioural, cognitive or clinical scores; genotype-by-diagnosis or other interaction effects; comparisons against a normative image database rather than a recruited control group.</li>
+<li><span class='criterion-tag criterion-green'>I8</span> I6- COORDINATES- The paper must report whole-brain results for that bvFTD-versus-control comparison in a defined stereotactic space (MNI or Talairach). It is acceptable for these results to appear in a table of coordinates, in figures, or in supplementary materials, as long as they are clearly described in the text. IMPORTANT- judge the PAPER, not the excerpt you were given. The full text supplied to you may be partial, may omit tables, or may not include supplementary files. Do NOT reject a study because the coordinates are not visible in the text provided; if the paper describes having performed and reported such a comparison, treat this criterion as met. When in doubt, INCLUDE- a qualifying study that turns out to lack usable coordinates is filtered later at the annotation stage, whereas a wrongly excluded study is lost for good.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> I5- SAMPLE PURITY- In that bvFTD-versus-control comparison, the bvFTD group must not be pooled with other patient groups (e.g. not bvFTD combined with semantic dementia, PNFA, FTD-ALS/MND, or Alzheimer&#x27;s disease). A paper that reports several patient groups separately is acceptable provided one of those groups is bvFTD alone and is compared with controls.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-2' name='judgment-2' value='agree'>
+<label for='agree-2'>Agree</label>
+<input type='radio' id='disagree-2' name='judgment-2' value='disagree'>
+<label for='disagree-2'>Disagree</label>
+<br><br>
+<label for='comment-2'><strong>Comments:</strong></label>
+<textarea id='comment-2' name='comment-2' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

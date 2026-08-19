@@ -1,0 +1,252 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: null
+  date_from: null
+  date_to: null
+  email: null
+  pmids_file: /home/zorro/repos/autonima-results/projects/dementia/Dementia_All_adjudicated.txt
+  pmids_list: null
+screening:
+  abstract:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: identify studies related to behavioral variant frontotemporal dementia
+      (bvFTD) by their abstract
+    inclusion_criteria:
+    - "Study uses Voxel-Based Morphometry (VBM), fMRI (resting\u2010state or task\
+      \ based), or FDG\u2010PET as the imaging modality to analyze whole brain"
+    - Sample- participants included at least 6 human, clinically diagnosed behavioral
+      variant frontotemporal dementia (bvFTD) patients
+    exclusion_criteria:
+    - Systematic reviews or meta-analyses
+    - Study should not focus on Parkinson's disease
+    - Study does not use neuroimaging
+    - studies with less than 6 participants
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I1: "Study uses Voxel-Based Morphometry (VBM), fMRI (resting\u2010state or\
+          \ task based), or FDG\u2010PET as the imaging modality to analyze whole\
+          \ brain"
+        I2: Sample- participants included at least 6 human, clinically diagnosed behavioral
+          variant frontotemporal dementia (bvFTD) patients
+      exclusion:
+        E1: Systematic reviews or meta-analyses
+        E2: Study should not focus on Parkinson's disease
+        E3: Study does not use neuroimaging
+        E4: studies with less than 6 participants
+  fulltext:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: identify studies related to behavioral variant frontotemporal dementia
+      (bvFTD)
+    inclusion_criteria:
+    - "I1- Study uses Voxel-Based Morphometry (VBM), fMRI (resting\u2010state or task\
+      \ based), or FDG\u2010PET as the imaging modality"
+    - I2- Sample- participants included clinically diagnosed behavioral variant frontotemporal
+      dementia (bvFTD) or picks disease patients
+    - I3- Sample- At least 6 participants in the patient group, and if there is a
+      healthy/control group, at least 6 particpants in the control group
+    - I4- CONTRAST- The paper must report at least one group-level analysis that DIRECTLY
+      COMPARES the bvFTD patient group against a healthy control group (e.g. bvFTD
+      < controls, or controls > bvFTD). The following do NOT satisfy this criterion
+      on their own- within-group task activations or condition contrasts computed
+      inside the patient group; comparisons between two patient groups or between
+      patient subgroups (e.g. apathetic vs disinhibited, C9orf72-positive vs negative);
+      correlations or regressions of imaging with behavioural, cognitive or clinical
+      scores; genotype-by-diagnosis or other interaction effects; comparisons against
+      a normative image database rather than a recruited control group.
+    - I5- SAMPLE PURITY- In that bvFTD-versus-control comparison, the bvFTD group
+      must not be pooled with other patient groups (e.g. not bvFTD combined with semantic
+      dementia, PNFA, FTD-ALS/MND, or Alzheimer's disease). A paper that reports several
+      patient groups separately is acceptable provided one of those groups is bvFTD
+      alone and is compared with controls.
+    - I6- COORDINATES- The paper must report whole-brain results for that bvFTD-versus-control
+      comparison in a defined stereotactic space (MNI or Talairach). It is acceptable
+      for these results to appear in a table of coordinates, in figures, or in supplementary
+      materials, as long as they are clearly described in the text. IMPORTANT- judge
+      the PAPER, not the excerpt you were given. The full text supplied to you may
+      be partial, may omit tables, or may not include supplementary files. Do NOT
+      reject a study because the coordinates are not visible in the text provided;
+      if the paper describes having performed and reported such a comparison, treat
+      this criterion as met. When in doubt, INCLUDE- a qualifying study that turns
+      out to lack usable coordinates is filtered later at the annotation stage, whereas
+      a wrongly excluded study is lost for good.
+    exclusion_criteria:
+    - systematic reviews or meta-analyses
+    - Studies that report only region-of-interest (ROI) analyses with no whole-brain
+      results.
+    - Sample- with no concurrent psychiatric diagnosis (e.g., major depressive disorder
+      and bipolar mood disorder), other forms of dementia or neurological symptoms,
+      and no history of alcohol or substance abuse
+    - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+      without original data.
+    - "only reports seed\u2010based functional connectivity (FC), diffusion tensor\
+      \ imaging (DTI), or cortical thickness methods"
+    - PET studies using a tracer other than FDG (18F-fluorodeoxyglucose). Amyloid
+      and tau tracers such as 11C-PiB, 18F-florbetapir, 18F-florbetaben, 18F-flutemetamol,
+      18F-flortaucipir/AV-1451, MK-6240 and PBB3 do not qualify as an imaging modality
+      for this review, even when whole-brain voxelwise results are reported.
+    - Case reports and case series (single patients or small consecutive clinical
+      series without a control group).
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I3: "I1- Study uses Voxel-Based Morphometry (VBM), fMRI (resting\u2010state\
+          \ or task based), or FDG\u2010PET as the imaging modality"
+        I4: I2- Sample- participants included clinically diagnosed behavioral variant
+          frontotemporal dementia (bvFTD) or picks disease patients
+        I5: I3- Sample- At least 6 participants in the patient group, and if there
+          is a healthy/control group, at least 6 particpants in the control group
+        I6: I4- CONTRAST- The paper must report at least one group-level analysis
+          that DIRECTLY COMPARES the bvFTD patient group against a healthy control
+          group (e.g. bvFTD < controls, or controls > bvFTD). The following do NOT
+          satisfy this criterion on their own- within-group task activations or condition
+          contrasts computed inside the patient group; comparisons between two patient
+          groups or between patient subgroups (e.g. apathetic vs disinhibited, C9orf72-positive
+          vs negative); correlations or regressions of imaging with behavioural, cognitive
+          or clinical scores; genotype-by-diagnosis or other interaction effects;
+          comparisons against a normative image database rather than a recruited control
+          group.
+        I7: I5- SAMPLE PURITY- In that bvFTD-versus-control comparison, the bvFTD
+          group must not be pooled with other patient groups (e.g. not bvFTD combined
+          with semantic dementia, PNFA, FTD-ALS/MND, or Alzheimer's disease). A paper
+          that reports several patient groups separately is acceptable provided one
+          of those groups is bvFTD alone and is compared with controls.
+        I8: I6- COORDINATES- The paper must report whole-brain results for that bvFTD-versus-control
+          comparison in a defined stereotactic space (MNI or Talairach). It is acceptable
+          for these results to appear in a table of coordinates, in figures, or in
+          supplementary materials, as long as they are clearly described in the text.
+          IMPORTANT- judge the PAPER, not the excerpt you were given. The full text
+          supplied to you may be partial, may omit tables, or may not include supplementary
+          files. Do NOT reject a study because the coordinates are not visible in
+          the text provided; if the paper describes having performed and reported
+          such a comparison, treat this criterion as met. When in doubt, INCLUDE-
+          a qualifying study that turns out to lack usable coordinates is filtered
+          later at the annotation stage, whereas a wrongly excluded study is lost
+          for good.
+      exclusion:
+        E5: systematic reviews or meta-analyses
+        E6: Studies that report only region-of-interest (ROI) analyses with no whole-brain
+          results.
+        E7: Sample- with no concurrent psychiatric diagnosis (e.g., major depressive
+          disorder and bipolar mood disorder), other forms of dementia or neurological
+          symptoms, and no history of alcohol or substance abuse
+        E8: Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+          without original data.
+        E9: "only reports seed\u2010based functional connectivity (FC), diffusion\
+          \ tensor imaging (DTI), or cortical thickness methods"
+        E10: PET studies using a tracer other than FDG (18F-fluorodeoxyglucose). Amyloid
+          and tau tracers such as 11C-PiB, 18F-florbetapir, 18F-florbetaben, 18F-flutemetamol,
+          18F-flortaucipir/AV-1451, MK-6240 and PBB3 do not qualify as an imaging
+          modality for this review, even when whole-brain voxelwise results are reported.
+        E11: Case reports and case series (single patients or small consecutive clinical
+          series without a control group).
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: gpt-5-mini-2025-08-07
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria:
+  - Scope- You are judging ONE analysis, not the paper. The study text is provided
+    only to interpret this analysis. That the paper elsewhere reports a qualifying
+    bvFTD result is not by itself a reason to include this analysis.
+  - How to read the analysis- Judge the analysis holistically from its name, its description
+    and its table caption taken together. An empty or uninformative analysis name
+    usually means the analysis is the only one in its table, in which case the table
+    caption describes it fully and you should judge from the caption. A blank analysis
+    name is never itself a reason to exclude.
+  - Whole-brain evidence- The analysis must be from a whole-brain (voxelwise) map
+  - Sample- The patient group in THIS analysis must be behavioral variant FTD (bvFTD,
+    also reported as fvFTD or frontal-variant FTD) or Pick's disease. Before deciding,
+    state which patient group this analysis actually concerns. A paper reporting several
+    patient groups qualifies only for the analysis on its bvFTD group. A symptom-defined
+    or behaviourally-defined subgroup of a bvFTD cohort (e.g. the apathetic or disinhibited
+    patients) still counts as bvFTD and qualifies.
+  - Involvement of the bvFTD group- The analysis must concern the bvFTD group. This
+    includes a direct contrast of bvFTD against healthy controls, and also includes
+    a whole-brain map computed within the bvFTD sample or across bvFTD and controls
+    together, such as a map of regions covarying with a behavioural, cognitive or
+    clinical measure. What matters is that the map is about the bvFTD group, not the
+    particular statistical form it takes.
+  exclusion_criteria:
+  - Region-of-interest (ROI) analyses
+  - Seed-based functional connectivity (FC), diffusion tensor imaging (DTI), and cortical
+    thickness methods
+  - Explicit evidence of pooling the bvFTD group with OTHER PATIENT groups in the
+    analysis (e.g. bvFTD + another dementia group vs controls). Combining bvFTD patients
+    with healthy controls in a single covariate or correlation map is NOT grounds
+    for exclusion under this criterion.
+  - The patient group in this analysis is not bvFTD- it is a different clinical diagnosis,
+    or a group defined by neuropathology or genotype rather than by a clinical bvFTD
+    diagnosis.
+  - The analysis is exclusively about another patient group rather than bvFTD (e.g.
+    an AD-only or semantic-dementia-only map, or a contrast of bvFTD against another
+    patient group instead of against healthy controls).
+  annotations:
+  - name: dementia_all
+    description: All analyses
+    inclusion_criteria:
+    - "Uses Voxel-Based Morphometry, fMRI (resting\u2010state or task based), and\
+      \ FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality"
+    exclusion_criteria: []
+  - name: dementia_decreasing_activity
+    description: Analyses reporting decreases for bvFTD group
+    inclusion_criteria:
+    - Analyses reporting any decreases in activity/connectivity, metabolism, or gray
+      matter volume for bvFTD group (e.g. Control > bvFTD or bvFTD < Control)
+    - "Uses Voxel-Based Morphometry, fMRI (resting\u2010state or task based), and\
+      \ FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality"
+    exclusion_criteria: []
+  - name: structural
+    description: VBM experiments
+    inclusion_criteria:
+    - Uses Voxel-based morphometry (VBM) as the imaging modality
+    exclusion_criteria: []
+  - name: functional
+    description: fdg pet & fmri
+    inclusion_criteria:
+    - "Uses fMRI (resting\u2010state or task based), and FDG-PET (Fluorodeoxyglucose\
+      \ Positron Emission Tomography) as the imaging modality"
+    exclusion_criteria: []
+  enabled: true
+output:
+  directory: projects/dementia/v5-allstudies
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: true

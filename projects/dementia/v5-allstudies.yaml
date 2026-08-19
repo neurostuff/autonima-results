@@ -1,0 +1,266 @@
+# v5-allstudies — Claude-improved ANNOTATION schema (derived from v4-allstudies.yaml)
+#
+# Screening is byte-identical to v4-allstudies. Only the global annotation criteria
+# differ, so v4 and v5 are directly comparable on the same 558-PMID adjudicated list.
+#
+# MOTIVATION — v4 diagnosis against the manual (meta 35664889)
+#
+# Of 44 annotation-selected studies that carry coordinates into the studyset, 13 are
+# false positives. Screening is not the cause: every one of them passed screening
+# legitimately, because the PAPER does contain a qualifying bvFTD-vs-control result.
+# The wrong ANALYSIS was selected from it. The v4 rationales show the annotator
+# restating the paper's headline design instead of judging the row in front of it:
+#
+#   20669302  analyses named "PD" / "MSA" / "PSP"
+#             -> "includes FTD group compared to controls"
+#   21304142  analysis "Perspective-Taking" (a covariate map)
+#             -> "comparing bvFTD patients to healthy controls"
+#   26509115  analysis "bvFTD x 5-HTTLPR-s interaction"
+#             -> "Whole-brain VBM interaction comparing bvFTD and controls"
+#   27489543  analysis "bvFTD COMBINED WITH CONTROLS"
+#             -> "correlating Hayling errors in bvFTD combined with controls"
+#
+# The last two name the disqualifying feature and include anyway. Pooling was ALREADY
+# a v4 exclusion criterion, so it was seen and weighed away. Hence the fix below makes
+# group identity, contrast shape and effect type POSITIVE GATES the model must affirm
+# and articulate, rather than adding further vetoes it can discount.
+#
+# CHANGES vs v4-allstudies (all in annotation.inclusion_criteria)
+#
+# 1. NEW — scope framing. The unit of judgement is one analysis. A qualifying
+#    comparison reported elsewhere in the paper is explicitly not grounds to include.
+#    study_fulltext is retained in metadata_fields but demoted to interpretive context.
+#
+# 2. NEW — holistic reading rule. Name, description and table caption are judged
+#    together. A blank analysis name usually means the analysis is the only one in its
+#    table, so the caption describes it fully; a blank name is never itself a reason to
+#    exclude. Many analyses in this corpus have empty names, so without this rule the
+#    stricter gates below would silently cost recall.
+#
+# NOTE — first v5 attempt was invalid and was discarded. The three new gates were
+# written as inclusion criteria containing "EXCLUDE if ..." clauses. The annotation
+# output schema only accepts GLOBAL_E* ids in exclusion_criteria_applied, so whenever
+# the model excluded on one of those gates it emitted GLOBAL_I4/I5/I6 there and failed
+# validation: 2507 validation errors, and 25 studies exhausted all 3 retries and lost
+# every annotation decision. The gates below are therefore split — positive requirement
+# in inclusion_criteria, disqualifying condition in exclusion_criteria — so the model
+# has a legal id to cite for each.
+#
+# REVISION 2 — validated against the gold coordinate set, and loosened.
+#
+# The first working v5 raised precision 0.70 -> 0.86 but cost 5 gold studies. Checking
+# those against neurometabench's gold nimads (data/nimads/dementia/merged) showed all 5
+# actually CONTRIBUTED coordinates to the published meta-analysis:
+#
+#   15668960 -> Franceschi_2005, 2 analyses / 108 pts. The paper's only coordinate table
+#               is "Apathetic subjects vs controls" and "Disinhibited subjects vs
+#               controls" — there is NO whole-bvFTD-vs-control contrast, and gold's two
+#               analyses are exactly those symptom subgroups.
+#   22952324 -> only table is "grey matter correlated with self-appraisal score".
+#   25797589 -> only analysis is "Neural correlates of Identity-Matching ...".
+#   25009480, 31461580 -> covariate maps (emotional enhancement; BMI/VAT).
+#
+# So this gold standard ACCEPTS whole-brain correlation and covariate maps involving the
+# bvFTD group, and ACCEPTS symptom-defined subgroups versus controls. The association
+# gate and the symptom-subgroup clause were therefore misaligned with it, not stricter-
+# but-correct. Note also that the three studies the association gate was introduced for
+# (21304142, 26509115, 29542053) are excluded by the manual for "Data Not Reported" — a
+# data-availability reason, not a design one — and contribute no gold coordinates.
+#
+# Changes in this revision:
+#   - DROPPED the association/interaction exclusion (old E6) and its positive
+#     counterpart. Cost 3 gold studies to remove 3 FPs: net zero, wrong direction.
+#   - DROPPED the "symptom or behavioural subgroup" clause from the group-identity
+#     exclusion; the sample criterion now states such subgroups DO qualify.
+#   - NARROWED the pooling exclusion back to pooling with other PATIENT groups only.
+#     Combining bvFTD with controls in one covariate map is explicitly allowed.
+#   - KEPT the disease-entity / neuropathology-or-genotype clause, which removed 3 false
+#     positives (16157747, 19158440, 20669302) at no cost to gold.
+#   - The 3 "Data Not Reported" studies above are accepted as false positives: they are
+#     the price of matching the gold standard's actual practice.
+#
+# 3. REWRITTEN — sample criterion is now a group-identity gate: the model must state
+#    which patient group the analysis contrasts. Stated by KIND (other clinical
+#    diagnosis / group defined by neuropathology or genotype / subgroup defined by
+#    symptom or behavioural profile) rather than by listing the specific diseases seen
+#    in this sample, which would overfit to the evaluation set.
+#
+# 4. NEW — contrast gate. Both sides of the contrast must be named before deciding,
+#    and must be bvFTD and healthy controls. Covers pooling and patient-vs-patient.
+#
+# 5. NEW — statistical-effect gate. Mean group differences only; covariate,
+#    regression and correlation maps and interaction terms are excluded.
+#
+# Expected effect: 8 of the 13 coordinate-bearing false positives are addressed
+# (4 wrong patient group, 1 pooled sample, 3 correlation/interaction). The remaining 5
+# are studies the manual marked "Data Not Reported" for which this pipeline did recover
+# a genuine bvFTD-vs-control contrast; those are not treated as errors.
+#
+# NOT changed, and why:
+#   - screening: v4's recall is 0.94 of attainable gold. The v4-numbered experiment
+#     that tightened full-text screening collapsed recall 0.96 -> 0.50 and was deleted.
+#     Do not tighten screening to fix an annotation problem.
+#   - study_fulltext stays in metadata_fields: too many analyses have empty names to
+#     drop it safely. Removing it is a separate experiment, not confounded with these.
+
+
+search:
+  database: "pubmed"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/dementia/Dementia_All_adjudicated.txt"
+  
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/articles/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/articles/ace_outputs/processed"
+      
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    objective: "identify studies related to behavioral variant frontotemporal dementia (bvFTD) by their abstract"
+    inclusion_criteria:
+      - Study uses Voxel-Based Morphometry (VBM), fMRI (resting‐state or task based), or FDG‐PET as the imaging modality to analyze whole brain
+      - Sample- participants included at least 6 human, clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) patients 
+    exclusion_criteria:
+      - Systematic reviews or meta-analyses
+      - Study should not focus on Parkinson's disease
+      - Study does not use neuroimaging
+      - studies with less than 6 participants
+    confidence_reporting: true
+
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: "identify studies related to behavioral variant frontotemporal dementia (bvFTD)"
+    inclusion_criteria:
+      - I1- Study uses Voxel-Based Morphometry (VBM), fMRI (resting‐state or task based), or FDG‐PET as the imaging modality
+      - I2- Sample- participants included clinically diagnosed behavioral variant frontotemporal dementia (bvFTD) or picks disease patients
+      - I3- Sample- At least 6 participants in the patient group, and if there is a healthy/control group, at least 6 particpants in the control group
+      - >-
+        I4- CONTRAST- The paper must report at least one group-level analysis that DIRECTLY COMPARES the bvFTD
+        patient group against a healthy control group (e.g. bvFTD < controls, or controls > bvFTD). The following
+        do NOT satisfy this criterion on their own- within-group task activations or condition contrasts computed
+        inside the patient group; comparisons between two patient groups or between patient subgroups (e.g.
+        apathetic vs disinhibited, C9orf72-positive vs negative); correlations or regressions of imaging with
+        behavioural, cognitive or clinical scores; genotype-by-diagnosis or other interaction effects; comparisons
+        against a normative image database rather than a recruited control group.
+      - >-
+        I5- SAMPLE PURITY- In that bvFTD-versus-control comparison, the bvFTD group must not be pooled with other
+        patient groups (e.g. not bvFTD combined with semantic dementia, PNFA, FTD-ALS/MND, or Alzheimer's disease).
+        A paper that reports several patient groups separately is acceptable provided one of those groups is bvFTD
+        alone and is compared with controls.
+      - >-
+        I6- COORDINATES- The paper must report whole-brain results for that bvFTD-versus-control comparison in a
+        defined stereotactic space (MNI or Talairach). It is acceptable for these results to appear in a table of
+        coordinates, in figures, or in supplementary materials, as long as they are clearly described in the text.
+        IMPORTANT- judge the PAPER, not the excerpt you were given. The full text supplied to you may be partial,
+        may omit tables, or may not include supplementary files. Do NOT reject a study because the coordinates are
+        not visible in the text provided; if the paper describes having performed and reported such a comparison,
+        treat this criterion as met. When in doubt, INCLUDE- a qualifying study that turns out to lack usable
+        coordinates is filtered later at the annotation stage, whereas a wrongly excluded study is lost for good.
+    exclusion_criteria:
+      - systematic reviews or meta-analyses
+      - Studies that report only region-of-interest (ROI) analyses with no whole-brain results.
+      - Sample- with no concurrent psychiatric diagnosis (e.g., major depressive disorder and bipolar mood disorder), other forms of dementia or neurological symptoms, and no history of alcohol or substance abuse
+      - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original data.
+      - only reports seed‐based functional connectivity (FC), diffusion tensor imaging (DTI), or cortical thickness methods
+      - >-
+        PET studies using a tracer other than FDG (18F-fluorodeoxyglucose). Amyloid and tau tracers such as 11C-PiB,
+        18F-florbetapir, 18F-florbetaben, 18F-flutemetamol, 18F-flortaucipir/AV-1451, MK-6240 and PBB3 do not qualify
+        as an imaging modality for this review, even when whole-brain voxelwise results are reported.
+      - >-
+        Case reports and case series (single patients or small consecutive clinical series without a control group).
+
+parsing:
+  parse_coordinates: true
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - >-
+      Scope- You are judging ONE analysis, not the paper. The study text is provided
+      only to interpret this analysis. That the paper elsewhere reports a qualifying
+      bvFTD result is not by itself a reason to include this analysis.
+    - >-
+      How to read the analysis- Judge the analysis holistically from its name, its
+      description and its table caption taken together. An empty or uninformative
+      analysis name usually means the analysis is the only one in its table, in which
+      case the table caption describes it fully and you should judge from the caption.
+      A blank analysis name is never itself a reason to exclude.
+    - Whole-brain evidence- The analysis must be from a whole-brain (voxelwise) map
+    - >-
+      Sample- The patient group in THIS analysis must be behavioral variant FTD (bvFTD,
+      also reported as fvFTD or frontal-variant FTD) or Pick's disease. Before deciding,
+      state which patient group this analysis actually concerns. A paper reporting
+      several patient groups qualifies only for the analysis on its bvFTD group. A
+      symptom-defined or behaviourally-defined subgroup of a bvFTD cohort (e.g. the
+      apathetic or disinhibited patients) still counts as bvFTD and qualifies.
+    - >-
+      Involvement of the bvFTD group- The analysis must concern the bvFTD group. This
+      includes a direct contrast of bvFTD against healthy controls, and also includes a
+      whole-brain map computed within the bvFTD sample or across bvFTD and controls
+      together, such as a map of regions covarying with a behavioural, cognitive or
+      clinical measure. What matters is that the map is about the bvFTD group, not the
+      particular statistical form it takes.
+  exclusion_criteria:
+    - Region-of-interest (ROI) analyses
+    - Seed-based functional connectivity (FC), diffusion tensor imaging (DTI), and cortical thickness methods
+    - >-
+      Explicit evidence of pooling the bvFTD group with OTHER PATIENT groups in the
+      analysis (e.g. bvFTD + another dementia group vs controls). Combining bvFTD
+      patients with healthy controls in a single covariate or correlation map is NOT
+      grounds for exclusion under this criterion.
+    - >-
+      The patient group in this analysis is not bvFTD- it is a different clinical
+      diagnosis, or a group defined by neuropathology or genotype rather than by a
+      clinical bvFTD diagnosis.
+    - >-
+      The analysis is exclusively about another patient group rather than bvFTD (e.g. an
+      AD-only or semantic-dementia-only map, or a contrast of bvFTD against another
+      patient group instead of against healthy controls).
+  annotations:
+    - name: "dementia_all"
+      description: "All analyses"
+      inclusion_criteria:
+        - Uses Voxel-Based Morphometry, fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
+
+    - name: "dementia_decreasing_activity"
+      description: "Analyses reporting decreases for bvFTD group"
+      inclusion_criteria:
+        - Analyses reporting any decreases in activity/connectivity, metabolism, or gray matter volume for bvFTD group (e.g. Control > bvFTD or bvFTD < Control)
+        - Uses Voxel-Based Morphometry, fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
+
+    - name: "structural"
+      description: "VBM experiments"
+      inclusion_criteria:
+        - Uses Voxel-based morphometry (VBM) as the imaging modality
+         
+    - name: "functional"
+      description: "fdg pet & fmri"
+      inclusion_criteria:
+        - Uses fMRI (resting‐state or task based), and FDG-PET (Fluorodeoxyglucose Positron Emission Tomography) as the imaging modality
+
+output:
+  formats:
+    - csv
+  nimads: true
+  export_excluded_studies: true
