@@ -1,0 +1,217 @@
+# v2 annotation-only — DRAFT. Relaxes three global criteria that the manual
+# meta-analysis demonstrably does not apply.
+#
+# Search/screening/retrieval/parsing are byte-identical to v1-annotation-only, so
+# v1 and v2 differ only in the annotation block and are directly comparable.
+#
+# WHY
+#
+# v1's global criteria were transcribed from Niendam et al. 2012 (PMC3660731) as
+# stated in its methods. Measured against what that paper actually INCLUDED, three
+# of them are wrong: the paper's realized inclusions contradict its own stated
+# restrictions. On the 86 analyses the matcher accepted, v1 produced 30 false
+# negatives against only 6 false positives -- a 5:1 recall problem -- and every FN
+# is attributable to a criterion v1 itself cites:
+#
+#     15   "must be contrasted against an ACTIVE control task"   (GLOBAL_I2/E1)
+#      7   "must require an overt behavioral response"           (GLOBAL_I3/E5)
+#      6   "participants must be healthy adults aged 18-60"      (GLOBAL_I4)
+#      1   ROI/SVC exclusion                                     (GLOBAL_E3)
+#      1   domain-boundary judgement (REP vs MAT: planning vs WM)
+#
+# The FNs are NOT extraction failures. The matcher accepted them with near-identical
+# names, e.g. manual "Main Effect of Delay" <-> ours "Main effect of delay",
+# manual "REP vs. MAT" <-> ours "REP/MAT". We found the right analyses and declined
+# to annotate them.
+#
+# Evidence for each relaxation, from v1's own rationales:
+#
+# 1. ACTIVE CONTROL (15 FNs). 12880912: all four analyses rejected because "the
+#    reported 'Primary No-go' effect is a main effect contrasted against implicit
+#    baseline/rest rather than an active control condition". The manual INCLUDED
+#    "Primary Counting No-Go Effects". So contrasts against implicit baseline,
+#    rest or fixation are acceptable to this benchmark.
+#
+# 2. OVERT RESPONSE (7 FNs). 10859133: all four rejected because "task responses
+#    were covert (silent naming) ... violates GLOBAL_I3". The manual INCLUDED
+#    "Stroop Positive".
+#
+# 3. HEALTHY ADULTS 18-60 (6 FNs, 3 papers). 11231835 rejected for including
+#    schizophrenia patients; 16983390 rejected because "Participants in this
+#    analysis are MDD patients rather than healthy adults"; 17885578 rejected
+#    because "participants are adolescents (ages 11-17)". The manual INCLUDED
+#    "Main Effect of Delay", "2-back > 1-back, Depressed Patients" and
+#    "Encoding, High Load > Low Load, Normals" respectively. The benchmark pools
+#    across clinical and developmental samples.
+#
+# WHAT CHANGED
+#
+# - REMOVED the active-control requirement (global I2 and exclusion E1) AND the
+#   matching "against an active control" clause from every per-domain criterion.
+#   Leaving it in the per-domain block would have silently preserved the
+#   restriction even with the global one gone.
+# - REMOVED the overt-response requirement (global I3 and exclusion E5).
+# - REPLACED the healthy-adults restriction with an explicit statement that any
+#   participant group qualifies, including clinical and developmental samples.
+# - KEPT the between-group exclusion, but sharpened it. The distinction v1 blurred:
+#   "2-back > 1-back in depressed patients" is a WITHIN-group contrast computed in a
+#   patient sample and qualifies; "patients vs controls" is a group comparison and
+#   does not. v1 rejected the former by conflating sample identity with contrast type.
+# - KEPT the ROI/SVC and connectivity exclusions. Together they cost 1 FN and are
+#   genuine methodological exclusions.
+# - ADDED scope and blank-name framing. 17728263's analysis is named "analysis_0"
+#   and was matched on coordinates alone; a blank name must not itself cause
+#   rejection. Same fix that was needed in the dementia project.
+#
+# RISK. This trades precision for recall deliberately. v1 precision was 0.94-1.00
+# per column with only 6 FPs total, so there is headroom, but the relaxations are
+# broad and `assumption`-mode precision was already only 0.50-0.64 -- meaning v1
+# already selects more analyses per paper than the manual did. Watch that number:
+# if it falls further while strict precision holds, v2 is over-selecting within
+# papers even though the per-column numbers look better.
+#
+# NOT ADDRESSED HERE. The matching layer discards 22 of 108 manual analyses before
+# annotation is scored, 14 of them involving a Talairach->MNI conversion and 13 with
+# a coordinate-count mismatch. That is an independent problem in coordinate/space
+# handling, not something an annotation schema can fix.
+
+search:
+  database: "pubmed"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/executive_function/annotation-only-ids.txt"
+
+retrieval:
+  load_excluded: false
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/articles/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/articles/ace_outputs/processed/"
+
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+
+parsing:
+  parse_coordinates: true
+  coordinate_model: "gpt-5-mini-2025-08-07"
+
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  prompt_type: "multi_analysis"
+  create_all_included_annotations: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+
+  inclusion_criteria:
+    - >-
+      Scope- You are judging ONE analysis, not the paper. The study text is provided only
+      to interpret this analysis. That the paper elsewhere reports a qualifying contrast
+      is not by itself a reason to include this analysis.
+    - >-
+      How to read the analysis- Judge it from its name, its description and its table
+      caption together. An empty or uninformative analysis name (e.g. "analysis_0")
+      usually means the analysis is the only one in its table, in which case the caption
+      describes it fully and you should judge from the caption. A blank name is never
+      itself a reason to exclude.
+    - >-
+      The analysis must be a within-group, group-level, whole-brain (voxelwise) task
+      activation contrast.
+    - >-
+      Sample- Any participant group qualifies, including clinical samples (e.g.
+      schizophrenia, depression) and developmental samples (e.g. adolescents), so long as
+      the contrast is computed WITHIN a group rather than between groups. Do not exclude
+      an analysis because of who the participants were.
+    - >-
+      Baseline- The comparison condition may be an active control task, or an implicit
+      baseline, rest or fixation. A main effect of task against implicit baseline
+      qualifies. Do not require an active control condition.
+    - >-
+      Response mode- The task may require an overt behavioral response (e.g. a button
+      press) or a covert one (e.g. silent naming or counting). Do not require an overt
+      response.
+  exclusion_criteria:
+    - >-
+      Group-comparison contrasts- an analysis whose contrast is between two participant
+      groups (e.g. patients vs controls, adults vs adolescents) or a group x condition
+      interaction. Note this is about the CONTRAST, not the sample: a within-group
+      contrast computed in a patient or adolescent sample is eligible.
+    - Region-of-interest (ROI) or small-volume-corrected (SVC) analyses
+    - Connectivity or resting-state analyses (functional connectivity, PPI, DCM, ICA)
+    - >-
+      The analysis does not reflect an executive function task contrast at all (e.g. a
+      motor or sensory localiser, a physiological or artefact regressor, or a purely
+      structural result).
+
+  annotations:
+    - name: "pooled_executive_function"
+      description: "Executive function task activation pooled across all six domains (flexibility, inhibition, working memory, initiation, planning, vigilance)."
+      inclusion_criteria:
+        - "The task belongs to any of the six executive function domains: flexibility, inhibition, working memory, initiation, planning, or vigilance"
+        - "The contrast reflects the executive demand of that task (this includes a main effect of the task against implicit baseline, not only task-versus-active-control contrasts)"
+
+    - name: "working_memory"
+      description: "Maintain information, context, or temporal/spatial relationships online and manipulate or use that information to guide response selection."
+      inclusion_criteria:
+        - "Task is a WORKING MEMORY paradigm: n-back, AX-CPT, Sternberg task, delayed match-to-sample, spatial span or sequence recall, or complex calculation/PASAT"
+        - "The contrast reflects memory load, maintenance or manipulation (e.g. 2-back > 0-back, high load > low load, main effect of delay, a linear regression on load, or an encoding or retrieval main effect)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., Go/No-Go, Stroop, task switching, Tower tasks, word generation, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "inhibition"
+      description: "Inhibit a prepotent response in order to make a correct but less common response."
+      inclusion_criteria:
+        - "Task is an INHIBITION paradigm: Go/No-Go, Stroop, Flanker, Simon task, or antisaccade"
+        - "The contrast reflects the inhibitory demand (e.g. No-Go > Go, incongruent > congruent, antisaccade > prosaccade, or a No-Go or Stroop main effect against implicit baseline)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Sternberg, task switching, Tower tasks, word generation, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "cognitive_flexibility"
+      description: "Switch from one task or rule to another."
+      inclusion_criteria:
+        - "Task is a FLEXIBILITY paradigm: task switching or the Wisconsin Card Sorting Test"
+        - "The contrast reflects the switching demand (e.g. switch trials > repeat trials, set-shifting > maintenance, or a switching main effect)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Go/No-Go, Stroop, Tower tasks, word generation, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "planning"
+      description: "Identify and organize the steps and elements needed to carry out an intention or achieve a goal."
+      inclusion_criteria:
+        - "Task is a PLANNING paradigm: Tower Maze test, Tower of London, or Tower of Hanoi"
+        - "The contrast reflects planning demand (e.g. high-move > low-move planning problems, or a planning main effect)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Go/No-Go, Stroop, task switching, word generation, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "vigilance"
+      description: "Maintaining set in the face of interference."
+      inclusion_criteria:
+        - "Task is a VIGILANCE paradigm: oddball discrimination, or an equivalent task requiring set maintenance while resisting interference"
+        - "The contrast reflects the demand to maintain set (e.g. target > standard stimuli, or a target-detection main effect)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Go/No-Go, Stroop, task switching, Tower tasks, word generation). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "initiation"
+      description: "Initiate a sequence of complex behaviors."
+      inclusion_criteria:
+        - "Task is an INITIATION paradigm: word generation or verbal fluency"
+        - "The contrast reflects self-initiated generation (e.g. word generation > word repetition, or a generation main effect). Covert or silent generation qualifies."
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Go/No-Go, Stroop, task switching, Tower tasks, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+output:
+  nimads: true
+  export_excluded_studies: true
