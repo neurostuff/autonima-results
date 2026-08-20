@@ -1,0 +1,120 @@
+# Annotation-only variant of v1.
+# Purpose: isolate the annotation step. The study set is fixed to the 171 gold
+# PMIDs of the manual meta-analysis (neurometabench meta_pmid 22282036), so no
+# search or screening error propagates into the annotation evaluation.
+# Everything below the search/screening blocks is identical to v1.yaml.
+search:
+  database: "pubmed"
+  pmids_file: "/home/zorro/repos/autonima-results/projects/executive_function/annotation-only-ids.txt"
+
+retrieval:
+  load_excluded: false
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: "/home/zorro/repos/autonima-results/articles/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/articles/ace_outputs/processed/"
+
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+
+parsing:
+  parse_coordinates: true
+  coordinate_model: "gpt-5-mini-2025-08-07"  
+
+annotation:
+  enabled: true
+  model: "gpt-5-mini-2025-08-07"
+  prompt_type: "multi_analysis"
+  create_all_included_annotations: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+
+  # Global criteria transcribed from Niendam et al. 2012 (PMC3660731), the
+  # manual meta-analysis being reproduced. Kept as hard, checkable predicates.
+  inclusion_criteria:
+    - The analysis must be a within-group, group-level, whole-brain (voxelwise) task activation contrast
+    - The task of interest must be contrasted against an ACTIVE control task
+    - The task must require an overt behavioral response (e.g., a button press)
+    - Participants must be healthy adults aged 18-60
+  exclusion_criteria:
+    - Contrasts against rest, fixation, or a passive baseline rather than an active control task
+    - Between-group contrasts (e.g., patients vs controls, or any comparison of two participant groups) rather than within-group task activation
+    - Region-of-interest (ROI) or small-volume-corrected (SVC) analyses
+    - Connectivity or resting-state analyses (functional connectivity, PPI, DCM, ICA)
+    - Tasks that do not require an overt behavioral response (e.g., passive viewing or listening)
+    - Analyses that do not isolate a specific executive function process
+
+  annotations:
+    - name: "pooled_executive_function"
+      description: "Executive function task activation pooled across all six domains (flexibility, inhibition, working memory, initiation, planning, vigilance)."
+      inclusion_criteria:
+        - "The task belongs to any of the six executive function domains: flexibility, inhibition, working memory, initiation, planning, or vigilance"
+        - "The contrast isolates the executive demand by comparing the task of interest to an active control condition"
+
+    - name: "working_memory"
+      description: "Maintain information, context, or temporal/spatial relationships online and manipulate or use that information to guide response selection."
+      inclusion_criteria:
+        - "Task is a WORKING MEMORY paradigm: n-back, AX-CPT, Sternberg task, delayed match-to-sample, spatial span or sequence recall, or complex calculation/PASAT"
+        - "The contrast isolates memory load or manipulation against an active control (e.g., 2-back > 0-back, high load > low load)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., Go/No-Go, Stroop, task switching, Tower tasks, word generation, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "inhibition"
+      description: "Inhibit a prepotent response in order to make a correct but less common response."
+      inclusion_criteria:
+        - "Task is an INHIBITION paradigm: Go/No-Go, Stroop, Flanker, Simon task, or antisaccade"
+        - "The contrast isolates the inhibitory demand against an active control (e.g., No-Go > Go, incongruent > congruent, antisaccade > prosaccade)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Sternberg, task switching, Tower tasks, word generation, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "cognitive_flexibility"
+      description: "Switch from one task or rule to another."
+      inclusion_criteria:
+        - "Task is a FLEXIBILITY paradigm: task switching or the Wisconsin Card Sorting Test"
+        - "The contrast isolates the switching demand against an active control (e.g., switch trials > repeat trials, set-shifting > maintenance)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Go/No-Go, Stroop, Tower tasks, word generation, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "planning"
+      description: "Identify and organize the steps and elements needed to carry out an intention or achieve a goal."
+      inclusion_criteria:
+        - "Task is a PLANNING paradigm: Tower Maze test, Tower of London, or Tower of Hanoi"
+        - "The contrast isolates planning demand against an active control (e.g., high-move > low-move planning problems)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Go/No-Go, Stroop, task switching, word generation, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "vigilance"
+      description: "Maintaining set in the face of interference."
+      inclusion_criteria:
+        - "Task is a VIGILANCE paradigm: oddball discrimination, or an equivalent task requiring set maintenance while resisting interference"
+        - "The contrast isolates the demand to maintain set against an active control (e.g., target > standard stimuli)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Go/No-Go, Stroop, task switching, Tower tasks, word generation). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+    - name: "initiation"
+      description: "Initiate a sequence of complex behaviors."
+      inclusion_criteria:
+        - "Task is an INITIATION paradigm: word generation or verbal fluency"
+        - "The contrast isolates self-initiated generation against an active control (e.g., word generation > word repetition)"
+      exclusion_criteria:
+        - "The contrast being annotated isolates a different executive function domain (e.g., n-back, Go/No-Go, Stroop, task switching, Tower tasks, oddball). Other tasks reported elsewhere in the same paper are irrelevant: judge only the contrast described by this analysis."
+
+output:
+  nimads: true
+  export_excluded_studies: true

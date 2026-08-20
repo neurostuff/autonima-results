@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fuzzy Matching Report</title>
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --panel: #ffffff;
+      --ink: #1d2730;
+      --line: #d8dde3;
+    }
+    body { margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .top-nav { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 0.5rem; background: #eef3f2; border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem; margin-bottom: 1rem; }
+    .top-nav a { display: inline-block; padding: 0.35rem 0.6rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; text-decoration: none; font-size: 0.9rem; color: #0e4f85; }
+    .review-toolbar { margin-top: 0.85rem; padding: 0.75rem; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfe; }
+    .review-toolbar p { margin: 0 0 0.45rem 0; }
+    .review-toolbar-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .review-btn { border: 1px solid #1f5f94; color: #1f5f94; background: #fff; border-radius: 999px; padding: 0.28rem 0.65rem; font-size: 0.86rem; cursor: pointer; }
+    .review-btn:hover { background: #eef6ff; }
+    .review-btn-muted { border-color: #7a8692; color: #48555f; }
+    section { margin-bottom: 1rem; }
+    .bucket > summary, .doc-card > summary, .inner-accordion > summary { cursor: pointer; }
+    .doc-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.85rem; margin-bottom: 0.85rem; }
+    .pmid-chip-list { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.45rem 0 0.2rem 0; }
+    .pmid-chip { display: inline-block; border: 1px solid #bed2e5; background: #f3f8ff; color: #0f4978; border-radius: 999px; padding: 0.2rem 0.55rem; font-size: 0.84rem; text-decoration: none; }
+    .pmid-chip:hover { background: #e7f1ff; border-color: #98bbdc; }
+    .unavailable-raw { margin-top: 0.55rem; }
+    .unavailable-raw > summary { cursor: pointer; color: #0e4f85; }
+    .unavailable-raw code { display: block; margin-top: 0.35rem; white-space: normal; line-height: 1.45; background: #f7f9fc; border: 1px solid var(--line); border-radius: 7px; padding: 0.45rem; }
+    .doc-links { margin: 0.45rem 0 0.25rem 0; font-size: 0.92rem; }
+    .inner-accordion { margin-top: 0.6rem; border-top: 1px dashed var(--line); padding-top: 0.4rem; }
+    .resource-box { background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.55rem; }
+    .resource-note { font-size: 0.85rem; color: #3b4b5a; }
+    .table-accordion { margin: 0.45rem 0; border-top: 1px solid #e3e8ed; padding-top: 0.3rem; }
+    .table-accordion > summary { cursor: pointer; color: #0e4f85; }
+    .extracted-table { margin-top: 0.4rem; }
+    .analysis-coords > summary { cursor: pointer; color: #0e4f85; }
+    .coord-list { white-space: pre-wrap; margin-top: 0.35rem; background: #fbfcfe; border: 1px solid var(--line); border-radius: 6px; padding: 0.35rem; font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.82rem; max-height: 10rem; overflow-y: auto; }
+    .review-box { margin-top: 0.4rem; background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem; }
+    .review-decision-group { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.45rem 0 0.6rem 0; }
+    .review-reasons { margin: 0.35rem 0 0.6rem 0; }
+    .review-reason-option { display: inline-flex; align-items: center; gap: 0.35rem; margin: 0.2rem 0.7rem 0.2rem 0; font-size: 0.88rem; }
+    .review-note-label { display: inline-block; margin-bottom: 0.25rem; }
+    textarea[data-role="review-note"] { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; padding: 0.45rem; font-family: inherit; font-size: 0.9rem; background: #fff; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }
+    th { background: #edf2f5; }
+    td.score-discrepancy { background: #ffefc2 !important; border-color: #d69700; font-weight: 700; }
+    a { color: #0e4f85; }
+    .st-accepted td { background: #e6f7eb; }
+    .st-uncertain td { background: #fff7dd; }
+    .st-unmatched td { background: #fdecec; }
+    .st-auto-unmatched td { background: #f1f2f4; }
+  </style>
+</head>
+<body>
+  <header>
+    <a id="top"></a>
+    <h1>Fuzzy Matching Report</h1>
+    <p>Coordinate-first matching (70%) + name similarity (30%), one-to-one Hungarian assignment, accepted &gt;= 0.75, uncertain &gt;= 0.55, coordinate override when coord score &gt;= 0.80. Metrics include overlap PMIDs only (manual ∩ auto).</p>
+    <p><strong>Decimal manual coordinate handling:</strong> match_best_space |
+       <strong>Converted decimal analyses:</strong> 0</p>
+    <p><strong>Overlap PMIDs:</strong> 0 |
+       <strong>Manual analyses:</strong> 0 |
+       <strong>Accepted:</strong> 0 |
+       <strong>Uncertain:</strong> 0 |
+       <strong>Unmatched:</strong> 0</p>
+    <p><strong>Study categories:</strong> All correct=0 |
+       Mixed=0 |
+       All incorrect=0</p>
+    <p><strong>Unavailable Manual Studies (decimal coordinates):</strong> 0</p>
+    <p><strong>Accepted by coordinate-score override:</strong> 0 |
+       <strong>Coordinate-override matches with low name score:</strong> 0</p>
+    <p><strong>PMIDs with Pubget docs:</strong> 0 |
+       <strong>Extracted tables available:</strong> 0</p>
+    <p><strong>All Correct exact same # analyses:</strong> 0 / 0</p>
+    <p><strong>Score distribution:</strong> mean=0.000 |
+       p25=0.000 |
+       median=0.000 |
+       p75=0.000</p>
+    
+  </header>
+  <nav class="top-nav">
+    <a href="#bucket-all-correct">All Correct (0)</a>
+    <a href="#bucket-mixed">Mixed (0)</a>
+    <a href="#bucket-all-incorrect">All Incorrect (0)</a>
+    
+    <a href="#top">Top</a>
+  </nav>
+  <section id="bucket-all-correct"><details class="bucket"><summary><h2>All Correct (0)</h2></summary><p><strong>Exact same # of analyses within All Correct:</strong> 0 / 0</p><p>No studies in this category.</p></details></section><section id="bucket-mixed"><details class="bucket" open><summary><h2>Mixed (0)</h2></summary><p>No studies in this category.</p></details></section><section id="bucket-all-incorrect"><details class="bucket" open><summary><h2>All Incorrect (0)</h2></summary><p>No studies in this category.</p></details></section>
+  
+  
+</body>
+</html>
