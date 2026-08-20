@@ -26,6 +26,7 @@ PMC_IDCONV_URL = (
     "?ids={joined_pmids}&idtype=pmid&format=json"
 )
 UT_EZPROXY_DOMAIN = "ezproxy.lib.utexas.edu"
+DEFAULT_PROXY_PREFIX = "http://ezproxy.lib.utexas.edu/login?url="
 SCIENCEDIRECT_HOSTS = {"www.sciencedirect.com", "sciencedirect.com"}
 ELSEVIER_LINKING_HOSTS = {"linkinghub.elsevier.com"}
 DEFAULT_USER_AGENT = "open_pubmed_in_browser/2.0 (+manual-fulltext-workflow)"
@@ -156,7 +157,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--proxy-prefix",
         type=str,
-        default="",
+        default=DEFAULT_PROXY_PREFIX,
         help=(
             "Enable proxy rewriting for opened URLs. For UT ezproxy values "
             "(contains 'ezproxy.lib.utexas.edu'), URLs are transformed to "
@@ -175,6 +176,13 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--no-proxy",
+        dest="proxy_prefix",
+        action="store_const",
+        const="",
+        help="Disable proxy rewriting entirely (PMC/PubMed are never proxied regardless).",
+    )
+    parser.add_argument(
         "--no-attach-pmid-fragment",
         dest="attach_pmid_fragment",
         action="store_false",
@@ -187,6 +195,42 @@ def parse_args() -> argparse.Namespace:
         help="Optional CSV path to write PMID -> opened URL manifest.",
     )
     parser.add_argument(
+        "--firefox-profile",
+        type=str,
+        default=None,
+        help=(
+            "Launch Firefox with this profile directory (e.g. the SOCKS-proxied "
+            "'beast-proxy' profile), leaving your default profile untouched."
+        ),
+    )
+    parser.add_argument(
+        "--done-dirs",
+        type=Path,
+        nargs="*",
+        default=None,
+        help=(
+            "Directories already holding <PMID>.html (searched recursively). PMIDs found "
+            "there are reported as done and skipped unless --no-skip-done. Defaults to "
+            "articles/ace_outputs/html and articles/elsevier_output when they exist."
+        ),
+    )
+    parser.add_argument(
+        "--no-skip-done",
+        dest="skip_done",
+        action="store_false",
+        default=True,
+        help="Report already-downloaded PMIDs but still open them (manual copy supersedes).",
+    )
+    parser.add_argument(
+        "--progress-file",
+        type=Path,
+        default=None,
+        help=(
+            "CSV tracking file. Records pmid,status,checked_at so a session can resume; "
+            "updated on each run with which PMIDs are still outstanding."
+        ),
+    )
+    parser.add_argument(
         "--print-save-bookmarklet",
         action="store_true",
         help="Print a bookmarklet that saves the current page as PMID.html.",
@@ -194,8 +238,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--elink-batch-size",
         type=int,
-        default=200,
-        help="PMIDs per E-utilities request when resolving publisher links (default: 200).",
+        default=100,
+        help="PMIDs per E-utilities request when resolving publisher links (default: 100).",
     )
     parser.add_argument(
         "--elink-timeout",
@@ -247,17 +291,39 @@ def resolve_primary_publisher_urls(
     url_by_pmid: dict[str, str | None] = {pmid: None for pmid in pmids}
     headers = {"User-Agent": DEFAULT_USER_AGENT}
 
-    for batch in chunked(pmids, batch_size):
-        joined_pmids = ",".join(batch)
-        endpoint = ELINK_PRLINKS_URL.format(joined_pmids=joined_pmids)
-        request = Request(endpoint, headers=headers)
+    def fetch(batch: list[str], attempt: int = 1) -> dict | None:
+        """One elink call with retries; on persistent failure split the batch."""
+        endpoint = ELINK_PRLINKS_URL.format(joined_pmids=",".join(batch))
         try:
-            with urlopen(request, timeout=timeout) as response:
-                payload = json.loads(response.read().decode("utf-8"))
+            with urlopen(Request(endpoint, headers=headers), timeout=timeout) as response:
+                return json.loads(response.read().decode("utf-8"))
         except Exception as exc:
-            print(
-                f"[WARN] Failed to resolve publisher URLs for batch starting PMID {batch[0]}: {exc}"
-            )
+            if attempt < 4:
+                sleep_for = 2.0 * attempt
+                print(
+                    f"[WARN] elink attempt {attempt} failed for batch of {len(batch)} "
+                    f"(starting {batch[0]}): {exc}; retrying in {sleep_for:.0f}s"
+                )
+                time.sleep(sleep_for)
+                return fetch(batch, attempt + 1)
+            if len(batch) > 1:
+                mid = len(batch) // 2
+                print(
+                    f"[WARN] elink still failing for batch of {len(batch)}; "
+                    f"splitting into {mid} + {len(batch) - mid}"
+                )
+                merged: dict = {"linksets": []}
+                for half in (batch[:mid], batch[mid:]):
+                    got = fetch(half)
+                    if got:
+                        merged["linksets"].extend(got.get("linksets", []))
+                return merged
+            print(f"[WARN] elink permanently failed for PMID {batch[0]}: {exc}")
+            return None
+
+    for batch in chunked(pmids, batch_size):
+        payload = fetch(batch)
+        if not payload:
             continue
 
         for linkset in payload.get("linksets", []):
@@ -358,8 +424,64 @@ def is_elsevier_publisher_url(url: str) -> bool:
     return "elsevier.com" in host or "sciencedirect.com" in host
 
 
+PMC_PROXY_EXEMPT_HOSTS = {
+    "pmc.ncbi.nlm.nih.gov",
+    "www.ncbi.nlm.nih.gov",
+    "ncbi.nlm.nih.gov",
+    "pubmed.ncbi.nlm.nih.gov",
+    "europepmc.org",
+    "www.europepmc.org",
+}
+
+
+def is_proxy_exempt(url: str) -> bool:
+    """PMC/PubMed are free and break under ezproxy; never proxy them."""
+    host = (urlsplit(url).hostname or "").lower()
+    if not host:
+        return False
+    return host in PMC_PROXY_EXEMPT_HOSTS or host.endswith(".ncbi.nlm.nih.gov")
+
+
+
+def default_done_dirs() -> list[Path]:
+    here = Path(__file__).resolve().parent.parent
+    cands = [here / "articles" / "ace_outputs" / "html",
+             here / "articles" / "elsevier_output"]
+    return [c for c in cands if c.exists()]
+
+
+def scan_done(dirs: list[Path]) -> dict[str, str]:
+    """Map pmid -> where it was found. <pmid>.html files or <pmid>/ dirs both count."""
+    found: dict[str, str] = {}
+    for d in dirs:
+        if not d.exists():
+            continue
+        for p in d.rglob("*.html"):
+            stem = p.stem
+            if PMID_RE.match(stem):
+                found.setdefault(stem, str(d))
+        for p in d.iterdir():
+            if p.is_dir() and PMID_RE.match(p.name):
+                found.setdefault(p.name, str(d))
+    return found
+
+
+def write_progress(path: Path, pmids: list[str], done: dict[str, str]) -> None:
+    import datetime
+    ts = datetime.datetime.now().isoformat(timespec="seconds")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        w.writerow(["pmid", "status", "source", "checked_at"])
+        for pm in pmids:
+            w.writerow([pm, "done" if pm in done else "outstanding", done.get(pm, ""), ts])
+    n_done = sum(1 for pm in pmids if pm in done)
+    print(f"[progress] {n_done}/{len(pmids)} done, {len(pmids)-n_done} outstanding -> {path}")
+
 def maybe_wrap_proxy(url: str, proxy_prefix: str) -> str:
     if not proxy_prefix:
+        return url
+    if is_proxy_exempt(url):
         return url
     if "ezproxy.lib.utexas.edu" in proxy_prefix.lower():
         return to_ut_ezproxy_url(url)
@@ -418,13 +540,17 @@ def to_ut_ezproxy_url(url: str) -> str:
     return urlunsplit((parts.scheme or "https", proxied_netloc, parts.path, parts.query, parts.fragment))
 
 
-def launch_browser(browser: str, urls: list[str], delay: float = 0.0) -> None:
+def launch_browser(browser: str, urls: list[str], delay: float = 0.0,
+                   firefox_profile: str | None = None) -> None:
     if not urls:
         return
 
     for index, url in enumerate(urls):
         if browser == "firefox":
-            command = ["firefox", "--new-window", url]
+            command = ["firefox"]
+            if firefox_profile:
+                command += ["--profile", firefox_profile]
+            command += ["--new-window", url]
         elif browser == "chrome":
             command = ["google-chrome", "--new-window", url]
         else:
@@ -579,6 +705,12 @@ def print_bookmarklet() -> None:
 
 def main() -> None:
     args = parse_args()
+
+    # Print the bookmarklet before doing any work; it is a standalone action.
+    if args.print_save_bookmarklet:
+        print(SAVE_BOOKMARKLET)
+        return
+
     pmid_file = args.pmid_file.expanduser().resolve()
 
     if args.max_at_once <= 0:
@@ -602,6 +734,24 @@ def main() -> None:
         # Open newest/higher PMIDs first by default.
         pmids = sorted(pmids, key=int, reverse=True)
     print(f"Found {len(pmids)} valid PMIDs in {pmid_file}")
+
+    # --- completion tracking -------------------------------------------------
+    done_dirs = args.done_dirs if args.done_dirs is not None else default_done_dirs()
+    done = scan_done([Path(d).expanduser() for d in done_dirs]) if done_dirs else {}
+    if done:
+        already = [pm for pm in pmids if pm in done]
+        if already:
+            print(f"[done] {len(already)}/{len(pmids)} already downloaded "
+                  f"(scanned {len(done_dirs)} dir(s))")
+            if args.skip_done:
+                pmids = [pm for pm in pmids if pm not in done]
+                print(f"[done] skipping them; {len(pmids)} remain "
+                      f"(use --no-skip-done to open anyway)")
+    if args.progress_file:
+        write_progress(args.progress_file.expanduser(), iter_pmids(pmid_file), done)
+    if not pmids:
+        print("Nothing outstanding.")
+        return
 
     records = build_target_records(args, pmids)
     if not records:
@@ -633,7 +783,8 @@ def main() -> None:
             for row in batch_rows:
                 print(f'{row["pmid"]}\t{row["target_type"]}\t{row["opened_url"]}')
         else:
-            launch_browser(args.browser, batch_urls, delay=args.delay)
+            launch_browser(args.browser, batch_urls, delay=args.delay,
+                           firefox_profile=args.firefox_profile)
 
         if batch_end >= total:
             break
