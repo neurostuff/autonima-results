@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fuzzy Matching Report</title>
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --panel: #ffffff;
+      --ink: #1d2730;
+      --line: #d8dde3;
+    }
+    body { margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .top-nav { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 0.5rem; background: #eef3f2; border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem; margin-bottom: 1rem; }
+    .top-nav a { display: inline-block; padding: 0.35rem 0.6rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; text-decoration: none; font-size: 0.9rem; color: #0e4f85; }
+    .review-toolbar { margin-top: 0.85rem; padding: 0.75rem; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfe; }
+    .review-toolbar p { margin: 0 0 0.45rem 0; }
+    .review-toolbar-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .review-btn { border: 1px solid #1f5f94; color: #1f5f94; background: #fff; border-radius: 999px; padding: 0.28rem 0.65rem; font-size: 0.86rem; cursor: pointer; }
+    .review-btn:hover { background: #eef6ff; }
+    .review-btn-muted { border-color: #7a8692; color: #48555f; }
+    section { margin-bottom: 1rem; }
+    .bucket > summary, .doc-card > summary, .inner-accordion > summary { cursor: pointer; }
+    .doc-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0.85rem; margin-bottom: 0.85rem; }
+    .pmid-chip-list { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.45rem 0 0.2rem 0; }
+    .pmid-chip { display: inline-block; border: 1px solid #bed2e5; background: #f3f8ff; color: #0f4978; border-radius: 999px; padding: 0.2rem 0.55rem; font-size: 0.84rem; text-decoration: none; }
+    .pmid-chip:hover { background: #e7f1ff; border-color: #98bbdc; }
+    .unavailable-raw { margin-top: 0.55rem; }
+    .unavailable-raw > summary { cursor: pointer; color: #0e4f85; }
+    .unavailable-raw code { display: block; margin-top: 0.35rem; white-space: normal; line-height: 1.45; background: #f7f9fc; border: 1px solid var(--line); border-radius: 7px; padding: 0.45rem; }
+    .doc-links { margin: 0.45rem 0 0.25rem 0; font-size: 0.92rem; }
+    .inner-accordion { margin-top: 0.6rem; border-top: 1px dashed var(--line); padding-top: 0.4rem; }
+    .resource-box { background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.55rem; }
+    .resource-note { font-size: 0.85rem; color: #3b4b5a; }
+    .table-accordion { margin: 0.45rem 0; border-top: 1px solid #e3e8ed; padding-top: 0.3rem; }
+    .table-accordion > summary { cursor: pointer; color: #0e4f85; }
+    .extracted-table { margin-top: 0.4rem; }
+    .analysis-coords > summary { cursor: pointer; color: #0e4f85; }
+    .coord-list { white-space: pre-wrap; margin-top: 0.35rem; background: #fbfcfe; border: 1px solid var(--line); border-radius: 6px; padding: 0.35rem; font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.82rem; max-height: 10rem; overflow-y: auto; }
+    .review-box { margin-top: 0.4rem; background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem; }
+    .review-decision-group { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.45rem 0 0.6rem 0; }
+    .review-reasons { margin: 0.35rem 0 0.6rem 0; }
+    .review-reason-option { display: inline-flex; align-items: center; gap: 0.35rem; margin: 0.2rem 0.7rem 0.2rem 0; font-size: 0.88rem; }
+    .review-note-label { display: inline-block; margin-bottom: 0.25rem; }
+    textarea[data-role="review-note"] { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; padding: 0.45rem; font-family: inherit; font-size: 0.9rem; background: #fff; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }
+    th { background: #edf2f5; }
+    td.score-discrepancy { background: #ffefc2 !important; border-color: #d69700; font-weight: 700; }
+    a { color: #0e4f85; }
+    .st-accepted td { background: #e6f7eb; }
+    .st-uncertain td { background: #fff7dd; }
+    .st-unmatched td { background: #fdecec; }
+    .st-auto-unmatched td { background: #f1f2f4; }
+  </style>
+</head>
+<body>
+  <header>
+    <a id="top"></a>
+    <h1>Fuzzy Matching Report</h1>
+    <p>Coordinate-first matching (70%) + name similarity (30%), one-to-one Hungarian assignment, accepted &gt;= 0.75, uncertain &gt;= 0.55, coordinate override when coord score &gt;= 0.80. Metrics include overlap PMIDs only (manual ∩ auto).</p>
+    <p><strong>Decimal manual coordinate handling:</strong> match_best_space |
+       <strong>Converted decimal analyses:</strong> 0</p>
+    <p><strong>Overlap PMIDs:</strong> 7 |
+       <strong>Manual analyses:</strong> 9 |
+       <strong>Accepted:</strong> 3 |
+       <strong>Uncertain:</strong> 1 |
+       <strong>Unmatched:</strong> 5</p>
+    <p><strong>Study categories:</strong> All correct=3 |
+       Mixed=0 |
+       All incorrect=4</p>
+    <p><strong>Unavailable Manual Studies (decimal coordinates):</strong> 0</p>
+    <p><strong>Accepted by coordinate-score override:</strong> 2 |
+       <strong>Coordinate-override matches with low name score:</strong> 3</p>
+    <p><strong>PMIDs with Pubget docs:</strong> 1 |
+       <strong>Extracted tables available:</strong> 1</p>
+    <p><strong>All Correct exact same # analyses:</strong> 1 / 3</p>
+    <p><strong>Score distribution:</strong> mean=0.374 |
+       p25=0.053 |
+       median=0.230 |
+       p75=0.743</p>
+    <div class="review-toolbar"><p><strong>Human review workflow:</strong> annotate Mixed/All Incorrect studies as <code>Annotation Error</code> or <code>Extraction Error</code>, then add notes.</p><p id="review-progress"><strong>Review progress:</strong> 0 / 4 completed</p><div class="review-toolbar-actions"><button type="button" class="review-btn" id="review-export-json">Download Review JSON</button><button type="button" class="review-btn" id="review-export-csv">Download Review CSV</button><button type="button" class="review-btn review-btn-muted" id="review-clear">Clear Saved Review</button></div></div>
+  </header>
+  <nav class="top-nav">
+    <a href="#bucket-all-correct">All Correct (3)</a>
+    <a href="#bucket-mixed">Mixed (0)</a>
+    <a href="#bucket-all-incorrect">All Incorrect (4)</a>
+    
+    <a href="#top">Top</a>
+  </nav>
+  <section id="bucket-all-correct"><details class="bucket"><summary><h2>All Correct (3)</h2></summary><p><strong>Exact same # of analyses within All Correct:</strong> 1 / 3</p><details class="doc-card" data-pmid="15585344" data-study-category="all_correct"><summary><strong>PMID 15585344</strong> | Boccardi_2005 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=1 | <strong>auto=manual = 0</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/15585344/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>Boccardi_2005_1 (19)</summary><pre class="coord-list">-2.0, 44.0, -10.0
+0.0, 26.0, -10.0
+-38.0, 30.0, 2.0
+-32.0, 22.0, 10.0
+4.0, 6.0, -6.0
+-52.0, 8.0, 18.0
+18.0, -10.0, -14.0
+-62.0, -28.0, -24.0
+8.0, 18.0, -18.0
+-4.0, 50.0, 24.0
+-18.0, -10.0, -14.0
+38.0, 22.0, 8.0
+14.0, 20.0, -2.0
+-4.0, 32.0, 18.0
+-8.0, 14.0, 38.0
+18.0, -6.0, -22.0
+10.0, 22.0, 36.0
+8.0, 34.0, 26.0
+-4.0, 46.0, 24.0</pre></details></td><td>Boccardi_2005_1</td><td>19</td><td>accepted</td><td>15585344_analysis_0</td><td>Atrophic regions in frontotemporal dementia (decreased gray matter density)</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.156</td><td>1.000</td><td>0.747</td><td>accepted_coord_override, exact_coord_set, high_coord_match, high_coverage_coord_set, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>15585344_analysis_0 (19)</summary><pre class="coord-list">-2.0, 44.0, -10.0
+0.0, 26.0, -10.0
+-38.0, 30.0, 2.0
+-32.0, 22.0, 10.0
+4.0, 6.0, -6.0
+-52.0, 8.0, 18.0
+18.0, -10.0, -14.0
+-62.0, -28.0, -24.0
+8.0, 18.0, -18.0
+-4.0, 50.0, 24.0
+-18.0, -10.0, -14.0
+38.0, 22.0, 8.0
+14.0, 20.0, -2.0
+-4.0, 32.0, 18.0
+-8.0, 14.0, 38.0
+18.0, -6.0, -22.0
+10.0, 22.0, 36.0
+8.0, 34.0, 26.0
+-4.0, 46.0, 24.0</pre></details></td><td>Atrophic regions in frontotemporal dementia (decreased gray matter density)</td><td>19</td><td>Boccardi_2005_1</td><td>Boccardi_2005_1</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.156</td><td>1.000</td><td>0.747</td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="20493673" data-study-category="all_correct"><summary><strong>PMID 20493673</strong> | Raczka_2010 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=4 | <strong>auto&gt;manual = 3</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/20493673/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>Raczka_2010_1 (8)</summary><pre class="coord-list">4.0, 28.0, 38.0
+4.0, 66.0, 2.0
+4.0, 64.0, 20.0
+-8.0, 8.0, 4.0
+-14.0, 0.0, 16.0
+0.0, 30.0, -24.0
+-10.0, 20.0, -26.0
+20.0, 6.0, 10.0</pre></details></td><td>Raczka_2010_1</td><td>8</td><td>accepted</td><td>20493673_analysis_1</td><td>FTD (frontotemporal dementia)</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.143</td><td>1.000</td><td>0.743</td><td>accepted_coord_override, exact_coord_set, high_coord_match, high_coverage_coord_set, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-auto-unmatched"><td>0</td><td><details class="analysis-coords"><summary>20493673_analysis_0 (13)</summary><pre class="coord-list">-60.0, -20.0, -30.0
+-50.0, -6.0, -34.0
+-46.0, -26.0, -30.0
+-12.0, 10.0, -22.0
+-12.0, 4.0, 8.0
+8.0, 58.0, 34.0
+6.0, 58.0, 10.0
+-40.0, -2.0, 8.0
+-40.0, 14.0, 4.0
+-8.0, 8.0, 28.0
+62.0, -14.0, -28.0
+12.0, 32.0, 20.0
+12.0, 24.0, 26.0</pre></details></td><td>SD (semantic dementia)</td><td>13</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-accepted"><td>1</td><td><details class="analysis-coords"><summary>20493673_analysis_1 (8)</summary><pre class="coord-list">4.0, 28.0, 38.0
+4.0, 66.0, 2.0
+4.0, 64.0, 20.0
+-8.0, 8.0, 4.0
+-14.0, 0.0, 16.0
+0.0, 30.0, -24.0
+-10.0, 20.0, -26.0
+20.0, 6.0, 10.0</pre></details></td><td>FTD (frontotemporal dementia)</td><td>8</td><td>Raczka_2010_1</td><td>Raczka_2010_1</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.143</td><td>1.000</td><td>0.743</td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>20493673_analysis_2 (12)</summary><pre class="coord-list">0.0, 0.0, 30.0
+2.0, 18.0, 24.0
+12.0, 18.0, 24.0
+-12.0, -2.0, 12.0
+-12.0, 8.0, 6.0
+-8.0, -30.0, 12.0
+-26.0, 50.0, 30.0
+-58.0, 14.0, 22.0
+-48.0, 12.0, 42.0
+2.0, 56.0, 4.0
+-26.0, 18.0, 54.0
+-40.0, 18.0, -2.0</pre></details></td><td>Executive deficits</td><td>12</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>20493673_analysis_3 (7)</summary><pre class="coord-list">-56.0, 24.0, 24.0
+-8.0, 66.0, -2.0
+-4.0, 60.0, -20.0
+-6.0, 8.0, -12.0
+-32.0, 12.0, 6.0
+-40.0, 54.0, 14.0
+-54.0, -32.0, -24.0</pre></details></td><td>Behavioral deficits (NPI)</td><td>7</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="25773639" data-study-category="all_correct"><summary><strong>PMID 25773639</strong> | Agustus_2015 | accepted=1 uncertain=0 unmatched=0 manual=1 auto=5 | <strong>auto&gt;manual = 4</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/25773639/" target="_blank" rel="noopener noreferrer">PubMed</a> | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4402026/" target="_blank" rel="noopener noreferrer">PMC full text</a></p><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-accepted"><td><details class="analysis-coords"><summary>Agustus_2015_1 (1)</summary><pre class="coord-list">1.0, -29.0, -24.0</pre></details></td><td>Agustus_2015_1</td><td>1</td><td>accepted</td><td>25773639_analysis_0</td><td>Musical mode: bvFTD &gt; controls</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.182</td><td>1.000</td><td>0.755</td><td>exact_coord_set, high_coord_match, low_name_with_coord_override</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-accepted"><td>0</td><td><details class="analysis-coords"><summary>25773639_analysis_0 (1)</summary><pre class="coord-list">1.0, -29.0, -24.0</pre></details></td><td>Musical mode: bvFTD &gt; controls</td><td>1</td><td>Agustus_2015_1</td><td>Agustus_2015_1</td><td>accepted</td><td class="score-discrepancy" title="High coordinate score override accepted this match, but name similarity is low.">0.182</td><td>1.000</td><td>0.755</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>25773639_analysis_1 (1)</summary><pre class="coord-list">-65.0, -29.0, 0.0</pre></details></td><td>Music emotion level: Controls &gt; bvFTD</td><td>1</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>25773639_analysis_2 (1)</summary><pre class="coord-list">55.0, 12.0, 11.0</pre></details></td><td>Music emotion level: bvFTD &gt; controls</td><td>1</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>25773639_analysis_3 (2)</summary><pre class="coord-list">-52.0, -10.0, -11.0
+-59.0, 33.0, 1.0</pre></details></td><td>Vocal emotion: Controls &gt; bvFTD</td><td>2</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>4</td><td><details class="analysis-coords"><summary>25773639_analysis_4 (1)</summary><pre class="coord-list">-61.0, -31.0, 0.0</pre></details></td><td>Music-specific emotion: bvFTD &gt; controls</td><td>1</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details><details class="inner-accordion"><summary>Pubget full text + extracted tables</summary><div class="resource-box"><p><strong>PMCID:</strong> PMC4402026 | <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4402026/" target="_blank" rel="noopener noreferrer">PubMedCentral full text</a></p><p><strong>Extracted tables:</strong> 1</p><details class="table-accordion"><summary>Table 1 (tbl1)</summary><p><strong>Caption:</strong> Summary of significant contrasts and regions of activation for patients vs. healthy controlsa</p><p><strong>Footnote:</strong> aSignificant interactions of key emotion-processing contrasts with group are shown; boldface indicates contrast significant at P &lt; 0.05 after FWE correction for multiple voxel-wise comparisons over the whole brain; other contrasts significant at P &lt; 0.05 after FWE correction for multiple comparisons over prespecified anatomical regions of interest. Statistics and coordinates (in MNI space) for local maxima of activation are shown. Condition contrasts were defined as follows (see text for condition labels): musical mode (MCM &gt; MFC); music emotion level ((MCM &gt; MFC) &gt; (MCD &gt; MFD)); vocal emotion (VC &gt; VF); music-specific emotion ((MCM &gt; MFC) &gt; (VC &gt; VF)). bvFTD, behavioral variant of frontotemporal dementia; IFG, inferior frontal gyrus; PT, planum temporale; STG, superior temporal gyrus.</p><p class="resource-note"><strong>Source:</strong> <code>articles/2d0/pmcid_4402026/tables/table_000.csv</code></p><div class="table-wrap"><table class="extracted-table"><thead><tr><th>Unnamed: 0_level_0</th><th>Unnamed: 1_level_0</th><th>Unnamed: 2_level_0</th><th>Unnamed: 3_level_0</th><th>Unnamed: 4_level_0</th><th>Peak (mm)</th><th>Peak (mm)</th><th>Peak (mm)</th><th>Unnamed: 8_level_0</th><th>Unnamed: 9_level_0</th></tr><tr><th>Contrast</th><th>Unnamed: 1_level_1</th><th>Area</th><th>Side</th><th>Cluster size (voxels)</th><th>x</th><th>y</th><th>z</th><th>P value</th><th>Z- score</th></tr></thead><tbody><tr><td>Musical mode</td><td>bvFTD &gt; controls</td><td>Dorsal brainstem</td><td>–</td><td>306</td><td>1</td><td>−29</td><td>−24</td><td>0.037</td><td>5.12</td></tr><tr><td>Music emotion level</td><td>Controls &gt; bvFTD</td><td>PT</td><td>L</td><td>51</td><td>−65</td><td>−29</td><td>0</td><td>0.013</td><td>3.55</td></tr><tr><td></td><td>bvFTD &gt; controls</td><td>IFG</td><td>R</td><td>90</td><td>55</td><td>12</td><td>11</td><td>0.028</td><td>3.77</td></tr><tr><td>Vocal emotion</td><td>Controls &gt; bvFTD</td><td>Anterior STG</td><td>L</td><td>20</td><td>−52</td><td>−10</td><td>−11</td><td>0.021</td><td>3.53</td></tr><tr><td></td><td></td><td>Posterior STG</td><td>L</td><td>100</td><td>−59</td><td>33</td><td>1</td><td>0.024</td><td>3.63</td></tr><tr><td>Music-specific emotion</td><td>bvFTD &gt; controls</td><td>Posterior STG</td><td>L</td><td>292</td><td>−61</td><td>−31</td><td>0</td><td>0.001</td><td>4.67</td></tr></tbody></table></div></details></div></details></details></details></section><section id="bucket-mixed"><details class="bucket" open><summary><h2>Mixed (0)</h2></summary><p>No studies in this category.</p></details></section><section id="bucket-all-incorrect"><details class="bucket" open><summary><h2>All Incorrect (4)</h2></summary><details class="doc-card" data-pmid="15668960" data-study-category="all_incorrect"><summary><strong>PMID 15668960</strong> | Franceschi_2005 | accepted=0 uncertain=0 unmatched=2 manual=2 auto=4 | <strong>auto&gt;manual = 2</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/15668960/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion review-annotation" data-pmid="15668960" data-study-name="Franceschi_2005" data-study-category="all_incorrect"><summary>Human adjudication</summary><div class="review-box"><p class="resource-note">Choose <strong>Annotation Error</strong> or <strong>Extraction Error</strong>, then optionally add notes. Saved automatically in browser localStorage.</p><div class="review-decision-group"><label><input type="radio" data-role="review-decision" name="review-decision-15668960" value="annotation_error"> Annotation Error</label><label><input type="radio" data-role="review-decision" name="review-decision-15668960" value="extraction_error"> Extraction Error</label><label><input type="radio" data-role="review-decision" name="review-decision-15668960" value=""> Clear selection</label></div><div class="review-reasons" data-role="extraction-reasons" hidden><p><strong>Extraction error reasons</strong></p><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="multiple_analyses_merged_into_one"> Multiple analyses merged into one</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="single_analysis_split_into_multiple"> Single analysis split into multiple</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="section_header_parsed_as_analysis"> Section/header parsed as analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinate_rows_assigned_wrong_analysis"> Coordinate rows assigned to wrong analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="contrast_label_missed_or_truncated"> Contrast label missed or truncated</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="table_structure_misparsed"> Table structure misparsed</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinates_missed_or_incomplete"> Coordinates missed or incomplete</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="other_extraction_issue"> Other extraction issue</label></div><label class="review-note-label" for="review-note-15668960"><strong>Note</strong></label><textarea id="review-note-15668960" data-role="review-note" rows="3" placeholder="Add evidence, rationale, or follow-up notes..."></textarea><p class="resource-note" data-role="review-status">Not reviewed yet.</p></div></details><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-unmatched"><td><details class="analysis-coords"><summary>Franceschi_2005_1 (62)</summary><pre class="coord-list">-6.0, 44.0, 22.0
+-6.0, 44.0, 23.0
+-6.0, 44.0, 24.0
+-6.0, 44.0, 25.0
+-6.0, 44.0, 26.0
+-6.0, 44.0, 27.0
+-6.0, 44.0, 28.0
+-6.0, 44.0, 29.0
+-6.0, 44.0, 30.0
+-6.0, 44.0, 31.0
+-6.0, 44.0, 32.0
+-6.0, 44.0, 33.0
+-6.0, 44.0, 34.0
+-6.0, 44.0, 35.0
+-6.0, 44.0, 36.0
+-6.0, 44.0, 37.0
+-6.0, 44.0, 38.0
+-6.0, 44.0, 39.0
+-6.0, 44.0, 40.0
+-6.0, 44.0, 41.0
+-6.0, 44.0, 42.0
+-6.0, 44.0, 43.0
+-6.0, 44.0, 44.0
+-6.0, 44.0, 45.0
+-6.0, 44.0, 46.0
+-6.0, 44.0, 47.0
+-6.0, 44.0, 48.0
+-6.0, 44.0, 49.0
+-6.0, 44.0, 50.0
+8.0, 40.0, 28.0
+8.0, 40.0, 29.0
+8.0, 40.0, 30.0
+8.0, 40.0, 31.0
+8.0, 40.0, 32.0
+8.0, 40.0, 33.0
+8.0, 40.0, 34.0
+8.0, 40.0, 35.0
+8.0, 40.0, 36.0
+8.0, 40.0, 37.0
+8.0, 40.0, 38.0
+8.0, 40.0, 39.0
+8.0, 40.0, 40.0
+8.0, 40.0, 41.0
+8.0, 40.0, 42.0
+8.0, 40.0, 43.0
+8.0, 40.0, 44.0
+8.0, 40.0, 45.0
+8.0, 40.0, 46.0
+8.0, 40.0, 47.0
+8.0, 40.0, 48.0
+8.0, 40.0, 49.0
+8.0, 40.0, 50.0
+-16.0, 64.0, -4.0
+16.0, 64.0, 0.0
+-2.0, 42.0, -24.0
+4.0, 40.0, -24.0
+-52.0, 16.0, 20.0
+-42.0, 12.0, 0.0
+58.0, 20.0, 24.0
+44.0, 6.0, 2.0
+-2.0, -16.0, 4.0
+12.0, -22.0, 6.0</pre></details></td><td>Franceschi_2005_1</td><td>62</td><td>unmatched</td><td>15668960_analysis_0</td><td>Apathetic subjects: vs controls (p &lt; 0.001)</td><td class="">0.167</td><td>0.161</td><td>0.163</td><td>coord_count_mismatch, low_total_score</td></tr><tr class="st-unmatched"><td><details class="analysis-coords"><summary>Franceschi_2005_2 (46)</summary><pre class="coord-list">-10.0, 12.0, -24.0
+12.0, 24.0, -28.0
+-8.0, 38.0, 18.0
+8.0, 34.0, 20.0
+-10.0, 12.0, -2.0
+-10.0, 12.0, -3.0
+-10.0, 12.0, -4.0
+-10.0, 12.0, -5.0
+-10.0, 12.0, -6.0
+-10.0, 12.0, -7.0
+-10.0, 12.0, -8.0
+-10.0, 12.0, -9.0
+-10.0, 12.0, -10.0
+-10.0, 12.0, -11.0
+-10.0, 12.0, -12.0
+-10.0, 12.0, -13.0
+-10.0, 12.0, -14.0
+-10.0, 12.0, -15.0
+-10.0, 12.0, -16.0
+-10.0, 12.0, -17.0
+-10.0, 12.0, -18.0
+10.0, 14.0, -2.0
+10.0, 14.0, -3.0
+10.0, 14.0, -4.0
+10.0, 14.0, -5.0
+10.0, 14.0, -6.0
+10.0, 14.0, -7.0
+10.0, 14.0, -8.0
+10.0, 14.0, -9.0
+10.0, 14.0, -10.0
+10.0, 14.0, -11.0
+10.0, 14.0, -12.0
+10.0, 14.0, -13.0
+10.0, 14.0, -14.0
+10.0, 14.0, -15.0
+10.0, 14.0, -16.0
+10.0, 14.0, -17.0
+10.0, 14.0, -18.0
+-46.0, 6.0, 0.0
+-4.0, -18.0, 8.0
+10.0, -20.0, 6.0
+-48.0, -18.0, -36.0
+48.0, -16.0, -36.0
+-24.0, -12.0, -30.0
+20.0, -8.0, -30.0
+46.0, 8.0, -2.0</pre></details></td><td>Franceschi_2005_2</td><td>46</td><td>unmatched</td><td>15668960_analysis_2</td><td>Disinhibited subjects: vs controls (p &lt; 0.001)</td><td class="">0.159</td><td>0.261</td><td>0.230</td><td>coord_count_mismatch, low_total_score</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-unmatched"><td>0</td><td><details class="analysis-coords"><summary>15668960_analysis_0 (11)</summary><pre class="coord-list">-16.0, 64.0, -4.0
+-16.0, 64.0, -4.0
+16.0, 64.0, 0.0
+-2.0, 42.0, -24.0
+4.0, 40.0, -24.0
+-52.0, 16.0, 20.0
+-42.0, 12.0, 0.0
+58.0, 20.0, 24.0
+44.0, 6.0, 2.0
+-2.0, -16.0, 4.0
+12.0, -22.0, 6.0</pre></details></td><td>Apathetic subjects: vs controls (p &lt; 0.001)</td><td>11</td><td>Franceschi_2005_1</td><td>Franceschi_2005_1</td><td>unmatched</td><td class="">0.167</td><td>0.161</td><td>0.163</td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>15668960_analysis_1 (8)</summary><pre class="coord-list">-42.0, 12.0, 26.0
+-46.0, 20.0, 18.0
+42.0, 34.0, 2.0
+38.0, 28.0, 24.0
+-24.0, -12.0, 68.0
+44.0, 6.0, 10.0
+0.0, 26.0, 58.0
+8.0, 40.0, 40.0</pre></details></td><td>Apathetic subjects: vs disinhibited (p &lt; 0.01)</td><td>8</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-unmatched"><td>2</td><td><details class="analysis-coords"><summary>15668960_analysis_2 (12)</summary><pre class="coord-list">-10.0, 12.0, -24.0
+12.0, 24.0, -28.0
+-8.0, 38.0, 18.0
+8.0, 34.0, 20.0
+-46.0, 6.0, 0.0
+-4.0, -18.0, 8.0
+10.0, -20.0, 6.0
+-48.0, -18.0, -36.0
+48.0, -16.0, -36.0
+-24.0, -12.0, -30.0
+20.0, -8.0, -30.0
+46.0, 8.0, -2.0</pre></details></td><td>Disinhibited subjects: vs controls (p &lt; 0.001)</td><td>12</td><td>Franceschi_2005_2</td><td>Franceschi_2005_2</td><td>unmatched</td><td class="">0.159</td><td>0.261</td><td>0.230</td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>15668960_analysis_3 (7)</summary><pre class="coord-list">-18.0, 12.0, -20.0
+11.0, 12.0, -18.0
+36.0, -12.0, -18.0
+-22.0, -28.0, -28.0
+50.0, -30.0, -28.0
+-12.0, 26.0, 26.0
+14.0, 32.0, 22.0</pre></details></td><td>Disinhibited subjects: vs apathetic (p &lt; 0.01)</td><td>7</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="26660857" data-study-category="all_incorrect"><summary><strong>PMID 26660857</strong> | Hafkemeijer_2016 | accepted=0 uncertain=0 unmatched=1 manual=1 auto=10 | <strong>auto&gt;manual = 9</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/26660857/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion review-annotation" data-pmid="26660857" data-study-name="Hafkemeijer_2016" data-study-category="all_incorrect"><summary>Human adjudication</summary><div class="review-box"><p class="resource-note">Choose <strong>Annotation Error</strong> or <strong>Extraction Error</strong>, then optionally add notes. Saved automatically in browser localStorage.</p><div class="review-decision-group"><label><input type="radio" data-role="review-decision" name="review-decision-26660857" value="annotation_error"> Annotation Error</label><label><input type="radio" data-role="review-decision" name="review-decision-26660857" value="extraction_error"> Extraction Error</label><label><input type="radio" data-role="review-decision" name="review-decision-26660857" value=""> Clear selection</label></div><div class="review-reasons" data-role="extraction-reasons" hidden><p><strong>Extraction error reasons</strong></p><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="multiple_analyses_merged_into_one"> Multiple analyses merged into one</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="single_analysis_split_into_multiple"> Single analysis split into multiple</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="section_header_parsed_as_analysis"> Section/header parsed as analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinate_rows_assigned_wrong_analysis"> Coordinate rows assigned to wrong analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="contrast_label_missed_or_truncated"> Contrast label missed or truncated</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="table_structure_misparsed"> Table structure misparsed</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinates_missed_or_incomplete"> Coordinates missed or incomplete</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="other_extraction_issue"> Other extraction issue</label></div><label class="review-note-label" for="review-note-26660857"><strong>Note</strong></label><textarea id="review-note-26660857" data-role="review-note" rows="3" placeholder="Add evidence, rationale, or follow-up notes..."></textarea><p class="resource-note" data-role="review-status">Not reviewed yet.</p></div></details><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-unmatched"><td><details class="analysis-coords"><summary>Hafkemeijer_2016_1 (3)</summary><pre class="coord-list">56.0, -52.0, 48.0
+24.0, -72.0, 28.0
+36.0, -15.0, 8.0</pre></details></td><td>Hafkemeijer_2016_1</td><td>3</td><td>unmatched</td><td>26660857_analysis_4</td><td>Network e</td><td class="">0.148</td><td>0.000</td><td>0.044</td><td>coord_count_mismatch, low_total_score</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-auto-unmatched"><td>0</td><td><details class="analysis-coords"><summary>26660857_analysis_0 (5)</summary><pre class="coord-list">-2.0, 34.0, -14.0
+46.0, -6.0, -50.0
+-6.0, 8.0, 46.0
+-24.0, -2.0, 48.0
+20.0, 32.0, 36.0</pre></details></td><td>Network a</td><td>5</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>26660857_analysis_1 (5)</summary><pre class="coord-list">-8.0, -52.0, 34.0
+52.0, -74.0, -2.0
+-22.0, -60.0, -10.0
+48.0, -22.0, -18.0
+-36.0, 20.0, 24.0</pre></details></td><td>Network b</td><td>5</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>2</td><td><details class="analysis-coords"><summary>26660857_analysis_2 (3)</summary><pre class="coord-list">-24.0, -8.0, -38.0
+2.0, -88.0, 30.0
+0.0, -86.0, -34.0</pre></details></td><td>Network c</td><td>3</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>26660857_analysis_3 (5)</summary><pre class="coord-list">36.0, -26.0, -14.0
+0.0, -92.0, -10.0
+42.0, 14.0, 56.0
+26.0, 60.0, -6.0
+-30.0, -74.0, 20.0</pre></details></td><td>Network d</td><td>5</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-unmatched"><td>4</td><td><details class="analysis-coords"><summary>26660857_analysis_4 (5)</summary><pre class="coord-list">-10.0, 14.0, -8.0
+4.0, 62.0, -12.0
+-4.0, -10.0, 54.0
+8.0, -74.0, 4.0
+56.0, 10.0, 4.0</pre></details></td><td>Network e</td><td>5</td><td>Hafkemeijer_2016_1</td><td>Hafkemeijer_2016_1</td><td>unmatched</td><td class="">0.148</td><td>0.000</td><td>0.044</td></tr><tr class="st-auto-unmatched"><td>5</td><td><details class="analysis-coords"><summary>26660857_analysis_5 (3)</summary><pre class="coord-list">-36.0, -84.0, 28.0
+56.0, -30.0, 46.0
+-18.0, -54.0, 74.0</pre></details></td><td>Network f</td><td>3</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>6</td><td><details class="analysis-coords"><summary>26660857_analysis_6 (4)</summary><pre class="coord-list">0.0, -28.0, 72.0
+-58.0, -4.0, -32.0
+-14.0, -74.0, -38.0
+-18.0, 42.0, 34.0</pre></details></td><td>Network g</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>7</td><td><details class="analysis-coords"><summary>26660857_analysis_7 (3)</summary><pre class="coord-list">-18.0, -62.0, -56.0
+-20.0, -6.0, -18.0
+34.0, -14.0, -10.0</pre></details></td><td>Network h</td><td>3</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>8</td><td><details class="analysis-coords"><summary>26660857_analysis_8 (3)</summary><pre class="coord-list">34.0, -74.0, -22.0
+32.0, 28.0, 46.0
+-32.0, 52.0, 22.0</pre></details></td><td>Network i</td><td>3</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>9</td><td><details class="analysis-coords"><summary>26660857_analysis_9 (4)</summary><pre class="coord-list">36.0, -68.0, -44.0
+24.0, -4.0, -6.0
+40.0, -16.0, 56.0
+-34.0, -24.0, -2.0</pre></details></td><td>Network j</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="27567867" data-study-category="all_incorrect"><summary><strong>PMID 27567867</strong> | Santamaria-Garcia_2016 | accepted=0 uncertain=0 unmatched=2 manual=2 auto=1 | <strong>manual&gt;auto = 1</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/27567867/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion review-annotation" data-pmid="27567867" data-study-name="Santamaria-Garcia_2016" data-study-category="all_incorrect"><summary>Human adjudication</summary><div class="review-box"><p class="resource-note">Choose <strong>Annotation Error</strong> or <strong>Extraction Error</strong>, then optionally add notes. Saved automatically in browser localStorage.</p><div class="review-decision-group"><label><input type="radio" data-role="review-decision" name="review-decision-27567867" value="annotation_error"> Annotation Error</label><label><input type="radio" data-role="review-decision" name="review-decision-27567867" value="extraction_error"> Extraction Error</label><label><input type="radio" data-role="review-decision" name="review-decision-27567867" value=""> Clear selection</label></div><div class="review-reasons" data-role="extraction-reasons" hidden><p><strong>Extraction error reasons</strong></p><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="multiple_analyses_merged_into_one"> Multiple analyses merged into one</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="single_analysis_split_into_multiple"> Single analysis split into multiple</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="section_header_parsed_as_analysis"> Section/header parsed as analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinate_rows_assigned_wrong_analysis"> Coordinate rows assigned to wrong analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="contrast_label_missed_or_truncated"> Contrast label missed or truncated</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="table_structure_misparsed"> Table structure misparsed</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinates_missed_or_incomplete"> Coordinates missed or incomplete</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="other_extraction_issue"> Other extraction issue</label></div><label class="review-note-label" for="review-note-27567867"><strong>Note</strong></label><textarea id="review-note-27567867" data-role="review-note" rows="3" placeholder="Add evidence, rationale, or follow-up notes..."></textarea><p class="resource-note" data-role="review-status">Not reviewed yet.</p></div></details><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-unmatched"><td><details class="analysis-coords"><summary>Santamaria-Garcia_2016_1 (18)</summary><pre class="coord-list">-22.0, -7.0, -15.0
+27.0, -6.0, -15.0
+-38.0, -22.0, -26.0
+-54.0, -64.0, 24.0
+-38.0, -1.0, 7.0
+-2.0, 3.0, 45.0
+16.0, -33.0, 1.0
+58.0, -15.0, -11.0
+-3.0, 38.0, -15.0
+-6.0, -48.0, 9.0
+-12.0, 14.0, 4.0
+-15.0, 8.0, 13.0
+-54.0, -67.0, -11.0
+62.0, -43.0, 7.0
+-4.0, -63.0, 12.0
+-28.0, 60.0, 3.0
+-2.0, 3.0, 45.0
+-2.0, 3.0, 45.0</pre></details></td><td>Santamaria-Garcia_2016_1</td><td>18</td><td>unmatched</td><td>27567867_analysis_0</td><td>DbvFTD &gt; AbvFTD (VBM differences in selected ROIs)</td><td class="">0.135</td><td>0.017</td><td>0.053</td><td>coord_count_mismatch, low_total_score</td></tr><tr class="st-unmatched"><td><details class="analysis-coords"><summary>Santamaria-Garcia_2016_2 (17)</summary><pre class="coord-list">27.0, -7.0, -14.0
+-52.0, -72.0, 10.0
+62.0, -30.0, 42.0
+27.0, -57.0, -9.0
+24.0, 58.0, -3.0
+51.0, 39.0, 1.0
+-26.0, -52.0, 66.0
+21.0, 47.0, 25.0
+28.0, 30.0, 42.0
+0.0, -64.0, 46.0
+-6.0, 11.0, 60.0
+14.0, -67.0, 60.0
+-24.0, 26.0, 49.0
+62.0, -13.0, 9.0
+-6.0, -67.0, 21.0
+45.0, 12.0, 31.0
+-24.0, 2.0, 57.0</pre></details></td><td>Santamaria-Garcia_2016_2</td><td>17</td><td>unmatched</td><td></td><td></td><td class="">0.000</td><td>0.000</td><td>0.000</td><td>unassigned_by_global_matching, low_total_score</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-unmatched"><td>0</td><td><details class="analysis-coords"><summary>27567867_analysis_0 (9)</summary><pre class="coord-list">52.5, 9.9, 24.3
+49.4, 12.9, 17.6
+62.5, 19.9, 14.3
+39.6, 61.2, 0.8
+29.6, 69.3, 0.9
+-1.8, 30.6, 24.3
+-8.1, 12.6, -1.5
+-34.2, 9.9, -24.3
+-37.8, 10.8, -24.2</pre></details></td><td>DbvFTD &gt; AbvFTD (VBM differences in selected ROIs)</td><td>9</td><td>Santamaria-Garcia_2016_1</td><td>Santamaria-Garcia_2016_1</td><td>unmatched</td><td class="">0.135</td><td>0.017</td><td>0.053</td></tr></tbody></table></div></details></details><details class="doc-card" data-pmid="30545239" data-study-category="all_incorrect"><summary><strong>PMID 30545239</strong> | Devencchio_2018 | accepted=0 uncertain=1 unmatched=0 manual=1 auto=9 | <strong>auto&gt;manual = 8</strong></summary><p class="doc-links"><a href="https://pubmed.ncbi.nlm.nih.gov/30545239/" target="_blank" rel="noopener noreferrer">PubMed</a></p><details class="inner-accordion review-annotation" data-pmid="30545239" data-study-name="Devencchio_2018" data-study-category="all_incorrect"><summary>Human adjudication</summary><div class="review-box"><p class="resource-note">Choose <strong>Annotation Error</strong> or <strong>Extraction Error</strong>, then optionally add notes. Saved automatically in browser localStorage.</p><div class="review-decision-group"><label><input type="radio" data-role="review-decision" name="review-decision-30545239" value="annotation_error"> Annotation Error</label><label><input type="radio" data-role="review-decision" name="review-decision-30545239" value="extraction_error"> Extraction Error</label><label><input type="radio" data-role="review-decision" name="review-decision-30545239" value=""> Clear selection</label></div><div class="review-reasons" data-role="extraction-reasons" hidden><p><strong>Extraction error reasons</strong></p><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="multiple_analyses_merged_into_one"> Multiple analyses merged into one</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="single_analysis_split_into_multiple"> Single analysis split into multiple</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="section_header_parsed_as_analysis"> Section/header parsed as analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinate_rows_assigned_wrong_analysis"> Coordinate rows assigned to wrong analysis</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="contrast_label_missed_or_truncated"> Contrast label missed or truncated</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="table_structure_misparsed"> Table structure misparsed</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="coordinates_missed_or_incomplete"> Coordinates missed or incomplete</label><label class="review-reason-option"><input type="checkbox" data-role="extraction-reason" value="other_extraction_issue"> Other extraction issue</label></div><label class="review-note-label" for="review-note-30545239"><strong>Note</strong></label><textarea id="review-note-30545239" data-role="review-note" rows="3" placeholder="Add evidence, rationale, or follow-up notes..."></textarea><p class="resource-note" data-role="review-status">Not reviewed yet.</p></div></details><details class="inner-accordion" open><summary>Manual analyses</summary><div class="table-wrap"><table><thead><tr><th>Manual ID</th><th>Manual Name</th><th>Coords</th><th>Status</th><th>Matched Auto ID</th><th>Matched Auto Name</th><th>Name Score</th><th>Coord Score</th><th>Combined</th><th>Reason Codes</th></tr></thead><tbody><tr class="st-uncertain"><td><details class="analysis-coords"><summary>Devencchio_2018_1 (22)</summary><pre class="coord-list">-13.0, 40.0, 39.0
+12.0, 15.0, 57.0
+37.0, 49.0, -13.0
+7.0, 38.0, 4.0
+-6.0, -39.0, 31.0
+-53.0, 8.0, -11.0
+39.0, 18.0, -25.0
+56.0, -2.0, -5.0
+-38.0, -48.0, 24.0
+-56.0, -18.0, -19.0
+33.0, -42.0, 31.0
+-7.0, -64.0, 52.0
+16.0, -46.0, 37.0
+-7.0, -74.0, 8.0
+-39.0, -25.0, -14.0
+-3.0, -36.0, -17.0
+36.0, -32.0, -25.0
+-10.0, -16.0, 4.0
+-38.0, 13.0, -16.0
+30.0, 11.0, -21.0
+-2.0, 7.0, 27.0
+-14.0, 8.0, 11.0</pre></details></td><td>Devencchio_2018_1</td><td>22</td><td>uncertain</td><td>30545239_analysis_2</td><td>bvFTD patients&lt;healthy controls</td><td class="">0.208</td><td>0.818</td><td>0.635</td><td>coord_count_mismatch, high_coord_match</td></tr></tbody></table></div></details><details class="inner-accordion" open><summary>Automated analyses</summary><div class="table-wrap"><table><thead><tr><th>Index</th><th>Auto ID</th><th>Auto Name</th><th>Coords</th><th>Linked Manual ID</th><th>Linked Manual Name</th><th>Status</th><th>Name Score</th><th>Coord Score</th><th>Combined</th></tr></thead><tbody><tr class="st-auto-unmatched"><td>0</td><td><details class="analysis-coords"><summary>30545239_analysis_0 (2)</summary><pre class="coord-list">32.0, 29.0, 7.0
+-9.0, 13.0, -11.0</pre></details></td><td>elderly BD patients&lt;healthy controls</td><td>2</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>1</td><td><details class="analysis-coords"><summary>30545239_analysis_1 (5)</summary><pre class="coord-list">32.0, -36.0, 15.0
+-21.0, -101.0, 15.0
+17.0, -104.0, 4.0
+23.0, -25.0, -1.0
+-30.0, -43.0, 16.0</pre></details></td><td>elderly BD patients&gt;healthy controls</td><td>5</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-uncertain"><td>2</td><td><details class="analysis-coords"><summary>30545239_analysis_2 (18)</summary><pre class="coord-list">-13.0, 40.0, 39.0
+12.0, 15.0, 57.0
+37.0, 49.0, -13.0
+7.0, 38.0, 4.0
+-6.0, -39.0, 31.0
+-53.0, 8.0, -11.0
+39.0, 18.0, -25.0
+56.0, -2.0, -5.0
+-38.0, -48.0, 24.0
+-56.0, -18.0, -19.0
+33.0, -42.0, 31.0
+-7.0, -64.0, 52.0
+16.0, -46.0, 37.0
+-7.0, -74.0, 8.0
+-39.0, -25.0, -14.0
+-3.0, -36.0, -17.0
+36.0, -32.0, -25.0
+-10.0, -16.0, 4.0</pre></details></td><td>bvFTD patients&lt;healthy controls</td><td>18</td><td>Devencchio_2018_1</td><td>Devencchio_2018_1</td><td>uncertain</td><td class="">0.208</td><td>0.818</td><td>0.635</td></tr><tr class="st-auto-unmatched"><td>3</td><td><details class="analysis-coords"><summary>30545239_analysis_3 (9)</summary><pre class="coord-list">11.0, 8.0, 68.0
+27.0, 34.0, -21.0
+-59.0, 10.0, -12.0
+-13.0, -62.0, 14.0
+-24.0, -32.0, -3.0
+-40.0, -28.0, -15.0
+42.0, -49.0, -16.0
+15.0, -100.0, 15.0
+2.0, 10.0, 12.0</pre></details></td><td>bvFTD patients&lt;elderly BD patients</td><td>9</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>4</td><td><details class="analysis-coords"><summary>30545239_analysis_4 (0)</summary><pre class="coord-list">No coordinates extracted.</pre></details></td><td>elderly BD patients&lt;bvFTD patients</td><td>0</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>5</td><td><details class="analysis-coords"><summary>30545239_analysis_5 (4)</summary><pre class="coord-list">44.0, -34.0, 11.0
+-8.0, -10.0, 2.0
+8.0, -21.0, 5.0
+26.0, -39.0, -42.0</pre></details></td><td>Elderly BD patients&lt;healthy controls</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>6</td><td><details class="analysis-coords"><summary>30545239_analysis_6 (4)</summary><pre class="coord-list">-38.0, 13.0, -16.0
+30.0, 11.0, -21.0
+-2.0, 7.0, 27.0
+-14.0, 8.0, 11.0</pre></details></td><td>bvFTD patients&lt;healthy controls</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>7</td><td><details class="analysis-coords"><summary>30545239_analysis_7 (4)</summary><pre class="coord-list">-4.0, 42.0, -14.0
+-36.0, 17.0, -16.0
+-4.0, 7.0, 29.0
+-6.0, 19.0, -6.0</pre></details></td><td>bvFTD patients&lt;elderly BD patients</td><td>4</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr><tr class="st-auto-unmatched"><td>8</td><td><details class="analysis-coords"><summary>30545239_analysis_8 (3)</summary><pre class="coord-list">51.0, -6.0, 26.0
+-14.0, -56.0, -24.0
+24.0, -44.0, -21.0</pre></details></td><td>Elderly BD patients&lt;bvFTD patients</td><td>3</td><td></td><td></td><td>not_matched</td><td class=""></td><td></td><td></td></tr></tbody></table></div></details></details></details></section>
+  
+  
+<script>
+(() => {
+  const STORAGE_KEY = "fuzzy_matching_human_review_v1";
+  const reviewPanels = Array.from(document.querySelectorAll(".review-annotation"));
+  if (!reviewPanels.length) {
+    return;
+  }
+
+  const REVIEW_TOTAL = 4;
+  const progressEl = document.getElementById("review-progress");
+  const exportJsonBtn = document.getElementById("review-export-json");
+  const exportCsvBtn = document.getElementById("review-export-csv");
+  const clearBtn = document.getElementById("review-clear");
+
+  function readStore() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        return { entries: {} };
+      }
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") {
+        return { entries: {} };
+      }
+      if (!parsed.entries || typeof parsed.entries !== "object") {
+        parsed.entries = {};
+      }
+      return parsed;
+    } catch (_err) {
+      return { entries: {} };
+    }
+  }
+
+  function writeStore(store) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    } catch (_err) {
+      // best-effort only
+    }
+  }
+
+  function escapeCsvValue(value) {
+    const text = String(value ?? "");
+    if (text.includes(",") || text.includes("\n") || text.includes("\"")) {
+      return "\""+text.replace(/\"/g, "\"\"")+"\"";
+    }
+    return text;
+  }
+
+  function buildCsv(entries) {
+    const header = [
+      "pmid",
+      "study_name",
+      "study_category",
+      "decision",
+      "extraction_reasons",
+      "note",
+      "updated_at"
+    ];
+    const lines = [header.join(",")];
+    for (const row of entries) {
+      lines.push([
+        escapeCsvValue(row.pmid),
+        escapeCsvValue(row.study_name),
+        escapeCsvValue(row.study_category),
+        escapeCsvValue(row.decision),
+        escapeCsvValue((row.extraction_reasons || []).join("|")),
+        escapeCsvValue(row.note || ""),
+        escapeCsvValue(row.updated_at || "")
+      ].join(","));
+    }
+    return lines.join("\n");
+  }
+
+  function downloadFile(filename, content, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function getDecision(panel) {
+    const selected = panel.querySelector('input[data-role="review-decision"]:checked');
+    return selected ? selected.value : "";
+  }
+
+  function setExtractionVisibility(panel) {
+    const reasonsWrap = panel.querySelector('[data-role="extraction-reasons"]');
+    if (!reasonsWrap) {
+      return;
+    }
+    const isExtraction = getDecision(panel) === "extraction_error";
+    reasonsWrap.hidden = !isExtraction;
+    const checkboxes = reasonsWrap.querySelectorAll('input[data-role="extraction-reason"]');
+    checkboxes.forEach((checkbox) => {
+      checkbox.disabled = !isExtraction;
+    });
+  }
+
+  function setStatus(panel, decision) {
+    const statusEl = panel.querySelector('[data-role="review-status"]');
+    if (!statusEl) {
+      return;
+    }
+    if (!decision) {
+      statusEl.textContent = "Not reviewed yet.";
+    } else if (decision === "annotation_error") {
+      statusEl.textContent = "Saved: Annotation Error";
+    } else if (decision === "extraction_error") {
+      statusEl.textContent = "Saved: Extraction Error";
+    } else {
+      statusEl.textContent = "Saved";
+    }
+  }
+
+  function collectEntry(panel) {
+    const pmid = panel.getAttribute("data-pmid") || "";
+    const studyName = panel.getAttribute("data-study-name") || "";
+    const studyCategory = panel.getAttribute("data-study-category") || "";
+    const decision = getDecision(panel);
+    const extractionReasons = Array.from(
+      panel.querySelectorAll('input[data-role="extraction-reason"]:checked')
+    ).map((node) => node.value);
+    const noteNode = panel.querySelector('textarea[data-role="review-note"]');
+    const note = noteNode ? noteNode.value.trim() : "";
+    return {
+      pmid,
+      study_name: studyName,
+      study_category: studyCategory,
+      decision,
+      extraction_reasons: decision === "extraction_error" ? extractionReasons : [],
+      note,
+      updated_at: new Date().toISOString(),
+    };
+  }
+
+  function loadPanel(panel, entry) {
+    if (!entry) {
+      setExtractionVisibility(panel);
+      setStatus(panel, "");
+      return;
+    }
+    const decision = entry.decision || "";
+    const radios = panel.querySelectorAll('input[data-role="review-decision"]');
+    radios.forEach((radio) => {
+      radio.checked = radio.value === decision;
+    });
+    const reasons = new Set(Array.isArray(entry.extraction_reasons) ? entry.extraction_reasons : []);
+    const reasonChecks = panel.querySelectorAll('input[data-role="extraction-reason"]');
+    reasonChecks.forEach((checkbox) => {
+      checkbox.checked = reasons.has(checkbox.value);
+    });
+    const noteNode = panel.querySelector('textarea[data-role="review-note"]');
+    if (noteNode) {
+      noteNode.value = entry.note || "";
+    }
+    setExtractionVisibility(panel);
+    setStatus(panel, decision);
+  }
+
+  function updateProgress(entries) {
+    if (!progressEl) {
+      return;
+    }
+    const completed = Object.values(entries).filter((entry) => {
+      return entry && (entry.decision === "annotation_error" || entry.decision === "extraction_error");
+    }).length;
+    progressEl.innerHTML = "<strong>Review progress:</strong> " + completed + " / " + REVIEW_TOTAL + " completed";
+  }
+
+  const store = readStore();
+  reviewPanels.forEach((panel) => {
+    const pmid = panel.getAttribute("data-pmid") || "";
+    loadPanel(panel, store.entries[pmid]);
+  });
+  updateProgress(store.entries);
+
+  function persistPanel(panel) {
+    const entry = collectEntry(panel);
+    if (!entry.pmid) {
+      return;
+    }
+    if (!entry.decision && !entry.note && entry.extraction_reasons.length === 0) {
+      delete store.entries[entry.pmid];
+      writeStore(store);
+      setExtractionVisibility(panel);
+      setStatus(panel, "");
+      updateProgress(store.entries);
+      return;
+    }
+    store.entries[entry.pmid] = entry;
+    writeStore(store);
+    setExtractionVisibility(panel);
+    setStatus(panel, entry.decision);
+    updateProgress(store.entries);
+  }
+
+  reviewPanels.forEach((panel) => {
+    panel.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+      if (target.matches('input[data-role="review-decision"]')) {
+        setExtractionVisibility(panel);
+      }
+      persistPanel(panel);
+    });
+    panel.addEventListener("input", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+      if (target.matches('textarea[data-role="review-note"]')) {
+        persistPanel(panel);
+      }
+    });
+  });
+
+  function getExportEntries() {
+    const entries = [];
+    for (const panel of reviewPanels) {
+      const pmid = panel.getAttribute("data-pmid") || "";
+      const stored = store.entries[pmid];
+      if (!stored) {
+        continue;
+      }
+      if (stored.decision === "annotation_error" || stored.decision === "extraction_error" || stored.note) {
+        entries.push(stored);
+      }
+    }
+    entries.sort((a, b) => {
+      const aP = String(a.pmid || "");
+      const bP = String(b.pmid || "");
+      if (aP.length !== bP.length) {
+        return aP.length - bP.length;
+      }
+      return aP.localeCompare(bP);
+    });
+    return entries;
+  }
+
+  if (exportJsonBtn) {
+    exportJsonBtn.addEventListener("click", () => {
+      const entries = getExportEntries();
+      const payload = {
+        generated_at: new Date().toISOString(),
+        total_review_studies: REVIEW_TOTAL,
+        completed_reviews: entries.filter((entry) => entry.decision).length,
+        entries,
+      };
+      downloadFile("fuzzy_matching_human_review.json", JSON.stringify(payload, null, 2), "application/json");
+    });
+  }
+
+  if (exportCsvBtn) {
+    exportCsvBtn.addEventListener("click", () => {
+      const entries = getExportEntries();
+      const csv = buildCsv(entries);
+      downloadFile("fuzzy_matching_human_review.csv", csv, "text/csv;charset=utf-8");
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      const ok = window.confirm("Clear all saved human review annotations for this report?");
+      if (!ok) {
+        return;
+      }
+      store.entries = {};
+      writeStore(store);
+      reviewPanels.forEach((panel) => {
+        loadPanel(panel, null);
+      });
+      updateProgress(store.entries);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
