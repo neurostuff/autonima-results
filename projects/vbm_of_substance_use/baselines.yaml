@@ -1,0 +1,93 @@
+# Per-sub-annotation search baselines for vbm_of_substance_use.
+#
+# WHAT THIS IS FOR
+#
+# The project's `all_studies` baseline answers "how good is a coarse, Neurosynth-style
+# meta-analysis of everything a broad PubMed search returns?". But this benchmark ran ONE
+# broad search and then divided the hits into six drug classes. A researcher targeting only
+# the alcohol sub-meta-analysis would not have used the broad query -- they would have put
+# "alcohol" in the search. Comparing our alcohol map against a baseline built from the broad
+# search therefore flatters us: it gives the baseline a deliberately worse search than a
+# real competitor would run.
+#
+# Each entry below is a FAIRER baseline for one sub-annotation: the same modality and
+# publication-type constraints, but a topic clause narrowed to that drug class.
+#
+# HOW A QUERY IS ASSEMBLED
+#
+#   (shared.modality) AND (topic) AND <date range>  NOT (shared.exclude)
+#
+# Set `query:` on an entry to override that assembly entirely (for hand-tuning). The
+# assembled or overridden string is what gets written into the generated run config, so
+# whatever ran is always recoverable from the run's config.executed.yaml.
+#
+# `manual_annotation` must be a key in nmb_mappings.json -- that is what ties each baseline
+# to the manual sub-meta-analysis it is a comparison for.
+#
+# NOTE on `all_drug_classes`: its topic clause is the broad substance clause from v2.yaml
+# verbatim, so this baseline reproduces the project's existing search. It is the control --
+# the arm that shows what the un-narrowed baseline was worth.
+
+meta_pmid: "36115222"
+
+shared:
+  # Morphometry / structural-imaging clause, taken verbatim from v2.yaml.
+  modality: >-
+    "voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab] OR
+    "grey matter volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab]
+    OR "cortical thickness"[tiab] OR "gray matter reduc*"[tiab] OR "grey matter reduc*"[tiab]
+    OR "gray matter abnormal*"[tiab] OR "grey matter abnormal*"[tiab] OR
+    "reduced gray matter"[tiab] OR "reduced grey matter"[tiab] OR
+    "tensor-based morphometr*"[tiab] OR "brain volumetric"[tiab] OR "brain morphometr*"[tiab]
+  # Applied as NOT (...), verbatim from v2.yaml.
+  exclude: >-
+    Editorial[pt] OR Letter[pt] OR Comment[pt] OR "Case Reports"[pt] OR News[pt]
+  date_from: null
+  date_to: "2019/7/31"
+
+baselines:
+  - manual_annotation: all_drug_classes
+    note: >-
+      Control arm. Broad substance clause verbatim from v2.yaml, so this reproduces the
+      project's existing search and shows what the un-narrowed baseline is worth.
+    topic: >-
+      "Substance-Related Disorders"[Mesh] OR addiction[tiab] OR addict*[tiab] OR
+      "substance use"[tiab] OR "substance abuse"[tiab] OR alcoholism[tiab] OR
+      "alcohol depend*"[tiab] OR "alcohol use disorder*"[tiab] OR "alcohol abuse"[tiab] OR
+      smoker*[tiab] OR "nicotine depend*"[tiab] OR "cannabis use"[tiab] OR
+      "cannabis depend*"[tiab] OR "marijuana use"[tiab] OR "cocaine depend*"[tiab] OR
+      "cocaine use"[tiab] OR "methamphetamine depend*"[tiab] OR "heroin depend*"[tiab] OR
+      "opioid use disorder*"[tiab] OR "betel quid"[tiab] OR psychedelic*[tiab] OR
+      stimulant*[tiab] OR amphetamine*[tiab]
+
+  - manual_annotation: alcohol
+    topic: >-
+      "Alcohol-Related Disorders"[Mesh] OR "Alcohol Drinking"[Mesh] OR alcoholism[tiab] OR
+      alcoholic*[tiab] OR "alcohol depend*"[tiab] OR "alcohol use disorder*"[tiab] OR
+      "alcohol abuse"[tiab] OR "alcohol misuse"[tiab] OR "alcohol addiction"[tiab] OR
+      "heavy drinking"[tiab] OR "binge drinking"[tiab]
+
+  - manual_annotation: nicotine
+    topic: >-
+      "Tobacco Use Disorder"[Mesh] OR "Smoking"[Mesh] OR nicotine[tiab] OR tobacco[tiab] OR
+      smoking[tiab] OR smoker*[tiab] OR "nicotine depend*"[tiab] OR
+      "cigarette smok*"[tiab] OR "tobacco use"[tiab]
+
+  - manual_annotation: opioids
+    topic: >-
+      "Opioid-Related Disorders"[Mesh] OR "Heroin Dependence"[Mesh] OR opioid*[tiab] OR
+      opiate*[tiab] OR heroin[tiab] OR morphine[tiab] OR methadone[tiab] OR
+      buprenorphine[tiab] OR "opioid use disorder*"[tiab] OR "heroin depend*"[tiab]
+
+  - manual_annotation: stimulants
+    topic: >-
+      "Cocaine-Related Disorders"[Mesh] OR "Amphetamine-Related Disorders"[Mesh] OR
+      cocaine[tiab] OR "crack cocaine"[tiab] OR amphetamine*[tiab] OR
+      methamphetamine[tiab] OR stimulant*[tiab] OR "psychostimulant*"[tiab] OR
+      "cocaine depend*"[tiab] OR "methamphetamine depend*"[tiab]
+
+  - manual_annotation: cannabis
+    topic: >-
+      "Marijuana Abuse"[Mesh] OR "Cannabis"[Mesh] OR cannabis[tiab] OR marijuana[tiab] OR
+      marihuana[tiab] OR THC[tiab] OR tetrahydrocannabinol[tiab] OR "cannabis use"[tiab] OR
+      "cannabis depend*"[tiab] OR "cannabis use disorder*"[tiab]
