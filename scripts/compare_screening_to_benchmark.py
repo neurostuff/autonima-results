@@ -10,32 +10,15 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
+import benchmark_pmids
+import nmb_mapping
+from benchmark_pmids import normalize_pmid, normalize_pmid_list
+
 import pandas as pd
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-def normalize_pmid(value: Any) -> str | None:
-    """Normalize PMID values to plain string IDs."""
-    if pd.isna(value):
-        return None
-
-    pmid = str(value).strip()
-    if not pmid or pmid.lower() == "nan":
-        return None
-
-    # Common CSV artifact when integers are parsed as floats.
-    if pmid.endswith(".0"):
-        pmid = pmid[:-2]
-
-    return pmid
-
-
-def normalize_pmid_list(values: List[Any]) -> List[str]:
-    """Normalize a list of PMIDs, dropping missing values."""
-    return [pmid for value in values if (pmid := normalize_pmid(value)) is not None]
 
 
 def load_json_if_exists(path: Path) -> Dict[str, Any] | None:
@@ -142,42 +125,15 @@ def resolve_run_root_and_outputs(project_dir: Path) -> tuple[Path, Path]:
 
 
 def load_meta_pmids(meta_pmids_path: str, meta_analysis_pmid: str | None = None) -> List[str]:
+    """Load gold-standard included study PMIDs (see benchmark_pmids.load_meta_pmids).
+
+    strict_csv=False preserves this script's long-standing lenient behaviour: a CSV
+    with neither meta_pmid/study_pmid nor a pmid column falls through to being read
+    as a headerless PMID list rather than raising.
     """
-    Load gold-standard included study PMIDs from either:
-    - a text file with one PMID per line, or
-    - an included_studies CSV filtered by meta-analysis PMID.
-    """
-    path_lower = meta_pmids_path.lower()
-
-    if path_lower.endswith(".csv"):
-        df = pd.read_csv(meta_pmids_path)
-        columns = set(df.columns)
-        has_relation_cols = {"meta_pmid", "study_pmid"}.issubset(columns)
-
-        if has_relation_cols:
-            if not meta_analysis_pmid:
-                raise ValueError(
-                    "CSV input with columns 'meta_pmid' and 'study_pmid' requires "
-                    "--meta-analysis-pmid (or nmb_mappings.json with 'meta_pmid' in "
-                    "<directory>/ or its parent directory)."
-                )
-
-            filtered = df[df["meta_pmid"].astype(str) == str(meta_analysis_pmid)]
-            pmids = normalize_pmid_list(filtered["study_pmid"].tolist())
-
-            if not pmids:
-                raise ValueError(
-                    f"No included study PMIDs found for meta-analysis PMID "
-                    f"{meta_analysis_pmid} in {meta_pmids_path}."
-                )
-            return pmids
-
-        if "pmid" in columns:
-            return normalize_pmid_list(df["pmid"].tolist())
-
-    # Backward-compatible path: text file with one PMID per line.
-    df = pd.read_csv(meta_pmids_path, header=None, names=["pmid"])
-    return normalize_pmid_list(df["pmid"].tolist())
+    return benchmark_pmids.load_meta_pmids(
+        meta_pmids_path, meta_analysis_pmid, strict_csv=False
+    )
 
 
 def resolve_meta_analysis_pmid(
@@ -196,20 +152,12 @@ def resolve_meta_analysis_pmid(
     seen_paths: set[Path] = set()
 
     for mapping_dir in mapping_dirs:
-        mapping_path = mapping_dir / "nmb_mappings.json"
-        if mapping_path in seen_paths:
+        mapping_path = nmb_mapping.resolve_mapping_path(mapping_dir, required=False)
+        if mapping_path is None or mapping_path in seen_paths:
             continue
         seen_paths.add(mapping_path)
 
-        if not mapping_path.exists():
-            continue
-
-        with mapping_path.open("r", encoding="utf-8") as f:
-            payload = json.load(f)
-        if not isinstance(payload, dict):
-            raise ValueError(f"Invalid mapping format at {mapping_path}: expected JSON object")
-
-        resolved = normalize_pmid(payload.get("meta_pmid"))
+        resolved = normalize_pmid(nmb_mapping.load_meta_pmid(mapping_path))
         if resolved is None:
             continue
 

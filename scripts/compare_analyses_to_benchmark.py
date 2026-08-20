@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Run analysis matching + annotation review reports in one script.
 
-This combines and inlines logic from:
-- scripts/run_fuzzy_analysis_matching.py
-- scripts/generate_annotation_review_reports.py
+Supersedes two earlier scripts whose logic is now inlined here (both removed):
+run_fuzzy_analysis_matching.py and generate_annotation_review_reports.py.
+
+Two phases, both driven from this file:
+  1. matching -> writes match_results_overall.json + analysis_fuzzy_matching_report.html
+     into --match-output-dir (default: <project-output-dir>/reports)
+  2. review   -> reads those via --match-input-dir and writes per-annotation HTML
+     into --review-output-dir
 """
 
 from __future__ import annotations
@@ -23,6 +28,8 @@ from typing import Any
 from urllib.parse import quote
 
 import numpy as np
+
+import nmb_mapping
 
 try:
     from scipy.optimize import linear_sum_assignment
@@ -3305,10 +3312,9 @@ def resolve_project_annotation_mapping_path(
         return resolved
 
     project_name = infer_project_name(project_output_dir)
-    inferred = (PROJECTS_ROOT / project_name / "nmb_mappings.json").resolve()
-    if inferred.exists():
-        return inferred
-    return None
+    return nmb_mapping.resolve_mapping_path(
+        PROJECTS_ROOT / project_name, required=False
+    )
 
 def configure_active_annotations(mapping_path: Path | None) -> None:
     global ACTIVE_ANNOTATION_NAMES
@@ -3326,30 +3332,13 @@ def configure_active_annotations(mapping_path: Path | None) -> None:
         )
         return
 
-    payload = load_json(mapping_path)
-    if not isinstance(payload, dict):
-        raise ValueError(f"Invalid annotation mapping format at {mapping_path}: expected JSON object")
-
-    raw_mappings: Any
-    if "annotation_mappings" in payload:
-        raw_mappings = payload.get("annotation_mappings")
-        if not isinstance(raw_mappings, dict):
-            raise ValueError(
-                f"Invalid annotation mapping format at {mapping_path}: "
-                "expected 'annotation_mappings' to be a JSON object"
-            )
-    else:
-        raw_mappings = {
-            key: value
-            for key, value in payload.items()
-            if str(key).strip() != "meta_pmid"
-        }
+    # Nested/flat layout handling and blank/container skipping live in nmb_mapping;
+    # clean_text() on top strips control characters, which that shared parser does not.
+    mapping_pairs = nmb_mapping.load_mapping_pairs(mapping_path, require_nonempty=False)
 
     annotation_names: list[str] = []
     note_keys_by_annotation: dict[str, list[str]] = defaultdict(list)
-    for manual_key_raw, auto_annotation_raw in raw_mappings.items():
-        if isinstance(auto_annotation_raw, (dict, list)):
-            continue
+    for manual_key_raw, auto_annotation_raw in mapping_pairs:
         manual_key = clean_text(str(manual_key_raw)).strip()
         auto_annotation = clean_text(str(auto_annotation_raw)).strip()
         if not manual_key or not auto_annotation:
@@ -3868,7 +3857,9 @@ def load_match_results_by_annotation(match_input_dir: Path) -> tuple[dict[str, A
     raise FileNotFoundError(
         f"Missing match result files ({missing_list}) under {match_input_dir}. "
         "Expected either match_results_<annotation>.json files or match_results_overall.json. "
-        "Run run_fuzzy_analysis_matching.py first."
+        "Run this script's matching phase first (it writes match_results_overall.json to "
+        "--match-output-dir, default <project-output-dir>/reports), or point "
+        "--match-input-dir at an existing results directory."
     )
 
 def build_manual_truth_from_match_results(

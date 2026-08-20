@@ -25,6 +25,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+import nmb_mapping
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PROJECTS_ROOT = REPO_ROOT / "projects"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "reports" / "cross_project_publication_plots"
@@ -114,10 +116,13 @@ def select_run(project_dir: Path) -> str | None:
 def collect(projects_root: Path) -> list[dict]:
     out: list[dict] = []
     for project_dir in sorted(p for p in projects_root.iterdir() if p.is_dir()):
-        mapping_path = project_dir / "nmb_mappings.json"
-        if not mapping_path.exists():
+        mapping_path = nmb_mapping.resolve_mapping_path(project_dir, required=False)
+        if mapping_path is None:
             continue
-        mapping = (json.loads(mapping_path.read_text()) or {}).get("annotation_mappings") or {}
+        try:
+            mapping = nmb_mapping.load_mappings(mapping_path, require_nonempty=False)
+        except (ValueError, json.JSONDecodeError):
+            continue
         if not mapping:
             continue
         run = select_run(project_dir)

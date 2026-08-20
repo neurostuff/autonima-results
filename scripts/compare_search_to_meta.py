@@ -7,62 +7,7 @@ import argparse
 import sys
 from typing import List, Dict, Any, Tuple
 
-
-def load_meta_pmids(meta_pmids_path: str, meta_analysis_pmid: str | None = None) -> List[str]:
-    """
-    Load gold-standard included study PMIDs from either:
-    - a text file with one PMID per line, or
-    - an included_studies CSV filtered by meta-analysis PMID.
-    """
-    path_lower = meta_pmids_path.lower()
-
-    if path_lower.endswith(".csv"):
-        df = pd.read_csv(meta_pmids_path)
-        columns = set(df.columns)
-
-        if {"meta_pmid", "study_pmid"}.issubset(columns):
-            if not meta_analysis_pmid:
-                raise ValueError(
-                    "CSV input with columns 'meta_pmid' and 'study_pmid' requires "
-                    "--meta-analysis-pmid."
-                )
-
-            filtered = df[df["meta_pmid"].astype(str).str.strip() == str(meta_analysis_pmid).strip()]
-            pmids = (
-                filtered["study_pmid"]
-                .dropna()
-                .astype(str)
-                .str.strip()
-                .tolist()
-            )
-            if not pmids:
-                raise ValueError(
-                    f"No included study PMIDs found for meta-analysis PMID "
-                    f"{meta_analysis_pmid} in {meta_pmids_path}."
-                )
-            return pmids
-
-        if "pmid" in columns:
-            return (
-                df["pmid"]
-                .dropna()
-                .astype(str)
-                .str.strip()
-                .tolist()
-            )
-
-        raise ValueError(
-            f"CSV file {meta_pmids_path} must contain either "
-            f"'meta_pmid' and 'study_pmid' columns, or a 'pmid' column."
-        )
-
-    return (
-        pd.read_csv(meta_pmids_path, header=None, names=["pmid"])["pmid"]
-        .dropna()
-        .astype(str)
-        .str.strip()
-        .tolist()
-    )
+from benchmark_pmids import load_meta_pmids
 
 
 def load_search_pmids(search_results_path: str) -> List[str]:

@@ -24,6 +24,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
+
+import nmb_mapping
 from typing import Any
 
 import matplotlib.pyplot as plt
@@ -277,12 +279,7 @@ def discover_annotation_only_runs(project_dir: Path) -> list[Path]:
 
 
 def resolve_mapping_path(project_dir: Path) -> Path:
-    candidates = [project_dir / "nmb_mappings.json", project_dir / "nmb_mapping.json"]
-    existing = next((path for path in candidates if path.exists()), None)
-    if existing is None:
-        searched = ", ".join(str(path) for path in candidates)
-        raise FileNotFoundError(f"Missing mapping file for project {project_dir.name}. Searched: {searched}")
-    return existing
+    return nmb_mapping.resolve_mapping_path(project_dir)
 
 
 def load_mapping_manual_names(mapping_path: Path) -> list[str]:
@@ -290,26 +287,7 @@ def load_mapping_manual_names(mapping_path: Path) -> list[str]:
 
 
 def load_mapping_pairs(mapping_path: Path) -> list[tuple[str, str]]:
-    payload = read_json(mapping_path)
-    if not isinstance(payload, dict):
-        raise ValueError(f"Mapping file must be a JSON object: {mapping_path}")
-    raw = payload.get("annotation_mappings", payload)
-    if not isinstance(raw, dict):
-        raise ValueError(f"Invalid mapping payload in {mapping_path}: expected object mappings")
-
-    mapping_pairs: list[tuple[str, str]] = []
-    for manual_name, auto_name in raw.items():
-        if str(manual_name).strip() == "meta_pmid":
-            continue
-        if isinstance(auto_name, (dict, list)):
-            continue
-        manual_name_clean = str(manual_name).strip()
-        auto_name_clean = str(auto_name).strip()
-        if manual_name_clean and auto_name_clean:
-            mapping_pairs.append((manual_name_clean, auto_name_clean))
-    if not mapping_pairs:
-        raise ValueError(f"No valid mapping entries found in {mapping_path}")
-    return mapping_pairs
+    return nmb_mapping.load_mapping_pairs(mapping_path)
 
 
 def collect_run_records(project_dir: Path) -> tuple[list[RunRecord], list[dict[str, str]]]:
