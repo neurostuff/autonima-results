@@ -42,6 +42,15 @@ AGGREGATE_ANALYSIS_NAME_VARIANTS = (
     ("all_analyses", "all_studies", "all_abstract"),
     ("all_analyses", "all_search", "all_abstract_screened"),
     ("all_analyses", "all_studies"),
+    # Single-name fallback. For an annotation-only run there is no search or abstract
+    # screening stage, so all_analyses / all_studies / all_abstract would be the SAME
+    # map; such runs therefore emit only all_analyses by design. Every variant above
+    # requires >=2 maps, so those runs matched none, were skipped wholesale, and lost
+    # all_analyses despite it existing -- which silently blanked the baseline in the
+    # fair cross-project report (dementia and executive_function both showed no
+    # baseline and were dropped from the dice-delta-vs-baseline plot). Emitting one
+    # aggregate is correct, not a misconfiguration, so a 1-name set must be honoured.
+    ("all_analyses",),
 )
 MANUAL_META_MARKERS = ("manual_meta", "manual-meta", "manual metas", "manual_metas")
 ANALYSIS_ID_RE = re.compile(r"^(?P<pmid>.+?)_analysis_(?P<index>\d+)$")
@@ -748,7 +757,7 @@ def collect_aggregate_paths(
             continue
 
         matched_variant: tuple[str, ...] | None = None
-        for variant in AGGREGATE_ANALYSIS_NAME_VARIANTS:
+        for variant in sorted(AGGREGATE_ANALYSIS_NAME_VARIANTS, key=len, reverse=True):
             if all(
                 (run_info.meta_results_dir / aggregate_name / map_filename).exists()
                 for aggregate_name in variant
