@@ -40,6 +40,20 @@ projects/<project>/baselines.yaml
 
 Query assembly:  (modality) AND (topic) AND <dates>  NOT (exclude)
 
+LAYOUT
+------
+Generated configs and their run outputs are kept together under a single folder so they
+do not clutter the project root alongside the hand-written v*.yaml runs:
+
+    projects/<project>/baselines.yaml            the spec (hand-written)
+    projects/<project>/baselines/<key>.yaml      generated config, do not hand-edit
+    projects/<project>/baselines/<key>/          that baseline's run outputs
+    projects/<project>/reports/baseline_*        cross-baseline reports
+
+autonima derives a run's output dir from the config path (config_path.with_suffix("")),
+so nesting the config under baselines/ nests its outputs there automatically. The older
+flat layout (<project>/baseline-<key>{,.yaml}) is still read by the evaluator.
+
 USAGE
 -----
     # inspect the assembled queries and PubMed hit counts, write nothing
@@ -68,7 +82,8 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PIXI_PYTHON = REPO_ROOT / ".pixi" / "envs" / "default" / "bin" / "python"
 AUTONIMA = REPO_ROOT / ".pixi" / "envs" / "default" / "bin" / "autonima"
-BASELINE_PREFIX = "baseline-"
+BASELINE_PREFIX = "baseline-"   # legacy flat layout: <project>/baseline-<key>{,.yaml}
+BASELINES_DIR = "baselines"     # current layout: <project>/baselines/<key>{,.yaml}
 # With screening skipped nothing is excluded, so this column is every searched study we
 # could parse coordinates from. `all_studies`/`all_abstract` are not emitted in that case.
 BASELINE_COLUMN = "all_analyses"
@@ -404,8 +419,9 @@ def main() -> int:
             rows.append({"manual_annotation": key, "query": query, "pubmed_hits": hits, **row_recall})
             continue
 
-        cfg_name = f"{BASELINE_PREFIX}{key}.yaml"
-        cfg_path = project_dir / cfg_name
+        baselines_dir = project_dir / BASELINES_DIR
+        baselines_dir.mkdir(parents=True, exist_ok=True)
+        cfg_path = baselines_dir / f"{key}.yaml"
         cfg = build_run_config(
             project_dir=project_dir, template_run=template_run, query=query, spec=spec
         )
@@ -421,7 +437,9 @@ def main() -> int:
         cfg_path.write_text(header + yaml.safe_dump(cfg, sort_keys=False, width=100), encoding="utf-8")
         print(f"  wrote config: {cfg_path.relative_to(REPO_ROOT)}")
 
-        run_dir = project_dir / f"{BASELINE_PREFIX}{key}"
+        # autonima derives the run dir from the config path (config_path.with_suffix("")),
+        # so nesting the config under baselines/ nests the outputs there too.
+        run_dir = baselines_dir / key
         row: dict[str, Any] = {"manual_annotation": key, "query": query, "pubmed_hits": hits,
                                "config": cfg_path.relative_to(REPO_ROOT).as_posix(), **row_recall}
         if args.run:
@@ -455,7 +473,9 @@ def main() -> int:
         missing: dict[str, list[str]] = {}
         for entry in entries:
             key = entry["manual_annotation"]
-            path = project_dir / f"{BASELINE_PREFIX}{key}" / "outputs" / "missing_fulltexts.txt"
+            path = project_dir / BASELINES_DIR / key / "outputs" / "missing_fulltexts.txt"
+            if not path.exists():   # legacy flat layout
+                path = project_dir / f"{BASELINE_PREFIX}{key}" / "outputs" / "missing_fulltexts.txt"
             if path.exists():
                 missing[key] = sorted({x.strip() for x in path.read_text().split() if x.strip()})
         if missing:

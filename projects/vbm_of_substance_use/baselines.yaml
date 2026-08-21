@@ -47,6 +47,11 @@ shared:
 
 baselines:
   - manual_annotation: all_drug_classes
+    # Marks this entry as the like-vintage broad control. The evaluator uses this
+    # arm as `baseline_broad` in preference to the project run's `all_studies`
+    # column, which is only correct if that run shares the baselines' retrieval
+    # vintage -- it usually does not.
+    broad_control: true
     note: >-
       Control arm. Broad substance clause verbatim from v2.yaml, so this reproduces the
       project's existing search and shows what the un-narrowed baseline is worth.

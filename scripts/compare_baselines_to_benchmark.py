@@ -36,6 +36,11 @@ FDR-corrected maps, voxels finite across all compared maps, Dice at z > 1.96, Pe
 R^2 is reported alongside Dice because Dice depends on a threshold and so moves with how
 many studies entered a map, which is exactly what differs between these arms.
 
+LAYOUT
+------
+Baseline runs are read from projects/<project>/baselines/<key>/, falling back to the
+legacy flat projects/<project>/baseline-<key>/ when that is what exists.
+
 USAGE
 -----
     python scripts/compare_baselines_to_benchmark.py --project vbm_of_substance_use
@@ -63,7 +68,8 @@ DEFAULT_MANUAL_ANALYSIS_BASE = Path("/home/zorro/repos/neurometabench/analysis")
 DEFAULT_MANUAL_NIMADS_BASE = Path("/home/zorro/repos/neurometabench/data/nimads")
 CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
 DICE_THRESHOLD = 1.96
-BASELINE_PREFIX = "baseline-"
+BASELINE_PREFIX = "baseline-"   # legacy flat layout
+BASELINES_DIR = "baselines"     # current layout: <project>/baselines/<key>/
 BROAD_COLUMN = "all_studies"       # project-wide, screening-free pool from the broad search
 SUB_COLUMN = "all_analyses"        # the baseline run skips screening, so this is its pool
 
@@ -116,6 +122,17 @@ def column_pool(run_dir: Path, column: str) -> dict[str, Any]:
     return out
 
 
+def baseline_run_dir(project_dir: Path, key: str) -> Path:
+    """Run dir for a baseline, preferring the nested layout over the legacy flat one."""
+    nested = project_dir / BASELINES_DIR / key
+    if (nested / "outputs").is_dir():
+        return nested
+    legacy = project_dir / f"{BASELINE_PREFIX}{key}"
+    if (legacy / "outputs").is_dir():
+        return legacy
+    return nested   # report the expected path when neither exists
+
+
 def pick_autonima_run(project_dir: Path, explicit: str | None) -> str:
     if explicit:
         if not (project_dir / explicit / "outputs" / "meta_analysis_results").is_dir():
@@ -126,6 +143,7 @@ def pick_autonima_run(project_dir: Path, explicit: str | None) -> str:
         for p in sorted(project_dir.iterdir())
         if p.is_dir()
         and not p.name.startswith(BASELINE_PREFIX)
+        and p.name != BASELINES_DIR
         and (p / "outputs" / "meta_analysis_results").is_dir()
     ]
     if not candidates:
@@ -163,6 +181,29 @@ def main() -> int:
 
     auto_run = pick_autonima_run(project_dir, args.autonima_run)
     auto_meta = project_dir / auto_run / "outputs" / "meta_analysis_results"
+
+    # Resolve the broad arm. Prefer a baseline entry flagged `broad_control: true`,
+    # because it was run in the same retrieval vintage as the other baselines. The
+    # project run's `all_studies` column is the fallback, but it is only comparable if
+    # that run happens to share the baselines' vintage -- typically it predates them,
+    # which silently understates the broad baseline (its pool is smaller, and a smaller
+    # screening-free pool scores HIGHER, so the bias favours the baseline).
+    broad_key = next(
+        (e["manual_annotation"] for e in (spec.get("baselines") or []) if e.get("broad_control")),
+        None,
+    )
+    broad_path: Path | None = None
+    broad_label = f"{auto_run}:{BROAD_COLUMN}"
+    if broad_key:
+        candidate = (baseline_run_dir(project_dir, broad_key) / "outputs"
+                     / "meta_analysis_results" / SUB_COLUMN / args.map_filename)
+        if candidate.exists():
+            broad_path = candidate
+            broad_label = f"{baseline_run_dir(project_dir, broad_key).name}:{SUB_COLUMN}"
+        else:
+            print(f"NOTE: broad_control {broad_key!r} has no map yet; "
+                  f"falling back to {auto_run}:{BROAD_COLUMN} (vintage may differ)", file=sys.stderr)
+    print(f"broad arm      : {broad_label}")
     print(f"project        : {args.project}")
     print(f"autonima run   : {auto_run}")
     print(f"map            : {args.map_filename}   dice z > {args.dice_threshold}")
@@ -174,14 +215,16 @@ def main() -> int:
         auto_col = auto_col_for.get(key, key)
         arms = {
             "autonima": auto_meta / auto_col / args.map_filename,
-            "baseline_broad": auto_meta / BROAD_COLUMN / args.map_filename,
-            "baseline_sub": project_dir / f"{BASELINE_PREFIX}{key}" / "outputs"
+            "baseline_broad": broad_path or (auto_meta / BROAD_COLUMN / args.map_filename),
+            "baseline_sub": baseline_run_dir(project_dir, key) / "outputs"
                             / "meta_analysis_results" / SUB_COLUMN / args.map_filename,
         }
+        broad_pool = (column_pool(baseline_run_dir(project_dir, broad_key), SUB_COLUMN)
+                      if broad_path else column_pool(project_dir / auto_run, BROAD_COLUMN))
         pools = {
             "autonima": column_pool(project_dir / auto_run, auto_col),
-            "baseline_broad": column_pool(project_dir / auto_run, BROAD_COLUMN),
-            "baseline_sub": column_pool(project_dir / f"{BASELINE_PREFIX}{key}", SUB_COLUMN),
+            "baseline_broad": broad_pool,
+            "baseline_sub": column_pool(baseline_run_dir(project_dir, key), SUB_COLUMN),
         }
 
         print(f"=== {key}  (autonima column: {auto_col}) ===")
@@ -222,7 +265,7 @@ def main() -> int:
                   f"   studies={pool.get('studies')} points={pool.get('points')}")
             rows.append({
                 "project": args.project, "manual_annotation": key, "arm": name,
-                "autonima_run": auto_run, "auto_column": auto_col,
+                "autonima_run": auto_run, "auto_column": auto_col, "broad_arm": broad_label,
                 "dice": round(dice, 4), "pearson_r": round(r, 4) if r == r else "",
                 "r2": round(r2, 4) if r2 == r2 else "",
                 "studies": pool.get("studies"), "points": pool.get("points"),

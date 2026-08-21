@@ -1,0 +1,69 @@
+search:
+  database: pubmed
+  query: '((("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab]
+    OR "grey matter volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab]
+    OR "cortical thickness"[tiab] OR "gray matter reduc*"[tiab] OR "grey matter reduc*"[tiab]
+    OR "gray matter abnormal*"[tiab] OR "grey matter abnormal*"[tiab] OR "reduced
+    gray matter"[tiab] OR "reduced grey matter"[tiab] OR "tensor-based morphometr*"[tiab]
+    OR "brain volumetric"[tiab] OR "brain morphometr*"[tiab]) AND ("Opioid-Related
+    Disorders"[Mesh] OR "Heroin Dependence"[Mesh] OR opioid*[tiab] OR opiate*[tiab]
+    OR heroin[tiab] OR morphine[tiab] OR methadone[tiab] OR buprenorphine[tiab] OR
+    "opioid use disorder*"[tiab] OR "heroin depend*"[tiab])) AND ("1800"[Date - Publication]
+    : "2019/7/31"[Date - Publication])) NOT (Editorial[pt] OR Letter[pt] OR Comment[pt]
+    OR "Case Reports"[pt] OR News[pt])'
+  max_results: null
+  date_from: null
+  date_to: 2019/7/31
+  email: delavega@utexas.edu
+  pmids_file: null
+  pmids_list: null
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: false
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output/
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed/
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: gpt-5-mini-2025-08-07
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations: []
+  enabled: true
+output:
+  directory: projects/vbm_of_substance_use/baselines/opioids
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: false
