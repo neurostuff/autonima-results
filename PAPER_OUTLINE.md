@@ -646,12 +646,25 @@ Beyond the arc above:
 1. **An error taxonomy figure** rather than prose. Qualitative FP/FN reports already exist per
    project; a coded taxonomy with frequencies would carry §8d far better than examples.
    **[partial]**
-2. **Sensitivity to model and prompt, from social.** Social is the natural home for both,
-   because its many `v3-*` variants differ along model and prompt-type axes while holding
-   screening fixed: `v3-all_pmids-multi_analysis-ft` (F1 0.806) vs `-gpt52` (0.784) is a
-   ready-made model comparison, and the `multi_analysis` variants give a prompt-type one.
-   "Does this need a frontier model" is the first question a practitioner asks and it is
-   nearly free to answer here. **[partial]**
+2. **Sensitivity to model, from social.** Social is the natural home for a model comparison,
+   because its `v3-*` variants differ along the model axis while holding screening fixed:
+   `v3-all_pmids-multi_analysis-ft` (F1 0.806) vs `-gpt52` (0.784) is ready-made. "Does this
+   need a frontier model" is the first question a practitioner asks and it is nearly free to
+   answer here. **[partial]**
+
+   ~~and the `multi_analysis` variants give a prompt-type one~~ — **STRUCK, 2026-08-26.** There
+   is no prompt-type contrast in this project. All 15 social configs resolve to
+   `prompt_type: multi_analysis` (9 set it explicitly, 6 omit it and inherit the default, which
+   is `multi_analysis` — `annotation/schema.py:30`). No `single_analysis` arm was ever run, in
+   social or anywhere else: across all 60 project configs the value is `multi_analysis` or
+   unset, and all 57 `config.executed.yaml` files from completed runs record `multi_analysis`. The `-multi_analysis` suffix in the run names is a
+   label, not a manipulation: `v3-all_pmids.yaml` and `v3-all_pmids-multi_analysis.yaml` differ
+   by exactly one line — the second adds `prompt_type: "multi_analysis"`, i.e. states the
+   default the first already inherits. Six of their seven stage hashes are identical; only the
+   annotation hash differs, and only because `stage_signature_payloads` hashes the presence of
+   the key rather than its effective value, so writing a field's own default busts the cache
+   without changing behaviour. Dropped rather than run: a prompt-type arm is not load-bearing
+   for any claim in the paper.
 3. **Predictors of per-project success.** With 8 projects there is room for a descriptive
    relation between performance and benchmark properties (gold set size, sub-annotation
    granularity, clinical vs cognitive, coordinate availability). Underpowered for inference,
