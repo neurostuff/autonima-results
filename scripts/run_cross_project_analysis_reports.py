@@ -32,6 +32,9 @@ DEFAULT_PARSER_REVIEW = (
 )
 COMPARE_SCRIPT = SCRIPT_DIR / "compare_analyses_to_benchmark.py"
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from run_tiers import add_tier_argument, resolve_tier  # noqa: E402
+
 ANNOTATION_ONLY_RUN_RE = re.compile(r"^v(?P<version>\d+)-annotation-only(?P<suffix>.*)$")
 REQUIRED_RUN_FILES = (
     "outputs/annotation_results.json",
@@ -134,6 +137,7 @@ class ProjectExecutionResult:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    add_tier_argument(parser)
     parser.add_argument(
         "--projects-root",
         type=Path,
@@ -194,7 +198,7 @@ def compute_prf_from_confusion(tp: int, fp: int, fn: int, tn: int) -> dict[str, 
     }
 
 
-def discover_project_selections(projects_root: Path) -> list[ProjectSelection]:
+def discover_project_selections(projects_root: Path, tier: str = "latest") -> list[ProjectSelection]:
     selections: list[ProjectSelection] = []
     if not projects_root.exists() or not projects_root.is_dir():
         return selections
@@ -253,12 +257,22 @@ def discover_project_selections(projects_root: Path) -> list[ProjectSelection]:
 
         strict_candidates = [c for c in valid_candidates if c.is_strict]
         candidate_pool = strict_candidates or valid_candidates
-        selected = max(candidate_pool, key=lambda c: (c.version, int(c.is_strict)))
-        reason = (
-            "Selected highest strict vN-annotation-only candidate"
-            if selected.is_strict
-            else "Selected highest annotation-only fallback candidate"
-        )
+        # Registry first: if run_categories.yaml names this project's annotation_only run for
+        # the requested tier AND that run is a valid candidate here, use it. Otherwise keep the
+        # historical highest-version pick so unregistered projects are never dropped.
+        want = resolve_tier(project_dir.name, "annotation_only", tier)
+        registered = next((c for c in candidate_pool if c.run_dir.name == want), None) if want else None
+        if registered is not None:
+            selected = registered
+            reason = f"Selected run_categories.yaml tier={tier} ({want})"
+        else:
+            selected = max(candidate_pool, key=lambda c: (c.version, int(c.is_strict)))
+            reason = (
+                ("Selected highest strict vN-annotation-only candidate"
+                 if selected.is_strict
+                 else "Selected highest annotation-only fallback candidate")
+                + (f" [tier={tier} unregistered]" if tier != "latest" else "")
+            )
         selections.append(
             ProjectSelection(
                 project_name=project_dir.name,
@@ -513,12 +527,12 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> 
             writer.writerow({k: row.get(k, "") for k in fieldnames})
 
 
-def collect_analysis_assumption_strict_rows(projects_root: Path) -> list[dict[str, Any]]:
+def collect_analysis_assumption_strict_rows(projects_root: Path, tier: str = "latest") -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     if not projects_root.exists() or not projects_root.is_dir():
         return rows
 
-    for selection in discover_project_selections(projects_root):
+    for selection in discover_project_selections(projects_root, tier=tier):
         if selection.selected_run_dir is None:
             continue
         metrics = aggregate_annotation_for_project(selection.selected_run_dir)
@@ -1015,7 +1029,7 @@ def main() -> None:
     if parser_review is not None and not parser_review.exists():
         raise FileNotFoundError(f"Parser review not found: {parser_review}")
 
-    selections = discover_project_selections(projects_root)
+    selections = discover_project_selections(projects_root, tier=getattr(args, "tier", "latest"))
     print(f"Discovered {len(selections)} project directories under {projects_root}")
 
     for selection in selections:
@@ -1316,7 +1330,7 @@ def main() -> None:
         ],
     )
 
-    analysis_assumption_strict_version_rows = collect_analysis_assumption_strict_rows(projects_root)
+    analysis_assumption_strict_version_rows = collect_analysis_assumption_strict_rows(projects_root, tier=getattr(args, "tier", "latest"))
     write_csv(
         output_dir / "analysis_assumption_strict_by_version.csv",
         [

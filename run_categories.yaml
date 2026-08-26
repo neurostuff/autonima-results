@@ -120,19 +120,27 @@ projects:
 
   problem_solving:
     canonical:
-      verbatim: v1                    # note the file is v1.yml, not v1.yaml
+      verbatim: v1
       manual:   null
-      latest:   v3                    # Claude; annotation + retrieval + wider max_results
+      latest:   v2                    # Claude-revised annotation; identical to v1 otherwise
+      review: >-
+        RENUMBERED 2026-08-26 (d589fa7): the project was collapsed to v1/v2 and the older runs
+        moved to archive/. What was v3 is now v2. IMPORTANT CAVEAT for the verbatim tier: v1's
+        SEARCH QUERY was replaced with an agent-designed one, chosen by measuring gold recall
+        across candidate queries (0.740 -> 0.890 while cutting the pool 44%). Its CRITERIA remain
+        paper-verbatim, but its search is gold-tuned, so v1 is only held-out with respect to
+        criteria. Same class of caveat as decision_making v1 and cue_reactivity v6.
       note: >-
-        v3's search pool is larger than v1's (max_results 20000 vs 5000), so v1 -> v3 does not
-        isolate the criteria change.
+        v1 and v2 differ in the annotation block ONLY, so v1 -> v2 isolates the annotation change
+        exactly -- cleaner than the previous v3, whose pool size also moved. Neither has been
+        re-run since the query change, so both currently lack outputs.
     annotation_only:
       verbatim: v1-annotation-only
       manual:   null
-      latest:   v3-annotation-only    # Claude
+      latest:   v2-annotation-only    # Claude (formerly v3-annotation-only)
       note: >-
-        v2-annotation-only sits between them and is GPT-written, so this family has a clean
-        verbatim -> agent contrast but no manual tier.
+        The GPT-authored annotation-only run was archived in the same reorganisation, so this
+        family is now a clean verbatim -> agent contrast with no manual tier.
 
   social:
     canonical:
