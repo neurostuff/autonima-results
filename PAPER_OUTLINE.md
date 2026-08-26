@@ -269,6 +269,52 @@ annotation precision, so recall-increasing revisions can look better on annotati
 being no better, or slightly worse, on the maps. **Report both metrics; they disagree, and the
 disagreement is the finding.**
 
+**But there is a second, better explanation for the disagreement, and it is measurable.** A
+construct may simply not be a well-defined *neural* concept. If the manual meta-analysis's own
+maps for two constructs are nearly identical, then no amount of improved analysis selection can
+sharpen them — the ceiling is set by the target, not by the annotation. The fair comparison
+already measures this: `dice_mean_off_diagonal` is how well a map matches the *other* constructs'
+manual targets, so the diagonal-minus-off-diagonal gap is a direct index of how separable the
+constructs are.
+
+| project | diag | off-diag | gap | off/diag |
+|---|---|---|---|---|
+| vbm_of_substance_use | 0.488 | 0.082 | 0.406 | 0.17 |
+| vbm_of_ptsd | 0.875 | 0.520 | 0.355 | 0.59 |
+| executive_function | 0.556 | 0.355 | 0.200 | 0.64 |
+| problem_solving | 0.633 | 0.475 | 0.159 | 0.75 |
+| decision_making | 0.390 | 0.233 | 0.157 | 0.60 |
+| cue_reactivity | 0.699 | 0.561 | 0.138 | 0.80 |
+| dementia | 0.470 | 0.351 | 0.118 | 0.75 |
+| **social** | 0.550 | 0.451 | **0.099** | **0.82** |
+
+**`social` is the least separable project in the corpus** — its maps match the wrong construct
+82% as well as the right one. And the two projects where annotation gains failed to reach the
+maps are exactly the two whose *own source papers* say the constructs share neural substrate:
+
+- **executive_function** — the paper's title is "Meta-analytic evidence for a **superordinate**
+  cognitive control network subserving diverse executive functions", and its central finding is
+  that one fronto-cingulo-parietal network underlies all six domains. Domain-specific maps are
+  not expected to separate; the paper argues they do not.
+- **social** — "we allowed for contrasts to be associated with more than one RDoC social domain
+  construct", with 1.34 labels per contrast and 29% dual-annotated. The constructs overlap *by
+  construction*, not by annotation error.
+
+**Synthesis.** Both mechanisms operate, and which one applies depends on the kind of fix:
+
+- A fix that corrects **misassignment** — analyses going to the wrong construct — improves maps
+  even when constructs overlap, because coordinates move to the right target. That is
+  problem_solving, whose off/diag ratio is a fairly high 0.75 yet whose dice still rose
+  0.514 → 0.633.
+- A fix that **adds labels** to already-correct assignments improves annotation recall but
+  cannot sharpen maps when the constructs are not separable to begin with. That is social.
+
+**Implication for the paper.** Do not report annotation-metric gains as if they imply better
+maps, and do not treat a flat map result as a failed schema. Report the separability index
+alongside, and say plainly that for some constructs — RDoC social domains, executive-function
+subdomains — the neural target itself is diffuse, which caps what any annotation improvement can
+achieve. This is a finding about the constructs, not about the method.
+
 **Caveat, stated up front.** These revisions read the benchmark's error reports, so they are
 tuned against it by construction and must be reported as iterated versions, never as held-out
 ones. What they demonstrate is repair-given-feedback, not zero-shot schema authoring.
