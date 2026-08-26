@@ -25,6 +25,7 @@ fallbacks and error messages. Prefer these helpers over adding a sixth copy.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 __all__ = [
@@ -34,6 +35,8 @@ __all__ = [
     "load_mapping_pairs",
     "load_mappings",
     "load_meta_pmid",
+    "normalize_key",
+    "resolve_analysis_dir",
 ]
 
 # Checked in order. The singular form is legacy but still present in some projects.
@@ -134,3 +137,32 @@ def load_meta_pmid(mapping_path: Path | str) -> str | None:
     payload = load_mapping_payload(mapping_path)
     value = str(payload.get("meta_pmid") or "").strip()
     return value or None
+
+
+def normalize_key(key: str) -> str:
+    """Fold a mapping key or directory name to a comparable form.
+
+    Mapping files and neurometabench's on-disk directories do not agree on case or
+    separator: the social project maps `others_merged` and `soccomm_merged`, while the
+    directories are `Others-Merged` and `SocComm-Merged`. Both fold to the same value here.
+    """
+    return re.sub(r"[^a-z0-9]+", "_", str(key).strip().lower()).strip("_")
+
+
+def resolve_analysis_dir(analysis_base: Path | str, project: str, key: str) -> Path | None:
+    """Find the manual analysis directory for `key`, tolerating case/separator drift.
+
+    Returns the exact-match directory when it exists, otherwise the unique directory whose
+    normalized name matches, otherwise None. Ambiguous matches return None rather than
+    guessing -- silently picking one would misattribute a manual map to the wrong
+    sub-analysis, which is worse than skipping it visibly.
+    """
+    project_root = Path(analysis_base) / project
+    exact = project_root / str(key)
+    if exact.is_dir():
+        return exact
+    if not project_root.is_dir():
+        return None
+    wanted = normalize_key(key)
+    matches = [d for d in project_root.iterdir() if d.is_dir() and normalize_key(d.name) == wanted]
+    return matches[0] if len(matches) == 1 else None
