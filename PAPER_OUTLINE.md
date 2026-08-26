@@ -780,3 +780,48 @@ Verified: `-gpt5` and `-lc` have annotation criteria *byte-identical* to `v1-ann
 differ only inside the annotation block. The suffix is the only thing distinguishing them, so
 collapsing any would overwrite a run and destroy the comparison. If they should move to the new
 convention they need renumbering, not suffix-stripping.
+
+## Naming convention, and an audit against it
+
+**The rule:** the version number tracks the CRITERIA. A suffix tracks anything else — search
+window, model, run mode. So multiple `vN-*` variants should share identical criteria and differ
+only in those other respects. Corollaries: `-recent` is never canonical (it widens the date window
+past the source meta's, so the plain `vN` is the one mirroring the original), and authorship of a
+schema edit belongs in a header comment, never in the filename.
+
+Audited every `projects/*/v*.yaml` by fingerprinting screening and annotation criteria separately
+(annotation-only runs have no screening criteria, so those are compared on annotation alone).
+**Clean:** cue_reactivity, decision_making, dementia, vbm_of_ptsd, vbm_of_substance_use — e.g. `v5`
+and `v5-recent` share criteria exactly, as do dementia's `vN` and `vN-allstudies`.
+
+**Violations, all of the same shape** — an `-annotation-only` variant whose annotation criteria
+have drifted from the same-numbered full run:
+
+    executive_function v1   v1 / v1-2010 share criteria; v1-annotation-only differs
+    executive_function v2   v2 (screening change, v1 annotation) vs v2-annotation-only (annotation change)
+    social v2               v2, v2-all_pmids, v2-annotation-only -- three different criteria sets
+    social v3               seven variants share criteria; v3-annotation-only differs
+
+`problem_solving v2` was also a violation and is **fixed**: the file I had written as `v2.yaml`
+carried annotation criteria byte-identical to `v3-annotation-only`, so it is a v3 and has been
+renamed (schema and run directory). `v2-annotation-only` remains the GPT-authored v2.
+
+The `executive_function` and `social` cases are pre-existing and need a decision rather than a
+unilateral renumber. For executive_function specifically, v2 currently asserts two different
+criteria sets: my `v2.yaml` changed *screening* while keeping v1's annotation, and the
+pre-existing `v2-annotation-only` changed *annotation*. Those are two separate criteria versions
+sharing one number; one of them should become v3.
+
+### Two further corrections to earlier claims
+
+`projects/problem_solving/v1.yml` **exists** and always did — with a `.yml` extension, which a
+`*.yaml` glob does not match. The claim that v1's config was missing and needed reconstructing was
+wrong. The reconstruction turned out byte-equal to it apart from one key, so nothing downstream
+was affected.
+
+That key: `max_results`. I claimed 5000 was "a default written into the executed config rather
+than the limit in force". Also wrong — v1.yml authors 5000 itself. What is genuinely unexplained
+is that v1 still retrieved 6,927 studies, above its own cap; the cap binds now (4,999 at 5000,
+9,981 at 20000) but did not bind then. **So raising it to 20000 is a deliberate widening, not a
+bug fix, and v3's pool is larger than v1's — v1 → v3 does not isolate the annotation and
+retrieval changes.**
