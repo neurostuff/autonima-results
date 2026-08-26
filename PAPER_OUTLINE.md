@@ -1037,10 +1037,12 @@ window and can be ignored.
 - **emotion_regulation_2022 needs a plain `vN.yaml`** (not `-allstudies`). All three existing ER
   configs are `-allstudies` variants, so the project has no canonical family at all and cannot
   appear in the screening roll-up, which selects plain `vN`. Wanted eventually; no blocker.
-- **ER annotation criteria are drafted but untrialled.** They live in `v2-annotation-only.yaml`
+- **ER annotation criteria are drafted but untrialled.** They live in `v3-annotation-only.yaml`
   deliberately: trial there first (88 gold PMIDs, screening skipped, annotation is the only stage
-  under test), then port to `v2-allstudies.yaml` and re-run that with the stage enabled. Under the
-  naming convention those two must then share the criteria byte-for-byte.
+  under test), then port to `v3-allstudies.yaml` and re-run that with the stage enabled. Under the
+  naming convention those two must then share the criteria byte-for-byte. Numbered v3 because all
+  three -allstudies runs already exist and v3 is the latest; its annotation stage was never
+  configured rather than deliberately left different.
 - **Three naming-convention violations remain**, all pre-existing: executive_function/v1 (its
   `v1-annotation-only` annotation differs from `v1`'s), social/v2, social/v3.
 - **cue_reactivity manual-download backlog** for the widened `load_excluded` arm; its numbers stay
