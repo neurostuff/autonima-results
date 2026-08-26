@@ -1094,3 +1094,60 @@ stated criteria are contradicted by what it actually included — after executiv
 control, age range, overt response) and decision_making (the "healthy adults" clause). That
 recurrence is itself a finding worth stating in §3: transcribing a paper's stated criteria
 faithfully is not sufficient, because papers do not follow their own stated criteria.
+
+## emotion_regulation_2022 v2: what the screening failures actually are
+
+v2-allstudies loses **12 gold studies to screening** — 4 at abstract, 8 at full text. Every one of
+the 12 appears in supplementary Table S1, i.e. the authors did include all of them. Classified by
+cause:
+
+### A. Faithful to a stated criterion the meta-analysis itself violates — 9 of 12 (75%)
+
+**A1. The static-picture rule — 4 studies.** Criterion (4) says *"Only studies using static visual
+stimuli (i.e., pictures) were included"*. All four excluded studies are among the **7 studies
+Table S1 marks `stim = film`**:
+
+    Goldin 2008        17888411   "15-sec film clips"          -> I7
+    Allard 2014        24782800   dynamic film/video clips     -> I7 (+ ROI mask)
+    Engen & Singer     25698699   film clips (abstract stage)  -> stimulus rule in the objective
+    Morawetz 2016a     25631055   extreme-sports film clips    -> I7
+
+**A2. The healthy-adults rule — 5 studies.** Criterion (1) says healthy adults; the gold includes
+child and adolescent samples:
+
+    Pitskel 2011       21686071   childhood-to-adolescence      -> no adult group
+    Belden 2014        24646887   healthy children              -> no adult group
+    Simsek 2017        28372994   girls at risk for depression  -> minors
+    Stephanou 2016     26596970   ages 15-25, no adult-only arm -> I8
+    Silvers 2015       25439326   ages 10.5-22.9, age analysed continuously -> I8
+
+### B. Other miscategorisations — 3 of 12 (25%)
+
+    Herwig 2007      17588776   I7 read too narrowly. Excluded because regulation targeted the
+                                ANTICIPATION of pictures rather than the pictures themselves.
+                                S1 lists 3 Herwig contrasts, all task>baseline / goal=decr /
+                                stim=picture -- ordinary picture-based down-regulation.
+    Kanske 2012      22613776   Judged ROI-only because the paper frames results around AAL
+                                amygdala masks. S1 extracts 8 Kanske 2012 contrasts including
+                                whole-brain task>emotion (decr), so whole-brain results exist.
+    Reinecke 2015    26529426   Judged to lack a separately reported whole-brain contrast for the
+                                healthy controls. S1 lists exactly one Reinecke contrast,
+                                task>emotion / decr / n=18.
+
+### Why this matters more than the raw recall number
+
+**Three quarters of v2's screening losses are the pipeline being more faithful to the paper than
+the paper was to itself.** These are not errors in any ordinary sense — the model applied a stated
+criterion correctly and the criterion is one the authors did not follow. Recovering them requires
+deliberately deviating from the published methods, which is only knowable *with* a gold standard.
+That is the same argument §3 makes from the dementia case, and ER is a second, cleaner instance:
+here the deviation is documented in the paper's own supplement.
+
+Effect if each class were fixed (full-text stage, recall within search):
+
+    as-is                       42/50   0.840
+    + fix the 5 A-class FNs     47/50   0.940
+    + fix the 3 B-class FNs     50/50   1.000
+
+Only the B-class 25% is addressable by better criteria writing. The A-class 75% is addressable
+only by choosing to contradict the source paper.
