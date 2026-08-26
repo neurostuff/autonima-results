@@ -12,75 +12,64 @@
   "annotation": {
     "global": {
       "inclusion": {
-        "GLOBAL_I1": "Primary voxelwise task contrast- Include only group-level, univariate, task-evoked voxelwise maps with stereotactic coordinates (MNI or Talairach).",
-        "GLOBAL_I2": "Direct isolation of problem-solving demand- The contrast must isolate active problem solving/reasoning versus a baseline/control or versus a simpler condition with lower reasoning demand.",
-        "GLOBAL_I3": "Explicit comparator required- Prefer contrasts with clear subtraction/comparison semantics (e.g., A>B, hard>easy, task>control). If only a condition label is shown, include only when caption/description explicitly states the underlying comparison.",
-        "GLOBAL_I4": "Conservative decision rule for precision- If analysis intent is ambiguous or appears secondary/derived rather than a direct problem-solving contrast, exclude it.",
-        "GLOBAL_I5": "Generic label handling- If labels are sparse (e.g., analysis_0), use table caption, neighboring contrasts, and study_fulltext to infer eligibility; do not include unless direct problem-solving isolation is clear."
+        "GLOBAL_I1": "Voxelwise task evidence- the analysis must be a group-level, univariate, WHOLE-BRAIN voxelwise task-evoked map. Small-volume-corrected and region-of-interest maps do NOT qualify.",
+        "GLOBAL_I2": "Task-based problem solving- the task must fit the source definition- the participant has a goal and must work out a way to reach it, applying some rule set (semantic, algebraic, logical, mechanical or other) to arrive at a previously unknown solution.",
+        "GLOBAL_I3": "Permitted contrast types- the analysis must be ONE of the following five, which are the only contrast types this benchmark admits- (1) a problem solving task minus a baseline or control condition; (2) a parametric or categorical comparison across difficulty, abstraction or complexity\n    (e.g. complex > simple, multi-digit > single-digit, high > low load, 2-relational >\n    1-relational, a positive linear trend with problem depth);\n(3) untrained, novel or previously unseen problems > trained, memorized or previously\n    solved problems of the same type;\n(4) one type of problem solving > another type, across rule sets or representational\n    modalities (e.g. multiplication > addition, word problems > number problems);\n(5) one problem solving phase > another, sequential phase (e.g. late > early, solution >\n    preparation).",
+        "GLOBAL_I4": "Group-level effects in healthy participants. Studies comparing patients or intellectually gifted individuals to controls are eligible ONLY through their separately reported within-group healthy-control result.",
+        "GLOBAL_I5": "Stereotactic reporting- coordinates must be reported in MNI or Talairach space.",
+        "GLOBAL_I6": "How to read a sparse label- an empty or generic analysis name usually means the analysis is the only one in its table, so judge from the caption and surrounding text. A blank name is never itself a reason to exclude."
       },
       "exclusion": {
-        "GLOBAL_E1": "ROI-only analyses without whole-brain voxelwise results or stereotactic coordinates.",
-        "GLOBAL_E2": "Connectivity analyses- Seed-based connectivity, effective connectivity, or resting-state analyses.",
-        "GLOBAL_E3": "Non-task or passive paradigms- Passive viewing, simple perception, or tasks not requiring active problem solving or reasoning.",
-        "GLOBAL_E4": "Motor or response-only contrasts that do not isolate cognitive problem solving processes.",
-        "GLOBAL_E5": "Clinical, demographic, or between-group contrasts (e.g., patient>control, male>female, blind>sighted) unless a valid within-group problem-solving contrast is reported separately.",
-        "GLOBAL_E6": "Covariate/regression/parametric analyses that do not directly isolate task contrast effects (e.g., age effects, performance correlations, RT effects, IQ, symptom severity, strategy-use covariates such as visualization/verbalization scores).",
-        "GLOBAL_E7": "Secondary decomposition contrasts that are not primary task-isolation maps (e.g., conjunctions, simple effects, higher-order interactions, overlap maps, content/familiarity splits where both sides are reasoning conditions).",
-        "GLOBAL_E8": "Null-result or no-activation comparisons explicitly reported as no significant increase/decrease.",
-        "GLOBAL_E9": "Literature-summary or non-original coordinate tables (e.g., previously published coordinates, pooled/reference coordinates not estimated from the current sample's direct contrast)."
+        "GLOBAL_E1": "DEACTIVATIONS AND REVERSE CONTRASTS- the benchmark includes only BOLD or rCBF signal INCREASES. Exclude any analysis reporting decreases, deactivations, or the reverse of a qualifying contrast (e.g. baseline > problem solving, simple > complex, trained > untrained, low > high load, rest > task). Where a paper reports a contrast in both directions, annotate only the increase direction. If the table caption or analysis name makes the direction explicit, use it; if direction is genuinely indeterminate, treat the analysis as an activation.",
+        "GLOBAL_E2": "ROI-only or small-volume-corrected analyses without whole-brain voxelwise results.",
+        "GLOBAL_E3": "Connectivity analyses- seed-based connectivity, effective connectivity (PPI, DCM) or resting-state analyses.",
+        "GLOBAL_E4": "Non-task or passive paradigms- passive viewing, simple perception, or tasks not requiring the participant to work out a solution.",
+        "GLOBAL_E5": "Motor, response-only, or artefact/physiological-regressor contrasts.",
+        "GLOBAL_E6": "Between-group contrasts and group x condition interactions (patients vs controls, gifted vs controls, age or gender group comparisons). Note this is about the CONTRAST- a within-group contrast computed in a control group qualifies."
       }
     },
     "annotations": {
       "domain_general_problem_solving": {
         "inclusion": {
-          "DOMAIN_GENERAL_PROBLEM_SOLVING_I1": "Include only primary contrasts that directly isolate problem solving/reasoning demand regardless of domain.",
-          "DOMAIN_GENERAL_PROBLEM_SOLVING_I2": "Accept task>control, hard>easy, or reasoning>baseline contrasts only when they are direct within-sample maps."
+          "DOMAIN_GENERAL_PROBLEM_SOLVING_I1": "Any analysis that satisfies the global criteria above qualifies here, regardless of representational domain. This is the pooled global network, so it is the union of the three representational domains rather than a separate construct."
         },
-        "exclusion": {
-          "DOMAIN_GENERAL_PROBLEM_SOLVING_E1": "Exclude secondary/derived analyses (covariates, interactions, decomposition maps, prior-study summaries) even if the study overall is about problem solving."
-        }
+        "exclusion": {}
       },
       "mathematical_problem_solving": {
         "inclusion": {
-          "MATHEMATICAL_PROBLEM_SOLVING_I1": "Include direct mathematical problem-solving contrasts (e.g., arithmetic reasoning/calculation demand vs control or simpler math condition).",
-          "MATHEMATICAL_PROBLEM_SOLVING_I2": "Require clear isolation of mathematical problem-solving demand, not only math-related context."
+          "MATHEMATICAL_PROBLEM_SOLVING_I1": "The problem is posed with numerical stimuli and solved by manipulating numbers- arithmetic (addition, subtraction, multiplication, division), multi-digit or multi-step calculation, number bisection or number-line tasks, approximate or exact estimation, and the paced auditory or visual serial addition test (PASAT).",
+          "MATHEMATICAL_PROBLEM_SOLVING_I2": "Domain is decided by the STIMULI, not by the reasoning involved. A complexity manipulation over arithmetic problems belongs here as well as to logical_reasoning."
         },
         "exclusion": {
-          "MATHEMATICAL_PROBLEM_SOLVING_E1": "Exclude simple number perception, rote fact retrieval, or passive number processing without problem-solving demand.",
-          "MATHEMATICAL_PROBLEM_SOLVING_E2": "Exclude math-performance covariate maps (ability/accuracy/RT/age) and between-group-only math contrasts."
+          "MATHEMATICAL_PROBLEM_SOLVING_E1": "Simple number perception, digit matching, or magnitude comparison with no problem to solve."
         }
       },
       "verbal_problem_solving": {
         "inclusion": {
-          "VERBAL_PROBLEM_SOLVING_I1": "Include direct language/semantic reasoning contrasts where verbal problem-solving demand is explicitly isolated versus baseline/control or lower-demand reasoning.",
-          "VERBAL_PROBLEM_SOLVING_I2": "Prioritize primary verbal reasoning contrasts over within-reasoning content decomposition contrasts."
+          "VERBAL_PROBLEM_SOLVING_I1": "The problem is posed with letter, word or sentence stimuli and solved using logic or content knowledge. Paradigms the source paper places here- DEDUCTIVE REASONING (categorical, relational or propositional arguments; judging whether a conclusion follows from premises); verbal inductive and probabilistic reasoning; verbal analogy problems (word or letter-string analogies); riddles and insight problems; and paragraph-based word problems.",
+          "VERBAL_PROBLEM_SOLVING_I2": "Deductive and logical reasoning over verbal material belongs HERE. It is a verbal paradigm in this benchmark, not a separate logical domain- do not divert it to logical_reasoning, which is a difficulty construct rather than a domain."
         },
         "exclusion": {
-          "VERBAL_PROBLEM_SOLVING_E1": "Exclude passive reading/language comprehension without problem solving.",
-          "VERBAL_PROBLEM_SOLVING_E2": "Exclude secondary manipulations where both sides are verbal reasoning conditions but the contrast isolates content/familiarity/determinacy nuances rather than core verbal problem solving.",
-          "VERBAL_PROBLEM_SOLVING_E3": "Exclude verbalization-style covariate/regression maps unless they are part of a direct task-isolation contrast."
+          "VERBAL_PROBLEM_SOLVING_E1": "Passive reading or language comprehension with no problem to solve."
         }
       },
       "visuospatial_problem_solving": {
         "inclusion": {
-          "VISUOSPATIAL_PROBLEM_SOLVING_I1": "Include direct spatial reasoning/navigation/manipulation contrasts versus baseline/control or clearly lower-demand spatial conditions.",
-          "VISUOSPATIAL_PROBLEM_SOLVING_I2": "Require that the contrast isolates core visuospatial problem-solving demand, not merely differences between two spatial task variants."
+          "VISUOSPATIAL_PROBLEM_SOLVING_I1": "The problem is posed with pictorial or spatial stimuli. Paradigms the source paper places here- visuospatial fluid reasoning (e.g. Raven's-style matrix problems); visual analogy problems; the Tower of London; and spatial navigation problem solving."
         },
         "exclusion": {
-          "VISUOSPATIAL_PROBLEM_SOLVING_E1": "Exclude simple visual perception/matching without reasoning demands.",
-          "VISUOSPATIAL_PROBLEM_SOLVING_E2": "Exclude condition-vs-condition variant contrasts (e.g., one navigation variant vs another) when both conditions are problem-solving and no clear control isolation exists.",
-          "VISUOSPATIAL_PROBLEM_SOLVING_E3": "Exclude phase-only contrasts (e.g., initial vs execution), performance-correlation maps, and strategy-use covariate maps."
+          "VISUOSPATIAL_PROBLEM_SOLVING_E1": "Simple visual perception, mental rotation, or matching with no problem to solve."
         }
       },
       "logical_reasoning": {
         "inclusion": {
-          "LOGICAL_REASONING_I1": "Include direct formal logical inference or rule-complexity contrasts that isolate logical reasoning demand versus control/simpler reasoning.",
-          "LOGICAL_REASONING_I2": "Favor primary logical task contrasts (e.g., complex>simple deduction, reasoning>control) over derived or descriptive tables."
+          "LOGICAL_REASONING_I1": "The contrast varies the DEMAND of the problem while holding the problem type broadly constant- harder versus easier, more versus fewer steps or relations, more versus less abstract, or a parametric or linear trend across difficulty. Examples from the benchmark- \"Addition, Complex > Simple\"; \"Multi-Digit > Single-Digit\"; \"Procedural > Retrieval\"; \"High vs. Low g\"; \"2-relational vs 1-relational\"; \"4-target > 2-target\"; \"Large Problem Size > Small Problem Size\"; \"Main Effect of Relational Complexity\"; \"positive linear trend of analogical depth\"; \"Complex - Simple Deductions\".",
+          "LOGICAL_REASONING_I2": "Any representational domain qualifies- mathematical, verbal and visuospatial demand contrasts are pooled into this single target.",
+          "LOGICAL_REASONING_I3": "Assign this IN ADDITION to the contrast's representational domain, not instead of it. A complexity contrast over arithmetic is both mathematical_problem_solving and logical_reasoning."
         },
         "exclusion": {
-          "LOGICAL_REASONING_E1": "Exclude tasks that involve rule following without active inference.",
-          "LOGICAL_REASONING_E2": "Exclude stimulus/content split maps, higher-order interactions, simple effects, and previously published/reference coordinate tables when they are not direct primary logical task-isolation contrasts.",
-          "LOGICAL_REASONING_E3": "Exclude between-group logical contrasts unless a valid within-group logical task contrast is separately reported."
+          "LOGICAL_REASONING_E1": "Contrasts of one problem TYPE against another (e.g. multiplication > addition, word > number problems) where difficulty is not what is being varied- those belong to their representational domain only.",
+          "LOGICAL_REASONING_E2": "Reverse-direction demand contrasts (simple > complex, low > high load), which are deactivations and are excluded benchmark-wide."
         }
       }
     }
