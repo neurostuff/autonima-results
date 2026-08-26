@@ -1047,3 +1047,50 @@ window and can be ignored.
   `v1-annotation-only` annotation differs from `v1`'s), social/v2, social/v3.
 - **cue_reactivity manual-download backlog** for the widened `load_excluded` arm; its numbers stay
   provisional until cleared.
+
+## emotion_regulation_2022: benchmark discrepancies against the supplementary material
+
+Cross-checked the gold Sleuth files against the paper's supplementary Table S1 (266 contrast rows
+over 90 studies, carrying per-contrast `Goal` and `Strategy` columns) and against Fig. 1.
+**Not corrected** — the gold files are what the original author supplied, so this is a record, not
+a patch.
+
+    construct      gold Sleuth   Table S1   Fig. 1     verdict
+    studies             --           90        90      S1 agrees with Fig. 1
+    reappraisal        154          162       154      gold agrees with Fig. 1
+    increase            24           34        24      gold agrees with Fig. 1; S1 counts the
+                                                       12 dual-goal contrasts in both buckets
+    decrease           152          139       130      GOLD WRONG
+    maintain / Look      7          104       104      GOLD WRONG; S1 and Fig. 1 agree at 104
+
+**Defect 1 — `Decrease.txt` holds the reappraisal union, not the decrease subset.** It is a strict
+subset of `Reappraisal.txt` differing by only two labels, and contains 23 of the 24 explicitly
+up-regulation contrasts (`Domes 2010 Increase>Maintain`, `Ochsner 2004 Increase>Look Negative`,
+`Morawetz 2016b Increase>Look film`, …). Those carry "Increase" in the label itself, so this is not
+the legitimate dual-goal set. Expected 130 (Fig. 1) or 139 (S1); the file has 152.
+
+**Defect 2 — `Maintain.txt` is missing ~97 of 104 Look experiments.** Table S1 and Fig. 1 agree
+independently on 104; the gold file has 7.
+
+**Consequence for §2's second controlled case.** If ER is scored against the gold as-is, `decrease`
+takes ~23 false negatives and `maintain` a large number of false positives, while `reappraisal` and
+`increase` should score cleanly. Report only the latter two, or rebuild the two broken files from
+Table S1 first. Either way this must not be presented as an ER schema result — the errors are in
+the reference data, not the criteria.
+
+### Two things the supplement settled about the criteria
+
+**Decrease and increase are not mutually exclusive.** Table S1 marks 12 contrasts `decr+incr`,
+every one a `task > emotion` contrast with `task=reg` — studies that pooled up- and
+down-regulation into a single regulate-versus-view contrast. Fig. 1's 130 + 24 = 154 arithmetic
+implied disjointness and was misleading; an intermediate version of the ER schema asserted it
+before the supplement corrected it.
+
+**The stated static-picture restriction is contradicted by the realized inclusions.** Criterion (4)
+says *"Only studies using static visual stimuli (i.e., pictures) were included"*, yet 7 of the 90
+included studies are film (Allard 2014, Beauregard 2001, Engen & Singer 2014, Goldin 2008,
+Levesque 2003, Levesque 2004, Morawetz 2016a). This is the **third** project where a paper's
+stated criteria are contradicted by what it actually included — after executive_function (active
+control, age range, overt response) and decision_making (the "healthy adults" clause). That
+recurrence is itself a finding worth stating in §3: transcribing a paper's stated criteria
+faithfully is not sufficient, because papers do not follow their own stated criteria.

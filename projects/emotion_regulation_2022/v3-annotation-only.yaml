@@ -12,6 +12,58 @@
 # analyses by name, description and table caption, so it needs the parsed analysis structure --
 # mechanical coordinate extraction alone yields poorly identified analyses.
 #
+# !! BENCHMARK CROSS-CHECK against the supplementary material (mmc1.docx, Table S1: 266 contrast
+# rows over 90 studies, with per-contrast Goal and Strategy columns) and the paper's Fig. 1.
+# NOT corrected here -- the gold files are what the original author supplied, so the discrepancies
+# are recorded rather than patched.
+#
+#     construct      gold Sleuth   Table S1   Fig. 1     verdict
+#     studies             --           90        90      S1 agrees with Fig. 1
+#     reappraisal        154          162       154      gold agrees with Fig. 1
+#     increase            24           34        24      gold agrees with Fig. 1 (S1 counts the
+#                                                        12 dual-goal contrasts in both buckets)
+#     decrease           152          139       130      GOLD WRONG
+#     maintain / Look      7          104       104      GOLD WRONG -- S1 and Fig. 1 agree at 104
+#
+# DEFECT 1 -- Decrease.txt holds the reappraisal UNION, not the decrease subset. It is a strict
+# subset of Reappraisal.txt differing by only two labels, and it contains 23 of the 24 explicitly
+# up-regulation contrasts ("Domes 2010 Increase>Maintain", "Ochsner 2004 Increase>Look Negative",
+# "Morawetz 2016b Increase>Look film", ...). Those are labelled Increase in the file itself, so
+# this is not the legitimate dual-goal set described below. Expected size is 130 (Fig. 1) or 139
+# (S1 counting dual-goal contrasts); the file has 152.
+#
+# DEFECT 2 -- Maintain.txt is missing ~97 of 104 Look experiments. Table S1 and Fig. 1 independently
+# agree on 104; the gold file has 7.
+#
+# Consequences if scoring proceeds against the gold as-is:
+#   - `decrease`  ~23 false negatives, since correct criteria label those contrasts increase and
+#                 the gold also demands decrease.
+#   - `maintain`  large numbers of false positives, since correct criteria find Look in far more
+#                 studies than the 7 recorded.
+#   - `reappraisal` and `increase` should score cleanly -- both agree with Fig. 1.
+# Treat the decrease and maintain columns as uninterpretable until the gold is rebuilt from S1.
+#
+# TWO THINGS THE SUPPLEMENT SETTLED ABOUT THE CRITERIA THEMSELVES
+#
+# (a) decrease and increase are NOT mutually exclusive. Table S1 marks 12 contrasts `decr+incr`
+#     or `incr+decr`, every one of them a `task > emotion` contrast with task=reg -- studies that
+#     pooled up- and down-regulation into a single regulate-versus-view contrast. Fig. 1's
+#     130 + 24 = 154 arithmetic suggested disjointness and was misleading. The dual-goal rule is
+#     restored below.
+# (b) The stated static-picture restriction is contradicted by the realized inclusions. Criterion
+#     (4) says "Only studies using static visual stimuli (i.e., pictures) were included", but 7 of
+#     the 90 studies in Table S1 are film (Allard 2014, Beauregard 2001, Engen & Singer 2014,
+#     Goldin 2008, Levesque 2003, Levesque 2004, Morawetz 2016a). Same stated-versus-realized
+#     mismatch found in executive_function. The criterion below is softened accordingly.
+#
+# annotation-only-ids.txt was generated from
+# neurometabench/data/included_studies.csv (meta_pmid 35413444): 89 rows, 88 unique PMIDs, which
+# matches the 88 studies in the merged nimads studyset.
+#
+# parse_coordinates is TRUE here, unlike v*-allstudies which have it off. Annotation judges
+# analyses by name, description and table caption, so it needs the parsed analysis structure --
+# mechanical coordinate extraction alone yields poorly identified analyses.
+#
 # !! TWO BENCHMARK DATA DEFECTS, found by reconciling the gold Sleuth files against the paper's
 # Fig. 1. Neither is a schema problem, and both will distort per-construct scoring:
 #
@@ -87,8 +139,9 @@ annotation:
   #
   # WHAT CHANGED FROM THE PREVIOUS (REVERSE-ENGINEERED) DRAFT
   #
-  #  - Dec and Inc are DISJOINT. Fig. 1's 130 + 24 = 154 leaves no room for overlap. The old draft
-  #    told the model to assign BOTH when a contrast pooled directions; that instruction is gone.
+  #  - Dec and Inc are NOT disjoint after all. Fig. 1's 130 + 24 = 154 suggested they were, and an
+  #    intermediate version of this file said so; Table S1 then showed 12 dual-goal contrasts. The
+  #    dual-goal rule is restored.
   #  - Added the sample rule: healthy adults only, no neurological/medical/psychiatric disorders.
   #    Patient studies qualify ONLY through a separately reported control group, and only that
   #    group. Gender/subgroup effects are excluded outright.
@@ -132,8 +185,11 @@ annotation:
       study of patients qualifies ONLY through a control group whose results are reported
       separately, and then only that control group's analysis.
     - >-
-      Stimuli- the task must use STATIC VISUAL stimuli, i.e. pictures. Film or video, auditory
-      stimuli, script-driven imagery, and word or sentence stimuli do not qualify.
+      Stimuli- the task must use VISUAL emotional stimuli. Static pictures are the norm (83 of the
+      90 included studies) but film and video clips also qualify- the paper states a
+      static-picture-only rule that its own included studies contradict, so do not exclude a study
+      for using film. Auditory-only stimuli, script-driven imagery with no visual stimulus, and
+      word or sentence stimuli do not qualify.
     - >-
       Emotional valence- both positive and negative emotional stimuli qualify.
     - >-
@@ -194,9 +250,10 @@ annotation:
           Dec set contains exactly such contrasts.
       exclusion_criteria:
         - >-
-          Contrasts whose stated goal is to amplify emotion. decrease and increase are mutually
-          exclusive in this meta-analysis- Fig. 1 gives Dec 130 + Inc 24 = Reappraisal 154, which
-          leaves no overlap.
+          Contrasts whose ONLY stated goal is to amplify emotion. Note this is not a
+          mutual-exclusion rule- a contrast that pools both regulation directions (typically
+          "regulate > view" or "task > emotion", where the study had both up- and down-regulation
+          conditions) carries BOTH decrease and increase. Table S1 marks 12 such contrasts.
 
     - name: "increase"
       description: "Up-regulation goal (the paper's Inc): reappraisal used to amplify the intensity of an emotional response."
@@ -207,11 +264,15 @@ annotation:
           watch, "feel the emotion more intensely".
         - >-
           Up-regulation must be stated or clearly implied by the condition name. Do not infer it
-          from an undirected reappraisal contrast, which is decrease.
+          from an undirected reappraisal contrast naming a single regulation attempt- that is
+          decrease.
+        - >-
+          A contrast that POOLS both regulation directions does qualify, in addition to decrease.
+          The signature is a generic regulation contrast ("regulate > view", "task > emotion") in
+          a study whose design had both an up- and a down-regulation condition.
       exclusion_criteria:
         - >-
-          Contrasts whose stated goal is to dampen emotion. increase and decrease are mutually
-          exclusive here.
+          Contrasts whose only stated goal is to dampen emotion.
 
     - name: "maintain"
       description: "The paper's Look control condition: viewing emotional pictures passively and responding naturally, with no instruction to regulate."
