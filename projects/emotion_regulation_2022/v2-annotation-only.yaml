@@ -34,7 +34,7 @@ parsing:
 
 annotation:
   # Criteria from the source paper (Morawetz et al. 2022, NeuroImage 255:119194). Drafted by
-  # Claude (Opus 5); for expert review.
+  # Claude (Opus 5); refined and stramlined by AD.
   #
   # SCOPE: ANALYSIS-LEVEL ONLY. Study-level eligibility -- task-based fMRI, reappraisal paradigm,
   # healthy adult sample, static visual stimuli, whole-brain acquisition, empirical paper -- is
@@ -55,6 +55,17 @@ annotation:
   #                   responses". The paper calls this Look.
   # Reappraisal is the union of Dec and Inc, so a regulation contrast carries two labels. Dec and
   # Inc are not mutually exclusive: a contrast pooling both directions carries both.
+  #
+  # NO DIRECTION-DEFAULT RULE, DELIBERATELY. An earlier draft told the model to treat an
+  # undirected reappraisal contrast ("reappraise > view", no goal stated) as decrease. That is
+  # true of the benchmark -- 65 of its 128 decrease contrasts name no direction, while all 24
+  # increase contrasts do -- but it is nowhere in the paper's stated criteria. It is a pattern
+  # read off the authors' realized classification, so encoding it is fitting the answer key
+  # rather than the specification. Removed.
+  #
+  # Expect that to cost `decrease` recall: roughly half its gold contrasts state no direction and
+  # will now be labelled reappraisal only. That is the honest number. If it is later reinstated,
+  # the run must be reported as benchmark-tuned.
   enabled: true
   model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
@@ -67,18 +78,18 @@ annotation:
     - "study_fulltext"
   inclusion_criteria:
     - >-
-      This analysis must itself be a group-level, whole-brain (voxelwise) task-evoked statistical
-      map. A study qualifying on the strength of one whole-brain analysis does not make its other
-      analyses eligible.
+      Voxelwise task evidence- this analysis must itself be a group-level, univariate, whole-brain
+      (voxelwise) task-evoked statistical map. A study qualifying on the strength of one
+      whole-brain analysis does not make its other analyses eligible.
     - >-
       The contrast must be WITHIN-group, and must concern either the regulation of an emotional
       response or the passive unregulated viewing of emotional stimuli.
     - >-
-      Direction- either an ACTIVATION or a DEACTIVATION effect qualifies. Do not exclude an
-      analysis because its effect is a decrease in signal.
+      Direction- either an ACTIVATION or a DEACTIVATION effect qualifies.
     - >-
       Judge this analysis from its own name, description and table caption. An empty or generic
-      analysis name is never itself a reason to exclude- read the caption instead.
+      analysis name (e.g. "analysis_0") is never itself a reason to exclude- it usually means the
+      analysis is the only one in its table, so the caption describes it fully.
     - >-
       Assign every label that applies. A regulation contrast carries TWO labels: its goal
       (decrease or increase) and the strategy label (reappraisal).
@@ -108,41 +119,29 @@ annotation:
         - >-
           Either regulation goal qualifies, since this label is the union of decrease and
           increase. Assign it IN ADDITION to the goal label, never instead of it.
-        - >-
-          The tactic does not matter. Reinterpretation, perspective-taking and distancing all
-          count as reappraisal.
       exclusion_criteria:
         - >-
-          Passive viewing contrasts with no regulation instruction. Those are the Look control
-          condition and belong to `maintain` alone.
+          Passive viewing contrasts with no regulation instruction.
 
     - name: "decrease"
-      description: "Down-regulation goal (the paper's Dec): reappraisal used to reduce the intensity of an emotional response."
+      description: "Down-regulation goal: reappraisal used to reduce the intensity of an emotional response."
       inclusion_criteria:
         - >-
           The contrast's regulation goal is to reduce or dampen the emotional response- e.g.
           decrease > look, decrease > maintain, downregulate > view, "distance oneself".
-        - >-
-          Treat an UNDIRECTED reappraisal contrast (e.g. "reappraise > view", with no goal
-          stated) as decrease. Down-regulation is this literature's default.
       exclusion_criteria:
         - >-
-          Contrasts whose ONLY stated goal is to amplify emotion. This is not a mutual-exclusion
-          rule- a contrast that pools both regulation directions (typically "regulate > view" or
-          "task > emotion", in a study that had both an up- and a down-regulation condition)
-          carries BOTH decrease and increase.
+          Contrasts whose ONLY stated goal is to amplify emotion. 
 
     - name: "increase"
-      description: "Up-regulation goal (the paper's Inc): reappraisal used to amplify the intensity of an emotional response."
+      description: "Up-regulation goal: reappraisal used to amplify the intensity of an emotional response."
       inclusion_criteria:
         - >-
           The contrast's regulation goal is explicitly to amplify or intensify the emotional
           response- e.g. increase > maintain, increase > look, increase > view, upregulate >
           watch, "feel the emotion more intensely".
         - >-
-          Up-regulation must be stated or clearly implied by the condition name. Do not infer it
-          from an undirected reappraisal contrast naming a single regulation attempt- that is
-          decrease.
+          Up-regulation must be stated or clearly implied by the condition name.
         - >-
           A contrast that POOLS both regulation directions does qualify, in addition to decrease.
           The signature is a generic regulation contrast ("regulate > view", "task > emotion") in
@@ -152,7 +151,7 @@ annotation:
           Contrasts whose only stated goal is to dampen emotion.
 
     - name: "maintain"
-      description: "The paper's Look control condition: viewing emotional pictures passively and responding naturally, with no instruction to regulate."
+      description: "Viewing emotional pictures passively and responding naturally, with no instruction to regulate."
       inclusion_criteria:
         - >-
           The contrast reflects passive, uninstructed viewing of emotional stimuli- e.g.

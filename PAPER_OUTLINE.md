@@ -1043,6 +1043,14 @@ window and can be ignored.
   naming convention those two must then share the criteria byte-for-byte. Numbered v2, not v3,
   because v2-allstudies is the screening version this project works from -- v3-allstudies regressed
   (full-text TP 42 -> 19) and is treated as a failed experiment.
+- **Sparse analysis names are a recurring annotation failure, patched per-project.** Analyses
+  parsed as `analysis_0` (or with otherwise uninformative names) get rejected for having no
+  informative name, and three projects now carry a criterion telling the model that a blank name
+  is never itself grounds for exclusion — dementia, executive_function and
+  emotion_regulation_2022. Patching it per schema is duplication and will keep being forgotten:
+  the fix belongs either in the parser (name analyses from their caption when the label is
+  empty) or in autonima's base annotation prompt. Worth doing before the next schema is written.
+
 - **Three naming-convention violations remain**, all pre-existing: executive_function/v1 (its
   `v1-annotation-only` annotation differs from `v1`'s), social/v2, social/v3.
 - **cue_reactivity manual-download backlog** for the widened `load_excluded` arm; its numbers stay
