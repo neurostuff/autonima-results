@@ -35,7 +35,7 @@ PROJECT_LABELS = {
     "cue_reactivity": "Cue reactivity",
     "decision_making": "Decision making",
     "dementia": "Dementia",
-    "emotional_regulation_2022": "Emotional regulation",
+    "emotion_regulation_2022": "Emotional regulation",
     "executive_function": "Executive function",
     "problem_solving": "Problem solving",
     "social": "Social",

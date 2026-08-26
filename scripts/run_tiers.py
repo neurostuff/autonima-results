@@ -62,7 +62,7 @@ def resolve_tier(
     """Run name for (project, family, tier), or None if unregistered/absent.
 
     If the requested family is missing but exactly one family is registered, that one is used --
-    projects like emotional_regulation_2022 only have `allstudies`, and a caller asking for
+    projects like emotion_regulation_2022 only have `allstudies`, and a caller asking for
     `canonical` should still get the sensible answer rather than nothing.
     """
     if tier not in TIERS:
