@@ -258,8 +258,16 @@ runs, which is the like-for-like comparison, only two projects have them:
 
 | project | run | recall | precision | F1 |
 |---|---|---|---|---|
-| **dementia** | `v3-allstudies` | 0.890 | 0.508 | **0.647** |
-| emotion_regulation_2022 | `v3-allstudies` | 0.216 | 0.576 | 0.314 |
+| **dementia** | `v3-allstudies` | 0.892 | 0.471 | **0.617** |
+| emotion_regulation_2022 | `v2-allstudies` | 0.477 | 0.568 | 0.519 |
+
+Both rows refreshed 2026-08-26 from the current per-run evaluations. Two changes worth noting.
+The ER row now cites `v2-allstudies`, not `v3-allstudies`: v3 regressed (full-text recall
+0.477 → 0.216 for +0.008 precision, mainly via an I11 change that scored missing coordinates in
+our *retrieved text* as study ineligibility) and has been moved to `archive/`. Quoting v3 compared
+dementia's best schema against ER's worst and overstated the gap — 0.617 vs 0.519, not vs 0.314.
+The dementia row moved slightly too (0.647 → 0.617) because its evaluation was regenerated since
+this report was first written.
 
 On the canonical PubMed-search runs — where search recall is folded in, so numbers are
 lower everywhere — dementia ranks third of eight on F1 and second on recall:
