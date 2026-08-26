@@ -714,3 +714,43 @@ Report v6 as a search fix, not as a screening improvement.
 
 The cross-project screening roll-up column `recall` is `recall_all_meta`, so the value it lists
 for v6 (0.853) is the correct one to quote.
+
+## Correction: problem_solving v1 was not starved of full text
+
+An earlier claim in this session — that problem_solving v1's retrieval was broken, that 69 of 73
+gold papers had no full text, that only four were ever screened, and that its screening F1 of
+0.249 "measures a dead path" — is **wrong**. It came from reading
+`projects/problem_solving/v1/evaluation/performance_metrics.json`, which is dated **2026-05-04**
+while v1's `outputs/` are dated **2026-08-14**. The evaluation directory was never regenerated
+after that re-run, so it was stale by three months.
+
+v1's actual outputs contain **275 studies included at full text with 50 gold true positives**.
+Freshly re-evaluated, v1 and the new v2 compare as:
+
+    run   fulltext incl   TP   FP    recall   precision      F1
+    v1         275        50   225    0.397     0.182       0.249
+    v2         264        44   220    0.349     0.167       0.226
+
+So **v2 is slightly worse than v1**, and the retrieval change delivered no measurable benefit.
+The dead `/data/alejandro/...` paths in v1's config are real, but pubget/PMC supplied enough text
+on its own that repairing them changed nothing.
+
+Two differences v2 introduced are untested candidates for the small regression: `load_excluded:
+true` (v1 used `false`), and a larger search pool (9,981 vs 6,927) that found two *fewer* gold
+studies at search while adding ~3,000 candidates.
+
+**Nothing should be concluded about problem_solving's screening schema in either direction.** Its
+annotation result stands unaffected — that was measured on the fixed-PMID annotation-only runs,
+where v1 → v3 improved four of five F1s and all five exhausted-precision figures.
+
+### The generalisable lesson
+
+Per-run `evaluation/` directories can lag their `outputs/` by months, and nothing warns you. A
+staleness audit across every run compared in this session found problem_solving/v1 was the only
+affected case — decision_making, executive_function and social were all current — but the failure
+mode is silent and would have been easy to miss.
+
+The cross-project roll-up regenerates its own evaluations under
+`reports/cross_project_screening/evaluations/<project>/<run>/`. **Those are authoritative; the
+project-local ones are not.** Any before/after claim should be read from the roll-up, or from a
+project-local evaluation whose mtime is confirmed to be newer than its `outputs/`.
