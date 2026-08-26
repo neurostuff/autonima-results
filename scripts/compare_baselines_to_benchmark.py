@@ -173,7 +173,10 @@ def main() -> int:
     if not spec_path.exists():
         raise SystemExit(f"no baselines.yaml in {project_dir}; run run_baseline_searches.py first")
     spec = yaml.safe_load(spec_path.read_text(encoding="utf-8")) or {}
-    keys = [e["manual_annotation"] for e in spec.get("baselines") or []]
+    # Entries with no manual_annotation are pure control arms: they supply the broad map but
+    # have nothing on the manual side to be scored against, so they are not iterated over.
+    entries = spec.get("baselines") or []
+    keys = [e["manual_annotation"] for e in entries if e.get("manual_annotation")]
 
     mapping_path = project_dir / "nmb_mappings.json"
     mapping = json.loads(mapping_path.read_text(encoding="utf-8")) if mapping_path.exists() else {}
@@ -189,7 +192,7 @@ def main() -> int:
     # which silently understates the broad baseline (its pool is smaller, and a smaller
     # screening-free pool scores HIGHER, so the bias favours the baseline).
     broad_key = next(
-        (e["manual_annotation"] for e in (spec.get("baselines") or []) if e.get("broad_control")),
+        ((e.get("manual_annotation") or e.get("name")) for e in entries if e.get("broad_control")),
         None,
     )
     broad_path: Path | None = None

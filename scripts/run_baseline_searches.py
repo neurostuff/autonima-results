@@ -126,6 +126,15 @@ def assemble_query(shared: dict[str, Any], entry: dict[str, Any]) -> str:
     return query
 
 
+def entry_key(entry: dict[str, Any]) -> str:
+    """Directory/config name for a baseline entry.
+
+    Normally the manual annotation it is compared against; for a pure control arm with no
+    manual counterpart, an explicit `name`.
+    """
+    return str(entry.get("manual_annotation") or entry.get("name"))
+
+
 def load_spec(project_dir: Path) -> dict[str, Any]:
     spec_path = project_dir / "baselines.yaml"
     if not spec_path.exists():
@@ -151,13 +160,23 @@ def validate_against_mappings(project_dir: Path, spec: dict[str, Any]) -> list[s
     for entry in spec["baselines"]:
         key = entry.get("manual_annotation")
         if not key:
-            raise SystemExit("every baseline entry needs `manual_annotation`")
+            # A pure control arm: reproduces the project's broad search but has no manual
+            # counterpart to be scored against. Legitimate when the source meta-analysis
+            # published no pooled column, so there is simply no manual map for "everything".
+            if entry.get("broad_control"):
+                if not entry.get("name"):
+                    raise SystemExit(
+                        "a broad_control entry without `manual_annotation` needs a `name` "
+                        "to label its config and run directory"
+                    )
+                continue
+            raise SystemExit("every baseline entry needs `manual_annotation` (or `broad_control` + `name`)")
         if key not in known:
             warnings.append(
                 f"baseline {key!r} is not a key in nmb_mappings.json "
                 f"(known: {sorted(known)}) -- it will have no manual map to compare against"
             )
-    covered = {e["manual_annotation"] for e in spec["baselines"]}
+    covered = {e.get("manual_annotation") for e in spec["baselines"]}
     for missing in sorted(known - covered):
         warnings.append(f"manual annotation {missing!r} has no baseline entry")
     return warnings
@@ -369,9 +388,9 @@ def main() -> int:
 
     entries = spec["baselines"]
     if args.only:
-        entries = [e for e in entries if e["manual_annotation"] in set(args.only)]
+        entries = [e for e in entries if entry_key(e) in set(args.only)]
         if not entries:
-            raise SystemExit(f"--only matched nothing; available: {[e['manual_annotation'] for e in spec['baselines']]}")
+            raise SystemExit(f"--only matched nothing; available: {[entry_key(e) for e in spec['baselines']]}")
 
     email = (template_run.get("search") or {}).get("email")
     gold: dict[str, set[str]] = {}
@@ -381,7 +400,7 @@ def main() -> int:
             print("WARNING: --check-recall found no benchmark NiMADS for this project", file=sys.stderr)
     rows: list[dict[str, Any]] = []
     for entry in entries:
-        key = entry["manual_annotation"]
+        key = entry_key(entry)
         row_recall: dict[str, Any] = {}
         query = assemble_query(spec.get("shared") or {}, entry)
         hits = None if (args.no_counts or args.dry_run is False and not args.dry_run) else None
@@ -394,9 +413,10 @@ def main() -> int:
         if entry.get("query"):
             print("  NOTE        : hand-written `query` override in use")
         if args.check_recall:
-            g = gold.get(key) or set()
+            g = gold.get(entry.get("manual_annotation") or "") or set()
             if not g:
-                print(f"  gold recall : no gold column {key!r} in the benchmark")
+                print(f"  gold recall : no gold column for {key!r} "
+                      f"({'control arm, none expected' if not entry.get('manual_annotation') else 'not in the benchmark'})")
             else:
                 narrow = gold_found(query, g, email)
                 ceiling = gold_found(f"({collapse((spec.get('shared') or {}).get('modality') or '')})", g, email)
@@ -416,7 +436,8 @@ def main() -> int:
                                        "topic_unreachable": unreachable})
         if args.dry_run:
             print(f"  query       : {query}\n")
-            rows.append({"manual_annotation": key, "query": query, "pubmed_hits": hits, **row_recall})
+            rows.append({"manual_annotation": entry.get("manual_annotation"), "key": key,
+                     "query": query, "pubmed_hits": hits, **row_recall})
             continue
 
         baselines_dir = project_dir / BASELINES_DIR
@@ -440,7 +461,8 @@ def main() -> int:
         # autonima derives the run dir from the config path (config_path.with_suffix("")),
         # so nesting the config under baselines/ nests the outputs there too.
         run_dir = baselines_dir / key
-        row: dict[str, Any] = {"manual_annotation": key, "query": query, "pubmed_hits": hits,
+        row: dict[str, Any] = {"manual_annotation": entry.get("manual_annotation"), "key": key,
+                               "query": query, "pubmed_hits": hits,
                                "config": cfg_path.relative_to(REPO_ROOT).as_posix(), **row_recall}
         if args.run:
             rc = run_cmd(
@@ -472,7 +494,7 @@ def main() -> int:
         # Roll up per-baseline missing full texts so manual downloading can be targeted.
         missing: dict[str, list[str]] = {}
         for entry in entries:
-            key = entry["manual_annotation"]
+            key = entry_key(entry)
             path = project_dir / BASELINES_DIR / key / "outputs" / "missing_fulltexts.txt"
             if not path.exists():   # legacy flat layout
                 path = project_dir / f"{BASELINE_PREFIX}{key}" / "outputs" / "missing_fulltexts.txt"

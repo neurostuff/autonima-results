@@ -1,0 +1,51 @@
+# Search baselines for executive_function (Niendam et al. 2012).
+#
+# Shared: the imaging clause plus Humans/English and the review exclusions, verbatim from
+# v1.yaml. Varying: the executive-domain clause, split into the three sub-domains the
+# benchmark scores separately. `all` reproduces v1.yaml's full domain clause.
+#
+# Note this project's date window closes 2008-12-31, matching the source meta-analysis.
+
+meta_pmid: "22282036"
+
+shared:
+  modality: >-
+    ("functional magnetic resonance imaging"[Mesh] OR fMRI[tiab] OR
+    "magnetic resonance imaging"[tiab] OR "positron emission tomography"[Mesh] OR PET[tiab])
+    AND Humans[mh] AND English[lang]
+  exclude: >-
+    review[pt] OR "systematic review"[tiab] OR meta-analysis[pt]
+  date_from: "1988/01/01"
+  date_to: "2008/12/31"
+
+baselines:
+  - manual_annotation: all
+    broad_control: true
+    note: Reproduces v1.yaml's executive-domain clause.
+    topic: >-
+      "executive function"[Mesh] OR "executive function*"[tiab] OR "cognitive control"[tiab] OR
+      "working memory"[Mesh] OR "working memory"[tiab] OR inhibition[tiab] OR inhibitory[tiab]
+      OR "cognitive flexibility"[tiab] OR "set shifting"[tiab] OR "task switching"[tiab] OR
+      planning[tiab] OR vigilance[tiab] OR "sustained attention"[tiab] OR initiation[tiab] OR
+      "go/no-go"[tiab] OR "go no go"[tiab] OR "stop signal"[tiab] OR stroop[tiab] OR
+      "n-back"[tiab] OR "tower of london"[tiab] OR "tower of hanoi"[tiab] OR
+      "wisconsin card sorting"[tiab] OR "continuous performance task"[tiab]
+
+  - manual_annotation: working_memory
+    topic: >-
+      "working memory"[Mesh] OR "working memory"[tiab] OR "n-back"[tiab] OR "nback"[tiab] OR
+      sternberg[tiab] OR "AX-CPT"[tiab] OR "delayed match*"[tiab] OR "digit span"[tiab] OR
+      "spatial span"[tiab] OR "memory load"[tiab] OR "short-term memory"[tiab]
+
+  - manual_annotation: inhibition
+    topic: >-
+      inhibition[tiab] OR inhibitory[tiab] OR "response inhibition"[tiab] OR "go/no-go"[tiab]
+      OR "go no go"[tiab] OR "no-go"[tiab] OR "stop signal"[tiab] OR "stop-signal"[tiab] OR
+      stroop[tiab] OR flanker[tiab] OR "simon task"[tiab] OR antisaccade[tiab] OR
+      "interference control"[tiab]
+
+  - manual_annotation: flexibility
+    topic: >-
+      "cognitive flexibility"[tiab] OR "set shifting"[tiab] OR "set-shifting"[tiab] OR
+      "task switching"[tiab] OR "task-switching"[tiab] OR "switch cost*"[tiab] OR
+      "wisconsin card sorting"[tiab] OR "rule switching"[tiab] OR "attentional set"[tiab]
