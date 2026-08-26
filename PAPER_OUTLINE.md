@@ -855,3 +855,15 @@ so it should be reported as a scoping constraint rather than folded into the aut
 The honest framing: autonima automates everything after the query, and query construction remains
 the human bottleneck — one that a capable model can nonetheless improve substantially when given
 the source paper and an error report, as the problem_solving replacement demonstrates.
+
+**A hard ceiling worth knowing about: NCBI caps esearch at 10,000 results.** autonima passes
+`max_results` straight through as `retmax`, and NCBI returns at most 10,000 ids regardless, with
+no warning. Raising `max_results` above 10000 does nothing. problem_solving's replacement query
+has a true count of 12,075, so its runs retrieve 9,999 — 83% of the pool.
+
+The damage is limited because autonima searches with `sort="relevance"`, so what is discarded is
+the lowest-ranked tail: measured gold recall is 0.890 untruncated versus 0.881 in the slice
+actually retrieved, a loss of two papers. Audited the corpus — problem_solving is the only project
+anywhere near the cap, the next largest pool being executive_function at 6,447 — so no other
+result is affected. But any future query that crosses 10,000 will be truncated silently, and
+paging via `retstart` would be the fix if that becomes a constraint.
