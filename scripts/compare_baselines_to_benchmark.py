@@ -65,6 +65,7 @@ from scipy.stats import pearsonr
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from nmb_mapping import resolve_analysis_dir  # noqa: E402
+from run_tiers import add_tier_argument, resolve_tier  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MANUAL_ANALYSIS_BASE = Path("/home/zorro/repos/neurometabench/analysis")
@@ -161,7 +162,9 @@ def main() -> int:
     )
     ap.add_argument("--project", required=True)
     ap.add_argument("--autonima-run", default=None,
-                    help="run dir supplying the pipeline and broad-baseline maps (default: highest vN)")
+                    help="run dir supplying the pipeline and broad-baseline maps "
+                         "(default: the --tier run, else highest vN)")
+    add_tier_argument(ap)
     ap.add_argument("--manual-analysis-base", type=Path, default=DEFAULT_MANUAL_ANALYSIS_BASE)
     ap.add_argument("--map-filename", default=CORRECTED_MAP)
     ap.add_argument("--dice-threshold", type=float, default=DICE_THRESHOLD)
@@ -185,7 +188,20 @@ def main() -> int:
     mapping = json.loads(mapping_path.read_text(encoding="utf-8")) if mapping_path.exists() else {}
     auto_col_for = (mapping.get("annotation_mappings") or {})
 
-    auto_run = pick_autonima_run(project_dir, args.autonima_run)
+    # --autonima-run wins; otherwise take the registered run for --tier, and only fall back to
+    # "highest vN" when this project/family has no entry for that tier. The fallback is
+    # deliberate: only three families support a full three-way contrast, so a hard failure here
+    # would silently drop most projects from any non-latest comparison.
+    auto_run = args.autonima_run
+    tier_source = "explicit --autonima-run"
+    if not auto_run:
+        auto_run = resolve_tier(args.project, "canonical", args.tier)
+        tier_source = f"tier={args.tier} (run_categories.yaml)"
+    if not auto_run:
+        auto_run = pick_autonima_run(project_dir, None)
+        tier_source = f"tier={args.tier} UNREGISTERED -> fallback highest vN"
+    if not (project_dir / auto_run / "outputs" / "meta_analysis_results").is_dir():
+        raise SystemExit(f"no meta results under {project_dir / auto_run} (selected by {tier_source})")
     auto_meta = project_dir / auto_run / "outputs" / "meta_analysis_results"
 
     # Resolve the broad arm. Prefer a baseline entry flagged `broad_control: true`,
@@ -211,7 +227,7 @@ def main() -> int:
                   f"falling back to {auto_run}:{BROAD_COLUMN} (vintage may differ)", file=sys.stderr)
     print(f"broad arm      : {broad_label}")
     print(f"project        : {args.project}")
-    print(f"autonima run   : {auto_run}")
+    print(f"autonima run   : {auto_run}   [{tier_source}]")
     print(f"map            : {args.map_filename}   dice z > {args.dice_threshold}")
     print(f"pools are NOT equalised; sizes reported per arm\n")
 

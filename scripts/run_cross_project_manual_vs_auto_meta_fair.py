@@ -37,6 +37,14 @@ from autonima import meta as autonima_meta
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
 DEFAULT_PROJECTS_ROOT = REPO_ROOT / "projects"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from run_tiers import add_tier_argument, resolve_tier  # noqa: E402
+
+# Which registered tier the charts represent. Set once from --tier in main(); the chart
+# selection helpers are called from several layers, so a module-level default is simpler and
+# less invasive than threading the value through every caller.
+CHART_TIER = "latest"
+
 DEFAULT_OUTPUT_ROOT = REPO_ROOT / "reports" / "cross_project_manual_vs_auto_meta_fair"
 DEFAULT_MANUAL_NIMADS_BASE = Path("/home/zorro/repos/neurometabench/data/nimads")
 DEFAULT_MANUAL_ANALYSIS_MAP_FILENAME = "z.nii.gz"
@@ -81,6 +89,13 @@ class ProjectResult:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--tier",
+        choices=("verbatim", "manual", "latest"),
+        default="latest",
+        help=("Which registered annotation-only run to chart per project, from "
+              "run_categories.yaml. Falls back to the highest-version pick when unregistered."),
+    )
     parser.add_argument(
         "--project",
         action="append",
@@ -819,7 +834,16 @@ def parse_annotation_only_version(run_name: str) -> int | None:
         return None
 
 
-def select_chart_runs_by_project(run_rows: list[dict[str, Any]]) -> dict[str, str]:
+def select_chart_runs_by_project(run_rows: list[dict[str, Any]], tier: str = "latest") -> dict[str, str]:
+    # Registry first: if run_categories.yaml names this project's annotation_only run for
+    # `tier` and that run is present in run_rows, chart it. Otherwise keep the historical
+    # highest-version pick, so an unregistered project is never dropped.
+    registered: dict[str, str] = {}
+    present = {(str(r.get("project_name","")), str(r.get("run",""))) for r in run_rows}
+    for proj in {str(r.get("project_name","")) for r in run_rows if r.get("project_name")}:
+        want = resolve_tier(proj, "annotation_only", tier)
+        if want and (proj, want) in present:
+            registered[proj] = want
     selected: dict[str, tuple[int, int, str]] = {}
     for row in run_rows:
         project = str(row.get("project_name", "")).strip()
@@ -838,14 +862,16 @@ def select_chart_runs_by_project(run_rows: list[dict[str, Any]]) -> dict[str, st
         if current is None or key > current:
             selected[project] = key
 
-    return {project: key[2] for project, key in selected.items()}
+    out = {project: key[2] for project, key in selected.items()}
+    out.update(registered)
+    return out
 
 
 def filter_rows_for_chart_primary_runs(
     run_rows: list[dict[str, Any]],
     diagonal_rows: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    selected_runs = select_chart_runs_by_project(run_rows)
+    selected_runs = select_chart_runs_by_project(run_rows, tier=CHART_TIER)
     if not selected_runs:
         return run_rows, diagonal_rows
 
@@ -863,7 +889,7 @@ def filter_rows_for_chart_primary_runs(
 
 
 def select_primary_run_rows(run_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    selected_runs = select_chart_runs_by_project(run_rows)
+    selected_runs = select_chart_runs_by_project(run_rows, tier=CHART_TIER)
     if not selected_runs:
         return run_rows
     return [
@@ -1634,7 +1660,9 @@ def write_run_version_delta_plots(
 
 
 def main() -> int:
+    global CHART_TIER
     args = parse_args()
+    CHART_TIER = getattr(args, "tier", "latest")
     projects_root = args.projects_root.expanduser().resolve()
     manual_nimads_base = args.manual_nimads_base.expanduser().resolve()
     output_root = args.output_root.expanduser().resolve()

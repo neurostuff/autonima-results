@@ -23,6 +23,9 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
 DEFAULT_PROJECTS_ROOT = REPO_ROOT / "projects"
 DEFAULT_COMPARE_SCRIPT = SCRIPT_DIR / "compare_screening_to_benchmark.py"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from run_tiers import add_tier_argument, resolve_tier  # noqa: E402
+
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "reports" / "cross_project_screening"
 DEFAULT_META_PMIDS = REPO_ROOT.parent / "neurometabench" / "data" / "included_studies.csv"
 
@@ -67,6 +70,7 @@ class RunExecutionResult:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    add_tier_argument(parser)
     parser.add_argument(
         "--projects-root",
         type=Path,
@@ -321,7 +325,16 @@ def extract_run_metrics(performance_metrics_path: Path) -> tuple[str | None, flo
     return None, None, None, None
 
 
-def select_top_v_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def select_top_v_rows(rows: list[dict[str, Any]], tier: str = "latest") -> list[dict[str, Any]]:
+    # run_categories.yaml wins when it registers this project's canonical run for `tier`.
+    # Unregistered projects keep the historical behaviour (highest canonical vN by version,
+    # then f1), so asking for a tier never silently drops a project from the roll-up.
+    tier_override_by_project = {}
+    for row in rows:
+        proj = str(row.get("project_name", ""))
+        want = resolve_tier(proj, "canonical", tier) if proj else None
+        if want and str(row.get("run_name", "")) == want:
+            tier_override_by_project[proj] = row
     override_by_project = {
         project: row
         for row in rows
@@ -333,7 +346,7 @@ def select_top_v_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         project = str(row.get("project_name", ""))
         if not project:
             continue
-        if project in override_by_project:
+        if project in override_by_project or project in tier_override_by_project:
             continue
         run_name = str(row.get("run_name", ""))
         if not is_canonical_version_run(run_name):
@@ -354,6 +367,7 @@ def select_top_v_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             best_by_project[project] = row
 
     best_by_project.update(override_by_project)
+    best_by_project.update(tier_override_by_project)   # registry takes final precedence
     return sorted(best_by_project.values(), key=lambda r: str(r.get("project_name", "")))
 
 
@@ -1169,7 +1183,7 @@ def main() -> None:
             }
         )
 
-    top_v_rows = select_top_v_rows(metric_rows)
+    top_v_rows = select_top_v_rows(metric_rows, tier=getattr(args, "tier", "latest"))
     top_v_allstudies_rows = select_top_v_allstudies_rows(metric_rows)
     top_run_keys = {(str(row["project_name"]), str(row["run_name"])) for row in top_v_rows}
     top_allstudies_run_keys = {
