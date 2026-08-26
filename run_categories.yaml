@@ -1,0 +1,206 @@
+# Three-tier run registry for cross-project comparisons.
+#
+# WHY THIS FILE EXISTS
+#
+# The comparison scripts currently auto-pick the highest version number per project. That is a
+# reasonable default -- it picks the latest iteration, usually the best performing -- but it
+# collapses three genuinely different things, and the difference matters for the overfitting
+# argument in the paper. The tiers:
+#
+#   verbatim   Criteria transcribed from the source paper BEFORE any results were seen.
+#              Held-out by construction. Note that GPT or a human helping to DRAFT from the
+#              paper does not disqualify a schema here -- what disqualifies it is having been
+#              revised against error reports.
+#
+#   manual     The highest version whose criteria the project author revised BY HAND. These were
+#              informed by the reports, but only lightly: a few examples inspected, obviously
+#              wrong patterns noticed and fixed, under time pressure. Overfitting is real but
+#              shallow.
+#
+#   latest     The absolute highest version number, whoever wrote it. In practice these are the
+#              agent-written schemas (Claude or GPT) produced by reading a project's error
+#              reports IN FULL and rewriting criteria against them. Overfitting is deep, and
+#              these must never be presented as held-out.
+#
+# The verbatim -> manual -> latest progression is therefore also a gradient of how much
+# gold-standard information reached the schema. That is the point of separating them.
+#
+# FAMILIES. A project can have parallel run families that the comparison scripts treat
+# separately, so each is registered independently:
+#   canonical        plain vN            -- what the screening roll-up selects
+#   annotation_only  vN-annotation-only  -- what the analysis and fair roll-ups select
+#   allstudies       vN-allstudies       -- dementia and emotional_regulation use these
+#
+# `null` means the tier genuinely does not exist for that project/family. Those gaps are
+# findings, not omissions: five projects have no manually-iterated version at all, so a
+# three-way comparison will have a smaller n for the manual tier than for the other two.
+#
+# STATUS: FIRST PASS, NEEDS REVIEW. Entries carrying `review:` are judgement calls where the
+# header evidence is ambiguous. Please check those before any of these lists is used in the paper.
+
+projects:
+
+  cue_reactivity:
+    canonical:
+      verbatim: v1          # no header; earliest, precedes all report feedback
+      manual:   v4          # "Modified from v4 to revert correlational analysis exclusion criteria"
+      latest:   v6          # Claude; search-only change carrying v5's GPT-written criteria
+      note: >-
+        v2/v3/v4 are all hand-edited by the author. v5 is where authorship changes hands
+        ("prompted GPT to improve criteria" from report feedback), so the manual tier stops at v4.
+    annotation_only:
+      verbatim: null
+      manual:   null
+      latest:   v5-annotation-only
+      review: >-
+        The only annotation-only run carries v5's GPT-written criteria, so this family has no
+        verbatim or manual entry. If the three-way comparison needs one, a v1-annotation-only or
+        v4-annotation-only would have to be created and run.
+
+  decision_making:
+    canonical:
+      verbatim: v1
+      manual:   null
+      latest:   v3          # Claude, full-text screening
+      review: >-
+        v1's header says "Used ChatGPT to refine query in an evaluation loop", so its SEARCH was
+        tuned against results even though its criteria appear paper-faithful. It is the best
+        verbatim candidate available but is not cleanly held-out. No hand-edited version exists.
+    annotation_only:
+      verbatim: null
+      manual:   null
+      latest:   v2-annotation-only    # GPT, "refine annotations using reports"
+
+  dementia:
+    canonical:
+      verbatim: v1
+      manual:   v3          # v2 and v3 are both hand-edited; v3 is the highest
+      latest:   v3          # no agent-written plain vN exists; v4/v5 are allstudies only
+    allstudies:
+      verbatim: v1-allstudies
+      manual:   v3-allstudies
+      latest:   v5-allstudies         # Claude, annotation schema
+      note: >-
+        The cleanest three-tier set in the corpus: all three tiers exist, in the same family,
+        with the same benchmark. Worth leading with.
+    annotation_only:
+      verbatim: null                  # v2-annotation-only is already an iteration
+      manual:   v3-annotation-only
+      latest:   v3-annotation-only
+
+  emotional_regulation_2022:
+    allstudies:
+      verbatim: v1-allstudies
+      manual:   v3-allstudies
+      latest:   v3-allstudies         # no agent-written version yet
+      note: >-
+        Blocked on nmb_mappings.json still holding the MANUAL_NAME1 placeholder, so none of these
+        can currently be scored against the benchmark.
+
+  executive_function:
+    canonical:
+      verbatim: v1-2010
+      manual:   null
+      latest:   v3                    # Claude; combines v2 screening + v3 annotation. NOT YET RUN.
+      review: >-
+        Deliberately naming v1-2010 rather than v1 as verbatim. v1's search window (1988-2008)
+        was narrowed by inspecting the gold set's own publication range, which is gold-informed
+        tuning; v1-2010 keeps the original untuned 1990-2010 window. If you would rather treat
+        that window change as too minor to matter, verbatim should be v1 instead. Separately, v1
+        was GPT-assisted in drafting from the paper -- allowed under the verbatim definition --
+        and no hand-edited version exists.
+    annotation_only:
+      verbatim: null
+      manual:   v1-annotation-only
+      latest:   v3-annotation-only    # Claude
+      review: >-
+        v1-annotation-only's annotation criteria differ from v1's, so it is an independent
+        criteria set rather than a mode wrapper. Classifying it as manual on that basis; it is
+        also the outstanding convention violation for this project.
+
+  problem_solving:
+    canonical:
+      verbatim: v1                    # note the file is v1.yml, not v1.yaml
+      manual:   null
+      latest:   v3                    # Claude; annotation + retrieval + wider max_results
+      note: >-
+        v3's search pool is larger than v1's (max_results 20000 vs 5000), so v1 -> v3 does not
+        isolate the criteria change.
+    annotation_only:
+      verbatim: v1-annotation-only
+      manual:   null
+      latest:   v3-annotation-only    # Claude
+      note: >-
+        v2-annotation-only sits between them and is GPT-written, so this family has a clean
+        verbatim -> agent contrast but no manual tier.
+
+  social:
+    canonical:
+      verbatim: null
+      manual:   v2
+      latest:   v2
+      review: >-
+        social has no v1.yaml -- the only plain vN is v2 -- so the canonical family has no
+        verbatim entry. Its v1 exists only as annotation-only variants.
+    annotation_only:
+      verbatim: v1-annotation-only
+      manual:   v3-annotation-only
+      latest:   v4-annotation-only    # Claude, multi-label fix
+      note: >-
+        The other complete three-tier set. Also the project where the tiers disagree most
+        sharply: v1 is best at map level (dice 0.570) while v4 has much better annotation F1.
+
+  vbm_of_ptsd:
+    canonical:
+      verbatim: v1
+      manual:   v1                    # never iterated; verbatim and manual are the same run
+      latest:   v1
+      note: Single-version project. Contributes to no tier contrast.
+    annotation_only:
+      verbatim: v1-annotation-only
+      manual:   v1-annotation-only
+      latest:   v1-annotation-only
+
+  vbm_of_substance_use:
+    canonical:
+      verbatim: v1
+      manual:   null
+      latest:   v2                    # GPT, "Double checked criteria using GPT 5.4"
+      review: >-
+        v1's query was "copied from original study and expanded using suggestions by GPT" --
+        paper-faithful criteria with a GPT-widened search, so verbatim with a caveat. v2's header
+        does not mention reports, so whether it counts as report-iterated or as a GPT criteria
+        review is unclear; classified as agent-written on authorship grounds.
+    annotation_only:
+      verbatim: null
+      manual:   null
+      latest:   v2-annotation-only    # GPT
+
+# ---------------------------------------------------------------------------------------------
+# COVERAGE, MEASURED (validated against disk 2026-08-26)
+#
+# Non-null entries: verbatim 12, manual 10, latest 18.
+#
+# Families supporting a FULL three-way contrast (three DISTINCT runs) -- only three:
+#     cue_reactivity/canonical        v1        -> v4              -> v6
+#     dementia/allstudies             v1-all    -> v3-all          -> v5-all
+#     social/annotation_only          v1-ao     -> v3-ao           -> v4-ao
+#
+# Families with only two distinct runs (eight): decision_making/canonical,
+# dementia/canonical, emotional_regulation_2022/allstudies, executive_function/canonical,
+# executive_function/annotation_only, problem_solving/canonical,
+# problem_solving/annotation_only, vbm_of_substance_use/canonical.
+#
+# IMPLICATION FOR THE PAPER. A three-tier cross-project comparison has n=3, not n=8. The
+# verbatim -> latest contrast is much better supported (most families have both), and the
+# manual tier is the scarce one -- it exists in only 10 of 18 families and is distinct from
+# `latest` in only 5. So the defensible framings are:
+#
+#   (a) verbatim vs latest, across most families        -- the main claim, well powered
+#   (b) verbatim vs manual vs latest, n=3               -- the gradient-of-overfitting claim,
+#                                                          a case study rather than a result
+#
+# Do not report (b) as a cross-project result. It is the same scoping problem already noted for
+# the schema-sensitivity section.
+#
+# NOT YET RUNNABLE: executive_function/v3 is registered as its `latest` but has no outputs/ yet.
