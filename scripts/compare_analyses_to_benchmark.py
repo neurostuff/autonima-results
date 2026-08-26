@@ -17,8 +17,22 @@ import argparse
 import csv
 import json
 import re
+import sys
 import xml.etree.ElementTree as ET
 from collections import defaultdict
+
+# pubget writes an entire article body into a single text.csv field, which blows past
+# Python's default 131072-character csv field cap and raises
+# "_csv.Error: field larger than field limit". Raise the cap as high as the platform
+# allows -- sys.maxsize overflows the underlying C long on some builds, so step down
+# until it is accepted.
+_CSV_FIELD_LIMIT = sys.maxsize
+while True:
+    try:
+        csv.field_size_limit(_CSV_FIELD_LIMIT)
+        break
+    except OverflowError:
+        _CSV_FIELD_LIMIT //= 2
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from difflib import SequenceMatcher
