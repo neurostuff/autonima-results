@@ -1,0 +1,64 @@
+# Search baselines for dementia (bvFTD).
+#
+# This project decomposes along a different axis from the others. Its sub-annotations are not
+# topics but IMAGING MODALITIES and a result DIRECTION:
+#
+#   all        every qualifying modality
+#   functional fMRI and FDG-PET
+#   structural VBM
+#   decrease   analyses reporting reduced signal in bvFTD
+#
+# So the clause held constant is the disease and the clause that varies is the modality — the
+# inverse of vbm_of_substance_use, where the modality was shared and the drug class varied.
+# The assembler does not care which is which; the naming below follows the spec format.
+#
+# `decrease` cannot be targeted by a PubMed query at all: no search expresses "the paper
+# reports a decrease rather than an increase". Its baseline is therefore identical to `all`,
+# which is the honest representation — a search-only competitor could not have done better,
+# and that is precisely the kind of selection only annotation can perform. Expect the
+# annotation-versus-baseline gap to be largest on this column for that reason.
+#
+# Clauses are taken verbatim from v3.yaml, including its unquoted multi-word terms.
+
+meta_pmid: "35664889"
+
+shared:
+  # Disease clause — held constant across all four baselines.
+  modality: >-
+    behavioral variant frontotemporal dementia OR bvFTD OR frontal variant frontotemporal
+    dementia OR frontotemporal dementia OR picks disease
+  exclude: null
+  date_from: "1995/01/01"
+  date_to: "2020/06/01"
+
+baselines:
+  - manual_annotation: all
+    broad_control: true
+    note: Reproduces v3.yaml's search — every qualifying modality.
+    topic: >-
+      functional magnetic resonance imaging OR fMRI OR voxel-based morphometry OR VBM OR
+      positron emission tomography OR PET
+
+  - manual_annotation: decrease
+    note: >-
+      Identical to `all` by necessity — no query can select for a reported direction of
+      effect. Included so the column has a baseline at all; the gap to annotation here
+      measures exactly what search cannot do.
+    topic: >-
+      functional magnetic resonance imaging OR fMRI OR voxel-based morphometry OR VBM OR
+      positron emission tomography OR PET
+
+  - manual_annotation: functional
+    topic: >-
+      functional magnetic resonance imaging OR fMRI OR positron emission tomography OR PET OR
+      FDG-PET OR fluorodeoxyglucose
+
+  - manual_annotation: structural
+    # Widened deliberately. A clause limited to VBM/volume/density phrasings recovered only
+    # 41/55 gold (75%); adding atrophy, cortical thickness and bare gray/grey matter reaches
+    # 52/55 (95%). The 11 recovered are papers whose TITLE is about connectivity or task fMRI
+    # but which also report a VBM analysis that the manual took — reachable via the abstract,
+    # so a structural-targeted searcher would find them.
+    topic: >-
+      voxel-based morphometry OR VBM OR gray matter OR grey matter OR cortical thickness OR
+      atrophy OR morphometr* OR brain volume OR structural MRI

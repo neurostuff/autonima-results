@@ -1,0 +1,63 @@
+# Search baselines for decision_making.
+#
+# NOTE — NO POOLED COLUMN EXISTS. The source meta-analysis published three separate
+# sub-analyses (ambiguous, risky, perceptual) and no combined one, so unlike every other
+# project there is no manual "all" map for a broad baseline to be scored against. The control
+# arm below therefore carries `name:` instead of `manual_annotation:` — it supplies the broad
+# map that the three sub-baselines are compared against, but is not itself compared to
+# anything on the manual side. It will not map to neurometabench, by construction.
+#
+# Shared: the fMRI clause, Humans, English and the review exclusions, verbatim from v2.yaml.
+# Varying: the decision-type clause. v2's topic clause is a disjunction of exactly these three
+# types plus an ambiguity/reward variant, so the decomposition here is close to a partition of
+# the original rather than a reinterpretation of it.
+
+meta_pmid: "32078973"
+
+shared:
+  modality: >-
+    (fMRI[tiab] OR "functional MRI"[tiab] OR "functional magnetic resonance imaging"[tiab] OR
+    BOLD[tiab] OR "blood oxygenation level dependent"[tiab]) AND Humans[mh] AND English[lang]
+  exclude: >-
+    review[pt] OR "systematic review"[tiab] OR meta-analysis[pt]
+  date_from: "1995/01/01"
+  date_to: "2019/03/31"
+
+baselines:
+  - name: all_decision_making
+    broad_control: true
+    note: >-
+      Control arm only. Reproduces v2.yaml's full topic clause. Has no manual counterpart
+      because the source meta-analysis published no pooled column, so it is used solely as
+      the broad baseline for the three sub-arms.
+    topic: >-
+      ((risk*[tiab] OR "risk taking"[tiab] OR "risk-taking"[tiab]) AND (decision-making[tiab]
+      OR "decision making"[tiab] OR choice[tiab] OR choices[tiab])) OR ((ambigu*[tiab] OR
+      uncertainty[tiab] OR probabilistic[tiab]) AND (decision-making[tiab] OR
+      "decision making"[tiab] OR choice[tiab] OR choices[tiab])) OR
+      ("perceptual decision-making"[tiab] OR "perceptual decision making"[tiab]) OR
+      ((ambigu*[tiab] OR uncertainty[tiab] OR probabilistic[tiab]) AND (reward*[tiab] OR
+      learning[tiab]))
+
+  - manual_annotation: adm_july2019
+    note: Ambiguous / uncertain decision making.
+    topic: >-
+      (ambigu*[tiab] OR uncertainty[tiab] OR uncertain[tiab] OR probabilistic[tiab] OR
+      "unknown probabilit*"[tiab]) AND (decision-making[tiab] OR "decision making"[tiab] OR
+      choice[tiab] OR choices[tiab] OR reward*[tiab] OR learning[tiab] OR gambl*[tiab])
+
+  - manual_annotation: rdm_july2019
+    note: Risky decision making.
+    topic: >-
+      (risk*[tiab] OR "risk taking"[tiab] OR "risk-taking"[tiab] OR "risky choice*"[tiab] OR
+      gambl*[tiab] OR "loss aversion"[tiab]) AND (decision-making[tiab] OR
+      "decision making"[tiab] OR choice[tiab] OR choices[tiab])
+
+  - manual_annotation: perceptual_dm_july2019
+    note: Perceptual decision making.
+    topic: >-
+      "perceptual decision-making"[tiab] OR "perceptual decision making"[tiab] OR
+      "perceptual choice*"[tiab] OR "perceptual discrimination"[tiab] OR
+      ("random dot*"[tiab] AND (motion[tiab] OR discrimination[tiab])) OR
+      ("sensory evidence"[tiab] AND (decision*[tiab] OR choice*[tiab])) OR
+      "evidence accumulation"[tiab]

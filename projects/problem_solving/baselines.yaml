@@ -1,0 +1,66 @@
+# Search baselines for problem_solving.
+#
+# Shared: the imaging clause, verbatim from the executed config of the v1 run. Varying: the
+# cognitive-domain clause, split into the four domains the benchmark scores separately, with
+# the pooled column keeping v1's original clause.
+#
+# NOTE ON PROVENANCE. This project's v1.yaml is missing from the project directory — only the
+# annotation-only configs remain — so the clauses below were recovered from
+# v1/outputs/config.executed.yaml, which records what actually ran (6,927 search results).
+# Reconstructing v1.yaml is a separate hygiene item.
+#
+# CAVEAT ON THE ORIGINAL QUERY. v1's topic clause is extraordinarily broad: alongside
+# "problem solving" and "reasoning" it includes bare "task", "number" and "picture", each of
+# which matches a large fraction of the cognitive neuroimaging literature. The pooled baseline
+# reproduces it faithfully, so expect a very large and very impure control pool. That is a
+# property of the project's search, not of this decomposition, and it is worth reporting: it
+# is the clearest example in the corpus of a search too broad to serve as a meta-analytic
+# selection on its own.
+
+meta_pmid: "29944961"
+
+shared:
+  modality: >-
+    "fMRI"[Title/Abstract] OR "functional magnetic resonance imaging"[Title/Abstract] OR
+    "PET"[Title/Abstract] OR "positron emission tomography"[Title/Abstract]
+  exclude: >-
+    review[pt] OR "systematic review"[tiab] OR meta-analysis[pt]
+  date_from: "1997/01/01"
+  date_to: "2015/03/14"
+
+baselines:
+  - manual_annotation: global_calculationandvisuospatialandword_mni_final
+    broad_control: true
+    note: >-
+      Reproduces v1's topic clause verbatim, bare "task"/"number"/"picture" included. This is
+      the un-narrowed control and is expected to be very impure.
+    topic: >-
+      "problem solving"[Title/Abstract] OR "calculation"[Title/Abstract] OR
+      "number"[Title/Abstract] OR "picture"[Title/Abstract] OR "task"[Title/Abstract] OR
+      "reasoning"[Title/Abstract] OR "math"[Title/Abstract] OR
+      "cognitive process"[Title/Abstract] OR "verbal"[Title/Abstract] OR
+      "visuospatial"[Title/Abstract]
+
+  - manual_annotation: calculation_mni_final
+    topic: >-
+      calculation[tiab] OR arithmetic[tiab] OR math[tiab] OR mathematic*[tiab] OR
+      numerical[tiab] OR "number processing"[tiab] OR "mental arithmetic"[tiab] OR
+      subtraction[tiab] OR multiplication[tiab] OR "numeric*"[tiab]
+
+  - manual_annotation: wordproblems_mni_final
+    topic: >-
+      "word problem*"[tiab] OR verbal[tiab] OR "verbal reasoning"[tiab] OR semantic[tiab] OR
+      linguistic[tiab] OR "language comprehension"[tiab] OR reading[tiab] OR
+      "sentence comprehension"[tiab] OR "text comprehension"[tiab]
+
+  - manual_annotation: visuospatialreasoning_mni_final
+    topic: >-
+      visuospatial[tiab] OR "visuo-spatial"[tiab] OR "spatial reasoning"[tiab] OR
+      "mental rotation"[tiab] OR "matrix reasoning"[tiab] OR "raven*"[tiab] OR figural[tiab] OR
+      "spatial cognition"[tiab] OR "visual reasoning"[tiab]
+
+  - manual_annotation: demand_mni_final
+    topic: >-
+      reasoning[tiab] OR "logical reasoning"[tiab] OR deductive[tiab] OR deduction[tiab] OR
+      inductive[tiab] OR inference[tiab] OR "rule-based"[tiab] OR syllogis*[tiab] OR
+      "cognitive demand"[tiab] OR "task difficulty"[tiab] OR "cognitive load"[tiab]

@@ -1,0 +1,37 @@
+# Search baselines for vbm_of_ptsd.
+#
+# Single sub-annotation, so there is nothing to narrow: the project's existing search IS the
+# right baseline. This spec exists for homogeneity — every project's baseline is then produced
+# by the same code path and carries the same provenance, rather than some being read from a
+# v*.yaml `all_studies` column and others from a generated run.
+#
+# Clauses are taken verbatim from v1.yaml. NOTE: v1's morphometry clause contains a typo,
+# "grey mattr volum*" (missing 'e'), which silently drops any hit that would have matched only
+# that term. It is preserved here deliberately so this baseline reproduces the project's
+# actual search; fixing it would make the control arm something the project never ran.
+# Checked: the typo costs no gold. Corrected, the clause returns ~1,000 more PubMed hits
+# overall (10,860 vs 9,792) but recovers the same 18/22 gold studies, so preserving it is
+# free. The 4 gold it misses fail the morphometry/MRI clause for other reasons.
+
+meta_pmid: "36100907"
+
+shared:
+  modality: >-
+    ("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab] OR
+    "grey mattr volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab])
+    AND ("magnetic resonance imaging"[Mesh] OR MRI[tiab] OR "structural MRI"[tiab])
+    AND Humans[mh] AND English[lang]
+  exclude: >-
+    review[pt] OR "systematic review"[tiab] OR meta-analysis[pt]
+  date_from: "1990/01/01"
+  date_to: "2020/12/31"
+
+baselines:
+  - manual_annotation: nonptsdgtptsd_merged
+    broad_control: true
+    note: >-
+      The project has one sub-annotation, so this is simultaneously the targeted baseline and
+      the broad control. Reproduces v1.yaml's search.
+    topic: >-
+      PTSD[tiab] OR "post-traumatic stress disorder"[tiab] OR "posttraumatic stress
+      disorder"[tiab]

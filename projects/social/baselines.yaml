@@ -1,0 +1,83 @@
+# Search baselines for social.
+#
+# Shared: the fMRI clause and Humans, verbatim from v2.yaml. Varying: the social-construct
+# clause, split into the four constructs the benchmark scores separately (affiliation, self,
+# others, communication), with the pooled column keeping v2.yaml's original clause.
+#
+# The original clause is unusually short — seven phrases — so the sub-topic clauses here are
+# broader than it rather than subsets of it. That is right for a fair baseline (a researcher
+# targeting only affiliation would not restrict themselves to v2's seven phrases) but it means
+# the sub-baselines are not nested inside the control, unlike vbm_of_substance_use.
+#
+# IMPORTANT — SUB-TARGETING DOES NOT WORK FOR THIS PROJECT, AND THAT IS THE POINT.
+#
+# The clauses below are the result of a deliberate widening pass, and they still fall far short
+# of what the broad clause achieves. Gold recall, measured:
+#
+#   column                broad   narrow   widened (shipped)   pool at widened
+#   all_merged             95%      —            —                   922
+#   others_merged          96%     56%          83%                4,044
+#   self_merged            94%     22%          65%                5,945
+#   soccomm_merged         94%     32%          62%                7,287
+#   affiliation_merged     94%     26%          47%                1,267
+#
+# The broad clause reaches ~95% on every column from 922 candidates; sub-targeting caps 30-50
+# points below that while needing 4-8x the pool. The reason is visible in the misses: the
+# self_merged gold includes studies on guilt and embarrassment, self-face recognition,
+# visuo-motor synchrony, empathy, love, and the Trust Game. Those were assigned to "self" by a
+# judgement about which CONTRAST the analysis reports, not by anything in the paper's topic
+# vocabulary. No query reaches them.
+#
+# These baselines are shipped anyway, because documenting the failure is the result: for
+# diffuse cognitive constructs a targeted search cannot substitute for annotation even in
+# principle. Contrast vbm_of_substance_use (drug classes, 90-100% recall at 3-13x smaller
+# pools) and dementia (imaging modalities, 95% on all four columns), where the sub-topics ARE
+# lexically separable. When interpreting this project, the broad control is the fair
+# competitor; the sub arms are evidence about what search can and cannot do.
+
+meta_pmid: "36436737"
+
+shared:
+  modality: >-
+    ("functional MRI"[Title/Abstract] OR "functional magnetic resonance imaging"[Title/Abstract]
+    OR fMRI[Title/Abstract]) AND Humans[MeSH]
+  exclude: >-
+    review[pt] OR "systematic review"[tiab] OR meta-analysis[pt]
+  date_from: "1995/01/01"
+  date_to: "2020/03/01"
+
+baselines:
+  - manual_annotation: all_merged
+    broad_control: true
+    note: Reproduces v2.yaml's social clause.
+    topic: >-
+      "social communication"[Title/Abstract] OR "social processing"[Title/Abstract] OR
+      "social interaction"[Title/Abstract] OR affiliation[Title/Abstract] OR
+      "social attachment"[Title/Abstract] OR "social cognition"[Title/Abstract] OR
+      "understanding others"[Title/Abstract]
+
+  - manual_annotation: affiliation_merged
+    topic: >-
+      affiliation[tiab] OR attachment[tiab] OR "social bond*"[tiab] OR bonding[tiab] OR
+      kinship[tiab] OR cooperation[tiab] OR trust[tiab] OR "social reward*"[tiab] OR love[tiab] OR
+      romantic[tiab] OR maternal[tiab] OR friendship[tiab] OR "social comparison"[tiab] OR
+      reciprocity[tiab]
+
+  - manual_annotation: self_merged
+    topic: >-
+      self[tiab] OR "self-referential"[tiab] OR "self-knowledge"[tiab] OR agency[tiab] OR
+      "self-awareness"[tiab] OR introspection[tiab] OR autobiograph*[tiab] OR
+      "trait judgment*"[tiab] OR guilt[tiab] OR embarrassment[tiab] OR "first-person"[tiab]
+
+  - manual_annotation: others_merged
+    topic: >-
+      "theory of mind"[tiab] OR mentaliz*[tiab] OR mentalis*[tiab] OR "mental state*"[tiab] OR
+      empathy[tiab] OR empathic[tiab] OR perspective-taking[tiab] OR "action observation"[tiab] OR
+      "biological motion"[tiab] OR animacy[tiab] OR intention*[tiab] OR attribution*[tiab] OR
+      "social cognition"[tiab]
+
+  - manual_annotation: soccomm_merged
+    topic: >-
+      "social communication"[tiab] OR face[tiab] OR faces[tiab] OR facial[tiab] OR
+      "emotion recognition"[tiab] OR gaze[tiab] OR "eye contact"[tiab] OR prosody[tiab] OR
+      voice[tiab] OR "nonverbal communication"[tiab] OR expression*[tiab]
