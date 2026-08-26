@@ -119,44 +119,10 @@ parsing:
   coordinate_model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
 
 annotation:
-  # MINIMAL FIRST DRAFT by Claude (Opus 5), 2026-08-26 -- for expert review, not final.
-  #
-  # The source paper (Morawetz et al. 2022, NeuroImage 255:119194, PMID 35413444, "Reappraisal
-  # and empathic perspective-taking") is not open access, so these criteria were NOT written from
-  # its stated methods. They were reverse-engineered from the benchmark's own contrast labels in
-  # neurometabench/raw/meta-datasets/Emotion Regulation - 2022 - Morawetz/{Decrease,Increase,
-  # Maintain,Reappraisal}.txt, plus the label structure of the merged annotation. Treat every
-  # criterion below as a hypothesis about what the authors did, to be corrected against the paper.
-  #
-  # WHAT THE LABELS ACTUALLY CONTAIN (counts from the Sleuth files; nimads agrees within one)
-  #
-  #   reappraisal  154   effectively the UNION of decrease and increase (152 + 24 - 23 overlap)
-  #   decrease     152   "Decrease>Baseline", "Decrease>maintain", "Decrease>View",
-  #                      and bare "Reappraise>View" / "Reappraisal>View emotional"
-  #   increase      24   "Increase>Maintain", "Increase>View", "Increase negative>Watch negative",
-  #                      "Increase>Look Negative", "Increase>look"
-  #   maintain       8   "Emotion>Baseline" only -- emotional reactivity with NO regulation
-  #
-  # THREE STRUCTURAL FACTS THAT DRIVE THE DESIGN
-  #
-  # 1. Multi-labelling is the norm, not the exception: of 161 annotated analyses, 130 carry two
-  #    labels, 23 carry three, and only 8 carry one. A schema that assigns one label per analysis
-  #    cannot exceed ~0.5 recall here.
-  # 2. `reappraisal` is a STRATEGY label and `decrease`/`increase` are GOAL labels, so they stack.
-  #    Every one of the 152 decrease contrasts is also reappraisal; so are all 24 increase ones.
-  # 3. `maintain` is DISJOINT from everything -- it co-occurs with no other label. It is not a
-  #    regulation contrast at all but the unregulated reactivity condition, so it must never be
-  #    labelled reappraisal.
-  #
-  # The 23 three-label analyses are decrease + increase + reappraisal: contrasts that pool both
-  # regulation directions (e.g. regulate > view collapsing up- and down-regulation).
-  #
-  # DELIBERATELY LEFT OUT, pending the paper: any sample restriction (age, healthy vs clinical),
-  # any stimulus-modality restriction, and any rule about strategies other than reappraisal
-  # (suppression, distraction, expressive suppression). The benchmark is reappraisal-only in
-  # practice, but whether that is an inclusion rule or just what the literature contains is not
-  # something the contrast labels can settle.
-  enabled: true
+  # Criteria intentionally absent. The draft annotation criteria for this project live in
+  # v2-annotation-only.yaml and are being trialled there first; once they behave they will be
+  # ported to v2-allstudies.yaml, which is the config meant to run them at full scale.
+  enabled: false
   model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
   prompt_type: "multi_analysis"
@@ -166,83 +132,6 @@ annotation:
     - "table_caption"
     - "study_title"
     - "study_fulltext"
-  inclusion_criteria:
-    - >-
-      The analysis must be a group-level, univariate whole-brain (voxelwise) task-evoked
-      statistical map with coordinates reported in MNI or Talairach space.
-    - >-
-      The task must involve emotional stimuli, and the contrast must concern either the
-      regulation of an emotional response or the unregulated experience of one.
-    - >-
-      Judge this analysis from its own name, description and table caption. An empty or generic
-      analysis name is never itself a reason to exclude- read the caption instead.
-    - >-
-      Assign every label that applies, not just the best one. Most analyses in this benchmark
-      carry two labels, because the regulation STRATEGY (reappraisal) and the regulation GOAL
-      (decrease, increase) are labelled separately and stack on the same contrast.
-  exclusion_criteria:
-    - Region-of-interest (ROI) or small-volume-corrected analyses without whole-brain results.
-    - >-
-      Connectivity or resting-state analyses (seed-based or effective connectivity, PPI, DCM,
-      ICA) with no task activation map.
-    - >-
-      Contrasts between two participant GROUPS, or group x condition interactions, with no
-      within-group effect. This is about who is compared, not about the conditions- a
-      within-group regulation contrast qualifies.
-  annotations:
-    - name: "reappraisal"
-      description: "Cognitive reappraisal: reinterpreting the meaning of an emotional stimulus in order to change one's emotional response to it."
-      inclusion_criteria:
-        - >-
-          The contrast isolates a cognitive-reappraisal regulation attempt against a
-          less-regulated or unregulated comparison- typical forms are reappraise > view,
-          reappraise > look, reappraise > watch, reappraise > maintain, or reappraise > baseline.
-        - >-
-          Either regulation direction qualifies. A contrast named only "reappraise > view", with
-          no direction stated, still belongs here.
-        - >-
-          Assign this IN ADDITION to the goal label (decrease or increase) rather than instead of
-          it- in this benchmark every decrease and every increase contrast is also reappraisal.
-      exclusion_criteria:
-        - >-
-          Contrasts of emotional versus neutral stimuli with no regulation instruction. Those are
-          reactivity contrasts and belong to `maintain` only.
-
-    - name: "decrease"
-      description: "Down-regulation goal: reappraisal used to reduce the intensity of an emotional response."
-      inclusion_criteria:
-        - >-
-          The contrast's regulation goal is to reduce or dampen the emotional response- e.g.
-          decrease > baseline, decrease > maintain, decrease > view, downregulate > look.
-        - >-
-          Treat an undirected reappraisal contrast (e.g. "reappraise > view") as decrease.
-          Down-regulation is the default goal in this literature and the benchmark labels such
-          contrasts this way.
-
-    - name: "increase"
-      description: "Up-regulation goal: reappraisal used to amplify the intensity of an emotional response."
-      inclusion_criteria:
-        - >-
-          The contrast's regulation goal is explicitly to amplify or intensify the emotional
-          response- e.g. increase > maintain, increase > view, increase > look, upregulate >
-          watch, "increase negative > watch negative".
-        - >-
-          Up-regulation must be stated. Do not infer it from an undirected reappraisal contrast.
-        - >-
-          If a single contrast pools both directions (e.g. regulate > view collapsing up- and
-          down-regulation), assign BOTH increase and decrease.
-
-    - name: "maintain"
-      description: "Unregulated emotional reactivity: experiencing an emotional stimulus with no instruction to regulate."
-      inclusion_criteria:
-        - >-
-          The contrast is emotional stimuli versus a neutral or low-level baseline, with no
-          regulation instruction- e.g. emotion > baseline, negative > neutral, look negative >
-          look neutral.
-      exclusion_criteria:
-        - >-
-          Any contrast involving a regulation attempt. `maintain` is mutually exclusive with the
-          other three labels in this benchmark- if the contrast regulates, it is not maintain.
 
 output:
   formats:
