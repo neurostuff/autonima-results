@@ -1048,7 +1048,47 @@ window and can be ignored.
 - **cue_reactivity manual-download backlog** for the widened `load_excluded` arm; its numbers stay
   provisional until cleared.
 
-## emotion_regulation_2022: benchmark discrepancies against the supplementary material
+## emotion_regulation_2022: benchmark discrepancies — DIAGNOSED AND FIXED 2026-08-26
+
+**Resolved.** The cause was the Sleuth export, not the source data. `FINAL_DATA_ER.xlsx` was
+correct all along; its per-goal sheets each hold MULTIPLE side-by-side Sleuth blocks, and the
+export read the wrong ones:
+
+    sheet         blocks (contrasts)        .txt was built from
+    Decrease      col A = 128, col H = 152  col H  <-- col H is the reappraisal UNION
+    Increase      col A = 23,  col H = 24   col H  (correct)
+    Maintain      cols A/E/K = 104 each     truncated to 8
+    Reappraisal   col A = 151               (correct, 154)
+
+`Decrease` col H minus col A is exactly 24 labels, 23 of which are the Increase set — so the
+"decrease" gold was decrease + increase. File timestamps corroborate it: `Decrease.txt` is dated
+May 11 and `Increase.txt` May 13, so Decrease was exported before the increase split existed and
+never regenerated.
+
+Rebuilt from `Decrease` col A and `Maintain` col E (cols E/K are cleaned; col A carries two label
+typos, `dörfel2014` and `winecoff2011 em42otion>baseline2`). Author originals preserved in
+`.original_from_author/`. Post-fix, against Fig. 1:
+
+    construct      before      after     Fig. 1
+    reappraisal   154/1590   154/1590   154/1590   exact
+    decrease      152/1577   128/1270   130/1284
+    increase       24/305     24/305     24/306
+    maintain        8/77     104/1408   104/1408   exact
+
+The nimads regenerated to **90 studies — the paper's exact count** — after three
+label-convention aliases were added to the fuzzy map (`Albein 2013` -> Albein-Urios 2013,
+`MacRae 2012` -> McRae 2012, `vanderVelde 2015a` -> van der Velde 2015a); the Maintain sheet uses
+a no-space naming convention the map, built from the other blocks, did not cover. The structural
+errors are gone: decrease+increase overlap 23 -> **0**, three-label analyses 23 -> **0**, and
+labels-per-analysis is now exactly 1 for maintain (96) and 2 for regulation contrasts (152), which
+is what the criteria encode. All four manual reference maps were recomputed.
+
+**Two studies remain unresolved to PMIDs**: `Chen 2017` and `Radke 2017`. Note 90 (paper) = 88
+(PMIDs in `included_studies.csv`) + 2, so these are almost certainly the two studies whose PMIDs
+were never entered. They carry coordinates and contribute to the ALE maps; only PMID-keyed
+comparisons are affected.
+
+### Original diagnosis, retained for the record
 
 Cross-checked the gold Sleuth files against the paper's supplementary Table S1 (266 contrast rows
 over 90 studies, carrying per-contrast `Goal` and `Strategy` columns) and against Fig. 1.
@@ -1060,8 +1100,8 @@ a patch.
     reappraisal        154          162       154      gold agrees with Fig. 1
     increase            24           34        24      gold agrees with Fig. 1; S1 counts the
                                                        12 dual-goal contrasts in both buckets
-    decrease           152          139       130      GOLD WRONG
-    maintain / Look      7          104       104      GOLD WRONG; S1 and Fig. 1 agree at 104
+    decrease           152          139       130      was wrong; now 128
+    maintain / Look      7          104       104      was wrong; now 104
 
 **Defect 1 — `Decrease.txt` holds the reappraisal union, not the decrease subset.** It is a strict
 subset of `Reappraisal.txt` differing by only two labels, and contains 23 of the 24 explicitly
