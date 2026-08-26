@@ -36,13 +36,13 @@ DEFAULT_REVIEW = (
 )
 
 RUNS_BY_PROJECT = {
-    "cue_reactivity": "v5-annotation-only-gpt",
+    "cue_reactivity": "v5-annotation-only",
     "decision_making": "v2-annotation-only",
     "dementia": "v3-annotation-only",
     "problem_solving": "v1-annotation-only",
     "social": "v3-annotation-only",
     "vbm_of_ptsd": "v1-annotation-only",
-    "vbm_of_substance_use": "v2-annotation-only-gpt",
+    "vbm_of_substance_use": "v2-annotation-only",
 }
 
 

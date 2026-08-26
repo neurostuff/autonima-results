@@ -473,12 +473,12 @@ are provisional until that manual-download backlog is cleared.
 
 **Version labels are not comparable across the two report families, by construction.** The
 screening roll-up selects the highest *canonical* run (`v6` for cue_reactivity), while the
-analysis and fair-meta roll-ups select the highest *annotation-only* run (`v5-annotation-only-gpt`).
+analysis and fair-meta roll-ups select the highest *annotation-only* run (`v5-annotation-only`).
 The mismatch is not an oversight and must not be "fixed" by producing a `v6-annotation-only`.
-v6 differs from v5-gpt in the `search` block and nothing else — annotation, parsing, retrieval,
+v6 differs from its v5 sibling in the `search` block and nothing else — annotation, parsing, retrieval,
 screening and output are byte-identical. Annotation-only runs override `search` with a fixed
 191-PMID gold list and skip screening, so they are search-independent: a `v6-annotation-only`
-config would be identical to `v5-annotation-only-gpt`. Running one would re-annotate the same
+config would be identical to `v5-annotation-only`. Running one would re-annotate the same
 191 papers and yield a "v6 annotation result" differing from v5 only by LLM nondeterminism —
 noise a reader would reasonably misread as an effect of the corrected search. State in Methods
 that annotation quality is measured on the fixed gold set and is therefore invariant to the
@@ -754,3 +754,26 @@ The cross-project roll-up regenerates its own evaluations under
 `reports/cross_project_screening/evaluations/<project>/<run>/`. **Those are authoritative; the
 project-local ones are not.** Any before/after claim should be read from the roll-up, or from a
 project-local evaluation whose mtime is confirmed to be newer than its `outputs/`.
+
+## Note: cue_reactivity v5-gpt was deleted; use v5-recent as the v5 reference
+
+`projects/cue_reactivity/v5-gpt.yaml` and its run directory have been removed, and
+`v5-annotation-only-gpt` renamed to `v5-annotation-only`, under the convention that schema
+authorship belongs in a header comment rather than a filename suffix.
+
+The earlier v6 correction above was computed against v5-gpt, which can no longer be reproduced
+from disk. **`v5-recent` is a valid substitute**: like the deleted v5-gpt, it differs from v6 in
+the `search` block and nothing else (annotation, parsing, retrieval, screening and output are all
+byte-identical — verified by loading both configs). Recomputed against it:
+
+    metric                      v5-recent    v6      delta
+    search recall                 0.754     0.932   +0.178
+    fulltext recall_all_meta      0.728     0.853   +0.125
+    fulltext recall_in_search     1.000     0.970   -0.030
+    fulltext precision            0.250     0.310   +0.060
+
+The conclusion is unchanged from the v5-gpt version of the comparison (+0.189 / +0.136 / -0.030):
+all of v6's gain comes from the search stage, `recall_in_search` slips slightly, and v6 should be
+reported as a search fix rather than a screening improvement. Precision is *better* against
+v5-recent than against v5-gpt (0.250 vs 0.321 baseline), so quote whichever v5 is retained and
+say which.
