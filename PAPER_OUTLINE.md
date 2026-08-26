@@ -825,3 +825,33 @@ is that v1 still retrieved 6,927 studies, above its own cap; the cap binds now (
 9,981 at 20000) but did not bind then. **So raising it to 20000 is a deliberate widening, not a
 bug fix, and v3's pool is larger than v1's — v1 → v3 does not isolate the annotation and
 retrieval changes.**
+
+
+## Limitation: the system still depends on a human-written PubMed query
+
+Every stage downstream of search — screening, retrieval, parsing, annotation — is automated, but
+the query itself is not. It is written by hand, and problem_solving shows how badly that can go
+unnoticed: four generic terms (`task`, `number`, `picture`, `verbal` in Title/Abstract) inflated
+the candidate pool to 21,452 while a whole paradigm group from the source paper (spatial
+navigation) was missing entirely. Replacing the query raised gold recall from 0.740 to 0.890 while
+*cutting* the pool 44%. Nothing in the pipeline flagged this; it surfaced only because we were
+scoring against a gold standard.
+
+**The asymmetry worth stating.** Too *narrow* is a correctness failure — unreachable papers cannot
+be recovered by any downstream stage, and the ceiling is invisible without a gold standard. Too
+*broad* is mostly a cost failure: screening filters the excess, so the price is compute and
+credits rather than a wrong answer. The two are not equally bad, and a practitioner without a gold
+standard should err broad.
+
+This matters most for OUR evaluation rather than for real use. Because precision here is scored
+against a fixed gold set, an over-broad search depresses reported precision even when the extra
+hits are legitimately on-topic papers the source meta-analysis simply never screened — the same
+floor effect already noted for executive_function (BrainMap-curated pool) and decision_making
+(Google Scholar + Web of Science + reference chasing). A real user pays for those extra hits in
+compute and sees no correctness penalty.
+
+**Where this leaves the claims.** Search quality is an input to the pipeline, not an output of it,
+so it should be reported as a scoping constraint rather than folded into the automation results.
+The honest framing: autonima automates everything after the query, and query construction remains
+the human bottleneck — one that a capable model can nonetheless improve substantially when given
+the source paper and an error report, as the problem_solving replacement demonstrates.
