@@ -471,6 +471,19 @@ standard, and it makes cue_reactivity an outlier in any cross-project end-to-end
 Disclose it explicitly. Its `load_excluded` arm also grows by ~740 candidates, so its numbers
 are provisional until that manual-download backlog is cleared.
 
+**Version labels are not comparable across the two report families, by construction.** The
+screening roll-up selects the highest *canonical* run (`v6` for cue_reactivity), while the
+analysis and fair-meta roll-ups select the highest *annotation-only* run (`v5-annotation-only-gpt`).
+The mismatch is not an oversight and must not be "fixed" by producing a `v6-annotation-only`.
+v6 differs from v5-gpt in the `search` block and nothing else — annotation, parsing, retrieval,
+screening and output are byte-identical. Annotation-only runs override `search` with a fixed
+191-PMID gold list and skip screening, so they are search-independent: a `v6-annotation-only`
+config would be identical to `v5-annotation-only-gpt`. Running one would re-annotate the same
+191 papers and yield a "v6 annotation result" differing from v5 only by LLM nondeterminism —
+noise a reader would reasonably misread as an effect of the corrected search. State in Methods
+that annotation quality is measured on the fixed gold set and is therefore invariant to the
+search version.
+
 **Methodological requirement learned the hard way.** All arms must share a retrieval vintage.
 Comparing a pipeline arm from an older corpus against baselines run later silently biases the
 result; the effect was large enough here to change the sign of the sub-vs-broad comparison.
