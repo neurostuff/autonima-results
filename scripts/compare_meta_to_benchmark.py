@@ -30,6 +30,9 @@ from dataclasses import dataclass
 from html import escape
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from nmb_mapping import resolve_analysis_dir  # noqa: E402
+
 import matplotlib.pyplot as plt
 import nibabel as nib
 import numpy as np
@@ -217,6 +220,29 @@ def manual_name_candidates(manual_name: str) -> list[str]:
         if candidate and candidate not in deduped:
             deduped.append(candidate)
     return deduped
+
+
+def manual_candidate_paths(
+    manual_analysis_base: Path,
+    project_name: str,
+    manual_name: str,
+    map_filename: str,
+) -> list[Path]:
+    """Candidate paths for a manual map, most likely first.
+
+    neurometabench's directory names do not always match the mapping key's case or
+    separators -- social maps `others_merged` while the directory is `Others-Merged` -- so the
+    normalized resolution is tried first, then the literal candidates as a fallback.
+    """
+    paths: list[Path] = []
+    resolved = resolve_analysis_dir(manual_analysis_base, project_name, manual_name)
+    if resolved is not None:
+        paths.append(resolved / map_filename)
+    for candidate in manual_name_candidates(manual_name):
+        candidate_path = manual_analysis_base / project_name / candidate / map_filename
+        if candidate_path not in paths:
+            paths.append(candidate_path)
+    return paths
 
 
 def heuristic_is_manual_meta_run(run_name: str) -> bool:
@@ -642,12 +668,11 @@ def build_mapping_pairs(
     run_missing_pairs = {run_info.name: [] for run_info in run_infos}
 
     for manual_name, auto_name in mappings.items():
-        candidates = manual_name_candidates(manual_name)
-
         manual_path: Path | None = None
         manual_paths_checked: list[Path] = []
-        for candidate in candidates:
-            candidate_path = manual_analysis_base / project_name / candidate / map_filename
+        for candidate_path in manual_candidate_paths(
+            manual_analysis_base, project_name, manual_name, map_filename
+        ):
             manual_paths_checked.append(candidate_path)
             if candidate_path.exists():
                 manual_path = candidate_path
@@ -1333,10 +1358,9 @@ def write_corrected_stat_map_images(
         )
 
     for pair in unique_pairs:
-        candidate_paths = [
-            manual_analysis_base / project_name / candidate / corrected_map_filename
-            for candidate in manual_name_candidates(pair.manual_name)
-        ]
+        candidate_paths = manual_candidate_paths(
+            manual_analysis_base, project_name, pair.manual_name, corrected_map_filename
+        )
         manual_map_path = first_existing_path(candidate_paths)
         if manual_map_path is None:
             checked = ", ".join(str(path) for path in candidate_paths)
