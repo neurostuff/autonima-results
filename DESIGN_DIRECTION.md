@@ -32,7 +32,7 @@ So the product's problem is not capability. Look at what the failures actually h
 | failure | what the pipeline knew | what it reported |
 |---|---|---|
 | problem_solving v1 dead retrieval root | `Path(root).rglob('*')` → `[]`, then `FileNotFoundError` swallowed at `pipeline.py:666` | run completed, exit 0, F1 0.249 |
-| decision_making v2/v3 mangled YAML key | `exclusion_criteria/home/zorro/.../v1.yaml:` carrying 3 real exclusions | `criteria_mapping.json`: `GLOBAL_E: 0`. Verified: **zero** GLOBAL_E ids in v3's mapping |
+| decision_making v2/v3 mangled YAML key | `exclusion_criteria/home/zorro/.../v1.yaml:` carrying 2 real exclusions | `criteria_mapping.json`: `GLOBAL_E: 0`. Verified: **zero** GLOBAL_E ids in v3's mapping |
 | executive_function v1 abstract screening | model cited criterion ids in prose | **3337 of 3538 exclusions (94.3%)** have an empty `exclusion_criteria_applied` |
 | social v2 abstract screening | same | **313 of 314 (99.7%)** empty |
 | dementia v3 NiMADS export | 146 of 478 analyses never evaluated for a column | exported as `False` — byte-identical to "evaluated and rejected" |
@@ -55,6 +55,7 @@ Two consequences follow, and they set the leverage.
 ## 2. Themes
 
 ### A. Refuse to emit a number that measures nothing
+**TLDR: add pre-flight checks, and abort on fatal config errors instead of running anyway.**
 *Changes for the user: a misconfigured run fails in seconds instead of publishing a metric measured against a dead path.*
 
 ### B. Close the specification feedback loop
@@ -75,6 +76,27 @@ Two consequences follow, and they set the leverage.
 ---
 
 ## 3. Theme A — Refuse to emit a number that measures nothing
+
+**TLDR.** Before a run starts, resolve and count everything the config declares — every
+full-text source root, every key, every path. If something is fatally wrong, **abort**; do not
+run and report a number anyway. Two rules cover most of it:
+
+1. **A declared source that does not exist is a fatal error, not a warning.** `problem_solving`
+   pointed two of its three full-text roots at a path from another machine, silently retrieved
+   nothing from them, and published a screening F1 of 0.249 that measures a dead path rather
+   than the criteria.
+2. **An unrecognised config key is a fatal error, not something to ignore.** `decision_making`
+   carried a file path glued onto a YAML key; pydantic dropped it, and three completed runs plus
+   one live one annotated with zero global exclusions.
+
+The point is *abort*, not *log louder*. `problem_solving` did log an error — `pipeline.py` calls
+`log_error_with_debug`, which is `logger.error` and nothing else — then exited 0 with a
+complete-looking output. A warning in a run that takes hours is a warning nobody reads.
+
+This is deliberately narrow. It covers only things knowable before any work happens: a directory
+that isn't there, a key that isn't real, a source that yields zero. Papers that are individually
+unreachable (paywalled, no PMC deposit) must keep being skipped and recorded, not fail the run —
+that is normal, and making it visible and actionable is Theme E, not this.
 
 **Convergence: this theme is the single strongest signal in the whole review.** Preflighting full-text sources was independently proposed by *three* lenses (spec-authoring R2, retrieval-extraction #1, reproducibility #1) and named as the strengthened first item of a fourth (validation-without-gold's tracer proposal). All three drew the same conclusion from the same defect. Treat that as settled.
 
@@ -115,6 +137,39 @@ The prose fallback was tested and it does not work. `screening/prompts.py:106` a
 Ship the additive field only — `inclusion_criteria_not_met: List[(id, evidence_span)]` on both screening outputs and the dynamic `_DecisionBase`. Defer the `criteria_verdicts` refactor, which touches three schemas, both prompt builders and every consumer for no verified gain. **Require a short verbatim evidence span per not-met id**: in ef v1-annotation-only, `GLOBAL_I1/I3/I4` are each cited exactly 336 times — the model already mechanically enumerates every inclusion id on inclusion, and a `not_met` list will otherwise be filled with the mechanical complement. Delete clause (c) from both screening prompts and the annotation self-check in the same commit. Do **not** bump `CACHE_SCHEMA_VERSION`: `prompt_version` is already folded into `stage_hash`, so the prompt edit invalidates every screening stage anyway; ship the field, the prompt change and a no-LLM back-fill together and make readers absent-tolerant. Before rolling out, run it on 200 executive_function abstracts and check the not-met lists are not simply the set complement of the met lists — if they are, the field is decoration and the rest of Theme B needs re-planning.
 
 Cheap prerequisite worth landing alongside: port annotation's `validate_criteria_ids` requirement into `screening/schema.py`, so an `EXCLUDED` decision with a non-empty `criteria_mapping` must carry a code. Annotation's attribution coverage is 85% precisely because it has that validator; screening's is 52% because it does not.
+
+**B1a. The obvious objection, and why it fails.** The natural response to B1 is that the field is redundant: `inclusion_criteria_applied` is *instructed* to be exhaustive (`screening/prompts.py:99`, "include ALL inclusion criteria IDs that are satisfied"), and inclusion requires every criterion to be met (`:200`, "Verify that ALL inclusion criteria are met"). If both hold, not-met is simply `ALL − met`, and B1 is a reporting change rather than a schema change.
+
+Both premises are stated in the code. The model does not honour the first, and this can be shown without any gold standard by using **included papers as a ground-truth control**: an included paper met all four criteria by definition, so it must list all four.
+
+In `executive_function/v1` abstract screening (4 inclusion criteria, 1,318 included papers):
+
+    ids listed on an INCLUDED paper    papers
+      4 (correct)                        745
+      3                                  448
+      2                                  111
+      1                                   10
+      0                                    4
+
+**43.5% under-report.** On records whose true not-met set is known to be empty, the complement manufactures **716 false "not met" attributions**, and they are not uniformly distributed:
+
+    I2  healthy participants     417 false accusations
+    I4  executive function       238
+    I3  fMRI or PET               50
+    I1  English peer-reviewed      11
+
+I2 is the criterion at the centre of the executive_function diagnosis — the healthy-adults gate that the benchmark demonstrably does not apply. The complement over-blames precisely the criterion that most needs an honest count, which is the worst possible failure mode for a signal whose entire purpose is deciding which criterion to rewrite.
+
+On excluded papers the complement is *mostly* right. Comparing it against the not-met set the prose explicitly names, where it names one: 2,437 agree and 270 disagree — **90.0% vs 10.0%**. Ninety percent is not nothing, and it is why the objection is reasonable. But a 10% error rate is the wrong thing to accept on the one number used to justify rewriting a criterion, and the errors concentrate in the highest-traffic clauses.
+
+**The distinction the complement structurally cannot represent.** `prompts.py:106` asks for "inclusion IDs **not met or not demonstrated**." Those are different findings:
+
+- *not met* — the abstract states a schizophrenia sample; the healthy-adults criterion is genuinely violated, and the criterion is working
+- *not demonstrated* — the abstract simply never mentions the sample, and the criterion is being applied to absent information
+
+The complement collapses both into "not met." That confound is live in the paper: §8a attributes executive_function's abstract-stage false negatives to over-strict user criteria, while 26–30% of stored abstracts corpus-wide are single-section fragments with METHODS and RESULTS discarded before the screener sees them (see §11 item 1). Until *violated* can be separated from *never stated*, specification error and information starvation are not identifiable, and the paper's flagship "the spec was wrong" case rests on the ambiguity.
+
+This is also the argument for requiring a short verbatim evidence span per not-met id rather than a bare list. Without it the model can satisfy the field with the arithmetic complement, and the result is the same 90%-accurate number in a new shape — at full token cost.
 
 **B2. `autonima criteria-profile` — a navigator, not a verdict.**
 

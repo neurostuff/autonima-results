@@ -572,6 +572,37 @@ This third mode is indistinguishable from "the model lacks judgement" in any agr
 the mode §3 is about, which makes §3 and this section mutually reinforcing: before concluding
 that a model cannot make a judgement, check whether it was ever asked to.
 
+**A fourth possibility, and it is currently inseparable from the third: the model was never
+shown the information.** `pubmed.py:370` reads one `AbstractText` element with `.text`, so a
+structured abstract is truncated to its first section. Verified live on PMID 12727696: four
+labelled sections, 1,344 characters available, 264 stored. Corpus-wide, stored abstracts under
+450 characters run 26.6% (executive_function/v1), 30.6% (dementia/v1) and 28.3%
+(cue_reactivity/v6). METHODS and RESULTS — the sections the screening criteria actually ask
+about — are frequently gone before the screener reads a word.
+
+This matters because our own decision records cannot tell the two apart. The screening prompt
+asks the model to name inclusion IDs "not met **or not demonstrated**"
+(`autonima/screening/prompts.py:106`), but only the *met* set is stored structurally, so the
+distinction survives nowhere in the data. "The abstract says schizophrenia patients" (criterion
+correctly violated) and "the abstract never mentions the sample" (criterion applied to absent
+information) both end up as an exclusion with an empty `exclusion_criteria_applied`.
+
+Nor can the not-met set be recovered by subtraction, which is the obvious workaround.
+`inclusion_criteria_applied` is *instructed* to be exhaustive (`prompts.py:99`) and inclusion
+requires all criteria (`:200`), so in principle not-met = ALL − met. Using included papers as a
+ground-truth control — an included paper met every criterion, so it must list every criterion —
+that breaks down: of executive_function v1's 1,318 included abstracts only 745 list all four
+IDs, so **43.5% under-report**, and the complement invents 716 false "not met" attributions on
+records whose true not-met set is empty. Those errors concentrate on I2, the healthy-participants
+gate (417 of 716) — the very criterion this section's argument turns on. On excluded papers the
+complement matches the prose-named not-met set 90.0% of the time (2,437 vs 270).
+
+So §3's conclusion that executive_function's false negatives are a specification error is
+consistent with the evidence but not yet identified against the truncation account. Treat it as
+the leading hypothesis, state the confound, and note that recording
+`inclusion_criteria_not_met` with an evidence span plus an `abstract_section_count` would settle
+it — both are cheap and neither needs a second rater. See DESIGN_DIRECTION.md B1/B1a and D1.
+
 **8b. Reliability.** Run-to-run variance under byte-identical criteria and the same model:
 **8.6% of abstract decisions** and 3.7% of full-text decisions flip. Report it — a reviewer
 will ask, and it sets a floor below which schema comparisons are noise. Several of our own
