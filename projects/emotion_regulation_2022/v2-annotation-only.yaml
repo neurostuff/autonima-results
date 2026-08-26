@@ -33,50 +33,28 @@ parsing:
   coordinate_model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
 
 annotation:
-  # REWRITTEN 2026-08-26 FROM THE SOURCE PAPER FULL TEXT (Morawetz et al. 2022, NeuroImage 255:
-  # 119194, PMID 35413444, "Reappraisal and empathic perspective-taking"). Drafted by Claude
-  # (Opus 5) -- still for expert review, but no longer reverse-engineered: the criteria below now
-  # come from the paper's own section 2.1 (Selection criteria) and its category definitions on
-  # p.4, not from guessing at the benchmark's contrast labels.
+  # Criteria from the source paper (Morawetz et al. 2022, NeuroImage 255:119194). Drafted by
+  # Claude (Opus 5); for expert review.
   #
-  # THE PAPER'S CATEGORIES (its section 2, p.4, verbatim in substance)
+  # SCOPE: ANALYSIS-LEVEL ONLY. Study-level eligibility -- task-based fMRI, reappraisal paradigm,
+  # healthy adult sample, static visual stimuli, whole-brain acquisition, empirical paper -- is
+  # screening's job and is not repeated here. In this annotation-only run screening is skipped and
+  # the fixed gold PMID list supplies that filtering instead; once these criteria are ported into
+  # v2-allstudies.yaml, the screening block enforces it.
   #
-  # Emotion regulation studies were categorized into three categories according to their GOAL:
+  # What DOES remain analysis-level: an eligible study can still contain ineligible analyses.
+  # Screening's exclusions are all of the form "studies that report ONLY ROI / only connectivity /
+  # only between-group contrasts", so a study passes on the strength of one qualifying analysis
+  # while its other analyses may be ROI, PPI, or group comparisons. Those must be rejected here.
+  #
+  # THE PAPER'S CATEGORIES (its section 2, p.4)
   #   decrease (Dec)  down-regulation of emotion, reappraisal as the strategy
   #   increase (Inc)  up-regulation of emotion, reappraisal as the strategy
-  #   maintain (Look) the CONTROL condition -- "participants are usually asked to just view the
+  #   maintain (Look) the control condition -- "participants are usually asked to just view the
   #                   images passively and respond naturally without regulating their emotional
-  #                   responses". The paper calls this Look; this benchmark calls it maintain.
-  # Reappraisal is the union of Dec and Inc: Fig. 1 gives Reappraisal n[e]=154 = Dec 130 + Inc 24.
-  # The strategy "includes a wide spectrum of tactics such as reinterpretation, perspective-taking
-  # and distancing", so the tactic does not matter -- the GOAL does.
-  #
-  # WHAT CHANGED FROM THE PREVIOUS (REVERSE-ENGINEERED) DRAFT
-  #
-  #  - Dec and Inc are NOT disjoint after all. Fig. 1's 130 + 24 = 154 suggested they were, and an
-  #    intermediate version of this file said so; Table S1 then showed 12 dual-goal contrasts. The
-  #    dual-goal rule is restored.
-  #  - Added the sample rule: healthy adults only, no neurological/medical/psychiatric disorders.
-  #    Patient studies qualify ONLY through a separately reported control group, and only that
-  #    group. Gender/subgroup effects are excluded outright.
-  #  - Added the stimulus rule: STATIC VISUAL STIMULI (pictures) only. This is criterion (4) and it
-  #    is restrictive -- film, audio, script-driven imagery and word stimuli are all out.
-  #  - Added fMRI-only. Criterion (2) says whole-brain fMRI; PET is not admitted (contrast with
-  #    problem_solving and executive_function, which do admit PET).
-  #  - DEACTIVATIONS ARE INCLUDED. Criterion (2) admits coordinates "for brain activation or
-  #    deactivation". Do NOT filter by contrast direction here -- the opposite of the
-  #    increases-only rule that problem_solving needs.
-  #  - Added: both positive AND negative emotions qualify (criterion 5). Do not restrict to
-  #    negative valence.
-  #  - Partial-brain coverage is excluded alongside ROI-only (criterion 3).
-  #
-  # EXPECTED LABEL STRUCTURE. A regulation contrast carries two labels (its goal + reappraisal);
-  # a Look contrast carries one (maintain). There should be no three-label analyses.
-  #
-  # !! BENCHMARK DATA DEFECTS THAT WILL DISTORT SCORING -- see the file header note. Two of the
-  # four gold files disagree with the paper, so per-construct scores for `decrease` and `maintain`
-  # will be wrong no matter how good these criteria are. Fix the benchmark before drawing
-  # conclusions from those two columns.
+  #                   responses". The paper calls this Look.
+  # Reappraisal is the union of Dec and Inc, so a regulation contrast carries two labels. Dec and
+  # Inc are not mutually exclusive: a contrast pooling both directions carries both.
   enabled: true
   model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
@@ -89,26 +67,15 @@ annotation:
     - "study_fulltext"
   inclusion_criteria:
     - >-
-      The analysis must come from a whole-brain fMRI study and be a group-level voxelwise
-      task-evoked statistical map, with coordinates reported in MNI or Talairach space.
+      This analysis must itself be a group-level, whole-brain (voxelwise) task-evoked statistical
+      map. A study qualifying on the strength of one whole-brain analysis does not make its other
+      analyses eligible.
     - >-
-      Direction- coordinates for either ACTIVATION or DEACTIVATION qualify. Do not exclude an
+      The contrast must be WITHIN-group, and must concern either the regulation of an emotional
+      response or the passive unregulated viewing of emotional stimuli.
+    - >-
+      Direction- either an ACTIVATION or a DEACTIVATION effect qualifies. Do not exclude an
       analysis because its effect is a decrease in signal.
-    - >-
-      Sample- healthy adults with no reported neurological, medical or psychiatric disorder. A
-      study of patients qualifies ONLY through a control group whose results are reported
-      separately, and then only that control group's analysis.
-    - >-
-      Stimuli- the task must use VISUAL emotional stimuli. Static pictures are the norm (83 of the
-      90 included studies) but film and video clips also qualify- the paper states a
-      static-picture-only rule that its own included studies contradict, so do not exclude a study
-      for using film. Auditory-only stimuli, script-driven imagery with no visual stimulus, and
-      word or sentence stimuli do not qualify.
-    - >-
-      Emotional valence- both positive and negative emotional stimuli qualify.
-    - >-
-      The contrast must concern either the regulation of an emotional response to those pictures,
-      or the passive unregulated viewing of them.
     - >-
       Judge this analysis from its own name, description and table caption. An empty or generic
       analysis name is never itself a reason to exclude- read the caption instead.
@@ -117,22 +84,19 @@ annotation:
       (decrease or increase) and the strategy label (reappraisal).
   exclusion_criteria:
     - >-
-      Region-of-interest (ROI) or small-volume-corrected analyses, and studies with only PARTIAL
-      brain coverage rather than whole-brain acquisition.
+      This analysis is a region-of-interest (ROI) or small-volume-corrected result rather than a
+      voxelwise whole-brain map.
     - >-
-      Positron emission tomography (PET) studies. This meta-analysis admits fMRI only.
+      This analysis is a connectivity or resting-state result- seed-based or effective
+      connectivity, PPI, DCM, ICA- rather than a task activation map.
     - >-
-      Connectivity or resting-state analyses (seed-based or effective connectivity, PPI, DCM,
-      ICA) with no task activation map.
+      This contrast is between two participant GROUPS, or a group x condition interaction,
+      including gender and other subgroup difference effects.
     - >-
-      Contrasts between two participant GROUPS, or group x condition interactions, including
-      gender or other subgroup difference effects. Only within-group effects in healthy adults
-      qualify.
-    - >-
-      Emotion regulation by a strategy other than reappraisal where the paper frames it as a
-      distinct strategy- e.g. expressive suppression, or attentional distraction used as its own
-      condition. Note that reinterpretation, perspective-taking and distancing are treated by
-      this meta-analysis as TACTICS WITHIN reappraisal and do qualify.
+      This contrast isolates an emotion regulation strategy that the study frames as distinct from
+      reappraisal- e.g. expressive suppression, or attentional distraction run as its own
+      condition. Reinterpretation, perspective-taking and distancing are tactics WITHIN
+      reappraisal and do qualify.
   annotations:
     - name: "reappraisal"
       description: "Cognitive reappraisal as the regulation strategy: changing the meaning of a pictured situation in order to change one's emotional response to it. The union of the decrease and increase goals."
@@ -146,7 +110,7 @@ annotation:
           increase. Assign it IN ADDITION to the goal label, never instead of it.
         - >-
           The tactic does not matter. Reinterpretation, perspective-taking and distancing all
-          count as reappraisal for this meta-analysis.
+          count as reappraisal.
       exclusion_criteria:
         - >-
           Passive viewing contrasts with no regulation instruction. Those are the Look control
@@ -160,14 +124,13 @@ annotation:
           decrease > look, decrease > maintain, downregulate > view, "distance oneself".
         - >-
           Treat an UNDIRECTED reappraisal contrast (e.g. "reappraise > view", with no goal
-          stated) as decrease. Down-regulation is this literature's default and the benchmark's
-          Dec set contains exactly such contrasts.
+          stated) as decrease. Down-regulation is this literature's default.
       exclusion_criteria:
         - >-
-          Contrasts whose ONLY stated goal is to amplify emotion. Note this is not a
-          mutual-exclusion rule- a contrast that pools both regulation directions (typically
-          "regulate > view" or "task > emotion", where the study had both up- and down-regulation
-          conditions) carries BOTH decrease and increase. Table S1 marks 12 such contrasts.
+          Contrasts whose ONLY stated goal is to amplify emotion. This is not a mutual-exclusion
+          rule- a contrast that pools both regulation directions (typically "regulate > view" or
+          "task > emotion", in a study that had both an up- and a down-regulation condition)
+          carries BOTH decrease and increase.
 
     - name: "increase"
       description: "Up-regulation goal (the paper's Inc): reappraisal used to amplify the intensity of an emotional response."
@@ -192,7 +155,7 @@ annotation:
       description: "The paper's Look control condition: viewing emotional pictures passively and responding naturally, with no instruction to regulate."
       inclusion_criteria:
         - >-
-          The contrast reflects passive, uninstructed viewing of emotional pictures- e.g.
+          The contrast reflects passive, uninstructed viewing of emotional stimuli- e.g.
           emotion > baseline, look negative > baseline, view emotional > neutral, watch > rest.
           The defining feature is the ABSENCE of any regulation instruction.
       exclusion_criteria:
