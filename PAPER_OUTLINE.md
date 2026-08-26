@@ -683,3 +683,34 @@ column.
 **Deprioritised for now:** §3 is scoped as a case study rather than a cross-project result,
 and is a supplement candidate if space is tight. Promoting it needs two more schema
 iterations (n=2 → n=4), which is cheap but not on the critical path.
+
+## Correction: cue_reactivity v6 full-text recall
+
+Commit `ae764e1` records "Full-text recall 0.644 -> 0.970" for cue_reactivity v6. That pair is
+wrong — it mixes two different recall definitions and two different comparison runs. From the
+per-run `evaluation/performance_metrics.json`:
+
+    run          search recall   fulltext recall_all_meta   fulltext recall_in_search
+    v4               0.743              0.644                        0.898
+    v5-gpt           0.743              0.717                        1.000
+    v6               0.932              0.853                        0.970
+
+0.644 is **v4's** `recall_all_meta`; 0.970 is **v6's** `recall_in_search`. Quoting them as a
+single before/after overstates the gain twice over.
+
+The correct like-for-like figures against v5-gpt, whose schema v6 inherits verbatim so that only
+the search differs:
+
+  - search recall                0.743 -> 0.932   (+0.189)   [as originally reported, correct]
+  - fulltext `recall_all_meta`   0.717 -> 0.853   (+0.136)
+  - fulltext `recall_in_search`  1.000 -> 0.970   (-0.030)
+  - fulltext precision           0.321 -> 0.310   (-0.011)   [as originally reported, correct]
+
+Two things this changes. First, the end-to-end recall gain is +0.136, not +0.326. Second, and
+more useful: `recall_in_search` went slightly DOWN (1.000 -> 0.970, 5 gold papers newly missed at
+full text). v6's entire gain comes from the search stage, which is exactly what a search-only
+change should do — v5-gpt's full-text screening was already perfect on what its search returned.
+Report v6 as a search fix, not as a screening improvement.
+
+The cross-project screening roll-up column `recall` is `recall_all_meta`, so the value it lists
+for v6 (0.853) is the correct one to quote.
