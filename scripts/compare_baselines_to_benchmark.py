@@ -319,7 +319,13 @@ def main() -> int:
         writer = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
-    print(f"wrote {out_csv.relative_to(REPO_ROOT)}  ({len(rows)} rows)")
+    # relative_to() raises when --output-dir points outside the repo, which used to crash the
+    # run AFTER all the work was done and the csv written.
+    try:
+        shown = out_csv.relative_to(REPO_ROOT)
+    except ValueError:
+        shown = out_csv
+    print(f"wrote {shown}  ({len(rows)} rows)")
 
     # Summary across sub-annotations, on R^2 (threshold-free).
     by_arm: dict[str, list[float]] = {}
