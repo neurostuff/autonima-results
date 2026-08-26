@@ -51,6 +51,17 @@
 # (Demand_MNI_final.txt) is the parametric-difficulty contrast set. See that file's header for
 # the full evidence.
 #
+# CORRECTION APPLIED AFTER THE FIRST v2 RUN: max_results was 5000, copied from
+# v1/outputs/config.executed.yaml. That value is not what v1 actually used -- v1 retrieved 6,927
+# studies, so the recorded 5000 is a default written into the executed config rather than the
+# limit in force. Reconstructing from it truncated the search to 4,999 and dropped search recall
+# from v1's 0.611 to 0.508, partly masking the retrieval fix this run exists to test. Raised to
+# 20000, which is above the observed 6,927 and so cannot truncate.
+#
+# For the record, the first (truncated) v2 run still showed the retrieval fix working clearly:
+#     fulltext TP 4 -> 37, recall_all_meta 0.032 -> 0.294, precision 0.083 -> 0.180
+# even while carrying a 0.103 search-recall regression. The re-run should improve on that.
+#
 # COST NOTE: search and abstract screening are cache-valid, but changing retrieval invalidates
 # full-text retrieval and everything downstream (full-text screening, parsing, annotation, meta).
 # That is unavoidable here -- the retrieval config is the thing being fixed.
@@ -62,7 +73,7 @@ search:
     OR "cognitive process"[Title/Abstract] OR "verbal"[Title/Abstract] OR "visuospatial"[Title/Abstract])
     AND ("fMRI"[Title/Abstract] OR "functional magnetic resonance imaging"[Title/Abstract] OR "PET"[Title/Abstract]
     OR "positron emission tomography"[Title/Abstract])
-  max_results: 5000
+  max_results: 20000
   date_from: 1997/01/01
   date_to: 2015/03/14
   email: anthonyang2027@utexas.edu
