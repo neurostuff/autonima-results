@@ -36,6 +36,42 @@
 #      coordinate extraction over that batch with the current (higher-recall) table logic
 #      and regenerate ace_outputs/processed/coordinates.csv.
 #
+# ---- MEASURED OUTCOME (added 2026-08-26): v3 REGRESSED. --------------------------
+# The claim above that v3 "changes only things with no fidelity cost" is contradicted by its
+# own evaluation. Full-text stage, all three runs:
+#
+#     run   incl   TP   FP   rec_in_search   rec_all_meta   precision
+#     v1      45   21   24      0.404           0.239         0.467
+#     v2      74   42   32      0.840           0.477         0.568
+#     v3      33   19   14      0.404           0.216         0.576
+#
+# v3 halved true positives (42 -> 19) and returned recall to v1's level, buying +0.008
+# precision. Two of the four changes caused it:
+#
+#   C (I11, coordinates verifiable in the provided text) is the main one. v3 has ~28 full-text
+#     false negatives against v2's ~8, and I11 is the most-cited criterion in them. The
+#     reasoning is consistent: studies satisfy every substantive criterion -- task-based fMRI,
+#     reappraisal, static images, healthy adults, within-task contrast, whole-brain -- and are
+#     then excluded because "the provided full text does not include the numeric whole-brain
+#     peak coordinates" or "the tables are referenced but cut off". That conflates "the paper
+#     does not report coordinates" (a legitimate exclusion) with "our retrieved copy does not
+#     show them" (a retrieval failure). It also double-counts the very defect noted in E below:
+#     those studies were already dying at the coordinate stage, and I11 now rejects them at
+#     screening as well.
+#
+#   B (static-stimulus rule promoted from the abstract `objective` into a declared exclusion)
+#     is the smaller one. Abstract false negatives went 4 -> 6 and film/video mentions in them
+#     jumped 2 -> 22. The supplementary material settles this: 7 of the 90 included studies use
+#     FILM (Allard 2014, Beauregard 2001, Engen & Singer 2014, Goldin 2008, Levesque 2003,
+#     Levesque 2004, Morawetz 2016a). The paper states a static-picture rule that its own
+#     inclusions violate, so enforcing it faithfully costs recall.
+#
+# A and D look harmless on this evidence.
+#
+# WHAT TO DO: v2 is the better screening version and should be preferred over v3 until I11 is
+# rewritten to test what the PAPER reports rather than what our retrieved text happens to show,
+# and the stimulus exclusion is relaxed to admit film.
+#
 # ---- deliberately unchanged (fidelity to the published criteria) ------------------
 # The "healthy adults" restriction stays, though the gold standard includes child,
 # adolescent and mixed 10-25 samples: costs 5 false negatives (21686071, 24646887,
