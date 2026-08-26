@@ -1,0 +1,262 @@
+search:
+  database: pubmed
+  query: ("problem solving"[Title/Abstract] OR "calculation"[Title/Abstract] OR "number"[Title/Abstract]
+    OR "picture"[Title/Abstract] OR "task"[Title/Abstract] OR "reasoning"[Title/Abstract]
+    OR "math"[Title/Abstract] OR "cognitive process"[Title/Abstract] OR "verbal"[Title/Abstract]
+    OR "visuospatial"[Title/Abstract]) AND ("fMRI"[Title/Abstract] OR "functional
+    magnetic resonance imaging"[Title/Abstract] OR "PET"[Title/Abstract] OR "positron
+    emission tomography"[Title/Abstract])
+  max_results: 20000
+  date_from: 1997/01/01
+  date_to: 2015/03/14
+  email: anthonyang2027@utexas.edu
+  pmids_file: null
+  pmids_list: null
+screening:
+  abstract:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Identify task-based fMRI or PET studies of problem solving in healthy
+      adults.
+    inclusion_criteria:
+    - Task-based fMRI or PET study.
+    - Human partcipants performing a problem-solving or reasoning task.
+    - Includes at least one group of healthy adults.
+    - Reports task-related brain activation results.
+    exclusion_criteria:
+    - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+    - Doesn't include at least one healthy adult sample.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I1: Task-based fMRI or PET study.
+        I2: Human partcipants performing a problem-solving or reasoning task.
+        I3: Includes at least one group of healthy adults.
+        I4: Reports task-related brain activation results.
+      exclusion:
+        E1: Non-empirical papers (e.g., reviews, meta-analyses) without original human
+          data.
+        E2: Doesn't include at least one healthy adult sample.
+  fulltext:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Identify whole-brain, task-based fMRI or PET studies examining problem-solving
+      across domains in healthy adults.
+    inclusion_criteria:
+    - Task-based fMRI or PET study studying a problem solving task-- defined as first
+      having a goal, followed by a need to figure out a way to reach it or a more
+      specific definition of the problem solving task-- defined as identifying and/or
+      performing critical thinking processes related to evaluating the problem, planning
+      or sequencing actions to solve it, and executing oeprations that conform to
+      some rule set (e.g. semnatic, algebraic, logical, mechanical, or other delimiting
+      frameworks) to arrive at a correct, or sometimes more appropriate, previously
+      unknown solution
+    - Includes at least one whole-brain analysis with group-level effects in healthy
+      adult individuals.
+    - Reports task-related increases as stereotactic coordinate results in either
+      Talairach or Montreal Neurological Institute (MNI) standardized space.
+    - Reports at least one blood oxygen level dependent (BOLD) or regional cerebral
+      blood flow (rCBF) analysis.
+    - It is acceptable for qualifying voxelwise results to be reported in tables of
+      coordinates, figures, or supplementary materials when the main text clearly
+      indicates those results are available.
+    exclusion_criteria:
+    - Reports only region of interest (ROI) results.
+    - Only reports disease, age, and gender-related group comparisons.
+    - Includes only between-group contrasts or doesn't include any healthy-group task
+      effect.
+    - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I5: Task-based fMRI or PET study studying a problem solving task-- defined
+          as first having a goal, followed by a need to figure out a way to reach
+          it or a more specific definition of the problem solving task-- defined as
+          identifying and/or performing critical thinking processes related to evaluating
+          the problem, planning or sequencing actions to solve it, and executing oeprations
+          that conform to some rule set (e.g. semnatic, algebraic, logical, mechanical,
+          or other delimiting frameworks) to arrive at a correct, or sometimes more
+          appropriate, previously unknown solution
+        I6: Includes at least one whole-brain analysis with group-level effects in
+          healthy adult individuals.
+        I7: Reports task-related increases as stereotactic coordinate results in either
+          Talairach or Montreal Neurological Institute (MNI) standardized space.
+        I8: Reports at least one blood oxygen level dependent (BOLD) or regional cerebral
+          blood flow (rCBF) analysis.
+        I9: It is acceptable for qualifying voxelwise results to be reported in tables
+          of coordinates, figures, or supplementary materials when the main text clearly
+          indicates those results are available.
+      exclusion:
+        E3: Reports only region of interest (ROI) results.
+        E4: Only reports disease, age, and gender-related group comparisons.
+        E5: Includes only between-group contrasts or doesn't include any healthy-group
+          task effect.
+        E6: Non-empirical papers (e.g., reviews, meta-analyses) without original human
+          data.
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/projects/problem_solving/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria:
+  - Voxelwise task evidence- the analysis must be a group-level, univariate, WHOLE-BRAIN
+    voxelwise task-evoked map. Small-volume-corrected and region-of-interest maps
+    do NOT qualify.
+  - Task-based problem solving- the task must fit the source definition- the participant
+    has a goal and must work out a way to reach it, applying some rule set (semantic,
+    algebraic, logical, mechanical or other) to arrive at a previously unknown solution.
+  - "Permitted contrast types- the analysis must be ONE of the following five, which\
+    \ are the only contrast types this benchmark admits- (1) a problem solving task\
+    \ minus a baseline or control condition; (2) a parametric or categorical comparison\
+    \ across difficulty, abstraction or complexity\n    (e.g. complex > simple, multi-digit\
+    \ > single-digit, high > low load, 2-relational >\n    1-relational, a positive\
+    \ linear trend with problem depth);\n(3) untrained, novel or previously unseen\
+    \ problems > trained, memorized or previously\n    solved problems of the same\
+    \ type;\n(4) one type of problem solving > another type, across rule sets or representational\n\
+    \    modalities (e.g. multiplication > addition, word problems > number problems);\n\
+    (5) one problem solving phase > another, sequential phase (e.g. late > early,\
+    \ solution >\n    preparation)."
+  - Group-level effects in healthy participants. Studies comparing patients or intellectually
+    gifted individuals to controls are eligible ONLY through their separately reported
+    within-group healthy-control result.
+  - Stereotactic reporting- coordinates must be reported in MNI or Talairach space.
+  - How to read a sparse label- an empty or generic analysis name usually means the
+    analysis is the only one in its table, so judge from the caption and surrounding
+    text. A blank name is never itself a reason to exclude.
+  exclusion_criteria:
+  - DEACTIVATIONS AND REVERSE CONTRASTS- the benchmark includes only BOLD or rCBF
+    signal INCREASES. Exclude any analysis reporting decreases, deactivations, or
+    the reverse of a qualifying contrast (e.g. baseline > problem solving, simple
+    > complex, trained > untrained, low > high load, rest > task). Where a paper reports
+    a contrast in both directions, annotate only the increase direction. If the table
+    caption or analysis name makes the direction explicit, use it; if direction is
+    genuinely indeterminate, treat the analysis as an activation.
+  - ROI-only or small-volume-corrected analyses without whole-brain voxelwise results.
+  - Connectivity analyses- seed-based connectivity, effective connectivity (PPI, DCM)
+    or resting-state analyses.
+  - Non-task or passive paradigms- passive viewing, simple perception, or tasks not
+    requiring the participant to work out a solution.
+  - Motor, response-only, or artefact/physiological-regressor contrasts.
+  - Between-group contrasts and group x condition interactions (patients vs controls,
+    gifted vs controls, age or gender group comparisons). Note this is about the CONTRAST-
+    a within-group contrast computed in a control group qualifies.
+  annotations:
+  - name: domain_general_problem_solving
+    description: The global pooled analysis- problem solving convergence across all
+      three representational domains (mathematical, verbal, visuospatial).
+    inclusion_criteria:
+    - Any analysis that satisfies the global criteria above qualifies here, regardless
+      of representational domain. This is the pooled global network, so it is the
+      union of the three representational domains rather than a separate construct.
+    exclusion_criteria: []
+  - name: mathematical_problem_solving
+    description: 'Problem solving in the MATHEMATICAL representational domain, defined
+      by stimulus modality: problems that involve number manipulation.'
+    inclusion_criteria:
+    - The problem is posed with numerical stimuli and solved by manipulating numbers-
+      arithmetic (addition, subtraction, multiplication, division), multi-digit or
+      multi-step calculation, number bisection or number-line tasks, approximate or
+      exact estimation, and the paced auditory or visual serial addition test (PASAT).
+    - Domain is decided by the STIMULI, not by the reasoning involved. A complexity
+      manipulation over arithmetic problems belongs here as well as to logical_reasoning.
+    exclusion_criteria:
+    - Simple number perception, digit matching, or magnitude comparison with no problem
+      to solve.
+  - name: verbal_problem_solving
+    description: 'Problem solving in the VERBAL representational domain, defined by
+      stimulus modality: problems posed with sentence, word or letter stimuli.'
+    inclusion_criteria:
+    - The problem is posed with letter, word or sentence stimuli and solved using
+      logic or content knowledge. Paradigms the source paper places here- DEDUCTIVE
+      REASONING (categorical, relational or propositional arguments; judging whether
+      a conclusion follows from premises); verbal inductive and probabilistic reasoning;
+      verbal analogy problems (word or letter-string analogies); riddles and insight
+      problems; and paragraph-based word problems.
+    - Deductive and logical reasoning over verbal material belongs HERE. It is a verbal
+      paradigm in this benchmark, not a separate logical domain- do not divert it
+      to logical_reasoning, which is a difficulty construct rather than a domain.
+    exclusion_criteria:
+    - Passive reading or language comprehension with no problem to solve.
+  - name: visuospatial_problem_solving
+    description: 'Problem solving in the VISUOSPATIAL representational domain, defined
+      by stimulus modality: problems posed with pictorial or spatial stimuli.'
+    inclusion_criteria:
+    - The problem is posed with pictorial or spatial stimuli. Paradigms the source
+      paper places here- visuospatial fluid reasoning (e.g. Raven's-style matrix problems);
+      visual analogy problems; the Tower of London; and spatial navigation problem
+      solving.
+    exclusion_criteria:
+    - Simple visual perception, mental rotation, or matching with no problem to solve.
+  - name: logical_reasoning
+    description: 'COGNITIVE DEMAND. Despite the name -- retained because nmb_mappings.json
+      matches on it -- this target is the benchmark''s Demand set: contrasts that
+      manipulate problem difficulty, complexity or abstraction, pooled across all
+      three representational domains. It is NOT formal logic or deductive reasoning,
+      which belong to verbal_problem_solving.'
+    inclusion_criteria:
+    - The contrast varies the DEMAND of the problem while holding the problem type
+      broadly constant- harder versus easier, more versus fewer steps or relations,
+      more versus less abstract, or a parametric or linear trend across difficulty.
+      Examples from the benchmark- "Addition, Complex > Simple"; "Multi-Digit > Single-Digit";
+      "Procedural > Retrieval"; "High vs. Low g"; "2-relational vs 1-relational";
+      "4-target > 2-target"; "Large Problem Size > Small Problem Size"; "Main Effect
+      of Relational Complexity"; "positive linear trend of analogical depth"; "Complex
+      - Simple Deductions".
+    - Any representational domain qualifies- mathematical, verbal and visuospatial
+      demand contrasts are pooled into this single target.
+    - Assign this IN ADDITION to the contrast's representational domain, not instead
+      of it. A complexity contrast over arithmetic is both mathematical_problem_solving
+      and logical_reasoning.
+    exclusion_criteria:
+    - Contrasts of one problem TYPE against another (e.g. multiplication > addition,
+      word > number problems) where difficulty is not what is being varied- those
+      belong to their representational domain only.
+    - Reverse-direction demand contrasts (simple > complex, low > high load), which
+      are deactivations and are excluded benchmark-wide.
+  enabled: true
+output:
+  directory: projects/problem_solving/v2
+  prisma_diagram: true
+  formats:
+  - csv
+  - json
+  nimads: true
+  export_excluded_studies: true

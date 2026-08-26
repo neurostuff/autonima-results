@@ -1,0 +1,196 @@
+# v1 -- MANUAL CRITERIA. Screening and annotation criteria are the original human-written ones,
+# carried over unchanged from the pre-2026-08-26 v1 (now archive/v1.yml).
+#
+# SEARCH: CLAUDE-OPTIMISED, REPLACING THE ORIGINAL HUMAN-WRITTEN QUERY.
+#
+# The original query's topic clause was
+#     "problem solving" OR "calculation" OR "number" OR "picture" OR "task" OR "reasoning"
+#     OR "math" OR "cognitive process" OR "verbal" OR "visuospatial"      [all Title/Abstract]
+# Four of those -- task, number, picture, verbal -- are generic enough to match most of the fMRI
+# literature. They contributed pool without contributing gold. Separately, the clause was missing
+# an entire paradigm the source paper includes: spatial navigation (paper section 3.1.3.4).
+#
+# Candidates measured by exact gold-membership counts against the 127-PMID list, all with the
+# same date window and modality clause (esearch, [PDAT] dates):
+#
+#     query                                     hits    gold   recall   precision
+#     original                                 21452      94    0.740      0.0044
+#     paper keywords + paradigms                9973      98    0.772      0.0098
+#     + navigation cluster  (THIS QUERY)       12075     113    0.890      0.0094
+#     + planning/intelligence/rotation         20012     116    0.913      0.0058
+#
+# This query beats the original on BOTH axes: recall 0.740 -> 0.890 with 44% fewer hits. The
+# fourth candidate buys three more gold papers for eight thousand more hits and was rejected.
+#
+# The modality clause was also widened (MeSH terms, "functional MRI", BOLD, neuroimaging). With
+# the original narrow clause only 106 of 127 gold papers are reachable at all regardless of topic
+# terms; widening lifts that ceiling to 119, and this query reaches 113 of them.
+#
+# WHY THIS IS NOT A CRITERIA CHANGE. The version number in this repo tracks the inclusion and
+# exclusion CRITERIA, and none changed here -- only the PubMed query. The original query was a
+# transcription error rather than a design choice, so the old results were archived rather than
+# kept as a comparison arm (see archive/NOTES.md). Note also that an over-broad search mostly
+# costs computation in real use; it is chiefly a problem here because precision is scored against
+# a fixed gold standard.
+#
+# Absolute hit counts above use [PDAT] filtering, which is not how autonima applies date_from and
+# date_to, so the pool this run actually returns will differ. The ranking between candidates is
+# unaffected -- all were measured the same way.
+#
+# Retrieval paths are also repaired here: the archived v1 pointed at
+# /data/alejandro/projects/autonima-results/..., which does not exist on this machine. That was a
+# real defect, though a mild one -- pubget/PMC supplied enough text that the archived run still
+# included 275 studies with 50 gold true positives.
+
+search:
+  database: pubmed
+  query: ("problem solving"[Title/Abstract] OR "problem-solving"[Title/Abstract] OR calculation[Title/Abstract]
+    OR arithmetic[Title/Abstract] OR reasoning[Title/Abstract] OR insight[Title/Abstract] OR deduction[Title/Abstract]
+    OR induction[Title/Abstract] OR syllogis*[Title/Abstract] OR analogy[Title/Abstract] OR analogical[Title/Abstract]
+    OR "fluid intelligence"[Title/Abstract] OR "Tower of London"[Title/Abstract] OR "Tower of Hanoi"[Title/Abstract]
+    OR "Raven"[Title/Abstract] OR "matrix reasoning"[Title/Abstract] OR "progressive matrices"[Title/Abstract]
+    OR "serial addition"[Title/Abstract] OR PASAT[Title/Abstract] OR "number line"[Title/Abstract] OR
+    "word problem*"[Title/Abstract] OR "riddle*"[Title/Abstract] OR "anagram*"[Title/Abstract] OR "numerical
+    cognition"[Title/Abstract] OR "number processing"[Title/Abstract] OR navigation[Title/Abstract] OR
+    navigational[Title/Abstract] OR wayfinding[Title/Abstract] OR maze[Title/Abstract] OR "spatial learning"[Title/Abstract]
+    OR "route learning"[Title/Abstract] OR egocentric[Title/Abstract] OR allocentric[Title/Abstract])
+    AND ("fMRI"[Title/Abstract] OR "functional magnetic resonance imaging"[Title/Abstract] OR "functional
+    MRI"[Title/Abstract] OR "PET"[Title/Abstract] OR "positron emission tomography"[Title/Abstract] OR
+    "Magnetic Resonance Imaging"[Mesh] OR "Positron-Emission Tomography"[Mesh] OR "Brain Mapping"[Mesh]
+    OR BOLD[Title/Abstract] OR neuroimaging[Title/Abstract] OR "brain activation"[Title/Abstract])
+  max_results: 20000
+  date_from: 1997/01/01
+  date_to: 2015/03/14
+  email: anthonyang2027@utexas.edu
+retrieval:
+  load_excluded: false
+  sources:
+  - pubget
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/projects/problem_solving/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
+screening:
+  abstract:
+    model: gpt-5-mini-2025-08-07
+    objective: Identify task-based fMRI or PET studies of problem solving in healthy adults.
+    inclusion_criteria:
+    - Task-based fMRI or PET study.
+    - Human partcipants performing a problem-solving or reasoning task.
+    - Includes at least one group of healthy adults.
+    - Reports task-related brain activation results.
+    exclusion_criteria:
+    - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+    - Doesn't include at least one healthy adult sample.
+    confidence_reporting: true
+  fulltext:
+    model: gpt-5-mini-2025-08-07
+    confidence_reporting: true
+    objective: Identify whole-brain, task-based fMRI or PET studies examining problem-solving across domains
+      in healthy adults.
+    inclusion_criteria:
+    - Task-based fMRI or PET study studying a problem solving task-- defined as first having a goal, followed
+      by a need to figure out a way to reach it or a more specific definition of the problem solving task--
+      defined as identifying and/or performing critical thinking processes related to evaluating the problem,
+      planning or sequencing actions to solve it, and executing oeprations that conform to some rule set
+      (e.g. semnatic, algebraic, logical, mechanical, or other delimiting frameworks) to arrive at a correct,
+      or sometimes more appropriate, previously unknown solution
+    - Includes at least one whole-brain analysis with group-level effects in healthy adult individuals.
+    - Reports task-related increases as stereotactic coordinate results in either Talairach or Montreal
+      Neurological Institute (MNI) standardized space.
+    - Reports at least one blood oxygen level dependent (BOLD) or regional cerebral blood flow (rCBF)
+      analysis.
+    - It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures,
+      or supplementary materials when the main text clearly indicates those results are available.
+    exclusion_criteria:
+    - Reports only region of interest (ROI) results.
+    - Only reports disease, age, and gender-related group comparisons.
+    - Includes only between-group contrasts or doesn't include any healthy-group task effect.
+    - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  enabled: true
+  model: gpt-5-mini-2025-08-07
+  create_all_included_annotations: true
+  prompt_type: multi_analysis
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  inclusion_criteria:
+  - Voxelwise task evidence- The analysis must be a group-level, univariate task-evoked voxelwise map
+    (typically whole-brain; small-volume-corrected maps are acceptable).
+  - Task-based problem solving- The contrast must reflect active problem solving, reasoning, or goal-directed
+    cognitive processing (e.g., rule application, planning, relational reasoning, symbolic manipulation).
+  - Valid comparator condition- The analysis/contrast must compare problem solving against an appropriate
+    baseline or control condition (e.g., rest, fixation, perceptual control, low-level baseline, or simpler
+    task condition).
+  - Domain generality- Analyses may come from any representational domain (e.g., mathematical, verbal,
+    visuospatial, logical), provided they isolate problem solving processes.
+  - Stereotactic reporting- Coordinates must be reported in standard stereotactic space (MNI or Talairach).
+  exclusion_criteria:
+  - ROI-only analyses without whole-brain voxelwise results or stereotactic coordinates.
+  - Connectivity analyses- Seed-based connectivity, effective connectivity, or resting-state analyses.
+  - Non-task or passive paradigms- Passive viewing, simple perception, or tasks not requiring active problem
+    solving or reasoning.
+  - Motor or response-only contrasts that do not isolate cognitive problem solving processes.
+  - Clinical or between-group contrasts that do not isolate a within-task problem solving effect (unless
+    a valid problem solving contrast is reported separately).
+  annotations:
+  - name: domain_general_problem_solving
+    description: Core problem solving processes that generalize across representational domains.
+    inclusion_criteria:
+    - Analyses must involve problem solving, reasoning, or goal-directed cognition independent of specific
+      domain.
+    - The contrast must isolate problem solving versus a valid control condition.
+    exclusion_criteria:
+    - Exclude contrasts that are domain-specific without clear problem solving demands.
+  - name: mathematical_problem_solving
+    description: Problem solving involving numerical or mathematical representations.
+    inclusion_criteria:
+    - Analyses must involve active mathematical reasoning or computation.
+    - Contrast must isolate mathematical problem solving versus a valid control.
+    exclusion_criteria:
+    - Exclude simple number perception or rote calculation without problem solving demands.
+  - name: verbal_problem_solving
+    description: Problem solving involving linguistic or semantic reasoning.
+    inclusion_criteria:
+    - Analyses must involve language-based reasoning.
+    - Contrast must isolate verbal reasoning versus a valid control.
+    exclusion_criteria:
+    - Exclude passive reading or language comprehension without problem solving.
+  - name: visuospatial_problem_solving
+    description: Problem solving involving spatial or visual representations.
+    inclusion_criteria:
+    - Analyses must involve spatial reasoning or manipulation.
+    - Contrast must isolate visuospatial problem solving versus a valid control.
+    exclusion_criteria:
+    - Exclude simple visual perception or matching tasks without reasoning demands.
+  - name: logical_reasoning
+    description: Problem solving involving formal logic or rule-based reasoning.
+    inclusion_criteria:
+    - Analyses must involve logical inference or rule-based reasoning.
+    - Contrast must isolate logical reasoning versus a valid control.
+    exclusion_criteria:
+    - Exclude tasks that involve rule following without active reasoning or inference.
+output:
+  nimads: true
+  export_excluded_studies: true
