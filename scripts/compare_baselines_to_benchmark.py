@@ -63,6 +63,9 @@ import numpy as np
 import yaml
 from scipy.stats import pearsonr
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from nmb_mapping import resolve_analysis_dir  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MANUAL_ANALYSIS_BASE = Path("/home/zorro/repos/neurometabench/analysis")
 DEFAULT_MANUAL_NIMADS_BASE = Path("/home/zorro/repos/neurometabench/data/nimads")
@@ -214,7 +217,12 @@ def main() -> int:
 
     rows: list[dict[str, Any]] = []
     for key in keys:
-        manual_path = args.manual_analysis_base / args.project / key / args.map_filename
+        # neurometabench's directories do not always match the mapping key's case or
+        # separators (social maps `others_merged`; the directory is `Others-Merged`), so
+        # resolve the directory rather than assuming an exact filename match.
+        manual_dir = resolve_analysis_dir(args.manual_analysis_base, args.project, key)
+        manual_path = ((manual_dir / args.map_filename) if manual_dir
+                       else args.manual_analysis_base / args.project / key / args.map_filename)
         auto_col = auto_col_for.get(key, key)
         arms = {
             "autonima": auto_meta / auto_col / args.map_filename,
