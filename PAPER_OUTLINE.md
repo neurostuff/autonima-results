@@ -692,13 +692,13 @@ per-run `evaluation/performance_metrics.json`:
 
     run          search recall   fulltext recall_all_meta   fulltext recall_in_search
     v4               0.743              0.644                        0.898
-    v5-gpt           0.743              0.717                        1.000
+    v5               0.743              0.717                        1.000
     v6               0.932              0.853                        0.970
 
 0.644 is **v4's** `recall_all_meta`; 0.970 is **v6's** `recall_in_search`. Quoting them as a
 single before/after overstates the gain twice over.
 
-The correct like-for-like figures against v5-gpt, whose schema v6 inherits verbatim so that only
+The correct like-for-like figures against v5 (formerly v5-gpt), whose schema v6 inherits verbatim so that only
 the search differs:
 
   - search recall                0.743 -> 0.932   (+0.189)   [as originally reported, correct]
@@ -709,7 +709,7 @@ the search differs:
 Two things this changes. First, the end-to-end recall gain is +0.136, not +0.326. Second, and
 more useful: `recall_in_search` went slightly DOWN (1.000 -> 0.970, 5 gold papers newly missed at
 full text). v6's entire gain comes from the search stage, which is exactly what a search-only
-change should do — v5-gpt's full-text screening was already perfect on what its search returned.
+change should do — v5's full-text screening was already perfect on what its search returned.
 Report v6 as a search fix, not as a screening improvement.
 
 The cross-project screening roll-up column `recall` is `recall_all_meta`, so the value it lists
@@ -755,25 +755,28 @@ The cross-project roll-up regenerates its own evaluations under
 project-local ones are not.** Any before/after claim should be read from the roll-up, or from a
 project-local evaluation whose mtime is confirmed to be newer than its `outputs/`.
 
-## Note: cue_reactivity v5-gpt was deleted; use v5-recent as the v5 reference
+## Note: cue_reactivity run naming (v5-gpt -> v5)
 
-`projects/cue_reactivity/v5-gpt.yaml` and its run directory have been removed, and
-`v5-annotation-only-gpt` renamed to `v5-annotation-only`, under the convention that schema
-authorship belongs in a header comment rather than a filename suffix.
+`projects/cue_reactivity/v5-gpt` has been renamed to **`v5`** (schema and run directory), and
+`v5-annotation-only-gpt` to `v5-annotation-only`. The run itself is unchanged, so every v5 figure
+quoted above stands as-is; only the name differs.
 
-The earlier v6 correction above was computed against v5-gpt, which can no longer be reproduced
-from disk. **`v5-recent` is a valid substitute**: like the deleted v5-gpt, it differs from v6 in
-the `search` block and nothing else (annotation, parsing, retrieval, screening and output are all
-byte-identical — verified by loading both configs). Recomputed against it:
+The `-gpt` suffix meant that **GPT edited the schema in response to the error reports** — the same
+relationship the Claude-generated schemas have to theirs, with GPT as the author. It never meant
+"this run called a GPT model": every run in this corpus does, so that would carry no information.
+Under the current convention that authorship goes in a header comment rather than a filename, the
+suffix is redundant, and each renamed config now states the authorship in its header.
 
-    metric                      v5-recent    v6      delta
-    search recall                 0.754     0.932   +0.178
-    fulltext recall_all_meta      0.728     0.853   +0.125
-    fulltext recall_in_search     1.000     0.970   -0.030
-    fulltext precision            0.250     0.310   +0.060
+Renamed on the same grounds: `problem_solving/v2-annotation-only-gpt` and
+`vbm_of_substance_use/v2-annotation-only-gpt`, both to `v2-annotation-only`.
 
-The conclusion is unchanged from the v5-gpt version of the comparison (+0.189 / +0.136 / -0.030):
-all of v6's gain comes from the search stage, `recall_in_search` slips slightly, and v6 should be
-reported as a search fix rather than a screening improvement. Precision is *better* against
-v5-recent than against v5-gpt (0.250 vs 0.321 baseline), so quote whichever v5 is retained and
-say which.
+**Three suffixes are NOT authorship and must stay**, all in `social`:
+
+    v1-annotation-only-gpt5                model variant (gpt-5.2-2025-12-11)
+    v1-annotation-only-lc                  config variant (enables local_evidence)
+    v3-all_pmids-multi_analysis-ft-gpt52   model variant
+
+Verified: `-gpt5` and `-lc` have annotation criteria *byte-identical* to `v1-annotation-only` and
+differ only inside the annotation block. The suffix is the only thing distinguishing them, so
+collapsing any would overwrite a run and destroy the comparison. If they should move to the new
+convention they need renumbering, not suffix-stripping.
