@@ -1001,3 +1001,47 @@ actually retrieved, a loss of two papers. Audited the corpus — problem_solving
 anywhere near the cap, the next largest pool being executive_function at 6,447 — so no other
 result is affected. But any future query that crosses 10,000 will be truncated silently, and
 paging via `retstart` would be the fix if that becomes a constraint.
+
+## Scoping decisions, 2026-08-26
+
+Resolutions to the open items listed above, so they are not re-litigated.
+
+**§S1 cost/scale — descoped from per-project tracking to a single estimate.** There is no token
+or cost accounting anywhere in the pipeline outputs; a check across every run found no `usage`,
+`prompt_tokens` or `cost` field, and the only timing datum is `started_at`. Rather than
+instrument the pipeline for this paper, report a **cost estimate based on expected tokens per
+paper**, applied to each project's known volumes (candidates searched, abstracts screened, full
+texts screened, analyses annotated — all of which we do have). That answers the practitioner's
+question without claiming measurement we did not make. Per-stage tracking is a pipeline feature
+request, filed separately, and can inform a later paper.
+
+**§8a inter-rater reliability — not feasible; moves to Discussion as a future direction.** A
+second expert rater is not available, so the identifiability limitation stays a stated limitation
+rather than becoming a measurement. Do not present cross-model agreement or test-retest as a
+substitute for inter-rater reliability; they measure different things. State plainly in Discussion
+that whether residual disagreement reflects an ambiguous target or a model limitation is not
+identifiable from this data, and name a second-rater study as the way to settle it.
+
+**§3 machine-readable provenance field — deferred.** Version headers now carry authorship and
+rationale in prose (and `run_categories.yaml` carries the tier classification), which is enough
+for this paper. A structured `provenance:` key in the config schema is a pipeline feature request,
+filed separately.
+
+**executive_function verbatim tier = v1.** "Verbatim" means an attempt to stay close to the
+paper; a narrowed search window still qualifies, because the CRITERIA are the paper's even though
+the 1988-2008 window was inferred from the gold set's range. `v1-2010` is the archived original
+window and can be ignored.
+
+### Tracked, not yet done
+
+- **emotion_regulation_2022 needs a plain `vN.yaml`** (not `-allstudies`). All three existing ER
+  configs are `-allstudies` variants, so the project has no canonical family at all and cannot
+  appear in the screening roll-up, which selects plain `vN`. Wanted eventually; no blocker.
+- **ER annotation criteria are drafted but untrialled.** They live in `v2-annotation-only.yaml`
+  deliberately: trial there first (88 gold PMIDs, screening skipped, annotation is the only stage
+  under test), then port to `v2-allstudies.yaml` and re-run that with the stage enabled. Under the
+  naming convention those two must then share the criteria byte-for-byte.
+- **Three naming-convention violations remain**, all pre-existing: executive_function/v1 (its
+  `v1-annotation-only` annotation differs from `v1`'s), social/v2, social/v3.
+- **cue_reactivity manual-download backlog** for the widened `load_excluded` arm; its numbers stay
+  provisional until cleared.

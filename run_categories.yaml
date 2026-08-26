@@ -89,6 +89,13 @@ projects:
       latest:   v3-annotation-only
 
   emotion_regulation_2022:
+    annotation_only:
+      verbatim: null
+      manual:   null
+      latest:   v2-annotation-only
+      note: >-
+        Trial harness for the draft annotation criteria (88 gold PMIDs, screening skipped). The
+        criteria are agent-drafted and awaiting expert review, hence `latest` only. NOT YET RUN.
     allstudies:
       verbatim: v1-allstudies
       manual:   v3-allstudies
@@ -99,16 +106,16 @@ projects:
 
   executive_function:
     canonical:
-      verbatim: v1-2010
+      verbatim: v1
       manual:   null
-      latest:   v3                    # Claude; combines v2 screening + v3 annotation. NOT YET RUN.
-      review: >-
-        Deliberately naming v1-2010 rather than v1 as verbatim. v1's search window (1988-2008)
-        was narrowed by inspecting the gold set's own publication range, which is gold-informed
-        tuning; v1-2010 keeps the original untuned 1990-2010 window. If you would rather treat
-        that window change as too minor to matter, verbatim should be v1 instead. Separately, v1
-        was GPT-assisted in drafting from the paper -- allowed under the verbatim definition --
-        and no hand-edited version exists.
+      latest:   v3                    # Claude; combines v2 screening + v3 annotation
+      note: >-
+        RESOLVED 2026-08-26: verbatim is v1, not v1-2010. "Verbatim" means an attempt to stay
+        close to the paper, and a narrowed search window still counts -- v1's 1988-2008 window
+        was inferred from the gold set's publication range, but the CRITERIA are the paper's.
+        v1-2010 is the archived original window and can be ignored. v1 was GPT-assisted in
+        drafting from the paper, which the verbatim definition allows; no hand-edited version
+        exists, so the manual tier is empty.
     annotation_only:
       verbatim: null
       manual:   v1-annotation-only
