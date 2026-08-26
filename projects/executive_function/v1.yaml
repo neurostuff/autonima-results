@@ -1,3 +1,24 @@
+# v1 — search window narrowed to the gold standard's actual publication range.
+#
+# The benchmark (Niendam et al. 2012, PMC3660731) states no search dates and searched
+# the BrainMap database rather than PubMed, so no cutoff can be taken from the paper.
+# Its 178 studies span 1988-2008, and that range is used here as the best available
+# proxy for what was screenable.
+#
+# CHANGES vs the archived v1-2010:
+#   date_to   2010/12/31 -> 2008/12/31   the previous window admitted ~223 studies
+#                                        published after the newest gold study, which
+#                                        the meta-analysis could not have screened yet
+#                                        were scored as screening false positives.
+#   date_from 1990/01/01 -> 1988/01/01   the previous window EXCLUDED two gold studies
+#                                        outright (Petersen 1988, Petersen 1989), a
+#                                        guaranteed and unrecoverable recall loss.
+#
+# Caveat: this is an inference from the gold set's observed range, not a stated method.
+# The manual's true pool was BrainMap's contents circa 2011, which is a curated subset
+# of the literature -- so even within this window, some of our includes were never
+# candidates for the manual screen. EF precision remains a floor, not a measurement.
+#
 # Inital version
 # Used GPT to help draft inital draft, based on previously examples.
 search:
@@ -18,8 +39,8 @@ search:
     OR "continuous performance task"[tiab])))
     AND Humans[mh] AND English[lang])
     NOT (review[pt] OR "systematic review"[tiab] OR meta-analysis[pt]))
-  date_from: "1990/01/01"
-  date_to: "2010/12/31"
+  date_from: 1988/01/01
+  date_to: 2008/12/31
   max_results: 20000
   email: "aid338@eid.utexas.edu"
 
