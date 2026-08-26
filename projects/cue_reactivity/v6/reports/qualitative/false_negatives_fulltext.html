@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .criteria-summary, .criteria-details {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .criteria-summary {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .criterion-list {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+        .criterion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }
+        .criterion-red {
+            background: #c0392b;
+        }
+        .criterion-green {
+            background: #1e8449;
+        }
+        .criterion-neutral {
+            background: #34495e;
+        }
+        .criterion-count {
+            color: #555;
+            font-size: 12px;
+        }
+        .annotation {
+            border-left: 3px solid #f39c12;
+            background-color: #fff8e1;
+            padding: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC';
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2';
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        @media (max-width: 900px) {
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+
+    function getAnnotationsFilename() {
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {
+            return "annotations.json";
+        }
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {
+            return "annotations.json";
+        }
+        return base + ".json";
+    }
+
+    async function saveAnnotations() {
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var pmid = study.getAttribute('data-pmid') || '';
+
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {
+            try {
+                var fileHandle = await window.showSaveFilePicker({
+                    suggestedName: outputFilename,
+                    types: [{
+                        description: "JSON Files",
+                        accept: { "application/json": [".json"] }
+                    }]
+                });
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            } catch (error) {
+                if (error && error.name === "AbortError") {
+                    return;
+                }
+                console.warn("Falling back to browser download.", error);
+            }
+        }
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", outputFilename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Negatives Papers at Fulltext Stage</h1>
+<p>Total papers: 5</p>
+<div class='criteria-summary'>
+<h2>Stage Criteria Summary</h2>
+<p>Stage: <strong>Fulltext</strong>. Counts show criterion usage across all stage decisions and within this report subset.</p>
+<div class='criteria-grid'>
+<div>
+<h3>Inclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>I3</span> Functional MRI study assessing drug or natural reward-related cue-reactivity with a clear visual cue component (visual-only or multimodal designs that include visual cues) <span class='criterion-count'>(all stage: 624/690, this report: 3/5)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I4</span> At least one analysis involving a within-participant contrast of drug cues&gt;control stimuli or natural reward-related cues&gt;control stimuli <span class='criterion-count'>(all stage: 610/690, this report: 3/5)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I5</span> {&#x27;Whole-brain or small-volume-corrected evidence&#x27;: &#x27;at least one qualifying analysis must be a group-level voxelwise task-evoked statistical result, reported as either whole-brain or small-volume-corrected.&#x27;} <span class='criterion-count'>(all stage: 576/690, this report: 3/5)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I6</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available. <span class='criterion-count'>(all stage: 582/690, this report: 4/5)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I7</span> Reporting of participant age/sex, cue type, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study. <span class='criterion-count'>(all stage: 616/690, this report: 3/5)</span></li>
+</ul>
+</div>
+<div>
+<h3>Exclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>E3</span> Studies that report only region-of-interest (ROI) analyses with no qualifying voxelwise whole-brain or small-volume-corrected result. <span class='criterion-count'>(all stage: 55/690, this report: 2/5)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E4</span> Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a qualifying task-evoked voxelwise result (whole-brain or small-volume-corrected). <span class='criterion-count'>(all stage: 23/690, this report: 0/5)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E5</span> Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying qualifying within-participant cue&gt;control contrast. <span class='criterion-count'>(all stage: 17/690, this report: 0/5)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E6</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human fMRI data. <span class='criterion-count'>(all stage: 4/690, this report: 0/5)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='study-list'>
+<div class='study' id='study-1' data-pmid='30991248'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/30991248/' target='_blank'>30991248</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> Full text appears complete. Met inclusion: I5 (authors report exploratory whole-brain analyses), I6 (results/supplementary material indicated for detailed voxelwise displays), and I7 (participant sex/age and MRI field strength reported). Not met / unclear: I3 (the manuscript does not explicitly state that the cue-reactivity task used visual-only cues or that visual cues were a clear component) and I4 (the paper does not explicitly present a within-participant drug-cues &gt; control-stimuli voxelwise contrast in the main text — the description implies cue reactivity analyses but the necessary explicit within-subject cue&gt;control contrast for task-evoked voxelwise results is not clearly documented in the provided text). No exclusion criteria (E3–E6) are explicitly met. Therefore, because key inclusion criteria I3 and I4 are not satisfied/are unclear from the provided full text, the study is excluded.</p>
+<p><strong>Fulltext Confidence:</strong> 0.65</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I5</span> {&#x27;Whole-brain or small-volume-corrected evidence&#x27;: &#x27;at least one qualifying analysis must be a group-level voxelwise task-evoked statistical result, reported as either whole-brain or small-volume-corrected.&#x27;}</li>
+<li><span class='criterion-tag criterion-green'>I6</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+<li><span class='criterion-tag criterion-green'>I7</span> Reporting of participant age/sex, cue type, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I3</span> Functional MRI study assessing drug or natural reward-related cue-reactivity with a clear visual cue component (visual-only or multimodal designs that include visual cues)</li>
+<li><span class='criterion-tag criterion-red'>I4</span> At least one analysis involving a within-participant contrast of drug cues&gt;control stimuli or natural reward-related cues&gt;control stimuli</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment-1'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-2' data-pmid='20881127'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/20881127/' target='_blank'>20881127</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> Full text is complete. Although the study is an empirical fMRI investigation using visual erotic (natural) and monetary cues and reports whole-brain group-level voxelwise task-evoked results, it does not report a within-participant cue&gt;control contrast for natural reward-related visual cues (the authors modeled anticipation but report outcome-phase results and did not present cue&gt;control cue-reactivity analyses). Inclusion criteria met: I3 (visual cues for natural rewards present/assessed), I5 (group-level whole-brain voxelwise results reported), I6 (voxelwise results reported in main text/figures/tables), I7 (participant demographics and MRI/preprocessing details reported). Inclusion criterion not met: I4 (no within-participant cue&gt;control cue-reactivity contrast reported). No exclusion criteria (E3–E6) apply. Therefore the study is excluded for failing to meet I4.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I3</span> Functional MRI study assessing drug or natural reward-related cue-reactivity with a clear visual cue component (visual-only or multimodal designs that include visual cues)</li>
+<li><span class='criterion-tag criterion-green'>I5</span> {&#x27;Whole-brain or small-volume-corrected evidence&#x27;: &#x27;at least one qualifying analysis must be a group-level voxelwise task-evoked statistical result, reported as either whole-brain or small-volume-corrected.&#x27;}</li>
+<li><span class='criterion-tag criterion-green'>I6</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+<li><span class='criterion-tag criterion-green'>I7</span> Reporting of participant age/sex, cue type, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I4</span> At least one analysis involving a within-participant contrast of drug cues&gt;control stimuli or natural reward-related cues&gt;control stimuli</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-2' name='judgment-2' value='agree'>
+<label for='agree-2'>Agree</label>
+<input type='radio' id='disagree-2' name='judgment-2' value='disagree'>
+<label for='disagree-2'>Disagree</label>
+<br><br>
+<label for='comment-2'><strong>Comments:</strong></label>
+<textarea id='comment-2' name='comment-2' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-3' data-pmid='22887826'>
+<h2>3. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/22887826/' target='_blank'>22887826</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> Exclusion E3 met: the study’s analyses are confined to predefined ROIs and multivariate searchlight/ensemble classifiers within those ROIs rather than reporting a qualifying group-level voxelwise whole-brain or small-volume-corrected task-evoked result. Inclusion criteria met: I3 (visual natural-reward cues—food pictures) and I4 (within-participant food&gt;neutral contrasts / GLM contrast maps). Inclusion criteria not met: I5 (no reported group-level voxelwise task-evoked results reported as whole-brain or small-volume-corrected). Full text appears complete for screening. Therefore the study is excluded under E3.</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I3</span> Functional MRI study assessing drug or natural reward-related cue-reactivity with a clear visual cue component (visual-only or multimodal designs that include visual cues)</li>
+<li><span class='criterion-tag criterion-green'>I4</span> At least one analysis involving a within-participant contrast of drug cues&gt;control stimuli or natural reward-related cues&gt;control stimuli</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I5</span> {&#x27;Whole-brain or small-volume-corrected evidence&#x27;: &#x27;at least one qualifying analysis must be a group-level voxelwise task-evoked statistical result, reported as either whole-brain or small-volume-corrected.&#x27;}</li>
+<li><span class='criterion-tag criterion-red'>I6</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+<li><span class='criterion-tag criterion-red'>I7</span> Reporting of participant age/sex, cue type, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E3</span> Studies that report only region-of-interest (ROI) analyses with no qualifying voxelwise whole-brain or small-volume-corrected result.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E4</span> Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a qualifying task-evoked voxelwise result (whole-brain or small-volume-corrected).</li>
+<li><span class='criterion-tag criterion-green'>E5</span> Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying qualifying within-participant cue&gt;control contrast.</li>
+<li><span class='criterion-tag criterion-green'>E6</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human fMRI data.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-3' name='judgment-3' value='agree'>
+<label for='agree-3'>Agree</label>
+<input type='radio' id='disagree-3' name='judgment-3' value='disagree'>
+<label for='disagree-3'>Disagree</label>
+<br><br>
+<label for='comment-3'><strong>Comments:</strong></label>
+<textarea id='comment-3' name='comment-3' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-4' data-pmid='21677649'>
+<h2>4. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/21677649/' target='_blank'>21677649</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an fMRI study of alcohol cue-reactivity, but the experimental cue modality is gustatory (taste delivery of preferred alcoholic beverage vs litchi juice) rather than visual. Inclusion criterion I3 requires a clear visual cue component (visual-only or multimodal that include visual cues), which is not met. The study does meet I4 (within-participant contrast alcohol cue &gt; control cue), I5 (group-level whole-brain voxelwise task-evoked results with cluster correction), and I6 (results reported in figures/tables). No exclusion criteria (E3–E6) are triggered. Full text appears complete (introduction, methods, results, discussion). Therefore the study is excluded solely because it lacks the required visual cue component (I3 not met).</p>
+<p><strong>Fulltext Confidence:</strong> 0.95</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> At least one analysis involving a within-participant contrast of drug cues&gt;control stimuli or natural reward-related cues&gt;control stimuli</li>
+<li><span class='criterion-tag criterion-green'>I5</span> {&#x27;Whole-brain or small-volume-corrected evidence&#x27;: &#x27;at least one qualifying analysis must be a group-level voxelwise task-evoked statistical result, reported as either whole-brain or small-volume-corrected.&#x27;}</li>
+<li><span class='criterion-tag criterion-green'>I6</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I3</span> Functional MRI study assessing drug or natural reward-related cue-reactivity with a clear visual cue component (visual-only or multimodal designs that include visual cues)</li>
+<li><span class='criterion-tag criterion-red'>I7</span> Reporting of participant age/sex, cue type, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-4' name='judgment-4' value='agree'>
+<label for='agree-4'>Agree</label>
+<input type='radio' id='disagree-4' name='judgment-4' value='disagree'>
+<label for='disagree-4'>Disagree</label>
+<br><br>
+<label for='comment-4'><strong>Comments:</strong></label>
+<textarea id='comment-4' name='comment-4' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-5' data-pmid='19650816'>
+<h2>5. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/19650816/' target='_blank'>19650816</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an fMRI study of smoking (drug) cue reactivity with visual cues and a within-participant SCs vs NCs contrast, and group-level voxelwise statistical maps reported with peak coordinates. However, all reported voxelwise analyses were conducted within an a priori anatomical mask (WFU PickAtlas) and reported at an uncorrected threshold (P&lt;0.001) without applying small-volume correction (SVC) or reporting whole-brain corrected results. Therefore the study effectively reports ROI/mask-restricted results without a qualifying whole-brain or small-volume-corrected group-level voxelwise result, which meets exclusion criterion E3. Inclusion criteria met: I3 (fMRI with visual drug cues), I4 (within-participant cue&gt;control contrast), I6 (voxelwise results/coordinates reported), I7 (participant and methods details reported). Inclusion criterion not met: I5 (no whole-brain or small-volume-corrected group-level voxelwise result). Full text is complete.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I3</span> Functional MRI study assessing drug or natural reward-related cue-reactivity with a clear visual cue component (visual-only or multimodal designs that include visual cues)</li>
+<li><span class='criterion-tag criterion-green'>I4</span> At least one analysis involving a within-participant contrast of drug cues&gt;control stimuli or natural reward-related cues&gt;control stimuli</li>
+<li><span class='criterion-tag criterion-green'>I6</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+<li><span class='criterion-tag criterion-green'>I7</span> Reporting of participant age/sex, cue type, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I5</span> {&#x27;Whole-brain or small-volume-corrected evidence&#x27;: &#x27;at least one qualifying analysis must be a group-level voxelwise task-evoked statistical result, reported as either whole-brain or small-volume-corrected.&#x27;}</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E3</span> Studies that report only region-of-interest (ROI) analyses with no qualifying voxelwise whole-brain or small-volume-corrected result.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E4</span> Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a qualifying task-evoked voxelwise result (whole-brain or small-volume-corrected).</li>
+<li><span class='criterion-tag criterion-green'>E5</span> Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying qualifying within-participant cue&gt;control contrast.</li>
+<li><span class='criterion-tag criterion-green'>E6</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human fMRI data.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-5' name='judgment-5' value='agree'>
+<label for='agree-5'>Agree</label>
+<input type='radio' id='disagree-5' name='judgment-5' value='disagree'>
+<label for='disagree-5'>Disagree</label>
+<br><br>
+<label for='comment-5'><strong>Comments:</strong></label>
+<textarea id='comment-5' name='comment-5' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>
