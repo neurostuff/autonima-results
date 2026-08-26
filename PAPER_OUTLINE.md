@@ -208,10 +208,10 @@ Two supporting observations, both requiring dementia's adjusted metrics:
   shape independently (recall 0.477 → 0.216). Iterating against observed errors reliably
   overshoots.
 
-**Scope, stated plainly.** Only two projects underwent genuine schema revision (dementia and
-emotional_regulation). For five of the eight, the highest v* either *is* v1 or has screening
-criteria byte-identical to it — so there is no verbatim-versus-iterated contrast to draw
-across the corpus, and a cross-project mean would be dominated by structural zeros.
+**Scope.** Originally only two projects had undergone genuine schema revision (dementia and
+emotional_regulation), both by hand. Four more have since been revised by an LLM agent, which
+both widens the base and supports a distinct second claim — see *Agent-authored schema repair*
+below.
 
 **The overfitting objection is already answered, and this is where to say so.** Every *later*
 schema was iterated against the benchmark, but **v1 was not**: in every project it was written
@@ -225,11 +225,57 @@ The corollary is that the v1 → later gains in this section are the *only* numb
 that are tuning-inflated, and they are presented as a case study rather than a headline for
 exactly that reason.
 
-**What would promote this from case study to result [need].** One S1 → S2 rewrite on two
-never-iterated projects (`executive_function` and `problem_solving` are the obvious candidates
-— both stuck at v1 with the corpus's lowest screening F1) takes it from n=2 to n=4. Cheap — screening re-runs only, no new retrieval. Separately, no
-config records *what changed* between versions; the scope table above had to be reconstructed
-by diffing configs, and a one-line provenance field would make it auditable.
+### Agent-authored schema repair  **[have]**
+
+**A second, separable claim.** The dementia case above says a human can misread a methods
+section. This says something different: **an LLM agent, given the source paper's full text and
+its own error reports, can repair a schema** — and that this works reliably for one class of
+defect and not another. Four projects were revised this way, with no human expert reviewing the
+criteria before the run. Each config carries a provenance header saying so.
+
+| project | what was revised | metric | before | after |
+|---|---|---|---|---|
+| problem_solving | annotation | mean annotation F1 | 0.770 | **0.948** |
+| problem_solving | annotation | fair-comparison dice | 0.514 | **0.633** |
+| decision_making | full-text screening | screening F1 | 0.283 | **0.312** |
+| social | annotation | fair-comparison dice | 0.514 | 0.550 *(v1 = 0.570)* |
+| executive_function | full-text screening | screening F1 | 0.163 | 0.152 *(recall 0.322 → 0.386)* |
+| executive_function | annotation | fair-comparison dice | 0.566 | 0.556 |
+
+**Two clear wins, one partial, one negative — and the split is not random.** The revisions
+succeeded where the defect was a *factual misreading of the benchmark*, and underperformed where
+it was a *precision/recall trade*:
+
+- **problem_solving** — `logical_reasoning` had been defined as formal logic. Reading the
+  benchmark's own Sleuth file showed the target it maps to (`Demand_MNI_final`) is
+  difficulty manipulations ("Complex > Simple", "Multi-Digit > Single-Digit"). That column went
+  0.393 → 0.844, and `verbal` recovered 0.767 → 0.959 because deductive-reasoning contrasts had
+  been diverted into it. A fact was wrong; the fix was verifiable.
+- **decision_making** — the paper admits only condition-vs-condition contrasts, but the schema
+  was accepting contrasts against implicit baseline. Again a checkable fact.
+- **social** — the diagnosis was right and quantitatively confirmed (the benchmark assigns 1.34
+  construct labels per contrast; the schema assigned 0.94, and the revision moved it to 1.33).
+  Recall rose on all four constructs. But map quality still did not beat v1, because the extra
+  labels cost precision.
+- **executive_function** — the relaxations recovered 11 gold papers at screening, yet F1 and
+  map dice both slipped. Its stated criteria contradict its realized inclusions on three axes,
+  and relaxation alone cannot repair that without paying in precision.
+
+**The generalisation worth stating:** where a schema encodes a *false belief about the
+benchmark*, an agent with the source paper and the error reports can find and fix it, sometimes
+dramatically. Where the schema sits at the wrong point on a *precision/recall trade-off*, the
+agent moves along the curve rather than off it — and in this corpus map quality tracks
+annotation precision, so recall-increasing revisions can look better on annotation metrics while
+being no better, or slightly worse, on the maps. **Report both metrics; they disagree, and the
+disagreement is the finding.**
+
+**Caveat, stated up front.** These revisions read the benchmark's error reports, so they are
+tuned against it by construction and must be reported as iterated versions, never as held-out
+ones. What they demonstrate is repair-given-feedback, not zero-shot schema authoring.
+
+**Still missing [need]:** no config records *what changed* between versions in machine-readable
+form; the scope table above had to be reconstructed by diffing configs. A one-line provenance
+field would make it auditable.
 
 **Figure 3.** Dementia S1/S2/S3: screening recall (flat at 0.91) beside end-to-end attainable
 recall (0.42 → 0.75 → 0.86). The gap between the two panels is the entire point.
@@ -363,7 +409,7 @@ omitted with the reason in the caption rather than silently dropped.
 
 ---
 
-## 7. What it takes in the wild: end-to-end vs a search-only meta-analysis  **[partial]**
+## 7. What it takes in the wild: end-to-end vs a search-only meta-analysis  **[have]**
 
 **Claim.** Running the full pipeline from a plain PubMed search beats what you would get by
 searching, extracting every coordinate, and meta-analysing the lot — the Neurosynth-style
@@ -377,19 +423,32 @@ approach.
   split the hits into sub-topics, the broad baseline is an unfairly weak opponent. Nobody
   targeting only the alcohol sub-meta-analysis searches the whole substance-use literature.
   Framework: `scripts/run_baseline_searches.py` + `projects/<p>/baselines.yaml`. **[have]**
-  for vbm_of_substance_use; **[need]** for the other 6 multi-annotation projects.
+  for all 8 projects, 31 sub-annotations.
 
-**Worked result — vbm_of_substance_use**, mean R² across six drug classes:
+**Full result — all 8 projects, 31 sub-annotations**, mean R² per project:
 
-| arm | mean R² |
-|---|---|
-| autonima end-to-end | **0.255** |
-| targeted search, no screening | 0.130 |
-| broad search, no screening | 0.110 |
+| project | n | autonima | targeted search | broad search | autonima − targeted |
+|---|---|---|---|---|---|
+| vbm_of_ptsd | 1 | **0.456** | 0.247 | 0.247 | +0.209 |
+| cue_reactivity | 3 | **0.599** | 0.457 | 0.433 | +0.142 |
+| vbm_of_substance_use | 6 | **0.255** | 0.153 | 0.123 | +0.102 |
+| problem_solving | 5 | **0.629** | 0.560 | 0.549 | +0.069 |
+| dementia | 4 | **0.330** | 0.275 | 0.272 | +0.055 |
+| executive_function | 4 | **0.633** | 0.612 | 0.598 | +0.021 |
+| social | 5 | 0.520 | 0.527 | **0.529** | −0.007 |
+| decision_making | 3 | 0.346 | **0.367** | 0.271 | −0.016 |
 
-autonima wins 5 of 6 sub-annotations. And the key secondary finding: **targeting the search
-is worth almost nothing on its own** (+0.020) despite cutting candidate pools 3–13× while
-retaining the same gold studies.
+**autonima wins 6 of 8 projects.** Report the two losses rather than burying them: `social`
+is the project with the corpus's weakest annotation, and `decision_making` is the only case
+where a narrowed baseline beats the pipeline outright.
+
+And the key secondary finding, which **now holds corpus-wide rather than on one project**:
+**targeting the search is worth almost nothing on its own.** Mean targeted − broad across all
+eight projects is **+0.022** (per-project range −0.002 to +0.096), despite the targeted queries
+cutting candidate pools several-fold while retaining the same gold studies. `decision_making`
+is the sole project where targeting buys anything substantial (+0.096) — and notably it is also
+the project where the targeted baseline beats autonima, which is consistent rather than
+contradictory: where search targeting *does* work, the pipeline's advantage narrows.
 
 **This is the paper's sharpest mechanistic point.** What limits a screening-free pool is not
 its size but that irrelevant analyses *inside retained papers* still contribute coordinates.
@@ -759,33 +818,33 @@ Report v6 as a search fix, not as a screening improvement.
 The cross-project screening roll-up column `recall` is `recall_all_meta`, so the value it lists
 for v6 (0.853) is the correct one to quote.
 
-## Correction: problem_solving v1 was not starved of full text
+## Note: problem_solving was rebuilt (2026-08-26) — earlier numbers superseded
 
-An earlier claim in this session — that problem_solving v1's retrieval was broken, that 69 of 73
-gold papers had no full text, that only four were ever screened, and that its screening F1 of
-0.249 "measures a dead path" — is **wrong**. It came from reading
-`projects/problem_solving/v1/evaluation/performance_metrics.json`, which is dated **2026-05-04**
-while v1's `outputs/` are dated **2026-08-14**. The evaluation directory was never regenerated
-after that re-run, so it was stale by three months.
+Two claims made about this project during development were wrong, and the project has since been
+rebuilt, so **no problem_solving figure predating 2026-08-26 should be quoted**.
 
-v1's actual outputs contain **275 studies included at full text with 50 gold true positives**.
-Freshly re-evaluated, v1 and the new v2 compare as:
+**What was wrong.** (1) I reported that v1's retrieval was broken and that only four papers were
+ever screened. That came from a stale `evaluation/` directory dated three months before the
+`outputs/` it described; v1 had in fact included 275 studies with 50 gold true positives.
+(2) I claimed `max_results: 5000` was a recorded default rather than an authored value — it was
+authored, and separately, raising it above 10000 does nothing because NCBI caps esearch at 10,000.
 
-    run   fulltext incl   TP   FP    recall   precision      F1
-    v1         275        50   225    0.397     0.182       0.249
-    v2         264        44   220    0.349     0.167       0.226
+**What actually needed fixing was the query**, which was a transcription error rather than a
+design choice: four generic terms (`task`, `number`, `picture`, `verbal`) inflated the pool, and
+spatial navigation — one of the source paper's own paradigm groups — was missing entirely.
 
-So **v2 is slightly worse than v1**, and the retrieval change delivered no measurable benefit.
-The dead `/data/alejandro/...` paths in v1's config are real, but pubget/PMC supplied enough text
-on its own that repairing them changed nothing.
+**Current state**, after replacing the query and collapsing to two versions:
 
-Two differences v2 introduced are untested candidates for the small regression: `load_excluded:
-true` (v1 used `false`), and a larger search pool (9,981 vs 6,927) that found two *fewer* gold
-studies at search while adding ~3,000 candidates.
+    stage / metric              old query    replacement
+    search recall                  0.611          0.881
+    screening recall               0.397          0.540
+    screening precision            0.182          0.308
+    screening F1                   0.249          0.392
+    fulltext TP / FP             50 / 225       68 / 153
 
-**Nothing should be concluded about problem_solving's screening schema in either direction.** Its
-annotation result stands unaffected — that was measured on the fixed-PMID annotation-only runs,
-where v1 → v3 improved four of five F1s and all five exhausted-precision figures.
+Better on every axis simultaneously. Old runs are in `projects/problem_solving/archive/` with
+`NOTES.md` recording their numbers, including the three-way annotation-only comparison (manual
+0.514, GPT-authored 0.485, Claude-authored 0.633 dice) so nothing is lost.
 
 ### The generalisable lesson
 
@@ -855,21 +914,6 @@ unilateral renumber. For executive_function specifically, v2 currently asserts t
 criteria sets: my `v2.yaml` changed *screening* while keeping v1's annotation, and the
 pre-existing `v2-annotation-only` changed *annotation*. Those are two separate criteria versions
 sharing one number; one of them should become v3.
-
-### Two further corrections to earlier claims
-
-`projects/problem_solving/v1.yml` **exists** and always did — with a `.yml` extension, which a
-`*.yaml` glob does not match. The claim that v1's config was missing and needed reconstructing was
-wrong. The reconstruction turned out byte-equal to it apart from one key, so nothing downstream
-was affected.
-
-That key: `max_results`. I claimed 5000 was "a default written into the executed config rather
-than the limit in force". Also wrong — v1.yml authors 5000 itself. What is genuinely unexplained
-is that v1 still retrieved 6,927 studies, above its own cap; the cap binds now (4,999 at 5000,
-9,981 at 20000) but did not bind then. **So raising it to 20000 is a deliberate widening, not a
-bug fix, and v3's pool is larger than v1's — v1 → v3 does not isolate the annotation and
-retrieval changes.**
-
 
 ## Limitation: the system still depends on a human-written PubMed query
 
