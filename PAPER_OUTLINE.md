@@ -135,7 +135,7 @@ of gold studies whose full text we obtained, screening recovers essentially all 
 **Emphasis.** The value of the dementia work is the *screening* result, not its brain maps.
 Its map comparison belongs in supplement.
 
-**Second controlled case: emotional_regulation_2022 [need].** Worth completing — one
+**Second controlled case: emotion_regulation_2022 [need].** Worth completing — one
 controlled case invites "n=1", and nothing else in the published set records rejection
 reasons. ER is a better second case than it first appears, for three reasons:
 
@@ -153,7 +153,7 @@ reasons. ER is a better second case than it first appears, for three reasons:
   the claim rather than cherry-picking, and a weaker ER result is still informative because
   it maps where the approach degrades (see §8a).
 
-**Blocker to clear first.** `projects/emotional_regulation_2022/nmb_mappings.json` is still
+**Blocker to clear first.** `projects/emotion_regulation_2022/nmb_mappings.json` is still
 the unedited template (`MANUAL_NAME1` → `AUTOMATIC_NAME1`), which excludes ER from every
 cross-project analysis. The benchmark side exists — 89 gold studies in `included_studies.csv`
 and a merged NiMADS — so this is filling in the annotation keys, not new curation.
@@ -204,12 +204,12 @@ Two supporting observations, both requiring dementia's adjusted metrics:
   precision/recall trade-off, not in overall quality. Choose an operating point deliberately
   rather than chasing F1.
 - **Over-tightening is the characteristic failure of failure-driven revision.** Dementia's
-  abandoned v4 collapsed recall 0.96 → 0.50, and emotional_regulation's S3 shows the same
+  abandoned v4 collapsed recall 0.96 → 0.50, and emotion_regulation's S3 shows the same
   shape independently (recall 0.477 → 0.216). Iterating against observed errors reliably
   overshoots.
 
 **Scope.** Originally only two projects had undergone genuine schema revision (dementia and
-emotional_regulation), both by hand. Four more have since been revised by an LLM agent, which
+emotion_regulation), both by hand. Four more have since been revised by an LLM agent, which
 both widens the base and supports a distinct second claim — see *Agent-authored schema repair*
 below.
 
@@ -527,7 +527,7 @@ directories; `pond` excluded, being a bulk corpus rather than hand-fetching):
 | project | coord-bearing | from manual | share |
 |---|---|---|---|
 | vbm_of_ptsd | 44 | 29 | **66%** |
-| emotional_regulation_2022 | 115 | 75 | **65%** |
+| emotion_regulation_2022 | 115 | 75 | **65%** |
 | decision_making | 357 | 83 | **23%** |
 | executive_function | 1128 | 39 | 3% |
 | problem_solving | 404 | 12 | 3% |
@@ -648,7 +648,7 @@ What can be done without new human labour, in rough order of value:
    one cognitive), rated by a second expert, would answer the question properly rather than by
    proxy. This is the only route to real identifiability and is probably worth the cost given
    how load-bearing the claim is. **[need]**
-4. **Use the emotional_regulation author contact as the second rater.** This is the strongest
+4. **Use the emotion_regulation author contact as the second rater.** This is the strongest
    available option and it is specific to ER: the original author can say whether a contrast
    we selected but they did not was a defensible alternative or a mistake — which is exactly
    the judgement no metric can supply. ER is also the hardest cognitive-selection case in the
@@ -815,7 +815,7 @@ Beyond the arc above:
 
 Three items plausibly gate submission:
 
-1. **emotional_regulation_2022**, which now carries three separate roles — second controlled
+1. **emotion_regulation_2022**, which now carries three separate roles — second controlled
    case (§2), hardest cognitive-selection case (§8a), and the only realistic route to
    second-rater adjudication via the author contact (§8a). It also has the smallest immediate
    blocker: a template `nmb_mappings.json` that excludes it from every cross-project analysis.

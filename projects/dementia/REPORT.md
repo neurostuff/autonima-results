@@ -259,7 +259,7 @@ runs, which is the like-for-like comparison, only two projects have them:
 | project | run | recall | precision | F1 |
 |---|---|---|---|---|
 | **dementia** | `v3-allstudies` | 0.890 | 0.508 | **0.647** |
-| emotional_regulation_2022 | `v3-allstudies` | 0.216 | 0.576 | 0.314 |
+| emotion_regulation_2022 | `v3-allstudies` | 0.216 | 0.576 | 0.314 |
 
 On the canonical PubMed-search runs — where search recall is folded in, so numbers are
 lower everywhere — dementia ranks third of eight on F1 and second on recall:
