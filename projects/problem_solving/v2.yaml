@@ -4,10 +4,18 @@
 # project's v1 error reports, and the benchmark's Sleuth files. No human expert review before the
 # run. Tuned against the benchmark -- report as an iterated version, never as held-out.
 #
-# THIS FILE ALSO RECONSTRUCTS A MISSING CONFIG. projects/problem_solving/v1.yaml is not on disk;
-# the only surviving record of that run is v1/outputs/config.executed.yaml. The search and
-# screening blocks below are taken from it verbatim, so v1's search results and abstract
-# decisions remain cache-valid and are NOT re-run.
+# CORRECTION (2026-08-26): an earlier version of this header claimed v1's config was missing
+# from disk. It is not. projects/problem_solving/v1.yml exists -- with a .yml extension, which a
+# `*.yaml` glob does not match. The search and fulltext-screening blocks below were rebuilt from
+# v1/outputs/config.executed.yaml and have since been verified byte-equal to v1.yml's, so this
+# file is still a faithful continuation and v1's search results and abstract decisions remain
+# cache-valid. Only the "missing" claim was wrong.
+#
+# v1.yml also shows the retrieval roots were ORIGINALLY Windows paths:
+#     C:\Users\antho\Neuroinformatics-Lab\autonima-results\projects\problem_solving\elsevier_output
+# and config.executed.yaml shows them later as /data/alejandro/... . The config has been carried
+# across three machines and its roots have never been portable on any of them, which is the
+# same defect described below, older than it first appeared.
 #
 # THE PRIMARY FIX IS NOT A SCHEMA CHANGE -- IT IS A BROKEN RETRIEVAL PATH.
 #
