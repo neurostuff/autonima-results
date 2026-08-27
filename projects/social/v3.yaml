@@ -1,19 +1,47 @@
+# v3 -- social's canonical search-driven run.
+#
+# Same criteria and the same annotation mode as v3-allstudies and v3-annotation-only. Only the
+# search block differs, which is what a suffix denotes here. This is social's first arm whose
+# pool comes from its query alone, with no curated PMIDs injected.
+#
+# WHY THIS FILE EXISTS. Social previously had no clean search-driven arm. Its v3-search-* arms set
+# BOTH a query and a pmids_file, and autonima UNIONS the two rather than preferring one
+# (search/pubmed.py: `pmids +=` the search hits, then `pmids +=` the file; the docstring at
+# pubmed.py:51 claiming the query is ignored is stale). So those arms screened their query hits
+# PLUS the 486-PMID curated pool, which contains every gold study by construction:
+# v3-search-all_pmids-multi_analysis-ft screened 1065 unique studies (query 1024 + pool 486, minus
+# 445 overlapping). The injected pool lifted its gold coverage from 0.952 -- what the query reaches
+# on its own, 219/230 -- to 1.000, handing it 11 gold studies its search would have missed. The
+# bias is modest but real: a search arm that cannot fail to retrieve gold overstates recall, and no
+# social run measured search in isolation. This file is that measurement.
+#
+# v2 is not a substitute either: it lacks study_fulltext in annotation metadata_fields. Two things
+# that are NOT differences, contrary to an earlier note here: prompt_type unset defaults to
+# multi_analysis, and include_all_analyses is the deprecated spelling of
+# create_all_included_annotations, which defaults to true.
+#
+# The query is taken verbatim from v3-search-all_pmids-multi_analysis-ft, the run the
+# cross-project overrides previously pointed at.
+
 search:
   database: "pubmed"
-  pmids_file: "/home/zorro/repos/autonima-results/projects/social/validation_ids/all_pmids.txt"
+  query: "( ('functional MRI'[Title/Abstract] OR 'functional magnetic resonance imaging'[Title/Abstract] OR 'fMRI'[Title/Abstract] ) AND ( 'social communication'[Title/Abstract] OR 'social processing'[Title/Abstract] OR 'social interaction'[Title/Abstract] OR 'affiliation'[Title/Abstract] OR 'social attachment'[Title/Abstract] OR 'social cognition'[Title/Abstract] OR 'understanding others'[Title/Abstract] ) AND 'Humans'[MeSH])"
+  date_from: "1995/01/01"
+  date_to: "2020/03/01"
+  max_results: 5000
+  email: "delavega@utexas.edu"
 
 retrieval:
   load_excluded: true
   sources:
     - pubget
   full_text_sources:
-    # - root_path: "/data/alejandro/projects/ns-pond/data"
-    #   pmid_source: "json"
-    #   text_path_templates:
-    #     - 'processed/pubget/text.txt'
-    #     - 'processed/ace/text.txt'
-    #   json_filename: "identifiers.json"
-    #   json_pmid_key: "pmid"
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
     - root_path: "/home/zorro/repos/autonima-results/articles/ace_outputs/"
       pmid_source: "file_name"
       allowed_extensions: [".html"]
@@ -26,7 +54,7 @@ screening:
     objective: "Identify fMRI studies of social related processing in healthy adults"
     inclusion_criteria:
       - Functional MRI scan conducted while human participants performed a social-related task. Relevant constructs include (but are not limited to) Affiliation and Attachment, Social Communication, Perception and Understanding of Self, and Perception and Understanding of Others.
-      - At least one group of healthy participants, age 17–65, even if other groups include participants with psychiatric or neurological disorders.
+      - At least one group of healthy participants, age 18–65, even if other groups include participants with psychiatric or neurological disorders.
     exclusion_criteria:
       - systematic reviews or meta-analyses
     confidence_reporting: true
@@ -37,14 +65,14 @@ screening:
     objective: "Identify fMRI studies of social related processing in healthy adults"
     inclusion_criteria:
       - Study uses functional MRI during a social-related task. Relevant constructs include (but are not limited to)- Affiliation and Attachment, Social Communication, Perception and Understanding of Self, and Perception and Understanding of Others.
-      - Sample- At least one group of healthy adult participants (age 17–65). Studies that also include clinical or special groups are eligible only if results for the healthy group are reported separately.
-      - Whole-brain evidence- The paper must report at least one group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is clearly identified as coming from the healthy/control group and is generalizable to the healthy adult population (i.e., not limited to a narrowly defined subgroup).
+      - Sample- At least one group of healthy adult participants (age 18–65). Studies that also include clinical or special groups are eligible only if results for the healthy group are reported separately.
+      - Whole-brain evidence- The paper must report at least one group-level, whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is clearly identified as coming from the healthy/control group (i.e., not limited to a narrowly defined subgroup).
       - It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text.
     exclusion_criteria:
       - Studies that report only region-of-interest (ROI) analyses with no whole-brain results.
       - Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a healthy-group whole-brain task activation map.
       - Studies that report only between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs control) without an accompanying unmasked, whole-brain healthy-group task effect.
-      - Studies that include only participants outside the age range of 17–65, unless a healthy adult subgroup in this range is analyzed and reported separately.
+      - Studies that include only participants outside the age range of 18–65, unless a healthy adult subgroup in this range is analyzed and reported separately.
       - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data in healthy adults.
 
 parsing:
@@ -54,13 +82,15 @@ parsing:
 annotation:
   enabled: true
   model: "gpt-5-mini-2025-08-07"
-  create_all_included_annotations: true  # (was the deprecated spelling include_all_analyses)
+  create_all_included_annotations: true
   metadata_fields:
     - "analysis_name"
     - "analysis_description"
     - "table_caption"
     - "study_title"
     - "study_abstract"
+    - "study_fulltext"
+  prompt_type: "multi_analysis"
   inclusion_criteria:
     - Sample- The analysis must be on a healthy adult participants (alone, not a clinical or special group, or a comparison between healthy and clinical/special groups).
     - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast) that is from the healthy/control group and is generalizable to the healthy adult population.
@@ -99,3 +129,4 @@ output:
   formats:
     - csv
   nimads: true
+  export_excluded_studies: true
