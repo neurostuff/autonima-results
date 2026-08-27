@@ -1,0 +1,65 @@
+{
+  "screening": {
+    "abstract": {
+      "inclusion": {},
+      "exclusion": {}
+    },
+    "fulltext": {
+      "inclusion": {},
+      "exclusion": {}
+    }
+  },
+  "annotation": {
+    "global": {
+      "inclusion": {
+        "GLOBAL_I1": "Voxelwise task evidence- this analysis must itself be a group-level, univariate, whole-brain (voxelwise) task-evoked statistical map. A study qualifying on the strength of one whole-brain analysis does not make its other analyses eligible.",
+        "GLOBAL_I2": "The contrast must be WITHIN-group, and must concern either the regulation of an emotional response or the passive unregulated viewing of emotional stimuli.",
+        "GLOBAL_I3": "Direction- either an ACTIVATION or a DEACTIVATION effect qualifies.",
+        "GLOBAL_I4": "Judge this analysis from its own name, description and table caption. An empty or generic analysis name (e.g. \"analysis_0\") is never itself a reason to exclude- it usually means the analysis is the only one in its table, so the caption describes it fully.",
+        "GLOBAL_I5": "Assign every label that applies. A regulation contrast carries TWO labels: its goal (decrease or increase) and the strategy label (reappraisal)."
+      },
+      "exclusion": {
+        "GLOBAL_E1": "This analysis is EXPLICITLY described as region-of-interest or small-volume-corrected, with no whole-brain result behind it. Do not infer an ROI analysis from a short coordinate table or from anatomically focused results- whole-brain analyses routinely report few peaks.",
+        "GLOBAL_E2": "This analysis is a connectivity or resting-state result- seed-based or effective connectivity, PPI, DCM, ICA- rather than a task activation map.",
+        "GLOBAL_E3": "This contrast is between two participant GROUPS, or a group x condition interaction, including gender and other subgroup difference effects."
+      }
+    },
+    "annotations": {
+      "reappraisal": {
+        "inclusion": {
+          "REAPPRAISAL_I1": "The contrast isolates a reappraisal regulation attempt against a less-regulated or unregulated comparison- typical forms are reappraise > look, reappraise > view, reappraise > watch, reappraise > maintain, decrease > look, or increase > maintain.",
+          "REAPPRAISAL_I2": "Either regulation goal qualifies, since this label is the union of decrease and increase. Assign it IN ADDITION to the goal label, never instead of it."
+        },
+        "exclusion": {
+          "REAPPRAISAL_E1": "Passive viewing contrasts with no regulation instruction."
+        }
+      },
+      "decrease": {
+        "inclusion": {
+          "DECREASE_I1": "The contrast's regulation goal is to reduce or dampen the emotional response- e.g. decrease > look, decrease > maintain, downregulate > view, \"distance oneself\"."
+        },
+        "exclusion": {
+          "DECREASE_E1": "Contrasts whose ONLY stated goal is to amplify emotion. "
+        }
+      },
+      "increase": {
+        "inclusion": {
+          "INCREASE_I1": "The contrast's regulation goal is explicitly to amplify or intensify the emotional response- e.g. increase > maintain, increase > look, increase > view, upregulate > watch, \"feel the emotion more intensely\".",
+          "INCREASE_I2": "Up-regulation must be stated or clearly implied by the condition name."
+        },
+        "exclusion": {
+          "INCREASE_E1": "Contrasts whose only stated goal is to dampen emotion."
+        }
+      },
+      "maintain": {
+        "inclusion": {
+          "MAINTAIN_I1": "The contrast reflects viewing emotional stimuli under NO regulation instruction- e.g. emotion > baseline, look negative > baseline, view emotional > neutral, watch negative > watch neutral, react > baseline, attend > rest.",
+          "MAINTAIN_I2": "Expect to find this INSIDE regulation studies. Almost every study in this benchmark is a reappraisal experiment, and its Look/Watch/React condition is the control arm of that same experiment. That the paper is about regulation is NOT a reason to withhold this label from its unregulated condition- judge the contrast, not the study."
+        },
+        "exclusion": {
+          "MAINTAIN_E1": "Contrasts in which THIS contrast's active condition involves a regulation attempt. `maintain` is mutually exclusive with the other three labels at the level of the contrast, not the study."
+        }
+      }
+    }
+  }
+}
