@@ -1093,27 +1093,41 @@ pre-fix criteria while `v4-annotation-only` carries the multi-label fix. And tun
 always help. Naming the preferred run explicitly removes both traps, and `verbatim` → `best` then
 measures directly what peeking was worth.
 
-**`best` differs from `latest` in exactly two places, and both are the same finding:**
+**Selection rule for canonical runs: prefer recall over F1.** Four families had a run that led on
+recall and a different run that led on F1. All four were resolved toward recall, on the grounds
+that with a mixed pool *it is not knowable why precision fell*. A screened-out "false positive"
+may be a perfectly good study that the source meta-analysis never had the chance to reject —
+demonstrably so for executive_function, whose benchmark was assembled from BrainMap, and for
+decision_making, which drew on Google Scholar and Web of Science as well as PubMed. Precision
+against such a benchmark is bounded by the benchmark's own coverage and is therefore a floor
+rather than a measurement. Recall carries no equivalent ambiguity: a study the pipeline never
+retrieved is unrecoverable by every downstream stage. The rule also matches how the output is
+used — a meta-analytic pool tolerates a few extra studies far better than a few missing ones.
 
-    executive_function / canonical         best v1                 latest v3
-    executive_function / annotation_only   best v1-annotation-only latest v3-annotation-only
+| family | recall pick | F1 pick | resolved |
+|---|---|---|---|
+| emotion_regulation_2022 / canonical | v4 (0.659) | v2 (0.492) | **v4** |
+| emotion_regulation_2022 / allstudies | v4 (0.602) | v2 (0.519) | **v4-allstudies** |
+| executive_function / canonical | v2, v3 (0.386) | v1 (0.163) | **v3** |
+| vbm_of_substance_use / canonical | v2 (0.797) | v1 (0.585) | **v2** |
 
-In executive_function the honest v1 still beats every tuned successor — fair dice 0.566 against
-v3's 0.556, and screening F1 0.163 against v2's 0.152 and v3's 0.151. Social is nearly the same
-story: its v1-annotation-only leads on fair dice (0.570 vs v4's 0.550), and `best` names v4 there
-only because v4 carries the multi-label fix that the corpus-wide annotation analysis depends on.
-Both are flagged CONTESTED in the registry.
+This rule is stated in `scripts/run_tiers.py` and each entry's `best-reason` records the tradeoff
+it accepted, so the cost of the convention stays visible rather than being absorbed into a number.
 
-**This is a result, not bookkeeping.** Two of the corpus's nine projects cannot be improved on
-their honest first attempt by any amount of benchmark-informed iteration — and both are cognitive
+**Where the honest first attempt still wins.** With the canonical families resolved on recall,
+`best` and `latest` now diverge in one place — executive_function / annotation_only, where v1
+leads on fair dice (0.566 vs v3's 0.556). Social is the same story one notch weaker: its
+v1-annotation-only leads (0.570 vs v4's 0.550), and `best` names v4 there only because v4 carries
+the multi-label fix the corpus-wide annotation analysis depends on, which makes v1's edge
+non-comparable rather than real.
+
+**This is a result, not bookkeeping.** In two of the corpus's nine projects, benchmark-informed
+iteration failed to improve on the honest first attempt at the map level — and both are cognitive
 rather than clinical targets (executive function, social processes), the same two that resist
-search targeting. Report `verbatim` → `best` per project rather than as a corpus mean, because
-the mean would hide that two of nine are zero or negative.
-
-Four entries are flagged CONTESTED where recall and F1 disagree about which run is preferable:
-emotion_regulation_2022 canonical and allstudies, executive_function canonical,
-vbm_of_substance_use canonical. Each names the tradeoff in its `best-reason` field. These are
-judgement calls and should be reviewed before the tier is used for a headline number.
+search targeting. Note the asymmetry that the recall rule exposes: in executive_function, peeking
+*did* buy better retrieval (recall 0.322 → 0.386) while buying nothing at the map level. Whatever
+limits these two projects binds after the studies are in hand. Report `verbatim` → `best` per
+project rather than as a corpus mean, because the mean would hide that two of nine are flat.
 
 ### Tracked, not yet done
 

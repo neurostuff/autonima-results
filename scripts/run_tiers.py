@@ -10,6 +10,13 @@ conflates three different things, which matters for the overfitting argument:
     best      THE PREFERRED CONFIG. Curated, not derived: the run we would put forward as the
               system's best showing, with benchmark-informed tuning fully allowed. Usually the
               highest performer; not necessarily the highest version number.
+
+              Selection rule for CANONICAL (search-driven) runs: prefer RECALL over F1. With a
+              mixed pool it is not knowable why precision fell -- a "false positive" may be a
+              perfectly good paper the source meta-analysis never screened, which is demonstrably
+              the case for executive_function (its benchmark searched BrainMap) and
+              decision_making (Google Scholar and Web of Science too). Recall has no such
+              ambiguity: a paper the pipeline never retrieved is unrecoverable downstream.
     latest    absolute highest version number. Mechanical, kept as a sanity check and as the
               fallback when `best` is unset.
 

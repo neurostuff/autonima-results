@@ -1,16 +1,19 @@
 {
   "cache_plan": {
-    "changed_stages": [],
-    "copyable_stages": [],
-    "has_cache_artifacts": false,
-    "has_previous_execution": false,
-    "recompute_stages": [
+    "changed_stages": [
+      "parsing"
+    ],
+    "copyable_stages": [
       "search",
-      "abstract",
       "retrieval",
+      "annotation"
+    ],
+    "has_cache_artifacts": true,
+    "has_previous_execution": true,
+    "recompute_stages": [
+      "abstract",
       "fulltext",
       "parsing",
-      "annotation",
       "output"
     ],
     "schema_version": 2,
@@ -20,7 +23,7 @@
       "annotation": "69f62c9df02e99f7ec4235440c840fa57d5a8ade66e1faad80b9cf5505e2f20a",
       "fulltext": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
       "output": "01db0764bb6a09431d6820b79a387af28c5c1a26dd1a103442bfed6872f243cd",
-      "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
+      "parsing": "81bd97d4018e3fe797b807f7a162ff0e9ee86c36d85ed712b6f61db0b0ecbe0c",
       "retrieval": "e8e4209dc52ea67cb50d20222456e5696de9a9546350a884f25b5960de5eacbd",
       "search": "ee9bd697aa07438c8d88216a0244ab999594163173322fedc3d55d828c805012"
     },
@@ -34,12 +37,12 @@
         "reason": "no cache artifact is available"
       },
       "annotation": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "recompute",
@@ -54,59 +57,86 @@
         "artifact_is_modern": false,
         "config_changed": false,
         "copy_artifact": false,
-        "has_artifact": false,
+        "has_artifact": true,
         "reason": "derived outputs are regenerated"
       },
       "parsing": {
         "action": "recompute",
-        "artifact_is_modern": false,
-        "config_changed": false,
+        "artifact_is_modern": true,
+        "config_changed": true,
         "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "has_artifact": true,
+        "reason": "parsing configuration changed"
       },
       "retrieval": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "retrieval cache is valid and missing texts will be fetched"
       },
       "search": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "metadata cache is valid and new PMIDs will be fetched"
       }
     },
     "unsupported_cache": false,
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [],
-  "completed_at": "2026-08-20T22:53:45.712351+00:00",
+  "changed_stages": [
+    "parsing"
+  ],
+  "completed_at": "2026-08-26T03:54:09.646322+00:00",
   "completed_stage": "full",
-  "config_hash": "b55d58eb341d6e0d32fe3c9299e64ab16bbf94fcbcf613ca7decd1b092583b68",
+  "config_hash": "c12ad9a0243b620667cd2d1f5613c10be83f737f1693582508a49d3849da39de",
   "copied_cache": [],
-  "created_at": "2026-08-20T22:50:52.990649+00:00",
+  "created_at": "2026-08-26T03:54:04.366726+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/vbm_of_substance_use/baselines/alcohol/outputs/config.executed.yaml",
-  "execution_id": "a1facf2d-da6e-4de2-b768-db276c2c53d5",
-  "invalidated": [],
-  "parent_execution_id": null,
+  "execution_id": "9be93921-6722-4f3b-a86d-056215e5a925",
+  "invalidated": [
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/vbm_of_substance_use/baselines/alcohol/outputs/coordinate_parsing_results.json",
+      "stage": "parsing"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/vbm_of_substance_use/baselines/alcohol/outputs/final_results.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/vbm_of_substance_use/baselines/alcohol/outputs/nimads_studyset.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/vbm_of_substance_use/baselines/alcohol/outputs/nimads_annotation.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/vbm_of_substance_use/baselines/alcohol/outputs/missing_fulltexts.csv",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/vbm_of_substance_use/baselines/alcohol/outputs/missing_fulltexts.txt",
+      "stage": "output"
+    }
+  ],
+  "parent_execution_id": "a1facf2d-da6e-4de2-b768-db276c2c53d5",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
     "annotation": "69f62c9df02e99f7ec4235440c840fa57d5a8ade66e1faad80b9cf5505e2f20a",
     "fulltext": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
     "output": "01db0764bb6a09431d6820b79a387af28c5c1a26dd1a103442bfed6872f243cd",
-    "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
+    "parsing": "81bd97d4018e3fe797b807f7a162ff0e9ee86c36d85ed712b6f61db0b0ecbe0c",
     "retrieval": "e8e4209dc52ea67cb50d20222456e5696de9a9546350a884f25b5960de5eacbd",
     "search": "ee9bd697aa07438c8d88216a0244ab999594163173322fedc3d55d828c805012"
   },
-  "started_at": "2026-08-20T22:50:52.990660+00:00",
+  "started_at": "2026-08-26T03:54:04.366740+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

@@ -1,0 +1,279 @@
+search:
+  database: pubmed
+  query: '(((("functional magnetic resonance imaging"[Mesh] OR fMRI[tiab] OR "magnetic
+    resonance imaging"[tiab] OR "positron emission tomography"[Mesh] OR PET[tiab]))
+    AND (("executive function"[Mesh] OR "executive function*"[tiab] OR "cognitive
+    control"[tiab] OR "working memory"[Mesh] OR "working memory"[tiab] OR inhibition[tiab]
+    OR inhibitory[tiab] OR "cognitive flexibility"[tiab] OR "set shifting"[tiab] OR
+    "task switching"[tiab] OR planning[tiab] OR vigilance[tiab] OR "sustained attention"[tiab]
+    OR initiation[tiab] OR "go/no-go"[tiab] OR "go no go"[tiab] OR "stop signal"[tiab]
+    OR stroop[tiab] OR "n-back"[tiab] OR "tower of london"[tiab] OR "tower of hanoi"[tiab]
+    OR "wisconsin card sorting"[tiab] OR "continuous performance task"[tiab]))) AND
+    Humans[mh] AND English[lang]) NOT (review[pt] OR "systematic review"[tiab] OR
+    meta-analysis[pt]))
+
+    '
+  max_results: 20000
+  date_from: 1988/01/01
+  date_to: 2008/12/31
+  email: aid338@eid.utexas.edu
+  pmids_file: null
+  pmids_list: null
+screening:
+  abstract:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Meta-analysis of executive function task activations in healthy adults
+    inclusion_criteria:
+    - English-language peer-reviewed neuroimaging studies
+    - Healthy human participants
+    - Functional MRI (fMRI) or positron emission tomography (PET) studies
+    - Studies examining executive function or cognitive control tasks
+    exclusion_criteria:
+    - Non-human studies
+    - Non-English studies
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I1: English-language peer-reviewed neuroimaging studies
+        I2: Healthy human participants
+        I3: Functional MRI (fMRI) or positron emission tomography (PET) studies
+        I4: Studies examining executive function or cognitive control tasks
+      exclusion:
+        E1: Non-human studies
+        E2: Non-English studies
+  fulltext:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Meta-analysis of executive function task activations, pooled across
+      participant groups
+    inclusion_criteria:
+    - Functional MRI (fMRI) or positron emission tomography (PET) study assessing
+      executive function or cognitive control using a task-based paradigm
+    - Tasks must fall within established executive function domains (working memory,
+      inhibition, cognitive flexibility, planning, vigilance, initiation)
+    - Whole-brain evidence- at least one analysis must be a group-level, voxelwise
+      task-evoked statistical map. Partial-brain acquisition (e.g. limited slice coverage)
+      still qualifies, so long as the analysis was voxelwise rather than confined
+      to a priori regions.
+    - At least one analysis must be a WITHIN-GROUP task contrast. The comparison condition
+      may be an active control task, or an implicit baseline, rest or fixation- a
+      main effect of task against implicit baseline qualifies.
+    - Any participant group qualifies, including clinical samples (e.g. schizophrenia,
+      depression) and developmental samples (e.g. adolescents), provided a within-group
+      task contrast is reported for at least one group. Do not exclude a study because
+      of who its participants were, or because it does not state their ages.
+    - It is acceptable for qualifying whole-brain results to be reported in tables
+      of coordinates, figures, or supplementary materials, as long as they are clearly
+      described in the text.
+    exclusion_criteria:
+    - Studies that report only region-of-interest (ROI) or small-volume-corrected
+      analyses with no voxelwise results.
+    - Studies that report only connectivity analyses (e.g., functional connectivity,
+      PPI, DCM) or resting-state analyses without also reporting a task activation
+      map.
+    - Studies that report ONLY between-group contrasts (e.g., patient vs control,
+      adults vs adolescents) or group x condition interactions, with no within-group
+      task activation contrast for any group. Note this is about the contrast, not
+      the sample- a within-group contrast computed in a patient or adolescent sample
+      qualifies.
+    - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+      without original human neuroimaging data.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I5: Functional MRI (fMRI) or positron emission tomography (PET) study assessing
+          executive function or cognitive control using a task-based paradigm
+        I6: Tasks must fall within established executive function domains (working
+          memory, inhibition, cognitive flexibility, planning, vigilance, initiation)
+        I7: Whole-brain evidence- at least one analysis must be a group-level, voxelwise
+          task-evoked statistical map. Partial-brain acquisition (e.g. limited slice
+          coverage) still qualifies, so long as the analysis was voxelwise rather
+          than confined to a priori regions.
+        I8: At least one analysis must be a WITHIN-GROUP task contrast. The comparison
+          condition may be an active control task, or an implicit baseline, rest or
+          fixation- a main effect of task against implicit baseline qualifies.
+        I9: Any participant group qualifies, including clinical samples (e.g. schizophrenia,
+          depression) and developmental samples (e.g. adolescents), provided a within-group
+          task contrast is reported for at least one group. Do not exclude a study
+          because of who its participants were, or because it does not state their
+          ages.
+        I10: It is acceptable for qualifying whole-brain results to be reported in
+          tables of coordinates, figures, or supplementary materials, as long as they
+          are clearly described in the text.
+      exclusion:
+        E3: Studies that report only region-of-interest (ROI) or small-volume-corrected
+          analyses with no voxelwise results.
+        E4: Studies that report only connectivity analyses (e.g., functional connectivity,
+          PPI, DCM) or resting-state analyses without also reporting a task activation
+          map.
+        E5: Studies that report ONLY between-group contrasts (e.g., patient vs control,
+          adults vs adolescents) or group x condition interactions, with no within-group
+          task activation contrast for any group. Note this is about the contrast,
+          not the sample- a within-group contrast computed in a patient or adolescent
+          sample qualifies.
+        E6: Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+          without original human neuroimaging data.
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output/
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed/
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: gpt-5-mini-2025-08-07
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria:
+  - Scope- You are judging ONE analysis, not the paper. The study text is provided
+    only to interpret this analysis. That the paper elsewhere reports a qualifying
+    contrast is not by itself a reason to include this analysis.
+  - How to read the analysis- Judge it from its name, its description and its table
+    caption together. An empty or uninformative analysis name (e.g. "analysis_0")
+    usually means the analysis is the only one in its table, in which case the caption
+    describes it fully and you should judge from the caption. A blank name is never
+    itself a reason to exclude.
+  - The analysis must be a within-group, group-level, whole-brain (voxelwise) task
+    activation contrast.
+  - Sample- Any participant group qualifies, including clinical samples (e.g. schizophrenia,
+    depression) and developmental samples (e.g. adolescents), so long as the contrast
+    is computed WITHIN a group rather than between groups. Do not exclude an analysis
+    because of who the participants were.
+  - Baseline- The comparison condition may be an active control task, or an implicit
+    baseline, rest or fixation. A main effect of task against implicit baseline qualifies.
+    Do not require an active control condition.
+  - Response mode- The task may require an overt behavioral response (e.g. a button
+    press) or a covert one (e.g. silent naming or counting). Do not require an overt
+    response.
+  exclusion_criteria:
+  - 'Group-comparison contrasts- an analysis whose contrast is between two participant
+    groups (e.g. patients vs controls, adults vs adolescents) or a group x condition
+    interaction. Note this is about the CONTRAST, not the sample: a within-group contrast
+    computed in a patient or adolescent sample is eligible.'
+  - Region-of-interest (ROI) or small-volume-corrected (SVC) analyses
+  - Connectivity or resting-state analyses (functional connectivity, PPI, DCM, ICA)
+  - The analysis does not reflect an executive function task contrast at all (e.g.
+    a motor or sensory localiser, a physiological or artefact regressor, or a purely
+    structural result).
+  annotations:
+  - name: pooled_executive_function
+    description: Executive function task activation pooled across all six domains
+      (flexibility, inhibition, working memory, initiation, planning, vigilance).
+    inclusion_criteria:
+    - 'The task belongs to any of the six executive function domains: flexibility,
+      inhibition, working memory, initiation, planning, or vigilance'
+    - The contrast reflects the executive demand of that task (this includes a main
+      effect of the task against implicit baseline, not only task-versus-active-control
+      contrasts)
+    exclusion_criteria: []
+  - name: working_memory
+    description: Maintain information, context, or temporal/spatial relationships
+      online and manipulate or use that information to guide response selection.
+    inclusion_criteria:
+    - 'Task is a WORKING MEMORY paradigm: n-back, AX-CPT, Sternberg task, delayed
+      match-to-sample, spatial span or sequence recall, or complex calculation/PASAT'
+    - The contrast reflects memory load, maintenance or manipulation (e.g. 2-back
+      > 0-back, high load > low load, main effect of delay, a linear regression on
+      load, or an encoding or retrieval main effect)
+    exclusion_criteria:
+    - 'The contrast being annotated isolates a different executive function domain
+      (e.g., Go/No-Go, Stroop, task switching, Tower tasks, word generation, oddball).
+      Other tasks reported elsewhere in the same paper are irrelevant: judge only
+      the contrast described by this analysis.'
+  - name: inhibition
+    description: Inhibit a prepotent response in order to make a correct but less
+      common response.
+    inclusion_criteria:
+    - 'Task is an INHIBITION paradigm: Go/No-Go, Stroop, Flanker, Simon task, or antisaccade'
+    - The contrast reflects the inhibitory demand (e.g. No-Go > Go, incongruent >
+      congruent, antisaccade > prosaccade, or a No-Go or Stroop main effect against
+      implicit baseline)
+    exclusion_criteria:
+    - 'The contrast being annotated isolates a different executive function domain
+      (e.g., n-back, Sternberg, task switching, Tower tasks, word generation, oddball).
+      Other tasks reported elsewhere in the same paper are irrelevant: judge only
+      the contrast described by this analysis.'
+  - name: cognitive_flexibility
+    description: Switch from one task or rule to another.
+    inclusion_criteria:
+    - 'Task is a FLEXIBILITY paradigm: task switching or the Wisconsin Card Sorting
+      Test'
+    - The contrast reflects the switching demand (e.g. switch trials > repeat trials,
+      set-shifting > maintenance, or a switching main effect)
+    exclusion_criteria:
+    - 'The contrast being annotated isolates a different executive function domain
+      (e.g., n-back, Go/No-Go, Stroop, Tower tasks, word generation, oddball). Other
+      tasks reported elsewhere in the same paper are irrelevant: judge only the contrast
+      described by this analysis.'
+  - name: planning
+    description: Identify and organize the steps and elements needed to carry out
+      an intention or achieve a goal.
+    inclusion_criteria:
+    - 'Task is a PLANNING paradigm: Tower Maze test, Tower of London, or Tower of
+      Hanoi'
+    - The contrast reflects planning demand (e.g. high-move > low-move planning problems,
+      or a planning main effect)
+    exclusion_criteria:
+    - 'The contrast being annotated isolates a different executive function domain
+      (e.g., n-back, Go/No-Go, Stroop, task switching, word generation, oddball).
+      Other tasks reported elsewhere in the same paper are irrelevant: judge only
+      the contrast described by this analysis.'
+  - name: vigilance
+    description: Maintaining set in the face of interference.
+    inclusion_criteria:
+    - 'Task is a VIGILANCE paradigm: oddball discrimination, or an equivalent task
+      requiring set maintenance while resisting interference'
+    - The contrast reflects the demand to maintain set (e.g. target > standard stimuli,
+      or a target-detection main effect)
+    exclusion_criteria:
+    - 'The contrast being annotated isolates a different executive function domain
+      (e.g., n-back, Go/No-Go, Stroop, task switching, Tower tasks, word generation).
+      Other tasks reported elsewhere in the same paper are irrelevant: judge only
+      the contrast described by this analysis.'
+  - name: initiation
+    description: Initiate a sequence of complex behaviors.
+    inclusion_criteria:
+    - 'Task is an INITIATION paradigm: word generation or verbal fluency'
+    - The contrast reflects self-initiated generation (e.g. word generation > word
+      repetition, or a generation main effect). Covert or silent generation qualifies.
+    exclusion_criteria:
+    - 'The contrast being annotated isolates a different executive function domain
+      (e.g., n-back, Go/No-Go, Stroop, task switching, Tower tasks, oddball). Other
+      tasks reported elsewhere in the same paper are irrelevant: judge only the contrast
+      described by this analysis.'
+  enabled: true
+output:
+  directory: projects/executive_function/v3
+  prisma_diagram: true
+  formats:
+  - csv
+  - json
+  nimads: true
+  export_excluded_studies: true
