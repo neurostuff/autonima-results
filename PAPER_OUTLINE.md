@@ -1051,6 +1051,22 @@ window and can be ignored.
   the fix belongs either in the parser (name analyses from their caption when the label is
   empty) or in autonima's base annotation prompt. Worth doing before the next schema is written.
 
+- **ER needs a v3 screening spec that deviates from the paper to gain recall.** v1 and v2 are
+  faithful transcriptions, and faithfulness is costing recall: criterion (4) restricts to static
+  pictures, yet 7 of the paper's own 90 included studies use film. A v3 that deliberately departs
+  from the stated criteria — admitting film and other non-static visual stimuli, and relaxing
+  whatever else the realized inclusions contradict — would test whether recall can be bought
+  without a precision collapse. Note this is a *different* v3 from the archived one, which failed
+  by being MORE restrictive (its I11 change scored missing coordinates in our retrieved text as
+  ineligibility). Numbering will need care.
+
+- **ER's baseline and pipeline arms are not currently comparable.** The broad baseline query
+  reaches 81 of 88 gold studies (0.920) from 2,909 hits; the project's own search pool holds only
+  56 of 88 (0.636). The baseline would search a corpus with a third more gold in it than the
+  pipeline ever sees, so an end-to-end margin computed today would measure a difference between
+  two searches rather than the value of screening and annotation. Blocked on the plain `vN.yaml`
+  item above.
+
 - **Three naming-convention violations remain**, all pre-existing: executive_function/v1 (its
   `v1-annotation-only` annotation differs from `v1`'s), social/v2, social/v3.
 - **cue_reactivity manual-download backlog** for the widened `load_excluded` arm; its numbers stay
