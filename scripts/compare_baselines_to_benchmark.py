@@ -188,6 +188,17 @@ def main() -> int:
     mapping = json.loads(mapping_path.read_text(encoding="utf-8")) if mapping_path.exists() else {}
     auto_col_for = (mapping.get("annotation_mappings") or {})
 
+    if not keys:
+        # Broad-control-only project: every arm is a control, so the loop above finds nothing.
+        # The manual annotations still need scoring -- autonima against the broad baseline --
+        # so fall back to the mapping's keys. baseline_sub will be reported MISSING for each,
+        # which is correct: no per-sub-annotation arm exists to compare against.
+        #
+        # This is the right shape for a project whose sub-annotations are not separable search
+        # topics (emotion_regulation_2022's decrease/increase/maintain/reappraisal are contrast
+        # directions within one paradigm), where narrowed arms would be near-identical queries.
+        keys = list(auto_col_for.keys())
+
     # --autonima-run wins; otherwise take the registered run for --tier, and only fall back to
     # "highest vN" when this project/family has no entry for that tier. The fallback is
     # deliberate: only three families support a full three-way contrast, so a hard failure here

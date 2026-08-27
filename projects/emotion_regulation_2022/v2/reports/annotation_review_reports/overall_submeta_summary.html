@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overall Sub-Meta-Analysis Summary</title>
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --panel: #ffffff;
+      --ink: #1d2730;
+      --line: #d8dde3;
+    }
+    body { margin: 0; padding: 1.25rem; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header, section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem; vertical-align: top; text-align: left; }
+    th { background: #edf2f5; }
+    .metric-bars { min-width: 250px; }
+    .metric-row { display: grid; grid-template-columns: 22px 1fr 46px; gap: 0.35rem; align-items: center; margin-bottom: 0.2rem; }
+    .metric-label { font-weight: 600; font-size: 0.82rem; }
+    .metric-val { font-size: 0.82rem; text-align: right; }
+    .bar { height: 0.55rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }
+    .fill { height: 100%; }
+    .fill-p { background: #3b82f6; }
+    .fill-r { background: #16a34a; }
+    .fill-f1 { background: #f59e0b; }
+    .confusion-plot { min-width: 220px; }
+    .stack-bar { width: 100%; height: 0.78rem; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fbfcfe; }
+    .seg { display: inline-block; height: 100%; }
+    .seg-tp { background: #16a34a; }
+    .seg-fp { background: #dc2626; }
+    .seg-fn { background: #ea580c; }
+    .seg-tn { background: #64748b; }
+    .legend { margin-top: 0.25rem; font-size: 0.77rem; color: #435164; display: flex; gap: 0.55rem; }
+    .lg::before { content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.2rem; border-radius: 50%; vertical-align: -1px; }
+    .lg-tp::before { background: #16a34a; }
+    .lg-fp::before { background: #dc2626; }
+    .lg-fn::before { background: #ea580c; }
+    .lg-tn::before { background: #64748b; }
+    .confusion-plot.empty { font-size: 0.82rem; color: #5a6878; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Overall Sub-Meta-Analysis Summary</h1>
+    <p>Metrics are shown for STRICT (accepted only) and COMBINED (accepted + uncertain) evaluations.</p>
+    <p>Analysis-level sections report both matched-only baseline metrics and exhausted-manual-assumption metrics.</p>
+  </section>
+  
+  <section>
+    <h2>ACCEPTED (strict) Aggregates</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aggregate</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Macro (mean over annotations)</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0.982</td>
+            <td>0.947</td>
+            <td>0.964</td>
+            <td>0.952</td>
+          </tr>
+          <tr>
+            <td>Micro (pooled confusion)</td>
+            <td>69</td>
+            <td>1</td>
+            <td>4</td>
+            <td>30</td>
+            <td>0.986</td>
+            <td>0.945</td>
+            <td>0.965</td>
+            <td>0.952</td>
+          </tr>
+          <tr>
+            <td>Matched-only analyses micro (pooled confusion)</td>
+            <td>74</td>
+            <td>15</td>
+            <td>26</td>
+            <td>121</td>
+            <td>0.831</td>
+            <td>0.740</td>
+            <td>0.783</td>
+            <td>0.826</td>
+          </tr>
+          <tr>
+            <td>Exhausted-manual assumption analyses micro (pooled confusion; activated_pmids=52, added_assumed_negative=324)</td>
+            <td>74</td>
+            <td>81</td>
+            <td>26</td>
+            <td>379</td>
+            <td>0.477</td>
+            <td>0.740</td>
+            <td>0.580</td>
+            <td>0.809</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>ACCEPTED (strict) Per-Annotation Study-Level Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Auto PMID Universe</th>
+            <th>Manual Studies+</th>
+            <th>Predicted Studies+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="decrease.html">decrease</a></td><td>26</td><td>26</td><td>25</td><td>25</td><td>0</td><td>1</td><td>0</td><td>1.000</td><td>0.962</td><td>0.980</td><td>0.962</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:96.2%"></div></div><span class="metric-val">0.962</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:98.0%"></div></div><span class="metric-val">0.980</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:96.154%" title="TP=25"></span><span class="seg seg-fp" style="width:0.000%" title="FP=0"></span><span class="seg seg-fn" style="width:3.846%" title="FN=1"></span><span class="seg seg-tn" style="width:0.000%" title="TN=0"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="increase.html">increase</a></td><td>26</td><td>6</td><td>6</td><td>6</td><td>0</td><td>0</td><td>20</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:23.077%" title="TP=6"></span><span class="seg seg-fp" style="width:0.000%" title="FP=0"></span><span class="seg seg-fn" style="width:0.000%" title="FN=0"></span><span class="seg seg-tn" style="width:76.923%" title="TN=20"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="maintain.html">maintain</a></td><td>26</td><td>15</td><td>14</td><td>13</td><td>1</td><td>2</td><td>10</td><td>0.929</td><td>0.867</td><td>0.897</td><td>0.885</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:92.9%"></div></div><span class="metric-val">0.929</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:86.7%"></div></div><span class="metric-val">0.867</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:89.7%"></div></div><span class="metric-val">0.897</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:50.000%" title="TP=13"></span><span class="seg seg-fp" style="width:3.846%" title="FP=1"></span><span class="seg seg-fn" style="width:7.692%" title="FN=2"></span><span class="seg seg-tn" style="width:38.462%" title="TN=10"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>26</td><td>26</td><td>25</td><td>25</td><td>0</td><td>1</td><td>0</td><td>1.000</td><td>0.962</td><td>0.980</td><td>0.962</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:96.2%"></div></div><span class="metric-val">0.962</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:98.0%"></div></div><span class="metric-val">0.980</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:96.154%" title="TP=25"></span><span class="seg seg-fp" style="width:0.000%" title="FP=0"></span><span class="seg seg-fn" style="width:3.846%" title="FN=1"></span><span class="seg seg-tn" style="width:0.000%" title="TN=0"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>ACCEPTED (strict) Per-Annotation Matched-Only Analysis Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Matched Manual Universe</th>
+            <th>Manual Accepted+</th>
+            <th>Predicted+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="decrease.html">decrease</a></td><td>59</td><td>35</td><td>35</td><td>28</td><td>7</td><td>7</td><td>17</td><td>0.800</td><td>0.800</td><td>0.800</td><td>0.763</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:80.0%"></div></div><span class="metric-val">0.800</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:80.0%"></div></div><span class="metric-val">0.800</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:80.0%"></div></div><span class="metric-val">0.800</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:47.458%" title="TP=28"></span><span class="seg seg-fp" style="width:11.864%" title="FP=7"></span><span class="seg seg-fn" style="width:11.864%" title="FN=7"></span><span class="seg seg-tn" style="width:28.814%" title="TN=17"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="increase.html">increase</a></td><td>59</td><td>6</td><td>6</td><td>5</td><td>1</td><td>1</td><td>52</td><td>0.833</td><td>0.833</td><td>0.833</td><td>0.966</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:83.3%"></div></div><span class="metric-val">0.833</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:83.3%"></div></div><span class="metric-val">0.833</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:83.3%"></div></div><span class="metric-val">0.833</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:8.475%" title="TP=5"></span><span class="seg seg-fp" style="width:1.695%" title="FP=1"></span><span class="seg seg-fn" style="width:1.695%" title="FN=1"></span><span class="seg seg-tn" style="width:88.136%" title="TN=52"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="maintain.html">maintain</a></td><td>59</td><td>18</td><td>8</td><td>8</td><td>0</td><td>10</td><td>41</td><td>1.000</td><td>0.444</td><td>0.615</td><td>0.831</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:44.4%"></div></div><span class="metric-val">0.444</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:61.5%"></div></div><span class="metric-val">0.615</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:13.559%" title="TP=8"></span><span class="seg seg-fp" style="width:0.000%" title="FP=0"></span><span class="seg seg-fn" style="width:16.949%" title="FN=10"></span><span class="seg seg-tn" style="width:69.492%" title="TN=41"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>59</td><td>41</td><td>40</td><td>33</td><td>7</td><td>8</td><td>11</td><td>0.825</td><td>0.805</td><td>0.815</td><td>0.746</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:82.5%"></div></div><span class="metric-val">0.825</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:80.5%"></div></div><span class="metric-val">0.805</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:81.5%"></div></div><span class="metric-val">0.815</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:55.932%" title="TP=33"></span><span class="seg seg-fp" style="width:11.864%" title="FP=7"></span><span class="seg seg-fn" style="width:13.559%" title="FN=8"></span><span class="seg seg-tn" style="width:18.644%" title="TN=11"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>ACCEPTED (strict) Per-Annotation Exhausted-Manual-Assumption Analysis Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Expanded Analysis Universe</th>
+            <th>Manual Accepted+</th>
+            <th>Predicted+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>Activated PMIDs</th>
+            <th>Added Assumed Negatives</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="decrease.html">decrease</a></td><td>140</td><td>35</td><td>61</td><td>28</td><td>33</td><td>7</td><td>72</td><td>0.459</td><td>0.800</td><td>0.583</td><td>0.714</td><td>13</td><td>81</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:45.9%"></div></div><span class="metric-val">0.459</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:80.0%"></div></div><span class="metric-val">0.800</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:58.3%"></div></div><span class="metric-val">0.583</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:20.000%" title="TP=28"></span><span class="seg seg-fp" style="width:23.571%" title="FP=33"></span><span class="seg seg-fn" style="width:5.000%" title="FN=7"></span><span class="seg seg-tn" style="width:51.429%" title="TN=72"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="increase.html">increase</a></td><td>140</td><td>6</td><td>12</td><td>5</td><td>7</td><td>1</td><td>127</td><td>0.417</td><td>0.833</td><td>0.556</td><td>0.943</td><td>13</td><td>81</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:41.7%"></div></div><span class="metric-val">0.417</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:83.3%"></div></div><span class="metric-val">0.833</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:55.6%"></div></div><span class="metric-val">0.556</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:3.571%" title="TP=5"></span><span class="seg seg-fp" style="width:5.000%" title="FP=7"></span><span class="seg seg-fn" style="width:0.714%" title="FN=1"></span><span class="seg seg-tn" style="width:90.714%" title="TN=127"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="maintain.html">maintain</a></td><td>140</td><td>18</td><td>19</td><td>8</td><td>11</td><td>10</td><td>111</td><td>0.421</td><td>0.444</td><td>0.432</td><td>0.850</td><td>13</td><td>81</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:42.1%"></div></div><span class="metric-val">0.421</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:44.4%"></div></div><span class="metric-val">0.444</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:43.2%"></div></div><span class="metric-val">0.432</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:5.714%" title="TP=8"></span><span class="seg seg-fp" style="width:7.857%" title="FP=11"></span><span class="seg seg-fn" style="width:7.143%" title="FN=10"></span><span class="seg seg-tn" style="width:79.286%" title="TN=111"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>140</td><td>41</td><td>63</td><td>33</td><td>30</td><td>8</td><td>69</td><td>0.524</td><td>0.805</td><td>0.635</td><td>0.729</td><td>13</td><td>81</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:52.4%"></div></div><span class="metric-val">0.524</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:80.5%"></div></div><span class="metric-val">0.805</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:63.5%"></div></div><span class="metric-val">0.635</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:23.571%" title="TP=33"></span><span class="seg seg-fp" style="width:21.429%" title="FP=30"></span><span class="seg seg-fn" style="width:5.714%" title="FN=8"></span><span class="seg seg-tn" style="width:49.286%" title="TN=69"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>COMBINED (accepted + uncertain) Aggregates</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aggregate</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Macro (mean over annotations)</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0.982</td>
+            <td>0.947</td>
+            <td>0.964</td>
+            <td>0.952</td>
+          </tr>
+          <tr>
+            <td>Micro (pooled confusion)</td>
+            <td>69</td>
+            <td>1</td>
+            <td>4</td>
+            <td>30</td>
+            <td>0.986</td>
+            <td>0.945</td>
+            <td>0.965</td>
+            <td>0.952</td>
+          </tr>
+          <tr>
+            <td>Matched-only analyses micro (pooled confusion)</td>
+            <td>84</td>
+            <td>16</td>
+            <td>26</td>
+            <td>138</td>
+            <td>0.840</td>
+            <td>0.764</td>
+            <td>0.800</td>
+            <td>0.841</td>
+          </tr>
+          <tr>
+            <td>Exhausted-manual assumption analyses micro (pooled confusion; activated_pmids=52, added_assumed_negative=324)</td>
+            <td>84</td>
+            <td>82</td>
+            <td>26</td>
+            <td>396</td>
+            <td>0.506</td>
+            <td>0.764</td>
+            <td>0.609</td>
+            <td>0.816</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>COMBINED (accepted + uncertain) Per-Annotation Study-Level Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Auto PMID Universe</th>
+            <th>Manual Studies+</th>
+            <th>Predicted Studies+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="decrease.html">decrease</a></td><td>26</td><td>26</td><td>25</td><td>25</td><td>0</td><td>1</td><td>0</td><td>1.000</td><td>0.962</td><td>0.980</td><td>0.962</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:96.2%"></div></div><span class="metric-val">0.962</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:98.0%"></div></div><span class="metric-val">0.980</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:96.154%" title="TP=25"></span><span class="seg seg-fp" style="width:0.000%" title="FP=0"></span><span class="seg seg-fn" style="width:3.846%" title="FN=1"></span><span class="seg seg-tn" style="width:0.000%" title="TN=0"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="increase.html">increase</a></td><td>26</td><td>6</td><td>6</td><td>6</td><td>0</td><td>0</td><td>20</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:23.077%" title="TP=6"></span><span class="seg seg-fp" style="width:0.000%" title="FP=0"></span><span class="seg seg-fn" style="width:0.000%" title="FN=0"></span><span class="seg seg-tn" style="width:76.923%" title="TN=20"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="maintain.html">maintain</a></td><td>26</td><td>15</td><td>14</td><td>13</td><td>1</td><td>2</td><td>10</td><td>0.929</td><td>0.867</td><td>0.897</td><td>0.885</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:92.9%"></div></div><span class="metric-val">0.929</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:86.7%"></div></div><span class="metric-val">0.867</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:89.7%"></div></div><span class="metric-val">0.897</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:50.000%" title="TP=13"></span><span class="seg seg-fp" style="width:3.846%" title="FP=1"></span><span class="seg seg-fn" style="width:7.692%" title="FN=2"></span><span class="seg seg-tn" style="width:38.462%" title="TN=10"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>26</td><td>26</td><td>25</td><td>25</td><td>0</td><td>1</td><td>0</td><td>1.000</td><td>0.962</td><td>0.980</td><td>0.962</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:96.2%"></div></div><span class="metric-val">0.962</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:98.0%"></div></div><span class="metric-val">0.980</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:96.154%" title="TP=25"></span><span class="seg seg-fp" style="width:0.000%" title="FP=0"></span><span class="seg seg-fn" style="width:3.846%" title="FN=1"></span><span class="seg seg-tn" style="width:0.000%" title="TN=0"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>COMBINED (accepted + uncertain) Per-Annotation Matched-Only Analysis Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Matched Manual Universe</th>
+            <th>Manual Accepted+</th>
+            <th>Predicted+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="decrease.html">decrease</a></td><td>66</td><td>38</td><td>39</td><td>31</td><td>8</td><td>7</td><td>20</td><td>0.795</td><td>0.816</td><td>0.805</td><td>0.773</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:79.5%"></div></div><span class="metric-val">0.795</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:81.6%"></div></div><span class="metric-val">0.816</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:80.5%"></div></div><span class="metric-val">0.805</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:46.970%" title="TP=31"></span><span class="seg seg-fp" style="width:12.121%" title="FP=8"></span><span class="seg seg-fn" style="width:10.606%" title="FN=7"></span><span class="seg seg-tn" style="width:30.303%" title="TN=20"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="increase.html">increase</a></td><td>66</td><td>6</td><td>6</td><td>5</td><td>1</td><td>1</td><td>59</td><td>0.833</td><td>0.833</td><td>0.833</td><td>0.970</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:83.3%"></div></div><span class="metric-val">0.833</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:83.3%"></div></div><span class="metric-val">0.833</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:83.3%"></div></div><span class="metric-val">0.833</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:7.576%" title="TP=5"></span><span class="seg seg-fp" style="width:1.515%" title="FP=1"></span><span class="seg seg-fn" style="width:1.515%" title="FN=1"></span><span class="seg seg-tn" style="width:89.394%" title="TN=59"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="maintain.html">maintain</a></td><td>66</td><td>21</td><td>11</td><td>11</td><td>0</td><td>10</td><td>45</td><td>1.000</td><td>0.524</td><td>0.688</td><td>0.848</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:100.0%"></div></div><span class="metric-val">1.000</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:52.4%"></div></div><span class="metric-val">0.524</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:68.8%"></div></div><span class="metric-val">0.688</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:16.667%" title="TP=11"></span><span class="seg seg-fp" style="width:0.000%" title="FP=0"></span><span class="seg seg-fn" style="width:15.152%" title="FN=10"></span><span class="seg seg-tn" style="width:68.182%" title="TN=45"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>66</td><td>45</td><td>44</td><td>37</td><td>7</td><td>8</td><td>14</td><td>0.841</td><td>0.822</td><td>0.831</td><td>0.773</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:84.1%"></div></div><span class="metric-val">0.841</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:82.2%"></div></div><span class="metric-val">0.822</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:83.1%"></div></div><span class="metric-val">0.831</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:56.061%" title="TP=37"></span><span class="seg seg-fp" style="width:10.606%" title="FP=7"></span><span class="seg seg-fn" style="width:12.121%" title="FN=8"></span><span class="seg seg-tn" style="width:21.212%" title="TN=14"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>COMBINED (accepted + uncertain) Per-Annotation Exhausted-Manual-Assumption Analysis Metrics</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Annotation</th>
+            <th>Expanded Analysis Universe</th>
+            <th>Manual Accepted+</th>
+            <th>Predicted+</th>
+            <th>TP</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>TN</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>Activated PMIDs</th>
+            <th>Added Assumed Negatives</th>
+            <th>PRF Plot</th>
+            <th>Confusion Plot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="decrease.html">decrease</a></td><td>147</td><td>38</td><td>65</td><td>31</td><td>34</td><td>7</td><td>75</td><td>0.477</td><td>0.816</td><td>0.602</td><td>0.721</td><td>13</td><td>81</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:47.7%"></div></div><span class="metric-val">0.477</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:81.6%"></div></div><span class="metric-val">0.816</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:60.2%"></div></div><span class="metric-val">0.602</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:21.088%" title="TP=31"></span><span class="seg seg-fp" style="width:23.129%" title="FP=34"></span><span class="seg seg-fn" style="width:4.762%" title="FN=7"></span><span class="seg seg-tn" style="width:51.020%" title="TN=75"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="increase.html">increase</a></td><td>147</td><td>6</td><td>12</td><td>5</td><td>7</td><td>1</td><td>134</td><td>0.417</td><td>0.833</td><td>0.556</td><td>0.946</td><td>13</td><td>81</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:41.7%"></div></div><span class="metric-val">0.417</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:83.3%"></div></div><span class="metric-val">0.833</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:55.6%"></div></div><span class="metric-val">0.556</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:3.401%" title="TP=5"></span><span class="seg seg-fp" style="width:4.762%" title="FP=7"></span><span class="seg seg-fn" style="width:0.680%" title="FN=1"></span><span class="seg seg-tn" style="width:91.156%" title="TN=134"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="maintain.html">maintain</a></td><td>147</td><td>21</td><td>22</td><td>11</td><td>11</td><td>10</td><td>115</td><td>0.500</td><td>0.524</td><td>0.512</td><td>0.857</td><td>13</td><td>81</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:50.0%"></div></div><span class="metric-val">0.500</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:52.4%"></div></div><span class="metric-val">0.524</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:51.2%"></div></div><span class="metric-val">0.512</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:7.483%" title="TP=11"></span><span class="seg seg-fp" style="width:7.483%" title="FP=11"></span><span class="seg seg-fn" style="width:6.803%" title="FN=10"></span><span class="seg seg-tn" style="width:78.231%" title="TN=115"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>147</td><td>45</td><td>67</td><td>37</td><td>30</td><td>8</td><td>72</td><td>0.552</td><td>0.822</td><td>0.661</td><td>0.741</td><td>13</td><td>81</td><td><div class="metric-bars"><div class="metric-row"><span class="metric-label">P</span><div class="bar"><div class="fill fill-p" style="width:55.2%"></div></div><span class="metric-val">0.552</span></div><div class="metric-row"><span class="metric-label">R</span><div class="bar"><div class="fill fill-r" style="width:82.2%"></div></div><span class="metric-val">0.822</span></div><div class="metric-row"><span class="metric-label">F1</span><div class="bar"><div class="fill fill-f1" style="width:66.1%"></div></div><span class="metric-val">0.661</span></div></div></td><td><div class="confusion-plot"><div class="stack-bar"><span class="seg seg-tp" style="width:25.170%" title="TP=37"></span><span class="seg seg-fp" style="width:20.408%" title="FP=30"></span><span class="seg seg-fn" style="width:5.442%" title="FN=8"></span><span class="seg seg-tn" style="width:48.980%" title="TN=72"></span></div><div class="legend"><span class="lg lg-tp">TP</span><span class="lg lg-fp">FP</span><span class="lg lg-fn">FN</span><span class="lg lg-tn">TN</span></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cross-Annotation Criteria Misapplication (Global Criteria, Strict)</h2>
+    <p>Aggregated from strict (accepted-only) criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
+    <div class="table-wrap"><table><thead><tr><th>Annotation</th><th>Error Category</th><th>Criterion</th><th>Type (Inclusion/Exclusion)</th><th>Error Mentions</th><th>Correct Mentions</th><th>Error Rate vs Correct</th></tr></thead><tbody><tr><td><a href="decrease.html">decrease</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E1</td><td>exclusion</td><td>5</td><td>0</td><td>5.000</td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E1</td><td>exclusion</td><td>5</td><td>0</td><td>5.000</td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>False Negative: inclusion criterion wrongly failed</td><td>GLOBAL_I1</td><td>inclusion</td><td>5</td><td>4</td><td>1.250</td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E3</td><td>exclusion</td><td>3</td><td>5</td><td>0.600</td></tr><tr><td><a href="maintain.html">maintain</a></td><td>False Negative: inclusion criterion wrongly failed</td><td>GLOBAL_I1</td><td>inclusion</td><td>1</td><td>3</td><td>0.333</td></tr><tr><td><a href="decrease.html">decrease</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E3</td><td>exclusion</td><td>2</td><td>9</td><td>0.222</td></tr><tr><td><a href="increase.html">increase</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E3</td><td>exclusion</td><td>1</td><td>9</td><td>0.111</td></tr><tr><td><a href="maintain.html">maintain</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>GLOBAL_E3</td><td>exclusion</td><td>1</td><td>10</td><td>0.100</td></tr></tbody></table></div>
+  </section>
+  <section>
+    <h2>Cross-Annotation Criteria Misapplication (Annotation-Specific Criteria, Strict)</h2>
+    <p>Aggregated from strict (accepted-only) criteria-error analysis. Rows are sorted by error rate vs correctly classified mentions.</p>
+    <div class="table-wrap"><table><thead><tr><th>Annotation</th><th>Error Category</th><th>Criterion</th><th>Type (Inclusion/Exclusion)</th><th>Error Mentions</th><th>Correct Mentions</th><th>Error Rate vs Correct</th></tr></thead><tbody><tr><td><a href="increase.html">increase</a></td><td>False Positive: inclusion criterion wrongly applied</td><td>INCREASE_I3</td><td>inclusion</td><td>2</td><td>0</td><td>2.000</td></tr><tr><td><a href="maintain.html">maintain</a></td><td>False Positive: inclusion criterion wrongly applied</td><td>MAINTAIN_I1</td><td>inclusion</td><td>3</td><td>8</td><td>0.375</td></tr><tr><td><a href="decrease.html">decrease</a></td><td>False Positive: inclusion criterion wrongly applied</td><td>DECREASE_I1</td><td>inclusion</td><td>11</td><td>38</td><td>0.289</td></tr><tr><td><a href="reappraisal.html">reappraisal</a></td><td>False Positive: inclusion criterion wrongly applied</td><td>REAPPRAISAL_I1</td><td>inclusion</td><td>5</td><td>23</td><td>0.217</td></tr><tr><td><a href="maintain.html">maintain</a></td><td>False Negative: exclusion criterion wrongly applied</td><td>MAINTAIN_E1</td><td>exclusion</td><td>1</td><td>32</td><td>0.031</td></tr></tbody></table></div>
+  </section>
+</body>
+</html>
