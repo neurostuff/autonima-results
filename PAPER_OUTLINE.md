@@ -1477,3 +1477,57 @@ A caution for anyone counting from these files: `search_results.json` stores the
 concatenation** — 1510 entries for the 1065 unique PMIDs above. An earlier draft of this note
 inferred near-zero query/pool overlap from that number before the set arithmetic
 (1024 + 486 − 445 = 1065) settled it.
+
+### How much did social's contamination actually buy? (measured 2026-08-27)
+
+`v3` (query only, 1024 studies) vs the archived `v3-search-all_pmids-multi_analysis-ft`
+(query ∪ curated pool, 1065 studies), both scored against the same gold set at full-text screening:
+
+| | v3 — clean | v3-search-*-ft — contaminated |
+|---|---|---|
+| TP / FP | 221 / 323 | 231 / 337 |
+| recall (all meta) | 0.93 | 0.97 |
+| recall (in search) | 0.98 | 0.97 |
+| precision | 0.41 | 0.41 |
+| F1 (all-meta recall) | 0.569 | 0.576 |
+
+The injected pool bought **+0.04 all-meta recall at identical precision** — about +0.007 F1. So the
+contamination was real but nearly worthless: social's headline screening number is essentially
+unchanged, and it is now defensible. This is the reassuring outcome. Had the gap been large, every
+social screening number in the cross-project table would have needed a caveat.
+
+Note `recall (in search)` moves the other way, 0.97 → 0.98, because the clean arm's denominator
+excludes the 11 gold studies its query never retrieved. That is the metric behaving correctly: the
+contaminated arm was penalised for imperfect screening of studies handed to it, while the clean arm
+is penalised at the *search* level instead (search recall 0.95, 226/238).
+
+**Not yet measured for v3:** coordinates, annotation, and maps. See the blocker below.
+
+### Blocker: Portkey API key usage limit exhausted (2026-08-27)
+
+The `social/v3` run reached coordinate parsing and then failed every table with
+
+    Error code: 412 - Portkey Error: Portkey API Key Usage Limit Exceeded. Error Code: 04
+
+56 tables attempted, 0 parsed. A direct probe through the gateway reproduces the 412, so the cap is
+still in force — this is not transient rate-limiting. The queue was stopped rather than allowed to
+continue into `v3-annotation-only`, which would have produced an empty run.
+
+**Nothing was corrupted.** The stages that completed today are valid and cached: search (1024),
+abstract screening (recall_all 0.95, precision 0.33), retrieval (835 pubget files, no LLM cost),
+full-text screening (the table above). `coordinate_parsing_results.json` still holds the artifact
+copied from `v3-allstudies` — the stage was killed before writing — and no per-table or LLM cache
+recorded the failures. A re-run resumes at parsing.
+
+**One hazard to watch on that re-run.** `stage_signature_payloads()` in `autonima/execution.py`
+builds each stage's signature from **its own config block plus a prompt version only** — signatures
+do not chain on upstream artifacts. So the `annotation` artifact copied from `v3-allstudies` is
+considered valid for `v3` even though the two runs' study sets differ. Screening demonstrably
+gap-fills per item rather than skipping wholesale ("578 to screen, 445 cached"), so annotation
+probably does the same, but this must be verified after the re-run: check that
+`v3/outputs/annotation_results.json` has a fresh mtime and covers v3's included studies, not
+v3-allstudies'.
+
+**Blocked on the cap:** v3 parsing/annotation/output, all of `v3-annotation-only`, social's
+decomposition, and the map-level half of the cross-project regeneration. Social's *screening* row
+is complete and can be regenerated now.
