@@ -2,10 +2,10 @@ search:
   database: pubmed
   query: '((("functional magnetic resonance imaging"[tiab] OR "functional MRI"[tiab]
     OR fMRI[tiab] OR neuroimaging[tiab] OR "Magnetic Resonance Imaging"[Mesh] OR "Brain
-    Mapping"[Mesh]) AND ("emotion regulation"[tiab] OR "affective regulation"[tiab]
-    OR reappraisal[tiab])) AND ("2000/01/01"[Date - Publication] : "2019/12/31"[Date
-    - Publication])) NOT (Editorial[pt] OR Letter[pt] OR Comment[pt] OR "Case Reports"[pt]
-    OR News[pt] OR Review[pt])'
+    Mapping"[Mesh]) AND (reappraisal[tiab] OR reappraise*[tiab] OR "cognitive reappraisal"[tiab]))
+    AND ("2000/01/01"[Date - Publication] : "2019/12/31"[Date - Publication])) NOT
+    (Editorial[pt] OR Letter[pt] OR Comment[pt] OR "Case Reports"[pt] OR News[pt]
+    OR Review[pt])'
   max_results: 20000
   date_from: 2000/01/01
   date_to: 2019/12/31
@@ -56,7 +56,7 @@ annotation:
   annotations: []
   enabled: true
 output:
-  directory: projects/emotion_regulation_2022/baselines/all_reappraisal
+  directory: projects/emotion_regulation_2022/baselines/reappraisal
   prisma_diagram: true
   formats:
   - csv

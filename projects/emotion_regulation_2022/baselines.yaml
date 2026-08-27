@@ -79,6 +79,31 @@ shared:
   date_to: "2019/12/31"
 
 baselines:
+  - manual_annotation: reappraisal
+    # A genuinely targeted arm, and the ONE case where sub-targeting is meaningful here.
+    # decrease/increase/maintain are contrast directions with no distinct search vocabulary, but
+    # reappraisal is a named strategy, so a researcher targeting that column would search for it.
+    #
+    # Measured against the 88 studies contributing to the reappraisal column:
+    #
+    #     query                            hits   gold   recall   precision
+    #     broad control (all_reappraisal)  1264     79    0.898     0.0625
+    #     this arm                          400     67    0.761     0.1675
+    #     + reinterpret/distancing terms    500     67    0.761     0.1340   <- +100 hits, +0 gold
+    #
+    # The trade is 12 gold studies for 864 fewer hits. That makes this baseline a STRONGER
+    # competitor than the broad control, not a weaker one: a less diluted pool yields a sharper
+    # map, so autonima's margin over it should be smaller and the comparison harder. That is the
+    # point of a sub-targeted arm.
+    #
+    # Reinterpretation and distancing terms are deliberately absent -- measured, they add hits
+    # without adding gold, because papers using those tactics still say "reappraisal".
+    note: >-
+      Reappraisal-targeted arm. The only ER column with its own search vocabulary; the other
+      three are contrast directions within the same paradigm and get the broad control alone.
+    topic: >-
+      reappraisal[tiab] OR reappraise*[tiab] OR "cognitive reappraisal"[tiab]
+
   - name: all_reappraisal
     # The only arm. Flagged as the like-vintage broad control so the evaluator prefers it over
     # the project run's own `all_studies` column, which is a different retrieval vintage.

@@ -182,22 +182,21 @@ def main() -> int:
     # Entries with no manual_annotation are pure control arms: they supply the broad map but
     # have nothing on the manual side to be scored against, so they are not iterated over.
     entries = spec.get("baselines") or []
-    keys = [e["manual_annotation"] for e in entries if e.get("manual_annotation")]
 
     mapping_path = project_dir / "nmb_mappings.json"
     mapping = json.loads(mapping_path.read_text(encoding="utf-8")) if mapping_path.exists() else {}
     auto_col_for = (mapping.get("annotation_mappings") or {})
 
-    if not keys:
-        # Broad-control-only project: every arm is a control, so the loop above finds nothing.
-        # The manual annotations still need scoring -- autonima against the broad baseline --
-        # so fall back to the mapping's keys. baseline_sub will be reported MISSING for each,
-        # which is correct: no per-sub-annotation arm exists to compare against.
-        #
-        # This is the right shape for a project whose sub-annotations are not separable search
-        # topics (emotion_regulation_2022's decrease/increase/maintain/reappraisal are contrast
-        # directions within one paradigm), where narrowed arms would be near-identical queries.
-        keys = list(auto_col_for.keys())
+    # Score EVERY manual annotation, not just those with a per-sub-annotation baseline arm.
+    # A missing sub arm is reported MISSING for that column and the row still carries autonima
+    # vs baseline_broad, which is the informative comparison either way.
+    #
+    # This used to iterate the arms instead, which silently dropped any manual annotation that
+    # had no narrowed arm. It went unnoticed because in eight of nine projects the two sets are
+    # identical; emotion_regulation_2022 is the exception, having a broad control plus a single
+    # targeted arm for `reappraisal` -- its other three columns are contrast directions with no
+    # distinct search vocabulary, so they have no arm and were being skipped entirely.
+    keys = list(auto_col_for.keys())
 
     # --autonima-run wins; otherwise take the registered run for --tier, and only fall back to
     # "highest vN" when this project/family has no entry for that tier. The fallback is
