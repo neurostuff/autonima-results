@@ -599,6 +599,63 @@ Per-baseline missing-full-text lists are written to
 `projects/<p>/reports/baseline_missing_fulltexts.{json,txt}` by the runner, so the targets for
 any download session are already enumerated rather than needing reconstruction.
 
+### Recall is capped by retrieval, and correcting for it reorders the projects  **[have]**
+
+The manual-reliance table above says where full texts *came from*. It does not say how many are
+missing, and that turns out to matter more. Compiling every project's per-run
+`missing_fulltexts.csv` across its registry-designated arms, then subtracting everything actually
+on disk, gives the gold-level retrieval gap: **136 gold studies across the corpus have no usable
+full text**. "Usable" is stricter than "present" — a file that is a landing or abstract page with
+no `<table>` cannot yield coordinates, and 3 of EF's are exactly that.
+
+Because a gold study with no retrievable text can never be recovered by screening, each project
+has a hard recall ceiling equal to the fraction of its gold set that is usable. Measuring canonical
+recall against that ceiling rather than against the full gold set changes the ordering:
+
+| project | run | recall | gold | unusable | ceiling | **% of ceiling** |
+|---|---|---|---|---|---|---|
+| social | v3 | 0.929 | 230 | 3 | 0.99 | **94%** |
+| dementia | v3 | 0.851 | 73 | 4 | 0.95 | **90%** |
+| cue_reactivity | v6 | 0.853 | 191 | 5 | 0.97 | **88%** |
+| vbm_of_substance_use | v2 | 0.797 | 79 | 4 | 0.95 | **84%** |
+| vbm_of_ptsd | v1 | 0.762 | 22 | 1 | 0.95 | **80%** |
+| problem_solving | v2 | 0.540 | 126 | 36 | 0.71 | **76%** |
+| emotion_regulation_2022 | v4 | 0.659 | 88 | 9 | 0.90 | **73%** |
+| **executive_function** | v3 | **0.386** | 171 | **80** | **0.53** | **73%** |
+| **decision_making** | v3 | 0.549 | 87 | 8 | 0.91 | **60%** |
+
+Two conclusions, and they point in opposite directions from the raw numbers.
+
+**executive_function is not the corpus's screening failure.** 80 of its 171 gold studies — 47% —
+have no usable full text, so its achievable recall is 0.53, not 1.0. Against that ceiling it
+recovers 73%, mid-pack and level with ER. Its headline 0.386 is roughly half retrieval attrition
+and half screening. This corroborates, by an independent route, the 58% retrieval-and-parsing
+attrition already noted in §5: that figure was computed from pool shrinkage, this one from gold
+studies absent from disk, and they agree that EF's binding constraint is upstream of screening.
+§3 currently reads EF's false negatives as a specification error; that remains true of the
+analysis-level errors examined there, but it should not be extended to the project's headline
+recall, which is mostly a retrieval artifact.
+
+**decision_making is the genuine weak point.** Its ceiling is 0.91 — retrieval is nearly fine —
+yet it reaches only 60% of it, the worst in the corpus, despite a raw recall (0.549) above EF's.
+Any explanation of "which projects screening struggles on" should name decision_making, not EF.
+
+Report the ceiling alongside recall for every project. Reporting raw recall alone rewards projects
+whose literature happens to be open-access and penalises ones whose gold sits behind paywalls,
+which is a property of the corpus rather than of the method.
+
+**The gap is closable, which is why it is worth reporting rather than just caveating.** Of the 136,
+36 resolve to Elsevier and 16 to PMC — both automatable. In this thread ER went from 26 gold
+missing to 4, and from 337 to 491 usable full texts of 766, by routing the Elsevier fetcher through
+a campus IP (see the retrieval note below). EF holds 24 of the 36 automatable gold papers, so the
+single highest-value retrieval action in the corpus is an Elsevier fetch for EF.
+
+**Method note.** The entitlement failures were an IP problem, not a credential one: the same API
+key that returns "ScienceDirect rejected FULL view" off-campus returns HTTP 200 with complete
+article XML through a SOCKS tunnel to a subscribing IP. No institutional token was required. This
+belongs in Methods, because it determines whether a retrieval gap of this kind is a hard limit of
+the corpus or a solvable configuration detail — here it was the latter for 213 of 222 attempts.
+
 **A tuned-search outlier to disclose: cue_reactivity v6.** v4/v5's query was written for drug
 cues and reached only 24% of the natural-reward gold (drug column: 96%). Two clauses caused it
 — the cue/craving clause required "cue"/"craving"/"urge" vocabulary that food and sexual reward
@@ -1360,24 +1417,37 @@ proxy for map quality.
 
 ### Two secondary questions the same family answers
 
-Only `emotion_regulation_2022/v4` and `dementia/v3` have three family members sharing criteria
-byte-for-byte, so only they support cross-arm contrasts (`scripts/decompose_pipeline_stages.py`):
+Three projects now have family members sharing criteria byte-for-byte, so they support cross-arm
+contrasts (`scripts/decompose_pipeline_stages.py` — note `--version` takes `vN`, not `N`):
 
-    question                                     ER v4    dementia v3
-    whole pipeline vs search-only baseline       +0.263      +0.244
-    own search vs a hand-assembled pool          +0.008      +0.044
+    question                                     ER v4    dementia v3    social v3
+    1  whole pipeline vs search-only baseline    +0.263      +0.244        +0.172
+    2  screening a broad pool vs a curated one   +0.017      -0.054        +0.002
+    3  own search vs a hand-assembled pool       +0.008      +0.044        +0.013
 
-The second says running your own search costs almost nothing against a hand-assembled pool,
+Question 3 says running your own search costs almost nothing against a hand-assembled pool,
 consistent with §7's finding that search targeting is worth little.
+
+**Question 2 is the one to lead with.** Three independent estimates, spanning +0.017 to -0.054 and
+centred on zero, say that automated screening of a broad pool matches hand curation of a targeted
+one. It is the most replicated result in the corpus, and unlike question 1 it is not confounded by
+the annotation-only arm's gold-restricted pool. It is also the claim most directly relevant to a
+reader deciding whether to adopt the method: the labour it replaces is exactly the curation step.
 
 **Not reported: `annotation_only − baseline`.** It is the largest number available (+0.238,
 +0.254) and it is tempting, but that arm is restricted to gold studies, so the margin bundles
 annotation with being handed a perfect pool. The `all_analyses` comparison above is what that
 number was reaching for, done correctly.
 
-**Social cannot be decomposed** across arms — its annotation-only runs carry drifted annotation
-criteria (`v2-annotation-only` `e02f49ac` vs `v2` `5a843dee`), the tracked naming violation. It
-still contributes to the `all_analyses` comparison, which needs only one run.
+**Social became decomposable on 2026-08-27**, and the way it did is worth a Methods sentence.
+Its existing arms could not serve: `v2-annotation-only` carried drifted criteria against `v2`, and
+the arms that *looked* search-driven (`v3-search-*`) set both a `query` and a `pmids_file`, which
+autonima unions rather than choosing between — so each screened its query hits plus the curated
+pool containing every gold study, making their search recall 1.000 by construction rather than by
+measurement (autonima#57). Two new arms were built to close this: `v3` (the same query, no
+injected PMIDs) and `v3-annotation-only` (v3's criteria over the fixed gold list). The decomposition
+above uses those. Social's own search reaches 219/230 gold on its own, 0.952, against the 1.000 the
+contaminated arms reported.
 
 ## What annotation buys once you already have the right studies (§7)
 
