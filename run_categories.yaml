@@ -175,17 +175,43 @@ projects:
     canonical:
       verbatim: null
       manual:   v2
-      latest:   v2
+      latest:   v3
       review: >-
-        social has no v1.yaml -- the only plain vN is v2 -- so the canonical family has no
-        verbatim entry. Its v1 exists only as annotation-only variants.
+          v3 (created 2026-08-27) is social's canonical search-driven run: v3-allstudies' criteria
+          and annotation mode, with the query from the former v3-search-all_pmids-multi_analysis-ft.
+          It replaces v2 as `latest` because v2 lacks study_fulltext in its annotation
+          metadata_fields and so is not mode-comparable with the rest of the v3 family. Still no
+          verbatim entry: social has no v1 full run, its v1 existing only as annotation-only
+          variants.
     annotation_only:
       verbatim: v1-annotation-only
-      manual:   v3-annotation-only
+      manual:   v5-annotation-only    # renamed from v3-annotation-only 2026-08-27
       latest:   v4-annotation-only    # Claude, multi-label fix
       note: >-
         The other complete three-tier set. Also the project where the tiers disagree most
         sharply: v1 is best at map level (dice 0.570) while v4 has much better annotation F1.
+        None of these three shares criteria with any full run, which is why the decomposition
+        set below needed its own v3-annotation-only arm.
+    allstudies:
+      verbatim: null
+      manual:   null
+      latest:   v3-allstudies    # renamed from v3-all_pmids-multi_analysis-ft 2026-08-27
+      note: >-
+        Screens the 486-PMID curated pool. Only one tier: social's earlier pool runs
+        (v3-all_pmids, v3-all_pmids-multi_analysis) differ in annotation mode, not criteria,
+        so they are mode variants rather than tiers and are archived.
+    decomposition:
+      search:      v3                  # query only, no injected PMIDs
+      pool:        v3-allstudies       # curated pool, same criteria and mode
+      annotation:  v3-annotation-only  # 230-PMID gold list, screening skipped
+      note: >-
+        The three matched arms that isolate search / screening / annotation for social, all
+        sharing v3 criteria and annotation mode. Created 2026-08-27, because the arms that
+        looked like they served this purpose did not: the v3-search-* runs set both a query
+        and a pmids_file, and autonima unions the two, so each screened its query hits plus
+        the curated pool that contains every gold study. For the arm the cross-project
+        overrides used to point at, that lifted gold coverage from 0.952 (query alone,
+        219/230) to 1.000. See autonima#57 and PAPER_OUTLINE.md.
 
   vbm_of_ptsd:
     canonical:
