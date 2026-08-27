@@ -1258,51 +1258,73 @@ alternative — max(targeted, broad) per column — looks more conservative but 
 counterfactual: it lets the baseline switch arms with hindsight, which no practitioner can do.
 The two differ by 0.005 (+0.091 vs +0.086), so no conclusion turns on the choice.
 
-## Stage attribution: can screening replace a hand-curated pool? (§7 addendum)
+## What annotation is worth, given the right studies (§7 addendum)
 
-Every other number in §7 confounds stages — a headline run does search AND screening AND
-annotation, so a margin over a baseline says the pipeline helped without saying which part helped.
-Two projects escape that, because three of their family members share criteria byte-for-byte and
-differ only in how studies enter the pipeline: `emotion_regulation_2022/v4` and `dementia/v3`.
-Emitted by `scripts/decompose_pipeline_stages.py`.
+The cleanest isolation of annotation in the corpus, and it needs no `-allstudies` run — only an
+annotation-only run, which every project has. Both sides of the comparison come from the SAME run:
+same fixed gold pool, same retrieved texts, same parsed analyses. The only thing that varies is
+which analyses enter the map.
 
-    arm                  pool              screening   annotation
-    baseline             broad search          no          no
-    vN-annotation-only   fixed gold pool       no          yes
-    vN-allstudies        fixed broad pool      yes         yes
-    vN                   real search           yes         yes
+    all_analyses   every parsed analysis from those studies, pooled -- perfect study selection,
+                   no analysis selection at all
+    <column>       only the analyses annotation assigned to that construct
 
-**What this cannot answer.** `annotation_only - baseline` is large in both projects (+0.238,
-+0.254) but must NOT be reported as annotation's contribution: that arm is restricted to gold
-studies, so the margin bundles annotation with being handed a perfect pool. It is an upper bound,
-nothing more. State this explicitly if the table appears — it is the obvious misreading.
+So `annotated − all_analyses` asks: **given that you already found the right papers, how much
+closer to the manual meta-analysis does analysis-level selection get you?** Nothing else varies.
+Emitted by `scripts/annotation_value.py` as `reports/annotation_value.csv`.
 
-**What it does answer**, mean dice over 4 columns each:
+**Result: 35 columns across all 9 projects. Mean dice gain +0.067, median +0.037, positive in
+26/35.**
 
-    question                                        ER v4      dementia v3
-    1. whole pipeline vs search-only baseline       +0.263       +0.244
-    2. screening a broad pool vs a curated one      +0.017       -0.054
-    3. own search vs a fixed hand-assembled pool    +0.008       +0.044
+### The gain scales with how selective the target is
 
-**Question 2 is the finding.** Both arms apply identical annotation, so the comparison asks
-whether screening a broad pool reaches what a hand-assembled pool gives you. In ER it slightly
-exceeds it; in dementia it recovers 87% of it (0.368 vs 0.422). **Automated screening
-substitutes for hand curation** — which is a sharper and more useful claim than "the pipeline
-beats a baseline", and it is the claim a practitioner deciding whether to trust the tool actually
-needs.
+    column type              n    mean gain   median   positive
+    pooled / global          7      +0.027    +0.009     5/7
+    specific sub-analysis   28      +0.077    +0.057    21/28
 
-Question 3 says running your own search costs little against a curated pool (+0.008, +0.044),
-consistent with §7's finding that search targeting is worth almost nothing.
+This is the mechanism, and it is close to arithmetic rather than an empirical surprise. When the
+manual column IS essentially every analysis in those papers — `executive_function/all`,
+`social/all_merged`, `problem_solving/global_…` — then `all_analyses` is already the right answer
+and annotation can only lose by dropping things. Four of the seven pooled columns are negative or
+flat. Where the manual column is a genuine subset, annotation is doing real work:
+`vbm_of_substance_use/alcohol` +0.446, `stimulants` +0.238, `decision_making/perceptual_dm`
++0.216, `emotion_regulation_2022/maintain` +0.195, `opioids` +0.209.
 
-**This also sharpens §7's existing mechanistic sentence.** §7 currently says "it is not a search
-problem; it is a screening problem", meaning analysis-level selection. In this repo's stage names
-that selection is ANNOTATION, not screening, and the sentence reads as the opposite of what it
-means. Reword it to name annotation explicitly.
+**This is the same claim §7 already makes mechanistically, now measured directly.** §7 says the
+limit on a screening-free pool is that irrelevant analyses *inside retained papers* still
+contribute coordinates. Here the papers are held perfect and only the analyses vary, so the effect
+is isolated: removing irrelevant analyses within kept papers is worth +0.077 dice on a targeted
+column and nothing on a pooled one.
 
-**Social cannot be decomposed**, and the reason is the tracked naming violation: its
-annotation-only runs carry independently drifted annotation criteria (`v2-annotation-only` =
-`e02f49ac` against `v2` = `5a843dee`), so no three of its family members share a criteria set.
-Fixing that violation would add a third decomposable project.
+### Annotation F1 does not predict map gain
+
+Pearson r between annotation F1 and dice gain is only **+0.261** across the 35 columns (F1 <0.85:
+mean gain +0.052; F1 ≥0.85: +0.075). The two measure different things — F1 scores the labelling
+decision on analyses that matched a gold analysis, dice scores the map that results — and a
+project can label almost perfectly while gaining nothing, because its target was never selective.
+`dementia/decrease` is the clean example: F1 1.000, gain +0.002. Report both; do not treat F1 as a
+proxy for map quality.
+
+### Two secondary questions the same family answers
+
+Only `emotion_regulation_2022/v4` and `dementia/v3` have three family members sharing criteria
+byte-for-byte, so only they support cross-arm contrasts (`scripts/decompose_pipeline_stages.py`):
+
+    question                                     ER v4    dementia v3
+    whole pipeline vs search-only baseline       +0.263      +0.244
+    own search vs a hand-assembled pool          +0.008      +0.044
+
+The second says running your own search costs almost nothing against a hand-assembled pool,
+consistent with §7's finding that search targeting is worth little.
+
+**Not reported: `annotation_only − baseline`.** It is the largest number available (+0.238,
++0.254) and it is tempting, but that arm is restricted to gold studies, so the margin bundles
+annotation with being handed a perfect pool. The `all_analyses` comparison above is what that
+number was reaching for, done correctly.
+
+**Social cannot be decomposed** across arms — its annotation-only runs carry drifted annotation
+criteria (`v2-annotation-only` `e02f49ac` vs `v2` `5a843dee`), the tracked naming violation. It
+still contributes to the `all_analyses` comparison, which needs only one run.
 
 ## What annotation buys once you already have the right studies (§7)
 
