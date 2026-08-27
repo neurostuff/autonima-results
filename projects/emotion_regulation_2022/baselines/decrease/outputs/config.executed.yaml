@@ -1,0 +1,65 @@
+search:
+  database: pubmed
+  query: '((("functional magnetic resonance imaging"[tiab] OR "functional MRI"[tiab]
+    OR fMRI[tiab] OR neuroimaging[tiab] OR "Magnetic Resonance Imaging"[Mesh] OR "Brain
+    Mapping"[Mesh]) AND ((reappraisal[tiab] OR reappraise*[tiab] OR "emotion regulation"[tiab])
+    AND ("down-regulat*"[tiab] OR downregulat*[tiab] OR decreas*[tiab] OR reduc*[tiab]
+    OR attenuat*[tiab] OR dampen*[tiab] OR distanc*[tiab]))) AND ("2000/01/01"[Date
+    - Publication] : "2019/12/31"[Date - Publication])) NOT (Editorial[pt] OR Letter[pt]
+    OR Comment[pt] OR "Case Reports"[pt] OR News[pt] OR Review[pt])'
+  max_results: 20000
+  date_from: 2000/01/01
+  date_to: 2019/12/31
+  email: delavega@utexas.edu
+  pmids_file: null
+  pmids_list: null
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: false
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+annotation:
+  model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations: []
+  enabled: true
+output:
+  directory: projects/emotion_regulation_2022/baselines/decrease
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: false

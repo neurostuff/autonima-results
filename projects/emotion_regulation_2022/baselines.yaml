@@ -6,7 +6,23 @@
 # broad PubMed search returns?" -- no screening, no annotation, every table with coordinates
 # pooled into one map. It is the thing autonima has to beat to be worth running.
 #
-# ONE ARM ONLY, DELIBERATELY.
+# MAINTAIN HAS NO TARGETED ARM, AND THAT WAS TESTED RATHER THAN ASSUMED.
+#
+# `maintain` is the Look control condition -- viewing emotional pictures with no regulation
+# instruction. Three plausible researcher queries were measured against its 57 gold studies:
+#
+#     query                          hits   gold   recall   precision
+#     broad control                  1264     50    0.877     0.0396
+#     "emotional reactivity" family   975     23    0.404     0.0236
+#     affective-picture-viewing      1287     14    0.246     0.0109
+#     both combined                  1634     21    0.368     0.0129
+#
+# Every variant is worse than the broad arm on BOTH recall and precision. The reason is
+# structural: a control condition is not what a paper is about, so it does not appear in titles
+# or abstracts. There is no query a researcher could write that targets "the passive-viewing
+# condition of reappraisal studies". The broad arm is the best baseline that can exist here.
+#
+# ORIGINALLY ONE ARM ONLY; NOW THREE.
 #
 # Every other project in this corpus also gets per-sub-annotation baselines: a narrowed query per
 # manual annotation, because a researcher targeting only the alcohol sub-meta-analysis would put
@@ -79,6 +95,44 @@ shared:
   date_to: "2019/12/31"
 
 baselines:
+  - manual_annotation: decrease
+    # Targeting IS possible for the two goal columns, contrary to a first reading -- but only by
+    # conjoining the regulation vocabulary with a direction term, not by direction terms alone.
+    # Measured against the 86 studies in the decrease column:
+    #
+    #     query                        hits   gold   recall   precision
+    #     broad control                1264     78    0.907     0.0617
+    #     down-regulation terms alone  9356     37    0.430     0.0040   <- useless
+    #     this arm (reapp AND down)     680     61    0.709     0.0897
+    #
+    # Direction terms alone fail badly because "downregulat*" is overwhelmingly molecular
+    # biology; 9,356 hits for 37 gold studies. Conjoining with the regulation vocabulary halves
+    # the pool against the broad arm and raises precision 1.5x, at a cost of 17 gold studies --
+    # the shape of a genuine targeted arm.
+    note: >-
+      Down-regulation arm. Regulation vocabulary conjoined with direction terms; direction terms
+      alone are unusable because downregulat* is dominated by molecular biology.
+    topic: >-
+      (reappraisal[tiab] OR reappraise*[tiab] OR "emotion regulation"[tiab]) AND
+      ("down-regulat*"[tiab] OR downregulat*[tiab] OR decreas*[tiab] OR reduc*[tiab] OR
+      attenuat*[tiab] OR dampen*[tiab] OR distanc*[tiab])
+
+  - manual_annotation: increase
+    # Same construction as the decrease arm. Against the 18 studies in the increase column:
+    #
+    #     query                       hits   gold   recall   precision
+    #     broad control               1264     17    0.944     0.0134
+    #     up-regulation terms alone   2276      8    0.444     0.0035
+    #     this arm (reapp AND up)      655     12    0.667     0.0183
+    #
+    # Only 18 gold studies, so this column is noisy whichever arm is used.
+    note: >-
+      Up-regulation arm, mirroring the decrease arm's construction.
+    topic: >-
+      (reappraisal[tiab] OR reappraise*[tiab] OR "emotion regulation"[tiab]) AND
+      ("up-regulat*"[tiab] OR upregulat*[tiab] OR increas*[tiab] OR amplif*[tiab] OR
+      intensif*[tiab] OR enhanc*[tiab])
+
   - manual_annotation: reappraisal
     # A genuinely targeted arm, and the ONE case where sub-targeting is meaningful here.
     # decrease/increase/maintain are contrast directions with no distinct search vocabulary, but
