@@ -1,16 +1,19 @@
 {
   "cache_plan": {
-    "changed_stages": [],
-    "copyable_stages": [],
-    "has_cache_artifacts": false,
-    "has_previous_execution": false,
-    "recompute_stages": [
+    "changed_stages": [
+      "search"
+    ],
+    "copyable_stages": [
       "search",
-      "abstract",
       "retrieval",
+      "annotation"
+    ],
+    "has_cache_artifacts": true,
+    "has_previous_execution": true,
+    "recompute_stages": [
+      "abstract",
       "fulltext",
       "parsing",
-      "annotation",
       "output"
     ],
     "schema_version": 2,
@@ -22,7 +25,7 @@
       "output": "01db0764bb6a09431d6820b79a387af28c5c1a26dd1a103442bfed6872f243cd",
       "parsing": "81bd97d4018e3fe797b807f7a162ff0e9ee86c36d85ed712b6f61db0b0ecbe0c",
       "retrieval": "249b382d89edcefab6ead8cda5334ea0a6c46793b85fe6aa893b7f54c86463ab",
-      "search": "90149b65cbd8003574afa5bbf012d786202f95094a8ffa977eee1239e86760fd"
+      "search": "43fa443bbd0aceacc93a60f124d6f52edbd8ac78c814ad55eb4446370b5321a9"
     },
     "stages": {
       "abstract": {
@@ -34,12 +37,12 @@
         "reason": "no cache artifact is available"
       },
       "annotation": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "recompute",
@@ -54,7 +57,7 @@
         "artifact_is_modern": false,
         "config_changed": false,
         "copy_artifact": false,
-        "has_artifact": false,
+        "has_artifact": true,
         "reason": "derived outputs are regenerated"
       },
       "parsing": {
@@ -66,36 +69,59 @@
         "reason": "no cache artifact is available"
       },
       "retrieval": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "retrieval cache is valid and missing texts will be fetched"
       },
       "search": {
-        "action": "recompute",
-        "artifact_is_modern": false,
-        "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "action": "incremental",
+        "artifact_is_modern": true,
+        "config_changed": true,
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "search changed; cached metadata will be matched by PMID"
       }
     },
     "unsupported_cache": false,
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [],
-  "completed_at": "2026-08-27T01:38:59.460942+00:00",
+  "changed_stages": [
+    "search"
+  ],
+  "completed_at": "2026-08-27T02:39:05.531818+00:00",
   "completed_stage": "full",
-  "config_hash": "4ad3447e41a366d2552e8e6845c60b7ff0e135d29879868e6b38094455832167",
+  "config_hash": "a7262911617f66d1e3fe1fcc2df548a60e06511222c5da52108f1e09916dea05",
   "copied_cache": [],
-  "created_at": "2026-08-27T01:37:56.245895+00:00",
+  "created_at": "2026-08-27T02:38:55.529173+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/baselines/all_reappraisal/outputs/config.executed.yaml",
-  "execution_id": "acde21ae-4a2b-4522-bc63-70784a3ae17e",
-  "invalidated": [],
-  "parent_execution_id": null,
+  "execution_id": "69df6746-fba1-4ff6-8ff0-b5608d79d314",
+  "invalidated": [
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/baselines/all_reappraisal/outputs/final_results.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/baselines/all_reappraisal/outputs/nimads_studyset.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/baselines/all_reappraisal/outputs/nimads_annotation.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/baselines/all_reappraisal/outputs/missing_fulltexts.csv",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/baselines/all_reappraisal/outputs/missing_fulltexts.txt",
+      "stage": "output"
+    }
+  ],
+  "parent_execution_id": "acde21ae-4a2b-4522-bc63-70784a3ae17e",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
@@ -104,9 +130,9 @@
     "output": "01db0764bb6a09431d6820b79a387af28c5c1a26dd1a103442bfed6872f243cd",
     "parsing": "81bd97d4018e3fe797b807f7a162ff0e9ee86c36d85ed712b6f61db0b0ecbe0c",
     "retrieval": "249b382d89edcefab6ead8cda5334ea0a6c46793b85fe6aa893b7f54c86463ab",
-    "search": "90149b65cbd8003574afa5bbf012d786202f95094a8ffa977eee1239e86760fd"
+    "search": "43fa443bbd0aceacc93a60f124d6f52edbd8ac78c814ad55eb4446370b5321a9"
   },
-  "started_at": "2026-08-27T01:37:56.245919+00:00",
+  "started_at": "2026-08-27T02:38:55.529191+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }
