@@ -1257,3 +1257,49 @@ scores well, because that is what a practitioner aiming at that column would hav
 alternative — max(targeted, broad) per column — looks more conservative but is the wrong
 counterfactual: it lets the baseline switch arms with hindsight, which no practitioner can do.
 The two differ by 0.005 (+0.091 vs +0.086), so no conclusion turns on the choice.
+
+## Stage attribution: can screening replace a hand-curated pool? (§7 addendum)
+
+Every other number in §7 confounds stages — a headline run does search AND screening AND
+annotation, so a margin over a baseline says the pipeline helped without saying which part helped.
+Two projects escape that, because three of their family members share criteria byte-for-byte and
+differ only in how studies enter the pipeline: `emotion_regulation_2022/v4` and `dementia/v3`.
+Emitted by `scripts/decompose_pipeline_stages.py`.
+
+    arm                  pool              screening   annotation
+    baseline             broad search          no          no
+    vN-annotation-only   fixed gold pool       no          yes
+    vN-allstudies        fixed broad pool      yes         yes
+    vN                   real search           yes         yes
+
+**What this cannot answer.** `annotation_only - baseline` is large in both projects (+0.238,
++0.254) but must NOT be reported as annotation's contribution: that arm is restricted to gold
+studies, so the margin bundles annotation with being handed a perfect pool. It is an upper bound,
+nothing more. State this explicitly if the table appears — it is the obvious misreading.
+
+**What it does answer**, mean dice over 4 columns each:
+
+    question                                        ER v4      dementia v3
+    1. whole pipeline vs search-only baseline       +0.263       +0.244
+    2. screening a broad pool vs a curated one      +0.017       -0.054
+    3. own search vs a fixed hand-assembled pool    +0.008       +0.044
+
+**Question 2 is the finding.** Both arms apply identical annotation, so the comparison asks
+whether screening a broad pool reaches what a hand-assembled pool gives you. In ER it slightly
+exceeds it; in dementia it recovers 87% of it (0.368 vs 0.422). **Automated screening
+substitutes for hand curation** — which is a sharper and more useful claim than "the pipeline
+beats a baseline", and it is the claim a practitioner deciding whether to trust the tool actually
+needs.
+
+Question 3 says running your own search costs little against a curated pool (+0.008, +0.044),
+consistent with §7's finding that search targeting is worth almost nothing.
+
+**This also sharpens §7's existing mechanistic sentence.** §7 currently says "it is not a search
+problem; it is a screening problem", meaning analysis-level selection. In this repo's stage names
+that selection is ANNOTATION, not screening, and the sentence reads as the opposite of what it
+means. Reword it to name annotation explicitly.
+
+**Social cannot be decomposed**, and the reason is the tracked naming violation: its
+annotation-only runs carry independently drifted annotation criteria (`v2-annotation-only` =
+`e02f49ac` against `v2` = `5a843dee`), so no three of its family members share a criteria set.
+Fixing that violation would add a third decomposable project.
