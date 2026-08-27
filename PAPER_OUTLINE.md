@@ -877,9 +877,12 @@ Beyond the arc above:
    **[partial]**
 2. **Sensitivity to model, from social.** Social is the natural home for a model comparison,
    because its `v3-*` variants differ along the model axis while holding screening fixed:
-   `v3-all_pmids-multi_analysis-ft` (F1 0.806) vs `-gpt52` (0.784) is ready-made. "Does this
-   need a frontier model" is the first question a practitioner asks and it is nearly free to
-   answer here. **[partial]**
+   `v3-allstudies` (F1 0.806; renamed from `v3-all_pmids-multi_analysis-ft` on 2026-08-27) vs
+   `v3-all_pmids-multi_analysis-ft-gpt52` (0.784) is ready-made. "Does this need a frontier
+   model" is the first question a practitioner asks and it is nearly free to answer here.
+   Note 0.806 is the *curated-pool* arm, not social's canonical run — canonical `v3` scores
+   F1 0.565 on its own search. The model contrast remains valid because both sides screen the
+   same 486-PMID pool, but the figure must not be reported as social's headline. **[partial]**
 
    ~~and the `multi_analysis` variants give a prompt-type one~~ — **STRUCK, 2026-08-26.** There
    is no prompt-type contrast in this project. All 15 social configs resolve to
