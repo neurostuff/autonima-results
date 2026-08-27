@@ -18,19 +18,30 @@ So each of these arms screened its query hits **plus** the 486-PMID curated pool
 every gold study by construction. For `v3-search-all_pmids-multi_analysis-ft`, the arm the
 cross-project overrides used to point at:
 
-| | n unique PMIDs |
+Measured from each arm's own `outputs/abstract_screening_results.json` (all three are identical):
+
+| | n |
 |---|---|
-| query alone | 1024 |
-| curated pool | 486 |
+| query hits | 1023 |
+| curated pool (486 listed, 485 retrievable) | 485 |
 | overlap | 445 |
-| union actually screened | 1065 |
+| union, unique PMIDs | 1063 |
+| union, screening **records** | 1508 |
 
 Gold coverage went from 0.952 (219/230, query alone) to 1.000 — the pool handed the arm 11 gold
 studies its own search would have missed. The bias is modest but real, and these arms were never a
 measurement of search in isolation. `../v3.yaml` (query only) replaces them.
 
-Note when reading these runs' `search_results.json`: it stores the **pre-dedup concatenation**,
-1510 entries for the 1065 unique PMIDs above.
+There is **no dedup anywhere** — not in `search_results.json` and not before screening. `search()`
+builds its `studies` list by iterating the raw concatenated `pmids`, so a PMID in both sources yields
+two `Study` objects that flow through independently. The 445 overlapping PMIDs were each screened
+**twice, as separate LLM calls** (445/445 with distinct timestamps), which is ~30% redundant
+abstract-screening spend on each of these runs. All 445 pairs agreed on the verdict, so the
+duplication cost money and inflated the precision denominators but changed no decision.
+
+That padding is why these arms' precision reads low: search precision 0.224 here versus 0.490 for the
+same criteria on the curated pool alone (`../v3-allstudies`), and 0.407 versus 0.690 at full text.
+Recall is identical across the two, since the extra records are duplicates and non-gold.
 
 ## Exact duplicate
 

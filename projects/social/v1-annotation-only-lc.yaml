@@ -32,18 +32,20 @@ annotation:
   model: "gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
   prompt_type: "multi_analysis"
-  # WARNING: autonima does not implement `local_evidence` -- the key appears nowhere in the
-  # codebase and is not passed to AnnotationConfig, so this entire block is silently
-  # DROPPED at config load. The `-lc` suffix names a feature that never ran; this run is
-  # equivalent to a plain annotation-only run with these metadata_fields.
-  local_evidence:
-    enabled: true
-    stage2_include_fulltext: false
-    force_title_abstract: true
-    reuse_cache: true
-    overwrite: false
-    on_extraction_failure: "fallback_to_annotation"
-    cache_file: "annotation_local_evidence.json"
+  # DISABLED -- NEVER RAN. autonima has no `local_evidence` feature: the key appears nowhere in
+  # the codebase and ConfigManager builds AnnotationConfig from an explicit kwarg list, so this
+  # block was silently DROPPED at config load every time this config was executed. Commented
+  # out so the file records what actually ran. The `-lc` suffix names a feature that never
+  # existed; this run is equivalent to a plain annotation-only run with the metadata_fields
+  # below. Filed upstream as https://github.com/neurostuff/autonima/issues/58.
+  # local_evidence:
+  # enabled: true
+  # stage2_include_fulltext: false
+  # force_title_abstract: true
+  # reuse_cache: true
+  # overwrite: false
+  # on_extraction_failure: "fallback_to_annotation"
+  # cache_file: "annotation_local_evidence.json"
   metadata_fields:
     - "analysis_name"
     - "analysis_description"

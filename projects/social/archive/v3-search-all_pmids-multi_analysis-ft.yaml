@@ -1,3 +1,30 @@
+# ARCHIVED -- CONTAMINATED ARM. Do not use for search or screening results.
+#
+# This config sets BOTH `query` and `pmids_file`. autonima UNIONS the two rather than preferring
+# one: `search/pubmed.py` does `pmids +=` the query hits, then `pmids +=` the file. The docstring at
+# `pubmed.py:51` says the query is ignored, which is the opposite of the behaviour. Filed upstream as
+# https://github.com/neurostuff/autonima/issues/57.
+#
+# So this arm screened its query hits PLUS the 486-PMID curated pool, which contains all 230 gold
+# studies by construction. Measured from this run's own abstract_screening_results.json:
+#
+#   query hits 1023 + pool members screened 485, 445 in both -> 1063 unique, but 1508 RECORDS,
+#   because the concatenated list is never deduped and those 445 were each screened TWICE as
+#   separate LLM calls (all 445 pairs agreed on the verdict, so it cost money and inflated the
+#   precision denominators without changing any decision).
+#
+#   gold coverage: 219/230 = 0.952 by query alone -> a guaranteed 1.000 for the union.
+#
+# The pool injection handed this arm the 11 gold studies its search would have missed, so its search
+# recall is an artifact of the config, not a measurement. Its precision is depressed by the padding
+# and the duplicates (search 0.224 here vs 0.490 for the same criteria on the curated pool alone).
+#
+# What actually ran is preserved verbatim -- both keys are left in place deliberately, since the
+# union is the behaviour that produced these outputs. `prompt_type` was added explicitly; it was
+# unset and the loader default is "multi_analysis", so this is a no-op record of what ran.
+#
+# Superseded by projects/social/v3.yaml (same query, no pmids_file) -- an honest search arm.
+
 search:
   database: "pubmed"
   pmids_file: "/home/zorro/repos/autonima-results/projects/social/validation_ids/all_pmids.txt"
@@ -59,6 +86,7 @@ annotation:
   enabled: true
   model: "gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
+  prompt_type: "multi_analysis"  # explicit: this is the loader default, and what this run used
   metadata_fields:
     - "analysis_name"
     - "analysis_description"
