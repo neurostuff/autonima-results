@@ -1207,3 +1207,43 @@ Effect if each class were fixed (full-text stage, recall within search):
 
 Only the B-class 25% is addressable by better criteria writing. The A-class 75% is addressable
 only by choosing to contradict the source paper.
+
+## The pooled best-baseline comparison (§7)
+
+Per-project baseline means are not comparable to each other, because the baselines are not all
+the same kind of thing. Most sub-analyses have a **targeted** arm — a narrowed search a real
+competitor would plausibly run. Three do not: `emotion_regulation_2022`'s `decrease`, `increase`
+and `maintain` are contrast *directions* within one paradigm, and no query targets
+"down-regulation" as against "up-regulation". For those the broad arm is not a fallback, it is
+genuinely the best baseline anyone could build.
+
+So the unit of comparison is the **sub-analysis column**, not the project, and each column is
+scored against the best baseline that could exist for it. `scripts/compile_best_baselines.py`
+emits this as `reports/cross_project_best_baseline.csv`.
+
+    definition                          autonima   baseline   delta   ahead
+    best available (targeted if any)      0.487      0.397    +0.090   29/35
+    strongest (max of targeted, broad)    0.487      0.401    +0.086   27/35
+
+**35 columns across 9 projects; 32 targetable, 3 not.** Report the *strongest* row: in 8 of the
+35 columns the broad arm actually outscores the targeted one — narrowing the search made the
+baseline weaker — and the `available` definition would credit autonima with beating the weaker of
+the two. The two differ by 0.004, which is the useful part: the conclusion does not depend on
+the choice.
+
+    columns where narrowing made the baseline WEAKER (broad > targeted)
+      problem_solving/demand_mni_final        sub 0.468  broad 0.511
+      executive_function/inhibition           sub 0.604  broad 0.638
+      social/soccomm_merged                   sub 0.549  broad 0.579
+      social/self_merged                      sub 0.364  broad 0.386
+      vbm_of_substance_use/stimulants         sub 0.105  broad 0.113
+      decision_making/rdm_july2019            sub 0.138  broad 0.145
+      vbm_of_substance_use/cannabis           sub 0.030  broad 0.033
+      decision_making/adm_july2019            sub 0.284  broad 0.285
+
+**Why this framing is the honest one.** Pooling columns rather than averaging project means also
+stops a project with one column (`vbm_of_ptsd`) counting as much as one with six
+(`vbm_of_substance_use`), and it removes the mixed-denominator problem that appears when a
+project's targeted margin is averaged over columns having no targeted arm — which is exactly what
+`emotion_regulation_2022` would otherwise do (mean over 4 columns against a sub arm existing for
+1).
