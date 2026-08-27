@@ -3,7 +3,10 @@
 
 search:
   database: "pubmed"
-  pmids_file: "<PATH_TO_PMIDS_FILE>"  # e.g., projects/<project_name>/validation_ids/all_pmids.txt
+  # Set EITHER query OR pmids_file, not both: autonima UNIONS them (search hits, then file
+  # contents), so supplying both injects the curated pool into a search-driven run and inflates
+  # its recall. Uncomment only the one you need.
+  # pmids_file: "<PATH_TO_PMIDS_FILE>"  # e.g., projects/<project_name>/validation_ids/all_pmids.txt
   query: "<PUBMED_QUERY_STRING>"
   max_results: 5000
   email: "<YOUR_EMAIL@example.com>"

@@ -1382,3 +1382,59 @@ undifferentiated target will score high on the first and zero on the second.
 **Implication for the paper's framing.** Annotation's value is conditional on the sub-analyses
 being real subsets. That is a scoping statement about which meta-analyses this tool helps with,
 and it is more useful to a reader than an unconditional average would be.
+
+## Correction: social's "search-driven" arms had the gold pool injected (2026-08-27)
+
+Found while checking whether social's existing runs could support a search / screening / annotation
+decomposition. They could not, and the reason matters for numbers already in the cross-project
+tables.
+
+**The mechanism.** `autonima`'s searcher UNIONS `query` and `pmids_file` when both are set —
+`pmids += search_hits`, then `pmids += file_contents` (`autonima/search/pubmed.py`, in `search()`).
+The docstring at `pubmed.py:51` claims the query is *ignored* when a PMID source is present, which
+is the opposite of what the code does. Filed as
+[autonima#57](https://github.com/neurostuff/autonima/issues/57).
+
+**Who was affected.** A corpus-wide audit found exactly four configs setting both keys: social's
+three `v3-search-all_pmids-*` arms, plus `projects/template_/v1.yaml` (boilerplate, now commented
+out so the pattern stops propagating). No other project was affected.
+
+**Size of the bias.** For `v3-search-all_pmids-multi_analysis-ft` — the arm the cross-project
+overrides pointed at:
+
+| | n unique PMIDs |
+|---|---|
+| query alone | 1024 |
+| curated pool (`all_pmids.txt`) | 486 |
+| overlap | 445 |
+| union actually screened | 1065 |
+
+Gold coverage: **0.952** for the query alone (219/230) → **1.000** for the union. The injected pool
+handed the arm 11 gold studies its own search would have missed. So the bias is real but modest —
+this is not a case where the pool did the retrieval work. The arm's screening numbers are
+optimistic by roughly that margin, and, more importantly, they were never a measurement of search
+in isolation.
+
+**What replaces it.** `projects/social/v3.yaml` — query only, no injected PMIDs, criteria and
+annotation mode identical to `v3-allstudies` and the new `v3-annotation-only`. The cross-project
+overrides now point here. This is social's first genuinely search-driven arm at v3 criteria and the
+third leg that makes the project decomposable.
+
+**Two non-differences, corrected.** An earlier note in this outline and in the v3 config headers
+listed `prompt_type` and `include_all_analyses` among the reasons social's older runs were not
+mode-comparable. Both are wrong: `prompt_type` unset **defaults to** `multi_analysis`
+(`config.py:446`), and `include_all_analyses` is the deprecated spelling of
+`create_all_included_annotations`, which defaults to `true` — the key is not read anywhere in the
+current codebase and is not in the deprecation check's `legacy_keys` list, so it was silently
+ignored rather than erroring. Verified by resolving both configs through `ConfigManager` and
+comparing `AnnotationConfig.model_dump()`: identical. The two stragglers carrying it
+(`social/v2.yaml`, `social/v2-all_pmids.yaml`) were normalised to the current spelling, a
+confirmed no-op.
+
+The one real annotation difference stands: **v2 lacks `study_fulltext`** in `metadata_fields`, which
+is why it is not a substitute for the new arm.
+
+A caution for anyone counting from these files: `search_results.json` stores the **pre-dedup
+concatenation** — 1510 entries for the 1065 unique PMIDs above. An earlier draft of this note
+inferred near-zero query/pool overlap from that number before the set arithmetic
+(1024 + 486 − 445 = 1065) settled it.
