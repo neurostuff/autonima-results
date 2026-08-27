@@ -1032,17 +1032,16 @@ paper; a narrowed search window still qualifies, because the CRITERIA are the pa
 the 1988-2008 window was inferred from the gold set's range. `v1-2010` is the archived original
 window and can be ignored.
 
+### Resolved 2026-08-26 (emotion_regulation_2022)
+
+The ER blockers listed here are cleared. It now has a plain search-driven run (`v2`), so it
+appears in the screening roll-up; its annotation criteria were drafted from the paper and
+trialled; and its baseline uses the *same query* as the pipeline arm, so the end-to-end
+comparison no longer measures a difference between two searches. Its gold was also repaired —
+the Sleuth export had been reading the wrong columns.
+
 ### Tracked, not yet done
 
-- **emotion_regulation_2022 needs a plain `vN.yaml`** (not `-allstudies`). All three existing ER
-  configs are `-allstudies` variants, so the project has no canonical family at all and cannot
-  appear in the screening roll-up, which selects plain `vN`. Wanted eventually; no blocker.
-- **ER annotation criteria are drafted but untrialled.** They live in `v2-annotation-only.yaml`
-  deliberately: trial there first (88 gold PMIDs, screening skipped, annotation is the only stage
-  under test), then port to `v2-allstudies.yaml` and re-run that with the stage enabled. Under the
-  naming convention those two must then share the criteria byte-for-byte. Numbered v2, not v3,
-  because v2-allstudies is the screening version this project works from -- v3-allstudies regressed
-  (full-text TP 42 -> 19) and is treated as a failed experiment.
 - **Sparse analysis names are a recurring annotation failure, patched per-project.** Analyses
   parsed as `analysis_0` (or with otherwise uninformative names) get rejected for having no
   informative name, and three projects now carry a criterion telling the model that a blank name
@@ -1059,13 +1058,6 @@ window and can be ignored.
   without a precision collapse. Note this is a *different* v3 from the archived one, which failed
   by being MORE restrictive (its I11 change scored missing coordinates in our retrieved text as
   ineligibility). Numbering will need care.
-
-- **ER's baseline and pipeline arms are not currently comparable.** The broad baseline query
-  reaches 81 of 88 gold studies (0.920) from 2,909 hits; the project's own search pool holds only
-  56 of 88 (0.636). The baseline would search a corpus with a third more gold in it than the
-  pipeline ever sees, so an end-to-end margin computed today would measure a difference between
-  two searches rather than the value of screening and annotation. Blocked on the plain `vN.yaml`
-  item above.
 
 - **Three naming-convention violations remain**, all pre-existing: executive_function/v1 (its
   `v1-annotation-only` annotation differs from `v1`'s), social/v2, social/v3.
