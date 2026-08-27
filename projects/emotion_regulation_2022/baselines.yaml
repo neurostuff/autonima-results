@@ -44,6 +44,14 @@
 # no screening. Do not report an ER end-to-end margin until the pipeline arm runs a real search
 # of comparable reach -- which is the tracked "ER needs a plain vN.yaml" item.
 #
+# WHY THE GAP EXISTS, measured rather than assumed. It is not that the project pool is careless:
+# the paper's exact keywords reproduce it precisely (854 hits, 56/88 gold -- the pool's own
+# coverage). The authors' PubMed keyword list omits the abbreviation "fMRI" while spelling out
+# "functional magnetic resonance imaging", so on PubMed alone it had a 0.636 ceiling. Their search
+# worked because they ALSO queried EMBASE, PsychINFO and Medline and chased reference lists. We
+# can only reach PubMed, so a faithful reproduction inherits the ceiling without the compensation.
+# Restoring "fMRI" is what lifts this baseline to 0.898.
+#
 # The annotation-only arm is unaffected: it works from the fixed 88-PMID gold list and does not
 # involve a search at all.
 #
@@ -56,7 +64,11 @@
 meta_pmid: "35413444"
 
 shared:
-  # fMRI/neuroimaging clause, from the paper's stated modality keywords.
+  # The paper's modality keywords PLUS the abbreviation and MeSH terms. This is the one
+  # deliberate deviation, and it is where all the recall lives: the paper's stated list spells
+  # out "functional magnetic resonance imaging" and "functional MRI" but never includes "fMRI",
+  # which is what most fMRI abstracts actually use. Measured against the gold, adding fMRI[tiab]
+  # and the MeSH terms takes recall 0.636 -> 0.898 and recovers 23 studies.
   modality: >-
     "functional magnetic resonance imaging"[tiab] OR "functional MRI"[tiab] OR fMRI[tiab] OR
     neuroimaging[tiab] OR "Magnetic Resonance Imaging"[Mesh] OR "Brain Mapping"[Mesh]
@@ -75,8 +87,9 @@ baselines:
       Broad emotion-regulation/reappraisal search, serving all four manual annotations. There are
       no per-sub-annotation arms because decrease/increase/maintain/reappraisal are contrast
       directions within a single paradigm rather than separable search topics.
+    # The paper's three topic keywords verbatim. Deliberately NOT expanded: measured against
+    # the gold, adding reappraise*, "cognitive reappraisal", "emotional regulation",
+    # "regulation of emotion", up/downregulat* and the MeSH term contributed ~1,900 extra hits
+    # and recovered ZERO additional gold studies (56/88 either way). Pure noise.
     topic: >-
-      "emotion regulation"[tiab] OR "affective regulation"[tiab] OR "emotion regulation"[Mesh] OR
-      reappraisal[tiab] OR reappraise*[tiab] OR "cognitive reappraisal"[tiab] OR
-      "emotional regulation"[tiab] OR "regulation of emotion"[tiab] OR
-      "downregulat*"[tiab] OR "down-regulat*"[tiab] OR "upregulat*"[tiab] OR "up-regulat*"[tiab]
+      "emotion regulation"[tiab] OR "affective regulation"[tiab] OR reappraisal[tiab]
