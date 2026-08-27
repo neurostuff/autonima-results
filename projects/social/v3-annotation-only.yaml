@@ -8,8 +8,9 @@
 # (search/pubmed.py: `pmids +=` the search hits, then `pmids +=` the file; the docstring at
 # pubmed.py:51 claiming the query is ignored is stale). So those arms screened their query hits
 # PLUS the 486-PMID curated pool, which contains every gold study by construction:
-# v3-search-all_pmids-multi_analysis-ft screened 1065 unique studies (query 1024 + pool 486, minus
-# 445 overlapping). The injected pool lifted its gold coverage from 0.952 -- what the query reaches
+# v3-search-all_pmids-multi_analysis-ft screened 1063 unique studies (query 1023 + 485 screened
+# pool members, 445 in both) -- and screened those 445 TWICE, 1508 records in all, since the
+# concatenated list is never deduped. The injected pool lifted its gold coverage from 0.952 -- what the query reaches
 # on its own, 219/230 -- to 1.000, handing it 11 gold studies its search would have missed. The
 # bias is modest but real: a search arm that cannot fail to retrieve gold overstates recall, and no
 # social run measured search in isolation. This file is that measurement.
@@ -17,7 +18,11 @@
 # v2 is not a substitute either: it lacks study_fulltext in annotation metadata_fields. Two things
 # that are NOT differences, contrary to an earlier note here: prompt_type unset defaults to
 # multi_analysis, and include_all_analyses is the deprecated spelling of
-# create_all_included_annotations, which defaults to true.
+# create_all_included_annotations, which defaults to true. With those two removed, v2's screening
+# AND annotation criteria are byte-identical to v3-allstudies' -- so under the naming convention
+# (version tracks criteria, suffix tracks everything else) v2 and the v3 family are one criteria
+# generation, and v2's separate number is itself a convention violation. Left as-is for now: v2 is
+# already run and reported, and renaming it would churn every table that cites it.
 #
 # Until now the annotation criteria that EVERY social full run uses had never been measured in
 # isolation: the four existing annotation-only runs all carry different criteria, none matching

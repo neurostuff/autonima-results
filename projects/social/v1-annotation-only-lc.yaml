@@ -32,6 +32,10 @@ annotation:
   model: "gpt-5-mini-2025-08-07"
   create_all_included_annotations: true
   prompt_type: "multi_analysis"
+  # WARNING: autonima does not implement `local_evidence` -- the key appears nowhere in the
+  # codebase and is not passed to AnnotationConfig, so this entire block is silently
+  # DROPPED at config load. The `-lc` suffix names a feature that never ran; this run is
+  # equivalent to a plain annotation-only run with these metadata_fields.
   local_evidence:
     enabled: true
     stage2_include_fulltext: false
