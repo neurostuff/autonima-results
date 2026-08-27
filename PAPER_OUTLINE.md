@@ -1303,3 +1303,60 @@ means. Reword it to name annotation explicitly.
 annotation-only runs carry independently drifted annotation criteria (`v2-annotation-only` =
 `e02f49ac` against `v2` = `5a843dee`), so no three of its family members share a criteria set.
 Fixing that violation would add a third decomposable project.
+
+## What annotation buys once you already have the right studies (§7)
+
+Both sides of this comparison come from the **same annotation-only run**: the same fixed gold
+pool, the same retrieved texts, the same parsed analyses. Only the selection differs.
+
+    all_analyses   every parsed analysis from those studies, pooled — perfect study selection,
+                   no analysis selection at all
+    <column>       only the analyses annotation assigned to that construct
+
+`annotated − all_analyses` therefore answers the practitioner's question directly: **given that
+you already found the right papers, how much closer to the manual meta-analysis does
+analysis-level selection get you?** Nothing else varies. Emitted by `scripts/annotation_value.py`
+as `reports/annotation_value.csv`. Annotation-only runs are used precisely because they have no
+screening, so study selection cannot leak into the difference.
+
+**35 columns across all 9 projects: mean dice gain +0.067, median +0.037, positive in 26 of 35.**
+
+    project                   mean gain   positive
+    vbm_of_substance_use        +0.156      5/6
+    emotion_regulation_2022     +0.144      4/4
+    cue_reactivity              +0.081      3/3
+    vbm_of_ptsd                 +0.078      1/1
+    problem_solving             +0.069      5/5
+    decision_making             +0.049      2/3
+    dementia                    +0.039      4/4
+    social                      -0.007      2/5
+    executive_function          -0.028      0/4
+
+The spread is the interesting part. Where a project's sub-analyses are genuinely distinct subsets
+of its pool, annotation earns a lot — `vbm_of_substance_use/alcohol` gains **+0.446**, opioids
++0.209, stimulants +0.238, because pooling all analyses from a substance-use corpus buries the
+drug-specific signal. Where the sub-analyses are near-synonymous with the whole pool, it earns
+nothing: `executive_function` is negative on all four columns, and its `all` column is by
+construction almost the same set as `all_analyses`.
+
+### Annotation F1 and map improvement measure different things
+
+Also reported per column is the annotation F1 on matched analyses — of the analyses that matched
+a gold analysis, how often annotation put them in the same construct. **Correlation with dice gain
+is only r = +0.26**, and the disagreements are systematic rather than noise:
+
+    project              column           annotation F1   dice gain
+    executive_function   inhibition           0.957         -0.019
+    executive_function   all                  0.955         -0.025
+    executive_function   working_memory       0.941         -0.014
+    social               all_merged           0.929         -0.025
+
+These are columns where annotation labels almost perfectly and the resulting map is no better than
+pooling everything. That is not a failure of annotation — it means **selection had nothing to do**,
+because the target subset was already most of the pool. Report both numbers: F1 says whether the
+labelling decision is right, dice says whether it changed the answer, and a good schema on an
+undifferentiated target will score high on the first and zero on the second.
+
+**Implication for the paper's framing.** Annotation's value is conditional on the sub-analyses
+being real subsets. That is a scoping statement about which meta-analyses this tool helps with,
+and it is more useful to a reader than an unconditional average would be.
