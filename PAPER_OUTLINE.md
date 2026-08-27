@@ -471,30 +471,66 @@ approach.
   Framework: `scripts/run_baseline_searches.py` + `projects/<p>/baselines.yaml`. **[have]**
   for all 8 projects, 31 sub-annotations.
 
-**Full result — all 8 projects, 31 sub-annotations**, mean R² per project:
+**Full result — 9 projects, 35 sub-analysis columns.** The unit is the COLUMN, not the project,
+and each column is scored against the best baseline that could exist for it: the targeted arm
+wherever one was defined, the broad arm only where targeting is impossible. Emitted by
+`scripts/compile_best_baselines.py` as `reports/cross_project_best_baseline.csv`.
 
-| project | n | autonima | targeted search | broad search | autonima − targeted |
+| project | n | autonima | best baseline | Δ |
+|---|---|---|---|---|
+| emotion_regulation_2022 | 4 | **0.663** | 0.309 | +0.354 |
+| vbm_of_ptsd | 1 | **0.456** | 0.247 | +0.209 |
+| cue_reactivity | 3 | **0.568** | 0.457 | +0.111 |
+| vbm_of_substance_use | 6 | **0.255** | 0.153 | +0.102 |
+| problem_solving | 5 | **0.629** | 0.560 | +0.069 |
+| dementia | 4 | **0.330** | 0.275 | +0.055 |
+| executive_function | 4 | **0.642** | 0.612 | +0.030 |
+| social | 5 | 0.520 | 0.527 | −0.007 |
+| decision_making | 3 | 0.352 | **0.367** | −0.015 |
+
+**Pooled over the 35 columns: autonima 0.487 vs 0.396, Δ +0.091, ahead in 29 of 35.** Median Δ is
++0.046 — the mean sits above it because a few large wins skew the distribution, so quote both.
+Pooling columns rather than averaging project means is deliberate: it stops a one-column project
+(`vbm_of_ptsd`) weighing as much as a six-column one (`vbm_of_substance_use`), and it avoids the
+mixed-denominator artefact that arises when a project's targeted margin is averaged over columns
+having no targeted arm.
+
+**Report the two losses rather than burying them.** `social` has the corpus's weakest annotation,
+and `decision_making` is the only project where a narrowed baseline beats the pipeline outright.
+`emotion_regulation_2022` heads the table, but three of its four columns are scored against a
+broad arm (see below), so it is the least contested comparison in the set — worth saying so.
+
+### Targeting the search is worth almost nothing, and sometimes less than nothing
+
+Across the 34 columns having both arms, mean targeted − broad is **+0.023 and the median is
+exactly 0.000**, despite targeted queries cutting candidate pools several-fold. **In 10 of those
+34 columns the broad arm actually scores HIGHER** — narrowing the search made the baseline worse.
+
+`emotion_regulation_2022` supplies the cleanest test of when targeting pays, because all four of
+its columns were probed deliberately:
+
+| column | targetable? | targeted pool | recall | sub R² | broad R² |
 |---|---|---|---|---|---|
-| vbm_of_ptsd | 1 | **0.456** | 0.247 | 0.247 | +0.209 |
-| cue_reactivity | 3 | **0.599** | 0.457 | 0.433 | +0.142 |
-| vbm_of_substance_use | 6 | **0.255** | 0.153 | 0.123 | +0.102 |
-| problem_solving | 5 | **0.629** | 0.560 | 0.549 | +0.069 |
-| dementia | 4 | **0.330** | 0.275 | 0.272 | +0.055 |
-| executive_function | 4 | **0.633** | 0.612 | 0.598 | +0.021 |
-| social | 5 | 0.520 | 0.527 | **0.529** | −0.007 |
-| decision_making | 3 | 0.346 | **0.367** | 0.271 | −0.016 |
+| reappraisal | yes | 135 studies | 0.761 | **0.523** | 0.365 |
+| decrease | yes | 195 | 0.709 | 0.307 | **0.316** |
+| increase | yes | 167 | 0.667 | 0.173 | **0.198** |
+| maintain | **no** | — | — | — | 0.233 |
 
-**autonima wins 6 of 8 projects.** Report the two losses rather than burying them: `social`
-is the project with the corpus's weakest annotation, and `decision_making` is the only case
-where a narrowed baseline beats the pipeline outright.
+Only `reappraisal` yields a stronger baseline, and it has the *smallest* pool of the three. The
+lesson is that **focus only pays when recall survives it**: the decrease and increase arms shed
+more gold studies (recall 0.709, 0.667) than their tighter pools win back.
 
-And the key secondary finding, which **now holds corpus-wide rather than on one project**:
-**targeting the search is worth almost nothing on its own.** Mean targeted − broad across all
-eight projects is **+0.022** (per-project range −0.002 to +0.096), despite the targeted queries
-cutting candidate pools several-fold while retaining the same gold studies. `decision_making`
-is the sole project where targeting buys anything substantial (+0.096) — and notably it is also
-the project where the targeted baseline beats autonima, which is consistent rather than
-contradictory: where search targeting *does* work, the pipeline's advantage narrows.
+Two further findings from that probe are worth stating:
+
+- **Direction terms alone are unusable.** Searching `downregulat*` and kin for the decrease column
+  returns 9,356 hits for 37 gold studies — the vocabulary belongs to molecular biology. Targeting
+  only worked when conjoined with the regulation vocabulary.
+- **A control condition cannot be targeted at all.** `maintain` is the Look condition — viewing
+  emotional pictures with no regulation instruction. Three plausible researcher queries (emotional
+  reactivity, affective-picture viewing, both combined) are ALL worse than the broad arm on both
+  recall and precision (0.404 / 0.246 / 0.368 against 0.877). A control condition is not what a
+  paper is *about*, so it never reaches the title or abstract. This is the one column in the
+  corpus where the broad arm is not a fallback but genuinely the best baseline obtainable.
 
 **This is the paper's sharpest mechanistic point.** What limits a screening-free pool is not
 its size but that irrelevant analyses *inside retained papers* still contribute coordinates.
