@@ -44,6 +44,8 @@ projects:
     canonical:
       verbatim: v1          # no header; earliest, precedes all report feedback
       manual:   v4          # "Modified from v4 to revert correlational analysis exclusion criteria"
+      best:     v6
+      # best-reason: highest screening F1 (0.455) and much the best recall (0.853)
       latest:   v6          # Claude; search-only change carrying v5's GPT-written criteria
       note: >-
         v2/v3/v4 are all hand-edited by the author. v5 is where authorship changes hands
@@ -51,6 +53,8 @@ projects:
     annotation_only:
       verbatim: null
       manual:   null
+      best:     v5-annotation-only
+      # best-reason: only annotation-only run; fair dice 0.699
       latest:   v5-annotation-only
       review: >-
         The only annotation-only run carries v5's GPT-written criteria, so this family has no
@@ -61,6 +65,8 @@ projects:
     canonical:
       verbatim: v1
       manual:   null
+      best:     v3
+      # best-reason: highest screening F1 (0.312)
       latest:   v3          # Claude, full-text screening
       review: >-
         v1's header says "Used ChatGPT to refine query in an evaluation loop", so its SEARCH was
@@ -69,16 +75,22 @@ projects:
     annotation_only:
       verbatim: null
       manual:   null
+      best:     v2-annotation-only
+      # best-reason: only annotation-only run
       latest:   v2-annotation-only    # GPT, "refine annotations using reports"
 
   dementia:
     canonical:
       verbatim: v1
       manual:   v3          # v2 and v3 are both hand-edited; v3 is the highest
+      best:     v3
+      # best-reason: highest screening F1 (0.545)
       latest:   v3          # no agent-written plain vN exists; v4/v5 are allstudies only
     allstudies:
       verbatim: v1-allstudies
       manual:   v3-allstudies
+      best:     v5-allstudies
+      # best-reason: the Claude annotation schema, the family latest
       latest:   v5-allstudies         # Claude, annotation schema
       note: >-
         The cleanest three-tier set in the corpus: all three tiers exist, in the same family,
@@ -86,12 +98,16 @@ projects:
     annotation_only:
       verbatim: null                  # v2-annotation-only is already an iteration
       manual:   v3-annotation-only
+      best:     v3-annotation-only
+      # best-reason: best fair dice of 3 (0.470)
       latest:   v3-annotation-only
 
   emotion_regulation_2022:
     canonical:
       verbatim: null
       manual:   null
+      best:     v4
+      # best-reason: CONTESTED: v4 has far better recall (0.659 vs 0.500) but lower F1 (0.420 vs 0.492) than v2
       latest:   v4
       note: >-
         v4 (RUN 2026-08-26) is the deliberately UNFAITHFUL screening + repaired annotation
@@ -106,6 +122,8 @@ projects:
     annotation_only:
       verbatim: null
       manual:   null
+      best:     v4-annotation-only
+      # best-reason: best fair dice of 2 (0.650 vs 0.603)
       latest:   v4-annotation-only
       note: >-
         RUN 2026-08-27. v4-annotation-only carries v4's repaired annotation criteria over the same
@@ -117,6 +135,8 @@ projects:
     allstudies:
       verbatim: v1-allstudies
       manual:   v2-allstudies         # NOT v3 -- v3 regressed and is archived
+      best:     v4-allstudies
+      # best-reason: CONTESTED: recall 0.602 vs v2 0.477, F1 0.475 vs 0.519
       latest:   v4-allstudies         # v4 criteria over the fixed pool
       note: >-
         STALE BLOCKER REMOVED 2026-08-26: nmb_mappings.json is filled in and the manual reference
@@ -130,6 +150,8 @@ projects:
     canonical:
       verbatim: v1
       manual:   null
+      best:     v1
+      # best-reason: CONTESTED: v1 has the highest F1 (0.163) but v2/v3 have better recall (0.386 vs 0.322)
       latest:   v3                    # Claude; combines v2 screening + v3 annotation
       note: >-
         RESOLVED 2026-08-26: verbatim is v1, not v1-2010. "Verbatim" means an attempt to stay
@@ -141,6 +163,8 @@ projects:
     annotation_only:
       verbatim: null
       manual:   v1-annotation-only
+      best:     v1-annotation-only
+      # best-reason: the honest v1 still beats the tuned v3 at map level (0.566 vs 0.556)
       latest:   v3-annotation-only    # Claude
       review: >-
         v1-annotation-only's annotation criteria differ from v1's, so it is an independent
@@ -151,6 +175,8 @@ projects:
     canonical:
       verbatim: v1
       manual:   null
+      best:     v2
+      # best-reason: v1 and v2 tie on screening F1; v2 carries the repaired annotation
       latest:   v2                    # Claude-revised annotation; identical to v1 otherwise
       review: >-
         RENUMBERED 2026-08-26 (d589fa7): the project was collapsed to v1/v2 and the older runs
@@ -166,6 +192,8 @@ projects:
     annotation_only:
       verbatim: v1-annotation-only
       manual:   null
+      best:     v2-annotation-only
+      # best-reason: tuning clearly helped: fair dice 0.633 vs v1 0.514
       latest:   v2-annotation-only    # Claude (formerly v3-annotation-only)
       note: >-
         The GPT-authored annotation-only run was archived in the same reorganisation, so this
@@ -175,6 +203,8 @@ projects:
     canonical:
       verbatim: null
       manual:   v2
+      best:     v3
+      # best-reason: the new canonical search-driven run; v2 lacked study_fulltext
       latest:   v3
       review: >-
           v3 (created 2026-08-27) is social's canonical search-driven run: v3-allstudies' criteria
@@ -186,6 +216,8 @@ projects:
     annotation_only:
       verbatim: v1-annotation-only
       manual:   v5-annotation-only    # renamed from v3-annotation-only 2026-08-27
+      best:     v4-annotation-only
+      # best-reason: CONTESTED: v1 leads on fair dice (0.570 vs 0.550) but v4 carries the multi-label fix
       latest:   v4-annotation-only    # Claude, multi-label fix
       note: >-
         The other complete three-tier set. Also the project where the tiers disagree most
@@ -195,6 +227,8 @@ projects:
     allstudies:
       verbatim: null
       manual:   null
+      best:     v3-allstudies
+      # best-reason: the family latest
       latest:   v3-allstudies    # renamed from v3-all_pmids-multi_analysis-ft 2026-08-27
       note: >-
         Screens the 486-PMID curated pool. Only one tier: social's earlier pool runs
@@ -217,17 +251,23 @@ projects:
     canonical:
       verbatim: v1
       manual:   v1                    # never iterated; verbatim and manual are the same run
+      best:     v1
+      # best-reason: only run
       latest:   v1
       note: Single-version project. Contributes to no tier contrast.
     annotation_only:
       verbatim: v1-annotation-only
       manual:   v1-annotation-only
+      best:     v1-annotation-only
+      # best-reason: only run; fair dice 0.875, the corpus high
       latest:   v1-annotation-only
 
   vbm_of_substance_use:
     canonical:
       verbatim: v1
       manual:   null
+      best:     v2
+      # best-reason: CONTESTED: v1 has higher F1 (0.585 vs 0.570); v2 has better recall and the reviewed criteria
       latest:   v2                    # GPT, "Double checked criteria using GPT 5.4"
       review: >-
         v1's query was "copied from original study and expanded using suggestions by GPT" --
@@ -237,6 +277,8 @@ projects:
     annotation_only:
       verbatim: null
       manual:   null
+      best:     v2-annotation-only
+      # best-reason: only annotation-only run
       latest:   v2-annotation-only    # GPT
 
 # ---------------------------------------------------------------------------------------------

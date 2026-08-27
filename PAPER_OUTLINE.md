@@ -1076,6 +1076,45 @@ trialled; and its baseline uses the *same query* as the pipeline arm, so the end
 comparison no longer measures a difference between two searches. Its gold was also repaired —
 the Sleuth export had been reading the wrong columns.
 
+### The `best` tier, and what peeking bought
+
+`run_categories.yaml` now carries four tiers, ordered by how much gold-standard information
+reached the schema:
+
+    verbatim  transcribed from the paper before any results were seen -- the honest attempt
+    manual    the author revised by hand, having glanced at a few report examples
+    best      THE PREFERRED CONFIG: the run we would put forward, benchmark-informed tuning
+              fully allowed. Curated, not derived.
+    latest    highest version number. Mechanical, kept as a sanity check and as `best`'s fallback.
+
+`best` was added because version order stopped tracking quality, in two distinct ways. A run can
+be renamed *upward* and still be the older, worse set — social's `v5-annotation-only` is the
+pre-fix criteria while `v4-annotation-only` carries the multi-label fix. And tuning does not
+always help. Naming the preferred run explicitly removes both traps, and `verbatim` → `best` then
+measures directly what peeking was worth.
+
+**`best` differs from `latest` in exactly two places, and both are the same finding:**
+
+    executive_function / canonical         best v1                 latest v3
+    executive_function / annotation_only   best v1-annotation-only latest v3-annotation-only
+
+In executive_function the honest v1 still beats every tuned successor — fair dice 0.566 against
+v3's 0.556, and screening F1 0.163 against v2's 0.152 and v3's 0.151. Social is nearly the same
+story: its v1-annotation-only leads on fair dice (0.570 vs v4's 0.550), and `best` names v4 there
+only because v4 carries the multi-label fix that the corpus-wide annotation analysis depends on.
+Both are flagged CONTESTED in the registry.
+
+**This is a result, not bookkeeping.** Two of the corpus's nine projects cannot be improved on
+their honest first attempt by any amount of benchmark-informed iteration — and both are cognitive
+rather than clinical targets (executive function, social processes), the same two that resist
+search targeting. Report `verbatim` → `best` per project rather than as a corpus mean, because
+the mean would hide that two of nine are zero or negative.
+
+Four entries are flagged CONTESTED where recall and F1 disagree about which run is preferable:
+emotion_regulation_2022 canonical and allstudies, executive_function canonical,
+vbm_of_substance_use canonical. Each names the tradeoff in its `best-reason` field. These are
+judgement calls and should be reviewed before the tier is used for a headline number.
+
 ### Tracked, not yet done
 
 - **Sparse analysis names are a recurring annotation failure, patched per-project.** Analyses

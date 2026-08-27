@@ -21,7 +21,8 @@ things and can disagree -- F1 scores the labelling decision, dice scores the map
 and where they diverge is informative rather than contradictory.
 
 Annotation-only runs are used because they have no screening, so study selection cannot contribute
-to the difference.
+to the difference. The run picked per project is the `best` tier from run_categories.yaml -- the
+curated preferred config, which is not always the highest version number.
 """
 
 from __future__ import annotations
@@ -69,7 +70,7 @@ def main() -> int:
 
     rows = []
     for pdir in sorted(p for p in args.projects_root.iterdir() if p.is_dir() and p.name != "template_"):
-        run = resolve_tier(pdir.name, "annotation_only", "latest")
+        run = resolve_tier(pdir.name, "annotation_only", "best")
         if not run:
             continue
         M, P, F = matrix(pdir, run, "dice"), matrix(pdir, run, "pearson"), ann_f1(pdir, run)
