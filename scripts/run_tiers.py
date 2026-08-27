@@ -4,9 +4,20 @@
 The comparison scripts historically auto-picked the highest version number per project. That
 conflates three different things, which matters for the overfitting argument:
 
-    verbatim  criteria transcribed from the source paper before any results were seen
-    manual    highest version the author revised BY HAND (a few report examples inspected)
-    latest    absolute highest version, in practice agent-written from the full reports
+    verbatim  criteria transcribed from the source paper before any results were seen. The
+              honest attempt: no peeking at the benchmark.
+    manual    the author revised BY HAND, having glanced at a few report examples. Light peeking.
+    best      THE PREFERRED CONFIG. Curated, not derived: the run we would put forward as the
+              system's best showing, with benchmark-informed tuning fully allowed. Usually the
+              highest performer; not necessarily the highest version number.
+    latest    absolute highest version number. Mechanical, kept as a sanity check and as the
+              fallback when `best` is unset.
+
+`best` exists because version order stopped tracking quality. A run renamed upward can be older
+and worse than a lower-numbered one (social's v5-annotation-only is the pre-fix set, v4 is the
+fixed one), and tuning does not always help -- in executive_function and social the honest v1
+still beats every tuned successor at map level. Naming the preferred run explicitly removes both
+traps, and the gap between `verbatim` and `best` is then a direct measure of what peeking bought.
 
 Runs are registered per project AND per family, because the roll-ups select from different
 families: the screening roll-up takes plain `vN` (family "canonical"), while the analysis and
@@ -36,7 +47,7 @@ __all__ = [
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY = REPO_ROOT / "run_categories.yaml"
-TIERS = ("verbatim", "manual", "latest")
+TIERS = ("verbatim", "manual", "best", "latest")
 
 # Families keyed by role rather than by tier. They live in the same registry because they name
 # runs of the same project, but asking them for a tier is a caller error, not a missing entry.
@@ -101,10 +112,14 @@ def resolve_tier(
             return None
         fam = candidates[0]
     value = fam.get(tier)
+    if not value and tier == "best":
+        # `best` is curated and may be unset; fall back to the mechanical highest version so a
+        # caller asking for the preferred run always gets something rather than nothing.
+        value = fam.get("latest")
     return str(value) if value else None
 
 
-def add_tier_argument(parser, default: str = "latest") -> None:
+def add_tier_argument(parser, default: str = "best") -> None:
     """Attach a uniform --tier flag. Kept here so every script spells it the same way."""
     parser.add_argument(
         "--tier",
@@ -112,8 +127,8 @@ def add_tier_argument(parser, default: str = "latest") -> None:
         default=default,
         help=(
             "Which registered run to compare, from run_categories.yaml: "
-            "'verbatim' (paper-faithful, held-out), 'manual' (hand-iterated), "
-            "'latest' (highest version, agent-written). "
+            "'verbatim' (paper-faithful, no peeking), 'manual' (hand-iterated), "
+            "'best' (curated preferred run, tuning allowed), 'latest' (highest version number). "
             f"Default {default}. Falls back to auto-pick when the tier is unregistered."
         ),
     )
