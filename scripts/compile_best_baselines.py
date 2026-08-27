@@ -15,17 +15,21 @@ two. This script instead resolves the best baseline PER COLUMN and pools the col
 row compares autonima against the strongest competitor that could exist for that particular
 sub-analysis.
 
-TWO DEFINITIONS, both reported.
+THE RULE: use the targeted arm wherever one was defined, and the broad arm only where targeting
+is impossible.
 
-  available  the targeted arm when one exists, else the broad arm. Reads as "what would a
-             competent practitioner targeting this column have built?"
-  strongest  max(targeted, broad) per column. More conservative: in 8 of 35 columns the broad
-             arm actually SCORES HIGHER than the targeted one -- narrowing the search made the
-             baseline worse -- and `available` would credit autonima with beating the weaker of
-             the two. Prefer this for any headline claim.
+  available  <- PRIMARY. The targeted arm when one exists, else the broad arm. This is the
+             honest counterfactual: what would a competent practitioner aiming at this column
+             actually have built? If they would have narrowed the search, that narrowed search is
+             their baseline, whether or not it happens to score well.
+  strongest  max(targeted, broad). Reported as a robustness check only. It is tempting because it
+             looks conservative, but it is the wrong counterfactual -- it lets the baseline switch
+             arms per column with hindsight, picking whichever scored better after the fact. No
+             practitioner gets to do that.
 
-They differ little in practice (delta +0.090 vs +0.086 at time of writing), which is itself worth
-reporting: the conclusion does not depend on the choice.
+In 8 of 35 columns the broad arm outscores the targeted one, i.e. narrowing the search made the
+baseline WORSE. That is a result about when sub-targeting helps, not a reason to substitute the
+broad arm. The two definitions differ by 0.004 anyway, so the conclusion does not turn on it.
 """
 
 from __future__ import annotations
