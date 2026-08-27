@@ -24,11 +24,23 @@ from pathlib import Path
 
 import yaml
 
-__all__ = ["TIERS", "DEFAULT_REGISTRY", "load_registry", "resolve_tier", "families_for"]
+__all__ = [
+    "TIERS",
+    "NON_TIER_FAMILIES",
+    "DEFAULT_REGISTRY",
+    "load_registry",
+    "resolve_tier",
+    "families_for",
+    "resolve_decomposition",
+]
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY = REPO_ROOT / "run_categories.yaml"
 TIERS = ("verbatim", "manual", "latest")
+
+# Families keyed by role rather than by tier. They live in the same registry because they name
+# runs of the same project, but asking them for a tier is a caller error, not a missing entry.
+NON_TIER_FAMILIES = frozenset({"decomposition"})
 
 _CACHE: dict[str, dict] = {}
 
@@ -50,7 +62,11 @@ def load_registry(path: Path | str | None = None) -> dict:
 def families_for(project: str, registry: dict | None = None) -> list[str]:
     reg = registry if registry is not None else load_registry()
     entry = reg.get(project) or {}
-    return [k for k, v in entry.items() if isinstance(v, dict)]
+    return [
+        k
+        for k, v in entry.items()
+        if isinstance(v, dict) and k not in NON_TIER_FAMILIES
+    ]
 
 
 def resolve_tier(
@@ -67,11 +83,20 @@ def resolve_tier(
     """
     if tier not in TIERS:
         raise ValueError(f"unknown tier {tier!r}; expected one of {TIERS}")
+    if family in NON_TIER_FAMILIES:
+        raise ValueError(
+            f"family {family!r} is keyed by role, not by tier; "
+            f"use resolve_decomposition({project!r}) instead"
+        )
     reg = registry if registry is not None else load_registry()
     entry = reg.get(project) or {}
     fam = entry.get(family)
     if not isinstance(fam, dict):
-        candidates = [v for v in entry.values() if isinstance(v, dict)]
+        candidates = [
+            v
+            for k, v in entry.items()
+            if isinstance(v, dict) and k not in NON_TIER_FAMILIES
+        ]
         if len(candidates) != 1:
             return None
         fam = candidates[0]
@@ -92,3 +117,20 @@ def add_tier_argument(parser, default: str = "latest") -> None:
             f"Default {default}. Falls back to auto-pick when the tier is unregistered."
         ),
     )
+
+
+def resolve_decomposition(project: str, registry: dict | None = None) -> dict[str, str]:
+    """The matched search / pool / annotation arms for `project`, or {} if not registered.
+
+    These three arms share criteria and annotation mode and differ only in how studies enter
+    the pipeline, which is what makes a search / screening / annotation split interpretable.
+    """
+    reg = registry if registry is not None else load_registry()
+    fam = (reg.get(project) or {}).get("decomposition")
+    if not isinstance(fam, dict):
+        return {}
+    return {
+        role: str(name)
+        for role, name in fam.items()
+        if role != "note" and name
+    }

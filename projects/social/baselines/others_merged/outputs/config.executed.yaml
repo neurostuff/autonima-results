@@ -1,0 +1,59 @@
+search:
+  database: pubmed
+  query: '(((("functional MRI"[Title/Abstract] OR "functional magnetic resonance imaging"[Title/Abstract]
+    OR fMRI[Title/Abstract]) AND Humans[MeSH]) AND ("theory of mind"[tiab] OR mentaliz*[tiab]
+    OR mentalis*[tiab] OR "mental state*"[tiab] OR empathy[tiab] OR empathic[tiab]
+    OR perspective-taking[tiab] OR "action observation"[tiab] OR "biological motion"[tiab]
+    OR animacy[tiab] OR intention*[tiab] OR attribution*[tiab] OR "social cognition"[tiab]))
+    AND ("1995/01/01"[Date - Publication] : "2020/03/01"[Date - Publication])) NOT
+    (review[pt] OR "systematic review"[tiab] OR meta-analysis[pt])'
+  max_results: null
+  date_from: 1995/01/01
+  date_to: 2020/03/01
+  email: delavega@utexas.edu
+  pmids_file: null
+  pmids_list: null
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: false
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs/
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed/
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+annotation:
+  model: gpt-5-mini-2025-08-07
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  prompt_type: multi_analysis
+  inclusion_criteria: []
+  exclusion_criteria: []
+  annotations: []
+  enabled: true
+output:
+  directory: projects/social/baselines/others_merged
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: false
