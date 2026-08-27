@@ -1,0 +1,82 @@
+# Search baseline for emotion_regulation_2022.
+#
+# WHAT THIS IS FOR
+#
+# The baseline answers "how good is a coarse, Neurosynth-style meta-analysis of everything a
+# broad PubMed search returns?" -- no screening, no annotation, every table with coordinates
+# pooled into one map. It is the thing autonima has to beat to be worth running.
+#
+# ONE ARM ONLY, DELIBERATELY.
+#
+# Every other project in this corpus also gets per-sub-annotation baselines: a narrowed query per
+# manual annotation, because a researcher targeting only the alcohol sub-meta-analysis would put
+# "alcohol" in the search rather than reuse the broad one. That construction does not transfer
+# here. This project's four targets -- decrease, increase, maintain, reappraisal -- are not
+# separable topics but CONTRAST DIRECTIONS WITHIN ONE PARADIGM. A researcher targeting the
+# down-regulation column and one targeting the up-regulation column would run the same reappraisal
+# search and differ only in which contrasts they then selected. Narrowed arms would therefore be
+# four near-identical queries, and the "sub-targeting" comparison would measure nothing.
+#
+# That is not a guess: the same collapse was measured in social (sub-targeting caps at 47-83%
+# against a 95% broad ceiling) and problem_solving, both of which have cognitive-construct rather
+# than topic sub-annotations. ER is the clearest case of it, so it gets the broad control alone.
+# The evaluator will report baseline_sub as MISSING for all four columns, which is correct.
+#
+# QUERY PROVENANCE
+#
+# Terms are the paper's own (section 2.1, p.3): "emotion regulation", "affective regulation",
+# "reappraisal" for the topic; "neuroimaging", "functional magnetic resonance imaging",
+# "functional MRI" for the modality. The window is the paper's stated 2000-01-01 to 2019-12-31.
+# The paper searched EMBASE, PsychINFO, Medline AND PubMed (315/219/42/275 hits); we can only
+# reach the PubMed slice, so this baseline -- like the pipeline arm -- sees a subset of what the
+# authors screened. Both arms share that limit, so the comparison stays fair.
+#
+# !! THE ASYMMETRY HERE RUNS THE WRONG WAY -- MEASURE BEFORE QUOTING.
+#
+# Usually the worry is that a broad baseline is unfairly WEAK. Here it is unfairly STRONG. This
+# query reaches 81 of the 88 gold studies (recall 0.920) from 2,909 hits, while the project's own
+# search pool -- pubmed_search_pmids.txt, the 275-PMID slice the -allstudies runs screen -- holds
+# only 56 of 88 (recall 0.636).
+#
+# So the baseline arm would search a corpus with a third more gold in it than the pipeline arm
+# ever sees. Any "autonima vs baseline" number computed that way is not a fair comparison; it
+# would measure the difference between two searches, not between screening-plus-annotation and
+# no screening. Do not report an ER end-to-end margin until the pipeline arm runs a real search
+# of comparable reach -- which is the tracked "ER needs a plain vN.yaml" item.
+#
+# The annotation-only arm is unaffected: it works from the fixed 88-PMID gold list and does not
+# involve a search at all.
+#
+# RETRIEVAL CEILING, SHARED BY BOTH ARMS
+#
+# The pipeline arm currently reaches 63 of 88 gold texts, and coordinate parsing finds tables in
+# only 48 studies. The baseline inherits the same full_text_sources, so it is limited the same
+# way. Read any ER baseline comparison as covering roughly half the benchmark.
+
+meta_pmid: "35413444"
+
+shared:
+  # fMRI/neuroimaging clause, from the paper's stated modality keywords.
+  modality: >-
+    "functional magnetic resonance imaging"[tiab] OR "functional MRI"[tiab] OR fMRI[tiab] OR
+    neuroimaging[tiab] OR "Magnetic Resonance Imaging"[Mesh] OR "Brain Mapping"[Mesh]
+  # Applied as NOT (...).
+  exclude: >-
+    Editorial[pt] OR Letter[pt] OR Comment[pt] OR "Case Reports"[pt] OR News[pt] OR Review[pt]
+  date_from: "2000/01/01"
+  date_to: "2019/12/31"
+
+baselines:
+  - name: all_reappraisal
+    # The only arm. Flagged as the like-vintage broad control so the evaluator prefers it over
+    # the project run's own `all_studies` column, which is a different retrieval vintage.
+    broad_control: true
+    note: >-
+      Broad emotion-regulation/reappraisal search, serving all four manual annotations. There are
+      no per-sub-annotation arms because decrease/increase/maintain/reappraisal are contrast
+      directions within a single paradigm rather than separable search topics.
+    topic: >-
+      "emotion regulation"[tiab] OR "affective regulation"[tiab] OR "emotion regulation"[Mesh] OR
+      reappraisal[tiab] OR reappraise*[tiab] OR "cognitive reappraisal"[tiab] OR
+      "emotional regulation"[tiab] OR "regulation of emotion"[tiab] OR
+      "downregulat*"[tiab] OR "down-regulat*"[tiab] OR "upregulat*"[tiab] OR "up-regulat*"[tiab]
