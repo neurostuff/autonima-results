@@ -1,3 +1,25 @@
+# v2 -- retained as run and reported. Two housekeeping notes, neither of which changes behaviour.
+#
+# 1. `create_all_included_annotations: true` below was written as `include_all_analyses: true`, a
+#    spelling autonima does not read at all: it is absent from the codebase and from the three
+#    entries in ConfigManager's `legacy_keys` deprecation guard, so it was silently dropped at load.
+#    It happened to be harmless -- `create_all_included_annotations` defaults to true, which is what
+#    the old key was asking for -- so replacing it records what ran rather than changing it. Filed
+#    upstream as https://github.com/neurostuff/autonima/issues/58.
+#
+# 2. `prompt_type: "multi_analysis"` is likewise stated explicitly rather than left to the loader
+#    default, which is the same value.
+#
+# Both edits are cache-neutral: the annotation stage_hash is stable_hash(config.model_dump() |
+# prompt_version), and model_dump() is byte-identical before and after (verified).
+#
+# CONVENTION NOTE. With those two non-differences removed, this file's screening AND annotation
+# criteria are identical to v3-allstudies.yaml. Only search, retrieval, output and one annotation
+# metadata field (v3 adds `study_fulltext`) differ. Under the naming convention -- version tracks
+# criteria, suffix tracks everything else -- v2 and the v3 family are therefore ONE criteria
+# generation, and v2's separate version number is itself a violation. Left as-is deliberately: this
+# run is already reported, and renumbering it would churn every table that cites it.
+
 search:
   database: "pubmed"
   query: "( ('functional MRI'[Title/Abstract] OR 'functional magnetic resonance imaging'[Title/Abstract] OR 'fMRI'[Title/Abstract] ) AND ( 'social communication'[Title/Abstract] OR 'social processing'[Title/Abstract] OR 'social interaction'[Title/Abstract] OR 'affiliation'[Title/Abstract] OR 'social attachment'[Title/Abstract] OR 'social cognition'[Title/Abstract] OR 'understanding others'[Title/Abstract] ) AND 'Humans'[MeSH])"
@@ -58,6 +80,7 @@ annotation:
   enabled: true
   model: "gpt-5-mini-2025-08-07"
   create_all_included_annotations: true  # (was the deprecated spelling include_all_analyses)
+  prompt_type: "multi_analysis"  # explicit: this is the loader default, and what this run used
   metadata_fields:
     - "analysis_name"
     - "analysis_description"
