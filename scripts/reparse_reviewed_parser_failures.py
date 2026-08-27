@@ -40,7 +40,7 @@ RUNS_BY_PROJECT = {
     "decision_making": "v2-annotation-only",
     "dementia": "v3-annotation-only",
     "problem_solving": "v1-annotation-only",
-    "social": "v3-annotation-only",
+    "social": "v5-annotation-only",
     "vbm_of_ptsd": "v1-annotation-only",
     "vbm_of_substance_use": "v2-annotation-only",
 }

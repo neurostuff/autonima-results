@@ -15,8 +15,9 @@ than a real competitor would use, and so overstates what our screening bought.
 
 This script builds a fairer baseline per sub-annotation: same modality and publication-type
 constraints, topic clause narrowed to that sub-topic. Each baseline is a normal autonima run
-with screening skipped, so "included" == "everything the search returned that we could parse
-coordinates from" -- a Neurosynth-style pool over a better-targeted search.
+with screening skipped and LLM coordinate parsing off, so "included" == "every coordinate table
+the search returned that could be harvested mechanically" -- a Neurosynth-style pool over a
+better-targeted search. See build_run_config for the measured cost of parsing being off.
 
 The study pools across arms are NOT equalised. Each arm gets whatever its own search plus
 our retrieval could actually obtain, which is the real-world question: given the same effort,
@@ -290,7 +291,27 @@ def build_run_config(
     cfg["retrieval"] = retrieval
 
     cfg["screening"] = {"abstract": {"skip_stage": True}, "fulltext": {"skip_stage": True}}
-    cfg["parsing"] = dict(template_run.get("parsing") or {"parse_coordinates": True})
+    # LLM coordinate parsing is OFF for baselines, deliberately.
+    #
+    # A Neurosynth/pubget-style meta-analysis does not structure coordinate tables into named
+    # analyses -- it harvests every coordinate table mechanically and pools the lot. Since a
+    # baseline performs no analysis-level selection, it does not need parsed analyses either,
+    # and all three retrieval sources already supply coordinates without an LLM:
+    #     elsevier   coordinates.json            (coordinates_path_templates)
+    #     ACE        processed/coordinates.csv   (processed_data_path)
+    #     pubget     pubget_data/coordinates.csv
+    #
+    # Measured on vbm_of_substance_use, parsing off versus on:
+    #     opioids   15 -> 15 studies (identical),  214 -> 188 points  (-12%)
+    #     alcohol   57 -> 59 studies (+4, -2),    1268 -> 1145 points (-10%)
+    # Study-level coverage is equal or better -- mechanical extraction finds coordinates in a
+    # few studies the parser missed. The ~10% point shortfall is the known failsafe case: where
+    # mechanical extraction fails on a table the table is retained and an LLM pass would have
+    # recovered it. Accepted, because it is also what a real search-only competitor would get.
+    #
+    # This also removes the only LLM-expensive stage from a baseline run, which is what makes
+    # arms like problem_solving's 19,429-hit control tractable at all.
+    cfg["parsing"] = {"parse_coordinates": False}
     # Only the all_* columns; no criteria, because a baseline makes no judgement.
     cfg["annotation"] = {
         "enabled": True,

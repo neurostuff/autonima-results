@@ -33,7 +33,7 @@ DEFAULT_OUTPUT_DIR = REPO_ROOT / "reports" / "cross_project_publication_plots"
 
 # Same selection rules as run_cross_project_screening_reports.py
 CANONICAL_VERSION_RUN_RE = re.compile(r"^v(?P<version>\d+)$")
-CANONICAL_RUN_OVERRIDES = {"social": "v3-search-all_pmids-multi_analysis-ft"}
+CANONICAL_RUN_OVERRIDES = {"social": "v3"}
 
 CONDITIONS = ("annotated", "all_analyses", "all_studies")
 

@@ -107,7 +107,8 @@ projects:
       verbatim: null
       manual:   null
       best:     v4
-      # best-reason: CONTESTED: v4 has far better recall (0.659 vs 0.500) but lower F1 (0.420 vs 0.492) than v2
+      # best-reason: v4, per the recall-first rule for canonical runs: recall 0.659 vs v2 0.500,
+      # accepting F1 0.420 vs 0.492. USER-RESOLVED 2026-08-27.
       latest:   v4
       note: >-
         v4 (RUN 2026-08-26) is the deliberately UNFAITHFUL screening + repaired annotation
@@ -136,7 +137,9 @@ projects:
       verbatim: v1-allstudies
       manual:   v2-allstudies         # NOT v3 -- v3 regressed and is archived
       best:     v4-allstudies
-      # best-reason: CONTESTED: recall 0.602 vs v2 0.477, F1 0.475 vs 0.519
+      # best-reason: v4-allstudies, per the recall-first rule: recall 0.602 vs v2 0.477, accepting
+      # F1 0.475 vs 0.519. Also reaches 94.6% of this pool's hard ceiling of 0.636.
+      # USER-RESOLVED 2026-08-27.
       latest:   v4-allstudies         # v4 criteria over the fixed pool
       note: >-
         STALE BLOCKER REMOVED 2026-08-26: nmb_mappings.json is filled in and the manual reference
@@ -150,8 +153,11 @@ projects:
     canonical:
       verbatim: v1
       manual:   null
-      best:     v1
-      # best-reason: CONTESTED: v1 has the highest F1 (0.163) but v2/v3 have better recall (0.386 vs 0.322)
+      best:     v3
+      # best-reason: v3, per the recall-first rule for canonical runs (see run_tiers.py). v1 has
+      # the highest F1 (0.163 vs 0.151) but v2/v3 recover more gold (recall 0.386 vs 0.322).
+      # Precision here is a floor, not a measurement: the benchmark searched BrainMap, so many
+      # "false positives" were never candidates for its manual screen. USER-RESOLVED 2026-08-27.
       latest:   v3                    # Claude; combines v2 screening + v3 annotation
       note: >-
         RESOLVED 2026-08-26: verbatim is v1, not v1-2010. "Verbatim" means an attempt to stay
@@ -217,7 +223,9 @@ projects:
       verbatim: v1-annotation-only
       manual:   v5-annotation-only    # renamed from v3-annotation-only 2026-08-27
       best:     v4-annotation-only
-      # best-reason: CONTESTED: v1 leads on fair dice (0.570 vs 0.550) but v4 carries the multi-label fix
+      # best-reason: v4-annotation-only. v1 leads on fair dice (0.570 vs 0.550), but v4 carries the
+      # multi-label fix that the corpus annotation-value analysis depends on, so v1's edge is not
+      # comparable. NOT a recall/F1 tradeoff -- decided on criteria correctness.
       latest:   v4-annotation-only    # Claude, multi-label fix
       note: >-
         The other complete three-tier set. Also the project where the tiers disagree most
@@ -267,7 +275,8 @@ projects:
       verbatim: v1
       manual:   null
       best:     v2
-      # best-reason: CONTESTED: v1 has higher F1 (0.585 vs 0.570); v2 has better recall and the reviewed criteria
+      # best-reason: v2, per the recall-first rule: better recall than v1, accepting F1 0.570 vs
+      # 0.585. v2 also carries the GPT-reviewed criteria. USER-RESOLVED 2026-08-27.
       latest:   v2                    # GPT, "Double checked criteria using GPT 5.4"
       review: >-
         v1's query was "copied from original study and expanded using suggestions by GPT" --

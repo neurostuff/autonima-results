@@ -41,7 +41,9 @@ SCREENING_ARTIFACTS = (
     "outputs/final_results.json",
 )
 CANONICAL_SCREENING_RUN_OVERRIDES = {
-    "social": "v3-search-all_pmids-multi_analysis-ft",
+    # social has no verbatim plain vN; v3 is its canonical search-driven run (renamed from
+    # v3-search-all_pmids-multi_analysis-ft's query with the canonical annotation mode).
+    "social": "v3",
 }
 
 
