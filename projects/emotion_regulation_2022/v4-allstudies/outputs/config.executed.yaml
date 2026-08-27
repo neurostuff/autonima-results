@@ -1,0 +1,252 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: 5000
+  date_from: null
+  date_to: null
+  email: delavega@utexas.edu
+  pmids_file: /home/zorro/repos/autonima-results/projects/emotion_regulation_2022/pubmed_search_pmids.txt
+  pmids_list: null
+screening:
+  abstract:
+    model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+    threshold: null
+    confidence_reporting: true
+    objective: Meta-analysis of fMRI studies in which participants regulate an emotional
+      response to visual stimuli, or view them without regulating.
+    inclusion_criteria:
+    - Task-based fMRI study.
+    - Human participants performing an emotion regulation task, broadly defined. Cognitive
+      reappraisal is the core case, and it covers reinterpretation, perspective-taking
+      and distancing. Also admit adjacent antecedent-focused strategies- acceptance,
+      "reality checking", cognitive control of emotion, and regulation applied during
+      an anticipation or cue period rather than during the stimulus itself.
+    - Any healthy or clinical participant group qualifies, at ANY age- children, adolescents,
+      adults, older adults, and mixed-age samples all count. A patient study qualifies
+      if a control group is reported separately.
+    - Reports task-related brain activation results.
+    exclusion_criteria:
+    - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+    - Empathy or perspective-taking studies in which participants adopt a self- or
+      other-oriented perspective toward a depicted person WITHOUT being instructed
+      to amplify or dampen their own emotional response.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I1: Task-based fMRI study.
+        I2: Human participants performing an emotion regulation task, broadly defined.
+          Cognitive reappraisal is the core case, and it covers reinterpretation,
+          perspective-taking and distancing. Also admit adjacent antecedent-focused
+          strategies- acceptance, "reality checking", cognitive control of emotion,
+          and regulation applied during an anticipation or cue period rather than
+          during the stimulus itself.
+        I3: Any healthy or clinical participant group qualifies, at ANY age- children,
+          adolescents, adults, older adults, and mixed-age samples all count. A patient
+          study qualifies if a control group is reported separately.
+        I4: Reports task-related brain activation results.
+      exclusion:
+        E1: Non-empirical papers (e.g., reviews, meta-analyses) without original human
+          data.
+        E2: Empathy or perspective-taking studies in which participants adopt a self-
+          or other-oriented perspective toward a depicted person WITHOUT being instructed
+          to amplify or dampen their own emotional response.
+  fulltext:
+    model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+    threshold: null
+    confidence_reporting: true
+    objective: Meta-analysis of fMRI studies in which participants regulate an emotional
+      response to visual stimuli, or view them without regulating.
+    inclusion_criteria:
+    - Task-based fMRI study.
+    - fMRI task- an emotion regulation strategy is instructed. Cognitive reappraisal
+      is the core case (reinterpretation, perspective-taking, distancing), and adjacent
+      antecedent-focused strategies also qualify- acceptance, "reality checking",
+      and instructed cognitive control of an emotional response. Regulation instructed
+      during an anticipation or cue period qualifies as well as regulation during
+      the stimulus.
+    - Stimuli- the emotional stimuli are VISUAL. Static images (IAPS pictures, photographs
+      of faces or scenes) are the common case, and film or video clips ALSO qualify.
+      Exclude only studies whose regulated stimuli are non-visual- purely auditory
+      material, script-driven imagery with no visual stimulus, or word and sentence
+      stimuli.
+    - Sample- any participant group at any age qualifies, including children, adolescents
+      and older adults. A study of a patient or clinical population qualifies when
+      a control group's results are reported separately.
+    - Analysis- reports at least one within-task contrast related to emotion regulation
+      (e.g. "reappraise > look", "down-regulate > maintain", "up-regulate > maintain"),
+      or an unregulated viewing contrast (e.g. "emotion > baseline", "watch negative
+      > neutral").
+    - Whole-brain evidence- at least one analysis is a group-level, whole-brain (voxelwise)
+      task-evoked statistical map with peak coordinates in a standard anatomical space.
+    - It is acceptable for qualifying whole-brain results to be reported in tables
+      of coordinates, figures, or supplementary materials, as long as they are clearly
+      described in the text.
+    exclusion_criteria:
+    - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+      without original fMRI data.
+    - Studies that report ONLY region-of-interest or small-volume-corrected results,
+      or that used partial brain coverage, with no accompanying whole-brain analysis.
+    - Studies that report ONLY seed-based connectivity, effective connectivity (e.g.
+      PPI, DCM) or resting-state analyses, without also reporting a whole-brain task
+      activation map.
+    - Studies that report ONLY between-group contrasts or interactions, with no within-group
+      task effect for any group.
+    - Empathy or perspective-taking studies in which participants take a self- or
+      other-oriented perspective toward a depicted person with no instruction to amplify
+      or dampen their own emotional response.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I5: Task-based fMRI study.
+        I6: fMRI task- an emotion regulation strategy is instructed. Cognitive reappraisal
+          is the core case (reinterpretation, perspective-taking, distancing), and
+          adjacent antecedent-focused strategies also qualify- acceptance, "reality
+          checking", and instructed cognitive control of an emotional response. Regulation
+          instructed during an anticipation or cue period qualifies as well as regulation
+          during the stimulus.
+        I7: Stimuli- the emotional stimuli are VISUAL. Static images (IAPS pictures,
+          photographs of faces or scenes) are the common case, and film or video clips
+          ALSO qualify. Exclude only studies whose regulated stimuli are non-visual-
+          purely auditory material, script-driven imagery with no visual stimulus,
+          or word and sentence stimuli.
+        I8: Sample- any participant group at any age qualifies, including children,
+          adolescents and older adults. A study of a patient or clinical population
+          qualifies when a control group's results are reported separately.
+        I9: Analysis- reports at least one within-task contrast related to emotion
+          regulation (e.g. "reappraise > look", "down-regulate > maintain", "up-regulate
+          > maintain"), or an unregulated viewing contrast (e.g. "emotion > baseline",
+          "watch negative > neutral").
+        I10: Whole-brain evidence- at least one analysis is a group-level, whole-brain
+          (voxelwise) task-evoked statistical map with peak coordinates in a standard
+          anatomical space.
+        I11: It is acceptable for qualifying whole-brain results to be reported in
+          tables of coordinates, figures, or supplementary materials, as long as they
+          are clearly described in the text.
+      exclusion:
+        E3: Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations)
+          without original fMRI data.
+        E4: Studies that report ONLY region-of-interest or small-volume-corrected
+          results, or that used partial brain coverage, with no accompanying whole-brain
+          analysis.
+        E5: Studies that report ONLY seed-based connectivity, effective connectivity
+          (e.g. PPI, DCM) or resting-state analyses, without also reporting a whole-brain
+          task activation map.
+        E6: Studies that report ONLY between-group contrasts or interactions, with
+          no within-group task effect for any group.
+        E7: Empathy or perspective-taking studies in which participants take a self-
+          or other-oriented perspective toward a depicted person with no instruction
+          to amplify or dampen their own emotional response.
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+annotation:
+  model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria:
+  - Voxelwise task evidence- this analysis must itself be a group-level, univariate,
+    whole-brain (voxelwise) task-evoked statistical map. A study qualifying on the
+    strength of one whole-brain analysis does not make its other analyses eligible.
+  - The contrast must be WITHIN-group, and must concern either the regulation of an
+    emotional response or the passive unregulated viewing of emotional stimuli.
+  - Direction- either an ACTIVATION or a DEACTIVATION effect qualifies.
+  - Judge this analysis from its own name, description and table caption. An empty
+    or generic analysis name (e.g. "analysis_0") is never itself a reason to exclude-
+    it usually means the analysis is the only one in its table, so the caption describes
+    it fully.
+  - 'Assign every label that applies. A regulation contrast carries TWO labels: its
+    goal (decrease or increase) and the strategy label (reappraisal).'
+  exclusion_criteria:
+  - This analysis is EXPLICITLY described as region-of-interest or small-volume-corrected,
+    with no whole-brain result behind it. Do not infer an ROI analysis from a short
+    coordinate table or from anatomically focused results- whole-brain analyses routinely
+    report few peaks.
+  - This analysis is a connectivity or resting-state result- seed-based or effective
+    connectivity, PPI, DCM, ICA- rather than a task activation map.
+  - This contrast is between two participant GROUPS, or a group x condition interaction,
+    including gender and other subgroup difference effects.
+  annotations:
+  - name: reappraisal
+    description: 'Cognitive reappraisal as the regulation strategy: changing the meaning
+      of a pictured situation in order to change one''s emotional response to it.
+      The union of the decrease and increase goals.'
+    inclusion_criteria:
+    - The contrast isolates a reappraisal regulation attempt against a less-regulated
+      or unregulated comparison- typical forms are reappraise > look, reappraise >
+      view, reappraise > watch, reappraise > maintain, decrease > look, or increase
+      > maintain.
+    - Either regulation goal qualifies, since this label is the union of decrease
+      and increase. Assign it IN ADDITION to the goal label, never instead of it.
+    exclusion_criteria:
+    - Passive viewing contrasts with no regulation instruction.
+  - name: decrease
+    description: 'Down-regulation goal: reappraisal used to reduce the intensity of
+      an emotional response.'
+    inclusion_criteria:
+    - The contrast's regulation goal is to reduce or dampen the emotional response-
+      e.g. decrease > look, decrease > maintain, downregulate > view, "distance oneself".
+    exclusion_criteria:
+    - 'Contrasts whose ONLY stated goal is to amplify emotion. '
+  - name: increase
+    description: 'Up-regulation goal: reappraisal used to amplify the intensity of
+      an emotional response.'
+    inclusion_criteria:
+    - The contrast's regulation goal is explicitly to amplify or intensify the emotional
+      response- e.g. increase > maintain, increase > look, increase > view, upregulate
+      > watch, "feel the emotion more intensely".
+    - Up-regulation must be stated or clearly implied by the condition name.
+    exclusion_criteria:
+    - Contrasts whose only stated goal is to dampen emotion.
+  - name: maintain
+    description: Viewing emotional pictures passively and responding naturally, with
+      no instruction to regulate.
+    inclusion_criteria:
+    - The contrast reflects viewing emotional stimuli under NO regulation instruction-
+      e.g. emotion > baseline, look negative > baseline, view emotional > neutral,
+      watch negative > watch neutral, react > baseline, attend > rest.
+    - Expect to find this INSIDE regulation studies. Almost every study in this benchmark
+      is a reappraisal experiment, and its Look/Watch/React condition is the control
+      arm of that same experiment. That the paper is about regulation is NOT a reason
+      to withhold this label from its unregulated condition- judge the contrast, not
+      the study.
+    exclusion_criteria:
+    - Contrasts in which THIS contrast's active condition involves a regulation attempt.
+      `maintain` is mutually exclusive with the other three labels at the level of
+      the contrast, not the study.
+  enabled: true
+output:
+  directory: projects/emotion_regulation_2022/v4-allstudies
+  prisma_diagram: true
+  formats:
+  - csv
+  - json
+  nimads: true
+  export_excluded_studies: true
