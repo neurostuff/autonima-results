@@ -1225,11 +1225,16 @@ emits this as `reports/cross_project_best_baseline.csv`.
     best available (targeted if any)      0.487      0.397    +0.090   29/35
     strongest (max of targeted, broad)    0.487      0.401    +0.086   27/35
 
-**35 columns across 9 projects; 32 targetable, 3 not.** Report the *strongest* row: in 8 of the
-35 columns the broad arm actually outscores the targeted one — narrowing the search made the
-baseline weaker — and the `available` definition would credit autonima with beating the weaker of
-the two. The two differ by 0.004, which is the useful part: the conclusion does not depend on
-the choice.
+**35 columns across 9 projects; 32 targetable, 3 not.** Report the **best available** row
+(+0.090, 29/35). Where a targeted arm was defined it is the baseline, whether or not it scores
+well: it is what a practitioner aiming at that column would actually have built. `strongest` is a
+robustness check only — it lets the baseline switch arms per column with hindsight, picking
+whichever turned out better, which no practitioner gets to do. The two differ by 0.004, so the
+conclusion does not turn on the choice.
+
+That 8 of 35 columns see the broad arm outscore the targeted one is a **result in its own right**,
+not a reason to substitute it: narrowing the search made the baseline worse in those cases, which
+says something about when sub-targeting is worth doing.
 
     columns where narrowing made the baseline WEAKER (broad > targeted)
       problem_solving/demand_mni_final        sub 0.468  broad 0.511
