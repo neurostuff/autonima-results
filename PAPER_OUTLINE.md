@@ -1618,3 +1618,103 @@ v3-allstudies'.
 **Blocked on the cap:** v3 parsing/annotation/output, all of `v3-annotation-only`, social's
 decomposition, and the map-level half of the cross-project regeneration. Social's *screening* row
 is complete and can be regenerated now.
+
+---
+
+## Retrieval expansion and full-corpus re-run (2026-08-27/28)
+
+The Portkey cap that blocked social is lifted, and everything queued behind it has run. Social's
+three decomposition arms (`v3`, `v3-allstudies`, `v3-annotation-only`) are complete, so social joins
+dementia and emotion_regulation_2022 as decomposable.
+
+**The cache hazard flagged above is resolved, empirically.** `stage_signature_payloads()` does not
+chain on upstream artifacts, so a copied annotation artifact validates against a different study
+set. But `_stage_action()` has no wholesale skip: a valid unchanged stage returns `incremental`
+("signed entries will be validated against current inputs"), and reuse is gated per study on
+`study_input_hash`. On the v3 re-run annotation gap-filled exactly as screening does -- "Processing
+330 studies for 'all_studies' annotation (missing or incomplete cache)", then 219, then 161 --
+taking decisions from 7,751 to 14,806. No silent skips.
+
+### What the retrieval campaign added
+
+Three routes, in descending yield:
+
+1. **Manual proxied downloads.** ~450 papers via the UT campus SOCKS tunnel.
+2. **Elsevier API through the same tunnel.** The 201 "ScienceDirect rejected FULL view" failures were
+   an *IP* problem, not a credential problem: the same `ELSEVIER_API_KEY` with no institutional token
+   succeeds from a campus IP. Routing the fetcher through the tunnel via `ELSEVIER_HTTPS_PROXY`
+   turned 213 of 222 ER attempts into successes, and a later sweep covered every project. The route
+   is now exhausted -- zero PMIDs across all nine projects have an Elsevier link and no attempt.
+3. **A silent ingest bug worth more than either.** `scripts/ace_ingest_and_export.py` discovers input
+   with `glob('*/*')`, which requires exactly one directory level below `html/`. Files written flat
+   as `html/<PMID>.html` sit at depth 1 and were **never matched**, and the parent directory doubles
+   as the source name. Measured ingestion rate by layout: flat 1/400 = **0.2%**, journal subdirectory
+   5343/5373 = 99.4%, `html/Manual/` 546/550 = 99.3%. 17 of 26 ER gold files were flat, so they had
+   never reached ACE at all. Moving them and re-ingesting recovered coordinates for 13 of 26 gold
+   immediately.
+
+Two data-integrity traps in the ACE database, both of which make it misleading to diagnose from:
+every row in `activations` has `article_id` NULL (84k rows), so any `articles`-to-`activations` join
+returns nothing; and all rows in `tables` have `n_columns` NULL while `n_activations` is populated.
+Coordinates are only attributable through the CSV export, which resolves `pmid` correctly.
+
+### The full-corpus re-run
+
+Affected runs were identified by intersecting each run's own `missing_fulltexts.txt` against what was
+newly on disk: **34 of the 38 runs** in `run_categories.yaml` gained text (1,862 studies). All 34 ran,
+then 34 metas, then the cross-project reports. Every run and meta exited 0.
+
+Full-text screening, before -> after:
+
+| run | recall | F1 |
+|---|---|---|
+| emotion_regulation_2022/v4 | 0.659 -> **0.830** (+0.170) | 0.420 -> 0.372 |
+| problem_solving/v1, v2 | 0.540 -> 0.579 (+0.040) | 0.392 -> 0.373 |
+| vbm_of_substance_use/v1 | 0.759 -> 0.785 (+0.025) | 0.585 -> 0.577 |
+| decision_making/v1, v3 | +0.007 | flat |
+| executive_function/v1, v3 | +0.006 | flat |
+
+The consistent shape is **recall up, F1 down**: newly retrieved studies bring false positives with
+them. `cue_reactivity/v6` is the extreme -- recall unchanged at 0.853 while F1 fell 0.455 -> 0.384,
+so its 68 new studies produced only false positives. That is worth stating plainly in §7: retrieval
+is not free, and past some point it buys recall by spending precision.
+
+Gold studies still lacking full text fell **179 -> 132**, concentrated in ER (26 -> 5) and
+vbm_of_substance_use (13 -> 2). executive_function remains the largest gap at 63.
+
+### PubMed searches are not reproducible, and this is a real limitation
+
+Two runs *lost* recall (`dementia/v1` -0.027, `cue_reactivity/v1` -0.037). Neither loss came from the
+retrieval work. `search` is always an incremental stage, so **every re-run silently re-queries
+PubMed**, and for these two the corpus came back smaller:
+
+| run | search pool | gold in search |
+|---|---|---|
+| dementia/v1 | 2027 -> **1282** (-37%) | 71 -> 69 |
+| cue_reactivity/v1 | 1170 -> **1057** | 142 -> 134 |
+
+This is genuine index drift, not a transient API failure: direct PubMed queries return 1283 and 1057
+consistently across repeated attempts, matching what autonima logged. The classification diff shows
+the mechanism -- every bucket lost studies and **gained none** (cue_reactivity TP 125->118, FP
+269->260). Decisions did not change; studies left the pool.
+
+Three consequences:
+
+- Those two before/after rows compare different study pools and **must not** be cited as an effect of
+  retrieval work.
+- Any reported result should pin its corpus via `pmids_file`. A config re-run months later is not
+  the same experiment, and 1 of 34 runs drifted by 37% in a single cycle. This belongs in the
+  Discussion alongside the human-written-query limitation at §1060 -- together they say the search
+  stage is the least reproducible part of the pipeline.
+- `cue_reactivity/v1` sets no `email` in its search config, which NCBI warns about. Not the cause
+  here, but it should be set.
+
+### A measurement trap worth not repeating
+
+`autonima run` does **not** write evaluation metrics. `projects/<p>/<run>/evaluation/` is refreshed
+only by `scripts/run_cross_project_screening_reports.py`. Reading those files straight after a run
+shows every metric unchanged, which reads as "the re-run did nothing" when it means "evaluation has
+not been recomputed". Separately, `compile_missing_fulltexts.py` defaults its gold file to
+`<project>/annotation-only-ids.txt`; three projects (cue_reactivity, vbm_of_substance_use, social)
+do not have one, and the script silently reports **0 gold missing** rather than failing. Both are
+failure modes that produce a plausible wrong number rather than an error.
