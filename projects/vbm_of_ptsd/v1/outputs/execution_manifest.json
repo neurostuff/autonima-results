@@ -1,19 +1,17 @@
 {
   "cache_plan": {
-    "changed_stages": [
-      "annotation"
-    ],
+    "changed_stages": [],
     "copyable_stages": [
       "search",
       "abstract",
       "retrieval",
       "fulltext",
-      "parsing"
+      "parsing",
+      "annotation"
     ],
     "has_cache_artifacts": true,
     "has_previous_execution": true,
     "recompute_stages": [
-      "annotation",
       "output"
     ],
     "schema_version": 2,
@@ -37,12 +35,12 @@
         "reason": "signed entries will be validated against current inputs"
       },
       "annotation": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "annotation configuration changed"
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "incremental",
@@ -89,21 +87,15 @@
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [
-    "annotation"
-  ],
-  "completed_at": "2026-08-14T22:23:53.522178+00:00",
+  "changed_stages": [],
+  "completed_at": "2026-08-28T01:07:04.810219+00:00",
   "completed_stage": "full",
   "config_hash": "c49174bcc89b7530365ae6ad858becbfa9026bb55279f5d77f1f27da00c5f051",
   "copied_cache": [],
-  "created_at": "2026-08-14T22:22:03.197401+00:00",
+  "created_at": "2026-08-28T01:06:37.031161+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/v1/outputs/config.executed.yaml",
-  "execution_id": "8476e385-f61b-4f27-9b42-e5baa80ffb98",
+  "execution_id": "8facf350-5bb4-410b-a59d-17fd4656fbcc",
   "invalidated": [
-    {
-      "path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/v1/outputs/annotation_results.json",
-      "stage": "annotation"
-    },
     {
       "path": "/home/zorro/repos/autonima-results/projects/vbm_of_ptsd/v1/outputs/final_results.json",
       "stage": "output"
@@ -125,7 +117,7 @@
       "stage": "output"
     }
   ],
-  "parent_execution_id": "migration-8595bc3fbeeb64530406d253",
+  "parent_execution_id": "8476e385-f61b-4f27-9b42-e5baa80ffb98",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "068a03c974b21891999078951c7f6b1816eaa07617ccdd83e9da4b92ae0cc64c",
@@ -136,7 +128,7 @@
     "retrieval": "90ce43e4210473a2489222bfa177ce50504ee9417c4de8053660c7abd8dbca38",
     "search": "06a8f6017a6acfa6c8c654e607cdaf97a899f3555da15f66fa377c2347bcb67d"
   },
-  "started_at": "2026-08-14T22:22:03.197416+00:00",
+  "started_at": "2026-08-28T01:06:37.031175+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

@@ -1,16 +1,17 @@
 {
   "cache_plan": {
     "changed_stages": [],
-    "copyable_stages": [],
-    "has_cache_artifacts": false,
-    "has_previous_execution": false,
-    "recompute_stages": [
+    "copyable_stages": [
       "search",
       "abstract",
       "retrieval",
       "fulltext",
       "parsing",
-      "annotation",
+      "annotation"
+    ],
+    "has_cache_artifacts": true,
+    "has_previous_execution": true,
+    "recompute_stages": [
       "output"
     ],
     "schema_version": 2,
@@ -26,60 +27,60 @@
     },
     "stages": {
       "abstract": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
       },
       "annotation": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
       },
       "output": {
         "action": "recompute",
         "artifact_is_modern": false,
         "config_changed": false,
         "copy_artifact": false,
-        "has_artifact": false,
+        "has_artifact": true,
         "reason": "derived outputs are regenerated"
       },
       "parsing": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
       },
       "retrieval": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "retrieval cache is valid and missing texts will be fetched"
       },
       "search": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "metadata cache is valid and new PMIDs will be fetched"
       }
     },
     "unsupported_cache": false,
@@ -87,15 +88,36 @@
   },
   "cache_policy": "auto",
   "changed_stages": [],
-  "completed_at": "2026-08-26T02:48:29.569449+00:00",
+  "completed_at": "2026-08-27T23:08:17.761024+00:00",
   "completed_stage": "full",
   "config_hash": "1918e64607dbd83a3e1abb60a8de5a686447f778171946059eef14aa1493ff1c",
   "copied_cache": [],
-  "created_at": "2026-08-26T01:53:37.230916+00:00",
+  "created_at": "2026-08-27T23:01:53.924897+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v6/outputs/config.executed.yaml",
-  "execution_id": "93bbae31-08fa-4d5c-9da6-52af677ea54a",
-  "invalidated": [],
-  "parent_execution_id": null,
+  "execution_id": "0924e090-01f3-4228-9554-c136a69851ed",
+  "invalidated": [
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v6/outputs/final_results.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v6/outputs/nimads_studyset.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v6/outputs/nimads_annotation.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v6/outputs/missing_fulltexts.csv",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v6/outputs/missing_fulltexts.txt",
+      "stage": "output"
+    }
+  ],
+  "parent_execution_id": "4b2ef6fe-2a25-4c7f-9647-4ac379f3391c",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "9bf31de907ad190d85ca96870679bae656e93a85e56f7ab099b72b08da801132",
@@ -106,7 +128,7 @@
     "retrieval": "90ce43e4210473a2489222bfa177ce50504ee9417c4de8053660c7abd8dbca38",
     "search": "6a9d70866094dae4167eec879c3e9e191135367ecf67eb6c1239174418362f6c"
   },
-  "started_at": "2026-08-26T01:53:37.230928+00:00",
+  "started_at": "2026-08-27T23:01:53.924911+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

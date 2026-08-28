@@ -1,26 +1,21 @@
 {
   "cache_plan": {
-    "changed_stages": [
-      "search",
-      "retrieval",
-      "annotation",
-      "output"
-    ],
+    "changed_stages": [],
     "copyable_stages": [
       "search",
       "abstract",
+      "retrieval",
       "fulltext",
-      "parsing"
+      "parsing",
+      "annotation"
     ],
     "has_cache_artifacts": true,
     "has_previous_execution": true,
     "recompute_stages": [
-      "retrieval",
-      "annotation",
       "output"
     ],
     "schema_version": 2,
-    "source_output": "/home/zorro/repos/autonima-results/projects/problem_solving/archive/v1",
+    "source_output": "/home/zorro/repos/autonima-results/projects/problem_solving/v1",
     "stage_hashes": {
       "abstract": "e4ace2f0fef66676ec0b718b063a8a64f2422344c1d8606569b3ea53a00cae75",
       "annotation": "c512887b984c4bcb0243957213b5c68ede58791b430a67fd4fe047c032c2ba30",
@@ -40,12 +35,12 @@
         "reason": "signed entries will be validated against current inputs"
       },
       "annotation": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "annotation configuration changed"
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "incremental",
@@ -58,7 +53,7 @@
       "output": {
         "action": "recompute",
         "artifact_is_modern": false,
-        "config_changed": true,
+        "config_changed": false,
         "copy_artifact": false,
         "has_artifact": true,
         "reason": "derived outputs are regenerated"
@@ -72,67 +67,57 @@
         "reason": "signed entries will be validated against current inputs"
       },
       "retrieval": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "retrieval configuration changed"
+        "reason": "retrieval cache is valid and missing texts will be fetched"
       },
       "search": {
         "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
+        "config_changed": false,
         "copy_artifact": true,
         "has_artifact": true,
-        "reason": "search changed; cached metadata will be matched by PMID"
+        "reason": "metadata cache is valid and new PMIDs will be fetched"
       }
     },
     "unsupported_cache": false,
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [
-    "search",
-    "retrieval",
-    "annotation",
-    "output"
-  ],
-  "completed_at": "2026-08-26T17:09:27.898588+00:00",
+  "changed_stages": [],
+  "completed_at": "2026-08-27T22:44:40.212006+00:00",
   "completed_stage": "full",
   "config_hash": "e273ccef180916fac1a078e4ed04bb1775481bb4a4c2b5fc22902e82eab7ca7e",
-  "copied_cache": [
+  "copied_cache": [],
+  "created_at": "2026-08-27T22:31:21.226788+00:00",
+  "executed_config_path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/config.executed.yaml",
+  "execution_id": "2932db58-56ab-4bc4-b993-ec447c58c116",
+  "invalidated": [
     {
-      "from": "/home/zorro/repos/autonima-results/projects/problem_solving/archive/v1/outputs/search_results.json",
-      "stage": "search",
-      "to": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/search_results.json"
+      "path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/final_results.json",
+      "stage": "output"
     },
     {
-      "from": "/home/zorro/repos/autonima-results/projects/problem_solving/archive/v1/outputs/abstract_screening_results.json",
-      "stage": "abstract",
-      "to": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/abstract_screening_results.json"
+      "path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/nimads_studyset.json",
+      "stage": "output"
     },
     {
-      "from": "/home/zorro/repos/autonima-results/projects/problem_solving/archive/v1/outputs/fulltext_screening_results.json",
-      "stage": "fulltext",
-      "to": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/fulltext_screening_results.json"
+      "path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/nimads_annotation.json",
+      "stage": "output"
     },
     {
-      "from": "/home/zorro/repos/autonima-results/projects/problem_solving/archive/v1/outputs/coordinate_parsing_results.json",
-      "stage": "parsing",
-      "to": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/coordinate_parsing_results.json"
+      "path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/missing_fulltexts.csv",
+      "stage": "output"
     },
     {
-      "from": "/home/zorro/repos/autonima-results/projects/problem_solving/archive/v1/retrieval",
-      "stage": "retrieval_data",
-      "to": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/retrieval"
+      "path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/missing_fulltexts.txt",
+      "stage": "output"
     }
   ],
-  "created_at": "2026-08-26T15:21:35.274235+00:00",
-  "executed_config_path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1/outputs/config.executed.yaml",
-  "execution_id": "a171ba2b-de2d-489f-a335-8174e595a3f6",
-  "invalidated": [],
-  "parent_execution_id": "migration-1ca8460a51cacf73a745d18c",
+  "parent_execution_id": "a171ba2b-de2d-489f-a335-8174e595a3f6",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "e4ace2f0fef66676ec0b718b063a8a64f2422344c1d8606569b3ea53a00cae75",
@@ -143,7 +128,7 @@
     "retrieval": "b66c44ab6beb5ced1b50d45fd901e4854765392b763cdbb9ac801cbe2fd8a404",
     "search": "74d5a5188c4c67920b35c2c7c44ef5f4a0afc7b7849d5183654429acf336a7e6"
   },
-  "started_at": "2026-08-26T15:21:35.274251+00:00",
+  "started_at": "2026-08-27T22:31:21.226803+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

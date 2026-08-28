@@ -1,19 +1,17 @@
 {
   "cache_plan": {
-    "changed_stages": [
-      "annotation"
-    ],
+    "changed_stages": [],
     "copyable_stages": [
       "search",
       "abstract",
       "retrieval",
       "fulltext",
-      "parsing"
+      "parsing",
+      "annotation"
     ],
     "has_cache_artifacts": true,
     "has_previous_execution": true,
     "recompute_stages": [
-      "annotation",
       "output"
     ],
     "schema_version": 2,
@@ -37,12 +35,12 @@
         "reason": "signed entries will be validated against current inputs"
       },
       "annotation": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "annotation configuration changed"
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "incremental",
@@ -89,21 +87,15 @@
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [
-    "annotation"
-  ],
-  "completed_at": "2026-08-26T20:06:34.160295+00:00",
+  "changed_stages": [],
+  "completed_at": "2026-08-28T00:16:15.890181+00:00",
   "completed_stage": "full",
   "config_hash": "4b6103889ad7f4ee465c00c7c4361806d2b288020dc0e9448b9d70518cf851f3",
   "copied_cache": [],
-  "created_at": "2026-08-26T19:15:20.409669+00:00",
+  "created_at": "2026-08-28T00:02:28.333274+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/decision_making/v3/outputs/config.executed.yaml",
-  "execution_id": "f1da3e5b-59d0-4c75-932f-125c40a202f5",
+  "execution_id": "a23dfc55-7c9b-4bc8-9209-22022d72f752",
   "invalidated": [
-    {
-      "path": "/home/zorro/repos/autonima-results/projects/decision_making/v3/outputs/annotation_results.json",
-      "stage": "annotation"
-    },
     {
       "path": "/home/zorro/repos/autonima-results/projects/decision_making/v3/outputs/final_results.json",
       "stage": "output"
@@ -125,7 +117,7 @@
       "stage": "output"
     }
   ],
-  "parent_execution_id": "ae58cb10-959d-421d-8855-02bd7728a883",
+  "parent_execution_id": "f1da3e5b-59d0-4c75-932f-125c40a202f5",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "70f4b7108edf967e6f4e3ed7c74a424b8b9cd44573e54e34b64b62dbe9f9e542",
@@ -136,7 +128,7 @@
     "retrieval": "90ce43e4210473a2489222bfa177ce50504ee9417c4de8053660c7abd8dbca38",
     "search": "b4c19d21a5b1d736836e024644f0c094cc6d937f293cf99162c9ef51dd976e50"
   },
-  "started_at": "2026-08-26T19:15:20.409691+00:00",
+  "started_at": "2026-08-28T00:02:28.333289+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

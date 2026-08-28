@@ -1,21 +1,17 @@
 {
   "cache_plan": {
-    "changed_stages": [
-      "search",
-      "retrieval",
-      "annotation"
-    ],
+    "changed_stages": [],
     "copyable_stages": [
       "search",
       "abstract",
+      "retrieval",
       "fulltext",
-      "parsing"
+      "parsing",
+      "annotation"
     ],
     "has_cache_artifacts": true,
     "has_previous_execution": true,
     "recompute_stages": [
-      "retrieval",
-      "annotation",
       "output"
     ],
     "schema_version": 2,
@@ -39,12 +35,12 @@
         "reason": "signed entries will be validated against current inputs"
       },
       "annotation": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "annotation configuration changed"
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "incremental",
@@ -71,47 +67,35 @@
         "reason": "signed entries will be validated against current inputs"
       },
       "retrieval": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "retrieval configuration changed"
+        "reason": "retrieval cache is valid and missing texts will be fetched"
       },
       "search": {
         "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
+        "config_changed": false,
         "copy_artifact": true,
         "has_artifact": true,
-        "reason": "search changed; cached metadata will be matched by PMID"
+        "reason": "metadata cache is valid and new PMIDs will be fetched"
       }
     },
     "unsupported_cache": false,
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [
-    "search",
-    "retrieval",
-    "annotation"
-  ],
-  "completed_at": "2026-08-15T06:36:14.509385+00:00",
+  "changed_stages": [],
+  "completed_at": "2026-08-28T00:34:17.973234+00:00",
   "completed_stage": "full",
   "config_hash": "a7a771448d6747ebad2dd79baa0845af5f195b0cf190ed3ad09c99eda04a3c4a",
   "copied_cache": [],
-  "created_at": "2026-08-15T06:24:56.988419+00:00",
+  "created_at": "2026-08-28T00:29:52.800170+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/config.executed.yaml",
-  "execution_id": "bbe2eb45-8be0-4cef-be70-898fc665c56b",
+  "execution_id": "e558ea3f-7988-4492-abf2-06e5a90e5e75",
   "invalidated": [
-    {
-      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/fulltext_retrieval_results.json",
-      "stage": "retrieval"
-    },
-    {
-      "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/annotation_results.json",
-      "stage": "annotation"
-    },
     {
       "path": "/home/zorro/repos/autonima-results/projects/cue_reactivity/v1/outputs/final_results.json",
       "stage": "output"
@@ -133,7 +117,7 @@
       "stage": "output"
     }
   ],
-  "parent_execution_id": "migration-9bbebe5310c92f300f8900b9",
+  "parent_execution_id": "bbe2eb45-8be0-4cef-be70-898fc665c56b",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "3dcde89e8e2c73b65489044042b562e8f26d6b51bb076e25f5711439c78c0135",
@@ -144,7 +128,7 @@
     "retrieval": "90ce43e4210473a2489222bfa177ce50504ee9417c4de8053660c7abd8dbca38",
     "search": "c26732983110f18a16c50ec3a630f45fdd9188b3739ac46352707efbdc7fbe67"
   },
-  "started_at": "2026-08-15T06:24:56.988437+00:00",
+  "started_at": "2026-08-28T00:29:52.800189+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }
