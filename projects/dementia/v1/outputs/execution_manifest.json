@@ -1,19 +1,19 @@
 {
   "cache_plan": {
     "changed_stages": [
-      "annotation"
+      "retrieval"
     ],
     "copyable_stages": [
       "search",
       "abstract",
-      "retrieval",
       "fulltext",
-      "parsing"
+      "parsing",
+      "annotation"
     ],
     "has_cache_artifacts": true,
     "has_previous_execution": true,
     "recompute_stages": [
-      "annotation",
+      "retrieval",
       "output"
     ],
     "schema_version": 2,
@@ -24,7 +24,7 @@
       "fulltext": "377eb318fb3bbb0213bc88201f404fc67b4ae40ad8420033f263b0e9f53cb653",
       "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
       "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
-      "retrieval": "8ec5ac194f8f687f7ada63a44554e96619620e9d2630104e76616a74a5feb92c",
+      "retrieval": "bb2cea9c000c39871057157d052bbf87226c98a008326073773abdf2864763d8",
       "search": "9bbbd732b61a98f5f5c650ed6bf9855a6148695243c5b18cba9ad7b85dfb62e5"
     },
     "stages": {
@@ -37,12 +37,12 @@
         "reason": "signed entries will be validated against current inputs"
       },
       "annotation": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "annotation configuration changed"
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "incremental",
@@ -69,12 +69,12 @@
         "reason": "signed entries will be validated against current inputs"
       },
       "retrieval": {
-        "action": "incremental",
+        "action": "recompute",
         "artifact_is_modern": true,
-        "config_changed": false,
-        "copy_artifact": true,
+        "config_changed": true,
+        "copy_artifact": false,
         "has_artifact": true,
-        "reason": "retrieval cache is valid and missing texts will be fetched"
+        "reason": "retrieval configuration changed"
       },
       "search": {
         "action": "incremental",
@@ -90,19 +90,19 @@
   },
   "cache_policy": "auto",
   "changed_stages": [
-    "annotation"
+    "retrieval"
   ],
-  "completed_at": "2026-08-15T00:38:36.964103+00:00",
+  "completed_at": "2026-08-28T00:24:40.097417+00:00",
   "completed_stage": "full",
-  "config_hash": "e4f5a1abf27ff4f75ee8c870553754d9655d176001189f188df877b2ffd2091b",
+  "config_hash": "ca68b681f821e71669a070887167d9f44757ca1b3b5228bef0044cc9575d941b",
   "copied_cache": [],
-  "created_at": "2026-08-15T00:30:41.209337+00:00",
+  "created_at": "2026-08-28T00:19:20.018256+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/dementia/v1/outputs/config.executed.yaml",
-  "execution_id": "5544f4d1-044f-4100-891d-36c73ab9b8d1",
+  "execution_id": "cae83fd0-e4dd-48a8-8947-61a50145961d",
   "invalidated": [
     {
-      "path": "/home/zorro/repos/autonima-results/projects/dementia/v1/outputs/annotation_results.json",
-      "stage": "annotation"
+      "path": "/home/zorro/repos/autonima-results/projects/dementia/v1/outputs/fulltext_retrieval_results.json",
+      "stage": "retrieval"
     },
     {
       "path": "/home/zorro/repos/autonima-results/projects/dementia/v1/outputs/final_results.json",
@@ -125,7 +125,7 @@
       "stage": "output"
     }
   ],
-  "parent_execution_id": "migration-648cebd1cdafc34bdb60b3b6",
+  "parent_execution_id": "5544f4d1-044f-4100-891d-36c73ab9b8d1",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "63abc13f02e6376e0371dec3e573e979ffe249b6e9e469516f70686cecda8332",
@@ -133,10 +133,10 @@
     "fulltext": "377eb318fb3bbb0213bc88201f404fc67b4ae40ad8420033f263b0e9f53cb653",
     "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
     "parsing": "bd6bd18419f33dc751de963653112dd75b3a49d7730dfc4731d0eb759eced15e",
-    "retrieval": "8ec5ac194f8f687f7ada63a44554e96619620e9d2630104e76616a74a5feb92c",
+    "retrieval": "bb2cea9c000c39871057157d052bbf87226c98a008326073773abdf2864763d8",
     "search": "9bbbd732b61a98f5f5c650ed6bf9855a6148695243c5b18cba9ad7b85dfb62e5"
   },
-  "started_at": "2026-08-15T00:30:41.209353+00:00",
+  "started_at": "2026-08-28T00:19:20.018272+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

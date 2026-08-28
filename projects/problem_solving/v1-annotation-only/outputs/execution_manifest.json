@@ -1,10 +1,9 @@
 {
   "cache_plan": {
-    "changed_stages": [
-      "retrieval"
-    ],
+    "changed_stages": [],
     "copyable_stages": [
       "search",
+      "retrieval",
       "parsing",
       "annotation"
     ],
@@ -12,7 +11,6 @@
     "has_previous_execution": true,
     "recompute_stages": [
       "abstract",
-      "retrieval",
       "fulltext",
       "output"
     ],
@@ -69,12 +67,12 @@
         "reason": "signed entries will be validated against current inputs"
       },
       "retrieval": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "retrieval configuration changed"
+        "reason": "retrieval cache is valid and missing texts will be fetched"
       },
       "search": {
         "action": "incremental",
@@ -89,21 +87,15 @@
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [
-    "retrieval"
-  ],
-  "completed_at": "2026-08-17T18:20:19.881643+00:00",
+  "changed_stages": [],
+  "completed_at": "2026-08-27T23:20:47.312895+00:00",
   "completed_stage": "full",
   "config_hash": "946ae59fccf937567608a7324ff32314a7cbbe6d0935187c1f8ea0cc29359bc6",
   "copied_cache": [],
-  "created_at": "2026-08-17T18:14:24.939111+00:00",
+  "created_at": "2026-08-27T23:14:23.872760+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1-annotation-only/outputs/config.executed.yaml",
-  "execution_id": "b9bbba8d-408b-4051-ad0c-e3977148dff0",
+  "execution_id": "86b54ddf-53ff-4c84-a6d3-b09943e8bd46",
   "invalidated": [
-    {
-      "path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1-annotation-only/outputs/fulltext_retrieval_results.json",
-      "stage": "retrieval"
-    },
     {
       "path": "/home/zorro/repos/autonima-results/projects/problem_solving/v1-annotation-only/outputs/final_results.json",
       "stage": "output"
@@ -125,7 +117,7 @@
       "stage": "output"
     }
   ],
-  "parent_execution_id": "a61d1909-b4b0-4c8b-a40f-9bbf9c37f697",
+  "parent_execution_id": "b9bbba8d-408b-4051-ad0c-e3977148dff0",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
@@ -136,7 +128,7 @@
     "retrieval": "bb2cea9c000c39871057157d052bbf87226c98a008326073773abdf2864763d8",
     "search": "6b7f7798f739082afeb0e2d3a2951cff214da83898df25a27ce6e6e1d5b522e7"
   },
-  "started_at": "2026-08-17T18:14:24.939125+00:00",
+  "started_at": "2026-08-27T23:14:23.872773+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

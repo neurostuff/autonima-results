@@ -1,25 +1,21 @@
 {
   "cache_plan": {
-    "changed_stages": [
-      "abstract",
-      "fulltext",
-      "annotation"
-    ],
+    "changed_stages": [],
     "copyable_stages": [
       "search",
+      "abstract",
       "retrieval",
-      "parsing"
+      "fulltext",
+      "parsing",
+      "annotation"
     ],
     "has_cache_artifacts": true,
     "has_previous_execution": true,
     "recompute_stages": [
-      "abstract",
-      "fulltext",
-      "annotation",
       "output"
     ],
     "schema_version": 2,
-    "source_output": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2",
+    "source_output": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4",
     "stage_hashes": {
       "abstract": "00d402358a94dae2fb54a9175194662692f1533a37e6c6fe7cc94e697124b759",
       "annotation": "8f7a6d10e49163ef8e4a308f69e875f40ff12dbad873612125dee0f119282e7b",
@@ -31,28 +27,28 @@
     },
     "stages": {
       "abstract": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "abstract configuration changed"
+        "reason": "signed entries will be validated against current inputs"
       },
       "annotation": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "annotation configuration changed"
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
-        "action": "recompute",
+        "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": true,
-        "copy_artifact": false,
+        "config_changed": false,
+        "copy_artifact": true,
         "has_artifact": true,
-        "reason": "fulltext configuration changed"
+        "reason": "signed entries will be validated against current inputs"
       },
       "output": {
         "action": "recompute",
@@ -91,41 +87,37 @@
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [
-    "abstract",
-    "fulltext",
-    "annotation"
-  ],
-  "completed_at": "2026-08-27T05:01:20.377179+00:00",
+  "changed_stages": [],
+  "completed_at": "2026-08-27T22:11:09.035307+00:00",
   "completed_stage": "full",
   "config_hash": "e88d8acb9d9d32e5718c12971fd43193742e2be9fb8ff71d0597c6245b4375f0",
-  "copied_cache": [
+  "copied_cache": [],
+  "created_at": "2026-08-27T21:57:41.922473+00:00",
+  "executed_config_path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/config.executed.yaml",
+  "execution_id": "c04c8318-8c79-4fb3-8f6f-0af6910cb6cb",
+  "invalidated": [
     {
-      "from": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2/outputs/search_results.json",
-      "stage": "search",
-      "to": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/search_results.json"
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/final_results.json",
+      "stage": "output"
     },
     {
-      "from": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2/outputs/fulltext_retrieval_results.json",
-      "stage": "retrieval",
-      "to": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/fulltext_retrieval_results.json"
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/nimads_studyset.json",
+      "stage": "output"
     },
     {
-      "from": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2/outputs/coordinate_parsing_results.json",
-      "stage": "parsing",
-      "to": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/coordinate_parsing_results.json"
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/nimads_annotation.json",
+      "stage": "output"
     },
     {
-      "from": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2/retrieval",
-      "stage": "retrieval_data",
-      "to": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/retrieval"
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/missing_fulltexts.csv",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/missing_fulltexts.txt",
+      "stage": "output"
     }
   ],
-  "created_at": "2026-08-27T04:41:27.402336+00:00",
-  "executed_config_path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v4/outputs/config.executed.yaml",
-  "execution_id": "8bc4213a-b91a-462b-bfbc-9f0d4101e68c",
-  "invalidated": [],
-  "parent_execution_id": "8ecf71b7-1841-4115-b42e-355feb2ff29c",
+  "parent_execution_id": "8bc4213a-b91a-462b-bfbc-9f0d4101e68c",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "00d402358a94dae2fb54a9175194662692f1533a37e6c6fe7cc94e697124b759",
@@ -136,7 +128,7 @@
     "retrieval": "bb2cea9c000c39871057157d052bbf87226c98a008326073773abdf2864763d8",
     "search": "43fa443bbd0aceacc93a60f124d6f52edbd8ac78c814ad55eb4446370b5321a9"
   },
-  "started_at": "2026-08-27T04:41:27.402349+00:00",
+  "started_at": "2026-08-27T21:57:41.922492+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

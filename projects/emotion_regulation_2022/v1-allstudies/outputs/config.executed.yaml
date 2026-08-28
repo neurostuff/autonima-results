@@ -5,7 +5,7 @@ search:
   date_from: null
   date_to: null
   email: delavega@utexas.edu
-  pmids_file: /home/zorro/repos/autonima-results/projects/emotional_regulation_2022/pubmed_search_pmids.txt
+  pmids_file: /home/zorro/repos/autonima-results/projects/emotion_regulation_2022/pubmed_search_pmids.txt
   pmids_list: null
 screening:
   abstract:
@@ -96,7 +96,7 @@ retrieval:
   max_retries: 3
   download_directory: downloads
   n_jobs: 1
-  load_excluded: false
+  load_excluded: true
   full_text_sources:
   - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
     pmid_source: folder_name
@@ -124,8 +124,12 @@ annotation:
   - study_title
   - study_fulltext
   prompt_type: multi_analysis
-  inclusion_criteria: []
-  exclusion_criteria: []
+  inclusion_criteria:
+  - <ANNOTATION_INCLUSION_CRITERION_1>
+  - <ANNOTATION_INCLUSION_CRITERION_2>
+  exclusion_criteria:
+  - <ANNOTATION_EXCLUSION_CRITERION_1>
+  - <ANNOTATION_EXCLUSION_CRITERION_2>
   annotations:
   - name: <ANNOTATION_SLUG_1>
     description: <SHORT_DESCRIPTION_1>
@@ -139,7 +143,7 @@ annotation:
     exclusion_criteria: []
   enabled: false
 output:
-  directory: /home/zorro/repos/autonima-results/projects/emotional_regulation_2022/v1-allstudies
+  directory: projects/emotion_regulation_2022/v1-allstudies
   prisma_diagram: true
   formats:
   - csv

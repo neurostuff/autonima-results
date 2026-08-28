@@ -1,29 +1,32 @@
 {
   "cache_plan": {
-    "changed_stages": [],
+    "changed_stages": [
+      "search",
+      "retrieval"
+    ],
     "copyable_stages": [
       "search",
       "abstract",
-      "retrieval",
       "fulltext"
     ],
     "has_cache_artifacts": true,
     "has_previous_execution": true,
     "recompute_stages": [
+      "retrieval",
       "parsing",
       "annotation",
       "output"
     ],
     "schema_version": 2,
-    "source_output": "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/v2-allstudies",
+    "source_output": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2-allstudies",
     "stage_hashes": {
       "abstract": "63e88b7a61621277a8ceb66a02e31c7b780960cbe85e648c670fd1d3cf19db51",
       "annotation": "42651f5685e78566f0cf762af70c54395b203ec67f86da74e6869502a022a75c",
       "fulltext": "105b4b18930e0d44209ebf1308218b50b2e015d3967ae58477d2ff36b2b27c65",
       "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
       "parsing": "4f9057331c5ae7d93959d2aad85733e93f82455710944e3f3dec6c2b9a96984f",
-      "retrieval": "249b382d89edcefab6ead8cda5334ea0a6c46793b85fe6aa893b7f54c86463ab",
-      "search": "713f7716ff904d125fcba5e2120ae9054c3c378992d2037a1c24b3c90b722c4f"
+      "retrieval": "bb2cea9c000c39871057157d052bbf87226c98a008326073773abdf2864763d8",
+      "search": "8ebd51bf47c186eb88a934fe49df78cf4b39db0faae15d6f593eb3e133d9a7a2"
     },
     "stages": {
       "abstract": {
@@ -67,57 +70,64 @@
         "reason": "no cache artifact is available"
       },
       "retrieval": {
-        "action": "incremental",
+        "action": "recompute",
         "artifact_is_modern": true,
-        "config_changed": false,
-        "copy_artifact": true,
+        "config_changed": true,
+        "copy_artifact": false,
         "has_artifact": true,
-        "reason": "retrieval cache is valid and missing texts will be fetched"
+        "reason": "retrieval configuration changed"
       },
       "search": {
         "action": "incremental",
         "artifact_is_modern": true,
-        "config_changed": false,
+        "config_changed": true,
         "copy_artifact": true,
         "has_artifact": true,
-        "reason": "metadata cache is valid and new PMIDs will be fetched"
+        "reason": "search changed; cached metadata will be matched by PMID"
       }
     },
     "unsupported_cache": false,
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [],
-  "completed_at": "2026-08-14T21:55:03.112897+00:00",
+  "changed_stages": [
+    "search",
+    "retrieval"
+  ],
+  "completed_at": "2026-08-28T00:46:59.196004+00:00",
   "completed_stage": "full",
-  "config_hash": "25e2fcfe9785e515f966a355db4a32c59bcecb69667481004e0b0da620c2b339",
+  "config_hash": "3aec7b9609638d0cba71ea05ec0aca1b8c7df2547cbcffcc4590ecb6914b1641",
   "copied_cache": [],
-  "created_at": "2026-08-14T21:54:56.537434+00:00",
-  "executed_config_path": "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/v2-allstudies/outputs/config.executed.yaml",
-  "execution_id": "affb49c6-b615-4bf7-95a4-bbd69c1d1739",
+  "created_at": "2026-08-28T00:46:30.266300+00:00",
+  "executed_config_path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2-allstudies/outputs/config.executed.yaml",
+  "execution_id": "2ed76d3c-4cd3-4354-a915-948b9dda7233",
   "invalidated": [
     {
-      "path": "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/v2-allstudies/outputs/final_results.json",
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2-allstudies/outputs/fulltext_retrieval_results.json",
+      "stage": "retrieval"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2-allstudies/outputs/final_results.json",
       "stage": "output"
     },
     {
-      "path": "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/v2-allstudies/outputs/nimads_studyset.json",
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2-allstudies/outputs/nimads_studyset.json",
       "stage": "output"
     },
     {
-      "path": "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/v2-allstudies/outputs/nimads_annotation.json",
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2-allstudies/outputs/nimads_annotation.json",
       "stage": "output"
     },
     {
-      "path": "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/v2-allstudies/outputs/missing_fulltexts.csv",
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2-allstudies/outputs/missing_fulltexts.csv",
       "stage": "output"
     },
     {
-      "path": "/home/zorro/repos/autonima-results/projects/emotional_regulation_2022/v2-allstudies/outputs/missing_fulltexts.txt",
+      "path": "/home/zorro/repos/autonima-results/projects/emotion_regulation_2022/v2-allstudies/outputs/missing_fulltexts.txt",
       "stage": "output"
     }
   ],
-  "parent_execution_id": "ebf7aace-94a9-421e-8ee5-8eff76cd10d5",
+  "parent_execution_id": "affb49c6-b615-4bf7-95a4-bbd69c1d1739",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "63e88b7a61621277a8ceb66a02e31c7b780960cbe85e648c670fd1d3cf19db51",
@@ -125,10 +135,10 @@
     "fulltext": "105b4b18930e0d44209ebf1308218b50b2e015d3967ae58477d2ff36b2b27c65",
     "output": "bbf5c92866f2212de7ac9166fd29430aaa3828b57ff283f8d84b0d3747947b96",
     "parsing": "4f9057331c5ae7d93959d2aad85733e93f82455710944e3f3dec6c2b9a96984f",
-    "retrieval": "249b382d89edcefab6ead8cda5334ea0a6c46793b85fe6aa893b7f54c86463ab",
-    "search": "713f7716ff904d125fcba5e2120ae9054c3c378992d2037a1c24b3c90b722c4f"
+    "retrieval": "bb2cea9c000c39871057157d052bbf87226c98a008326073773abdf2864763d8",
+    "search": "8ebd51bf47c186eb88a934fe49df78cf4b39db0faae15d6f593eb3e133d9a7a2"
   },
-  "started_at": "2026-08-14T21:54:56.537449+00:00",
+  "started_at": "2026-08-28T00:46:30.266318+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }

@@ -1,20 +1,21 @@
 {
   "cache_plan": {
     "changed_stages": [],
-    "copyable_stages": [],
-    "has_cache_artifacts": false,
-    "has_previous_execution": false,
-    "recompute_stages": [
+    "copyable_stages": [
       "search",
-      "abstract",
       "retrieval",
-      "fulltext",
       "parsing",
-      "annotation",
+      "annotation"
+    ],
+    "has_cache_artifacts": true,
+    "has_previous_execution": true,
+    "recompute_stages": [
+      "abstract",
+      "fulltext",
       "output"
     ],
     "schema_version": 2,
-    "source_output": "/home/zorro/repos/autonima-results/projects/executive_function/v2-annotation-only",
+    "source_output": "/home/zorro/repos/autonima-results/projects/executive_function/v3-annotation-only",
     "stage_hashes": {
       "abstract": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
       "annotation": "382accf9398cad3959d2cdbc17dc242907832bd850d68a6e6a6004c5436f820a",
@@ -34,12 +35,12 @@
         "reason": "no cache artifact is available"
       },
       "annotation": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "recompute",
@@ -54,32 +55,32 @@
         "artifact_is_modern": false,
         "config_changed": false,
         "copy_artifact": false,
-        "has_artifact": false,
+        "has_artifact": true,
         "reason": "derived outputs are regenerated"
       },
       "parsing": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
       },
       "retrieval": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "retrieval cache is valid and missing texts will be fetched"
       },
       "search": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "metadata cache is valid and new PMIDs will be fetched"
       }
     },
     "unsupported_cache": false,
@@ -87,15 +88,36 @@
   },
   "cache_policy": "auto",
   "changed_stages": [],
-  "completed_at": "2026-08-21T00:53:18.038610+00:00",
+  "completed_at": "2026-08-27T23:41:57.560202+00:00",
   "completed_stage": "full",
   "config_hash": "af2bc18860c3bb2493c63524ee4eeba5091c5c2dd266e1e5ad015dda96da560f",
   "copied_cache": [],
-  "created_at": "2026-08-21T00:42:39.953826+00:00",
-  "executed_config_path": "/home/zorro/repos/autonima-results/projects/executive_function/v2-annotation-only/outputs/config.executed.yaml",
-  "execution_id": "3a646269-7384-4fb7-9195-9fc3aa419a84",
-  "invalidated": [],
-  "parent_execution_id": null,
+  "created_at": "2026-08-27T23:37:05.767703+00:00",
+  "executed_config_path": "/home/zorro/repos/autonima-results/projects/executive_function/v3-annotation-only/outputs/config.executed.yaml",
+  "execution_id": "8f05b884-ef71-4d78-8db6-a69ba7624c0d",
+  "invalidated": [
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/executive_function/v3-annotation-only/outputs/final_results.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/executive_function/v3-annotation-only/outputs/nimads_studyset.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/executive_function/v3-annotation-only/outputs/nimads_annotation.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/executive_function/v3-annotation-only/outputs/missing_fulltexts.csv",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/executive_function/v3-annotation-only/outputs/missing_fulltexts.txt",
+      "stage": "output"
+    }
+  ],
+  "parent_execution_id": "3a646269-7384-4fb7-9195-9fc3aa419a84",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
@@ -106,7 +128,7 @@
     "retrieval": "e8e4209dc52ea67cb50d20222456e5696de9a9546350a884f25b5960de5eacbd",
     "search": "f7e3b51eee2bf7f3a4d01487c1d5059d1a0ac74621bd34f6fe342217f37de4f6"
   },
-  "started_at": "2026-08-21T00:42:39.953841+00:00",
+  "started_at": "2026-08-27T23:37:05.767715+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }
