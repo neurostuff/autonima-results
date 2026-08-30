@@ -2142,6 +2142,10 @@ essentially every dementia anomaly recorded above — all of which I had previou
 - **Supersedes the earlier interpretation.** The note above concluding dementia is "the project where
   pool quality dominates" is withdrawn: the pool is not obviously bad, it is being scored against
   differently-shaped units.
-- Worth checking whether any other benchmark aggregates this way. If dementia is the only one, this
-  is a footnote; if two or three do, unit-matching becomes a methods requirement for the whole
-  evaluation.
+- **Confirmed: dementia is the only benchmark that aggregates this way** (author confirmation,
+  2026-08-30). So this is a footnote, not a methods requirement — the other eight compare
+  like-for-like units and need no unit-matching caveat. It also means dementia is a
+  single, explainable outlier rather than evidence of a systematic mismatch between per-paper
+  extraction and manual meta-analytic practice, which is the stronger position for §7: the one
+  project that underperforms does so for a reason that is documented, external to the pipeline, and
+  does not generalise.
