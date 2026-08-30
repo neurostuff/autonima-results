@@ -350,48 +350,54 @@ subtype) and ROI-only designs. **[have]**
 > after the corpus re-run), so the cross-project version is filled in below and the EF-specific
 > figures are corrected. The section's *claims* all survive; three of its *numbers* had drifted.
 
-**Cross-project result — analysis-level annotation on matched analyses.** From
-`reports/cross_project_analysis/annotation_aggregates.csv` (`variant=matched_only`,
-`mode_id=combined`), with matched fraction from `parsing_metrics_by_project.csv`:
+**Cross-project result — analysis-level annotation.** From
+`reports/cross_project_analysis/annotation_aggregates.csv`, with matched fraction from
+`parsing_metrics_by_project.csv`.
 
-| project | matched % | precision | recall | F1 | FN | FP | FN:FP |
-|---|---|---|---|---|---|---|---|
-| cue_reactivity | 95% | 0.997 | 0.950 | **0.973** | 18 | 1 | 18.0:1 |
-| problem_solving | 97% | 0.945 | 0.962 | **0.953** | 13 | 19 | 0.7:1 |
-| dementia | 100% | 1.000 | 0.897 | **0.945** | 3 | 0 | 3.0:1 |
-| vbm_of_substance_use | 98% | 0.970 | 0.890 | 0.928 | 12 | 3 | 4.0:1 |
-| decision_making | 91% | 0.965 | 0.882 | 0.921 | 11 | 3 | 3.7:1 |
-| vbm_of_ptsd | 100% | 1.000 | 0.800 | 0.889 | 2 | 0 | 2.0:1 |
-| executive_function | 84% | 0.945 | 0.821 | 0.879 | 34 | 9 | 3.8:1 |
-| emotion_regulation_2022 | **63%** | 0.925 | 0.786 | 0.850 | 40 | 12 | 3.3:1 |
-| social | 94% | 0.752 | 0.708 | 0.729 | 338 | 271 | 1.2:1 |
-| **POOLED** | | **0.863** | **0.810** | **0.836** | 471 | 318 | 1.5:1 |
+**Aggregation: `exhausted_manual_assumption`, and dementia excluded.** Two scoping decisions, both
+deliberate:
 
-Three things to say about this table:
+1. *Exhausted-manual is the primary figure*, because it reflects reality. It charges every unmatched
+   manual analysis as a miss rather than excusing it. `matched_only` conditions on the matching layer
+   having succeeded, which flatters the system by hiding exactly the failures §5 says are an
+   independent error source. Where `matched_only` is quoted it must be labelled as such — the two
+   differ by **0.32 in pooled precision** (0.863 vs 0.540).
+2. *dementia is excluded from analysis-level annotation figures.* Its source meta-analysis **combined
+   multiple studies that shared a data source into single analyses**, so there is no clean mapping
+   from our per-paper extraction to its gold analyses. Matching failure there is a property of the
+   benchmark's construction, not of the pipeline, and scoring it either way is misleading.
 
-- **Annotation is precision-heavy nearly everywhere** — pooled precision 0.863 against recall 0.810,
-  and FN outnumber FP 1.5:1. The system is conservative: when it errs, it more often drops a real
-  analysis than admits a wrong one. That generalises the EF asymmetry below from one project to
-  eight of nine.
-- **social is the outlier and drags the pool** — F1 0.729 against a 0.85–0.97 band for everyone
-  else, and it alone contributes 338 of the 471 pooled FN. Quoting the pooled figure without
-  naming social would misrepresent the rest. This is the same weak-annotation finding already
-  recorded for social elsewhere.
-- **Report matched % beside every F1.** ER's 0.850 is computed on **63%** of its manual analyses,
-  the worst coverage in the set; EF's on 84%. An F1 on a matched subset is not comparable across
-  projects unless the subset size travels with it.
+| project | matched % | precision | recall | F1 | FN | FP |
+|---|---|---|---|---|---|---|
+| vbm_of_ptsd | 100% | 1.000 | 0.800 | **0.889** | 2 | 0 |
+| vbm_of_substance_use | 98% | 0.584 | 0.890 | 0.705 | 12 | 69 |
+| problem_solving | 97% | 0.539 | 0.962 | 0.691 | 13 | 280 |
+| social | 94% | 0.618 | 0.708 | 0.660 | 338 | 508 |
+| executive_function | 84% | 0.545 | 0.821 | 0.655 | 34 | 130 |
+| emotion_regulation_2022 | **63%** | 0.507 | 0.786 | 0.616 | 40 | 143 |
+| decision_making | 91% | 0.451 | 0.882 | 0.596 | 11 | 100 |
+| cue_reactivity | 95% | 0.427 | 0.950 | 0.589 | 18 | 457 |
+| **POOLED (n=8)** | | **0.540** | **0.809** | **0.647** | 468 | 1687 |
+
+Excluding dementia barely moves the pool (0.539 -> 0.540 precision, F1 0.647 either way) — it is
+excluded for correctness of the comparison, not to improve the number.
+
+Three things to say:
+
+- **Annotation is recall-heavy under the honest denominator** — pooled recall 0.809 against precision
+  0.540. The system finds the manual analyses (0.71–0.96 recall everywhere) and admits a great many
+  extra ones. That is the opposite conclusion to `matched_only`, which makes it look
+  precision-heavy, and it is why the variant must be stated.
+- **The FP count is the story, not the FN count.** 1687 FP against 468 FN. Whether those are true
+  errors or analyses the manual meta-analysis simply never considered is the open question, and it
+  is the same question §2 addresses for screening precision.
+- **Report matched % beside every F1.** ER's rests on **63%** of its manual analyses, the worst in
+  the set.
 
 **Corrections to the EF worked example below.** Direction holds, magnitudes drifted: matching now
-fails for **19 of 122** manual analyses (was "22 of 108"), and the error asymmetry is **3.8:1**
-false-negative, 34 FN vs 9 FP (was "5:1, 30 FN vs 6 FP"). The precision/recall band 0.94–1.00 /
-0.75–0.86 still brackets the current aggregate (0.945 / 0.821).
-
-**One caveat on the variant.** These are `matched_only`. The alternative aggregation,
-`exhausted_manual_assumption`, charges every unmatched manual analysis as a false positive and
-collapses pooled precision from 0.863 to 0.534. Which is the honest denominator depends on whether
-an unmatched manual analysis is a parsing miss or a genuine disagreement — §5's own point about the
-matching layer being an independent error source. Whichever is chosen, say so explicitly, because
-the two differ by 0.33 in precision.
+fails for **19 of 122** manual analyses (was "22 of 108"). Under `matched_only` the EF asymmetry is
+3.8:1 false-negative (34 FN vs 9 FP), close to the stated 5:1; under exhausted-manual it inverts to
+130 FP vs 34 FN. Both are true of the same run — another reason the variant has to be named.
 
 **5a. Parsing.** Cross-project coordinate extraction performance, from
 `reports/cross_project_analysis/parsing_metrics_by_project.csv`. Needed both as a result and
@@ -2103,3 +2109,39 @@ curation — two of three say otherwise.
 time as the stage, and `annotation_only` is restricted to gold studies, so its margin over baseline
 bundles annotation with a perfect pool. That is why no annotation share is quoted — the arms cannot
 isolate it.
+
+---
+
+## Dementia's benchmark aggregates studies — the likely root cause of its whole profile (2026-08-30)
+
+The dementia source meta-analysis **combined multiple studies sharing a data source into single
+analyses**. Our extraction is per paper. So the two sides are not counting the same units, and no
+amount of screening or annotation quality closes that gap.
+
+This is a benchmark-comparability property, not a pipeline weakness, and it retro-explains
+essentially every dementia anomaly recorded above — all of which I had previously attributed to
+"pool quality":
+
+- **Weakest allstudies -> gold alignment in the corpus** (mean dice 0.329 against ER 0.598, social
+  0.578). If gold analyses pool several papers, a per-paper map cannot reproduce them.
+- **The only negative Q2 in the stage decomposition** (-0.054, curated pool still ahead of
+  screening). A hand-curated pool can be assembled to match the benchmark's aggregation; automated
+  screening over individual papers cannot.
+- **A map metric unstable enough that 13 duplicated coordinates in one paper moved every column by
+  up to 0.06.** Fewer, larger gold units means each of our per-paper contributions carries more
+  relative weight.
+- **The largest annotation gain in the corpus** (+0.116, 0.329 -> 0.470). Annotation is partially
+  compensating for a unit mismatch rather than only selecting better analyses.
+
+**Consequences.**
+
+- dementia is excluded from analysis-level annotation figures (§5), for this reason.
+- Its map-level numbers should be reported with the caveat attached, not silently pooled. Its §7
+  margin (+0.005 over baseline) is a *lower bound* distorted by unit mismatch, not a measurement of
+  what the pipeline achieves on a comparably-structured benchmark.
+- **Supersedes the earlier interpretation.** The note above concluding dementia is "the project where
+  pool quality dominates" is withdrawn: the pool is not obviously bad, it is being scored against
+  differently-shaped units.
+- Worth checking whether any other benchmark aggregates this way. If dementia is the only one, this
+  is a footnote; if two or three do, unit-matching becomes a methods requirement for the whole
+  evaluation.
