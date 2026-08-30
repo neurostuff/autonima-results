@@ -1689,7 +1689,7 @@ is not free, and past some point it buys recall by spending precision.
 Gold studies still lacking full text fell **179 -> 132**, concentrated in ER (26 -> 5) and
 vbm_of_substance_use (13 -> 2). executive_function remains the largest gap at 63.
 
-### PubMed searches are not reproducible, and this is a real limitation
+### PubMed returned a degraded corpus mid-run (RETRACTED as drift, 2026-08-29)
 
 Two runs *lost* recall (`dementia/v1` -0.027, `cue_reactivity/v1` -0.037). Neither loss came from the
 retrieval work. `search` is always an incremental stage, so **every re-run silently re-queries
@@ -1700,8 +1700,12 @@ PubMed**, and for these two the corpus came back smaller:
 | dementia/v1 | 2027 -> **1282** (-37%) | 71 -> 69 |
 | cue_reactivity/v1 | 1170 -> **1057** | 142 -> 134 |
 
-This is genuine index drift, not a transient API failure: direct PubMed queries return 1283 and 1057
-consistently across repeated attempts, matching what autonima logged. The classification diff shows
+**This was NOT index drift.** Re-probed on 2026-08-29, both queries return their original counts
+consistently: cue_reactivity 1170 (stored 1170) and dementia 2028 (stored 2027, +1 new record),
+three attempts each. PubMed was in a degraded state during the re-run window and has since
+recovered. My original conclusion -- "genuine index drift, not a transient API failure", justified
+by the counts reproducing three times -- was wrong. Three identical results seconds apart rule out a
+one-off failure; they say nothing about a condition that persists for hours. The classification diff shows
 the mechanism -- every bucket lost studies and **gained none** (cue_reactivity TP 125->118, FP
 269->260). Decisions did not change; studies left the pool.
 
@@ -1709,10 +1713,17 @@ Three consequences:
 
 - Those two before/after rows compare different study pools and **must not** be cited as an effect of
   retrieval work.
-- Any reported result should pin its corpus via `pmids_file`. A config re-run months later is not
-  the same experiment, and 1 of 34 runs drifted by 37% in a single cycle. This belongs in the
-  Discussion alongside the human-written-query limitation at §1060 -- together they say the search
-  stage is the least reproducible part of the pipeline.
+- `dementia/v1` and `cue_reactivity/v1` must be RE-RUN. Their current outputs were built on a
+  corpus PubMed was under-reporting by 37% and 10%, so their metrics and maps are wrong -- including
+  the dementia map-level drop (0.330 -> 0.280) reported in the §7 correction, which is an artifact
+  of the degraded corpus and not a retrieval effect.
+- The reproducibility point survives, but in weaker and more accurate form. `search` is always an
+  incremental stage, so every re-run silently re-queries PubMed and inherits whatever state the
+  service is in that hour. The failure mode is not slow index drift but transient degradation that
+  is invisible unless you diff the corpus size against the stored run. Pinning via `pmids_file`, or
+  at minimum asserting the search count against the previous run and refusing to proceed on a large
+  drop, would have caught this within seconds. That belongs in the Discussion next to the
+  human-written-query limitation at §1060.
 - `cue_reactivity/v1` sets no `email` in its search config, which NCBI warns about. Not the cause
   here, but it should be set.
 
