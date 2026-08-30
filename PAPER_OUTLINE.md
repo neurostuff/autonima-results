@@ -1775,3 +1775,58 @@ map-level drop is confounded with search drift and should not be read as a retri
 **Process lesson worth keeping:** an aggregator that runs clean and emits an unchanged file is
 indistinguishable from a correctly-unchanged result. When a re-run produces byte-identical
 aggregate output, check the mtimes of its inputs before explaining the result.
+
+---
+
+## Dementia is sensitive to the final study list, not to annotation (observation, 2026-08-30)
+
+**The observation, and a correction to my first reading of it.** I described the `allstudies` arm as
+the unfiltered pool "before screening or annotation enter the picture". That is wrong: `allstudies`
+runs annotation with the *same* criteria as the canonical arm (verified — `annotation.enabled: true`
+and identical `n_criteria` in dementia/v5-allstudies, v3-annotation-only and v3, and likewise for ER
+and social). What separates the arms is **which studies reach the pool**, not whether annotation
+happened. So an allstudies-vs-canonical difference isolates study selection, i.e. screening.
+
+**What prompted it.** dementia/v3's map moved a lot on almost no input change:
+
+| run | studies | analyses | coordinates |
+|---|---|---|---|
+| dementia/v3 | 62 -> 62 | 332 -> 333 | 1747 -> 1761 (**+14**) |
+| cue_reactivity/v6 | 357 -> 446 | 1896 -> 2340 | +2520 |
+| emotion_regulation_2022/v4 | 131 -> 207 | 749 -> 1126 | +2394 |
+
+A 0.8% coordinate change moved dementia's r2 by up to 0.06 across all four columns, while the two
+projects that gained ~170x more coordinates both improved. Three explanations were tested and two
+died:
+
+- *Degraded PubMed corpus* -- **ruled out.** §7 uses dementia/**v3**, whose search pool was 2027
+  before and after; only the v1 runs were caught in the degraded window.
+- *Meta-analysis nondeterminism* -- **ruled out.** Re-running dementia/v3's meta on byte-identical
+  inputs reproduced every column to four decimals (max |delta| 0.0000). There is no seed in
+  `autonima/meta.py`, so this was worth checking, but the pipeline is deterministic and the §7
+  per-column changes are real signal.
+- *The study list itself* -- **the surviving explanation.**
+
+**Supporting numbers.** allstudies -> gold, mean dice: dementia **0.329**, social 0.578, ER 0.598.
+Dementia's `functional` column is 0.137, the worst in the set. Against its annotation-only arm at
+0.470, dementia gains **+0.141** from a narrower pool where ER gains +0.026 from a pool that already
+starts high. Pool sizes differ sharply too: dementia 62 (v3) / 61 (allstudies) / 39
+(annotation-only), against ER 207 / 104 / 64.
+
+**Interpretation.** Dementia's map metric is operating in a shallow, unstable region: its pool aligns
+weakly with the benchmark, so small membership changes move the thresholded map disproportionately
+(dice on thresholded maps is discontinuous -- a few coordinates can tip voxels across a
+cluster-forming threshold). The fragility is a symptom of a weakly-aligned pool, not an independent
+effect, and it is consistent with dementia's weak §7 margin (+0.005 over baseline) sitting alongside
+a strong annotation gain (+0.116): annotation is rescuing a poor pool up to roughly where ER's pool
+already begins.
+
+**Follow-up worth doing.** Diff the final studysets directly -- which PMIDs are in
+dementia/v3 but not v5-allstudies, and vice versa, and which of those carry the coordinates driving
+the moved columns. That converts "sensitive to the study list" from an inference into a named set of
+studies, and would say whether a handful of high-leverage papers dominate the metric. The same diff
+on ER, where the metric is stable, gives the contrast case.
+
+**Caveat on the cross-arm table.** Each arm is its own `best` tier, so the rows differ in run *and*
+column set (dementia 4 columns for allstudies vs 5 for annotation-only; ER 4 vs 7). The gains above
+are indicative, not a controlled contrast.
