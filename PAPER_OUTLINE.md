@@ -1909,3 +1909,65 @@ candidate lever on the map-level results that has nothing to do with screening o
 **Follow-up.** Sample ~20 flagged studies across projects, check against source PDFs, and if the
 duplication is confirmed as a defect, dedupe identical point sets within a study at parse time and
 re-run the affected metas to measure how much of the map-level signal it was costing.
+
+### Verified, and the fix does NOT improve maps (2026-08-30)
+
+Followed through on the three steps flagged above: sample, verify, dedupe and measure.
+
+**Verification — the duplication is real and its cause is upstream of autonima.** Sampling 20 of the
+163 flagged PMIDs, most pairs carry names describing *genuinely different* contrasts while sharing
+identical coordinates ("Younger adults - Transient minus Sustained" vs "Older adults - ...",
+"Group pattern for words" vs "... for faces", "Main effect of GROUP" vs "Genotype x Alcohol Group
+interaction"). Two also appear under byte-identical names, and two pair a real name against `None`
+(the known sparse-label problem).
+
+Tracing PMID 17494060 to source: ACE exported **10 table files with only 5 distinct contents** --
+each table stored twice under two ids (1368-1372 and 2220-2224). So the same tables were ingested
+twice and the LLM, parsing each copy independently, produced *different* analysis names for the same
+coordinates. That explains both the identical point sets and the contradictory labels.
+
+Corpus-wide, over `ace_outputs/processed/tables`:
+
+    PMIDs with extracted tables    2551
+    PMIDs with duplicate tables     759   (29.8%)
+    redundant table files          1412   (22.5% of all tables)
+
+Worst cases are exactly 2x (16 files -> 8 distinct, 12 -> 6, 10 -> 5), consistent with double
+ingestion rather than partial re-extraction.
+
+**Not caused by the flat-file move.** The 474 files relocated into `html/Manual/` on 2026-08-28 were
+an obvious suspect, since ACE keys work off file paths. They are cleared: duplicate-table rates are
+10.5% among Manual PMIDs (which include every moved file) against 12.1% among journal-subdirectory
+PMIDs that were never touched. The defect is pre-existing and uniform.
+
+**The measurement, and it refutes my own hypothesis.** I predicted deduping would recover map
+quality, on the reasoning that double-weighted studies distort a coordinate-based meta-analysis.
+Deduping dementia/v3 by identical point-set within study (6 studies, 10 analyses removed, annotation
+notes filtered 513 -> 503 to match) and re-running the meta:
+
+| column | with duplicates | deduped | delta |
+|---|---|---|---|
+| 0 | 0.4164 | 0.3778 | -0.0386 |
+| 1 | 0.4236 | 0.4109 | -0.0127 |
+| 2 | 0.3787 | 0.3687 | -0.0100 |
+| 3 | 0.2941 | 0.2977 | +0.0036 |
+| **mean** | **0.3782** | **0.3638** | **-0.0144** |
+
+Removing the duplicates made agreement with the gold maps slightly **worse**. The double-weighted
+studies happened to align well with the benchmark, so their extra weight was accidentally helping.
+
+**What this does and does not license.**
+
+- It remains a genuine data-integrity defect: a study's influence in the meta-analysis should not
+  depend on how many times ACE happened to ingest its tables. Two runs of the same pipeline over the
+  same corpus can weight a paper differently for reasons that have nothing to do with the paper.
+- It does **not** support the claim I made when flagging it -- that fixing this is a lever on the
+  map-level results, or that it explains annotation F1 failing to predict map gain (r = +0.261).
+  That speculation is withdrawn.
+- The dementia test is small (10 analyses over 6 studies). `executive_function/v3` carries 36
+  affected studies and 1774 duplicated points and would be a far stronger test; if the effect there
+  is also near-zero or negative, the honest conclusion is that CBMA is robust to this level of
+  duplication and the fix is worth making for correctness alone.
+
+Test artifacts: `projects/dementia/v3-dedup` (deduped copy, not a registry run) and
+`projects/dementia/reports/{dedup_test,dedup_baseline}`.
