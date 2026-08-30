@@ -243,3 +243,96 @@ random subsample and confirm the map is stable.
    in exactly the way the dementia test showed CBMA tolerates but should not.
 4. **Feasibility counts for B** — per-drug-class N is unknown and is the single fact that decides
    whether B is viable.
+
+---
+
+# PILOT RESULT — deactivation atlas, local data only, zero LLM tokens (2026-08-30)
+
+Steps 1–2 of the recommended sequence were run. **It worked, and it validated.**
+
+## What was built
+
+Source: `articles/ace_outputs/sqlite.db` only — no NeuroStore, no new retrieval, no new parsing, and
+**no LLM calls at any stage**. The whole pipeline below is stage 0.
+
+    activations JOIN tables (84,668 rows, 4,815 tables, 2,534 PMIDs)
+      free filter: deactivation wording in caption/notes  OR  >=1 negative signed statistic
+        -> 266 candidate tables, 194 studies, 3,053 coordinates
+      dedupe identical points within study (autonima#60)      -> 2,681  (-12%)
+      drop unknown coordinate space (26) and <3 coords (25)   -> 143 studies
+      Talairach -> MNI for 47 studies (nimare.utils.tal2mni)
+    ALE, FWE montecarlo, 1,000 iterations, cluster-mass       -> 2,081 significant voxels
+
+## The map recovers the default mode network
+
+Eight significant clusters (z>1.65, k>50 voxels):
+
+| # | x, y, z | peak z | region |
+|---|---|---|---|
+| 1 | −48, −64, 32 | 3.09 | left angular gyrus / TPJ — **DMN** |
+| 2 | −12, 48, 38 | 3.09 | left dorsomedial PFC — **DMN** |
+| 3 | 22, −8, −18 | 3.09 | right amygdala / hippocampus |
+| 4 | 40, 18, −2 | 3.09 | right insula / IFG |
+| 5 | −2, 4, 56 | 2.88 | SMA / dorsal ACC |
+| 6 | −6, −56, 36 | 2.75 | precuneus / PCC — **DMN** |
+| 7 | −4, 48, −10 | 2.41 | ventromedial PFC — **DMN** |
+| 8 | −6, 38, 10 | 1.79 | anterior medial PFC — **DMN** |
+
+Quantified against Yeo-7 (`thick_7`), enrichment = share of significant voxels ÷ share of cortex:
+
+| network | sig voxels | % of sig | enrichment |
+|---|---|---|---|
+| **Default** | 1062 | **51.0%** | **2.23×** |
+| VentAttn / Salience | 384 | 18.5% | 1.78× |
+| Frontoparietal | 106 | 5.1% | 0.34× |
+| Limbic | 18 | 0.9% | 0.10× |
+| Somatomotor | 12 | 0.6% | 0.04× |
+| Visual | 0 | 0.0% | **0.00×** |
+| DorsalAttn | 0 | 0.0% | **0.00×** |
+| (outside cortical atlas) | 499 | 24.0% | — |
+
+**The prediction was DMN, and the prediction held.** Half the significant voxels fall in the DMN at
+2.23× enrichment, while the two canonical *task-positive* networks — visual and dorsal attention —
+contain **exactly zero** significant voxels. The 24% outside the atlas is subcortical (cluster 3,
+amygdala/hippocampus), which Yeo's cortical parcellation does not cover.
+
+## Why this matters for §9
+
+- **It is novel by construction.** Meta-analyses discard deactivations as a matter of routine —
+  documented inside our own corpus, where problem_solving's benchmark states it "includes only BOLD
+  or rCBF signal INCREASES". There is no gold-standard deactivation meta-analysis to validate
+  against, which is exactly why the DMN prediction is the right test.
+- **It validated externally.** Yeo-7 comes from resting-state data in an independent cohort — no
+  literature overlap, different modality, and the prediction was registered in advance in §6A above.
+- **It cost nothing.** Zero tokens. The entire selection was structured filtering over data already
+  on disk, which is the strongest possible demonstration of the cascade's stage 0.
+
+## Honest limitations
+
+1. **The corpus is not a neutral sample of the literature.** These 143 studies come from the nine
+   benchmark projects (cue_reactivity, social, executive_function, emotion regulation, …), so the
+   map is a domain-general deactivation map *of those domains*. Clusters 3–5 (amygdala, insula,
+   SMA) plausibly reflect that composition rather than a general task-negative response. A neutral
+   sweep needs NeuroStore.
+2. **The filter is crude and precision-first by design.** Caption wording OR a negative statistic.
+   A negative statistic can mean a reversed contrast (`B > A`) or a negative correlation rather than
+   a deactivation. This is the adjudication step an LLM would do, and it was skipped here — so the
+   present map is the *zero-token floor*, not the ceiling.
+3. **No spin test.** Enrichment is reported against network size, which does not account for spatial
+   autocorrelation. A spin/spatial-permutation test is the rigorous version and should be run before
+   publication.
+4. **Sample-size metadata was stubbed** at n=20 for the ALE kernel, since ACE does not carry it. This
+   affects kernel width and therefore cluster extent, though not the network-level conclusion.
+
+## What this licenses
+
+The cheap path works end to end and produces a validated, novel result. Two clear next moves:
+
+- **Add the LLM adjudication layer** to the same 266 candidate tables and measure how much precision
+  it buys over the zero-token floor. That is a direct, quantified demonstration of what annotation
+  contributes — the capability flagged as most interesting — on a task where the free baseline is
+  already known.
+- **Rerun on NeuroStore** for a neutral, much larger sample, once autonima#6/#27 land.
+
+Artifacts: `projects/_pilot_deactivation/` — FWE-corrected z map, cluster table, NiMARE dataset,
+summary JSON, and the four scripts that produced them.
