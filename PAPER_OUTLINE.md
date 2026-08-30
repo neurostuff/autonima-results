@@ -1978,3 +1978,54 @@ which is where it belongs in the Discussion, next to the search-corpus point.
 
 Test artifacts: `projects/dementia/v3-dedup` (deduped copy, deliberately not a registry run) and
 `projects/dementia/reports/{dedup_test,dedup_baseline}`.
+
+---
+
+## Stage decomposition: all three decomposable projects (2026-08-30)
+
+Social's three matched arms are complete, so the decomposition now covers **three** projects, not
+two. Re-ran all three against the current (post-retrieval, post-baseline-rerun) results.
+
+Mean dice per arm, and the three questions the arms can actually answer:
+
+| project | n | baseline | annot-only | allstudies | full | Q1 pipeline vs search-only | Q2 screening vs curation | Q3 own search vs fixed pool |
+|---|---|---|---|---|---|---|---|---|
+| emotion_regulation_2022 | 4 | 0.328 | 0.585 | 0.601 | 0.609 | **+0.282** | +0.017 | +0.008 |
+| dementia | 4 | 0.168 | 0.422 | 0.368 | 0.412 | **+0.244** | **−0.054** | +0.044 |
+| social | 5 | 0.408 | 0.570 | 0.572 | 0.585 | **+0.176** | +0.002 | +0.013 |
+
+Social per column:
+
+| column | baseline | annot | allstud | full |
+|---|---|---|---|---|
+| affiliation_merged | 0.258 | 0.401 | 0.384 | 0.446 |
+| all_merged | 0.690 | 0.731 | 0.734 | 0.752 |
+| others_merged | 0.468 | 0.655 | 0.665 | 0.644 |
+| self_merged | 0.202 | 0.489 | 0.494 | 0.474 |
+| soccomm_merged | 0.423 | 0.573 | 0.583 | 0.606 |
+| **mean** | **0.408** | **0.570** | **0.572** | **0.585** |
+
+**What holds across all three.**
+
+- **Q1 — the whole pipeline beats a search-only meta-analysis everywhere**, by +0.176 to +0.282.
+  This is the §7 claim restated at map level on matched arms, and it is the robust one.
+- **Q2 — automated screening matches hand curation in two of three.** ER +0.017 and social +0.002
+  are ties; screening a broad pool reaches what a hand-assembled pool reaches. This remains the most
+  load-bearing finding in the decomposition, because it is the step a sceptic assumes cannot be
+  automated.
+- **Q3 — running your own search costs almost nothing**, +0.008 to +0.044, and is *positive* in all
+  three. Combined with the earlier result that targeting the search buys ~nothing (+0.023 mean,
+  median ~0), the search stage is neither a strength nor a liability: it is close to free.
+
+**Dementia is the exception on Q2 (−0.054), and its cause is now known.** The curated pool still
+beats screening there. That sits with everything else established about dementia: the weakest
+allstudies→gold alignment in the corpus (mean dice 0.329 against ER 0.598 and social 0.578), the
+largest annotation gain (+0.116, rescuing a poor pool), and a map metric so unstable that
+13 duplicated coordinates in a single paper moved every column by up to 0.06. Report it as the
+project where pool quality dominates, not as evidence that screening generally underperforms
+curation — two of three say otherwise.
+
+**Caveat to carry.** None of these is a clean stage effect. Each arm changes the *pool* at the same
+time as the stage, and `annotation_only` is restricted to gold studies, so its margin over baseline
+bundles annotation with a perfect pool. That is why no annotation share is quoted — the arms cannot
+isolate it.
