@@ -1221,7 +1221,18 @@ project rather than as a corpus mean, because the mean would hide that two of ni
     back until the description fix lands. Not on the critical path -- at 2.6% it cannot move the
     headline results.
 
-- **ER needs a v3 screening spec that deviates from the paper to gain recall.** v1 and v2 are
+- **DONE (2026-08-30 audit): ER's deviating screening spec exists, as v4 rather than v3.** The
+    entry below was written before v4 and is superseded. v4's header enumerates the exact price of
+    each faithful restriction and then drops three of them: film and video now qualify (only
+    NON-VISUAL stimuli excluded), any age qualifies, and the strategy definition widened to adjacent
+    antecedent-focused regulation and anticipation-period instructions. Result at full text:
+    **recall_all_meta 0.500 (v2) -> 0.830 (v4)**, precision 0.484 -> 0.239, F1 0.492 -> 0.372. So
+    recall can indeed be bought by departing from the stated criteria, and the answer to "without a
+    precision collapse" is **no** -- precision halves. That tradeoff is the finding, and it belongs
+    in §3 beside the other cases where a paper does not follow its own criteria. Nothing further to
+    run. Original entry retained for the record:
+
+  - ~~**ER needs a v3 screening spec that deviates from the paper to gain recall.**~~ v1 and v2 are
   faithful transcriptions, and faithfulness is costing recall: criterion (4) restricts to static
   pictures, yet 7 of the paper's own 90 included studies use film. A v3 that deliberately departs
   from the stated criteria — admitting film and other non-static visual stimuli, and relaxing
