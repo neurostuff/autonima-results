@@ -343,7 +343,55 @@ subtype) and ROI-only designs. **[have]**
 
 ---
 
-## 5. Parsing and analysis-level annotation  **[have / partial]**
+## 5. Parsing and analysis-level annotation  **[have — cross-project numbers filled 2026-08-30]**
+
+> **Audit note (2026-08-30).** This section was marked `[have / partial]` because only an EF worked
+> example had been written in. Both underlying tables exist and are current (regenerated 2026-08-28,
+> after the corpus re-run), so the cross-project version is filled in below and the EF-specific
+> figures are corrected. The section's *claims* all survive; three of its *numbers* had drifted.
+
+**Cross-project result — analysis-level annotation on matched analyses.** From
+`reports/cross_project_analysis/annotation_aggregates.csv` (`variant=matched_only`,
+`mode_id=combined`), with matched fraction from `parsing_metrics_by_project.csv`:
+
+| project | matched % | precision | recall | F1 | FN | FP | FN:FP |
+|---|---|---|---|---|---|---|---|
+| cue_reactivity | 95% | 0.997 | 0.950 | **0.973** | 18 | 1 | 18.0:1 |
+| problem_solving | 97% | 0.945 | 0.962 | **0.953** | 13 | 19 | 0.7:1 |
+| dementia | 100% | 1.000 | 0.897 | **0.945** | 3 | 0 | 3.0:1 |
+| vbm_of_substance_use | 98% | 0.970 | 0.890 | 0.928 | 12 | 3 | 4.0:1 |
+| decision_making | 91% | 0.965 | 0.882 | 0.921 | 11 | 3 | 3.7:1 |
+| vbm_of_ptsd | 100% | 1.000 | 0.800 | 0.889 | 2 | 0 | 2.0:1 |
+| executive_function | 84% | 0.945 | 0.821 | 0.879 | 34 | 9 | 3.8:1 |
+| emotion_regulation_2022 | **63%** | 0.925 | 0.786 | 0.850 | 40 | 12 | 3.3:1 |
+| social | 94% | 0.752 | 0.708 | 0.729 | 338 | 271 | 1.2:1 |
+| **POOLED** | | **0.863** | **0.810** | **0.836** | 471 | 318 | 1.5:1 |
+
+Three things to say about this table:
+
+- **Annotation is precision-heavy nearly everywhere** — pooled precision 0.863 against recall 0.810,
+  and FN outnumber FP 1.5:1. The system is conservative: when it errs, it more often drops a real
+  analysis than admits a wrong one. That generalises the EF asymmetry below from one project to
+  eight of nine.
+- **social is the outlier and drags the pool** — F1 0.729 against a 0.85–0.97 band for everyone
+  else, and it alone contributes 338 of the 471 pooled FN. Quoting the pooled figure without
+  naming social would misrepresent the rest. This is the same weak-annotation finding already
+  recorded for social elsewhere.
+- **Report matched % beside every F1.** ER's 0.850 is computed on **63%** of its manual analyses,
+  the worst coverage in the set; EF's on 84%. An F1 on a matched subset is not comparable across
+  projects unless the subset size travels with it.
+
+**Corrections to the EF worked example below.** Direction holds, magnitudes drifted: matching now
+fails for **19 of 122** manual analyses (was "22 of 108"), and the error asymmetry is **3.8:1**
+false-negative, 34 FN vs 9 FP (was "5:1, 30 FN vs 6 FP"). The precision/recall band 0.94–1.00 /
+0.75–0.86 still brackets the current aggregate (0.945 / 0.821).
+
+**One caveat on the variant.** These are `matched_only`. The alternative aggregation,
+`exhausted_manual_assumption`, charges every unmatched manual analysis as a false positive and
+collapses pooled precision from 0.863 to 0.534. Which is the honest denominator depends on whether
+an unmatched manual analysis is a parsing miss or a genuine disagreement — §5's own point about the
+matching layer being an independent error source. Whichever is chosen, say so explicitly, because
+the two differ by 0.33 in precision.
 
 **5a. Parsing.** Cross-project coordinate extraction performance, from
 `reports/cross_project_analysis/parsing_metrics_by_project.csv`. Needed both as a result and
