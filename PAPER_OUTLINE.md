@@ -1969,5 +1969,12 @@ studies happened to align well with the benchmark, so their extra weight was acc
   is also near-zero or negative, the honest conclusion is that CBMA is robust to this level of
   duplication and the fix is worth making for correctness alone.
 
-Test artifacts: `projects/dementia/v3-dedup` (deduped copy, not a registry run) and
+**Back-burnered.** Filed upstream as
+[autonima#60](https://github.com/neurostuff/autonima/issues/60) as a general data-integrity issue to
+diagnose and fix, rather than pursued further here. It is not on the critical path for the paper:
+the measured map-level effect is slightly negative, so nothing in the results depends on fixing it.
+It matters for the reproducibility claim -- a paper's weight should not depend on ingest history --
+which is where it belongs in the Discussion, next to the search-corpus point.
+
+Test artifacts: `projects/dementia/v3-dedup` (deduped copy, deliberately not a registry run) and
 `projects/dementia/reports/{dedup_test,dedup_baseline}`.
