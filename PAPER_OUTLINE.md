@@ -478,25 +478,32 @@ wherever one was defined, the broad arm only where targeting is impossible. Emit
 
 | project | n | autonima | best baseline | Δ |
 |---|---|---|---|---|
-| emotion_regulation_2022 | 4 | **0.663** | 0.309 | +0.354 |
+| emotion_regulation_2022 | 4 | **0.670** | 0.309 | +0.361 |
 | vbm_of_ptsd | 1 | **0.456** | 0.247 | +0.209 |
-| cue_reactivity | 3 | **0.568** | 0.457 | +0.111 |
-| vbm_of_substance_use | 6 | **0.255** | 0.153 | +0.102 |
-| problem_solving | 5 | **0.629** | 0.560 | +0.069 |
-| dementia | 4 | **0.330** | 0.275 | +0.055 |
-| executive_function | 4 | **0.642** | 0.612 | +0.030 |
-| social | 5 | 0.520 | 0.527 | −0.007 |
-| decision_making | 3 | 0.352 | **0.367** | −0.015 |
+| cue_reactivity | 3 | **0.585** | 0.457 | +0.128 |
+| problem_solving | 5 | **0.652** | 0.560 | +0.092 |
+| vbm_of_substance_use | 6 | **0.243** | 0.153 | +0.090 |
+| social | 5 | **0.584** | 0.527 | +0.057 |
+| executive_function | 4 | **0.643** | 0.612 | +0.031 |
+| dementia | 4 | **0.280** | 0.275 | +0.005 |
+| decision_making | 3 | **0.367** | 0.367 | +0.001 |
 
-**Pooled over the 35 columns: autonima 0.487 vs 0.396, Δ +0.091, ahead in 29 of 35.** Median Δ is
+*(Regenerated 2026-08-29 against the post-retrieval maps. Previous values, computed before the
+corpus re-run: ER 0.663, cue_reactivity 0.568, problem_solving 0.629, social 0.520, dementia 0.330,
+vbm_of_su 0.255, EF 0.642, decision_making 0.352.)*
+
+**Pooled over the 35 columns: autonima 0.495 vs 0.396, Δ +0.099, ahead in 30 of 35.** Median Δ is
 +0.046 — the mean sits above it because a few large wins skew the distribution, so quote both.
 Pooling columns rather than averaging project means is deliberate: it stops a one-column project
 (`vbm_of_ptsd`) weighing as much as a six-column one (`vbm_of_substance_use`), and it avoids the
 mixed-denominator artefact that arises when a project's targeted margin is averaged over columns
 having no targeted arm.
 
-**Report the two losses rather than burying them.** `social` has the corpus's weakest annotation,
-and `decision_making` is the only project where a narrowed baseline beats the pipeline outright.
+**There are no longer any project-level losses.** Before the retrieval work `social` (−0.007) and
+`decision_making` (−0.015) both sat behind their best baseline; after it both are ahead, social
+decisively (+0.057) and decision_making by a hair (+0.001, effectively a tie). `social` still has
+the corpus's weakest annotation, and `decision_making` remains the closest contest in the set —
+worth saying so rather than claiming a clean sweep.
 `emotion_regulation_2022` heads the table, but three of its four columns are scored against a
 broad arm (see below), so it is the least contested comparison in the set — worth saying so.
 
@@ -1718,3 +1725,42 @@ not been recomputed". Separately, `compile_missing_fulltexts.py` defaults its go
 `<project>/annotation-only-ids.txt`; three projects (cue_reactivity, vbm_of_substance_use, social)
 do not have one, and the script silently reports **0 gold missing** rather than failing. Both are
 failure modes that produce a plausible wrong number rather than an error.
+
+### Correction: §7 was NOT regenerated with the rest (2026-08-29)
+
+I reported that the map-level headline "did not move, byte-identical to before the re-run", and
+explained it as the best-baseline comparison being driven by the gold-restricted `annotation_only`
+family. **Both the finding and the explanation were wrong.**
+
+`compile_best_baselines.py` is only an aggregator: it reads
+`projects/*/reports/baseline_vs_autonima.csv`. Those files are written by
+`scripts/compare_baselines_to_benchmark.py`, which was **not in the report chain**. Every one of
+them predated the corpus re-run (newest 2026-08-27 06:43; the re-run started 16:57). The output was
+byte-identical because its inputs were never regenerated -- not because the underlying maps are
+fixed.
+
+Regenerated for all nine projects at `--tier best`, then re-aggregated. **The map-level results did
+move: 30 of 35 columns changed.**
+
+  best AVAILABLE (targeted if any)     0.487 -> 0.495  vs 0.396   +0.091 -> +0.099   ahead 29 -> 30/35
+  STRONGEST (max of targeted, broad)   0.487 -> 0.495  vs 0.401   +0.086 -> +0.094   ahead 27 -> 29/35
+
+Largest column moves: social/self_merged +0.176, cue_reactivity/3_natural_neutral +0.109,
+social/affiliation_merged +0.076, vbm_of_su/alcohol -0.069, problem_solving/visuospatial +0.066,
+dementia/all -0.061.
+
+Two things this changes in the narrative:
+
+- **The retrieval campaign did buy map-level gain**, not just screening recall. §7's central claim
+  strengthens rather than staying flat.
+- **§7 no longer has two losses to report.** social went -0.007 -> +0.057 and decision_making
+  -0.015 -> +0.001. The "report the losses rather than burying them" paragraph has been rewritten;
+  decision_making is now a tie rather than a loss, and should be described that way.
+
+`dementia` moved the other way (0.330 -> 0.280) and is now barely ahead of its baseline (+0.005).
+Note dementia/v1 is also one of the two runs whose PubMed corpus shrank 37% this cycle, so its
+map-level drop is confounded with search drift and should not be read as a retrieval effect.
+
+**Process lesson worth keeping:** an aggregator that runs clean and emits an unchanged file is
+indistinguishable from a correctly-unchanged result. When a re-run produces byte-identical
+aggregate output, check the mtimes of its inputs before explaining the result.
