@@ -1206,6 +1206,21 @@ project rather than as a corpus mean, because the mean would hide that two of ni
   the fix belongs either in the parser (name analyses from their caption when the label is
   empty) or in autonima's base annotation prompt. Worth doing before the next schema is written.
 
+    **Filed and back-burnered as [autonima#61](https://github.com/neurostuff/autonima/issues/61)
+    (2026-08-30), with the first actual measurement.** 1254 of 48992 analyses are sparse-named
+    (2.6%) -- executive_function 4.6%, problem_solving 3.2%, ER 2.5%, cue_reactivity 2.1%, social
+    1.9%, decision_making 1.6%. Correcting the count above: the patch is in **six configs across
+    four projects** (ER v4 and v4-annotation-only, decision_making v3 and v2-annotation-only,
+    dementia v5-allstudies, problem_solving v2), each worded differently -- not three projects.
+    The workaround is also weaker than it reads: it tells the model to fall back on the
+    description, but **74.2% of sparse-named analyses have no description either**, so it prevents
+    a spurious exclusion without enabling a correct inclusion. Proposed fix in the issue: parser
+    fills `description` from the table caption (closing the 74% gap, and helping every consumer
+    rather than only annotation), plus moving the instruction into the base prompt to deduplicate
+    the six copies, plus a parse-stage count so this stops being rediscovered. Name synthesis held
+    back until the description fix lands. Not on the critical path -- at 2.6% it cannot move the
+    headline results.
+
 - **ER needs a v3 screening spec that deviates from the paper to gain recall.** v1 and v2 are
   faithful transcriptions, and faithfulness is costing recall: criterion (4) restricts to static
   pictures, yet 7 of the paper's own 90 included studies use film. A v3 that deliberately departs
