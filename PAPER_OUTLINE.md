@@ -1827,6 +1827,85 @@ the moved columns. That converts "sensitive to the study list" from an inference
 studies, and would say whether a handful of high-leverage papers dominate the metric. The same diff
 on ER, where the metric is stable, gives the contrast case.
 
+**Future step: non-search baselines (NeuroQuery, NeuroVLM).** Every baseline in §7 is a *search*
+baseline -- a PubMed query, coordinates extracted, pooled. That tests the pipeline against the
+Neurosynth-style workflow but not against the current generation of automated meta-analytic map
+generators. Adding **NeuroQuery** and **NeuroVLM** as additional arms would ask a different and
+harder question: not "does screening beat pooling your own search?" but "does building a curated
+studyset beat asking an existing model for a map of the same construct?". Both produce maps directly
+from a text query, so they slot into the existing per-column dice/r2 comparison without needing a
+studyset at all -- the arm is the map. Worth having for the same reason `baseline_sub` was worth
+having: the broad search baseline is a weak opponent, and a reviewer will ask what happens against a
+strong one.
+
 **Caveat on the cross-arm table.** Each arm is its own `best` tier, so the rows differ in run *and*
 column set (dementia 4 columns for allstudies vs 5 for annotation-only; ER 4 vs 7). The gains above
 are indicative, not a controlled contrast.
+
+---
+
+## The dementia diff, and a coordinate-duplication finding (2026-08-30)
+
+Ran the studyset diff flagged above. The answer is sharper than the hypothesis: dementia/v3's map
+moved **without any change to its study list at all**.
+
+    dementia/v3 before -> after:  studies 62 -> 62,  added 0,  removed 0
+    coordinate counts changed in exactly TWO studies:
+      11805245   21 -> 34  (+13)
+      27258418   38 -> 39  (+1)
+
+So a 0.06 dice swing across all four columns traces to essentially **one paper**. Contrast ER/v4
+over the same window: 76 studies added, +2394 coordinates, and its columns moved +0.007 on average.
+
+### What happened in that paper is a parsing defect, not new data
+
+PMID 11805245's re-parse split two conflated contrasts into four:
+
+    BEFORE                                   AFTER
+    FTD (n = 8) vs controls and SemD    6    FTD vs controls                    6
+                                             FTD < SemD (direct comparison)     6
+    SemD (n = 12) vs controls and FTD   7    SemD vs controls                   7
+                                             SemD < FTD (direct comparison)     7
+
+Splitting the conflated label is right. Assigning the *same coordinates to both halves* is not --
+the pairs are byte-identical point sets:
+
+    FTD vs controls   vs  FTD < SemD    shared 6/6   (both start 38, 18, -6)
+    SemD vs controls  vs  SemD < FTD    shared 7/7   (both start -29, 11, -42)
+
+So the "+13 coordinates" is duplication, and the study is now double-weighted in the pooled
+meta-analysis. That is what moved dementia's map, and it moved it the wrong way.
+
+### It is corpus-wide
+
+Scanning every run for studies where two analyses carry *fully identical* coordinate sets:
+
+| run | studies affected | of | duplicated points |
+|---|---|---|---|
+| executive_function/v3 | 36 | 500 | 1774 |
+| executive_function/v1-2010 | 33 | 522 | 1543 |
+| executive_function/v2 | 30 | 496 | 1860 |
+| cue_reactivity/v6 | 27 | 446 | 678 |
+| executive_function/v1 | 27 | 377 | 1389 |
+| emotion_regulation_2022/v4 | 14 | 207 | 494 |
+| problem_solving/v1 | 14 | 216 | 1242 |
+| social/v2 | 13 | 308 | 1549 |
+
+56 runs in total contain at least one such study. In executive_function/v3 that is 7.2% of studies.
+
+**Hedge before this is cited.** Identical coordinate sets across two analyses are *strong* evidence
+of one table being assigned to several labels, but not proof: a paper can legitimately report the
+same peak table under two headings, and conjunction analyses can share peaks by construction. The
+11805245 case was verified by hand against its analysis names and is unambiguous. The corpus-wide
+count is a screen, not an audit -- it needs a sample checked against source papers before the
+7.2% figure is quoted.
+
+**Why it matters regardless.** Coordinate-based meta-analysis weights studies by their reported
+peaks, so a duplicated table silently doubles one study's influence. This is a plausible contributor
+to the recurring finding that annotation F1 barely predicts map gain (r = +0.261): if map quality is
+partly hostage to parse-level duplication, annotation quality would not track it. Fixing this is a
+candidate lever on the map-level results that has nothing to do with screening or annotation.
+
+**Follow-up.** Sample ~20 flagged studies across projects, check against source PDFs, and if the
+duplication is confirmed as a defect, dedupe identical point sets within a study at parse time and
+re-run the affected metas to measure how much of the map-level signal it was costing.
