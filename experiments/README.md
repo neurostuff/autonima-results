@@ -456,3 +456,113 @@ converts a mixed map into a specific one.**
 
 Artifacts: `deactivation_atlas/maps/{arm_floor,arm_llm}/`, `tables/clusters_arm_*.csv`,
 `tables/arm_comparison.json`. Scripts `05`–`08`.
+
+---
+
+# §9 REASSESSMENT — B and C, and the topic decision (2026-08-31)
+
+Candidate A (deactivation atlas) is **parked**: the built result stands as proof of concept and can be
+revived, but it is not compelling enough to carry §9. B and C are more compelling because they can be
+externally validated and represent automation of a much harder outcome — ENIGMA is a
+multi-consortium effort.
+
+## Candidate B — DROPPED
+
+Supply-limited even with unlimited fetching. PubMed, structural/functional pre-post treatment fMRI:
+
+| drug class | any fMRI | + pre/post | est. usable at ~12% |
+|---|---|---|---|
+| SSRI / antidepressant | 600 | 207 | ~25 |
+| antipsychotic | 320 | 93 | ~11 |
+| stimulant (DAT) | 239 | 33 | ~4 |
+| ketamine / NMDA | 190 | 26 | ~3 |
+| opioid / MOR | 116 | 28 | ~3 |
+| psilocybin / 5HT2A | 141 | 19 | ~2 |
+| benzodiazepine / GABA | 60 | 1 | ~0 |
+
+Only SSRI clears ALE's >=20, barely. But B's validation needs SEVERAL receptor-mappable classes —
+one class against one PET atlas is an anecdote, not a pattern. The literature does not exist at the
+granularity the validation requires, so fetching cannot fix it. `neuromaps` is also not installed.
+
+## Candidate C — PURSUE, structural
+
+Two corrections to the earlier assessment, both from the author:
+
+**1. Structural meta-analysis is already proven here, so the modality-mismatch risk dissolves.**
+Three of the nine benchmark projects ARE structural: dementia (104 studies, explicit `structural`
+r2=0.249 and `functional` r2=0.217 columns), vbm_of_substance_use (106 studies across six drug-class
+strata, alcohol r2=0.476), vbm_of_ptsd (14 studies, r2=0.456). Structural-vs-structural is
+modality-matched to ENIGMA — no functional/structural correspondence assumption needed. My earlier
+concern was an artifact of assuming C had to be functional.
+
+**2. The validation target is packaged, not a manual extraction.** The ENIGMA Toolbox
+(github.com/MICA-MNI/ENIGMA) ships **191 case-control summary-statistic CSVs** in exactly the needed
+form — Cohen's d per Desikan-Killiany ROI with CIs and N:
+
+    CorticalThickness,Structure,d_icv,se_icv,low_ci_icv,up_ci_icv,n_controls,n_patients,pobs,fdr_p
+    MDDadult_casevsCN,L_bankssts,-0.058,0.031,-0.118,0.002,7571,1781,0.059,0.173
+
+ENIGMA is 50 working groups over 26 diseases. Disorder families with case-control stats: 22q11, ADHD
+(4 age strata), epilepsy (5 variants), anorexia, antisocial/conduct, autism (mega AND meta), bipolar
+(type I/II, adolescent/adult), MDD (6+ strata), OCD (adult/pediatric x medicated/unmedicated x
+anxiety/depression), Parkinson's (by Hoehn-Yahr stage), psychosis/CHR, schizophrenia.
+
+**The stratified contrasts are the opportunity.** ENIGMA publishes not just "OCD vs controls" but
+*medicated* OCD, *first-episode* vs *recurrent* MDD, Parkinson's by disease stage, bipolar type I vs
+II. Each distinction lives in the methods section and requires analysis-level selection to reproduce
+— exactly what annotation is for, and exactly what makes it infeasible by hand.
+
+## THE DECISIVE CRITERION: effect size, not supply
+
+CBMA detects **convergence of reported peaks**, so a disorder with tiny case-control effects yields
+few significant peaks to converge on, regardless of how many papers exist. Measured from the ENIGMA
+CSVs against PubMed supply:
+
+| target | max abs(d) | median abs(d) | est. usable | verdict |
+|---|---|---|---|---|
+| **left TLE** (subcortical) | **1.728** | — | ~21 | large effects, marginal N |
+| **anorexia** (thickness) | 0.925 | **0.528** | ~20 | strong effects, novel, marginal N |
+| schizophrenia (thickness) | 0.536 | 0.317 | **~229** | moderate effects, comfortable N |
+| antisocial (thickness) | 0.160 | 0.050 | ~90 | too small |
+| Parkinson's (subcortical) | ~0.136 | — | ~183 | **too small — a supply trap** |
+| MDD (thickness) | ~0.058 | — | ~90 | too small |
+
+Parkinson's has the best supply of any candidate and is unusable. Supply was never the criterion.
+
+## RECOMMENDED PILOT: left vs right temporal lobe epilepsy
+
+Novel to this project (not one of the nine benchmarks), and the sharpest available qualitative test:
+
+    ENIGMA left hippocampus, Cohen's d
+      left TLE  (tlemtsl):  -1.728   massive
+      right TLE (tlemtsr):  -0.169   n.s. (p=0.056)
+
+A **10x dissociation in the same structure between two strata.** If our left-TLE map shows left
+hippocampal/temporal convergence and our right-TLE map does not, the replication is unambiguous by
+eye — which is what the author asked for ("qualitative replication for now").
+
+Four reasons this is the right pilot:
+
+1. **Self-controlling.** Right TLE is an internal negative control for left TLE's positive finding.
+   Most validations lack an internal negative; this one has it by construction.
+2. **Large effects offset marginal N.** Hippocampal sclerosis is gross pathology, so reported peaks
+   are highly consistent — ~20 studies per side is adequate where MDD's d=0.06 would need hundreds.
+3. **Genuinely novel.** No published meta-analysis compares left vs right TLE coordinates against
+   ENIGMA.
+4. **Lateralization is falsifiable and obvious.** A left/right dissociation either appears or it does
+   not; there is no ambiguous middle to argue about.
+
+Supply: left TLE 173 hits (~21 usable), right TLE 153 (~18), TLE any 459 (~55), MTS/HS 206 (~25).
+
+**Scale-up options if the pilot works:** schizophrenia (comfortable ~229 studies, moderate effects) or
+anorexia (median d=0.53, rarely meta-analyzed, ~20 studies).
+
+## Deferred by decision
+
+- **Quantitative ROI comparison design.** ALE measures spatial convergence of reported findings, not
+  effect magnitude, so mapping ALE output onto ENIGMA's per-ROI Cohen's d is non-trivial. Deferred:
+  qualitative replication is sufficient for the first pass, and the author will judge the maps
+  directly.
+- **PTSD and addiction** have ENIGMA working groups but no case-control CSVs in the Toolbox, so our
+  two best-populated local projects have no packaged target. This is part of why the pilot goes to a
+  novel topic instead of reusing a benchmark corpus.
