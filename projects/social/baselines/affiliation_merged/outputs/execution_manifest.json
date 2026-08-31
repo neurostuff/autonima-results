@@ -1,16 +1,20 @@
 {
   "cache_plan": {
-    "changed_stages": [],
-    "copyable_stages": [],
-    "has_cache_artifacts": false,
-    "has_previous_execution": false,
-    "recompute_stages": [
+    "changed_stages": [
       "search",
+      "retrieval"
+    ],
+    "copyable_stages": [
+      "search",
+      "annotation"
+    ],
+    "has_cache_artifacts": true,
+    "has_previous_execution": true,
+    "recompute_stages": [
       "abstract",
       "retrieval",
       "fulltext",
       "parsing",
-      "annotation",
       "output"
     ],
     "schema_version": 2,
@@ -21,8 +25,8 @@
       "fulltext": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
       "output": "01db0764bb6a09431d6820b79a387af28c5c1a26dd1a103442bfed6872f243cd",
       "parsing": "81bd97d4018e3fe797b807f7a162ff0e9ee86c36d85ed712b6f61db0b0ecbe0c",
-      "retrieval": "ef4f0b9bb1fcfef075acea43e851dfcba64908e8bb883bb2ea9557ccce84f781",
-      "search": "ef79a2cdd7a13958f89bf4bf191dd1564ace919ea13d971f332680963d05c1ad"
+      "retrieval": "fb3ed97c062b1f506390e55c2addfada49acbbce0b049a6d5626c47367761d41",
+      "search": "ee8a70903611ee9da9071d7e1e918a6b02725abcbe8b4c2b31f53a20e465ddae"
     },
     "stages": {
       "abstract": {
@@ -34,12 +38,12 @@
         "reason": "no cache artifact is available"
       },
       "annotation": {
-        "action": "recompute",
-        "artifact_is_modern": false,
+        "action": "incremental",
+        "artifact_is_modern": true,
         "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "signed entries will be validated against current inputs"
       },
       "fulltext": {
         "action": "recompute",
@@ -54,7 +58,7 @@
         "artifact_is_modern": false,
         "config_changed": false,
         "copy_artifact": false,
-        "has_artifact": false,
+        "has_artifact": true,
         "reason": "derived outputs are regenerated"
       },
       "parsing": {
@@ -67,35 +71,63 @@
       },
       "retrieval": {
         "action": "recompute",
-        "artifact_is_modern": false,
-        "config_changed": false,
+        "artifact_is_modern": true,
+        "config_changed": true,
         "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "has_artifact": true,
+        "reason": "retrieval configuration changed"
       },
       "search": {
-        "action": "recompute",
-        "artifact_is_modern": false,
-        "config_changed": false,
-        "copy_artifact": false,
-        "has_artifact": false,
-        "reason": "no cache artifact is available"
+        "action": "incremental",
+        "artifact_is_modern": true,
+        "config_changed": true,
+        "copy_artifact": true,
+        "has_artifact": true,
+        "reason": "search changed; cached metadata will be matched by PMID"
       }
     },
     "unsupported_cache": false,
     "unverified_stages": []
   },
   "cache_policy": "auto",
-  "changed_stages": [],
-  "completed_at": "2026-08-26T03:30:43.378339+00:00",
+  "changed_stages": [
+    "search",
+    "retrieval"
+  ],
+  "completed_at": "2026-08-30T03:59:52.793826+00:00",
   "completed_stage": "full",
-  "config_hash": "dd73a639b2d4a974b804898b246d2115bc2ed81fa3493197dbefa143bac3463b",
+  "config_hash": "52d478244520d6fd87074ad639b5db7a21223b690e241de61e407ee2c41c10c2",
   "copied_cache": [],
-  "created_at": "2026-08-26T03:30:12.190421+00:00",
+  "created_at": "2026-08-30T03:59:45.541209+00:00",
   "executed_config_path": "/home/zorro/repos/autonima-results/projects/social/baselines/affiliation_merged/outputs/config.executed.yaml",
-  "execution_id": "152d4377-048e-458c-a1b3-a1d2fb0760e2",
-  "invalidated": [],
-  "parent_execution_id": null,
+  "execution_id": "9b2deef4-d64f-4997-bf4f-ebf6f7c7825c",
+  "invalidated": [
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/social/baselines/affiliation_merged/outputs/fulltext_retrieval_results.json",
+      "stage": "retrieval"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/social/baselines/affiliation_merged/outputs/final_results.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/social/baselines/affiliation_merged/outputs/nimads_studyset.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/social/baselines/affiliation_merged/outputs/nimads_annotation.json",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/social/baselines/affiliation_merged/outputs/missing_fulltexts.csv",
+      "stage": "output"
+    },
+    {
+      "path": "/home/zorro/repos/autonima-results/projects/social/baselines/affiliation_merged/outputs/missing_fulltexts.txt",
+      "stage": "output"
+    }
+  ],
+  "parent_execution_id": "152d4377-048e-458c-a1b3-a1d2fb0760e2",
   "schema_version": 2,
   "stage_hashes": {
     "abstract": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
@@ -103,10 +135,10 @@
     "fulltext": "a8eb9b0dbc6a0fee2092b8027690642b683f6a91cc7b6420eabc969d6394b1a7",
     "output": "01db0764bb6a09431d6820b79a387af28c5c1a26dd1a103442bfed6872f243cd",
     "parsing": "81bd97d4018e3fe797b807f7a162ff0e9ee86c36d85ed712b6f61db0b0ecbe0c",
-    "retrieval": "ef4f0b9bb1fcfef075acea43e851dfcba64908e8bb883bb2ea9557ccce84f781",
-    "search": "ef79a2cdd7a13958f89bf4bf191dd1564ace919ea13d971f332680963d05c1ad"
+    "retrieval": "fb3ed97c062b1f506390e55c2addfada49acbbce0b049a6d5626c47367761d41",
+    "search": "ee8a70903611ee9da9071d7e1e918a6b02725abcbe8b4c2b31f53a20e465ddae"
   },
-  "started_at": "2026-08-26T03:30:12.190433+00:00",
+  "started_at": "2026-08-30T03:59:45.541222+00:00",
   "status": "completed",
   "stop_after_stage": "full"
 }
