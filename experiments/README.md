@@ -378,9 +378,13 @@ the only thing that differs is how analyses are selected:
 - **Arm A, floor** — analyses whose own name/description matches the tight direction lexicon.
 - **Arm B, LLM** — analyses drawn from a *looser* candidate pool and adjudicated by the model.
 
-Model `gpt-5.6-luna` with `reasoning_effort="none"`. Note this model **rejects function tools unless
-that parameter is passed**, and autonima's client (`annotation/client.py:305`) does not send it, so
-the annotation stage is implemented directly in `06_annotate.py` rather than through autonima.
+Model `gpt-5.6-luna` with `reasoning_effort="none"`. This model **rejects function tools unless that
+parameter is passed**, and no autonima call site sends it — `annotation/client.py:305`,
+`screening/openai_client.py:92` and `coordinates/openai_client.py:92` all use `functions=` and pass
+no model-specific parameters, so the model is unusable across the whole pipeline. Filed as
+[autonima#62](https://github.com/neurostuff/autonima/issues/62). The annotation stage here is
+therefore a direct API call in `06_annotate.py` rather than an autonima run, which also means it
+sidesteps caching, retries and cost accounting — a workaround, not a pattern to copy.
 
 ## Cost — measured, not estimated
 
