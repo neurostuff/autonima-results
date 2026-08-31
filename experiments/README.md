@@ -362,3 +362,93 @@ The cheap path works end to end and produces a validated, novel result. Two clea
 
 Artifacts: `experiments/deactivation_atlas/` — FWE-corrected z map, cluster table, NiMARE dataset,
 summary JSON, and the four scripts that produced them.
+
+---
+
+# ANNOTATION EXPERIMENT — what analysis-level selection buys over the free filter (2026-08-30)
+
+The pilot above established a zero-token floor. This is the controlled comparison against it: same
+substrate, same downstream pipeline, one difference — regex versus LLM adjudication.
+
+## Design
+
+Both arms are built from **autonima's parsed analyses** (not the raw ACE tables the pilot used), so
+the only thing that differs is how analyses are selected:
+
+- **Arm A, floor** — analyses whose own name/description matches the tight direction lexicon.
+- **Arm B, LLM** — analyses drawn from a *looser* candidate pool and adjudicated by the model.
+
+Model `gpt-5.6-luna` with `reasoning_effort="none"`. Note this model **rejects function tools unless
+that parameter is passed**, and autonima's client (`annotation/client.py:305`) does not send it, so
+the annotation stage is implemented directly in `06_annotate.py` rather than through autonima.
+
+## Cost — measured, not estimated
+
+    957 studies, 2,650 candidate analyses
+    473,595 input tokens / 126,960 output tokens
+    $0.37, 178 seconds at 10 workers, reasoning tokens = 0
+
+## Selection
+
+**150 of 2,650 analyses included (5.7%).** Precision is the point, and it holds in both directions.
+Included: *"Stroop deactivation"*, *"Deactivations (hypoactivations; all words < baseline)"*,
+*"Task-Negative Regions (negative activation)"*. Rejected — each a case the regex floor swallows:
+
+- negative *correlations* with craving (a correlation is not a deactivation)
+- between-group contrasts (`AUD < CTL`, `Untreated > Treated`)
+- active-condition contrasts (`drug < neutral cue`, `Alcohol > No-Alcohol`)
+- gPPI connectivity analyses
+
+## Result: fewer studies, stronger and much cleaner map
+
+| | floor (regex) | LLM (annotated) |
+|---|---|---|
+| studies | 92 | **31** |
+| coordinates | 1,326 | 543 |
+| significant voxels | 880 | **1,038** |
+| clusters | 5 | 4 |
+| **% of sig voxels in DMN** | 54.7% | **90.9%** |
+| **DMN enrichment** | 2.39× | **3.98×** |
+
+Yeo-7 enrichment, full breakdown:
+
+| network | floor | LLM | Δ |
+|---|---|---|---|
+| **Default** | 2.39× | **3.98×** | **+1.59** |
+| VentAttn / Salience | 2.10× | **0.00×** | −2.10 |
+| Frontoparietal | 1.14× | **0.00×** | −1.14 |
+| DorsalAttn | 0.00× | 0.12× | +0.12 |
+| Visual | 0.00× | 0.03× | +0.03 |
+| Somatomotor | 0.00× | 0.00× | 0.00 |
+
+Cluster peaks tell the same story. The floor arm's strongest clusters are anterior cingulate
+(−8, 44, 4), pre-SMA (4, 22, 38) and right insula (36, 22, −2) — **task-positive salience regions**,
+which is what between-group and active-condition contrasts contribute. The LLM arm's are precuneus
+(−6, −52, 28), vmPFC (6, 44, −4), left angular gyrus (−50, −66, 28) and anterior mPFC (4, 56, 10) —
+**four canonical DMN nodes and nothing else**.
+
+## What this demonstrates
+
+**Annotation removed two-thirds of the studies and produced a stronger map.** The floor arm's
+salience and frontoparietal signal is not weak evidence of deactivation; it is *contamination* — the
+regex admits contrasts that are not task-induced deactivations at all, and those contribute
+task-positive peaks. Stripping them raises DMN purity from 54.7% to 90.9% and eliminates
+salience/frontoparietal entirely.
+
+This is the cleanest available answer to what analysis-level selection is worth: **$0.37, and it
+converts a mixed map into a specific one.**
+
+## Limitations
+
+1. **The arms are unequal in power** (92 vs 31 studies) and unequal by construction, since the LLM
+   is stricter. The enrichment ratio is partly power-robust and the LLM arm has *more* significant
+   voxels despite fewer studies, so the direction is not a power artifact — but a matched-N
+   comparison (subsample the floor to 31) would be the rigorous version.
+2. **34 of the 72 LLM-selected studies were dropped for unknown coordinate space** — a larger loss
+   than the selection itself, and a data-quality limit rather than a method one.
+3. **No spin test** on either arm; enrichment is against network size only.
+4. **The corpus is still the nine benchmark projects**, so this is not a neutral sample of the
+   literature.
+
+Artifacts: `deactivation_atlas/maps/{arm_floor,arm_llm}/`, `tables/clusters_arm_*.csv`,
+`tables/arm_comparison.json`. Scripts `05`–`08`.
