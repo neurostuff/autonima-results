@@ -1,3 +1,29 @@
+# experiments/
+
+Exploratory work that is **not** validated against a manual meta-analysis, kept out of `projects/`
+so it cannot be picked up by the benchmark tooling (`run_categories.yaml`, the cross-project report
+scripts, and anything globbing `projects/*/v*.yaml`).
+
+| | |
+|---|---|
+| `README.md` | this file — the §9 candidate set, cascade design and sequencing |
+| `deactivation_atlas/` | the run pilot: domain-general deactivation ALE, validated against Yeo-7 |
+
+Each experiment directory holds `scripts/` (numbered, run in order), `maps/`, `tables/`, and a
+gitignored `work/` for intermediates.
+
+To reproduce the deactivation atlas from scratch:
+
+```bash
+cd experiments/deactivation_atlas/scripts
+pixi run python 01_build_candidates.py   # zero-token filter over the ACE db
+pixi run python 02_build_dataset.py      # TAL->MNI, drop unusable, NiMARE Dataset
+pixi run python 03_run_ale.py            # ALE + FWE montecarlo (~25 min, 6 cores)
+pixi run python 04_validate_dmn.py       # cluster table + Yeo-7 enrichment
+```
+
+---
+
 # §9 Novel use case — candidates, design, and sequencing
 
 Planning document for the paper's forward-looking section. Status: **no candidate committed.**
@@ -334,5 +360,5 @@ The cheap path works end to end and produces a validated, novel result. Two clea
   already known.
 - **Rerun on NeuroStore** for a neutral, much larger sample, once autonima#6/#27 land.
 
-Artifacts: `projects/_pilot_deactivation/` — FWE-corrected z map, cluster table, NiMARE dataset,
+Artifacts: `experiments/deactivation_atlas/` — FWE-corrected z map, cluster table, NiMARE dataset,
 summary JSON, and the four scripts that produced them.
