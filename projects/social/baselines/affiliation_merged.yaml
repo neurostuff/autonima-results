@@ -11,14 +11,21 @@ search:
     love[tiab] OR romantic[tiab] OR maternal[tiab] OR friendship[tiab] OR "social comparison"[tiab] OR
     reciprocity[tiab])) AND ("1995/01/01"[Date - Publication] : "2020/03/01"[Date - Publication])) NOT
     (review[pt] OR "systematic review"[tiab] OR meta-analysis[pt])'
-  email: delavega@utexas.edu
   date_from: 1995/01/01
   date_to: 2020/03/01
+  max_results: 5000
+  email: delavega@utexas.edu
 retrieval:
   load_excluded: false
   sources:
   - pubget
   full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output/
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
   - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs/
     pmid_source: file_name
     allowed_extensions:
