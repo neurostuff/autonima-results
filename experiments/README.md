@@ -566,3 +566,86 @@ anorexia (median d=0.53, rarely meta-analyzed, ~20 studies).
 - **PTSD and addiction** have ENIGMA working groups but no case-control CSVs in the Toolbox, so our
   two best-populated local projects have no packaged target. This is part of why the pilot goes to a
   novel topic instead of reusing a benchmark corpus.
+
+---
+
+# TLE PILOT — FEASIBILITY RESULT (2026-08-31)
+
+Two runs. Both produced 2 usable studies. **The pilot failed, and the failure is the useful result**:
+it establishes the yield rates that determine which ENIGMA replication targets are possible at all.
+
+## v1 — the ROI/coordinate problem
+
+Broad structural search ("gray matter", "atrophy", "hippocampal volume"):
+
+    search 1,114 -> abstract 467 included -> full text 69 -> fulltext 2 included
+
+**60 of 69 full-text rejections were one criterion: no stereotactic coordinates.** The reasons were
+consistent -- "ROI-based structural analyses (FreeSurfer cortical thickness and subcortical
+volumes)", "atlas-based".
+
+This is structural, not a config bug. The TLE structural literature is ~59% ROI/parcellation-based
+(261 ROI vs 182 voxel-wise on PubMed), and ROI studies report per-region values rather than
+coordinates. **That is the same methodology ENIGMA uses** -- which is exactly why ENIGMA could
+mega-analyse it, and exactly why a coordinate-based meta-analysis cannot consume it. The closer a
+literature sits to ENIGMA's method, the less usable it is for CBMA.
+
+## v2 — require a voxel-wise method
+
+Search and screening both now require VBM / voxel-wise / SPM. Pool 1,114 -> 273.
+
+    search 273 -> abstract 105 included -> full text 14 -> fulltext 2 included
+
+Narrowing worked on the intended axis: full-text inclusion given text rose from 2.9% to 14%. But
+retrieval became the binding constraint -- only 14 of 105 abstract-included studies had text.
+
+## Measured rates (PMC only)
+
+| stage | rate |
+|---|---|
+| abstract inclusion | 39.0% |
+| PMC full-text coverage | 14% (38 of 269 articles) |
+| coordinate table present, given PMC full text | 37% (14 of 38) |
+| autonima extracted coordinates, given a table | ~71% (10 of 14) |
+| full-text inclusion, given coordinates | 67% |
+
+Net: **~0.7% of searched papers become usable on PMC alone; ~6.9% with full retrieval.**
+
+## Projections, and the two conclusions
+
+| literature | VBM papers | PMC-only | full retrieval | per side |
+|---|---|---|---|---|
+| **schizophrenia** | 1,042 | 8 | **72** | 36 |
+| bipolar | 340 | 3 | 19 | 9 |
+| **TLE** | 273 | 2 | **19** | 9 |
+| autism | 272 | 2 | 15 | 8 |
+| ADHD | 199 | 1 | 11 | 6 |
+| OCD | 178 | 1 | 10 | 5 |
+
+**1. PMC alone is not viable for any target.** Every literature caps at 1-8 usable studies. The
+Elsevier-via-campus-tunnel top-up is mandatory, not an optimisation -- it is what moves the column
+from "PMC-only" to "full retrieval".
+
+**2. TLE is too small.** Even with perfect retrieval it yields ~19 studies, ~9 per side, against the
+>=20 per stratum an ALE/MKDA needs. The lateralization design is elegant and self-controlling, and
+the literature does not exist to support it. **Only schizophrenia clears the bar** (~72 usable), and
+it has no equivalent internal negative control -- so the trade is statistical power against design
+elegance.
+
+## Secondary findings
+
+- **A 17% false-exclusion rate at full-text screening.** 2 of 12 exclusions said "no coordinates"
+  for studies where pubget *had* extracted a coordinate table (PMIDs 34817680, 26594628). Not
+  systemic -- the other 8 genuinely have no coordinate table -- but it means the screener is not
+  reading pubget's extracted tables reliably. Related to autonima#44.
+- **pubget table extraction works well.** All 46 retrieved articles had non-empty `tables/`
+  directories, 246 table files. The bottleneck is PMC *coverage*, not extraction.
+- **gpt-5.6-luna ran the annotation stage inside autonima** for the first time, via the autonima#62
+  fix and `AUTONIMA_MODEL_PARAMS`.
+
+## What this means for the §9 decision
+
+The ENIGMA replication is not dead, but it is narrower than proposed: **one disorder
+(schizophrenia), full retrieval required, and no internal control.** Before committing, the cheap
+next step is to re-run this same pilot on schizophrenia with PMC only -- projected 8 usable studies,
+which is enough to confirm the rates hold on a larger literature without waiting for the tunnel.
