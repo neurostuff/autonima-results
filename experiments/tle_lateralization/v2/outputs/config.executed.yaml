@@ -1,0 +1,173 @@
+search:
+  database: pubmed
+  query: ((("temporal lobe epilep*"[tiab] OR TLE[tiab] OR "mesial temporal sclerosis"[tiab]
+    OR "hippocampal sclerosis"[tiab] OR "medial temporal lobe epilep*"[tiab]) AND
+    ("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "voxel-wise"[tiab] OR voxelwise[tiab]
+    OR "voxel based"[tiab] OR SPM[tiab] OR "statistical parametric mapping"[tiab]))
+    AND ("magnetic resonance imaging"[Mesh] OR MRI[tiab]) AND "Humans"[MeSH])
+  max_results: 5000
+  date_from: 1995/01/01
+  date_to: 2025/12/31
+  email: delavega@utexas.edu
+  pmids_file: null
+  pmids_list: null
+screening:
+  abstract:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Meta-analysis of structural neuroimaging studies reporting grey-matter
+      or volumetric differences between temporal lobe epilepsy (TLE) patients and
+      healthy controls, where the side of the seizure focus is specified.
+    inclusion_criteria:
+    - Empirical English-language structural MRI studies comparing TLE patients against
+      a control group using a VOXEL-WISE method (VBM, voxel-based morphometry, SPM
+      voxelwise analysis). ROI-only or atlas/parcellation-only designs (FreeSurfer
+      region tables, manual hippocampal volumetry) do NOT qualify, because they report
+      per-region values rather than the stereotactic coordinates a coordinate-based
+      meta-analysis requires.
+    - The study must report, or make determinable, the side of the seizure focus (left,
+      right, or both/mixed). Studies of unspecified laterality still qualify at abstract
+      stage; laterality is resolved at full text.
+    - Mesial temporal sclerosis, hippocampal sclerosis and medial temporal lobe epilepsy
+      all qualify as TLE.
+    exclusion_criteria:
+    - Reviews, meta-analyses, case reports, and studies of a single patient.
+    - Purely functional studies (fMRI, PET, MEG, EEG) with no structural morphometric
+      outcome.
+    - ROI-based or atlas-based-only morphometry with no voxel-wise whole-brain analysis.
+    - Studies only of post-surgical change with no patient-versus-control comparison.
+    - Non-human studies.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I1: Empirical English-language structural MRI studies comparing TLE patients
+          against a control group using a VOXEL-WISE method (VBM, voxel-based morphometry,
+          SPM voxelwise analysis). ROI-only or atlas/parcellation-only designs (FreeSurfer
+          region tables, manual hippocampal volumetry) do NOT qualify, because they
+          report per-region values rather than the stereotactic coordinates a coordinate-based
+          meta-analysis requires.
+        I2: The study must report, or make determinable, the side of the seizure focus
+          (left, right, or both/mixed). Studies of unspecified laterality still qualify
+          at abstract stage; laterality is resolved at full text.
+        I3: Mesial temporal sclerosis, hippocampal sclerosis and medial temporal lobe
+          epilepsy all qualify as TLE.
+      exclusion:
+        E1: Reviews, meta-analyses, case reports, and studies of a single patient.
+        E2: Purely functional studies (fMRI, PET, MEG, EEG) with no structural morphometric
+          outcome.
+        E3: ROI-based or atlas-based-only morphometry with no voxel-wise whole-brain
+          analysis.
+        E4: Studies only of post-surgical change with no patient-versus-control comparison.
+        E5: Non-human studies.
+  fulltext:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Confirm the study reports stereotactic coordinates for a structural
+      comparison between TLE patients and controls, with the seizure-focus side determinable.
+    inclusion_criteria:
+    - Reports coordinates in a standard stereotactic space (MNI or Talairach) for
+      at least one patient-versus-control structural contrast.
+    - The seizure-focus side of the patient sample is stated or clearly determinable.
+    - Whole-brain or whole-region analysis; ROI-only hippocampal volumetry without
+      coordinates does NOT qualify.
+    exclusion_criteria:
+    - No stereotactic coordinates reported anywhere.
+    - Coordinates reported only for functional or diffusion measures, not grey matter
+      structure.
+    - Patient group is not TLE, or is a mixed epilepsy sample where TLE cannot be
+      isolated.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I4: Reports coordinates in a standard stereotactic space (MNI or Talairach)
+          for at least one patient-versus-control structural contrast.
+        I5: The seizure-focus side of the patient sample is stated or clearly determinable.
+        I6: Whole-brain or whole-region analysis; ROI-only hippocampal volumetry without
+          coordinates does NOT qualify.
+      exclusion:
+        E6: No stereotactic coordinates reported anywhere.
+        E7: Coordinates reported only for functional or diffusion measures, not grey
+          matter structure.
+        E8: Patient group is not TLE, or is a mixed epilepsy sample where TLE cannot
+          be isolated.
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output/
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: gpt-5.6-luna
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_abstract
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria:
+  - Judge each analysis from its own name, description and table caption, plus the
+    study text for the seizure-focus side. An empty or generic analysis name is never
+    itself a reason to exclude.
+  - Coordinates must be in MNI or Talairach space.
+  exclusion_criteria:
+  - Exclude analyses that are not a patient-versus-control structural comparison.
+  annotations:
+  - name: left_tle_atrophy
+    description: null
+    inclusion_criteria:
+    - The patient sample has a LEFT-sided seizure focus (left TLE, left MTS, left
+      hippocampal sclerosis). If the paper reports left and right groups separately,
+      this label applies only to the left-focus contrast.
+    - The contrast direction is controls GREATER than patients, i.e. atrophy / reduced
+      grey matter / reduced volume in patients.
+    exclusion_criteria:
+    - Right-focus or bilateral/mixed-laterality patient samples.
+    - Patients GREATER than controls (hypertrophy or increased volume).
+    - Contrasts between two patient groups rather than patients versus controls.
+  - name: right_tle_atrophy
+    description: null
+    inclusion_criteria:
+    - The patient sample has a RIGHT-sided seizure focus (right TLE, right MTS, right
+      hippocampal sclerosis). If left and right groups are reported separately, this
+      label applies only to the right-focus contrast.
+    - The contrast direction is controls GREATER than patients.
+    exclusion_criteria:
+    - Left-focus or bilateral/mixed-laterality patient samples.
+    - Patients GREATER than controls.
+    - Contrasts between two patient groups rather than patients versus controls.
+  - name: all_tle_atrophy
+    description: null
+    inclusion_criteria:
+    - Any TLE patient sample (left, right, bilateral or unspecified) versus controls.
+    - The contrast direction is controls GREATER than patients.
+    exclusion_criteria:
+    - Patients GREATER than controls.
+    - Contrasts between two patient groups rather than patients versus controls.
+  enabled: true
+output:
+  directory: experiments/tle_lateralization/v2
+  prisma_diagram: true
+  formats:
+  - csv
+  - json
+  nimads: true
+  export_excluded_studies: true

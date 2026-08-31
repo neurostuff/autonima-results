@@ -1,0 +1,161 @@
+# TLE lateralization -- §9 pilot. Replicate ENIGMA-Epilepsy's left/right temporal lobe
+# epilepsy atrophy dissociation from the published coordinate literature.
+#
+# WHY THIS TARGET. ENIGMA ships per-ROI Cohen's d for left- and right-focus TLE with mesial
+# temporal sclerosis (tlemtsl / tlemtsr). Left hippocampus: d = -1.728 for LEFT TLE against
+# -0.169 (n.s.) for RIGHT TLE -- a 10x dissociation in the SAME structure between two strata.
+# That makes the experiment self-controlling: right TLE is an internal negative control for
+# left TLE's positive finding, and the prediction is falsifiable by eye.
+#
+# WHAT MAKES IT INFEASIBLE BY HAND. Seizure-focus side lives in the sample description, and
+# atrophy direction lives in the table. Selecting "left-focus TLE patients < controls" requires
+# reading both, per analysis, across hundreds of papers.
+#
+# RETRIEVAL: pubget + Elsevier only. ACE is deliberately NOT a source here -- pubget and the
+# Elsevier extractor ingest their own coordinates, and ACE's duplicate-table problem
+# (autonima#60) would double-weight studies.
+#
+# WHY v2. v1 searched broadly on structural terms ("gray matter", "atrophy", "hippocampal volume")
+# and died at full-text screening: 2 of 69 included, with 60 rejected on the single criterion "no
+# stereotactic coordinates". The reasons were consistent -- "ROI-based structural analyses
+# (FreeSurfer cortical thickness and subcortical volumes)", "atlas-based". The modern TLE structural
+# literature is ~59% ROI/parcellation-based (261 ROI vs 182 voxel-wise on PubMed), and ROI studies
+# report per-region values, not coordinates. That is the same methodology ENIGMA uses -- which is
+# precisely why ENIGMA could mega-analyse it, and precisely why a coordinate-based meta-analysis
+# cannot consume it. v2 therefore REQUIRES a voxel-wise method at both search and screening.
+#
+# MODEL: gpt-5.6-luna for annotation (autonima#62 fixed). Not -- that model rejects function tools unless
+# reasoning_effort='none' is passed, which no autonima call site does (autonima#62).
+
+search:
+  database: "pubmed"
+  query: >-
+    ((("temporal lobe epilep*"[tiab] OR TLE[tiab] OR "mesial temporal sclerosis"[tiab]
+    OR "hippocampal sclerosis"[tiab] OR "medial temporal lobe epilep*"[tiab])
+    AND ("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "voxel-wise"[tiab] OR voxelwise[tiab]
+    OR "voxel based"[tiab] OR SPM[tiab] OR "statistical parametric mapping"[tiab]))
+    AND ("magnetic resonance imaging"[Mesh] OR MRI[tiab])
+    AND "Humans"[MeSH])
+  date_from: "1995/01/01"
+  date_to: "2025/12/31"
+  max_results: 5000
+  email: "delavega@utexas.edu"
+
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - "text.txt"
+      coordinates_path_templates:
+        - "coordinates.json"
+
+parsing:
+  parse_coordinates: true
+  coordinate_model: "gpt-5-mini-2025-08-07"
+
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: >-
+      Meta-analysis of structural neuroimaging studies reporting grey-matter or volumetric
+      differences between temporal lobe epilepsy (TLE) patients and healthy controls, where the
+      side of the seizure focus is specified.
+    inclusion_criteria:
+      - Empirical English-language structural MRI studies comparing TLE patients against a control
+        group using a VOXEL-WISE method (VBM, voxel-based morphometry, SPM voxelwise analysis).
+        ROI-only or atlas/parcellation-only designs (FreeSurfer region tables, manual hippocampal
+        volumetry) do NOT qualify, because they report per-region values rather than the stereotactic
+        coordinates a coordinate-based meta-analysis requires.
+      - The study must report, or make determinable, the side of the seizure focus (left, right, or
+        both/mixed). Studies of unspecified laterality still qualify at abstract stage; laterality
+        is resolved at full text.
+      - Mesial temporal sclerosis, hippocampal sclerosis and medial temporal lobe epilepsy all
+        qualify as TLE.
+    exclusion_criteria:
+      - Reviews, meta-analyses, case reports, and studies of a single patient.
+      - Purely functional studies (fMRI, PET, MEG, EEG) with no structural morphometric outcome.
+      - ROI-based or atlas-based-only morphometry with no voxel-wise whole-brain analysis.
+      - Studies only of post-surgical change with no patient-versus-control comparison.
+      - Non-human studies.
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: >-
+      Confirm the study reports stereotactic coordinates for a structural comparison between TLE
+      patients and controls, with the seizure-focus side determinable.
+    inclusion_criteria:
+      - Reports coordinates in a standard stereotactic space (MNI or Talairach) for at least one
+        patient-versus-control structural contrast.
+      - The seizure-focus side of the patient sample is stated or clearly determinable.
+      - Whole-brain or whole-region analysis; ROI-only hippocampal volumetry without coordinates
+        does NOT qualify.
+    exclusion_criteria:
+      - No stereotactic coordinates reported anywhere.
+      - Coordinates reported only for functional or diffusion measures, not grey matter structure.
+      - Patient group is not TLE, or is a mixed epilepsy sample where TLE cannot be isolated.
+
+annotation:
+  enabled: true
+  # gpt-5.6-luna with reasoning disabled. Usable inside autonima as of the fix for autonima#62;
+  # requires AUTONIMA_MODEL_PARAMS='{"gpt-5.6-luna":{"reasoning_effort":"none"}}' in the environment.
+  model: "gpt-5.6-luna"
+  prompt_type: "multi_analysis"
+  create_all_included_annotations: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_abstract"
+    - "study_fulltext"
+  inclusion_criteria:
+    - Judge each analysis from its own name, description and table caption, plus the study text for
+      the seizure-focus side. An empty or generic analysis name is never itself a reason to exclude.
+    - Coordinates must be in MNI or Talairach space.
+  exclusion_criteria:
+    - Exclude analyses that are not a patient-versus-control structural comparison.
+  annotations:
+    - name: "left_tle_atrophy"
+      objective: >-
+        Grey-matter REDUCTION in LEFT-focus temporal lobe epilepsy patients relative to controls.
+      inclusion_criteria:
+        - The patient sample has a LEFT-sided seizure focus (left TLE, left MTS, left hippocampal
+          sclerosis). If the paper reports left and right groups separately, this label applies only
+          to the left-focus contrast.
+        - The contrast direction is controls GREATER than patients, i.e. atrophy / reduced grey
+          matter / reduced volume in patients.
+      exclusion_criteria:
+        - Right-focus or bilateral/mixed-laterality patient samples.
+        - Patients GREATER than controls (hypertrophy or increased volume).
+        - Contrasts between two patient groups rather than patients versus controls.
+    - name: "right_tle_atrophy"
+      objective: >-
+        Grey-matter REDUCTION in RIGHT-focus temporal lobe epilepsy patients relative to controls.
+      inclusion_criteria:
+        - The patient sample has a RIGHT-sided seizure focus (right TLE, right MTS, right
+          hippocampal sclerosis). If left and right groups are reported separately, this label
+          applies only to the right-focus contrast.
+        - The contrast direction is controls GREATER than patients.
+      exclusion_criteria:
+        - Left-focus or bilateral/mixed-laterality patient samples.
+        - Patients GREATER than controls.
+        - Contrasts between two patient groups rather than patients versus controls.
+    - name: "all_tle_atrophy"
+      objective: >-
+        Grey-matter REDUCTION in ANY temporal lobe epilepsy patients relative to controls,
+        regardless of focus side. The pooled comparison, matching ENIGMA's allepi stratum.
+      inclusion_criteria:
+        - Any TLE patient sample (left, right, bilateral or unspecified) versus controls.
+        - The contrast direction is controls GREATER than patients.
+      exclusion_criteria:
+        - Patients GREATER than controls.
+        - Contrasts between two patient groups rather than patients versus controls.
+
+output:
+  nimads: true
+  export_excluded_studies: true
