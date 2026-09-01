@@ -810,41 +810,45 @@ question from argument into measurement.
 
 #### Fetching the PDFs: which routes actually work
 
-Tested 2026-09-01, because most of the documented ones are dead:
+Tested 2026-09-01, because most of the documented routes are dead:
 
 | route | result |
 |---|---|
 | PMC OA Web Service (`oa.fcgi`) | **404** on both `www.ncbi.nlm.nih.gov` and `pmc.ncbi.nlm.nih.gov` |
 | PMC FTP dataset tree | **emptied August 2026**; `/pub/pmc/` now holds only `PMC-ids.csv.gz` |
-| `pmc.ncbi.nlm.nih.gov/articles/PMC*/pdf/` | HTTP 200 but returns a "Preparing to download ..." bot-mitigation interstitial, not a PDF |
-| Europe PMC `fullTextPDF` | **0 of 30** candidates returned a PDF |
-| **PMC Cloud Service (AWS Open Data)** | **25 of 25.** No login, no key, HTTPS or S3 |
+| `pmc.ncbi.nlm.nih.gov/articles/PMC*/pdf/` | HTTP 200 but returns a "Preparing to download ..." bot-mitigation interstitial |
+| Europe PMC `fullTextPDF` | **0 of 30** candidates |
+| **PMC Cloud Service (AWS Open Data)** | **25 of 25.** No login, no key |
+| **Unpaywall** (`best_oa_location.url_for_pdf`) | **60 of 60 resolve**, all to publisher hosts |
+| **Semantic Scholar** (`openAccessPdf`) | **59 of 60 resolve**, same hosts |
+| OpenAlex (`best_oa_location.pdf_url`) | 19 of 60 — markedly more conservative |
 
-`https://pmc-oa-opendata.s3.amazonaws.com/` is the current sanctioned route and the FTP readme
-now points at it explicitly. Objects are keyed directly by PMCID and version
-(`PMC3434213.1/PMC3434213.1.pdf`), so no lookup table is needed — though versions matter, since a
-`.2` is typically the publisher's typeset copy replacing an author manuscript, and the highest
-version should win.
+#### Source choice is a validity question, not a convenience one
 
-**The bonus finding is worth more than the PDFs.** Each record also carries **one JPEG per figure
-and one per table**, pre-cropped by PMC:
+PMC's rendering is uniform, and an extractor validated only against it will look better than it is.
+The publisher-hosted PDFs Unpaywall and Semantic Scholar resolve to are what a document actually
+looks like arriving from any other route, so those are the ones worth scoring against. The benchmark
+script takes `--source {pmc,unpaywall,s2}`, repeatable, and stores under `pdfs/<source>/` so the same
+papers can be scored across renderings.
 
-| | share of 25 sampled |
-|---|---|
-| PDF present | 100% |
-| >= 1 table image | 40% (36 images) |
-| >= 1 figure image | 88% (89 images) |
+**Resolution is near-total; download is not.** Of 25 Unpaywall URLs actually fetched:
 
-That removes a whole pipeline stage from two directions at once. Table-image extraction skips PDF
-page segmentation entirely — feed the crop straight to a vision model. And the figure-extraction
-direction (supply-side item 5 above), whose main objection was that no cheap validation set exists,
-now has one: figures already isolated, already paired with the article's XML coordinates.
+| outcome | n | hosts |
+|---|---|---|
+| real PDF | 14 (56%) | Frontiers, PLOS, Nature |
+| HTTP 403 + HTML | 6 | SfN (jneurosci), Wiley, MDPI, OUP |
+| HTTP 200 + HTML | 5 | BMC redirect pages |
 
-For non-PMC sources the ladder is different and untested here: Unpaywall and OpenAlex both expose
-`best_oa_location.pdf_url` free and keyless, Crossref carries publisher TDM links
-(`intended-application: text-mining`) which is the standard cross-publisher discovery route, and
-Wiley and Springer both run TDM APIs that return PDFs to entitled institutions. All of those inherit
-the IP-entitlement constraint measured above.
+The gap is publisher bot-protection, not missing content — **the same IP/entitlement wall the
+Elsevier work hit**, showing up again in a different guise. Closing it means publisher TDM APIs
+(Wiley's `Wiley-TDM-Client-Token`, Springer's TDM endpoint, Elsevier's `Accept: application/pdf`)
+or institutional IP, not cleverer scraping. That is worth knowing before anyone assumes an
+open-access paper is an *obtainable* paper: **~100% are licensed for reuse, ~56% are retrievable
+without institutional standing.**
+
+An Elsevier arm is the obvious fourth source and needs no new discovery work: we already hold 4,100
+Elsevier XML files, of which roughly half look coordinate-bearing, so those papers come with their
+own ground truth and their own PDF route through the API already in use.
 
 #### The reframe that may remove the need for a model
 
