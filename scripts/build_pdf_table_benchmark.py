@@ -61,6 +61,7 @@ import argparse
 import csv
 import json
 import os
+import random
 import re
 import sys
 import time
@@ -214,7 +215,7 @@ def scan(roots: Iterable[str]) -> list[dict]:
     return found
 
 
-def scan_neurostore(max_candidates: int, page_size: int = 100) -> list[dict]:
+def scan_neurostore(max_candidates: int, page_size: int = 100, seed: int = 0) -> list[dict]:
     """Candidates from NeuroStore instead of local pubget output.
 
     Far larger and far more publisher-diverse than what we hold locally -- roughly 31,000
@@ -226,26 +227,43 @@ def scan_neurostore(max_candidates: int, page_size: int = 100) -> list[dict]:
     pubget arm's come from publisher XML. Use this arm for relative comparison between
     extractors, and the pubget arm when an absolute accuracy number is wanted.
     """
+    total = (_json(NEUROSTORE_BASE.format(ps=1, page=1)) or {}).get("metadata", {}).get(
+        "total_count", 0
+    )
+    if not total:
+        return []
+
+    # Random pages, not a walk from page 1. The corpus is strongly clustered by ingestion order:
+    # coordinate-bearing density measured 14/100 on page 1, 2/100 on page 50 and 98/100 on page
+    # 400, and median publication year swings between 2012 and 2024 across those pages. Walking
+    # sequentially would both waste most calls on sparse pages and hand back a sample skewed by
+    # whenever a study happened to be ingested.
+    rng = random.Random(seed)
+    pages = list(range(1, max(total // page_size, 1) + 1))
+    rng.shuffle(pages)
+
+    # ...and only a handful per page. Studies are clustered *within* a page too -- a page is
+    # roughly one ingestion batch, so taking a whole one yields a few journals repeated. Capping
+    # per page spreads the sample across many more batches for the same number of studies, and
+    # the extra listing calls are cheap next to the one-per-study coordinate lookup.
+    per_page = max(1, page_size // 20)
+
     found: list[dict] = []
-    page = 1
-    while len(found) < max_candidates:
-        body = _get(NEUROSTORE_BASE.format(ps=page_size, page=page))
-        if body is None:
+    for page in pages:
+        if len(found) >= max_candidates:
             break
-        try:
-            results = json.loads(body).get("results", [])
-        except ValueError:
-            break
-        if not results:
-            break
+        payload = _json(NEUROSTORE_BASE.format(ps=page_size, page=page))
+        results = (payload or {}).get("results", [])
+        rng.shuffle(results)
+        taken = 0
         for study in results:
+            if taken >= per_page:
+                break
             if not (study.get("has_coordinates") and study.get("doi") and study.get("pmid")):
                 continue
             coords = neurostore_points(study["pmid"])
             if len(coords) < 3:
                 continue
-            # NeuroStore stores the PMCID with its "PMC" prefix; the rest of this script and the
-            # S3 bucket key both want the bare digits.
             raw_pmcid = (study.get("pmcid") or "").strip()
             found.append(
                 {
@@ -256,13 +274,14 @@ def scan_neurostore(max_candidates: int, page_size: int = 100) -> list[dict]:
                     "licence": None,
                     "redistributable": bool(study.get("is_oa")),
                     "publication": study.get("publication"),
+                    "year": study.get("year"),
                     "n_coordinates": len(coords),
                     "coordinates": coords,
                 }
             )
+            taken += 1
             if len(found) >= max_candidates:
                 break
-        page += 1
     return found
 
 
@@ -557,7 +576,10 @@ def main(argv: list[str] | None = None) -> int:
                              "noisier ground truth but far more publisher-diverse. "
                              "both = the deduplicated union, pubget ground truth preferred")
     parser.add_argument("--max-candidates", type=int, default=500,
-                        help="cap for --candidates neurostore (one API call per study)")
+                        help="cap on the NeuroStore arm only; the local pubget arm is always "
+                             "taken in full. One API call per study, so this drives runtime")
+    parser.add_argument("--seed", type=int, default=0,
+                        help="seed for random NeuroStore page sampling (reproducible)")
     parser.add_argument("--source", action="append", choices=sorted(SOURCES) + ["auto"],
                         help="PDF source to fetch from; repeatable. pmc = PMC Cloud (uniform "
                              "rendering), unpaywall / s2 = publisher-hosted (representative)")
@@ -572,7 +594,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.candidates == "both":
         local = [a for a in scan(ARTICLE_GLOBS) if a["redistributable"]]
-        articles = merge_pools(local, scan_neurostore(args.max_candidates))
+        articles = merge_pools(local, scan_neurostore(args.max_candidates, seed=args.seed))
         eligible = articles
         from collections import Counter as _C
         origins = _C(a.get("ground_truth_source") for a in articles)
@@ -582,7 +604,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  carrying a DOI (publisher APIs)      {sum(1 for a in articles if a.get('doi'))}")
         print(f"  carrying a PMCID (PMC Cloud)         {sum(1 for a in articles if a.get('pmcid'))}")
     elif args.candidates == "neurostore":
-        articles = scan_neurostore(args.max_candidates)
+        articles = scan_neurostore(args.max_candidates, seed=args.seed)
         eligible = articles          # licence gating is the fetch source's problem here
         journals = {(a.get("publication") or "?") for a in articles}
         print(f"NeuroStore coordinate-bearing studies  {len(articles)}")
