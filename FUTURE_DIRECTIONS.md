@@ -808,6 +808,44 @@ XML-derived table **exactly, with no hand labelling**. In the two experiments al
 Thousands corpus-wide. This should be built before any tool is chosen, because it converts the whole
 question from argument into measurement.
 
+#### Fetching the PDFs: which routes actually work
+
+Tested 2026-09-01, because most of the documented ones are dead:
+
+| route | result |
+|---|---|
+| PMC OA Web Service (`oa.fcgi`) | **404** on both `www.ncbi.nlm.nih.gov` and `pmc.ncbi.nlm.nih.gov` |
+| PMC FTP dataset tree | **emptied August 2026**; `/pub/pmc/` now holds only `PMC-ids.csv.gz` |
+| `pmc.ncbi.nlm.nih.gov/articles/PMC*/pdf/` | HTTP 200 but returns a "Preparing to download ..." bot-mitigation interstitial, not a PDF |
+| Europe PMC `fullTextPDF` | **0 of 30** candidates returned a PDF |
+| **PMC Cloud Service (AWS Open Data)** | **25 of 25.** No login, no key, HTTPS or S3 |
+
+`https://pmc-oa-opendata.s3.amazonaws.com/` is the current sanctioned route and the FTP readme
+now points at it explicitly. Objects are keyed directly by PMCID and version
+(`PMC3434213.1/PMC3434213.1.pdf`), so no lookup table is needed — though versions matter, since a
+`.2` is typically the publisher's typeset copy replacing an author manuscript, and the highest
+version should win.
+
+**The bonus finding is worth more than the PDFs.** Each record also carries **one JPEG per figure
+and one per table**, pre-cropped by PMC:
+
+| | share of 25 sampled |
+|---|---|
+| PDF present | 100% |
+| >= 1 table image | 40% (36 images) |
+| >= 1 figure image | 88% (89 images) |
+
+That removes a whole pipeline stage from two directions at once. Table-image extraction skips PDF
+page segmentation entirely — feed the crop straight to a vision model. And the figure-extraction
+direction (supply-side item 5 above), whose main objection was that no cheap validation set exists,
+now has one: figures already isolated, already paired with the article's XML coordinates.
+
+For non-PMC sources the ladder is different and untested here: Unpaywall and OpenAlex both expose
+`best_oa_location.pdf_url` free and keyless, Crossref carries publisher TDM links
+(`intended-application: text-mining`) which is the standard cross-publisher discovery route, and
+Wiley and Springer both run TDM APIs that return PDFs to entitled institutions. All of those inherit
+the IP-entitlement constraint measured above.
+
 #### The reframe that may remove the need for a model
 
 The downstream consumer is an LLM (`CoordinateParsingClient`), not a schema validator. So what is
