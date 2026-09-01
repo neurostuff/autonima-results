@@ -15,7 +15,9 @@ This script does the first two thirds of that. It:
      fetched PDFs get stored, and "in PMC" is not the same as "redistributable" -- roughly a
      tenth of PMC content is publisher-labelled open access with no actual grant);
   2. writes the ground-truth coordinates per article as JSON;
-  3. optionally fetches the matching PDF from the PMC OA service.
+  3. optionally fetches the matching PDF -- and PMC's per-table and per-figure JPEGs -- from the
+     PMC Cloud Service on AWS Open Data, which is the only bulk route that still works (see the
+     PMC_CLOUD comment below for the four that do not).
 
 Scoring is deliberately left to the caller, because it depends on the extractor under test.
 Load ground_truth.json, produce the same shape from your extractor, and compare -- score_stub()
@@ -37,6 +39,10 @@ Usage:
 
     # ...and fetch the PDFs (polite, sequential, resumable)
     python scripts/build_pdf_table_benchmark.py --out reports/pdf_table_benchmark --fetch-pdfs
+
+    # ...also grabbing PMC's pre-cropped table and figure images
+    python scripts/build_pdf_table_benchmark.py --out reports/pdf_table_benchmark \
+        --fetch-pdfs --fetch-images --limit 50
 """
 
 from __future__ import annotations
@@ -71,8 +77,22 @@ REDISTRIBUTABLE = re.compile(
 INT_CELL = re.compile(r"^-?\d{1,3}$")
 PMCID_FROM_DIR = re.compile(r"pmcid_(\d+)$")
 
-OA_PDF_URL = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pmcid}/pdf/"
-USER_AGENT = "autonima-results pdf-table-benchmark (research use)"
+# The PMC Cloud Service on AWS Open Data. This is the only route that currently works for bulk
+# PDF retrieval, and it is the sanctioned one:
+#   - the OA Web Service (oa.fcgi) 404s on both the old and new PMC domains;
+#   - the FTP dataset tree was emptied in August 2026 (see /pub/pmc/readme.txt) in favour of this;
+#   - https://pmc.ncbi.nlm.nih.gov/articles/PMC*/pdf/ returns a "Preparing to download ..."
+#     bot-mitigation interstitial rather than a PDF;
+#   - Europe PMC's fullTextPDF endpoint returned nothing for 30/30 of our candidates.
+# No credentials or login are required. Objects are keyed by PMCID and version, and each record
+# carries the PDF, the JATS XML, plain text, and -- usefully -- one JPEG per figure AND per table.
+PMC_CLOUD = "https://pmc-oa-opendata.s3.amazonaws.com/"
+USER_AGENT = "autonima-results pdf-table-benchmark (research use; aid338@eid.utexas.edu)"
+
+S3_KEY = re.compile(r"<Key>([^<]+)</Key>")
+# Publishers name table images inconsistently: pone.0042394.t001.jpg, nihms916817t2.jpg, ...
+TABLE_IMAGE = re.compile(r"[._]t\d+\.(?:jpg|jpeg|png)$", re.I)
+FIGURE_IMAGE = re.compile(r"(?:g\d+|f\d+|Fig\d+)[^/]*\.(?:jpg|jpeg|png)$", re.I)
 
 
 def is_coordinate_row(row: list[str]) -> bool:
@@ -142,24 +162,74 @@ def scan(roots: Iterable[str]) -> list[dict]:
     return found
 
 
-def fetch_pdf(pmcid: str, dest: Path, pause: float = 1.0) -> str:
-    """Fetch one PDF from the PMC OA service. Returns a short status string."""
-    if dest.exists() and dest.stat().st_size > 0:
-        return "cached"
-    request = Request(OA_PDF_URL.format(pmcid=pmcid), headers={"User-Agent": USER_AGENT})
+def _get(url: str, timeout: int = 90) -> bytes | None:
+    request = Request(url, headers={"User-Agent": USER_AGENT})
     try:
-        with urlopen(request, timeout=60) as response:
-            body = response.read()
-    except HTTPError as exc:
-        return f"http {exc.code}"
-    except (URLError, TimeoutError) as exc:
-        return f"error {exc}"
-    finally:
+        with urlopen(request, timeout=timeout) as response:
+            return response.read()
+    except (HTTPError, URLError, TimeoutError):
+        return None
+
+
+def cloud_assets(pmcid: str) -> dict:
+    """List one article's objects in the PMC Cloud bucket.
+
+    Records are versioned (PMC6107443.1/, PMC6107443.2/, ...) and versions are not always
+    equivalent -- a .2 is typically the publisher's typeset version replacing an author
+    manuscript -- so the highest version wins.
+    """
+    body = _get(f"{PMC_CLOUD}?list-type=2&prefix=PMC{pmcid}.")
+    if body is None:
+        return {"pdf": None, "tables": [], "figures": []}
+    keys = S3_KEY.findall(body.decode("utf-8", "replace"))
+    pdfs = sorted(k for k in keys if k.lower().endswith(".pdf"))
+    latest = pdfs[-1] if pdfs else None
+    prefix = latest.rsplit("/", 1)[0] + "/" if latest else None
+    scoped = [k for k in keys if prefix and k.startswith(prefix)]
+    return {
+        "pdf": latest,
+        "tables": [k for k in scoped if TABLE_IMAGE.search(k)],
+        "figures": [k for k in scoped if FIGURE_IMAGE.search(k)],
+    }
+
+
+def fetch_article(pmcid: str, out: Path, images: bool = False, pause: float = 0.34) -> str:
+    """Fetch one article's PDF (and optionally its table/figure images). Returns a status."""
+    pdf_dest = out / "pdfs" / f"PMC{pmcid}.pdf"
+    if pdf_dest.exists() and pdf_dest.stat().st_size > 0 and not images:
+        return "cached"
+
+    assets = cloud_assets(pmcid)
+    time.sleep(pause)
+    if not assets["pdf"]:
+        return "absent"
+
+    if not (pdf_dest.exists() and pdf_dest.stat().st_size > 0):
+        body = _get(PMC_CLOUD + assets["pdf"])
         time.sleep(pause)
-    if not body.startswith(b"%PDF"):
-        return "not a pdf"
-    dest.write_bytes(body)
-    return f"ok {len(body) // 1024}KB"
+        if body is None:
+            return "fetch failed"
+        if not body.startswith(b"%PDF"):
+            return "not a pdf"
+        pdf_dest.write_bytes(body)
+        status = f"ok {len(body) // 1024}KB"
+    else:
+        status = "cached pdf"
+
+    if images:
+        got = 0
+        for key in assets["tables"] + assets["figures"]:
+            dest = out / "images" / f"PMC{pmcid}" / key.rsplit("/", 1)[-1]
+            if dest.exists() and dest.stat().st_size > 0:
+                continue
+            blob = _get(PMC_CLOUD + key)
+            time.sleep(pause)
+            if blob:
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                dest.write_bytes(blob)
+                got += 1
+        status += f" +{got}img ({len(assets['tables'])}t/{len(assets['figures'])}f)"
+    return status
 
 
 def score_stub(ground_truth: list[list[int]], extracted: list[list[int]]) -> dict:
@@ -186,8 +256,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", type=Path, help="directory for ground_truth.json, candidates.csv, pdfs/")
     parser.add_argument("--survey", action="store_true", help="report what is available and exit")
     parser.add_argument("--fetch-pdfs", action="store_true", help="download the matching PMC PDFs")
+    parser.add_argument("--fetch-images", action="store_true",
+                        help="also download PMC's per-table and per-figure JPEGs")
     parser.add_argument("--limit", type=int, help="cap the number of articles (for a quick pilot)")
-    parser.add_argument("--pause", type=float, default=1.0, help="seconds between PDF fetches")
+    parser.add_argument("--pause", type=float, default=0.34, help="seconds between requests")
     args = parser.parse_args(argv)
 
     if not args.survey and not args.out:
@@ -212,6 +284,8 @@ def main(argv: list[str] | None = None) -> int:
 
     out = args.out
     (out / "pdfs").mkdir(parents=True, exist_ok=True)
+    if args.fetch_images:
+        (out / "images").mkdir(parents=True, exist_ok=True)
 
     (out / "ground_truth.json").write_text(json.dumps(eligible, indent=1), encoding="utf-8")
     with (out / "candidates.csv").open("w", newline="", encoding="utf-8") as handle:
@@ -225,14 +299,14 @@ def main(argv: list[str] | None = None) -> int:
         print("re-run with --fetch-pdfs to download the matching PDFs")
         return 0
 
-    print(f"\nfetching {len(eligible)} PDFs from the PMC OA service...")
+    print(f"\nfetching {len(eligible)} articles from the PMC Cloud Service...")
     tally: dict[str, int] = {}
     for i, article in enumerate(eligible, 1):
         pmcid = article["pmcid"]
         if not pmcid:
             tally["no pmcid"] = tally.get("no pmcid", 0) + 1
             continue
-        status = fetch_pdf(pmcid, out / "pdfs" / f"PMC{pmcid}.pdf", pause=args.pause)
+        status = fetch_article(pmcid, out, images=args.fetch_images, pause=args.pause)
         key = status.split()[0]
         tally[key] = tally.get(key, 0) + 1
         print(f"  [{i}/{len(eligible)}] PMC{pmcid}: {status}", flush=True)
@@ -241,6 +315,8 @@ def main(argv: list[str] | None = None) -> int:
     for key, count in sorted(tally.items(), key=lambda kv: -kv[1]):
         print(f"  {key:<12} {count}")
     print(f"\nPDFs in {out/'pdfs'}. Ground truth in {out/'ground_truth.json'}.")
+    if args.fetch_images:
+        print(f"Per-table and per-figure JPEGs in {out/'images'}.")
     print("Score an extractor with score_stub() in this file for comparable numbers.")
     return 0
 
