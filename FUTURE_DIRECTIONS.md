@@ -850,6 +850,86 @@ An Elsevier arm is the obvious fourth source and needs no new discovery work: we
 Elsevier XML files, of which roughly half look coordinate-bearing, so those papers come with their
 own ground truth and their own PDF route through the API already in use.
 
+#### A more diverse candidate pool: NeuroStore, not our local corpus
+
+Our pubget corpus is a poor benchmark base: it is PMC-OA by construction, so it is
+publisher-skewed before anything is fetched. NeuroStore is much better. Sampling 3,000 base
+studies:
+
+| | |
+|---|---|
+| coordinate-bearing **with a DOI** | 74% -> **~31,281 corpus-wide** |
+| distinct journals in the sample | **291** |
+| largest single journal | NeuroImage, **15%** |
+| flagged open access | 70% |
+| holding a PMCID | 60% -> **~18,862 PMC Cloud-reachable** |
+
+Its own parsed coordinates serve as ground truth. The trade against the pubget arm is *quality*,
+not size: NeuroStore's coordinates came from ACE/Neurosynth-era parsing and carry their own error
+rate, whereas the pubget arm's come from publisher XML. Use NeuroStore for relative comparison
+between extractors and pubget when an absolute accuracy figure is wanted.
+
+By publisher family, with corpus-wide estimates:
+
+| family | share | est. studies |
+|---|---|---|
+| **Elsevier** | **37.3%** | ~11,682 |
+| other / long tail | 26.4% | ~8,269 |
+| OUP | 7.5% | ~2,336 |
+| Wiley | 6.5% | ~2,024 |
+| PLOS | 5.7% | ~1,798 |
+| Springer / Nature | 4.8% | ~1,486 |
+| Frontiers | 4.5% | ~1,416 |
+| SfN / eNeuro | 4.0% | ~1,260 |
+| MIT Press | 3.0% | ~934 |
+
+#### Diversity does not survive the fetch layer
+
+This is the finding that matters. On a **publisher-stratified** sample of 90 studies across 76
+journals, Semantic Scholar yields:
+
+| outcome | n | share |
+|---|---|---|
+| no OA PDF at all | 27 | 30% |
+| blocked, HTTP 403 | 23 | 26% |
+| **usable PDF** | **17** | **19%** |
+| blocked, HTTP 200 + HTML challenge | 12 | 13% |
+| blocked, HTTP 500 | 9 | 10% |
+
+**19%, not the 56% measured earlier** — and that earlier figure was inflated because it was drawn
+from papers already in PMC OA. Worse, the 17 successes came from only 15 journals, concentrated in
+Frontiers, Nature and PLOS. **A candidate list spanning 76 journals collapses to an OA-publisher
+benchmark the moment you try to fetch it.**
+
+Combining all three free routes on a diverse 20-study sample:
+
+| source | yield | unique contribution |
+|---|---|---|
+| pmc | 35% | 6 of 8 |
+| s2 | 10% | 1 |
+| unpaywall | 10% | 0 |
+| **union** | **40%** | |
+
+So the free ceiling is around 40%, and PMC carries it — which reintroduces the uniform-rendering
+problem the diverse pool was meant to solve.
+
+#### What this implies for the experiment
+
+1. **Run the PMC arm as the backbone** (~18,862 papers, free, 100% fetchable) but never report it
+   alone. PMC's uniform typesetting flatters an extractor.
+2. **Make the rendering effect a measurement, not a caveat.** For the subset available *both* from
+   PMC Cloud and publisher-native, score the same papers twice. That quantifies exactly how much
+   PMC-only validation over-estimates, and it is nearly free.
+3. **The Elsevier arm is the single biggest diversity win** — 37.3% of the corpus, ~11,682 studies,
+   in the paywalled-publisher rendering that PMC cannot represent at all. It needs the tunnel, and
+   it buys more than every free route combined.
+4. Wiley (6.5%) and OUP (7.5%) come next and both run TDM APIs; together with Elsevier that is
+   just over half the corpus behind three institutional agreements.
+
+Minor data-quality note found while building this: some NeuroStore DOIs carry leading whitespace,
+which crashes naive URL construction. Worth a trim on ingest.
+
+
 #### The reframe that may remove the need for a model
 
 The downstream consumer is an LLM (`CoordinateParsingClient`), not a schema validator. So what is
