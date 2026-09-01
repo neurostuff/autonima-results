@@ -123,8 +123,8 @@ genuinely novel, and very cheap — the corpus is already on disk.
 ### 7. Leave neuroimaging
 
 Analysis-level selection is not domain-specific. Any literature whose unit of interest lives inside a
-table has the same problem and no equivalent tool: trial arms and outcomes, genetic associations,
-ecological effect sizes.
+table has the same problem. Expanded below, since picking the right domain matters more than the
+idea itself.
 
 ---
 
@@ -162,3 +162,82 @@ extraction is reliable enough to build on before anything else is committed.
 - autonima#6, #27 — NeuroStore ingestion, which direction 4 depends on.
 - autonima#60 — duplicate coordinate tables; matters more once effect sizes are pooled, since a
   duplicated table would double-weight a study's magnitude rather than just its peaks.
+
+---
+
+## Appendix: which other domains, and why
+
+Four criteria. A candidate has to clear all of them, and the fourth is the one that eliminates most:
+
+1. **Result units inside tables**, several per paper -- so analysis-level selection is load-bearing
+   rather than a nicety.
+2. **A common space to pool into** -- whatever plays the role MNI plays for us.
+3. **Large, growing literature.**
+4. **A synthesis deficit.** Not merely a big literature: a big literature that is *not already being
+   synthesised*. This is the criterion that kills most candidates.
+
+### Measuring criterion 4
+
+Meta-analyses per 1,000 papers is a serviceable proxy for whether a field already has a working
+synthesis solution. From PubMed, 2000 onward:
+
+| domain | papers | meta-analyses | **MAs per 1,000** |
+|---|---|---|---|
+| **preclinical animal neuroscience** | 123,453 | 149 | **1.2** |
+| **behavioral pharmacology** | 8,900 | 12 | **1.3** |
+| EEG / ERP components | 9,717 | 69 | 7 |
+| candidate-gene association | 10,336 | 377 | 36 |
+| epidemiology risk factors | 177,879 | 8,214 | 46 |
+
+Two eliminations follow immediately. **Epidemiology** has the largest literature of any candidate and
+the highest synthesis density -- the field already meta-analyses itself, and Cochrane-adjacent
+tooling exists. **Genetics** fails for a different reason: GWAS Catalog already solved the curated
+part, and while the candidate-gene literature is not covered by it, the field has moved on.
+
+Also eliminated on prior knowledge rather than these numbers: clinical trials (RobotReviewer,
+Trialstreamer, Cochrane infrastructure), and omics (GEO, Expression Atlas). Both are well served.
+
+### Top pick — preclinical animal neuroscience
+
+**123,453 papers against 149 meta-analyses: a 38x lower synthesis density than epidemiology, on a
+literature nearly as large.** The deficit is acknowledged inside the field -- CAMARADES and SYRCLE do
+this by hand and reviews take years.
+
+It fits the profile:
+
+- outcomes live in tables (group, dose, n, mean +/- SEM), several comparisons per paper
+- the pooling space is the standardised mean difference rather than a coordinate system
+- analysis-level precision is exactly what is scarce, because a single paper reports many arms
+- it is adjacent to this project's domain, so the screening and annotation machinery transfers
+- it carries real weight: preclinical-to-clinical translation failure is a named crisis and poor
+  synthesis is part of the reason
+
+**The honest difficulty** is outcome heterogeneity -- forced swim time, escape latency, lever presses
+-- with no shared ontology. That is a normalisation problem rather than an extraction problem, which
+is what LLM extraction is good at, and it is the same shape as the ROI-name-to-atlas mapping in
+direction 1 above. If direction 1 works, this works.
+
+### Runner-up — EEG / ERP
+
+The closest structural analogue to the current work: **component x electrode x latency window is a
+coordinate space**, and no Neurosynth equivalent exists for ERP. Smaller (9,717 papers) and less
+standardised in reporting, but the infrastructure transfers almost directly -- which makes it the
+cheapest available test of whether the approach generalises beyond fMRI at all, rather than the most
+valuable place to apply it.
+
+### Narrower slice worth noting — behavioral pharmacology
+
+8,900 papers and 12 meta-analyses (1.3 per 1,000). A cleaner subset of the top pick: dose-response
+data is unusually tabular and unusually poolable, and the deficit is just as stark. A good pilot
+target *within* preclinical work, for the same reason left/right TLE was an attractive pilot within
+epilepsy -- tight scope, unambiguous structure.
+
+### Caveat on the metric
+
+Low meta-analysis density can mean "nobody can afford to synthesise this" or "this is not
+meta-analysable". For preclinical work the evidence points at the former -- people do it manually and
+slowly, and say so -- but that is an inference from the field's own complaints, not something
+measured here. Before committing to any of these, the check worth doing is whether a handful of
+existing manual reviews in the domain could serve as validation benchmarks, the way the nine
+neuroimaging meta-analyses did for this project. A domain with no benchmark is a domain where nothing
+can be validated.
