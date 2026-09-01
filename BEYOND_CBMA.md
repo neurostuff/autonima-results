@@ -347,7 +347,7 @@ These are not like-for-like: 60% is a *supply ceiling* measured before any scree
 already post-screening and post-extraction. Applying our screening to the corpus would pull the
 hosted number somewhere below 56%. But the gap is single-digit percentage points, and that is the
 whole finding — **hosting on a fixed corpus costs a few points of recall and buys away the entire
-retrieval problem**: no entitlement, no hours-long runs, no PDF redistribution exposure.
+retrieval problem**: no entitlement to hold, and no hours-long runs.
 
 ### Where the corpus is weak: era
 
@@ -383,13 +383,58 @@ not a fallback; it is the ingestion path:
 
 Three properties make this better than either half alone:
 
-1. **It is legally clean.** The companion uploads *extracted* content — tables, coordinates, analysis
-   records — not publisher PDFs. Hosting user-uploaded PDFs is redistribution; ingesting derived
-   coordinates is what NeuroStore already does.
+1. **The sharing boundary is clean.** What gets *pooled* is extracted content — tables, coordinates,
+   analysis records — which is not the publisher's expression and is what NeuroStore already ingests.
+   PDFs, if uploaded at all, stay private to the uploader. See the copyright note below: this is a
+   permissions boundary, not a restriction on what users may upload.
 2. **The fixed corpus stops being fixed.** Every local run raises the ceiling for every hosted user,
    and it raises it preferentially at the recent end — precisely the ingestion-lag deficit above.
 3. **The retrieval problem is solved once, by whoever has the entitlement**, rather than by the
    service pretending to have it.
+
+### Copyright: what actually matters (and what does not)
+
+An earlier draft of this note claimed hosting user-uploaded PDFs was a redistribution problem to be
+designed around. That was overstated, and the framing was wrong.
+
+**The precedent is directly on point.** Covidence and Rayyan — the systematic-review platforms
+Cochrane reviewers actually use — treat full-text PDF upload as a core feature. So do Mendeley,
+Paperpile, Elicit, and SciSpace. Allowing users to upload the PDFs they already have access to is
+normal, not novel.
+
+**The mechanism that puts the liability on the uploader** is DMCA §512 safe harbour (and the DSA in
+the EU). Its conditions are administrative and cheap, not architectural: a designated agent
+registered with the Copyright Office, a notice-and-takedown process, a repeat-infringer policy, no
+actual knowledge of specific infringement, and no direct financial benefit tied to it.
+
+**The line is not PDF-versus-extracted. It is private-versus-pooled.** ResearchGate is the
+cautionary case (Elsevier/ACS litigation, 2017-2023), and it turned on content being *publicly
+accessible*, not on it being PDFs. A PDF visible only to its uploader is Covidence; the same PDF
+served to other users is a different activity.
+
+That distinction is convenient rather than costly here, because the thing worth pooling is the
+extraction, not the file. So: **allow PDF upload, keep uploads private to the uploader, pool only
+derived records.** Both halves, separated by a permissions boundary.
+
+**Extraction itself rests on separate and firmer ground** — the EU DSM Directive Art. 3 text-and-data
+-mining exception for research organisations, and US fair use for TDM after *HathiTrust* and
+*Authors Guild v. Google*.
+
+**The architectural consequence is the useful part.** The IP-entitlement finding is untouched: a user
+still needs their own institutional access to obtain a PDF at all. But they can obtain it however
+they already do and upload it, which means **PDF upload substitutes for the local companion in v1**.
+The companion drops from "required, because the service cannot hold entitlement" to "automation
+convenience, because bulk manual download is tedious." That is a real simplification — it moves the
+companion later in the build order.
+
+**One caveat that survives.** Publisher licence agreements commonly prohibit systematic downloading
+and deposit of licensed content into shared repositories. Those terms bind the *user*, not the
+service — which is a second, independent reason to make per-user privacy the default: it keeps users
+compliant, rather than protecting us.
+
+None of the above is legal advice, and it is worth a short conversation with UT's IP office before
+the hosted tier goes public. But it is a policy-and-permissions question, not an architecture
+blocker.
 
 ### Verdicts on the interface options
 
@@ -418,9 +463,11 @@ spot — the 16.1% body-text-only share measured above is invisible to a table-d
 
 1. **Criteria-authoring assistant** — removes the actual adoption barrier, and is cheap.
 2. **Compose push as the output contract** — defines the boundary everything else plugs into.
-3. **Local companion / uploader** — starts the corpus flywheel.
+3. **User PDF upload** — private to uploader, feeding extraction. Cheap, well-precedented, and it
+   starts the corpus flywheel without building a client.
 4. **MCP query server** over the resulting corpus.
 5. **Hosted execution**, corpus-only, advertised with its 60% ceiling and its era profile.
+6. **Local companion** — automates what step 3 makes users do by hand. Convenience, not prerequisite.
 
 ---
 
