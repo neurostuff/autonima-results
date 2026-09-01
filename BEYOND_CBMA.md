@@ -436,6 +436,104 @@ None of the above is legal advice, and it is worth a short conversation with UT'
 the hosted tier goes public. But it is a policy-and-permissions question, not an architecture
 blocker.
 
+### The three tiers, and the constraint that actually binds
+
+The natural product is three tiers over one backend, separated by where the full text comes from:
+
+| tier | full text from | PRISMA-complete? | cost |
+|---|---|---|---|
+| **0 — corpus only** | nowhere; filter already-extracted records | no, 60% ceiling | near zero |
+| **1 — local companion** | user's network, extraction runs locally | yes | user's compute |
+| **2 — user uploads PDFs** | user's network, extraction runs hosted | yes | ours, small |
+
+Tier 0 is the interesting one because it needs no full text at all: filter on structured metadata and
+already-parsed analysis records. It is also already demonstrated — the deactivation experiment did
+exactly this, selecting existing parsed analyses by whether they were deactivation contrasts, for
+$0.37 across 957 studies / 2,650 analyses.
+
+But its ceiling is not the 60% study-coverage number. Sampling 4,000 NeuroStore analyses at random
+(of 208,767 total, 94% coordinate-bearing):
+
+| can you tell what the analysis is, from its record alone? | n | share |
+|---|---|---|
+| usable description present | 2,138 | 53.4% |
+| descriptive name, 3+ words | 201 | 5.0% |
+| short / uninformative name only (1-2 words) | 1,043 | 26.1% |
+| name is a bare number or ID, no description | 618 | 15.4% |
+| **filterable without full text** | **2,339** | **58.5%** |
+| **opaque without full text** | **1,661** | **41.5%** |
+
+Restricted to coordinate-bearing analyses — the ones a CBMA would actually use — **56.2% are
+filterable**. When labels are present they are excellent, and exactly the right shape for
+analysis-level selection: `Neutral cue placebo > cocaine cue placebo`, `Contrast: increase > maintain
+emotions`, `Repeated errors > corrected errors`, `Healthy Control Subjects > Borderline Patients-2`.
+When they are absent, the record is a bare integer.
+
+**This is the binding constraint, and it is the one neither Tier 1 nor Tier 2 fixes.** Uploading
+papers grows *coverage*; it does nothing for analysis labels on the 42,483 base studies already in the
+corpus, whose names came from whatever parsed them originally. The two ceilings also compound — a
+usable meta-analysis needs the study present *and* its relevant contrast identifiable — so the
+realistic Tier 0 recall sits below 60%. (The joint figure is measurable but I have not measured it;
+a study with several analyses only needs one labelled, so it is not a simple product.)
+
+### A third job the two options miss: corpus repair
+
+Re-extract analysis labels for the opaque 41.5%. For any paper whose full text is reachable, the
+contrast label is recoverable from the table caption and surrounding text — the same task the
+coordinate parser already performs, run against records that already have coordinates but no
+identity.
+
+It is high leverage in a way corpus *growth* is not: it improves every future query for every user,
+on papers already present, with no new retrieval. It is also the direct hosted-tier analogue of
+autonima#61.
+
+### Why annotations make hosting compound
+
+A full-corpus annotation pass over all 208,767 analyses costs roughly **$29** at the deactivation
+experiment's measured rate ($0.37 / 2,650 analyses). That is cheap enough to run repeatedly.
+
+The more important property: **annotations are reusable across users.** If one user annotates
+"is this a deactivation contrast?" corpus-wide, that column can be cached and served to everyone
+after. Marginal cost for a popular criterion trends to zero. Local runs never get this — every user
+pays the full cost every time. It is the strongest argument for hosting that does not depend on
+convenience.
+
+The cost shape does still require a cascade for arbitrary queries: free structured pre-filter on
+metadata, then LLM annotation only on survivors. $29 per speculative user query does not scale; $29
+once for a cached column does.
+
+### Which of Tier 1 and Tier 2 to build first
+
+**Tier 2, clearly** — and the analysis-label finding sharpens why:
+
+- Extraction runs on one code version, so quality is consistent and **retroactively improvable**.
+  Stored PDFs are the substrate for the repair job above, and for adding body-text coordinates
+  (+30-36%) later. Tier 1 freezes extraction quality at whatever client version the user happened to
+  run, and re-extraction means asking users to re-run.
+- No client to distribute, version, or support across platforms.
+- Tier 1's only real advantage is automated *fetching*, which the copyright note above establishes is
+  a convenience rather than a necessity.
+
+This does imply a retention decision: keep uploaded PDFs (private to uploader) so re-extraction is
+possible, rather than discarding them after a single pass. Worth making deliberately.
+
+### Two products, not one service
+
+Tier 0 is not a degraded systematic review; it is a different thing. A 60%-recall map is perfectly
+good for hypothesis generation, for deciding whether a question is worth pursuing, for a grant
+figure. It is not PRISMA-complete and should never be labelled as though it were. Tiers 1 and 2 are
+the publishable-review path. Conflating them is the main product risk here, and the fix is honest
+labelling of the recall basis on every output — which the corpus-snapshot provenance requirement
+above already demands.
+
+### Where the pooling boundary already sits
+
+Worth noting that NeuroStore is already on the right side of the line and has been: it pools
+coordinates, analysis metadata, and **abstracts** (the `description` field on a base study is the
+paper's abstract). Abstract redistribution is settled practice — PubMed does it. So the boundary in
+operation is: coordinates, analysis records, and abstracts are poolable; full text and verbatim
+tables are not. That is a clean, already-established line rather than a new policy to invent.
+
 ### Verdicts on the interface options
 
 - **Neurosynth Compose** — the *destination and criteria-sharing surface*, and the natural home for
@@ -463,11 +561,16 @@ spot — the 16.1% body-text-only share measured above is invisible to a table-d
 
 1. **Criteria-authoring assistant** — removes the actual adoption barrier, and is cheap.
 2. **Compose push as the output contract** — defines the boundary everything else plugs into.
-3. **User PDF upload** — private to uploader, feeding extraction. Cheap, well-precedented, and it
-   starts the corpus flywheel without building a client.
-4. **MCP query server** over the resulting corpus.
-5. **Hosted execution**, corpus-only, advertised with its 60% ceiling and its era profile.
-6. **Local companion** — automates what step 3 makes users do by hand. Convenience, not prerequisite.
+3. **Tier 0 hosted execution**, corpus-only, advertised with its 60% study ceiling and 56%
+   analysis-filterability, plus the era profile. Cheapest thing to ship that anyone can use.
+4. **Corpus repair** — re-extract labels for the opaque 41.5% of analyses. Raises the Tier 0 ceiling
+   for everyone without any new retrieval, and is a prerequisite for Tier 0 being good rather than
+   merely cheap.
+5. **Tier 2: user PDF upload**, private to uploader, extraction hosted. Cheap, well-precedented,
+   starts the corpus flywheel without shipping a client.
+6. **MCP query server** over the resulting corpus, with cached annotation columns.
+7. **Tier 1: local companion** — automates the fetching that step 5 makes users do by hand.
+   Convenience, not prerequisite.
 
 ---
 
