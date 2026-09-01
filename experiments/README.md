@@ -649,3 +649,95 @@ The ENIGMA replication is not dead, but it is narrower than proposed: **one diso
 (schizophrenia), full retrieval required, and no internal control.** Before committing, the cheap
 next step is to re-run this same pilot on schizophrenia with PMC only -- projected 8 usable studies,
 which is enough to confirm the rates hold on a larger literature without waiting for the tunnel.
+
+---
+
+# SCHIZOPHRENIA / ENIGMA PILOT — a qualitative replication (2026-08-31)
+
+After the TLE pilot showed that literature size, not design elegance, is the binding constraint, the
+target moved to schizophrenia: 5x the VBM literature and higher PMC coverage (46% vs 33%).
+
+## Search widening
+
+The first config scored 916 hits. Measuring each clause's cost showed the disease terms were only
+mildly restrictive and two **redundant structural filters** were doing the damage:
+
+    as run                                        916
+    wider disease clause (+psychosis/psychotic)  1025
+    ...also drop "Humans"[MeSH]                  1092
+    ...also drop the MRI clause                  1190
+    ...drop BOTH MRI and Humans                  1370
+    ...plus a wider method clause                1506
+
+`AND (MRI OR "magnetic resonance imaging"[Mesh])` is redundant -- a VBM paper is MRI by definition --
+and silently dropped papers that do not say "MRI" or are not MeSH-indexed. `"Humans"[MeSH]` likewise,
+and it penalises recent unindexed work. Both removed; the voxel-wise method requirement was KEPT,
+since that is the filter that determines coordinate yield. Pool 916 -> **1,434**. Re-running cost
+only 505 new abstract screenings, since the abstract cache is keyed per study.
+
+## Funnel (PMC only, no Elsevier top-up)
+
+    search 1,434 -> abstract 492 included -> full text 136 -> fulltext 32 included
+                 -> 21 studies parsed (60 analyses, 257 coordinates)
+                 -> scz_atrophy column: 20 analyses across 14 studies
+
+Projected 33 usable, actual 32. The antipsychotic-naive column found 1 study, correctly rejecting
+59 analyses -- the selection works, the literature is not there without full retrieval.
+
+## Result: MKDA, 14 studies, and it looks like schizophrenia
+
+MKDA density, Monte-Carlo FWE, 1,000 iterations. Six significant clusters:
+
+| peak (MNI) | z | Harvard-Oxford label |
+|---|---|---|
+| −40, −12, 16 | 3.09 | Central Opercular (left insula/STG) |
+| −56, −6, 4 | 2.65 | Central Opercular (left STG) |
+| −36, 14, 8 | 2.65 | Frontal Operculum (left insula) |
+| −30, 22, −8 | 2.07 | Frontal Orbital |
+| 54, 0, 2 | 2.01 | Central Opercular (right insula/STG) |
+| 0, 36, −18 | 1.98 | Frontal Medial |
+
+Against ENIGMA's 12 strongest cortical-thickness effects:
+
+| ENIGMA ROI | d | recovered? |
+|---|---|---|
+| R/L fusiform | −0.536 / −0.491 | **no** |
+| L/R inferiortemporal | −0.449 / −0.439 | no |
+| L middletemporal | −0.444 | no |
+| L superiortemporal | −0.440 | **yes** (clusters 1, 2) |
+| R superiortemporal | −0.438 | **yes** (cluster 5) |
+| L superiorfrontal | −0.425 | no |
+| R parsopercularis | −0.424 | **yes** (cluster 3 region) |
+| L insula | −0.408 | **yes** (clusters 1, 3, 4) |
+| R insula | −0.406 | **yes** (cluster 5) |
+| L lateralorbitofrontal | −0.398 | **yes** (clusters 4, 6) |
+
+**6 of ENIGMA's top 12 ROIs recovered from 14 studies on PMC alone**, with bilateral insula,
+bilateral superior temporal and orbitofrontal all hit. The map is also a textbook schizophrenia VBM
+result independent of ENIGMA, which is reassuring about the pipeline rather than about the target.
+
+**The misses are informative.** Fusiform is ENIGMA's single strongest effect and we do not recover it
+at all, nor inferior/middle temporal. Two candidate explanations, not yet distinguished: power (14
+studies), or a modality difference -- ENIGMA measures cortical *thickness* over the whole ribbon,
+while VBM peak coordinates cluster where volume loss is focal. Worth checking whether the fusiform
+gap persists at 60+ studies after the tunnel top-up, because if it does it is a substantive finding
+about what CBMA can and cannot recover from a thickness-based benchmark.
+
+## Where the studies are lost
+
+Three independent bottlenecks, now quantified:
+
+    492 abstract-included
+     -> 136 have full text          PMC OA boundary        -- the Elsevier tunnel fixes this
+     ->  32 pass full-text screening
+     ->  21 have parseable coordinates   supplementary gap -- nothing currently fixes this
+     ->  14 in the scz_atrophy column
+
+The 32 -> 21 loss was diagnosed and is NOT a parser bug: of the 11 lost, 8 have pubget-extracted
+tables containing no coordinates at all, 2 are genuine parser misses, 1 had no pubget directory. The
+8 are papers whose full text discusses MNI coordinates but whose coordinate tables are not in
+pubget's output -- most plausibly in supplementary material. That is autonima#36, now quantified at
+**~25% of otherwise-eligible studies**.
+
+Closing both bottlenecks would plausibly take the same 1,434-paper search from 14 studies to 60-80 --
+the difference between a pilot and a publishable map.

@@ -1,0 +1,156 @@
+search:
+  database: pubmed
+  query: ((schizophrenia[tiab] OR schizophreni*[tiab] OR psychosis[tiab] OR psychotic[tiab]
+    OR schizoaffective[tiab] OR "first-episode psychosis"[tiab] OR "first episode
+    psychosis"[tiab] OR "Schizophrenia"[Mesh] OR "Psychotic Disorders"[Mesh]) AND
+    ("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "voxel-wise"[tiab] OR voxelwise[tiab]
+    OR "voxel based"[tiab] OR "statistical parametric mapping"[tiab] OR SPM[tiab]
+    OR "tensor-based morphometr*"[tiab] OR "deformation-based morphometr*"[tiab] OR
+    "optimized VBM"[tiab] OR "whole-brain morphometr*"[tiab]))
+  max_results: 5000
+  date_from: 1995/01/01
+  date_to: 2025/12/31
+  email: delavega@utexas.edu
+  pmids_file: null
+  pmids_list: null
+screening:
+  abstract:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Meta-analysis of voxel-wise structural MRI studies reporting grey-matter
+      differences between patients with schizophrenia or first-episode psychosis and
+      healthy controls.
+    inclusion_criteria:
+    - Empirical English-language structural MRI studies comparing patients with schizophrenia,
+      schizoaffective disorder or first-episode psychosis against a healthy control
+      group.
+    - The analysis must be VOXEL-WISE (VBM, voxel-based morphometry, SPM voxelwise).
+      ROI-only or atlas/parcellation-only designs such as FreeSurfer region tables
+      do NOT qualify, because they report per-region values rather than the stereotactic
+      coordinates a coordinate-based meta-analysis requires.
+    exclusion_criteria:
+    - Reviews, meta-analyses, case reports, and single-patient studies.
+    - Purely functional studies (fMRI, PET, MEG, EEG) with no structural morphometric
+      outcome.
+    - ROI-based or atlas-based-only morphometry with no voxel-wise whole-brain analysis.
+    - Studies only of clinical high-risk or unaffected relatives with no patient-versus-control
+      comparison.
+    - Non-human studies.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I1: Empirical English-language structural MRI studies comparing patients with
+          schizophrenia, schizoaffective disorder or first-episode psychosis against
+          a healthy control group.
+        I2: The analysis must be VOXEL-WISE (VBM, voxel-based morphometry, SPM voxelwise).
+          ROI-only or atlas/parcellation-only designs such as FreeSurfer region tables
+          do NOT qualify, because they report per-region values rather than the stereotactic
+          coordinates a coordinate-based meta-analysis requires.
+      exclusion:
+        E1: Reviews, meta-analyses, case reports, and single-patient studies.
+        E2: Purely functional studies (fMRI, PET, MEG, EEG) with no structural morphometric
+          outcome.
+        E3: ROI-based or atlas-based-only morphometry with no voxel-wise whole-brain
+          analysis.
+        E4: Studies only of clinical high-risk or unaffected relatives with no patient-versus-control
+          comparison.
+        E5: Non-human studies.
+  fulltext:
+    model: gpt-5-mini-2025-08-07
+    threshold: null
+    confidence_reporting: true
+    objective: Confirm the study reports stereotactic coordinates for a voxel-wise
+      grey-matter comparison between schizophrenia patients and healthy controls.
+    inclusion_criteria:
+    - Reports coordinates in a standard stereotactic space (MNI or Talairach) for
+      at least one patient-versus-control grey-matter contrast.
+    - Whole-brain voxel-wise analysis.
+    exclusion_criteria:
+    - No stereotactic coordinates reported anywhere for a structural patient-versus-control
+      contrast.
+    - Coordinates reported only for functional or diffusion measures, not grey-matter
+      structure.
+    - Patient group is not schizophrenia-spectrum.
+    additional_instructions: null
+    criteria_mapping:
+      inclusion:
+        I3: Reports coordinates in a standard stereotactic space (MNI or Talairach)
+          for at least one patient-versus-control grey-matter contrast.
+        I4: Whole-brain voxel-wise analysis.
+      exclusion:
+        E6: No stereotactic coordinates reported anywhere for a structural patient-versus-control
+          contrast.
+        E7: Coordinates reported only for functional or diffusion measures, not grey-matter
+          structure.
+        E8: Patient group is not schizophrenia-spectrum.
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output/
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: gpt-5.6-luna
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_abstract
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria:
+  - Judge each analysis from its own name, description and table caption, plus the
+    study text for sample characteristics. An empty or generic analysis name is never
+    itself a reason to exclude.
+  - Coordinates must be in MNI or Talairach space.
+  exclusion_criteria:
+  - Exclude analyses that are not a patient-versus-control grey-matter comparison.
+  annotations:
+  - name: scz_atrophy
+    description: null
+    inclusion_criteria:
+    - The contrast is schizophrenia-spectrum patients versus healthy controls.
+    - The direction is controls GREATER than patients, i.e. reduced grey matter, atrophy
+      or decreased volume/density in patients.
+    exclusion_criteria:
+    - Patients GREATER than controls (increased grey matter).
+    - Contrasts between two patient groups, or against clinical high-risk or relative
+      groups rather than healthy controls.
+    - Correlations with symptom severity, duration or dose rather than a group contrast.
+  - name: scz_atrophy_antipsychotic_naive
+    description: null
+    inclusion_criteria:
+    - The patient sample is described as antipsychotic-naive, drug-naive, medication-free
+      or unmedicated at scanning.
+    - The contrast is patients versus healthy controls, direction controls GREATER
+      than patients.
+    exclusion_criteria:
+    - Medicated or mixed-medication samples, or samples whose medication status is
+      not stated.
+    - Patients GREATER than controls.
+  enabled: true
+output:
+  directory: experiments/scz_enigma/v1
+  prisma_diagram: true
+  formats:
+  - csv
+  - json
+  nimads: true
+  export_excluded_studies: true

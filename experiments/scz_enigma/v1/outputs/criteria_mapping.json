@@ -1,0 +1,62 @@
+{
+  "screening": {
+    "abstract": {
+      "inclusion": {
+        "I1": "Empirical English-language structural MRI studies comparing patients with schizophrenia, schizoaffective disorder or first-episode psychosis against a healthy control group.",
+        "I2": "The analysis must be VOXEL-WISE (VBM, voxel-based morphometry, SPM voxelwise). ROI-only or atlas/parcellation-only designs such as FreeSurfer region tables do NOT qualify, because they report per-region values rather than the stereotactic coordinates a coordinate-based meta-analysis requires."
+      },
+      "exclusion": {
+        "E1": "Reviews, meta-analyses, case reports, and single-patient studies.",
+        "E2": "Purely functional studies (fMRI, PET, MEG, EEG) with no structural morphometric outcome.",
+        "E3": "ROI-based or atlas-based-only morphometry with no voxel-wise whole-brain analysis.",
+        "E4": "Studies only of clinical high-risk or unaffected relatives with no patient-versus-control comparison.",
+        "E5": "Non-human studies."
+      }
+    },
+    "fulltext": {
+      "inclusion": {
+        "I3": "Reports coordinates in a standard stereotactic space (MNI or Talairach) for at least one patient-versus-control grey-matter contrast.",
+        "I4": "Whole-brain voxel-wise analysis."
+      },
+      "exclusion": {
+        "E6": "No stereotactic coordinates reported anywhere for a structural patient-versus-control contrast.",
+        "E7": "Coordinates reported only for functional or diffusion measures, not grey-matter structure.",
+        "E8": "Patient group is not schizophrenia-spectrum."
+      }
+    }
+  },
+  "annotation": {
+    "global": {
+      "inclusion": {
+        "GLOBAL_I1": "Judge each analysis from its own name, description and table caption, plus the study text for sample characteristics. An empty or generic analysis name is never itself a reason to exclude.",
+        "GLOBAL_I2": "Coordinates must be in MNI or Talairach space."
+      },
+      "exclusion": {
+        "GLOBAL_E1": "Exclude analyses that are not a patient-versus-control grey-matter comparison."
+      }
+    },
+    "annotations": {
+      "scz_atrophy": {
+        "inclusion": {
+          "SCZ_ATROPHY_I1": "The contrast is schizophrenia-spectrum patients versus healthy controls.",
+          "SCZ_ATROPHY_I2": "The direction is controls GREATER than patients, i.e. reduced grey matter, atrophy or decreased volume/density in patients."
+        },
+        "exclusion": {
+          "SCZ_ATROPHY_E1": "Patients GREATER than controls (increased grey matter).",
+          "SCZ_ATROPHY_E2": "Contrasts between two patient groups, or against clinical high-risk or relative groups rather than healthy controls.",
+          "SCZ_ATROPHY_E3": "Correlations with symptom severity, duration or dose rather than a group contrast."
+        }
+      },
+      "scz_atrophy_antipsychotic_naive": {
+        "inclusion": {
+          "SCZ_ATROPHY_ANTIPSYCHOTIC_NAIVE_I1": "The patient sample is described as antipsychotic-naive, drug-naive, medication-free or unmedicated at scanning.",
+          "SCZ_ATROPHY_ANTIPSYCHOTIC_NAIVE_I2": "The contrast is patients versus healthy controls, direction controls GREATER than patients."
+        },
+        "exclusion": {
+          "SCZ_ATROPHY_ANTIPSYCHOTIC_NAIVE_E1": "Medicated or mixed-medication samples, or samples whose medication status is not stated.",
+          "SCZ_ATROPHY_ANTIPSYCHOTIC_NAIVE_E2": "Patients GREATER than controls."
+        }
+      }
+    }
+  }
+}

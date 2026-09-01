@@ -1,0 +1,152 @@
+# Schizophrenia grey-matter atrophy -- ENIGMA replication pilot.
+#
+# TARGET. ENIGMA ships case-control Cohen's d per Desikan-Killiany ROI for schizophrenia
+# (scz_case-controls_CortThick, _CortSurf, _SubVol; max abs(d) 0.536, median 0.317) plus
+# antipsychotic-exposure strata under `psychosis`. Both are packaged in the ENIGMA Toolbox.
+#
+# WHY SCHIZOPHRENIA RATHER THAN TLE. The TLE pilot (experiments/tle_lateralization) had the more
+# elegant design -- left vs right focus is self-controlling, ENIGMA d = -1.73 vs -0.17 -- but the
+# literature cannot support it: 273 VBM papers yield ~4 usable studies on PMC and ~19 with full
+# retrieval, against the >=20 per stratum a CBMA needs. Schizophrenia has 1,391 VBM papers AND
+# higher PMC coverage (46% vs 33%), projecting ~32 usable studies on PMC ALONE.
+#
+# SEARCH REQUIRES A VOXEL-WISE METHOD. The TLE v1 run died with 60 of 69 full-text rejections on
+# "no stereotactic coordinates", because ROI/parcellation designs (FreeSurfer region tables) report
+# per-region values rather than coordinates -- the same methodology ENIGMA uses, which is why ENIGMA
+# could mega-analyse it and why CBMA cannot consume it.
+#
+# SEARCH WIDENED after measuring each clause's cost. The first version scored 916 hits; the two
+# structural filters were doing the damage rather than the disease terms:
+#     as run                                       916
+#     wider disease clause (+psychosis/psychotic)  1025
+#     ...also drop "Humans"[MeSH]                  1092
+#     ...also drop the MRI clause                  1190
+#     ...drop BOTH MRI and Humans                  1370
+#     ...plus a wider method clause                1506
+# The MRI clause is redundant -- a VBM paper is MRI by definition -- and it silently dropped papers
+# that simply do not say "MRI" in the title/abstract or are not MeSH-indexed. "Humans"[MeSH] is
+# likewise redundant here and penalises recent, not-yet-indexed papers. Both are gone. Animal and
+# non-MRI work is caught by screening instead, which is cheap; the method clause still requires a
+# voxel-wise design, which is the filter that actually matters for coordinate yield.
+#
+# RETRIEVAL: pubget + Elsevier only, no ACE (autonima#60 duplicate tables).
+# ANNOTATION MODEL: gpt-5.6-luna, reasoning off. Needs
+#   AUTONIMA_MODEL_PARAMS='{"gpt-5.6-luna":{"reasoning_effort":"none"}}'   (autonima#62)
+
+search:
+  database: "pubmed"
+  query: >-
+    ((schizophrenia[tiab] OR schizophreni*[tiab] OR psychosis[tiab] OR psychotic[tiab]
+    OR schizoaffective[tiab] OR "first-episode psychosis"[tiab] OR "first episode psychosis"[tiab]
+    OR "Schizophrenia"[Mesh] OR "Psychotic Disorders"[Mesh])
+    AND ("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "voxel-wise"[tiab] OR voxelwise[tiab]
+    OR "voxel based"[tiab] OR "statistical parametric mapping"[tiab] OR SPM[tiab]
+    OR "tensor-based morphometr*"[tiab] OR "deformation-based morphometr*"[tiab]
+    OR "optimized VBM"[tiab] OR "whole-brain morphometr*"[tiab]))
+  date_from: "1995/01/01"
+  date_to: "2025/12/31"
+  max_results: 5000
+  email: "delavega@utexas.edu"
+
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: "/home/zorro/repos/autonima-results/articles/elsevier_output/"
+      pmid_source: "folder_name"
+      text_path_templates:
+        - "text.txt"
+      coordinates_path_templates:
+        - "coordinates.json"
+
+parsing:
+  parse_coordinates: true
+  coordinate_model: "gpt-5-mini-2025-08-07"
+
+screening:
+  abstract:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: >-
+      Meta-analysis of voxel-wise structural MRI studies reporting grey-matter differences between
+      patients with schizophrenia or first-episode psychosis and healthy controls.
+    inclusion_criteria:
+      - Empirical English-language structural MRI studies comparing patients with schizophrenia,
+        schizoaffective disorder or first-episode psychosis against a healthy control group.
+      - The analysis must be VOXEL-WISE (VBM, voxel-based morphometry, SPM voxelwise). ROI-only or
+        atlas/parcellation-only designs such as FreeSurfer region tables do NOT qualify, because
+        they report per-region values rather than the stereotactic coordinates a coordinate-based
+        meta-analysis requires.
+    exclusion_criteria:
+      - Reviews, meta-analyses, case reports, and single-patient studies.
+      - Purely functional studies (fMRI, PET, MEG, EEG) with no structural morphometric outcome.
+      - ROI-based or atlas-based-only morphometry with no voxel-wise whole-brain analysis.
+      - Studies only of clinical high-risk or unaffected relatives with no patient-versus-control
+        comparison.
+      - Non-human studies.
+  fulltext:
+    model: "gpt-5-mini-2025-08-07"
+    confidence_reporting: true
+    objective: >-
+      Confirm the study reports stereotactic coordinates for a voxel-wise grey-matter comparison
+      between schizophrenia patients and healthy controls.
+    inclusion_criteria:
+      - Reports coordinates in a standard stereotactic space (MNI or Talairach) for at least one
+        patient-versus-control grey-matter contrast.
+      - Whole-brain voxel-wise analysis.
+    exclusion_criteria:
+      - No stereotactic coordinates reported anywhere for a structural patient-versus-control
+        contrast.
+      - Coordinates reported only for functional or diffusion measures, not grey-matter structure.
+      - Patient group is not schizophrenia-spectrum.
+
+annotation:
+  enabled: true
+  model: "gpt-5.6-luna"
+  prompt_type: "multi_analysis"
+  create_all_included_annotations: true
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_abstract"
+    - "study_fulltext"
+  inclusion_criteria:
+    - Judge each analysis from its own name, description and table caption, plus the study text for
+      sample characteristics. An empty or generic analysis name is never itself a reason to exclude.
+    - Coordinates must be in MNI or Talairach space.
+  exclusion_criteria:
+    - Exclude analyses that are not a patient-versus-control grey-matter comparison.
+  annotations:
+    - name: "scz_atrophy"
+      objective: >-
+        Grey-matter REDUCTION in schizophrenia-spectrum patients relative to healthy controls.
+        Matches ENIGMA's scz case-control contrast, whose negative Cohen's d denotes
+        patients below controls.
+      inclusion_criteria:
+        - The contrast is schizophrenia-spectrum patients versus healthy controls.
+        - The direction is controls GREATER than patients, i.e. reduced grey matter, atrophy or
+          decreased volume/density in patients.
+      exclusion_criteria:
+        - Patients GREATER than controls (increased grey matter).
+        - Contrasts between two patient groups, or against clinical high-risk or relative groups
+          rather than healthy controls.
+        - Correlations with symptom severity, duration or dose rather than a group contrast.
+    - name: "scz_atrophy_antipsychotic_naive"
+      objective: >-
+        Grey-matter REDUCTION in ANTIPSYCHOTIC-NAIVE or unmedicated schizophrenia-spectrum patients
+        relative to controls. Matches ENIGMA's antipsychotic-exposure strata, and requires reading
+        medication status out of the sample description.
+      inclusion_criteria:
+        - The patient sample is described as antipsychotic-naive, drug-naive, medication-free or
+          unmedicated at scanning.
+        - The contrast is patients versus healthy controls, direction controls GREATER than patients.
+      exclusion_criteria:
+        - Medicated or mixed-medication samples, or samples whose medication status is not stated.
+        - Patients GREATER than controls.
+
+output:
+  nimads: true
+  export_excluded_studies: true
