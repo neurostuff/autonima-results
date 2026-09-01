@@ -1,7 +1,33 @@
-# Beyond CBMA — where automated meta-analysis goes next
+# Future directions — autonima and automated meta-analysis
 
-Strategy note, 2026-08-31. Written after the deactivation and ENIGMA pilots, and grounded in
-measurements from those runs rather than speculation. Nothing here is committed work.
+Strategy note, started 2026-08-31 as a narrower question about life beyond CBMA and since grown to
+cover data sources, deployment, licensing, and tooling. Written after the deactivation and ENIGMA
+pilots. Everything quantified here is measured against this project's own runs and corpus rather than
+estimated; where a number is a guess or a recollection it says so. Nothing here is committed work.
+
+## Contents
+
+**What to do with the data we have**
+- [The premise](#the-premise) — the demonstrated strength, with evidence
+- [The limitation is worse than "only coordinates"](#the-limitation-is-worse-than-only-coordinates)
+- [The measurement that reframes it](#the-measurement-that-reframes-it) — we discard more than we use
+- [Directions, ranked](#directions-ranked) — effect sizes first
+- [Recommendation](#recommendation) and [cheapest first step](#cheapest-first-step)
+
+**Where more data lives**
+- [The second measurement](#the-second-measurement--where-else-the-results-live) — body text, figures,
+  dataset reuse, NeuroVault; and what is ruled out
+
+**How it gets delivered**
+- [Delivery](#delivery-what-a-finished-autonima-should-be) — the IP-entitlement constraint, the
+  measured corpus ceiling, the three tiers, and the constraint that actually binds
+- [Copyright](#copyright-what-actually-matters-and-what-does-not) and
+  [provenance display](#provenance-display-what-can-be-shown-by-licence-tier)
+- [PDF and table extraction tooling](#pdf-and-table-extraction-tooling)
+- [Build order](#build-order)
+
+**Further afield**
+- [Appendix: which other domains](#appendix-which-other-domains-and-why) — beyond neuroimaging
 
 ---
 
@@ -754,6 +780,84 @@ coordinates, analysis metadata, and **abstracts** (the `description` field on a 
 paper's abstract). Abstract redistribution is settled practice — PubMed does it. So the boundary in
 operation is: coordinates, analysis records, and abstracts are poolable; full text and verbatim
 tables are not. That is a clean, already-established line rather than a new policy to invent.
+
+### PDF and table extraction tooling
+
+Relevant to Tier 2 and to opportunistic PDF sources (Semantic Scholar and similar give PDFs but weak
+or absent tables — S2ORC is GROBID-derived, and tables are GROBID's known soft spot, so that gap is
+inherited rather than incidental). Supplementary PDFs are the same problem: autonima#36, measured at
+**~25% of otherwise-eligible studies** in the schizophrenia pilot.
+
+Note first that this is **not on the current critical path**. The corpus on disk is 40,534 XML files
+and **zero PDFs** — pubget returns JATS, Elsevier returns XML. For that path the right tool is a fast
+XML parser (`quick-xml` in Rust, `lxml` in Python), and the in-text coordinate work (+30-36%) is regex
+over already-structured markup with no PDF parsing and no models at all.
+
+#### The free benchmark we already have
+
+For any PMC OA article held as XML, the PDF can be fetched and extraction scored against the
+XML-derived table **exactly, with no hand labelling**. In the two experiments alone:
+
+| | n |
+|---|---|
+| pubget articles on disk | 564 |
+| with a coordinate table in the XML | 132 |
+| redistributable CC licence | 545 |
+| **both — PDF fetchable, XML ground truth** | **130** |
+
+Thousands corpus-wide. This should be built before any tool is chosen, because it converts the whole
+question from argument into measurement.
+
+#### The reframe that may remove the need for a model
+
+The downstream consumer is an LLM (`CoordinateParsingClient`), not a schema validator. So what is
+needed is not *table structure recognition* but **enough spatial fidelity for an LLM to reconstruct
+rows**. Coordinate tables are unusually forgiving here: the target is `(label, x, y, z)` where x/y/z
+are three small integers on a line — numerically distinctive, and robust to imperfect cell
+segmentation in a way a financial table would not be.
+
+So test the cheap path first.
+
+| tier | approach | tools | cost |
+|---|---|---|---|
+| **A** | geometry-preserving text, no ML | `pdfium-render` (Rust, permissive), `mutool draw -F stext` (C, AGPL), `pdftotext -bbox-layout` (C++, GPL) | ms/page, no GPU |
+| **B** | rule-based table detection | `pdfplumber`, `camelot`, `tabula-java` | slow, CPU |
+| **C** | ML table structure | Docling/TableFormer, `marker`/Surya, **Table Transformer** (ONNX-exportable), PaddleOCR PP-Structure | GPU preferred |
+
+Tier B is likely to underperform here specifically: neuroimaging coordinate tables are frequently
+**unruled**, whitespace-aligned with no borders, which is exactly where lattice methods fail.
+
+#### The honest Rust position
+
+**There is no mature Rust equivalent of Docling for table structure.** Rust's real contributions are
+`pdfium-render` for fast text-plus-geometry and **`ort`** (ONNX Runtime bindings) for running models
+without Python overhead. The pragmatic Rust architecture is therefore `pdfium-render` + `ort` running
+Table Transformer or PP-Structure weights. `ferrules` is the closest packaged attempt and
+`extractous` the closest general-purpose one; both are worth verifying against current sources before
+being relied on — this note is working from recollection on those two specifically.
+
+Also worth remembering that for Docling-class tools **the language is not the bottleneck** — layout
+and table models are. A Rust rewrite of orchestration buys little; a faster ONNX execution provider
+buys a lot.
+
+#### Two source-specific notes
+
+- **Supplementary material is often not a typeset PDF.** It is frequently an author-produced Excel or
+  Word export. Try the native format first — `calamine` (Rust) reads xlsx very fast, `docx-rs` for
+  Word — since author tables tend to be *cleaner* than publisher typesetting. This may sidestep PDF
+  parsing entirely for a share of autonima#36.
+- **Pre-2000 papers may be image-only**, needing OCR regardless of tool (Tesseract, Surya). That
+  intersects the pre-2004 coverage hole measured above (34% with coordinates), so it is the same
+  shrinking slice twice over.
+
+#### Ordering
+
+1. Build the paired benchmark. Free, and every later decision depends on it.
+2. Test Tier A plus the existing LLM parser. If it recovers >= 90% of coordinates, stop — no model
+   is needed.
+3. Escalate to Tier C only for the measured residue.
+
+Licence note for a hosted service: PDFium is permissive; MuPDF and Poppler are AGPL/GPL.
 
 ### Verdicts on the interface options
 
