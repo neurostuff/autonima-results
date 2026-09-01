@@ -15,9 +15,21 @@ This script does the first two thirds of that. It:
      fetched PDFs get stored, and "in PMC" is not the same as "redistributable" -- roughly a
      tenth of PMC content is publisher-labelled open access with no actual grant);
   2. writes the ground-truth coordinates per article as JSON;
-  3. optionally fetches the matching PDF -- and PMC's per-table and per-figure JPEGs -- from the
-     PMC Cloud Service on AWS Open Data, which is the only bulk route that still works (see the
-     PMC_CLOUD comment below for the four that do not).
+  3. optionally fetches the matching PDF from one or more sources.
+
+Source choice is the point, not an afterthought. PMC's own rendering is uniform and easier than
+the real workload, so an extractor validated only against it will look better than it is. The
+publisher-hosted PDFs that Unpaywall and Semantic Scholar resolve to are what a document actually
+looks like arriving from anywhere else, and they are the ones worth scoring against. Measured
+availability over the candidate set:
+
+    pmc         100%   PMC Cloud Service on AWS, no key, uniform typesetting
+    unpaywall   100% resolve, ~56-75% download   publisher-native
+    s2           98% resolve, ~56-75% download   publisher-native, same hosts
+
+The download gap is publisher bot-protection, not missing content: Frontiers, PLOS and Nature
+serve directly, while Wiley, OUP, MDPI and SfN return 403 or an HTML challenge. That is the same
+IP/entitlement wall the Elsevier work hit, and it is not worked around here.
 
 Scoring is deliberately left to the caller, because it depends on the extractor under test.
 Load ground_truth.json, produce the same shape from your extractor, and compare -- score_stub()
@@ -90,9 +102,21 @@ PMC_CLOUD = "https://pmc-oa-opendata.s3.amazonaws.com/"
 USER_AGENT = "autonima-results pdf-table-benchmark (research use; aid338@eid.utexas.edu)"
 
 S3_KEY = re.compile(r"<Key>([^<]+)</Key>")
-# Publishers name table images inconsistently: pone.0042394.t001.jpg, nihms916817t2.jpg, ...
-TABLE_IMAGE = re.compile(r"[._]t\d+\.(?:jpg|jpeg|png)$", re.I)
-FIGURE_IMAGE = re.compile(r"(?:g\d+|f\d+|Fig\d+)[^/]*\.(?:jpg|jpeg|png)$", re.I)
+
+# Unpaywall and Semantic Scholar both resolve a DOI to a publisher-hosted PDF. Those are the
+# interesting ones: a publisher's own typesetting is what a PDF from any non-PMC route actually
+# looks like, whereas PMC's rendering is uniform and easier than the real workload.
+UNPAYWALL = "https://api.unpaywall.org/v2/{doi}?email={email}"
+S2_PAPER = "https://api.semanticscholar.org/graph/v1/paper/DOI:{doi}?fields=openAccessPdf"
+DOI_IN_JATS = re.compile(r'<article-id pub-id-type="doi">([^<]+)</article-id>')
+
+# Publisher sites gate on User-Agent before anything else. This gets past the crudest checks;
+# roughly 44% of publisher hosts still refuse (Wiley, OUP, MDPI and SfN all 403 in testing),
+# which is the same IP/entitlement wall the Elsevier work ran into and is not worked around here.
+BROWSER_UA = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/124.0 Safari/537.36"
+)
 
 
 def is_coordinate_row(row: list[str]) -> bool:
@@ -147,13 +171,16 @@ def scan(roots: Iterable[str]) -> list[dict]:
             if not coords:
                 continue
 
-            licence = licence_of(xml)
+            raw = xml.read_text(encoding="utf-8", errors="replace")
+            licence = REDISTRIBUTABLE.search(raw)
+            doi = DOI_IN_JATS.search(raw)
             pmcid_match = PMCID_FROM_DIR.search(article_dir.name)
             found.append(
                 {
                     "pmcid": pmcid_match.group(1) if pmcid_match else None,
+                    "doi": doi.group(1).strip() if doi else None,
                     "article_dir": str(article_dir.relative_to(REPO)),
-                    "licence": licence,
+                    "licence": licence.group(0) if licence else None,
                     "redistributable": licence is not None,
                     "n_coordinates": len(coords),
                     "coordinates": coords,
@@ -162,8 +189,8 @@ def scan(roots: Iterable[str]) -> list[dict]:
     return found
 
 
-def _get(url: str, timeout: int = 90) -> bytes | None:
-    request = Request(url, headers={"User-Agent": USER_AGENT})
+def _get(url: str, timeout: int = 90, browser: bool = False) -> bytes | None:
+    request = Request(url, headers={"User-Agent": BROWSER_UA if browser else USER_AGENT})
     try:
         with urlopen(request, timeout=timeout) as response:
             return response.read()
@@ -171,65 +198,78 @@ def _get(url: str, timeout: int = 90) -> bytes | None:
         return None
 
 
-def cloud_assets(pmcid: str) -> dict:
-    """List one article's objects in the PMC Cloud bucket.
+def pmc_cloud_pdf(pmcid: str, doi: str | None) -> str | None:
+    """Highest-version PDF key for one article in the PMC Cloud bucket.
 
-    Records are versioned (PMC6107443.1/, PMC6107443.2/, ...) and versions are not always
-    equivalent -- a .2 is typically the publisher's typeset version replacing an author
-    manuscript -- so the highest version wins.
+    Records are versioned (PMC6107443.1/, PMC6107443.2/, ...) and versions are not equivalent --
+    a .2 is typically the publisher's typeset copy replacing an author manuscript -- so the
+    highest wins.
     """
     body = _get(f"{PMC_CLOUD}?list-type=2&prefix=PMC{pmcid}.")
     if body is None:
-        return {"pdf": None, "tables": [], "figures": []}
-    keys = S3_KEY.findall(body.decode("utf-8", "replace"))
-    pdfs = sorted(k for k in keys if k.lower().endswith(".pdf"))
-    latest = pdfs[-1] if pdfs else None
-    prefix = latest.rsplit("/", 1)[0] + "/" if latest else None
-    scoped = [k for k in keys if prefix and k.startswith(prefix)]
-    return {
-        "pdf": latest,
-        "tables": [k for k in scoped if TABLE_IMAGE.search(k)],
-        "figures": [k for k in scoped if FIGURE_IMAGE.search(k)],
-    }
+        return None
+    pdfs = sorted(k for k in S3_KEY.findall(body.decode("utf-8", "replace")) if k.lower().endswith(".pdf"))
+    return PMC_CLOUD + pdfs[-1] if pdfs else None
 
 
-def fetch_article(pmcid: str, out: Path, images: bool = False, pause: float = 0.34) -> str:
-    """Fetch one article's PDF (and optionally its table/figure images). Returns a status."""
-    pdf_dest = out / "pdfs" / f"PMC{pmcid}.pdf"
-    if pdf_dest.exists() and pdf_dest.stat().st_size > 0 and not images:
+def unpaywall_pdf(pmcid: str, doi: str | None, email: str = "") -> str | None:
+    """Publisher-hosted PDF URL for a DOI, via Unpaywall's best_oa_location."""
+    if not doi:
+        return None
+    body = _get(UNPAYWALL.format(doi=doi, email=email))
+    if body is None:
+        return None
+    try:
+        payload = json.loads(body)
+    except ValueError:
+        return None
+    return (payload.get("best_oa_location") or {}).get("url_for_pdf")
+
+
+def s2_pdf(pmcid: str, doi: str | None) -> str | None:
+    """Publisher-hosted PDF URL for a DOI, via Semantic Scholar's openAccessPdf."""
+    if not doi:
+        return None
+    body = _get(S2_PAPER.format(doi=doi))
+    if body is None:
+        return None
+    try:
+        payload = json.loads(body)
+    except ValueError:
+        return None
+    return (payload.get("openAccessPdf") or {}).get("url")
+
+
+SOURCES = {
+    "pmc": pmc_cloud_pdf,
+    "unpaywall": unpaywall_pdf,
+    "s2": s2_pdf,
+}
+
+
+def fetch_from(source: str, article: dict, out: Path, email: str, pause: float) -> str:
+    """Resolve and download one article's PDF from one source. Returns a status string."""
+    pmcid, doi = article["pmcid"], article.get("doi")
+    dest = out / "pdfs" / source / f"PMC{pmcid}.pdf"
+    if dest.exists() and dest.stat().st_size > 0:
         return "cached"
 
-    assets = cloud_assets(pmcid)
+    resolver = SOURCES[source]
+    url = resolver(pmcid, doi, email) if source == "unpaywall" else resolver(pmcid, doi)
     time.sleep(pause)
-    if not assets["pdf"]:
-        return "absent"
+    if not url:
+        return "no url"
 
-    if not (pdf_dest.exists() and pdf_dest.stat().st_size > 0):
-        body = _get(PMC_CLOUD + assets["pdf"])
-        time.sleep(pause)
-        if body is None:
-            return "fetch failed"
-        if not body.startswith(b"%PDF"):
-            return "not a pdf"
-        pdf_dest.write_bytes(body)
-        status = f"ok {len(body) // 1024}KB"
-    else:
-        status = "cached pdf"
-
-    if images:
-        got = 0
-        for key in assets["tables"] + assets["figures"]:
-            dest = out / "images" / f"PMC{pmcid}" / key.rsplit("/", 1)[-1]
-            if dest.exists() and dest.stat().st_size > 0:
-                continue
-            blob = _get(PMC_CLOUD + key)
-            time.sleep(pause)
-            if blob:
-                dest.parent.mkdir(parents=True, exist_ok=True)
-                dest.write_bytes(blob)
-                got += 1
-        status += f" +{got}img ({len(assets['tables'])}t/{len(assets['figures'])}f)"
-    return status
+    body = _get(url, browser=True)
+    time.sleep(pause)
+    if body is None:
+        return "blocked/error"
+    if not body.startswith(b"%PDF"):
+        # Publisher bot-protection returns an HTML challenge with a 200 as often as a 403.
+        return "not a pdf (html)"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_bytes(body)
+    return f"ok {len(body) // 1024}KB"
 
 
 def score_stub(ground_truth: list[list[int]], extracted: list[list[int]]) -> dict:
@@ -255,11 +295,13 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", type=Path, help="directory for ground_truth.json, candidates.csv, pdfs/")
     parser.add_argument("--survey", action="store_true", help="report what is available and exit")
-    parser.add_argument("--fetch-pdfs", action="store_true", help="download the matching PMC PDFs")
-    parser.add_argument("--fetch-images", action="store_true",
-                        help="also download PMC's per-table and per-figure JPEGs")
+    parser.add_argument("--source", action="append", choices=sorted(SOURCES),
+                        help="PDF source to fetch from; repeatable. pmc = PMC Cloud (uniform "
+                             "rendering), unpaywall / s2 = publisher-hosted (representative)")
     parser.add_argument("--limit", type=int, help="cap the number of articles (for a quick pilot)")
     parser.add_argument("--pause", type=float, default=0.34, help="seconds between requests")
+    parser.add_argument("--email", default="aid338@eid.utexas.edu",
+                        help="contact address required by the Unpaywall API")
     args = parser.parse_args(argv)
 
     if not args.survey and not args.out:
@@ -279,13 +321,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.survey:
         return 0
 
-    if args.limit:
-        eligible = eligible[: args.limit]
-
     out = args.out
     (out / "pdfs").mkdir(parents=True, exist_ok=True)
-    if args.fetch_images:
-        (out / "images").mkdir(parents=True, exist_ok=True)
 
     (out / "ground_truth.json").write_text(json.dumps(eligible, indent=1), encoding="utf-8")
     with (out / "candidates.csv").open("w", newline="", encoding="utf-8") as handle:
@@ -295,29 +332,32 @@ def main(argv: list[str] | None = None) -> int:
             writer.writerow([a["pmcid"], a["n_coordinates"], a["licence"], a["article_dir"]])
     print(f"\nwrote {out/'ground_truth.json'} and {out/'candidates.csv'} ({len(eligible)} articles)")
 
-    if not args.fetch_pdfs:
-        print("re-run with --fetch-pdfs to download the matching PDFs")
+    # --limit caps the fetch only; the artefacts above always describe the full eligible set.
+    if args.limit:
+        eligible = eligible[: args.limit]
+        print(f"--limit {args.limit}: fetching a subset, artefacts still cover all candidates")
+
+    if not args.source:
+        print("re-run with --source {pmc,unpaywall,s2} (repeatable) to download PDFs")
         return 0
 
-    print(f"\nfetching {len(eligible)} articles from the PMC Cloud Service...")
-    tally: dict[str, int] = {}
-    for i, article in enumerate(eligible, 1):
-        pmcid = article["pmcid"]
-        if not pmcid:
-            tally["no pmcid"] = tally.get("no pmcid", 0) + 1
-            continue
-        status = fetch_article(pmcid, out, images=args.fetch_images, pause=args.pause)
-        key = status.split()[0]
-        tally[key] = tally.get(key, 0) + 1
-        print(f"  [{i}/{len(eligible)}] PMC{pmcid}: {status}", flush=True)
+    for source in args.source:
+        print(f"\n=== {source}: fetching {len(eligible)} PDFs ===")
+        tally: dict[str, int] = {}
+        for i, article in enumerate(eligible, 1):
+            if not article["pmcid"]:
+                tally["no pmcid"] = tally.get("no pmcid", 0) + 1
+                continue
+            status = fetch_from(source, article, out, args.email, args.pause)
+            tally[status.split()[0]] = tally.get(status.split()[0], 0) + 1
+            print(f"  [{i}/{len(eligible)}] PMC{article['pmcid']}: {status}", flush=True)
+        got = tally.get("ok", 0) + tally.get("cached", 0)
+        print(f"  -- {source}: {got}/{len(eligible)} PDFs ({got/max(len(eligible),1)*100:.0f}%)")
+        for key, count in sorted(tally.items(), key=lambda kv: -kv[1]):
+            print(f"     {key:<18} {count}")
 
-    print("\nfetch summary:")
-    for key, count in sorted(tally.items(), key=lambda kv: -kv[1]):
-        print(f"  {key:<12} {count}")
-    print(f"\nPDFs in {out/'pdfs'}. Ground truth in {out/'ground_truth.json'}.")
-    if args.fetch_images:
-        print(f"Per-table and per-figure JPEGs in {out/'images'}.")
-    print("Score an extractor with score_stub() in this file for comparable numbers.")
+    print(f"\nPDFs under {out/'pdfs'}/<source>/. Ground truth in {out/'ground_truth.json'}.")
+    print("Score an extractor with score_stub() for numbers comparable across sources.")
     return 0
 
 
