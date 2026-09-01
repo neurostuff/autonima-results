@@ -502,6 +502,91 @@ The cost shape does still require a cascade for arbitrary queries: free structur
 metadata, then LLM annotation only on survivors. $29 per speculative user query does not scale; $29
 once for a cached column does.
 
+### Can a structured evidence layer replace full text for screening?
+
+This is the NeuroStore metadata work's central bet, and it is testable against our own runs: 20,810
+full-text screening decisions with written reasons, across every project and version.
+
+**Full text is load-bearing today.** It overturns **33%** of abstract-included studies (6,835
+exclusions of 20,810 screened). It is not a rubber stamp, so replacing it is a real substitution, not
+a free saving.
+
+**But the grounds for overturning are overwhelmingly field-like.** Mapping each exclusion reason to
+the schema field that would have caught it:
+
+| proposed field | exclusions it absorbs | share |
+|---|---|---|
+| `analysis.contrast_identity` — is this the required contrast? | 3,560 | **52%** |
+| `analysis.spatial_scope` — whole-brain vs ROI-only | 2,713 | **40%** |
+| `study.imaging_modality` — fMRI / PET / DTI / rs-fMRI / structural | 2,206 | 32% |
+| `analysis.coordinate_space` — coordinates reported at all | 650 | 10% |
+| `analysis.stimulus_modality` — visual / auditory / taste / imagery | 379 | 6% |
+| `study.publication_type` — review, protocol, commentary | 234 | 3% |
+| `analysis.level` — group vs single-subject | 146 | 2% |
+| `study.sample_size` | 71 | 1% |
+| `analysis.survived_correction` | 62 | 1% |
+| **absorbed by >= 1 field** | **5,582** | **82%** |
+| **residue — needs prose judgment** | **1,253** | **18%** |
+
+Two things stand out. `spatial_scope` is a **single boolean that absorbs 40% of full-text
+exclusions** — whole-brain versus ROI-only is the highest-leverage field in the list and the easiest
+to extract. And `contrast_identity` at 52% is precisely analysis-level metadata, which is why the
+analysis-level half of the NeuroStore work matters more than the paper-level half.
+
+**What the 18% residue actually is:** topical scope, not missing facts. *"Does the Monetary Incentive
+Delay task count as cue-reactivity?"* *"Does a slot-machine gambling task count as a drug cue?"* Those
+are judgments about whether a study's construct matches the review's construct.
+
+But note the bar. **Fields do not need to decide; they need to carry enough for the LLM to decide.**
+Every residue example names its task (`MID`, `slot machine`, `monetary reward expectation`) — so a
+`task` or `construct` field would let a screener adjudicate from a 175-token record instead of 13,000
+tokens of full text. The residue is *compressible* even where it is not *decidable*.
+
+(Classification is keyword-based against written reasons, with patterns verified by sampling. It both
+over- and under-counts — an earlier pass put ROI-only at 31% because it missed phrasings like
+"reports only region-of-interest analyses". Treat the percentages as indicative and the ranking as
+solid. Many criteria here are cue_reactivity-flavoured, so the specific fields are partly
+project-specific; the *classes* generalise.)
+
+### The cost case is strong, and stronger than the cost case
+
+Median pubget article: **13,416 tokens**. A structured record covering the fields above plus contrast
+names for a handful of analyses: **~175 tokens**. That is **77x compression**. Across the 20,810
+full-text screenings run in this project:
+
+| | input tokens |
+|---|---|
+| as full text | ~279M |
+| as structured records | ~3.6M |
+
+The under-stated benefit is not cost but **capability**: 50 structured records fit in one context
+where 50 full texts cannot. That enables *comparative* screening — judging a study against its
+neighbours rather than in isolation — which is unavailable at any price with full text.
+
+### The counter-argument to discarding full text
+
+The corpus's **41.5% opaque analyses are themselves the bill for not being able to re-extract.** They
+were parsed under a thinner schema, and there is now no cheap way back. `analysis-schema` is at
+`0.1.0-alpha.10` and still moving; every alpha changes what the evidence layer should contain.
+Discarding source text freezes the layer at whichever schema version happened to be current.
+
+The resolution is narrower than "store everything":
+
+- **Structured layer is the serving substrate.** Screening, filtering, and querying run on it. This
+  is right, and the 82% figure supports it.
+- **Open-access full text need not be stored** — it is re-fetchable on demand when the schema changes.
+- **User-uploaded non-OA full text should be retained** (private to uploader), because it is the only
+  copy that will ever exist and the schema *will* change. This is exactly the Tier 2 case, and it is
+  the one place the retention question actually bites.
+
+### Consequence for validity, not just cost
+
+The 33% overturn rate cuts both ways. If the structured layer is missing a field that a criterion
+depends on, screening does not fail loudly — it **silently includes** studies full text would have
+excluded. So field coverage is a validity property, and the audit that matters before Tier 0 goes
+public is: for a given review's criteria, is every criterion expressible in available fields? If not,
+that review needs Tier 1 or 2, and the service should say so rather than returning a confident map.
+
 ### Which of Tier 1 and Tier 2 to build first
 
 **Tier 2, clearly** — and the analysis-label finding sharpens why:
@@ -563,9 +648,10 @@ spot — the 16.1% body-text-only share measured above is invisible to a table-d
 2. **Compose push as the output contract** — defines the boundary everything else plugs into.
 3. **Tier 0 hosted execution**, corpus-only, advertised with its 60% study ceiling and 56%
    analysis-filterability, plus the era profile. Cheapest thing to ship that anyone can use.
-4. **Corpus repair** — re-extract labels for the opaque 41.5% of analyses. Raises the Tier 0 ceiling
-   for everyone without any new retrieval, and is a prerequisite for Tier 0 being good rather than
-   merely cheap.
+4. **Corpus repair / richer evidence layer** — re-extract labels for the opaque 41.5%, and add the
+   fields ranked above. Raises the Tier 0 ceiling for everyone with no new retrieval, and is a
+   prerequisite for Tier 0 being good rather than merely cheap. Already under way on the NeuroStore
+   side. `analysis.spatial_scope` first: one boolean, 40% of full-text exclusions.
 5. **Tier 2: user PDF upload**, private to uploader, extraction hosted. Cheap, well-precedented,
    starts the corpus flywheel without shipping a client.
 6. **MCP query server** over the resulting corpus, with cached annotation columns.
