@@ -71,7 +71,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
-REPO = Path(__file__).resolve().parent.parent
+REPO = Path(__file__).resolve().parents[3]
+EXPERIMENT = Path(__file__).resolve().parents[1]
 
 # Article dirs look like <root>/pubget_data/articles/<bucket>/pmcid_<id>/
 ARTICLE_GLOBS = (
@@ -504,14 +505,15 @@ def route_for(article: dict) -> list[str]:
     chain = []
     if prefix in DOI_ROUTE:
         chain.append(DOI_ROUTE[prefix])
-    # PMC goes second, not last. It is the only route that is near-certain when a PMCID exists,
-    # and burying it behind s2/unpaywall -- which succeed ~7% of the time against publisher
-    # bot-protection -- costs far more yield than the uniform-rendering concern is worth. The
-    # source each PDF came from is recorded in its path, so rendering stays controllable at
-    # analysis time, and both renderings can be had by pinning --source explicitly.
+    chain += ["s2", "unpaywall"]
+    # PMC is the backstop, deliberately last. It is the most reliable route when a PMCID exists,
+    # but its typesetting is uniform and easier than the real workload, so an extractor scored
+    # against it looks better than it is. Preferring publisher-native renderings costs about one
+    # point of overall yield -- measured 43% with PMC second against 42% with it last -- and buys
+    # a test set that resembles the documents this will actually meet.
     if article.get("pmcid"):
         chain.append("pmc")
-    return chain + ["s2", "unpaywall"]
+    return chain
 
 
 def fetch_auto(article: dict, out: Path, cfg: dict, pause: float) -> str:
@@ -568,7 +570,8 @@ def score_stub(ground_truth: list[list[int]], extracted: list[list[int]]) -> dic
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--out", type=Path, help="directory for ground_truth.json, candidates.csv, pdfs/")
+    parser.add_argument("--out", type=Path, default=EXPERIMENT,
+                        help="experiment directory; writes data/ and pdfs/ under it")
     parser.add_argument("--survey", action="store_true", help="report what is available and exit")
     parser.add_argument("--candidates", choices=("pubget", "neurostore", "both"), default="pubget",
                         help="pubget = local XML, cleaner ground truth, ~1.6k articles. "
@@ -588,9 +591,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--email", default="aid338@eid.utexas.edu",
                         help="contact address required by the Unpaywall API")
     args = parser.parse_args(argv)
-
-    if not args.survey and not args.out:
-        parser.error("one of --survey or --out is required")
 
     if args.candidates == "both":
         local = [a for a in scan(ARTICLE_GLOBS) if a["redistributable"]]
@@ -628,14 +628,15 @@ def main(argv: list[str] | None = None) -> int:
 
     out = args.out
     (out / "pdfs").mkdir(parents=True, exist_ok=True)
+    (out / "data").mkdir(parents=True, exist_ok=True)
 
-    (out / "ground_truth.json").write_text(json.dumps(eligible, indent=1), encoding="utf-8")
-    with (out / "candidates.csv").open("w", newline="", encoding="utf-8") as handle:
+    (out / "data" / "ground_truth.json").write_text(json.dumps(eligible, indent=1), encoding="utf-8")
+    with (out / "data" / "candidates.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         writer.writerow(["pmcid", "n_coordinates", "licence", "article_dir"])
         for a in eligible:
             writer.writerow([a["pmcid"], a["n_coordinates"], a["licence"], a["article_dir"]])
-    print(f"\nwrote {out/'ground_truth.json'} and {out/'candidates.csv'} ({len(eligible)} articles)")
+    print(f"\nwrote {out/'data'}/ground_truth.json + candidates.csv ({len(eligible)} articles)")
 
     # --limit caps the fetch only; the artefacts above always describe the full eligible set.
     if args.limit:
@@ -665,7 +666,7 @@ def main(argv: list[str] | None = None) -> int:
         for key, count in sorted(tally.items(), key=lambda kv: -kv[1]):
             print(f"     {key:<18} {count}")
 
-    print(f"\nPDFs under {out/'pdfs'}/<source>/. Ground truth in {out/'ground_truth.json'}.")
+    print(f"\nPDFs under {out/'pdfs'}/<source>/. Ground truth in {out/'data'}/ground_truth.json.")
     print("Score an extractor with score_stub() for numbers comparable across sources.")
     return 0
 
