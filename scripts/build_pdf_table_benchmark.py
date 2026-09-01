@@ -68,6 +68,7 @@ import time
 from pathlib import Path
 from typing import Iterable
 from urllib.error import HTTPError, URLError
+from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 REPO = Path(__file__).resolve().parent.parent
@@ -106,6 +107,8 @@ S3_KEY = re.compile(r"<Key>([^<]+)</Key>")
 # Unpaywall and Semantic Scholar both resolve a DOI to a publisher-hosted PDF. Those are the
 # interesting ones: a publisher's own typesetting is what a PDF from any non-PMC route actually
 # looks like, whereas PMC's rendering is uniform and easier than the real workload.
+NEUROSTORE_BASE = "https://neurostore.org/api/base-studies/?page_size={ps}&page={page}"
+NEUROSTORE_NESTED = "https://neurostore.org/api/studies/?pmid={pmid}&nested=true&page_size=1"
 UNPAYWALL = "https://api.unpaywall.org/v2/{doi}?email={email}"
 S2_PAPER = "https://api.semanticscholar.org/graph/v1/paper/DOI:{doi}?fields=openAccessPdf"
 DOI_IN_JATS = re.compile(r'<article-id pub-id-type="doi">([^<]+)</article-id>')
@@ -189,6 +192,80 @@ def scan(roots: Iterable[str]) -> list[dict]:
     return found
 
 
+def scan_neurostore(max_candidates: int, page_size: int = 100) -> list[dict]:
+    """Candidates from NeuroStore instead of local pubget output.
+
+    Far larger and far more publisher-diverse than what we hold locally -- roughly 31,000
+    coordinate-bearing studies with a DOI across ~291 journals, no journal above 15% -- and its
+    own parsed coordinates serve as ground truth.
+
+    The trade against the pubget arm is ground-truth quality, not size: NeuroStore's coordinates
+    came from earlier ACE/Neurosynth-era parsing and carry their own error rate, whereas the
+    pubget arm's come from publisher XML. Use this arm for relative comparison between
+    extractors, and the pubget arm when an absolute accuracy number is wanted.
+    """
+    found: list[dict] = []
+    page = 1
+    while len(found) < max_candidates:
+        body = _get(NEUROSTORE_BASE.format(ps=page_size, page=page))
+        if body is None:
+            break
+        try:
+            results = json.loads(body).get("results", [])
+        except ValueError:
+            break
+        if not results:
+            break
+        for study in results:
+            if not (study.get("has_coordinates") and study.get("doi") and study.get("pmid")):
+                continue
+            coords = neurostore_points(study["pmid"])
+            if len(coords) < 3:
+                continue
+            # NeuroStore stores the PMCID with its "PMC" prefix; the rest of this script and the
+            # S3 bucket key both want the bare digits.
+            raw_pmcid = (study.get("pmcid") or "").strip()
+            found.append(
+                {
+                    "pmcid": raw_pmcid[3:] if raw_pmcid.upper().startswith("PMC") else (raw_pmcid or None),
+                    "pmid": study.get("pmid"),
+                    "doi": (study.get("doi") or "").strip() or None,
+                    "article_dir": None,
+                    "licence": None,
+                    "redistributable": bool(study.get("is_oa")),
+                    "publication": study.get("publication"),
+                    "n_coordinates": len(coords),
+                    "coordinates": coords,
+                }
+            )
+            if len(found) >= max_candidates:
+                break
+        page += 1
+    return found
+
+
+def neurostore_points(pmid: str) -> list[list[int]]:
+    """Ground-truth coordinates for one study, from NeuroStore's parsed analyses."""
+    body = _get(NEUROSTORE_NESTED.format(pmid=pmid))
+    if body is None:
+        return []
+    try:
+        results = json.loads(body).get("results", [])
+    except ValueError:
+        return []
+    out: list[list[int]] = []
+    for study in results:
+        for analysis in study.get("analyses") or []:
+            for point in analysis.get("points") or []:
+                xyz = point.get("coordinates")
+                if isinstance(xyz, list) and len(xyz) == 3:
+                    try:
+                        out.append([int(round(float(v))) for v in xyz])
+                    except (TypeError, ValueError):
+                        continue
+    return out
+
+
 def _get(url: str, timeout: int = 90, browser: bool = False) -> bytes | None:
     request = Request(url, headers={"User-Agent": BROWSER_UA if browser else USER_AGENT})
     try:
@@ -216,7 +293,7 @@ def unpaywall_pdf(pmcid: str, doi: str | None, email: str = "") -> str | None:
     """Publisher-hosted PDF URL for a DOI, via Unpaywall's best_oa_location."""
     if not doi:
         return None
-    body = _get(UNPAYWALL.format(doi=doi, email=email))
+    body = _get(UNPAYWALL.format(doi=quote(doi.strip(), safe="/"), email=email))
     if body is None:
         return None
     try:
@@ -230,7 +307,7 @@ def s2_pdf(pmcid: str, doi: str | None) -> str | None:
     """Publisher-hosted PDF URL for a DOI, via Semantic Scholar's openAccessPdf."""
     if not doi:
         return None
-    body = _get(S2_PAPER.format(doi=doi))
+    body = _get(S2_PAPER.format(doi=quote(doi.strip(), safe="/")))
     if body is None:
         return None
     try:
@@ -247,10 +324,23 @@ SOURCES = {
 }
 
 
+def article_id(article: dict) -> str:
+    """Stable filename stem. NeuroStore candidates often have no PMCID, DOI-only ones no PMID."""
+    if article.get("pmcid"):
+        return f"PMC{article['pmcid']}"
+    if article.get("pmid"):
+        return f"pmid{article['pmid']}"
+    return "doi_" + re.sub(r"[^A-Za-z0-9]+", "_", article.get("doi") or "unknown")
+
+
 def fetch_from(source: str, article: dict, out: Path, email: str, pause: float) -> str:
     """Resolve and download one article's PDF from one source. Returns a status string."""
-    pmcid, doi = article["pmcid"], article.get("doi")
-    dest = out / "pdfs" / source / f"PMC{pmcid}.pdf"
+    pmcid, doi = article.get("pmcid"), article.get("doi")
+    if source == "pmc" and not pmcid:
+        return "no pmcid"
+    if source in ("unpaywall", "s2") and not doi:
+        return "no doi"
+    dest = out / "pdfs" / source / f"{article_id(article)}.pdf"
     if dest.exists() and dest.stat().st_size > 0:
         return "cached"
 
@@ -295,6 +385,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", type=Path, help="directory for ground_truth.json, candidates.csv, pdfs/")
     parser.add_argument("--survey", action="store_true", help="report what is available and exit")
+    parser.add_argument("--candidates", choices=("pubget", "neurostore"), default="pubget",
+                        help="pubget = local XML, cleaner ground truth, ~1.6k articles. "
+                             "neurostore = ~31k coordinate-bearing studies across ~291 journals, "
+                             "noisier ground truth but far more publisher-diverse")
+    parser.add_argument("--max-candidates", type=int, default=500,
+                        help="cap for --candidates neurostore (one API call per study)")
     parser.add_argument("--source", action="append", choices=sorted(SOURCES),
                         help="PDF source to fetch from; repeatable. pmc = PMC Cloud (uniform "
                              "rendering), unpaywall / s2 = publisher-hosted (representative)")
@@ -307,16 +403,25 @@ def main(argv: list[str] | None = None) -> int:
     if not args.survey and not args.out:
         parser.error("one of --survey or --out is required")
 
-    articles = scan(ARTICLE_GLOBS)
-    eligible = [a for a in articles if a["redistributable"]]
-
-    print(f"articles with a coordinate table       {len(articles)}")
-    print(f"  of those, redistributable licence    {len(eligible)}")
+    if args.candidates == "neurostore":
+        articles = scan_neurostore(args.max_candidates)
+        eligible = articles          # licence gating is the fetch source's problem here
+        journals = {(a.get("publication") or "?") for a in articles}
+        print(f"NeuroStore coordinate-bearing studies  {len(articles)}")
+        print(f"  distinct journals                    {len(journals)}")
+        print(f"  flagged open access                  {sum(1 for a in articles if a['redistributable'])}")
+        print(f"  with a PMCID (PMC Cloud reachable)   {sum(1 for a in articles if a.get('pmcid'))}")
+    else:
+        articles = scan(ARTICLE_GLOBS)
+        eligible = [a for a in articles if a["redistributable"]]
+        print(f"articles with a coordinate table       {len(articles)}")
+        print(f"  of those, redistributable licence    {len(eligible)}")
     print(f"  total ground-truth coordinates       {sum(a['n_coordinates'] for a in eligible):,}")
     if articles:
-        no_pmcid = sum(1 for a in eligible if not a["pmcid"])
+        no_pmcid = sum(1 for a in eligible if not a.get("pmcid"))
         if no_pmcid:
-            print(f"  (! {no_pmcid} eligible articles have no parseable PMCID and cannot be fetched)")
+            print(f"  (! {no_pmcid} have no PMCID -- unreachable via --source pmc, "
+                  f"but fine via unpaywall/s2, which key on DOI)")
 
     if args.survey:
         return 0
@@ -345,12 +450,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\n=== {source}: fetching {len(eligible)} PDFs ===")
         tally: dict[str, int] = {}
         for i, article in enumerate(eligible, 1):
-            if not article["pmcid"]:
-                tally["no pmcid"] = tally.get("no pmcid", 0) + 1
-                continue
-            status = fetch_from(source, article, out, args.email, args.pause)
+            try:
+                status = fetch_from(source, article, out, args.email, args.pause)
+            except Exception as exc:                      # noqa: BLE001 - one bad record must
+                status = f"error {type(exc).__name__}"    # not abort the remaining fetches
             tally[status.split()[0]] = tally.get(status.split()[0], 0) + 1
-            print(f"  [{i}/{len(eligible)}] PMC{article['pmcid']}: {status}", flush=True)
+            print(f"  [{i}/{len(eligible)}] {article_id(article)}: {status}", flush=True)
         got = tally.get("ok", 0) + tally.get("cached", 0)
         print(f"  -- {source}: {got}/{len(eligible)} PDFs ({got/max(len(eligible),1)*100:.0f}%)")
         for key, count in sorted(tally.items(), key=lambda kv: -kv[1]):
