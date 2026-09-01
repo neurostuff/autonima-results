@@ -139,6 +139,46 @@ time, and both renderings can be had for the overlap subset by pinning `--source
 
 ---
 
+## Result: the local test set as built
+
+451 of 451 fetched (**100%**), publisher-native wherever available:
+
+| source that served | n | share |
+|---|---|---|
+| Semantic Scholar (publisher hosts) | 310 | 69% |
+| **PMC Cloud** (backstop) | **69** | **15%** |
+| Elsevier API | 35 | 8% |
+| Wiley TDM API | 31 | 7% |
+| Unpaywall | 6 | 1% |
+
+**382 of 451 (85%) are publisher-native**; only 69 fall back to PMC's rendering.
+
+Because the earlier PMC-second run had already completed, its 385 PMC copies were kept rather than
+deleted. That is useful rather than wasteful:
+
+| | n |
+|---|---|
+| publisher-native | 382 |
+| PMC-rendered | 385 |
+| **both — the paired control subset** | **316** |
+| PMC only | 69 |
+
+**316 papers with two renderings of the same article and one ground truth** is the cleanest thing
+in this folder. It measures directly how much PMC-only validation over-estimates an extractor,
+which is otherwise a caveat nobody can put a number on.
+
+Total on disk: **1.5 GB across 767 files**, gitignored.
+
+### Read this yield with suspicion
+
+Semantic Scholar served 69% here against **19%** on the publisher-stratified NeuroStore sample. The
+difference is not that this run was luckier — it is that **every article in this pool is PMC open
+access by construction**, so it resolves to publisher OA hosts (Frontiers, PLOS, Nature) that serve
+without challenge. This pool flatters every route, and the NeuroStore arm remains the one that
+reflects the real literature.
+
+---
+
 ## Layout
 
     experiments/pdf_table_extraction/
@@ -146,7 +186,7 @@ time, and both renderings can be had for the overlap subset by pinning `--source
       scripts/build_benchmark.py     candidate discovery + multi-source fetch + score_stub()
       data/ground_truth.json         451 articles with their XML-derived coordinates
       data/candidates.csv            pmcid, doi, n_coordinates, licence, source dir
-      pdfs/<source>/PMC*.pdf         gitignored (~800MB); source is in the path
+      pdfs/<source>/PMC*.pdf         gitignored (1.5GB, 767 files); source is in the path
 
 ## Running it
 
