@@ -800,13 +800,17 @@ XML-derived table **exactly, with no hand labelling**. In the two experiments al
 
 | | n |
 |---|---|
-| pubget articles on disk | 564 |
-| with a coordinate table in the XML | 132 |
-| redistributable CC licence | 545 |
-| **both — PDF fetchable, XML ground truth** | **130** |
+| distinct articles with a coordinate table | 671 |
+| of those, redistributable CC licence | **451** |
+| ground-truth coordinates they carry | **7,256** |
 
-Thousands corpus-wide. This should be built before any tool is chosen, because it converts the whole
-question from argument into measurement.
+An earlier count here said 1,640 articles and 26,486 coordinates. That was wrong: it counted
+article *directories*, and the same paper is downloaded independently by every project and run that
+screened it in, inflating the total roughly 3.6x. The corrected figures are above.
+
+451 is a usable pilot but not a benchmark, which is what pushed the search toward NeuroStore below.
+Either way this should be built before any tool is chosen, because it converts the whole question
+from argument into measurement.
 
 #### Fetching the PDFs: which routes actually work
 
@@ -928,6 +932,51 @@ problem the diverse pool was meant to solve.
 
 Minor data-quality note found while building this: some NeuroStore DOIs carry leading whitespace,
 which crashes naive URL construction. Worth a trim on ingest.
+
+
+#### Building the real test set: publisher APIs, routed by DOI prefix
+
+Both `~/.keys/elsevier.key` and `~/.keys/wiley.key` work from here, so the entitled routes are
+live. Routing on the Crossref registrant prefix is exact — the prefix *is* the publisher — so each
+paper can be sent to the one API allowed to serve it, with free routes as fallback.
+
+Measured on 120 NeuroStore candidates with the chain
+`publisher -> pmc -> s2 -> unpaywall`:
+
+| route | delivered | note |
+|---|---|---|
+| **elsevier** | **26** | 26 routed, **100%** — `10.1016`, the single biggest prefix |
+| pmc | 15 | 52% of those routed; limited by OA-subset membership, not PMCID presence |
+| wiley | 8 | 42% of 19 routed — `10.1002` / `10.1111` |
+| s2 | 2 | publisher bot-protection |
+| unpaywall | 1 | same hosts as s2 |
+| **total** | **52 / 120** | **43%** |
+
+**43% of a genuinely publisher-diverse pool**, against 19% for Semantic Scholar alone. Scaled to the
+~31,281 coordinate-bearing NeuroStore studies, that is roughly **13,400 obtainable PDFs** — far more
+than a benchmark needs, so the practical limit is time rather than availability (one NeuroStore API
+call per study for its coordinates, plus one or more fetches).
+
+Chain order matters and was worth measuring. Putting PMC last, behind s2 and unpaywall, gave 42%;
+moving it to second gave 43% on a larger sample while shifting successes onto the reliable route.
+The source each PDF came from is recorded in its path, so the rendering variable stays controllable
+at analysis time, and both renderings can be had for the overlap subset by pinning `--source`.
+
+#### The union pool
+
+`--candidates both` merges the local pubget articles with NeuroStore, deduplicated by DOI then
+PMCID then PMID, preferring pubget's ground truth where a paper appears in both — its coordinates
+come from publisher JATS rather than ACE-era parsing — while backfilling the DOI that pubget
+records often lack and every publisher API needs.
+
+Recommended build:
+
+    python scripts/build_pdf_table_benchmark.py --candidates both \
+        --max-candidates 3000 --out reports/pdf_bench --source auto
+
+which should yield on the order of 1,300-1,500 PDFs spanning Elsevier, Wiley, PMC and the OA
+publishers, each paired with ground-truth coordinates and tagged by both source and
+ground-truth provenance.
 
 
 #### The reframe that may remove the need for a model

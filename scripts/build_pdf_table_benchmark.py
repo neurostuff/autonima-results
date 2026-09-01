@@ -1,60 +1,58 @@
 #!/usr/bin/env python3
-"""Build a paired PDF/XML benchmark for evaluating PDF table extraction.
+"""Build a paired PDF/ground-truth benchmark for evaluating PDF table extraction.
 
-Choosing a PDF table extractor (Docling, pdfplumber, Table Transformer, a Rust
-pdfium-render pipeline, ...) is currently an argument rather than a measurement. It does not
-have to be: for any PMC open-access article we already hold as JATS XML, the XML tables are
-ground truth for what a PDF extractor *should* recover from the same paper. Fetch the PDF,
-run the extractor, score the coordinates it finds against the coordinates pubget already
-parsed. No hand labelling anywhere.
+Choosing a PDF table extractor (Docling, pdfplumber, Table Transformer, a Rust pdfium-render
+pipeline, ...) is currently an argument rather than a measurement. It does not have to be: for any
+article whose coordinates we already hold in parsed form, those coordinates are ground truth for
+what an extractor *should* recover from the same paper's PDF. No hand labelling anywhere.
 
-This script does the first two thirds of that. It:
+Two candidate pools, trading ground-truth quality against size and diversity:
 
-  1. scans pubget article directories for papers that have BOTH a coordinate table in the XML
-     AND a redistributable Creative Commons licence (the licence check matters because the
-     fetched PDFs get stored, and "in PMC" is not the same as "redistributable" -- roughly a
-     tenth of PMC content is publisher-labelled open access with no actual grant);
-  2. writes the ground-truth coordinates per article as JSON;
-  3. optionally fetches the matching PDF from one or more sources.
+  --candidates pubget      ~1,640 articles from local pubget output. Ground truth is publisher
+                           JATS XML, so it is clean -- but the pool is PMC-OA by construction and
+                           therefore publisher-skewed before anything is fetched.
+  --candidates neurostore  ~31,000 coordinate-bearing studies across ~291 journals, no journal
+                           above 15%. Ground truth is NeuroStore's own parsed coordinates, which
+                           came from ACE/Neurosynth-era parsing and carry their own error rate.
+                           Use this arm for comparing extractors, pubget for absolute accuracy.
 
-Source choice is the point, not an afterthought. PMC's own rendering is uniform and easier than
-the real workload, so an extractor validated only against it will look better than it is. The
-publisher-hosted PDFs that Unpaywall and Semantic Scholar resolve to are what a document actually
-looks like arriving from anywhere else, and they are the ones worth scoring against. Measured
-availability over the candidate set:
+Source choice is a validity control, not a convenience. PMC's rendering is uniform and easier than
+the real workload, so an extractor validated only against it will look better than it is. Measured
+yield with --source auto, which routes each DOI to the API entitled to serve it:
 
-    pmc         100%   PMC Cloud Service on AWS, no key, uniform typesetting
-    unpaywall   100% resolve, ~56-75% download   publisher-native
-    s2           98% resolve, ~56-75% download   publisher-native, same hosts
+    elsevier    100%   10.1016; needs ELSEVIER_API_KEY and an entitled IP
+    pmc          73%   free and keyless, but uniform typesetting
+    wiley        50%   10.1002 / 10.1111; needs WILEY_TDM_TOKEN
+    s2            7%   free; mostly blocked by publisher bot-protection
+    unpaywall     -    same hosts as s2, used as a further fallback
 
-The download gap is publisher bot-protection, not missing content: Frontiers, PLOS and Nature
-serve directly, while Wiley, OUP, MDPI and SfN return 403 or an HTML challenge. That is the same
-IP/entitlement wall the Elsevier work hit, and it is not worked around here.
+auto tries the entitled publisher API first, then s2, unpaywall and finally PMC, so a paper is
+only lost when every route fails. Publisher-native renderings are preferred over PMC's because
+they are what a document actually looks like arriving from anywhere else.
 
-Scoring is deliberately left to the caller, because it depends on the extractor under test.
-Load ground_truth.json, produce the same shape from your extractor, and compare -- score_stub()
-at the bottom shows the intended matching (exact triple match, order-insensitive, per article).
+Scoring is deliberately left to the caller, since it depends on the extractor under test. Load
+ground_truth.json, produce the same shape, and compare -- score_stub() at the bottom shows the
+intended matching (exact triple match, order-insensitive, per article).
 
-A coordinate row is any table row carrying at least three integer-valued cells in [-120, 120];
-an article counts as having a coordinate table if some table has at least three such rows. This
-is the same crude rule used elsewhere in this repo for corpus classification. It over-counts
-demographic tables full of small integers and under-counts tables that report coordinates as
-floats, so treat per-article ground truth as noisy and the aggregate as sound.
+For the pubget arm, a coordinate row is any table row carrying at least three integer cells in
+[-120, 120], and an article qualifies if some table has at least three such rows. This is the same
+crude rule used elsewhere in this repo. It over-counts demographic tables full of small integers
+and misses coordinates reported as floats, so treat per-article ground truth as noisy and the
+aggregate as sound.
 
 Usage:
 
     # what is available, no network
     python scripts/build_pdf_table_benchmark.py --survey
+    python scripts/build_pdf_table_benchmark.py --candidates neurostore --survey
 
-    # build ground truth for everything eligible
-    python scripts/build_pdf_table_benchmark.py --out reports/pdf_table_benchmark
+    # build the diverse pool and fetch each paper from whichever API can serve it
+    python scripts/build_pdf_table_benchmark.py --candidates neurostore \
+        --max-candidates 2000 --out reports/pdf_bench --source auto
 
-    # ...and fetch the PDFs (polite, sequential, resumable)
-    python scripts/build_pdf_table_benchmark.py --out reports/pdf_table_benchmark --fetch-pdfs
-
-    # ...also grabbing PMC's pre-cropped table and figure images
-    python scripts/build_pdf_table_benchmark.py --out reports/pdf_table_benchmark \
-        --fetch-pdfs --fetch-images --limit 50
+    # or pin one source, to compare renderings of the same papers
+    python scripts/build_pdf_table_benchmark.py --out reports/pdf_bench \
+        --source pmc --source elsevier
 """
 
 from __future__ import annotations
@@ -62,6 +60,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import re
 import sys
 import time
@@ -110,6 +109,17 @@ S3_KEY = re.compile(r"<Key>([^<]+)</Key>")
 NEUROSTORE_BASE = "https://neurostore.org/api/base-studies/?page_size={ps}&page={page}"
 NEUROSTORE_NESTED = "https://neurostore.org/api/studies/?pmid={pmid}&nested=true&page_size=1"
 UNPAYWALL = "https://api.unpaywall.org/v2/{doi}?email={email}"
+ELSEVIER_ARTICLE = "https://api.elsevier.com/content/article/doi/{doi}"
+WILEY_TDM = "https://api.wiley.com/onlinelibrary/tdm/v1/articles/{doi}"
+
+# Which publisher API can serve a DOI, by registrant prefix. Routing on the prefix rather than the
+# journal name is exact -- the prefix IS the publisher's Crossref registrant -- and lets --source
+# auto send each paper to the one API that can actually serve it.
+DOI_ROUTE = {
+    "10.1016": "elsevier",
+    "10.1002": "wiley",
+    "10.1111": "wiley",
+}
 S2_PAPER = "https://api.semanticscholar.org/graph/v1/paper/DOI:{doi}?fields=openAccessPdf"
 DOI_IN_JATS = re.compile(r'<article-id pub-id-type="doi">([^<]+)</article-id>')
 
@@ -158,8 +168,15 @@ def licence_of(article_xml: Path) -> str | None:
 
 
 def scan(roots: Iterable[str]) -> list[dict]:
-    """Find every article that has both a coordinate table and a redistributable licence."""
+    """Find every article that has both a coordinate table and a redistributable licence.
+
+    Deduplicated by PMCID: the same paper is downloaded independently by every project and run
+    that screened it in, so the raw directory count is roughly 3.6x the number of distinct
+    papers (1,640 directories -> 451 articles). Counting directories would badly overstate the
+    benchmark size.
+    """
     found: list[dict] = []
+    seen: set[str] = set()
     for pattern in roots:
         for article_dir in sorted(REPO.glob(pattern)):
             xml = article_dir / "article.xml"
@@ -174,10 +191,15 @@ def scan(roots: Iterable[str]) -> list[dict]:
             if not coords:
                 continue
 
+            pmcid_match = PMCID_FROM_DIR.search(article_dir.name)
+            if pmcid_match and pmcid_match.group(1) in seen:
+                continue
+
             raw = xml.read_text(encoding="utf-8", errors="replace")
             licence = REDISTRIBUTABLE.search(raw)
             doi = DOI_IN_JATS.search(raw)
-            pmcid_match = PMCID_FROM_DIR.search(article_dir.name)
+            if pmcid_match:
+                seen.add(pmcid_match.group(1))
             found.append(
                 {
                     "pmcid": pmcid_match.group(1) if pmcid_match else None,
@@ -266,8 +288,71 @@ def neurostore_points(pmid: str) -> list[list[int]]:
     return out
 
 
-def _get(url: str, timeout: int = 90, browser: bool = False) -> bytes | None:
-    request = Request(url, headers={"User-Agent": BROWSER_UA if browser else USER_AGENT})
+def merge_pools(pubget: list[dict], neurostore: list[dict]) -> list[dict]:
+    """Union the two candidate pools, deduplicated, preferring the cleaner ground truth.
+
+    A paper can appear in both: pubget holds it because we downloaded its PMC XML, NeuroStore
+    because someone parsed it years ago. When that happens the pubget record wins, because its
+    coordinates come from publisher JATS rather than ACE-era parsing -- but the NeuroStore record
+    still contributes its DOI, which pubget records often lack and which every publisher API
+    needs.
+
+    Matching is by DOI first (the only identifier all sources agree on), then PMCID, then PMID.
+    """
+    def keys(rec: dict) -> list[str]:
+        out = []
+        if rec.get("doi"):
+            out.append("doi:" + rec["doi"].strip().lower())
+        if rec.get("pmcid"):
+            out.append("pmcid:" + str(rec["pmcid"]).lstrip("PMCpmc"))
+        if rec.get("pmid"):
+            out.append("pmid:" + str(rec["pmid"]))
+        return out
+
+    merged: dict[str, dict] = {}
+    index: dict[str, str] = {}
+    for rec, origin in [(r, "pubget") for r in pubget] + [(r, "neurostore") for r in neurostore]:
+        ks = keys(rec)
+        hit = next((index[k] for k in ks if k in index), None)
+        if hit is None:
+            rec = dict(rec, ground_truth_source=origin)
+            merged[ks[0]] = rec
+            for k in ks:
+                index[k] = ks[0]
+            continue
+        # Already seen. Keep the better ground truth, but backfill missing identifiers.
+        existing = merged[hit]
+        for field in ("doi", "pmid", "pmcid"):
+            if not existing.get(field) and rec.get(field):
+                existing[field] = rec[field]
+        if existing["ground_truth_source"] == "neurostore" and origin == "pubget":
+            existing.update(
+                coordinates=rec["coordinates"],
+                n_coordinates=rec["n_coordinates"],
+                article_dir=rec.get("article_dir"),
+                licence=rec.get("licence"),
+                ground_truth_source="pubget",
+            )
+        for k in ks:
+            index.setdefault(k, hit)
+    return list(merged.values())
+
+
+def _json(url: str) -> dict | None:
+    body = _get(url)
+    if body is None:
+        return None
+    try:
+        return json.loads(body)
+    except ValueError:
+        return None
+
+
+def _get(url: str, timeout: int = 90, browser: bool = False,
+         headers: dict | None = None) -> bytes | None:
+    hdrs = {"User-Agent": BROWSER_UA if browser else USER_AGENT}
+    hdrs.update(headers or {})
+    request = Request(url, headers=hdrs)
     try:
         with urlopen(request, timeout=timeout) as response:
             return response.read()
@@ -289,38 +374,60 @@ def pmc_cloud_pdf(pmcid: str, doi: str | None) -> str | None:
     return PMC_CLOUD + pdfs[-1] if pdfs else None
 
 
-def unpaywall_pdf(pmcid: str, doi: str | None, email: str = "") -> str | None:
-    """Publisher-hosted PDF URL for a DOI, via Unpaywall's best_oa_location."""
+def unpaywall_pdf(article: dict, cfg: dict) -> bytes | None:
+    """Publisher-hosted PDF via Unpaywall's best_oa_location."""
+    doi = (article.get("doi") or "").strip()
     if not doi:
         return None
-    body = _get(UNPAYWALL.format(doi=quote(doi.strip(), safe="/"), email=email))
-    if body is None:
-        return None
-    try:
-        payload = json.loads(body)
-    except ValueError:
-        return None
-    return (payload.get("best_oa_location") or {}).get("url_for_pdf")
+    payload = _json(UNPAYWALL.format(doi=quote(doi, safe="/"), email=cfg.get("email", "")))
+    url = (payload or {}).get("best_oa_location", {}) or {}
+    return _get(url.get("url_for_pdf"), browser=True) if url.get("url_for_pdf") else None
 
 
-def s2_pdf(pmcid: str, doi: str | None) -> str | None:
-    """Publisher-hosted PDF URL for a DOI, via Semantic Scholar's openAccessPdf."""
+def s2_pdf(article: dict, cfg: dict) -> bytes | None:
+    """Publisher-hosted PDF via Semantic Scholar's openAccessPdf."""
+    doi = (article.get("doi") or "").strip()
     if not doi:
         return None
-    body = _get(S2_PAPER.format(doi=quote(doi.strip(), safe="/")))
-    if body is None:
+    payload = _json(S2_PAPER.format(doi=quote(doi, safe="/")))
+    url = ((payload or {}).get("openAccessPdf") or {}).get("url")
+    return _get(url, browser=True) if url else None
+
+
+def elsevier_pdf(article: dict, cfg: dict) -> bytes | None:
+    """Elsevier Article Retrieval API. Entitlement is IP-based, so this only works from a
+    network the subscription covers -- the same constraint measured throughout this project."""
+    doi, key = (article.get("doi") or "").strip(), cfg.get("elsevier")
+    if not (doi and key):
         return None
-    try:
-        payload = json.loads(body)
-    except ValueError:
+    headers = {"X-ELS-APIKey": key, "Accept": "application/pdf"}
+    if cfg.get("elsevier_insttoken"):
+        headers["X-ELS-Insttoken"] = cfg["elsevier_insttoken"]
+    return _get(ELSEVIER_ARTICLE.format(doi=quote(doi, safe="/")), headers=headers)
+
+
+def wiley_pdf(article: dict, cfg: dict) -> bytes | None:
+    """Wiley Text and Data Mining API. Needs a client token; also IP-gated."""
+    doi, token = (article.get("doi") or "").strip(), cfg.get("wiley")
+    if not (doi and token):
         return None
-    return (payload.get("openAccessPdf") or {}).get("url")
+    return _get(WILEY_TDM.format(doi=quote(doi, safe="/")),
+                headers={"Wiley-TDM-Client-Token": token})
+
+
+def pmc_pdf(article: dict, cfg: dict) -> bytes | None:
+    """PMC Cloud Service. Free and keyless, but PMC's uniform typesetting is easier than the
+    publisher-native renderings above, so results from this arm flatter an extractor."""
+    url = pmc_cloud_pdf(article.get("pmcid"), None)
+    return _get(url) if url else None
 
 
 SOURCES = {
-    "pmc": pmc_cloud_pdf,
+    "pmc": pmc_pdf,
     "unpaywall": unpaywall_pdf,
     "s2": s2_pdf,
+    "elsevier": elsevier_pdf,
+    "wiley": wiley_pdf,
 }
 
 
@@ -333,27 +440,86 @@ def article_id(article: dict) -> str:
     return "doi_" + re.sub(r"[^A-Za-z0-9]+", "_", article.get("doi") or "unknown")
 
 
-def fetch_from(source: str, article: dict, out: Path, email: str, pause: float) -> str:
-    """Resolve and download one article's PDF from one source. Returns a status string."""
-    pmcid, doi = article.get("pmcid"), article.get("doi")
-    if source == "pmc" and not pmcid:
+def load_credentials(email: str) -> dict:
+    """Read publisher credentials from the environment, falling back to ~/.keys/.
+
+    Values are read but never logged. Elsevier's file ships as `export VAR=...` lines; the Wiley
+    TDM token is a bare UUID on one line.
+    """
+    cfg = {
+        "email": email,
+        "elsevier": os.environ.get("ELSEVIER_API_KEY"),
+        "elsevier_insttoken": os.environ.get("ELSEVIER_INSTTOKEN"),
+        "wiley": os.environ.get("WILEY_TDM_TOKEN"),
+    }
+    keys = Path.home() / ".keys"
+    if (keys / "elsevier.key").exists():
+        # The file holds several publishers' keys, so the variable name has to be matched
+        # specifically -- a generic *API_KEY* pattern silently picks up SPRINGER_API_KEY from a
+        # later line and hands Elsevier's endpoint the wrong credential.
+        text = (keys / "elsevier.key").read_text()
+        for field, pattern in (
+            ("elsevier", r"ELSEVIER_API_?KEY\s*=\s*[\"']?([^\"'\s]+)"),
+            ("elsevier_insttoken", r"ELSEVIER_INSTTOKEN\s*=\s*[\"']?([^\"'\s]+)"),
+            ("springer", r"SPRINGER_API_?KEY\s*=\s*[\"']?([^\"'\s]+)"),
+        ):
+            if not cfg.get(field):
+                found = re.search(pattern, text, re.I)
+                if found:
+                    cfg[field] = found.group(1)
+    if not cfg["wiley"] and (keys / "wiley.key").exists():
+        raw = (keys / "wiley.key").read_text().strip()
+        cfg["wiley"] = raw.split("=", 1)[1].strip().strip("\"'") if "=" in raw else raw
+    return cfg
+
+
+def route_for(article: dict) -> list[str]:
+    """Ordered sources to try for one article, best first.
+
+    Routing on the Crossref registrant prefix is exact -- the prefix *is* the publisher -- so the
+    entitled API goes first when there is one. The rest is fallback: publisher-native renderings
+    are preferred over PMC's uniform one, but a PMC copy beats no copy, and chaining lifts overall
+    yield well above any single route.
+    """
+    prefix = (article.get("doi") or "").strip().split("/")[0]
+    chain = []
+    if prefix in DOI_ROUTE:
+        chain.append(DOI_ROUTE[prefix])
+    # PMC goes second, not last. It is the only route that is near-certain when a PMCID exists,
+    # and burying it behind s2/unpaywall -- which succeed ~7% of the time against publisher
+    # bot-protection -- costs far more yield than the uniform-rendering concern is worth. The
+    # source each PDF came from is recorded in its path, so rendering stays controllable at
+    # analysis time, and both renderings can be had by pinning --source explicitly.
+    if article.get("pmcid"):
+        chain.append("pmc")
+    return chain + ["s2", "unpaywall"]
+
+
+def fetch_auto(article: dict, out: Path, cfg: dict, pause: float) -> str:
+    """Try each viable source in turn until one yields a PDF."""
+    for source in route_for(article):
+        status = fetch_from(source, article, out, cfg, pause)
+        if status.startswith(("ok", "cached")):
+            return f"{status} [{source}]"
+    return "no pdf / blocked"
+
+
+def fetch_from(source: str, article: dict, out: Path, cfg: dict, pause: float) -> str:
+    """Download one article's PDF from one source. Returns a status string."""
+    if source == "pmc" and not article.get("pmcid"):
         return "no pmcid"
-    if source in ("unpaywall", "s2") and not doi:
+    if source != "pmc" and not (article.get("doi") or "").strip():
         return "no doi"
+    if source in ("elsevier", "wiley") and not cfg.get(source):
+        return f"no-{source}-key"
     dest = out / "pdfs" / source / f"{article_id(article)}.pdf"
     if dest.exists() and dest.stat().st_size > 0:
         return "cached"
 
-    resolver = SOURCES[source]
-    url = resolver(pmcid, doi, email) if source == "unpaywall" else resolver(pmcid, doi)
-    time.sleep(pause)
-    if not url:
-        return "no url"
-
-    body = _get(url, browser=True)
+    body = SOURCES[source](article, cfg)
     time.sleep(pause)
     if body is None:
-        return "blocked/error"
+        return "no pdf / blocked"
     if not body.startswith(b"%PDF"):
         # Publisher bot-protection returns an HTML challenge with a 200 as often as a 403.
         return "not a pdf (html)"
@@ -385,13 +551,14 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", type=Path, help="directory for ground_truth.json, candidates.csv, pdfs/")
     parser.add_argument("--survey", action="store_true", help="report what is available and exit")
-    parser.add_argument("--candidates", choices=("pubget", "neurostore"), default="pubget",
+    parser.add_argument("--candidates", choices=("pubget", "neurostore", "both"), default="pubget",
                         help="pubget = local XML, cleaner ground truth, ~1.6k articles. "
                              "neurostore = ~31k coordinate-bearing studies across ~291 journals, "
-                             "noisier ground truth but far more publisher-diverse")
+                             "noisier ground truth but far more publisher-diverse. "
+                             "both = the deduplicated union, pubget ground truth preferred")
     parser.add_argument("--max-candidates", type=int, default=500,
                         help="cap for --candidates neurostore (one API call per study)")
-    parser.add_argument("--source", action="append", choices=sorted(SOURCES),
+    parser.add_argument("--source", action="append", choices=sorted(SOURCES) + ["auto"],
                         help="PDF source to fetch from; repeatable. pmc = PMC Cloud (uniform "
                              "rendering), unpaywall / s2 = publisher-hosted (representative)")
     parser.add_argument("--limit", type=int, help="cap the number of articles (for a quick pilot)")
@@ -403,7 +570,18 @@ def main(argv: list[str] | None = None) -> int:
     if not args.survey and not args.out:
         parser.error("one of --survey or --out is required")
 
-    if args.candidates == "neurostore":
+    if args.candidates == "both":
+        local = [a for a in scan(ARTICLE_GLOBS) if a["redistributable"]]
+        articles = merge_pools(local, scan_neurostore(args.max_candidates))
+        eligible = articles
+        from collections import Counter as _C
+        origins = _C(a.get("ground_truth_source") for a in articles)
+        print(f"union pool                             {len(articles)}")
+        print(f"  ground truth from pubget XML         {origins['pubget']}")
+        print(f"  ground truth from NeuroStore         {origins['neurostore']}")
+        print(f"  carrying a DOI (publisher APIs)      {sum(1 for a in articles if a.get('doi'))}")
+        print(f"  carrying a PMCID (PMC Cloud)         {sum(1 for a in articles if a.get('pmcid'))}")
+    elif args.candidates == "neurostore":
         articles = scan_neurostore(args.max_candidates)
         eligible = articles          # licence gating is the fetch source's problem here
         journals = {(a.get("publication") or "?") for a in articles}
@@ -414,7 +592,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         articles = scan(ARTICLE_GLOBS)
         eligible = [a for a in articles if a["redistributable"]]
-        print(f"articles with a coordinate table       {len(articles)}")
+        print(f"distinct articles with a coord table   {len(articles)}")
         print(f"  of those, redistributable licence    {len(eligible)}")
     print(f"  total ground-truth coordinates       {sum(a['n_coordinates'] for a in eligible):,}")
     if articles:
@@ -446,12 +624,16 @@ def main(argv: list[str] | None = None) -> int:
         print("re-run with --source {pmc,unpaywall,s2} (repeatable) to download PDFs")
         return 0
 
+    creds = load_credentials(args.email)
+    print(f"\ncredentials: elsevier={'yes' if creds.get('elsevier') else 'NO'} "
+          f"wiley={'yes' if creds.get('wiley') else 'NO'}")
     for source in args.source:
         print(f"\n=== {source}: fetching {len(eligible)} PDFs ===")
         tally: dict[str, int] = {}
         for i, article in enumerate(eligible, 1):
             try:
-                status = fetch_from(source, article, out, args.email, args.pause)
+                status = (fetch_auto(article, out, creds, args.pause) if source == "auto"
+                          else fetch_from(source, article, out, creds, args.pause))
             except Exception as exc:                      # noqa: BLE001 - one bad record must
                 status = f"error {type(exc).__name__}"    # not abort the remaining fetches
             tally[status.split()[0]] = tally.get(status.split()[0], 0) + 1
