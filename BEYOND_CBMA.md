@@ -436,6 +436,142 @@ None of the above is legal advice, and it is worth a short conversation with UT'
 the hosted tier goes public. But it is a policy-and-permissions question, not an architecture
 blocker.
 
+### Provenance display: what can be shown, by licence tier
+
+The extracted layer is error-prone, so users will want to see the sentence a field came from — and
+will still read whole papers for PRISMA-grade work. That makes provenance display a product
+requirement, not a nicety. It is also the sharpest copyright question in the design, because it is the
+first place NeuroStore would reproduce publisher expression rather than facts.
+
+**None of the following is legal advice.** It is the landscape as best I can establish it; the
+snippet-length and licence-filter decisions want sign-off from counsel or the library's scholarly
+communications office, and the contract question below wants someone to actually read the current
+Elsevier agreement.
+
+#### The plan's flaw: "we have a PMC download" is the wrong filter
+
+PMC contains at least three distinct rights situations, and only one is redistributable:
+
+- **OA Subset** — CC-BY / BY-NC / BY-NC-ND / BY-SA / CC0. Redistributable on the licence's terms.
+- **Author Manuscript Collection** (NIH public access) — free to read, deposited under a right granted
+  to PMC. *Not* a third-party redistribution right.
+- **Other free-to-read content** — publisher-labelled "open access" with all rights reserved.
+
+The correct filter is the licence field, and we already capture it. Across the 564 pubget articles on
+disk:
+
+| licence as recorded in the JATS XML | share |
+|---|---|
+| CC-BY (incl. `license-type=creativeCommonsBy`) | ~29% |
+| CC-BY-NC-ND | ~8% |
+| CC-BY-NC / BY-NC-SA | ~6% |
+| CC0 | 0.2% |
+| CC reference in prose, machine-unparsed | 44.1% |
+| **`license-type=OpenAccess` / `open-access`, no CC reference** | **~10%** |
+| **publisher licence-agreement URL (Frontiers, Nature)** | **~1%** |
+| **no `<license>` element at all** | **1.6%** |
+
+The bolded rows are the trap: **roughly 10-13% of what a source-based filter would treat as "open
+access" carries no identifiable redistribution grant.** A publisher's "OpenAccess" label is a reading
+permission, not a licence. So: parse the licence, allow-list the specific CC variants, and default to
+the non-OA treatment on anything unrecognised or absent — including the 1.6% with no licence element,
+which is where author manuscripts would hide.
+
+Two licence terms carry live obligations even inside the OA set. **ND** (~8%) permits redistributing
+the work unmodified — fine for showing full text, worth a thought before reformatting or truncating
+it. **NC** (~14% combined) binds if NeuroStore ever charges for access.
+
+#### Non-OA: the escalation ladder
+
+Ordered by exposure, lowest first. The first three are effectively free and should be built
+regardless:
+
+1. **The extracted facts themselves.** n = 24, mean age 31.2, task = MID, coordinates, contrast
+   labels. Facts are not copyrightable (*Feist v. Rural Telephone*, 1991). This is the entire
+   structured layer, and it is solid ground.
+2. **Bibliographic metadata and the abstract.** Already settled practice — PubMed redistributes
+   abstracts, and NeuroStore already serves them in the `description` field.
+3. **Location pointers with no text.** "Methods, paragraph 3, sentence 2", a section label, a table
+   caption number, a character offset. Zero reproduction, therefore zero exposure — and genuinely
+   useful to any user who has their own access, which is most of the target audience. This option is
+   underrated and is the honest default for non-OA.
+4. **Short verbatim snippets.** Strong fair-use posture, discussed below.
+5. **Full text of non-OA papers.** Not supported by any of the precedent below. Don't.
+
+#### Why snippets are defensible
+
+The controlling US precedent is close to exactly this use case:
+
+- ***Authors Guild v. Google*** (2d Cir. 2015) — scanning entire in-copyright books and displaying
+  **snippets** in search results was fair use.
+- ***Authors Guild v. HathiTrust*** (2d Cir. 2014) — retaining a full-text corpus for computational
+  search was fair use; *displaying* full text to general users was not part of what was upheld.
+- ***A.V. v. iParadigms*** (4th Cir. 2009) — Turnitin retaining complete copies for plagiarism
+  detection was fair use.
+
+The consistent pattern: **retain full text internally for computation — fine. Display bounded
+snippets — fine. Display the whole work — not covered.** That maps directly onto the design.
+
+On the four factors, this case is *stronger* than Google's. Purpose is non-profit research and
+transformative in a specific sense: the snippet exists to verify a structured claim, not to convey
+the author's expression. Amount is a sentence or two, far below Google's roughly one-eighth of a page.
+And market effect — the decisive factor — clearly favours it: a sentence reading "participants were
+24 healthy adults (12 female)" cannot substitute for the paper, no licensing market for provenance
+snippets exists, and the feature drives traffic to the version of record.
+
+#### Guardrails that make the snippet case hold
+
+Google's snippet view survived because of its *design limits*, and those limits are the checklist:
+
+- **Cap snippet length.** A sentence or two. See the contract note below for a possible hard number.
+- **Cap cumulative retrievable text per paper**, per user and in total.
+- **Prevent reconstruction.** This is the load-bearing engineering requirement: a determined user must
+  not be able to walk a paper by issuing many queries. No adjacent-snippet stitching, no
+  offset-walking, rate limits.
+- **Keep it purposive, not browsable.** Anchor every snippet to a specific extracted field. Do not
+  offer free-text search over non-OA full text returning arbitrary passages — permitted in *Google*,
+  but a much harder story than "here is the sentence this number came from".
+- **Always link to the DOI / version of record.** Reinforces non-substitution.
+- **Honour opt-outs** and have a takedown path, as with the safe-harbour requirements above.
+
+#### The bigger risk is contract, not copyright
+
+This is the part that gets underweighted, and it applies directly because the corpus is built on
+institutional licences:
+
+- Publisher and library agreements commonly permit TDM for research while prohibiting redistribution
+  and "systematic downloading". **Fair use is a defence to copyright infringement, not to breach of
+  contract** — a bulletproof fair-use posture does not cure a licence violation.
+- **Elsevier's TDM terms have historically specified a maximum snippet length** (my recollection is on
+  the order of 200 characters around a match). If that clause is in the current agreement it is
+  effectively the answer for Elsevier-sourced text, and it is far more concrete than a fair-use
+  judgement call. **Someone should read the current agreement and get the number.**
+- ACE-style scraping of publisher sites likely conflicts with site terms and systematic-download
+  clauses regardless of what is later displayed. That is a pre-existing exposure, independent of this
+  feature.
+- EU/UK: DSM Art. 3 gives research organisations a TDM exception that contracts cannot override
+  (Art. 7(1)), and UK CDPA s.29A is similar — but both cover *making copies for mining*, not
+  publishing them. Snippet display falls instead to the quotation exception (InfoSoc Art. 5(3)(d)),
+  which provenance display plausibly fits.
+
+#### The clean way out for the users who care most
+
+For non-OA papers, **show full text of the user's own upload.** It is already private to the uploader
+under the Tier 2 boundary, they demonstrably have access since they supplied the file, and no
+redistribution occurs. The verification problem and the upload tier solve each other: the people who
+most want to read the source are exactly the people running a PRISMA-grade review, who are already in
+Tier 1 or 2.
+
+So the full picture:
+
+| content | OA (allow-listed CC) | non-OA |
+|---|---|---|
+| extracted facts | yes | yes |
+| abstract + metadata | yes | yes |
+| location pointer, no text | yes | yes |
+| short verbatim snippet | yes | fair use + guardrails; check Elsevier's contractual cap |
+| full text | yes, subject to ND/NC | only to the uploader who supplied it |
+
 ### The three tiers, and the constraint that actually binds
 
 The natural product is three tiers over one backend, separated by where the full text comes from:
