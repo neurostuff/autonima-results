@@ -749,6 +749,81 @@ excluded. So field coverage is a validity property, and the audit that matters b
 public is: for a given review's criteria, is every criterion expressible in available fields? If not,
 that review needs Tier 1 or 2, and the service should say so rather than returning a confident map.
 
+### Proposed experiment: re-screen every benchmark project on the evidence layer
+
+The 82% figure above is **retrospective** — it classifies the language of written exclusion
+reasons, which is not the same as showing a decision could have been *made* from fields. A reason
+can cite a field post hoc while the judgement actually required reading the paper. Only a
+prospective run separates those, and the corpus to do it already exists: nine projects with
+hand-curated gold standards and 5,332 full-text screening decisions already on disk.
+
+#### Three arms
+
+| arm | input to the screener | what it isolates |
+|---|---|---|
+| **A** — exists | full text | baseline; already run, best-tier runs per project |
+| **B** — new | an evidence record extracted from that same full text | whether the *information* suffices |
+| **C** — new | NeuroStore's current layer, as deployed | whether the *existing* layer suffices |
+
+B against A isolates information loss with extraction held perfect-ish. C against B isolates what
+today's layer is missing — which matters because 41.5% of its analyses are opaque. Running only C
+would confound the two and make a fixable extraction gap look like an inherent limit.
+
+#### Fields to extract
+
+The ranked list derived from the 6,835 exclusions above, which is what a schema would need rather
+than a guess at it: `analysis.contrast_identity` (52%), `analysis.spatial_scope` (40%),
+`study.imaging_modality` (32%), `analysis.coordinate_space` (10%),
+`analysis.stimulus_modality` (6%), `study.publication_type` (3%), `analysis.level` (2%),
+`study.sample_size`, `analysis.survived_correction`. Plus a `task` / `construct` field, aimed
+squarely at the 18% topical residue — every residue example named its task, so the field may let a
+screener adjudicate scope from a short record even where no field decides it outright.
+
+#### What to measure
+
+1. **Precision, recall and F1 against gold, per project.** Directly comparable to the existing §5
+   and §7 numbers, so the comparison needs no new baseline.
+2. **Agreement with arm A's decision**, raw and κ. Reproducing the full-text decision is the
+   narrower, cleaner claim.
+3. **The gap inventory — the actual deliverable.** For every case where B or C disagrees with A,
+   which field was absent, wrong, or insufficient. Ranked by how many decisions it would fix. That
+   is a direct work-list for the NeuroStore metadata effort, derived from decisions rather than
+   from opinion.
+4. **Map-level dice against gold** on the resulting studyset. A cheaper screen that yields the same
+   map is a stronger result than one that merely matches decisions.
+5. **Precision with particular care.** The failure mode is not loud: a missing field does not cause
+   a refusal, it causes a *silent inclusion* of studies full text would have excluded.
+
+#### A falsifiable prediction
+
+If the retrospective figure is honest, arm B should reproduce **82-90% of arm A's exclusions**, and
+its gold recall should land within a couple of points of arm A. If it lands materially lower, that
+is evidence the 82% was an artifact of reasons being *written* in field-like language rather than
+*decided* on field-like grounds — a real possibility this experiment exists to rule out.
+
+#### The cost saving will not show up here, and that is expected
+
+Measured over the nine projects: 5,332 full-text decisions across **5,153 distinct studies — an
+overlap factor of 1.03x**, with only 175 studies (3%) screened by more than one project. Each
+project ran its own PubMed search, so the pools are almost disjoint and there is nothing to
+amortise. Arm A costs ~72M input tokens; arm B costs ~69M to extract plus 0.9M to screen. **No
+saving on this corpus.**
+
+That is a property of the benchmark, not of the idea. The economics only appear where reviews share
+a corpus, which is exactly the hosted Tier 0 case: extract once over the fixed corpus, and every
+subsequent review screens against it at **~1.3% of a full-text pass, a 76x marginal reduction**. So
+this experiment should be run for accuracy and gap-finding, and the cost case argued separately
+from the deployment model rather than from these numbers.
+
+#### Cheapest useful version
+
+Pilot on the three smallest projects first — vbm_of_ptsd (50 studies), vbm_of_substance_use (243)
+and dementia (604), about 900 studies. That is enough to see whether arm B tracks arm A at all, and
+whether the gap inventory converges on a short list of fields, before spending the extraction pass
+on executive_function's 1,298. dementia is a useful early case despite its aggregation problem,
+since it is excluded from analysis-level figures anyway and its screening decisions are unaffected.
+
+
 ### Which of Tier 1 and Tier 2 to build first
 
 **Tier 2, clearly** — and the analysis-label finding sharpens why:
