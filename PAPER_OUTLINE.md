@@ -807,8 +807,17 @@ What can be done without new human labour, in rough order of value:
    byte-identical criteria). Cheap: one extra run per project. **[need]**
 3. **A small hand-rated sample.** ~50 analyses across two contrasting projects (one clinical,
    one cognitive), rated by a second expert, would answer the question properly rather than by
-   proxy. This is the only route to real identifiability and is probably worth the cost given
-   how load-bearing the claim is. **[need]**
+   proxy, and is the only route to real identifiability. The design is what makes it
+   discriminating: the diagnostic is rater-versus-rater agreement *in the cognitive project*,
+   with the clinical project as a control that should show high agreement under either account.
+   If two experts disagree with each other, the ceiling belongs to the question; if they agree
+   with each other but not the model, it is a genuine LLM limitation. Sizing, from measured
+   analyses-per-study: 50 analyses is ~17 papers of problem_solving, ~25 of
+   vbm_of_substance_use, ~50 of vbm_of_ptsd. **[optional]** — downgraded from [need] 2026-09-02.
+   It is the only item on the list needing expert human time rather than compute, and §8a can
+   stand as a stated limitation without it. Note also that n≈50 supports "experts substantially
+   disagree" but not a calibrated reliability coefficient, so it was never going to settle the
+   question as precisely as the framing implied.
 4. **Use the emotion_regulation author contact as the second rater.** This is the strongest
    available option and it is specific to ER: the original author can say whether a contrast
    we selected but they did not was a defensible alternative or a mistake — which is exactly
