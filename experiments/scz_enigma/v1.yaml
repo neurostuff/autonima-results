@@ -59,6 +59,15 @@ retrieval:
         - "text.txt"
       coordinates_path_templates:
         - "coordinates.json"
+    # Manually and browser-scraped HTML for papers pubget and the Elsevier API could not reach:
+    # 119 of 174 missing full texts, retrieved through the institutional SOCKS tunnel, of which
+    # 37 carry coordinate tables. Deliberately kept under this experiment rather than in the
+    # shared articles/ace_outputs, so the pilot's corpus stays separable from the benchmark
+    # projects'. Drop further manual saves in as html/Manual/<PMID>.html and re-run the ingest.
+    - root_path: "/home/zorro/repos/autonima-results/experiments/scz_enigma/ace_outputs"
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: "/home/zorro/repos/autonima-results/experiments/scz_enigma/ace_outputs/processed/"
 
 parsing:
   parse_coordinates: true
