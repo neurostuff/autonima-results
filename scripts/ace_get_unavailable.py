@@ -96,6 +96,7 @@ class ChallengeAwareScraper(scrape.Scraper):
         use_uc_reconnect=True,
         use_uc=True,
         uc_debug_port=0,
+        proxy=None,
     ):
         super().__init__(store, api_key=api_key)
         self.browser = str(browser).strip().lower()
@@ -111,6 +112,35 @@ class ChallengeAwareScraper(scrape.Scraper):
         self.use_uc_reconnect = bool(use_uc_reconnect)
         self.use_uc = bool(use_uc)
         self.uc_debug_port = int(uc_debug_port)
+        self.proxy = self._normalize_proxy(proxy)
+
+    @staticmethod
+    def _normalize_proxy(proxy):
+        """Accept 'socks5://host:port', 'host:port' or None.
+
+        Entitlement for paywalled publishers is IP-based, so scraping from an unentitled host
+        gets 403s no matter how good the anti-bot handling is. Routing the browser through an
+        institutional SOCKS tunnel is the only thing that changes the answer.
+        """
+        if not proxy:
+            return None
+        text = str(proxy).strip()
+        if not text:
+            return None
+        if "://" not in text:
+            text = f"socks5://{text}"
+        scheme, _, remainder = text.partition("://")
+        if scheme.lower() not in {"socks5", "socks5h", "socks4", "http", "https"}:
+            raise ValueError(f"Unsupported proxy scheme: {scheme!r}")
+        if not remainder or ":" not in remainder:
+            raise ValueError(f"Proxy must include a port: {proxy!r}")
+        return text
+
+    def _proxy_parts(self):
+        """Split the normalised proxy into (scheme, host, port)."""
+        scheme, _, remainder = self.proxy.partition("://")
+        host, _, port = remainder.rpartition(":")
+        return scheme.lower(), host, int(port)
 
     @staticmethod
     def _pick_free_local_port():
@@ -182,6 +212,22 @@ class ChallengeAwareScraper(scrape.Scraper):
             firefox_options.set_preference("general.useragent.override", user_agent)
             if headless:
                 firefox_options.add_argument("-headless")
+            if self.proxy:
+                scheme, host, port = self._proxy_parts()
+                firefox_options.set_preference("network.proxy.type", 1)
+                if scheme.startswith("socks"):
+                    firefox_options.set_preference("network.proxy.socks", host)
+                    firefox_options.set_preference("network.proxy.socks_port", port)
+                    firefox_options.set_preference(
+                        "network.proxy.socks_version", 4 if scheme == "socks4" else 5
+                    )
+                    # Resolve DNS at the proxy, or hostnames leak and entitlement is lost.
+                    firefox_options.set_preference("network.proxy.socks_remote_dns", True)
+                else:
+                    for prefix in ("http", "ssl"):
+                        firefox_options.set_preference(f"network.proxy.{prefix}", host)
+                        firefox_options.set_preference(f"network.proxy.{prefix}_port", port)
+                scrape.logger.info("Firefox routing through proxy %s", self.proxy)
             firefox_binary = self._resolve_firefox_binary()
             if firefox_binary:
                 scrape.logger.info("Using Firefox binary: %s", firefox_binary)
@@ -197,6 +243,10 @@ class ChallengeAwareScraper(scrape.Scraper):
             driver_kwargs["headless2"] = headless
         else:
             driver_kwargs["headless"] = headless
+
+        if self.proxy:
+            driver_kwargs["proxy"] = self.proxy
+            scrape.logger.info("Chrome routing through proxy %s", self.proxy)
 
         if use_uc:
             uc_port = self.uc_debug_port or self._pick_free_local_port()
@@ -614,6 +664,11 @@ def main():
         help='List of PMIDs to process'
     )
     parser.add_argument(
+        '--proxy',
+        help='Route the browser through a proxy, e.g. socks5://127.0.0.1:1080. '
+             'Needed for paywalled publishers, whose entitlement is IP-based.'
+    )
+    parser.add_argument(
         '--delay',
         type=float,
         default=3.0,
@@ -799,6 +854,7 @@ def main():
         use_uc_reconnect=not args.no_uc_reconnect,
         use_uc=not args.no_uc,
         uc_debug_port=args.uc_debug_port,
+        proxy=args.proxy,
     )
     
     # Retrieve articles by PMID list
