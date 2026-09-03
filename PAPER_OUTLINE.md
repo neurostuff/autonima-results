@@ -5,7 +5,8 @@ expert-curated results than a search-only pipeline can, and the gain comes speci
 selecting the right *analyses*, not merely the right *papers*.**
 
 Status key: **[have]** analysis exists and is reproducible · **[partial]** exists for some
-projects · **[need]** not yet run · **[idea]** aspirational
+projects · **[need]** not yet run and required · **[optional]** not yet run, would strengthen
+the paper but is not required for any claim as written · **[idea]** aspirational
 
 ---
 
@@ -135,9 +136,12 @@ of gold studies whose full text we obtained, screening recovers essentially all 
 **Emphasis.** The value of the dementia work is the *screening* result, not its brain maps.
 Its map comparison belongs in supplement.
 
-**Second controlled case: emotion_regulation_2022 [need].** Worth completing — one
-controlled case invites "n=1", and nothing else in the published set records rejection
-reasons. ER is a better second case than it first appears, for three reasons:
+**Second controlled case: emotion_regulation_2022 [optional].** Downgraded from [need]
+2026-09-02: ER's own results came out strong enough that §2 does not depend on a second
+controlled case, so this is no longer a gate on submission. It would still strengthen the
+section — one controlled case invites "n=1", and nothing else in the published set records
+rejection reasons — and if the author correspondence happens anyway it is worth taking. ER is
+a better second case than it first appears, for three reasons:
 
 - **We are in direct contact with the original author.** That is the only route in this
   project to information no paper publishes: the actual screened pool, and potentially the
@@ -319,9 +323,12 @@ achieve. This is a finding about the constructs, not about the method.
 tuned against it by construction and must be reported as iterated versions, never as held-out
 ones. What they demonstrate is repair-given-feedback, not zero-shot schema authoring.
 
-**Still missing [need]:** no config records *what changed* between versions in machine-readable
-form; the scope table above had to be reconstructed by diffing configs. A one-line provenance
-field would make it auditable.
+**Tooling gap, moved out of scope.** No config records *what changed* between versions, so the
+scope table above had to be reconstructed by diffing configs after the fact. That is a real
+problem but it belongs in the tool rather than the paper — filed as
+[autonima#64](https://github.com/neurostuff/autonima/issues/64), which proposes deriving a
+semantic per-stage diff in the webui from `config.executed.yaml` rather than relying on anyone
+to record it by hand. Nothing in §3 depends on it.
 
 **Figure 3.** Dementia S1/S2/S3: screening recall (flat at 0.91) beside end-to-end attainable
 recall (0.42 → 0.75 → 0.86). The gap between the two panels is the entire point.
@@ -808,7 +815,9 @@ What can be done without new human labour, in rough order of value:
    the judgement no metric can supply. ER is also the hardest cognitive-selection case in the
    set (§2), so it is where the squishy-target and model-limitation accounts diverge most.
    Even a few dozen adjudicated disagreements would turn §8a from a stated limitation into a
-   measurement. **[need]**
+   measurement. **[optional]** — downgraded from [need] 2026-09-02, for the same reason as the
+   §2 second controlled case: ER's results were strong enough that §8a can stand as a stated
+   limitation. Still the strongest available option if the correspondence happens.
 
 **A third possibility the dichotomy misses: the specification was wrong.**
 In executive_function all 30 analysis-level false negatives traced to criteria *we* had
