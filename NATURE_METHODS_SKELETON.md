@@ -166,6 +166,13 @@ reasonably ask why random is at recall 0.8.
 No pooled baseline line is drawn: prevalence ranges 0.104 to 0.345 across these projects, a 3.3×
 spread, so a single mean line would read as *the* baseline and misplace most of them.
 
+**Two presentational choices to state in the caption.** The recall axis is clipped to 0.62–1.02;
+every project sits above 0.70 recall, so the full 0–1 range left 60% of the panel empty and
+crowded the points into a band where their spans overlapped. And points are labelled directly
+rather than by legend — panel **a** already names every project on its y-axis, so colour there is
+redundant, while panel **b** would otherwise depend on colour alone with no key. Labels sit beside
+the markers because projects cluster in recall (three pairs within 0.02) but spread in precision.
+
 Two reasons this encoding rather than a precision-vs-recall dumbbell. A connector implies a
 before/after, and precision and recall are two coordinates of one operating point, not a
 progression — worse, it made panel **b** mimic panel **a**, where the connector genuinely does run

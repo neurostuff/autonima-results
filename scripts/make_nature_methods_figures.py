@@ -67,6 +67,15 @@ PALETTE = ["#0072B2", "#D55E00", "#009E73", "#CC79A7",
            "#E69F00", "#56B4E9", "#785EF0", "#000000", "#7F7F7F"]
 COLORS = dict(zip(PROJECT_ORDER, PALETTE))
 
+# Direct labels for dense panels, where a legend would cost more space than it saves and colour
+# alone leaves a reader unable to name a point.
+SHORT = {
+    "cue_reactivity": "Cue", "decision_making": "Decision", "dementia": "Dementia",
+    "emotion_regulation_2022": "Emo. reg.", "executive_function": "Exec. fn.",
+    "problem_solving": "Problem", "social": "Social", "vbm_of_ptsd": "PTSD",
+    "vbm_of_substance_use": "Subst. use",
+}
+
 INK, MUTED, RULE = "#1a1a1a", "#5a5a5a", "#c8c8c8"
 
 # From S1 in PAPER_OUTLINE.md, measured from per-stage token accounting (usage_total in
@@ -298,13 +307,22 @@ def figure3(out_dir: Path) -> None:
     #
     # No pooled baseline line is drawn. Prevalence ranges 0.104 to 0.345 across these projects, a
     # 3.3x spread, so a single mean line would read as THE baseline and misplace most projects.
-    for proj, rec, prec, prev in pts:
+    # Labels sit BESIDE each point, not above it. Projects cluster tightly in recall (three pairs
+    # within 0.02 of each other) but spread in precision, so horizontal placement separates them
+    # where vertical placement overprints. The two rightmost flip to the left of their marker to
+    # stay inside the axis, and PTSD at precision 1.0 would clip the top edge if labelled above.
+    for proj, rec, prec, prev in sorted(pts, key=lambda z: z[1]):
+        right = rec < 0.92
         ax.plot([rec, rec], [prev, prec], color=COLORS[proj], lw=0.8, alpha=0.55, zorder=2)
-        ax.plot([rec - 0.028, rec + 0.028], [prev, prev], color=COLORS[proj], lw=1.1,
+        ax.plot([rec - 0.012, rec + 0.012], [prev, prev], color=COLORS[proj], lw=1.1,
                 alpha=0.85, zorder=3)
         ax.scatter([rec], [prec], s=17, color=COLORS[proj], zorder=4,
                    edgecolors="white", linewidths=0.4)
-    ax.set_xlim(0, 1.02)
+        ax.annotate(SHORT[proj], (rec, prec), textcoords="offset points",
+                    xytext=(5 if right else -5, 0), va="center",
+                    ha="left" if right else "right",
+                    fontsize=5.2, color=COLORS[proj])
+    ax.set_xlim(0.62, 1.02)
     ax.set_ylim(0, 1.02)
     ax.set_xlabel("Recall")
     ax.set_ylabel("Precision")
@@ -315,7 +333,7 @@ def figure3(out_dir: Path) -> None:
                        Line2D([], [], marker="_", ls="", color=INK, markersize=5,
                               markeredgewidth=1.2, label="Random, at this recall")],
               loc="upper left", handletextpad=0.4, borderaxespad=0.4)
-    ax.text(0.02, 0.055,
+    ax.text(0.03, 0.055,
             "a random selector scores its own prevalence\n"
             f"at every recall; span = lift, mean {st.mean([p[2] / p[3] for p in pts]):.1f}x",
             transform=ax.transAxes, ha="left", fontsize=5.2, color=MUTED, linespacing=1.5)
