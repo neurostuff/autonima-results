@@ -741,3 +741,97 @@ pubget's output -- most plausibly in supplementary material. That is autonima#36
 
 Closing both bottlenecks would plausibly take the same 1,434-paper search from 14 studies to 60-80 --
 the difference between a pilot and a publishable map.
+
+---
+
+## Update 2026-09-03: bottlenecks closed, and the temporal gap is real
+
+Both bottlenecks were closed and the prediction above was beaten: **115 analyses in the
+`scz_atrophy` arm, against 14 in the pilot**.
+
+### How the corpus grew
+
+| route | result |
+|---|---|
+| Elsevier Article API, through the institutional tunnel | 182 of 183 fetched, 105 with coordinates |
+| browser scraping with the new `--proxy` flag | 119 of 174 retrieved |
+| manual download | +30 |
+| **ACE corpus** | **149 articles, 51 coordinate-bearing** |
+
+| | pilot | now |
+|---|---|---|
+| studies in studyset | 169 | **318** |
+| analyses | 294 | **706** |
+| coordinate points | 3,157 | **7,617** |
+| passing full-text screening | 32 | **116** |
+| `scz_atrophy` analyses selected | 20 | **115** |
+| `scz_atrophy_antipsychotic_naive` | 1 | **20** |
+
+The antipsychotic-naive arm produced no map at all before and now yields one (20 experiments,
+101 foci, 1 cluster) -- still thin, but no longer empty.
+
+### The new map
+
+MKDA (mkdadensity, Monte Carlo FWE), **1,427 foci from 115 experiments**, five clusters:
+
+| cluster | peak (MNI) | voxels | Harvard-Oxford extent |
+|---|---|---|---|
+| 1 | -44, 0, 0 | 3,012 | Insular 18%, Central Opercular 16%, Frontal Orbital 9% |
+| 5 | 42, 6, 0 | 2,882 | Insular 22%, Frontal Orbital 10%, Central Opercular 9% |
+| 4 | 0, 46, -6 | 1,690 | Paracingulate 36%, Frontal Medial 34%, Frontal Pole 18% |
+| 3 | 2, -18, 6 | 735 | **bilateral thalamus** (48% R, 44% L) |
+| 2 | -2, 10, -8 | 711 | Subcallosal 25% |
+
+Now bilateral where the pilot was left-lateralised, and clusters are roughly ten times larger.
+
+### Validation against ENIGMA
+
+Scored quantitatively this time -- an ENIGMA ROI counts as recovered if significant voxels cover
+>= 2% of it -- rather than by reading peak labels against ROI names.
+
+**Cortical thickness (van Erp 2018, top 12):**
+
+| ROI | d | % of ROI significant | recovered |
+|---|---|---|---|
+| R insula | -0.406 | 52.7% | **yes** |
+| L insula | -0.408 | 46.6% | **yes** |
+| R parsopercularis | -0.424 | 32.4% | **yes** |
+| L lateralorbitofrontal | -0.398 | 17.0% | **yes** |
+| L superiortemporal | -0.440 | 0.8% | no |
+| R/L fusiform, L/R inferiortemporal, L middletemporal, R superiortemporal, L superiorfrontal | -0.536 to -0.425 | **0.0%** | no |
+
+**4 of 12.** This is *not* comparable to the pilot's "6 of 12": that used a lenient
+peak-label reading, this uses a coverage threshold, and the pilot's map cannot be re-scored
+because `meta_analysis_results/` is gitignored and has been overwritten. Treat the two numbers as
+incommensurable rather than as a regression.
+
+**Subcortical (van Erp 2016)** -- not examined in the pilot, and where the gain actually shows:
+
+| structure | ENIGMA d | % of structure significant |
+|---|---|---|
+| Accumbens | -0.20 | **63.6%** |
+| Thalamus | -0.31 | **25.9%** |
+| Amygdala | -0.31 | 11.2% |
+| Caudate | +0.06 | 7.4% |
+| Putamen | +0.14 | 3.6% |
+| **Hippocampus** | **-0.46** | **0.0%** |
+
+### The finding the pilot asked for
+
+The pilot flagged: *"Worth checking whether the fusiform gap persists at 60+ studies after the
+tunnel top-up, because if it does it is a substantive finding about what CBMA can and cannot
+recover from a thickness-based benchmark."*
+
+**It persists at 115.** Fusiform, inferior temporal and middle temporal are at exactly zero
+significant voxels, and superior temporal at 0.8%, with 5.75x the studies. The entire temporal
+lobe is absent while insula, operculum, medial frontal, thalamus and accumbens are strongly hit.
+So the gap is **not power** -- it is a modality difference. ENIGMA measures cortical thickness
+across the whole ribbon, where temporal effects are largest and spatially diffuse; VBM peak
+coordinates are reported where volume loss is focal, and those are different places.
+
+Hippocampus is the sharpest case: ENIGMA's single strongest subcortical effect (d = -0.46) and we
+recover none of it, while recovering 63.6% of accumbens at less than half the effect size. A
+CBMA of reported peaks tracks *where authors localise focal differences*, not where the largest
+group effect lies -- which is the coordinate-based limitation this repo argues elsewhere, showing
+up as a concrete miss rather than an abstract one.
+
