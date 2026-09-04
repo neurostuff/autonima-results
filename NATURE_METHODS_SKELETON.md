@@ -100,23 +100,36 @@ The benchmark panel that would otherwise sit here belongs in the companion paper
 inset naming the nine meta-analyses is enough. That frees the third panel for the unit
 distinction to be drawn properly rather than crammed.
 
-### Result 2 — What survives the funnel, and what screening buys — **Figure 2** (~300 w)
+### Result 2 — Screening raises precision at almost no cost to recall — **Figure 2** (~300 w)
 
-§1. Panel **a** decomposes each project's gold standard into recovered / lost after search / never
-found by the search. Panel **b** is the precision climb across search → abstract → full text.
+§1. Panel **a** is cumulative retention of the gold standard across search → abstract screening →
+full-text retrieval → full-text screening. Panel **b** is precision over the same funnel.
 
-**Do not plot per-stage recall.** The stage-progression file holds *conditional retention* — the
-share of studies entering a stage that survive it — so its denominator changes at every stage and
-the numbers rise across the funnel. Labelled "recall" that is simply wrong, since cumulative recall
-can only fall. Report the share of the gold standard recovered end-to-end, and where the remainder
-went.
+The claim, now quantified: **abstract screening costs a median 1.4 points** of the gold standard,
+while precision roughly doubles or triples. Marginal loss by stage, in percentage points of gold:
 
-That reframing also promotes the more useful finding: **loss is dominated by the search query, not
-by screening.** Decision making never finds 40% of its gold standard; executive function never
-finds 26% and loses another 35% downstream. Social recovers 93%. This is the human-written-query
-limitation the outline already flags, and it belongs here rather than buried in Discussion — it
-sets the ceiling every later result operates under, and it is an argument for the method rather
-than against it, since screening is demonstrably not where the studies go.
+| stage | median | max | projects losing >5pp |
+|---|---|---|---|
+| abstract screening | **1.4** | 8.8 | 2/9 |
+| full-text retrieval | 3.4 | 11.9 | 3/9 |
+| full-text screening | 4.0 | 14.6 | 3/9 |
+
+**Retrieval is shown as its own stage, not folded into screening.** They fail for different
+reasons — no obtainable full text is a supply problem, a rejection is a judgement — and in several
+projects retrieval is the larger loss. Merging them would blame screening for the pipeline's
+biggest cost.
+
+Seven of nine projects end within 11 points of where their search started. The two exceptions,
+executive function (74% → 39%) and problem solving (88% → 58%), lose most of it at retrieval and
+full-text screening rather than at the abstract stage, and both should be named rather than
+averaged away.
+
+**Do not plot per-stage recall from `screening_metrics_top_v_stage_progression.csv`.** It holds
+*conditional retention* — the share entering a stage that survives it — so its denominator moves
+at every stage and the numbers rise across the funnel, which cumulative recall cannot do. Chaining
+those retentions does not recover the truth either, since retrieval loss is absent from that file
+(executive function chains to 0.645 against an actual 0.392). Use
+`reports/gold_survival_by_stage.csv`, which counts gold PMIDs against a fixed denominator.
 
 ### Result 3 — Analysis-level selection against expert annotation — **Figure 3** (~300 w)
 
