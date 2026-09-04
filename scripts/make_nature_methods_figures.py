@@ -9,7 +9,7 @@ is a separate module with its own house style.
 
 Figures map onto NATURE_METHODS_SKELETON.md:
 
-    Figure 2  gold recovery + precision gain     Result 2  (§1)
+    Figure 2  gold retention + precision gain    Result 2  (§1)
     Figure 3  analysis-level annotation          Result 3  (§5)
     Figure 4  pipeline vs best baseline          Result 4  (§7)  <- headline
     Figure 5  where the gain comes from          Result 5  (§6)  <- the thesis
@@ -122,40 +122,30 @@ def read(path: Path) -> list[dict]:
 # --------------------------------------------------------------------------- Figure 2
 
 def figure2(out_dir: Path) -> None:
-    """Where the gold standard is lost, and what screening does to precision.
+    """Cumulative gold recovery barely falls through screening; precision climbs.
 
-    An earlier version plotted the stage-progression file's recall column directly and it rose
-    across stages, which is impossible for cumulative recall -- screening can only discard. The
-    cause is that the file holds *conditional retention* (the share of studies entering a stage
-    that survive it), not cumulative recall, so its denominator changes at every stage. Plotted as
-    "recall against gold standard" it invited exactly the wrong reading.
+    This is §1's claim, and getting it right required not using
+    screening_metrics_top_v_stage_progression.csv. That file holds *conditional retention* -- the
+    share of studies entering a stage that survive it -- so its denominator moves at every stage
+    and its recall column rises across the funnel, which cumulative recall cannot do. Chaining the
+    retentions does not fix it either, because retrieval loss is absent from that file entirely
+    (executive_function's chained product is 0.645 against an actual 0.392).
 
-    Panel a instead reports the quantity a reader actually wants: what fraction of the gold
-    standard the pipeline ends up with, and where the rest went. It uses two numbers that are
-    unambiguous -- search recall, and end-to-end cumulative recall -- so the three shares sum to
-    exactly 100% by construction and no stage-conditional arithmetic is involved.
-
-    The decomposition is also the more useful result. Loss is dominated by the search query in
-    several projects (decision_making 40%, executive_function 26%), which is the human-written
-    query limitation, not a screening failure.
+    Panel a instead uses scripts/compute_gold_survival.py, which counts gold PMIDs against a fixed
+    denominator at each stage, so the curve is monotone by construction and every drop belongs to
+    a named stage. Retrieval is shown separately from screening because they fail for different
+    reasons -- no obtainable full text is a supply problem, a rejection is a judgement -- and in
+    several projects retrieval is the larger loss.
     """
-    prog: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    for r in read(REPO_ROOT / "reports" / "cross_project_screening"
-                  / "screening_metrics_top_v_stage_progression.csv"):
-        if r["metric"] == "recall":
-            try:
-                prog[r["project_name"]][r["stage"]] = float(r["value"])
-            except ValueError:
-                continue
-    cum: dict[str, float] = {}
+    rows = read(REPO_ROOT / "reports" / "gold_survival_by_stage.csv")
+    stages = ["search", "abstract", "retrieval", "fulltext"]
+    labels = ["Search", "Abstract\nscreening", "Full-text\nretrieval", "Full-text\nscreening"]
+    surv: dict[str, dict[str, float]] = collections.defaultdict(dict)
+    for r in rows:
+        if r["cumulative_recall"]:
+            surv[r["project"]][r["stage"]] = float(r["cumulative_recall"])
+
     prec: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    for r in read(REPO_ROOT / "reports" / "cross_project_screening"
-                  / "screening_metrics_top_v.csv"):
-        if r["stage"] == "fulltext":
-            try:
-                cum[r["project_name"]] = float(r["recall"])
-            except ValueError:
-                continue
     for r in read(REPO_ROOT / "reports" / "cross_project_screening"
                   / "screening_metrics_top_v_stage_progression.csv"):
         if r["metric"] == "precision":
@@ -164,55 +154,53 @@ def figure2(out_dir: Path) -> None:
             except ValueError:
                 continue
 
-    projects = [p for p in PROJECT_ORDER if p in cum and "search" in prog.get(p, {})]
-    projects.sort(key=lambda p: cum[p])
+    projects = [p for p in PROJECT_ORDER if len(surv.get(p, {})) == len(stages)]
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.4))
 
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.3),
-                             gridspec_kw={"width_ratios": [1.25, 1]})
-
-    # a: what happened to the gold standard, as shares that sum to 1
+    # a: cumulative share of the gold standard still in play
     ax = axes[0]
-    y = range(len(projects))
-    never = [(1 - prog[p]["search"]) * 100 for p in projects]
-    after = [(prog[p]["search"] - cum[p]) * 100 for p in projects]
-    kept = [cum[p] * 100 for p in projects]
-    left = [0.0] * len(projects)
-    for vals, colr, lab in ((kept, "#009E73", "Recovered"),
-                            (after, "#E69F00", "Lost after search"),
-                            (never, "#D55E00", "Never found by search")):
-        ax.barh(list(y), vals, 0.68, left=left, color=colr, lw=0, label=lab)
-        left = [l + v for l, v in zip(left, vals)]
-    for i, p in enumerate(projects):
-        ax.text(kept[i] - 1.5, i, f"{kept[i]:.0f}%", va="center", ha="right",
-                fontsize=5.5, color="white")
-    ax.set_yticks(list(y))
-    ax.set_yticklabels([DISPLAY[p] for p in projects])
-    ax.set_xlim(0, 100)
-    ax.set_xlabel("Share of gold-standard studies (%)")
-    ax.legend(loc="lower center", bbox_to_anchor=(0.5, -0.42), ncol=3,
-              handlelength=1.0, handletextpad=0.4, columnspacing=1.0)
-    ax.grid(axis="x", alpha=0.6)
-    ax.set_axisbelow(True)
-    panel_label(ax, "a", dx=-0.34)
-
-    # b: precision, which does climb monotonically and is the claim being made
-    ax = axes[1]
-    stages = ["search", "abstract", "fulltext"]
     for p in projects:
-        ys = [prec.get(p, {}).get(s) for s in stages]
+        ys = [surv[p][s] * 100 for s in stages]
+        ax.plot(range(len(stages)), ys, "-o", color=COLORS[p], markeredgewidth=0,
+                alpha=0.9, label=DISPLAY[p])
+        ax.annotate(f"{ys[-1]:.0f}", (len(stages) - 1, ys[-1]), textcoords="offset points",
+                    xytext=(4, -1.5), fontsize=5.2, color=COLORS[p])
+    losses = [(surv[p][stages[i - 1]] - surv[p][stages[i]]) * 100
+              for p in projects for i in range(1, len(stages))]
+    ax.set_xticks(range(len(stages)))
+    ax.set_xticklabels(labels)
+    ax.set_xlim(-0.25, len(stages) - 0.45)
+    ax.set_ylim(0, 100)
+    ax.set_ylabel("Gold-standard studies retained (%)")
+    ax.grid(axis="y", alpha=0.6)
+    ax.set_axisbelow(True)
+    med_abs = st.median([(surv[p]["search"] - surv[p]["abstract"]) * 100 for p in projects])
+    ax.text(0.03, 0.06, f"abstract screening costs a\nmedian {med_abs:.1f} points",
+            transform=ax.transAxes, fontsize=5.5, color=MUTED, linespacing=1.5)
+    panel_label(ax, "a", dx=-0.20)
+
+    # b: precision over the stages that change it
+    ax = axes[1]
+    pstages = ["search", "abstract", "fulltext"]
+    for p in projects:
+        ys = [prec.get(p, {}).get(s) for s in pstages]
         if any(v is None for v in ys):
             continue
-        ax.plot(range(len(stages)), ys, "-o", color=COLORS[p], markeredgewidth=0, alpha=0.85)
-    ax.set_xticks(range(len(stages)))
-    ax.set_xticklabels(["Search", "Abstract", "Full text"])
+        ax.plot(range(len(pstages)), ys, "-o", color=COLORS[p], markeredgewidth=0, alpha=0.9)
+    ax.set_xticks(range(len(pstages)))
+    ax.set_xticklabels(["Search", "Abstract\nscreening", "Full-text\nscreening"])
     ax.set_ylim(0, 1.02)
     ax.set_ylabel("Precision vs gold standard")
     ax.grid(axis="y", alpha=0.6)
     ax.set_axisbelow(True)
-    panel_label(ax, "b", dx=-0.24)
+    panel_label(ax, "b", dx=-0.20)
 
-    fig.subplots_adjust(wspace=0.42)
-    save(fig, out_dir, "figure2_gold_recovery_and_precision")
+    handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
+                      label=DISPLAY[p]) for p in projects]
+    fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
+               handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
+    fig.subplots_adjust(wspace=0.34)
+    save(fig, out_dir, "figure2_gold_retention_and_precision")
 
 
 # --------------------------------------------------------------------------- Figure 3
