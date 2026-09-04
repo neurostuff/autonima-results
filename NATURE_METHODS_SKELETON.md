@@ -152,8 +152,19 @@ depends on. Worst case is emotion regulation at 63%, which is also the project w
 target — worth naming rather than averaging away.
 
 **b. Annotation (§5).** Each project is an operating point in precision–recall space, with a
-connector down to its own **prevalence** — the precision a random selector achieves, and therefore
-the no-skill line in PR space. Exhausted-manual basis, `mode_id = combined`.
+connector down to its own **prevalence**. Exhausted-manual basis, `mode_id = combined`.
+
+**Why the baseline sits at the same recall.** A random selector that picks each analysis with
+probability *p* achieves recall = *p* and precision = prevalence, **independent of *p*** — the
+selected set has the pool's composition whatever its size. So the no-skill baseline is a
+*horizontal line spanning all recall*, not a point, and there is no recall value at which random
+"lands". Pinning it to each project's own recall is the like-for-like comparison: at the recall we
+achieved, chance would have scored prevalence. The figure draws it as a short horizontal rule
+rather than a marker so the encoding says "level", and the caption must state this or a reader will
+reasonably ask why random is at recall 0.8.
+
+No pooled baseline line is drawn: prevalence ranges 0.104 to 0.345 across these projects, a 3.3×
+spread, so a single mean line would read as *the* baseline and misplace most of them.
 
 Two reasons this encoding rather than a precision-vs-recall dumbbell. A connector implies a
 before/after, and precision and recall are two coordinates of one operating point, not a
