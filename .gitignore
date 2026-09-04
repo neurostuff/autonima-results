@@ -202,4 +202,10 @@ experiments/pdf_table_extraction/pdfs/
 pmc_articles_*.zip
 
 # retest replicates: outputs are small, the copied corpus is not
-experiments/e2e_retest/*/*/retrieval/
+
+# e2e retest replicates. Same reasoning as projects/*/v3-dedup: these are scratch copies built to
+# measure run-to-run drift, not registry runs, and tracking them would invite being mistaken for
+# one -- besides adding ~150MB. The derived analysis (drift.json, map_drift.json, the
+# manual_vs_auto_meta tables) IS tracked, and the replicates regenerate from the recipe in
+# experiments/e2e_retest/README.md.
+experiments/e2e_retest/*/v*/

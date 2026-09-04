@@ -71,13 +71,17 @@ def _coordinates(run: Path) -> Dict[str, list]:
             continue
         points = []
         for analysis in study.get("analyses") or []:
-            for point in analysis.get("points") or analysis.get("coordinates") or []:
+            for point in analysis.get("points") or []:
+                # Parsed points nest the triple: {"coordinates": [x, y, z], "space": ..., ...}
                 if isinstance(point, dict):
-                    xyz = (point.get("x"), point.get("y"), point.get("z"))
+                    xyz = point.get("coordinates")
+                    if not (isinstance(xyz, (list, tuple)) and len(xyz) >= 3):
+                        xyz = (point.get("x"), point.get("y"), point.get("z"))
                 elif isinstance(point, (list, tuple)) and len(point) >= 3:
-                    xyz = tuple(point[:3])
+                    xyz = point
                 else:
                     continue
+                xyz = tuple(xyz)[:3]
                 if all(isinstance(v, (int, float)) for v in xyz):
                     points.append(tuple(round(float(v)) for v in xyz))
         out[pmid] = points
