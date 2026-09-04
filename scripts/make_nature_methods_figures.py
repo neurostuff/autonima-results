@@ -289,17 +289,19 @@ def figure3(out_dir: Path) -> None:
             continue
         pts.append((r["project_name"], float(r["recall"]), float(r["precision"]),
                     (tp + fn) / total))
-    pooled_prev = st.mean([p[3] for p in pts])
-
-    ax.axhline(pooled_prev, color=MUTED, lw=0.7, ls=(0, (4, 2)), zorder=1)
-    # Parked at the far left: every project sits at recall > 0.7, so the left half of the axis is
-    # empty and the label cannot collide with data.
-    ax.text(0.02, pooled_prev + 0.025, f"random selector (mean prevalence {pooled_prev:.2f})",
-            fontsize=5.2, color=MUTED, ha="left")
+    # Each project's baseline is drawn as a short horizontal RULE, not a dot. A random selector
+    # picking each analysis with probability p gets recall = p and precision = prevalence,
+    # independent of p -- the selected set has the pool's composition whatever its size. So the
+    # no-skill baseline is a horizontal line spanning all recall, not a point, and a dot invites
+    # the reasonable question of why "random" sits at recall 0.8. The rule says "this is a level";
+    # the connector samples it at our recall, which is the like-for-like comparison.
+    #
+    # No pooled baseline line is drawn. Prevalence ranges 0.104 to 0.345 across these projects, a
+    # 3.3x spread, so a single mean line would read as THE baseline and misplace most projects.
     for proj, rec, prec, prev in pts:
         ax.plot([rec, rec], [prev, prec], color=COLORS[proj], lw=0.8, alpha=0.55, zorder=2)
-        ax.scatter([rec], [prev], s=9, facecolors="white", edgecolors=COLORS[proj],
-                   linewidths=0.7, zorder=3)
+        ax.plot([rec - 0.028, rec + 0.028], [prev, prev], color=COLORS[proj], lw=1.1,
+                alpha=0.85, zorder=3)
         ax.scatter([rec], [prec], s=17, color=COLORS[proj], zorder=4,
                    edgecolors="white", linewidths=0.4)
     ax.set_xlim(0, 1.02)
@@ -310,11 +312,12 @@ def figure3(out_dir: Path) -> None:
     ax.set_axisbelow(True)
     ax.legend(handles=[Line2D([], [], marker="o", ls="", color=INK, markersize=3.4,
                               label="Achieved"),
-                       Line2D([], [], marker="o", ls="", markerfacecolor="white",
-                              markeredgecolor=INK, color="none", markersize=3.0,
-                              label="Random (prevalence)")],
-              loc="upper left", handletextpad=0.3, borderaxespad=0.4)
-    ax.text(0.02, 0.055, f"vertical span = lift over random\nmean {st.mean([p[2] / p[3] for p in pts]):.1f}x",
+                       Line2D([], [], marker="_", ls="", color=INK, markersize=5,
+                              markeredgewidth=1.2, label="Random, at this recall")],
+              loc="upper left", handletextpad=0.4, borderaxespad=0.4)
+    ax.text(0.02, 0.055,
+            "a random selector scores its own prevalence\n"
+            f"at every recall; span = lift, mean {st.mean([p[2] / p[3] for p in pts]):.1f}x",
             transform=ax.transAxes, ha="left", fontsize=5.2, color=MUTED, linespacing=1.5)
     panel_label(ax, "b", dx=-0.24)
 
