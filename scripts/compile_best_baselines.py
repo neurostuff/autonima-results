@@ -38,6 +38,8 @@ import argparse
 import collections
 import csv
 import glob
+import math
+import random
 import statistics as st
 from pathlib import Path
 
@@ -55,10 +57,60 @@ def load_columns(projects_root: Path) -> dict[tuple[str, str], dict[str, float]]
     return by
 
 
+def cluster_bootstrap(
+    deltas_by_project: dict[str, list[float]],
+    resamples: int,
+    seed: int,
+) -> dict[str, float]:
+    """Percentile CI for the pooled mean delta, resampling PROJECTS rather than columns.
+
+    The 35 columns are not 35 independent observations: cue_reactivity's three columns come from
+    one corpus, one search and one screening run, so resampling columns treats correlated
+    measurements as independent and reports a narrower interval than the evidence supports. This
+    resamples whole projects, carrying each one's columns along with it.
+
+    The correction is not cosmetic. emotion_regulation_2022 alone carries a mean delta of +0.369
+    against a pooled +0.101, so whether it lands in a given resample moves the mean a long way --
+    which is precisely the uncertainty a column bootstrap hides. Measured at 20,000 resamples the
+    cluster interval came out 1.8x wider than the naive one.
+
+    A percentile bootstrap is used rather than a t-based interval because the deltas are visibly
+    right-skewed (mean +0.101 against median +0.059), so a symmetric interval would be misplaced.
+    """
+    rng = random.Random(seed)
+    projects = sorted(deltas_by_project)
+    means = []
+    for _ in range(resamples):
+        drawn = rng.choices(projects, k=len(projects))
+        values = [v for p in drawn for v in deltas_by_project[p]]
+        if values:
+            means.append(st.mean(values))
+    means.sort()
+    lo = means[int(0.025 * len(means))]
+    hi = means[int(0.975 * len(means)) - 1]
+    return {"ci_low": lo, "ci_high": hi, "n_projects": len(projects), "resamples": len(means)}
+
+
+def sign_test(deltas: list[float]) -> float:
+    """Exact two-sided binomial test that autonima beats the baseline no more often than chance.
+
+    Ties are dropped, which is the conservative convention: a tie is evidence for neither side.
+    """
+    wins = sum(1 for d in deltas if d > 0)
+    trials = sum(1 for d in deltas if d != 0)
+    if not trials:
+        return 1.0
+    tail = sum(math.comb(trials, i) for i in range(wins, trials + 1)) / 2 ** trials
+    return min(2 * tail, 1.0)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--projects-root", type=Path, default=REPO_ROOT / "projects")
     ap.add_argument("--output", type=Path, default=REPO_ROOT / "reports" / "cross_project_best_baseline.csv")
+    ap.add_argument("--resamples", type=int, default=20000,
+                    help="bootstrap resamples for the pooled CI (default 20000)")
+    ap.add_argument("--seed", type=int, default=0, help="bootstrap seed, so the CI is reproducible")
     args = ap.parse_args()
 
     by = load_columns(args.projects_root)
@@ -93,18 +145,47 @@ def main() -> int:
         w.writerows(rows)
 
     a = [r["autonima_r2"] for r in rows]
+    stats_rows = []
     for lbl, key in (("best AVAILABLE (targeted if any)", "best_available_r2"),
                      ("STRONGEST (max of targeted, broad)", "strongest_r2")):
         b = [r[key] for r in rows]
         d = [x - y for x, y in zip(a, b)]
+        by_project: dict[str, list[float]] = collections.defaultdict(list)
+        for row, delta in zip(rows, d):
+            by_project[row["project"]].append(delta)
+        boot = cluster_bootstrap(by_project, args.resamples, args.seed)
+        p = sign_test(d)
         print(f"  {lbl:<36} autonima {st.mean(a):.3f}  baseline {st.mean(b):.3f}  "
               f"delta {st.mean(d):+.3f}  ahead {sum(1 for x in d if x > 0)}/{len(d)}")
+        print(f"  {'':<36} 95% CI [{boot['ci_low']:+.3f}, {boot['ci_high']:+.3f}]  "
+              f"sign test p = {p:.2e}  (median delta {st.median(d):+.3f})")
+        stats_rows.append({
+            "comparison": key, "n_columns": len(d), "n_projects": boot["n_projects"],
+            "autonima_mean_r2": round(st.mean(a), 4), "baseline_mean_r2": round(st.mean(b), 4),
+            "mean_delta": round(st.mean(d), 4), "median_delta": round(st.median(d), 4),
+            "ci_low": round(boot["ci_low"], 4), "ci_high": round(boot["ci_high"], 4),
+            "columns_ahead": sum(1 for x in d if x > 0),
+            "sign_test_p": f"{p:.3e}",
+            "bootstrap": "cluster over projects", "resamples": boot["resamples"], "seed": args.seed,
+        })
+
+    # Written beside the per-column table so the paper quotes a generated number rather than one
+    # transcribed from a console run that nobody can re-derive later.
+    stats_path = args.output.with_name(args.output.stem + "_stats.csv")
+    with open(stats_path, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(stats_rows[0]))
+        w.writeheader()
+        w.writerows(stats_rows)
     no_target = [r for r in rows if r["targeting_possible"] == "no"]
     print(f"\n  columns: {len(rows)}   targetable: {len(rows) - len(no_target)}   "
           f"no targeting possible: {len(no_target)}")
     for r in no_target:
         print(f"    {r['project']}/{r['manual_annotation']}")
-    print(f"\n  wrote {args.output.relative_to(REPO_ROOT) if str(args.output).startswith(str(REPO_ROOT)) else args.output}")
+    def _rel(path: Path) -> str:
+        return str(path.relative_to(REPO_ROOT)) if str(path).startswith(str(REPO_ROOT)) else str(path)
+
+    print(f"\n  wrote {_rel(args.output)}")
+    print(f"  wrote {_rel(stats_path)}")
     return 0
 
 
