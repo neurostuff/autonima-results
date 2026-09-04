@@ -151,10 +151,33 @@ to be *recovered* before selecting among them means anything, so this is the pre
 depends on. Worst case is emotion regulation at 63%, which is also the project with the loosest
 target — worth naming rather than averaging away.
 
-**b. Annotation (§5).** Exhausted-manual basis, `mode_id = combined`, dementia excluded — its gold
-analyses pool several studies each, so per-paper extraction has no clean mapping to its units. The
-asymmetry between panels is marked with an asterisk rather than hidden, since dementia parses
-perfectly (100%) and is dropped only from **b**.
+**b. Annotation (§5).** Each project is an operating point in precision–recall space, with a
+connector down to its own **prevalence** — the precision a random selector achieves, and therefore
+the no-skill line in PR space. Exhausted-manual basis, `mode_id = combined`.
+
+Two reasons this encoding rather than a precision-vs-recall dumbbell. A connector implies a
+before/after, and precision and recall are two coordinates of one operating point, not a
+progression — worse, it made panel **b** mimic panel **a**, where the connector genuinely does run
+baseline → outcome. Here the connector *is* that relationship: random → achieved.
+
+It also makes the absolute numbers interpretable, and **it reorders them**:
+
+| | precision | prevalence | lift |
+|---|---|---|---|
+| vbm_of_substance_use | 0.584 | 0.104 | **5.6×** |
+| vbm_of_ptsd | 1.000 | 0.250 | 4.0× |
+| executive_function | 0.545 | 0.158 | 3.5× |
+| … | | | |
+| social | 0.618 | 0.345 | **1.8×** |
+
+Mean **3.3×** over random. Social's 0.618 is the third-highest raw precision but the *lowest* lift,
+because its prevalence is the highest in the set; vbm_of_substance_use turns a similar 0.584 into
+5.6×. Reporting raw precision alone would have ranked these backwards — a reader has no way to
+judge 0.54 without knowing what chance looks like.
+
+dementia is excluded from **b** only (its gold analyses pool several studies each, so per-paper
+extraction has no clean mapping to its units); it parses perfectly at 100% and stays in **a**. The
+asymmetry is marked with an asterisk rather than hidden.
 
 State the aggregation dependence in one sentence, because it reverses the conclusion: matched-only
 gives precision 0.863 / recall 0.810 (precision-heavy), exhausted-manual gives 0.540 / 0.809

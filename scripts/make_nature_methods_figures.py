@@ -267,30 +267,60 @@ def figure3(out_dir: Path) -> None:
               loc="lower right", handletextpad=0.3)
     panel_label(ax, "a", dx=-0.40)
 
-    # b: annotation among the analyses that were recovered
+    # b: annotation as an operating point in precision-recall space, against the no-skill line
+    #
+    # An earlier version drew precision and recall as a dumbbell, which was wrong: a connector
+    # implies a before/after, and these are two coordinates of one operating point, not a
+    # progression. Worse, it made panel b look like panel a, where the connector genuinely does
+    # run baseline -> outcome.
+    #
+    # The connector here runs prevalence -> achieved precision, which IS that relationship. A
+    # random selector achieves precision equal to the prevalence of true positives at every
+    # recall, so prevalence is the no-skill line in precision-recall space. It also makes the
+    # absolute numbers interpretable, and it reorders them: social's 0.618 precision is the third
+    # highest but the *lowest* lift at 1.8x, because its prevalence is the highest in the set,
+    # while vbm_of_substance_use turns a similar 0.584 into 5.6x off a prevalence of 0.104.
     ax = axes[1]
-    ann.sort(key=lambda r: float(r["f1"]))
-    for i, r in enumerate(ann):
-        p, rec = float(r["precision"]), float(r["recall"])
-        ax.plot([min(p, rec), max(p, rec)], [i, i], color=RULE, lw=1.5, zorder=1)
-        ax.scatter([p], [i], s=15, color="#0072B2", zorder=3, edgecolors="white", linewidths=0.4)
-        ax.scatter([rec], [i], s=15, color="#D55E00", zorder=3, edgecolors="white", linewidths=0.4)
-    ax.set_yticks(range(len(ann)))
-    ax.set_yticklabels([DISPLAY[r["project_name"]] for r in ann])
+    pts = []
+    for r in ann:
+        tp, fp, fn, tn = (int(float(r[k])) for k in ("tp", "fp", "fn", "tn"))
+        total = tp + fp + fn + tn
+        if not total:
+            continue
+        pts.append((r["project_name"], float(r["recall"]), float(r["precision"]),
+                    (tp + fn) / total))
+    pooled_prev = st.mean([p[3] for p in pts])
+
+    ax.axhline(pooled_prev, color=MUTED, lw=0.7, ls=(0, (4, 2)), zorder=1)
+    # Parked at the far left: every project sits at recall > 0.7, so the left half of the axis is
+    # empty and the label cannot collide with data.
+    ax.text(0.02, pooled_prev + 0.025, f"random selector (mean prevalence {pooled_prev:.2f})",
+            fontsize=5.2, color=MUTED, ha="left")
+    for proj, rec, prec, prev in pts:
+        ax.plot([rec, rec], [prev, prec], color=COLORS[proj], lw=0.8, alpha=0.55, zorder=2)
+        ax.scatter([rec], [prev], s=9, facecolors="white", edgecolors=COLORS[proj],
+                   linewidths=0.7, zorder=3)
+        ax.scatter([rec], [prec], s=17, color=COLORS[proj], zorder=4,
+                   edgecolors="white", linewidths=0.4)
     ax.set_xlim(0, 1.02)
-    ax.set_xlabel("Annotation vs expert selection")
-    ax.grid(axis="x", alpha=0.6)
+    ax.set_ylim(0, 1.02)
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.grid(alpha=0.6)
     ax.set_axisbelow(True)
-    ax.legend(handles=[Line2D([], [], marker="o", ls="", color="#0072B2", markersize=3.4,
-                              label="Precision"),
-                       Line2D([], [], marker="o", ls="", color="#D55E00", markersize=3.4,
-                              label="Recall")],
-              loc="lower right", handletextpad=0.3)
-    panel_label(ax, "b", dx=-0.40)
+    ax.legend(handles=[Line2D([], [], marker="o", ls="", color=INK, markersize=3.4,
+                              label="Achieved"),
+                       Line2D([], [], marker="o", ls="", markerfacecolor="white",
+                              markeredgecolor=INK, color="none", markersize=3.0,
+                              label="Random (prevalence)")],
+              loc="upper left", handletextpad=0.3, borderaxespad=0.4)
+    ax.text(0.02, 0.055, f"vertical span = lift over random\nmean {st.mean([p[2] / p[3] for p in pts]):.1f}x",
+            transform=ax.transAxes, ha="left", fontsize=5.2, color=MUTED, linespacing=1.5)
+    panel_label(ax, "b", dx=-0.24)
 
     fig.text(0.5, -0.06, "* dementia excluded from b: its gold analyses pool several studies each",
              ha="center", fontsize=5.2, color=MUTED)
-    fig.subplots_adjust(wspace=0.75)
+    fig.subplots_adjust(wspace=0.42)
     save(fig, out_dir, "figure3_recover_and_select_analyses")
 
 
