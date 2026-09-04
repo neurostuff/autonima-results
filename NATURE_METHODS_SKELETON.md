@@ -100,11 +100,23 @@ The benchmark panel that would otherwise sit here belongs in the companion paper
 inset naming the nine meta-analyses is enough. That frees the third panel for the unit
 distinction to be drawn properly rather than crammed.
 
-### Result 2 — Paper-level screening: precision rises, recall holds — **Figure 2** (~300 w)
+### Result 2 — What survives the funnel, and what screening buys — **Figure 2** (~300 w)
 
-§1. Search → abstract → full-text, per project. Precision climbs monotonically; recall is
-essentially preserved. Necessary but framed explicitly as *not sufficient* — this is the setup for
-Result 4, not a headline.
+§1. Panel **a** decomposes each project's gold standard into recovered / lost after search / never
+found by the search. Panel **b** is the precision climb across search → abstract → full text.
+
+**Do not plot per-stage recall.** The stage-progression file holds *conditional retention* — the
+share of studies entering a stage that survive it — so its denominator changes at every stage and
+the numbers rise across the funnel. Labelled "recall" that is simply wrong, since cumulative recall
+can only fall. Report the share of the gold standard recovered end-to-end, and where the remainder
+went.
+
+That reframing also promotes the more useful finding: **loss is dominated by the search query, not
+by screening.** Decision making never finds 40% of its gold standard; executive function never
+finds 26% and loses another 35% downstream. Social recovers 93%. This is the human-written-query
+limitation the outline already flags, and it belongs here rather than buried in Discussion — it
+sets the ceiling every later result operates under, and it is an argument for the method rather
+than against it, since screening is demonstrably not where the studies go.
 
 ### Result 3 — Analysis-level selection against expert annotation — **Figure 3** (~300 w)
 
