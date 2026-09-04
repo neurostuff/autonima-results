@@ -220,11 +220,30 @@ costs nothing, since both intervals exclude zero.
 §6. **This is the paper.** Holding the study pool fixed, annotation still improves the map — so the
 advantage is not explained by retrieving better papers.
 
-Give the per-project ordering as the mechanism, not decoration: the two clinical projects requiring
-a specific population contrast gain ~3× what the cognitive ones do, and the only project where
-annotation loses to its baseline (problem_solving, Δr −0.020) is the most diffuse target in the set.
-Gain tracks how *specific* the target is. That is a claim about when the method works, which is what
-distinguishes a methods paper from an evaluation.
+**Median +0.037 dice, 26 of 35 columns improve.** Note this is a softer headline than Result 4's
++0.101 and measures a different thing; Result 5 must quote its own number rather than borrowing
+Result 4's.
+
+Single panel, deliberately. An earlier draft paired this with a slope plot of baseline vs annotated
+dice across all 35 columns — 35 crossing lines in 89mm, unreadable, and carrying nothing the gain
+distribution does not already show except absolute dice levels, which Figure 4 supplies.
+
+**Two candidate mechanisms were tested and belong in the text, not in a panel:**
+
+| candidate | result | verdict |
+|---|---|---|
+| gain vs prevalence (target specificity) | Spearman −0.233, n = 9 projects | right direction, no power |
+| gain vs baseline dice (headroom) | Pearson −0.353, t = −2.17, n = 35 | marginal, and deflationary |
+
+The first is the mechanism the paper argues for — narrower target, more to gain from selecting —
+and it points the right way, but nine projects cannot support it. The second is the ceiling-effect
+objection a reviewer will raise unprompted, so **report it rather than wait for it**: gain is
+somewhat larger where the baseline was worse, though the quartiles are not monotone (+0.116,
++0.035, +0.084, +0.007). Neither is strong enough to plot without implying more than it supports.
+
+That leaves the per-project ordering as the qualitative mechanism: the projects requiring a
+specific population contrast gain most, and the two that lose — executive function and social — are
+the most diffuse targets in the set. Say it as an observed ordering, not a tested relationship.
 
 ### Result 6 — Cost and scale — **Figure 6** (~300 w)
 
