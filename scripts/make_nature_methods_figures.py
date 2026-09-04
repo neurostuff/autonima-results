@@ -12,7 +12,7 @@ Figures map onto NATURE_METHODS_SKELETON.md:
     Figure 2  gold retention + precision gain    Result 2  (§1)
     Figure 3  parsing + annotation               Result 3  (§5)
     Figure 4  pipeline vs best baseline          Result 4  (§7)  <- headline
-    Figure 5  where the gain comes from          Result 5  (§6)  <- the thesis
+    Figure 5  gain from analysis selection       Result 5  (§6)  <- the thesis
     Figure 6  measured cost per stage            Result 6  (S1)
 
 Figure 1 is a schematic (pipeline, benchmark, and the paper-vs-analysis unit) and is not
@@ -407,7 +407,24 @@ def figure4(out_dir: Path) -> None:
 # --------------------------------------------------------------------------- Figure 5
 
 def figure5(out_dir: Path) -> None:
-    """The thesis: with the study pool held fixed, analysis selection still improves the map."""
+    """The thesis: with the study pool held fixed, analysis selection still improves the map.
+
+    Single panel, deliberately. An earlier version paired this with a slope plot of baseline vs
+    annotated dice for all 35 columns, which was 35 crossing lines in 89mm -- unreadable, and it
+    carried nothing the gain distribution does not already show except absolute dice levels, which
+    Figure 4 supplies.
+
+    Two candidate replacements were tested against the data and rejected rather than drawn:
+
+      gain vs prevalence (target specificity)   Spearman -0.233, n = 9 projects
+      gain vs baseline dice (headroom)          Pearson -0.353, t = -2.17, n = 35 columns
+
+    The first is the mechanism the paper argues for and points the right way, but nine projects
+    cannot support it. The second is marginally significant and deflationary -- gain is larger
+    where the baseline was worse -- and its quartiles are not monotone (+0.116, +0.035, +0.084,
+    +0.007). Both belong in the text as tested-and-weak, not in a panel that would imply more than
+    they support.
+    """
     rows = read(REPO_ROOT / "reports" / "annotation_value.csv")
     pts = []
     for r in rows:
@@ -415,52 +432,39 @@ def figure5(out_dir: Path) -> None:
             ann, allan = float(r["dice_annotated"]), float(r["dice_all_analyses"])
         except (ValueError, KeyError):
             continue
-        pts.append((r["project"], ann, allan, ann - allan))
+        pts.append((r["project"], ann - allan))
     if not pts:
         print("  figure5: no rows; skipped")
         return
-    pts.sort(key=lambda t: t[3])
-    gains = [p[3] for p in pts]
+    gains = [p[1] for p in pts]
 
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.4),
-                             gridspec_kw={"width_ratios": [1, 1.2]})
-
-    # a: same studies, annotation on vs off
-    ax = axes[0]
-    for proj, ann, allan, _ in pts:
-        ax.plot([0, 1], [allan, ann], color=COLORS.get(proj, "#7F7F7F"), lw=0.7, alpha=0.75)
-        ax.scatter([0, 1], [allan, ann], s=9, color=COLORS.get(proj, "#7F7F7F"),
-                   edgecolors="white", linewidths=0.3, zorder=3)
-    ax.set_xticks([0, 1])
-    ax.set_xticklabels(["All analyses\nfrom same studies", "Annotation-\nselected"])
-    ax.set_xlim(-0.35, 1.35)
-    ax.set_ylabel("Dice vs expert map")
-    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
-    panel_label(ax, "a", dx=-0.22)
-
-    # b: the gain, by project, with the pooled median
-    ax = axes[1]
     by_proj: dict[str, list[float]] = collections.defaultdict(list)
-    for proj, _, _, g in pts:
+    for proj, g in pts:
         by_proj[proj].append(g)
     order = sorted(by_proj, key=lambda p: st.median(by_proj[p]))
-    ax.axvline(0, color=INK, lw=0.6, zorder=2)
+
+    fig, ax = plt.subplots(figsize=(SINGLE_COL, 0.30 * len(order) + 1.0))
+    ax.axvline(0, color=INK, lw=0.7, zorder=2)
     for i, proj in enumerate(order):
         vals = by_proj[proj]
-        ax.scatter(vals, [i] * len(vals), s=11, color=COLORS.get(proj, "#7F7F7F"),
-                   edgecolors="white", linewidths=0.3, zorder=3, alpha=0.9)
-        ax.plot([st.median(vals)] * 2, [i - 0.3, i + 0.3], color=INK, lw=1.0, zorder=4)
+        ax.scatter(vals, [i] * len(vals), s=13, color=COLORS.get(proj, "#7F7F7F"),
+                   edgecolors="white", linewidths=0.35, zorder=3, alpha=0.9)
+        ax.plot([st.median(vals)] * 2, [i - 0.32, i + 0.32], color=INK, lw=1.2, zorder=4)
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
-    ax.set_xlabel("Dice gain from analysis selection")
-    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
-    ax.text(0.97, 0.04, f"median {st.median(gains):+.3f}\n{sum(1 for g in gains if g > 0)}"
-            f"/{len(gains)} columns improve",
+    ax.set_ylim(-0.7, len(order) - 0.3)
+    ax.set_xlabel("Dice gain from analysis selection\n(same studies, annotation on vs off)")
+    ax.grid(axis="x", alpha=0.6)
+    ax.set_axisbelow(True)
+    improved = sum(1 for g in gains if g > 0)
+    ax.text(0.98, 0.02,
+            f"median {st.median(gains):+.3f}\n{improved}/{len(gains)} columns improve",
             transform=ax.transAxes, ha="right", va="bottom", fontsize=5.5, color=MUTED,
             linespacing=1.5)
-    panel_label(ax, "b", dx=-0.30)
-    fig.subplots_adjust(wspace=0.55)
-    save(fig, out_dir, "figure5_where_the_gain_comes_from")
+    # Top-left: the highest-gain project sits well right of zero, so this corner is clear.
+    ax.text(0.02, 0.985, "vertical rule = project median", transform=ax.transAxes,
+            ha="left", va="top", fontsize=5.2, color=MUTED)
+    save(fig, out_dir, "figure5_gain_from_analysis_selection")
 
 
 # --------------------------------------------------------------------------- Figure 6
