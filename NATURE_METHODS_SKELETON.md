@@ -72,7 +72,7 @@ limit, and it is worth paying only if the analysis-unit framing carries.
 
 ## Section-by-section, with figure allocation
 
-### Introduction (~450 w)
+### Introduction (~350 w)
 
 Three moves, no more:
 
