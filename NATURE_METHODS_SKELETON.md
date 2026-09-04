@@ -63,7 +63,7 @@ limit, and it is worth paying only if the analysis-unit framing carries.
 |---|---|---|
 | Abstract | 150 | problem → approach → finding, unreferenced |
 | Introduction | ~350 | the unit problem; why coordinate meta-analysis exposes it; benchmark cited, not built |
-| **Results** | **~1,900** | six subsections, ~300 words each, one per figure |
+| **Results** | **~1,900** | six subsections; Results 3–5 get ~350, Results 1/2/6 ~300 |
 | Discussion | ~600 | limits of the benchmark; where the gain does and does not appear; what generalises |
 | *(Methods)* | *unlimited* | pipeline, benchmark construction, statistics, M1 transparency section |
 | **body total** | **~3,000** | the ~100 words the benchmark split returns go to Result 5 |
@@ -131,15 +131,34 @@ those retentions does not recover the truth either, since retrieval loss is abse
 (executive function chains to 0.645 against an actual 0.392). Use
 `reports/gold_survival_by_stage.csv`, which counts gold PMIDs against a fixed denominator.
 
-### Result 3 — Analysis-level selection against expert annotation — **Figure 3** (~300 w)
+### Result 3 — Recovering the analyses, then selecting among them — **Figure 3** (~350 w)
 
-§5. Cross-project annotation performance on the **exhausted-manual** basis, dementia excluded
-(its source meta-analysis pools multiple studies per gold analysis, so per-paper extraction has no
-clean mapping).
+Two analysis-level operations in pipeline order, combined into one display item to stay inside six.
+Panel **a** is recovery, panel **b** is selection.
 
-State the aggregation dependence honestly and in one sentence, because it reverses the conclusion:
-matched-only gives precision 0.863 / recall 0.810 (precision-heavy), exhausted-manual gives
-0.540 / 0.809 (recall-heavy). Naming the variant is not optional.
+**a. Parsing (§ new).** Against a table-only baseline that takes coordinate tables as parsed
+without an LLM reading them:
+
+| | expert analyses recovered |
+|---|---|
+| tables only | **31%** |
+| LLM parsing | **90%** |
+
+**+60 points pooled over 1,358 gold analyses, and the LLM wins in all nine projects** — margins
+from +36 (VBM PTSD) to +82 (dementia). This is the strongest single margin in the paper and it was
+not previously a headline result. It also does necessary work for the argument: the analyses have
+to be *recovered* before selecting among them means anything, so this is the precondition Result 5
+depends on. Worst case is emotion regulation at 63%, which is also the project with the loosest
+target — worth naming rather than averaging away.
+
+**b. Annotation (§5).** Exhausted-manual basis, `mode_id = combined`, dementia excluded — its gold
+analyses pool several studies each, so per-paper extraction has no clean mapping to its units. The
+asymmetry between panels is marked with an asterisk rather than hidden, since dementia parses
+perfectly (100%) and is dropped only from **b**.
+
+State the aggregation dependence in one sentence, because it reverses the conclusion: matched-only
+gives precision 0.863 / recall 0.810 (precision-heavy), exhausted-manual gives 0.540 / 0.809
+(recall-heavy). Naming the variant is not optional.
 
 ### Result 4 — The whole pipeline beats a search-only synthesis — **Figure 4** (~350 w)
 

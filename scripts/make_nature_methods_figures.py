@@ -10,7 +10,7 @@ is a separate module with its own house style.
 Figures map onto NATURE_METHODS_SKELETON.md:
 
     Figure 2  gold retention + precision gain    Result 2  (§1)
-    Figure 3  analysis-level annotation          Result 3  (§5)
+    Figure 3  parsing + annotation               Result 3  (§5)
     Figure 4  pipeline vs best baseline          Result 4  (§7)  <- headline
     Figure 5  where the gain comes from          Result 5  (§6)  <- the thesis
     Figure 6  measured cost per stage            Result 6  (S1)
@@ -206,42 +206,92 @@ def figure2(out_dir: Path) -> None:
 # --------------------------------------------------------------------------- Figure 3
 
 def figure3(out_dir: Path) -> None:
-    """Analysis-level annotation, exhausted-manual basis, dementia excluded.
+    """Analysis-level work, in pipeline order: recover the analyses, then select among them.
 
-    dementia is dropped because its source meta-analysis pools several studies into one gold
-    analysis, so per-paper extraction has no clean mapping to its units -- an artefact of the
-    benchmark, not a result about the method.
+    Two operations that both live below the paper, combined into one display item to stay inside
+    Nature's six. Panel a is recovery -- did the pipeline reconstruct the analyses the experts
+    worked from at all -- against a table-only baseline that takes coordinate tables as parsed
+    without an LLM reading them. Panel b is selection among what was recovered.
+
+    dementia appears in a but not b. Its parsing is fine (100%); it is excluded from
+    analysis-level annotation because its source meta-analysis pools several studies into one gold
+    analysis, so per-paper extraction has no clean mapping to its units. That is an artefact of
+    that benchmark rather than a result about the method, and the asymmetry is marked rather than
+    hidden.
     """
-    rows = read(REPO_ROOT / "reports" / "cross_project_analysis" / "annotation_aggregates.csv")
-    keep = [r for r in rows
-            if r["level"] == "analysis"
-            and r["variant"] == "exhausted_manual_assumption"
-            and r["scope"] == "project"
-            and r["project_name"] != "dementia"]
-    keep = [r for r in keep if r["project_name"] in DISPLAY]
-    keep.sort(key=lambda r: float(r["f1"]))
-    if not keep:
-        print("  figure3: no rows matched; skipped")
-        return
+    parse = read(REPO_ROOT / "reports" / "cross_project_analysis" / "parsing_metrics_by_project.csv")
+    # mode_id "combined" is what §5 reports (pooled 0.539/0.810 across all nine, 0.540 with
+    # dementia dropped); "accepted" is the stricter variant and differs by about a point. Both
+    # rows are present for every project, so filtering on it is not optional -- without it each
+    # project is plotted twice.
+    ann = [r for r in read(REPO_ROOT / "reports" / "cross_project_analysis"
+                           / "annotation_aggregates.csv")
+           if r["level"] == "analysis" and r["variant"] == "exhausted_manual_assumption"
+           and r["scope"] == "project" and r["mode_id"] == "combined"
+           and r["project_name"] in DISPLAY and r["project_name"] != "dementia"]
 
-    labels = [DISPLAY[r["project_name"]] for r in keep]
-    y = range(len(keep))
-    fig, ax = plt.subplots(figsize=(SINGLE_COL, 0.26 * len(keep) + 0.9))
-    for i, r in enumerate(keep):
-        p, rec = float(r["precision"]), float(r["recall"])
-        ax.plot([min(p, rec), max(p, rec)], [i, i], color=RULE, lw=1.4, zorder=1)
-        ax.scatter([p], [i], s=14, color="#0072B2", zorder=3, edgecolors="white", linewidths=0.4)
-        ax.scatter([rec], [i], s=14, color="#D55E00", zorder=3, edgecolors="white", linewidths=0.4)
-    ax.set_yticks(list(y))
-    ax.set_yticklabels(labels)
-    ax.set_xlim(0, 1.02)
-    ax.set_xlabel("Precision / recall vs expert annotation")
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.6))
+
+    # a: LLM parsing against a table-only baseline
+    rows = []
+    for r in parse:
+        if r["project_name"] not in DISPLAY:
+            continue
+        try:
+            llm = float(r["manual_matched_pct"])
+            tab = float(r["table_only_baseline_matched_pct"])
+        except (ValueError, KeyError):
+            continue
+        rows.append((r["project_name"], tab * 100, llm * 100, int(r["manual_analyses_total"])))
+    rows.sort(key=lambda x: x[2])
+
+    ax = axes[0]
+    for i, (proj, tab, llm, _) in enumerate(rows):
+        ax.plot([tab, llm], [i, i], color=RULE, lw=1.5, zorder=1)
+        ax.scatter([tab], [i], s=15, color="#7F7F7F", zorder=3,
+                   edgecolors="white", linewidths=0.4)
+        ax.scatter([llm], [i], s=15, color=COLORS[proj], zorder=3,
+                   edgecolors="white", linewidths=0.4)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels([DISPLAY[p] + (" *" if p == "dementia" else "") for p, _, _, _ in rows])
+    ax.set_xlim(0, 105)
+    ax.set_xlabel("Expert analyses recovered (%)")
     ax.grid(axis="x", alpha=0.6)
     ax.set_axisbelow(True)
-    ax.legend(handles=[Line2D([], [], marker="o", ls="", color="#0072B2", markersize=3.4, label="Precision"),
-                       Line2D([], [], marker="o", ls="", color="#D55E00", markersize=3.4, label="Recall")],
+    pooled_llm = sum(r[2] * r[3] for r in rows) / sum(r[3] for r in rows)
+    pooled_tab = sum(r[1] * r[3] for r in rows) / sum(r[3] for r in rows)
+    ax.legend(handles=[Line2D([], [], marker="o", ls="", color="#7F7F7F", markersize=3.4,
+                              label=f"Tables only ({pooled_tab:.0f}%)"),
+                       Line2D([], [], marker="o", ls="", color=INK, markersize=3.4,
+                              label=f"LLM parsing ({pooled_llm:.0f}%)")],
               loc="lower right", handletextpad=0.3)
-    save(fig, out_dir, "figure3_analysis_annotation")
+    panel_label(ax, "a", dx=-0.40)
+
+    # b: annotation among the analyses that were recovered
+    ax = axes[1]
+    ann.sort(key=lambda r: float(r["f1"]))
+    for i, r in enumerate(ann):
+        p, rec = float(r["precision"]), float(r["recall"])
+        ax.plot([min(p, rec), max(p, rec)], [i, i], color=RULE, lw=1.5, zorder=1)
+        ax.scatter([p], [i], s=15, color="#0072B2", zorder=3, edgecolors="white", linewidths=0.4)
+        ax.scatter([rec], [i], s=15, color="#D55E00", zorder=3, edgecolors="white", linewidths=0.4)
+    ax.set_yticks(range(len(ann)))
+    ax.set_yticklabels([DISPLAY[r["project_name"]] for r in ann])
+    ax.set_xlim(0, 1.02)
+    ax.set_xlabel("Annotation vs expert selection")
+    ax.grid(axis="x", alpha=0.6)
+    ax.set_axisbelow(True)
+    ax.legend(handles=[Line2D([], [], marker="o", ls="", color="#0072B2", markersize=3.4,
+                              label="Precision"),
+                       Line2D([], [], marker="o", ls="", color="#D55E00", markersize=3.4,
+                              label="Recall")],
+              loc="lower right", handletextpad=0.3)
+    panel_label(ax, "b", dx=-0.40)
+
+    fig.text(0.5, -0.06, "* dementia excluded from b: its gold analyses pool several studies each",
+             ha="center", fontsize=5.2, color=MUTED)
+    fig.subplots_adjust(wspace=0.75)
+    save(fig, out_dir, "figure3_recover_and_select_analyses")
 
 
 # --------------------------------------------------------------------------- Figure 4
