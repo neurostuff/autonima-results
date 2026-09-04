@@ -29,37 +29,60 @@ Discussion, where it motivates the future-use-case argument (§9).
 
 ## 1. Screening improves precision at almost no cost to recall  **[have]**
 
-**Claim.** Moving search → abstract screening → full-text screening raises precision
-monotonically while recall is essentially preserved.
+**Claim.** Moving search → abstract screening → full-text screening raises precision monotonically
+while recall is essentially preserved.
 
-**Evidence.** `reports/cross_project_screening/screening_metrics_top_v_stage_progression.csv`,
-8 projects:
+**Evidence.** Precision from
+`reports/cross_project_screening/screening_metrics_top_v_stage_progression.csv`; **retention from
+`reports/gold_survival_by_stage.csv`**, which counts gold PMIDs against a fixed denominator. All
+9 projects.
 
-| stage | mean precision | mean recall | mean F1 |
+| stage | mean gold retained | mean precision |
+|---|---|---|
+| search | 0.858 | 0.103 |
+| abstract screening | 0.833 | 0.196 |
+| full-text retrieval | 0.786 | *not measured* |
+| full-text screening | 0.728 | 0.323 |
+
+Precision increases at every stage in **9 of 9 projects**, no exceptions — that unanimity is the
+strongest single fact in the paper and should be stated as such. Retention falls monotonically, as
+it must.
+
+**Marginal cost of each stage**, in percentage points of the gold standard:
+
+| stage | median | max | projects losing >5pp |
 |---|---|---|---|
-| search | 0.112 | 0.802 | 0.186 |
-| abstract | 0.201 | 0.965 | 0.323 |
-| full text | 0.332 | 0.934 | 0.472 |
+| abstract screening | **1.4** | 8.8 | 2/9 |
+| full-text retrieval | 3.4 | 11.9 | 3/9 |
+| full-text screening | 4.0 | 14.6 | 3/9 |
 
-Precision increases at every stage in **8 of 8 projects**, no exceptions — that unanimity is
-the strongest single fact in the paper and should be stated as such.
+So the claim is specifically about *abstract* screening: it triples precision for a median 1.4
+points of recall. Full-text screening and retrieval are not free, and saying "screening is nearly
+lossless" without qualification overstates it.
 
-**A metric subtlety to fix before a reviewer finds it.** Recall *rises* from search (0.802)
-to abstract (0.965), which is impossible for a cumulative measure — screening cannot recover
-a study the search never returned. These are **stage-conditional** retention rates (recall
-among gold that reached that stage), not cumulative recall. Two consequences:
+**Do not use the stage-progression file's recall column.** It holds **stage-conditional retention**
+— the share of gold reaching a stage that survives it — so its denominator changes at every stage
+and the numbers *rise* across the funnel (mean 0.802 → 0.965), which cumulative recall cannot do.
+Chaining those retentions does not recover the truth either, because **retrieval loss is absent
+from that file entirely**: executive_function chains to 0.645 against an actual 0.392. State the
+denominator explicitly for every recall number in the paper.
 
-- State the denominator explicitly for every recall number in the paper.
-- Reframed cumulatively, the finding is *stronger*: screening is close to lossless
-  (0.93–0.97 retention), and essentially all recall loss occurs at **search**. That reframing
-  also sets up §6, where end-to-end performance is search-limited.
+**Correction, 2026-09-04.** An earlier version of this section predicted that reframing cumulatively
+would make the finding *stronger* because "essentially all recall loss occurs at search". Measured,
+that is false. **Post-search stages dominate the loss in 4 of 9 projects** — executive_function
+(26pp at search vs 35pp after), problem_solving (12 vs 30), dementia (4 vs 11), cue_reactivity
+(7 vs 8). The prediction was made before the cumulative artifact existed and does not survive it.
+The honest version is narrower and still worth having: abstract screening is nearly free, retrieval
+is the largest single loss in several projects, and the search ceiling binds hardest in
+decision_making (40% never found).
 
-**Adjusted recall.** Recall must be reported over gold studies for which the data actually
-exists — full text obtained and coordinates extractable — or it measures corpus availability
-rather than screening. Define once, early, and use consistently.
+**Adjusted recall.** Recall must be reported over gold studies for which the data actually exists —
+full text obtained and coordinates extractable — or it measures corpus availability rather than
+screening. Define once, early, and use consistently. Separating retrieval as its own stage above is
+the first half of that discipline.
 
-**Figure 1.** Slope plot, precision by stage, one line per project, 8/8 rising. Secondary
-panel: stage-conditional recall flat across stages.
+**Figure.** Cumulative gold retention across the four stages beside the precision climb — Figure 2
+in `NATURE_METHODS_SKELETON.md`, built by `scripts/make_nature_methods_figures.py`.
 
 ---
 

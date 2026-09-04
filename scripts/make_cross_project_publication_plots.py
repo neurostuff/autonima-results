@@ -225,6 +225,17 @@ def plot_screening_stage_progression(
     stage_rows: list[dict[str, Any]],
     *,
     output_dir: Path,
+    # WARNING: the "recall" panel here is NOT cumulative recall. screening_metrics_top_v_
+    # stage_progression.csv holds stage-CONDITIONAL retention -- the share of gold reaching a
+    # stage that survives it -- so its denominator changes at every stage and the line rises
+    # across the funnel, which cumulative recall cannot do. It also omits retrieval loss
+    # entirely, so chaining the values does not recover the truth (executive_function chains to
+    # 0.645 against an actual 0.392).
+    #
+    # This is retained as-is because the poster it was built for is published. Do not quote its
+    # recall panel as recall, and do not build new figures from that column: use
+    # reports/gold_survival_by_stage.csv, which counts gold PMIDs against a fixed denominator.
+    # See scripts/compute_gold_survival.py and PAPER_OUTLINE.md §1.
     formats: list[str],
     dpi: int,
     project_colors: dict[str, Any],
