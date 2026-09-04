@@ -560,9 +560,38 @@ Pooling columns rather than averaging project means is deliberate: it stops a on
 mixed-denominator artefact that arises when a project's targeted margin is averaged over columns
 having no targeted arm.
 
+**Reproducibility floor — required for reading any of the above.** The test–retest work
+([experiments/e2e_retest/](experiments/e2e_retest/README.md), §8a item 2) re-ran three projects
+end-to-end against a frozen corpus. Two runs of the same pipeline on identical inputs give
+project-level benchmark scores differing by **±0.02–0.04 dice** (ER −0.022, social +0.035, EF
++0.042; direction varies, so noise not bias) and individual columns differing by up to
+**±0.12 dice** (ER `increase` −0.114, EF `cognitive_flexibility` +0.117).
+
+That has to be stated beside the margins, because it swallows some of them:
+
+| project | autonima | baseline | margin | run drift | |
+|---|---|---|---|---|---|
+| emotion_regulation_2022 | 0.611 | 0.328 | +0.284 | 0.022 | margin ≫ drift |
+| social | 0.543 | 0.428 | +0.115 | 0.035 | margin ≫ drift |
+| executive_function | 0.575 | 0.517 | +0.058 | 0.042 | **margin ≈ drift** |
+
+So **the pooled Δ +0.099 and the large per-project wins are safe, and the small ones are not.**
+On the ±0.04 project-level floor, `decision_making` (+0.001), `dementia` (+0.005) and
+`executive_function` (+0.031) all sit inside the noise band and should be reported as ties, not
+wins. On the ±0.12 column-level floor, no single-column difference below that is interpretable
+from one run, which qualifies "ahead in 30 of 35" — that count is a tally of point estimates, and
+several of the 35 are within noise of zero either way.
+
+This is a strengthening rather than a retraction: the headline claim survives, and almost no
+LLM-pipeline paper reports a reproducibility interval at all. The honest framing is that the
+method wins clearly where the margin is large and is indistinguishable from the baseline where it
+is not. Only three projects have been retested, so the floor is estimated from those and applied
+to the rest by assumption; a wider or replicated retest would tighten it.
+
 **There are no longer any project-level losses.** Before the retrieval work `social` (−0.007) and
 `decision_making` (−0.015) both sat behind their best baseline; after it both are ahead, social
-decisively (+0.057) and decision_making by a hair (+0.001, effectively a tie). `social` still has
+decisively (+0.057) and decision_making by a hair (+0.001, which the floor above reclassifies from
+"effectively a tie" to a tie outright). `social` still has
 the corpus's weakest annotation, and `decision_making` remains the closest contest in the set —
 worth saying so rather than claiming a clean sweep.
 `emotion_regulation_2022` heads the table, but three of its four columns are scored against a
@@ -801,10 +830,37 @@ What can be done without new human labour, in rough order of value:
    analyses gives a genuine two-rater measurement. Where they diverge, the construct or its
    specification is ambiguous; where they converge but both differ from the human, that
    points at spec or expertise rather than noise. Some `-gpt` runs already exist. **[partial]**
-2. **Test–retest self-consistency.** Re-run annotation with the cache cleared and measure the
-   per-project flip rate. Weaker than inter-rater, but it bounds how reliably the spec can be
-   applied at all, and we have the screening precedent (8.6% of abstract decisions flip under
-   byte-identical criteria). Cheap: one extra run per project. **[need]**
+2. **Test–retest self-consistency.** **[have — done 2026-09-04, and widened.]** Run
+   end-to-end rather than annotation-only, because the flip rate is not the interesting quantity:
+   whether it reaches the brain map is. Three projects at their `best` tier
+   (executive_function v3, emotion_regulation_2022 v4, social v3), re-executing full-text
+   screening, parsing, annotation and the meta against a **frozen corpus** — search, abstract
+   screening and retrieval all reused and verified identical. Full write-up and reproduction
+   recipe in [experiments/e2e_retest/](experiments/e2e_retest/README.md).
+
+   **Stage instability.** Abstract screening, measured in its own arm before the freeze, flips
+   **2.24%** (EF) and **2.83%** (social) — well under the 8.6% precedent this entry was written
+   against, and near-symmetric, so the pool is stable even though decisions are not. Full-text
+   screening, the one cleanly isolated stage, flips **4.86% / 11.01% / 7.29%**. Parsing changes
+   coordinates for 5.8–12.2% of studies. Annotation flips 2.42–4.50%, but that figure is
+   end-to-end rather than per-stage: its input had already drifted, so it is computed over the
+   items present in both runs and excludes the 1,200–1,900 analysis-column pairs that exist in
+   only one.
+
+   **Consequence, which is the point.** Studyset movement is under 1% (822→822, 580→578,
+   530→529), which initially read as "the drift washes out". It does not — it redistributes.
+   Between the two runs, map agreement on manual-matched annotation groups is **mean r² 0.961 /
+   0.908 / 0.893** (dice 0.876 / 0.805 / 0.856). r² sits consistently above dice, so the
+   continuous pattern is stable and what moves is where the FDR threshold falls — a milder
+   failure than dice alone suggests, and the reason r² is the primary metric. The `all_*` bypass
+   arms barely move (r² 0.987), which localises the drift to the re-run stages. Instability
+   tracks group size at **r = +0.825**: groups under 40k voxels average dice 0.692 against 0.864
+   above it, because one study entering or leaving moves a small map a great deal.
+
+   **This bounds spec applicability as intended**, but it cannot separate the two §8a accounts:
+   a self-inconsistent model and a genuinely ambiguous target both produce flips. It is evidence
+   about reliability, not identifiability, and §8a should say so — both human-rater routes are
+   now `[optional]`, so the dichotomy stays unresolved.
 3. **A small hand-rated sample.** ~50 analyses across two contrasting projects (one clinical,
    one cognitive), rated by a second expert, would answer the question properly rather than by
    proxy, and is the only route to real identifiability. The design is what makes it
