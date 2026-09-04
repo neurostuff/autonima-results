@@ -1,0 +1,199 @@
+# Nature Methods skeleton — 3,000 words, 6 display items
+
+Target: **Article**. 150-word unstructured abstract, 3,000 words of body (5,000 at editorial
+discretion), ≤6 figures/tables, ~50 references. **Methods sits after the references and is excluded
+from the word count** — which is the single most important fact for planning, because it means the
+pipeline description, the benchmark construction, and all of `M1. AI Transparency and
+Reproducibility` cost nothing against the 3,000.
+
+Format limits from third-party aggregators ([formatting](https://manusights.com/blog/nature-methods-formatting-requirements),
+[abstract](https://wordlimit.ai/abstract-limit/nature-methods)); nature.com gates its own guidelines
+behind an IdP, so **confirm these before final submission**.
+
+---
+
+## Two papers, written together
+
+Decided 2026-09-04. Both drafted simultaneously; only one goes to Nature Methods.
+
+| paper | venue | role |
+|---|---|---|
+| **neurometabench** | preprint with DOI, then optionally a data journal | the instrument: nine published meta-analyses with gold study lists *and* per-analysis annotations |
+| **autonima evaluation** | **Nature Methods** | the finding: selection at the analysis level is what recovers expert maps |
+
+The split earns back word count where it is scarcest. In a single paper, constructing and
+justifying the benchmark would eat several hundred words of a 3,000-word body and a figure panel,
+for material that is not the finding. Split out, it becomes **one sentence and a citation**, and
+the benchmark paper gets to be as thorough as it should be without a limit.
+
+**The benchmark paper must exist first, or at least simultaneously.** Reviewers will ask where the
+benchmark is, and "in a paper we have not submitted yet" is not an answer. A preprint with a Zenodo
+DOI is sufficient; it does not need to be accepted anywhere.
+
+## The framing, and why Neurosynth is the exact precedent
+
+Nature Methods does not publish evaluations — the measurement is blunt: **zero
+LLM-evidence-synthesis papers across Nature Methods, Nature Machine Intelligence, Nature
+Communications, eLife, PNAS and NEJM AI.**
+
+But Neurosynth (Nat Methods, 2011) is the counter-example that shows the way through, because read
+closely **it is primarily an evaluation** — the substance is a demonstration that automated
+synthesis reproduces what manual meta-analysis produces. It succeeded by presenting that evaluation
+as the validation of a new capability rather than as a benchmark exercise. fMRIPrep (2019) did the
+same.
+
+So the instruction is not "hide the evaluation". It is **lead with the method and let the
+evaluation be its proof**:
+
+> **Automated evidence synthesis has been operating at the wrong unit. Selecting papers is not
+> enough — the analysis determines the result, and selecting at that level is both necessary and now
+> feasible. Here is a method that does it, and here is what it recovers.**
+
+The existing thesis is already close. The shift is emphasis: §6's decomposition (annotation gain
+exceeds screening gain) is the *finding*, not a supporting result. Everything else is evidence for
+it.
+
+**What this costs.** §3's cautionary case — currently 1,702 words of outline and one of the
+strongest passages — becomes two sentences plus Extended Data. That is the real price of the word
+limit, and it is worth paying only if the analysis-unit framing carries.
+
+## Word budget
+
+| block | words | contents |
+|---|---|---|
+| Abstract | 150 | problem → approach → finding, unreferenced |
+| Introduction | ~350 | the unit problem; why coordinate meta-analysis exposes it; benchmark cited, not built |
+| **Results** | **~1,900** | six subsections, ~300 words each, one per figure |
+| Discussion | ~600 | limits of the benchmark; where the gain does and does not appear; what generalises |
+| *(Methods)* | *unlimited* | pipeline, benchmark construction, statistics, M1 transparency section |
+| **body total** | **~3,000** | the ~100 words the benchmark split returns go to Result 5 |
+
+---
+
+## Section-by-section, with figure allocation
+
+### Introduction (~450 w)
+
+Three moves, no more:
+
+1. **The unit problem.** Evidence synthesis selects papers. But a paper reports many results, and
+   for most syntheses only one is the target. Selecting the paper and taking everything in it is
+   the standard failure, and it is invisible to every paper-level metric.
+2. **Why neuroimaging exposes it.** Coordinate-based meta-analysis has a machine-readable result
+   unit (the analysis, with its peaks) and published gold standards. So the error is measurable
+   here in a way it is not elsewhere.
+3. **What we built.** A pipeline that selects at both levels, evaluated against **neurometabench**
+   (cite the companion preprint — do not rebuild it here). One clause that it is the best available
+   reference rather than ground truth; the caveat returns in Discussion, its construction does not.
+
+*(One paragraph of the §"Framing" caveat, moved here from where the outline currently has it.)*
+
+### Result 1 — The pipeline, the benchmark, and the unit that matters — **Figure 1** (~300 w)
+
+Schematic. Establishes what is being measured before any number appears.
+
+Panels: **a** pipeline stages with what each consumes and emits; **b** the unit distinction — one
+paper, k analyses, one target, and what a paper-level selector does with that. Panel b is the
+argument of the paper in a picture and should be drawn first.
+
+The benchmark panel that would otherwise sit here belongs in the companion paper; a one-line
+inset naming the nine meta-analyses is enough. That frees the third panel for the unit
+distinction to be drawn properly rather than crammed.
+
+### Result 2 — Paper-level screening: precision rises, recall holds — **Figure 2** (~300 w)
+
+§1. Search → abstract → full-text, per project. Precision climbs monotonically; recall is
+essentially preserved. Necessary but framed explicitly as *not sufficient* — this is the setup for
+Result 4, not a headline.
+
+### Result 3 — Analysis-level selection against expert annotation — **Figure 3** (~300 w)
+
+§5. Cross-project annotation performance on the **exhausted-manual** basis, dementia excluded
+(its source meta-analysis pools multiple studies per gold analysis, so per-paper extraction has no
+clean mapping).
+
+State the aggregation dependence honestly and in one sentence, because it reverses the conclusion:
+matched-only gives precision 0.863 / recall 0.810 (precision-heavy), exhausted-manual gives
+0.540 / 0.809 (recall-heavy). Naming the variant is not optional.
+
+### Result 4 — The whole pipeline beats a search-only synthesis — **Figure 4** (~350 w)
+
+§7, the headline. 35 columns, autonima against the strongest baseline a competent practitioner
+could have built per column.
+
+```
+best AVAILABLE   0.495 vs 0.394   Δ +0.101   95% CI [+0.045, +0.185]   sign test p = 2.2e-05
+STRONGEST        0.495 vs 0.399   Δ +0.096   95% CI [+0.040, +0.179]   p = 1.2e-04
+```
+
+CI is cluster-bootstrapped over projects, not columns — a project's columns share a corpus, a
+search and a screening run. Say so in one clause; it pre-empts the obvious reviewer objection and
+costs nothing, since both intervals exclude zero.
+
+### Result 5 — The gain comes from analysis selection, not paper selection — **Figure 5** (~350 w)
+
+§6. **This is the paper.** Holding the study pool fixed, annotation still improves the map — so the
+advantage is not explained by retrieving better papers.
+
+Give the per-project ordering as the mechanism, not decoration: the two clinical projects requiring
+a specific population contrast gain ~3× what the cognitive ones do, and the only project where
+annotation loses to its baseline (problem_solving, Δr −0.020) is the most diffuse target in the set.
+Gain tracks how *specific* the target is. That is a claim about when the method works, which is what
+distinguishes a methods paper from an evaluation.
+
+### Result 6 — Cost and scale — **Figure 6** (~300 w)
+
+S1, now fully measured from per-stage token accounting rather than estimated.
+
+| stage | $/call | note |
+|---|---|---|
+| abstract screening | $0.0023 | **88% of cost is output** — the written rejection reason, not the abstract |
+| full-text screening | $0.0138 | |
+| coordinate parsing | $0.0059 | |
+| annotation | $0.0211 | one call per study, not per study-column |
+
+The practical claim: a full project runs for tens of dollars and hours, against months of person
+time. For a methods journal this is not an aside — it is why the method matters.
+
+### Discussion (~600 w)
+
+Four beats, roughly 150 words each:
+
+1. **The benchmark is a reference, not truth.** Manual meta-analyses have their own scope,
+   resolution and internal consistency. Where this binds, it binds hard — dementia's aggregation
+   explains its whole profile.
+2. **Where the gain appears and where it does not.** Specific targets gain; diffuse ones do not. Two
+   accounts (squishy target vs model limitation) remain unresolved; say so rather than choosing.
+3. **What generalises.** The analysis-unit argument is not neuroimaging-specific; the *measurability*
+   is. Any synthesis whose result unit lives below the paper has this problem and no instrument.
+4. **Close on §9** — the forward-looking use case, once it lands.
+
+---
+
+## Extended Data / Supplementary
+
+Everything below survives at full length outside the word count:
+
+- **§3's cautionary case** — verbatim criteria that look faithful and fail. Strong material,
+  sacrificed to the limit; Extended Data figure plus two sentences in the body.
+- §2's controlled precision analysis (dementia's published rejection reasons).
+- Per-project tables behind Figures 2–5.
+- The four-tier registry and `verbatim → best` leakage measurement (**still unrun**).
+- Full PRISMA-style funnel per project.
+
+---
+
+## Before submission
+
+| item | state |
+|---|---|
+| §9 forward-looking close | **the gate.** scz_enigma is the live candidate; Elsevier blocker cleared |
+| statistical reporting | done — cluster bootstrap + sign test wired into `compile_best_baselines.py` |
+| cost and scale | done — measured, not estimated |
+| `verbatim → best` | designed, never run; needed for the leakage claim |
+| neurometabench citable | **needs a Zenodo DOI** before submission — reviewers will ask where the benchmark is |
+| preprint | post simultaneously; NM desk-rejects fast, so the downside is bounded time only if the preprint is already out |
+
+**Sequencing with the data paper.** neurometabench as a separate Data Resource paper is the right
+split, but it must be at least preprinted with a DOI before or alongside this one. "In a paper we
+have not submitted yet" is not an answer to "where is this benchmark".
