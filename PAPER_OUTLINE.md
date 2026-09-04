@@ -956,31 +956,96 @@ maps should be the reported metric, with Dice at most secondary.
 
 ---
 
-## S1. Supplement: cost and scale per project  **[need]**
+## S1. Supplement: cost and scale  **[have — measured 2026-09-04]**
 
-Not a headline result, but the question every reader with a meta-analysis to run will ask, and
-currently unanswered anywhere in the paper.
+Not a headline result, but the question every reader with a meta-analysis to run will ask. All
+figures below are **measured**, not estimated: runs now record per-stage token usage
+(`usage_total` in `execution_progress.json`), and these come from the end-to-end retest
+(§8a item 2) plus two dedicated abstract-stage runs. Prices are gpt-5-mini at
+$0.25 / $0.03 / $2.00 per 1M input / cached-input / output tokens.
 
-Per project, report: candidate studies searched, abstracts screened, full texts retrieved,
-coordinates extracted, analyses annotated, wall-clock time, and **API cost** — broken out by
-stage, since the cost profile is lopsided (abstract screening is high-volume and cheap per
-item; full-text screening and annotation are low-volume and expensive per item).
+### Measured per-call cost
 
-Two things this supports that the main text cannot:
+| stage | calls measured | input/call | cached | output/call | **$/call** |
+|---|---|---|---|---|---|
+| abstract screening | 708 | 1,007 | 10.9% | 1,034 | **$0.0023** |
+| full-text screening | 1,211 | 46,310 | 1.7% | 1,211 | **$0.0138** |
+| coordinate parsing | 1,299 | 4,962 | 10.2% | 2,359 | **$0.0059** |
+| annotation | 1,091 | 52,117 | 7.0% | 4,424 | **$0.0211** |
 
-- **The practical case.** If a full project costs on the order of tens of dollars and hours
-  rather than months of person-time, that is the argument for adoption, independent of how it
-  scores against the benchmark.
-- **Where to spend effort.** Pair cost with the funnel from §8c. If coordinate extraction is
-  the binding constraint and screening is cheap, the sensible advice is to screen broadly and
-  invest in extraction — which is the opposite of where intuition sends people.
+Two things worth stating because they are counter-intuitive:
 
-Data source: `execution_manifest.json` and `execution_progress.json` per run already record
-stage timings and cached-versus-computed counts; cost needs per-stage token accounting, which
-may require adding it to the pipeline if it is not already logged. Worth checking before
-promising the cost column.
+**Output dominates the cheap stages.** Abstract screening emits 1,034 output tokens per call
+against 1,007 input, and at 8x the price that makes output **88% of abstract-stage cost**. The
+driver is the written rejection reason, not the abstract. Anyone trying to reduce cost should
+shorten the justification before touching the input.
 
----
+**Annotation issues one call per study, not per study-column.** The multi-annotation function
+schema decides every column in a single call, so calls track studies parsed (1.12 per study) and
+each call is large. An earlier estimate that modelled calls as studies x columns overstated the
+count by ~8x while understating per-call size by ~26x.
+
+### The funnel, and why cost per hit is the wrong unit
+
+Across all nine projects at their canonical runs (22,624 search hits):
+
+| | median | range across projects |
+|---|---|---|
+| hits reaching full-text screening | 41.7% | **4.9% – 72.8%** |
+| hits reaching coordinate parsing | 16.4% | **2.2% – 33.2%** |
+| **cost per search hit** | $0.0139 | **$0.0037 – $0.0243** (6.5x) |
+| **cost per study in the final map** | **$0.085** | $0.073 – $0.211 (2.9x) |
+
+Cost per hit varies 6.5x because it is really a measure of *query selectivity*, not of the method:
+problem_solving returns 9,999 hits and parses 216 of them, while social returns 1,024 and parses
+322. **Quote cost per study that reaches the map instead** — it is 2.9x tighter, and it is the
+unit a reader planning a review can actually reason about. (Its two outliers, dementia $0.211 and
+problem_solving $0.172, are the two projects that discard the most after full-text screening, so
+they pay screening costs for studies that never contribute.)
+
+A model fitted on the pooled funnel predicts individual projects poorly (0.35x–2.31x of actual),
+which is the same point from the other direction: there is no single hits-to-cost constant.
+
+### What a project costs
+
+Applying measured rates to each project's actual funnel:
+
+| project | search hits | **cost** |
+|---|---|---|
+| executive_function | 4,881 | $42.26 |
+| problem_solving | 9,999 | $37.19 |
+| cue_reactivity | 1,940 | $32.57 |
+| social | 1,024 | $23.45 |
+| decision_making | 769 | $18.70 |
+| emotion_regulation_2022 | 1,264 | $17.63 |
+| dementia | 2,027 | $13.05 |
+| vbm_of_substance_use | 647 | $7.85 |
+| vbm_of_ptsd | 73 | $1.29 |
+| **all nine, from scratch** | **22,624** | **$194** |
+
+**Mean $21.55 per project; the entire nine-project benchmark for under $200.** Wall-clock at
+`-j 12`, from throughput observed in the retest, runs roughly 0.5 h per 1,000 hits — so a typical
+project is a few hours unattended, against the months a manual review of the same corpus takes.
+
+That is the practical case, and it is the argument for adoption independent of how the method
+scores against the benchmark. It also reframes §8c: if screening is this cheap, the sensible advice
+is to **screen broadly and invest in retrieval and extraction**, which is the opposite of where
+intuition sends people — full-text screening plus annotation is 61% of the bill, and both are
+gated by how much full text was obtained in the first place.
+
+### Caveats
+
+- Rates come from three projects (ER, EF, social) for the full-text, parsing and annotation stages
+  and two (vbm_of_ptsd, vbm_of_substance_use) for abstract screening. They are stable across those,
+  but all are neuroimaging with similar criteria lengths.
+- Per-call input scales with full-text length and with the number of criteria, both of which are
+  project-specific. A review with twice the criteria will not cost twice as much, but it will not
+  cost the same.
+- Costs are for `gpt-5-mini` with reasoning off. The deactivation experiment measured
+  `gpt-5.6-luna` at a different rate, and prices change; the accounting records tokens
+  unconditionally so any figure here can be re-priced.
+- These are re-run costs against a **frozen corpus**. A first run also pays retrieval, which is
+  network time rather than tokens, and is often the wall-clock bottleneck.
 
 ## 9. Forward-looking close  **[idea]**
 
