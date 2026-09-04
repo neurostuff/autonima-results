@@ -1047,6 +1047,127 @@ gated by how much full text was obtained in the first place.
 - These are re-run costs against a **frozen corpus**. A first run also pays retrieval, which is
   network time rather than tokens, and is often the wall-clock bottleneck.
 
+## M1. Methods: "AI Transparency and Reproducibility"  **[partial]**
+
+Not a narrative section. Imaging Neuroscience's [guidelines for AI methods
+papers](https://direct.mit.edu/imag/pages/imag-guidelines-for-ai-methods-papers) require a
+standalone Methods sub-section under this exact name, normally at the end of Methods, covering
+five areas. Drafting it is mostly assembly — four of the five are already established work sitting
+in appended notes — but it changes where that material lives, and one area is a genuine gap.
+
+**Keep two AI roles separate, or this section becomes unreadable.** The paper contains AI as the
+*object of study* (gpt-5-mini performing screening, parsing and annotation — that is the method
+being evaluated) and AI as a *development tool* (LLM assistance writing the pipeline itself).
+Reviewers will conflate them unless the sub-section names the distinction in its first sentence.
+The end-matter "Declaration of the use of AI", which Imaging Neuroscience requires of *all* papers,
+covers the second plus writing; this Methods sub-section covers the research.
+
+### 1. Code and data availability
+
+autonima (`neurostuff/autonima`), this results repository, and neurometabench. Needs a **Zenodo DOI
+for a tagged snapshot of each** — a bare GitHub link is not the "public, permanent repository" the
+guidelines ask for, and the configs are the method, so a moving `master` makes every number
+unreproducible. Environment configuration ships already; there are no model weights to release,
+which is worth stating explicitly rather than leaving as an apparent omission.
+
+### 2. Generative AI in development  **[need — nothing written yet]**
+
+Required verbatim: state "whether and how generative AI tools (e.g., ChatGPT, Claude) were used to
+assist in software and code development, confirming that all AI-generated code has been
+human-verified and unit-tested."
+
+This applies squarely and should be answered plainly rather than minimised — autonima was
+developed with substantial LLM assistance throughout, including the evaluation scripts that
+produce the numbers in this paper. Three things make that declarable rather than awkward:
+
+- **The test suite is the verification claim.** 161 tests, run on every change. That is the
+  concrete content of "human-verified and unit-tested"; without it the sentence is an assertion.
+- **The measurement code is separable from the pipeline under test.** A reviewer's real worry is
+  circularity — a model marking its own homework. Worth stating that the benchmark, the gold
+  standards and the comparison scripts derive from published meta-analyses and hand curation, not
+  from the pipeline's own output.
+- **Known defects were found and recorded, not smoothed over.** The retracted PubMed-drift finding,
+  the stale-aggregator error in §7, the ACE double-ingest, the `--limit` clobber. A declaration
+  that lists real bugs caught reads as a working process; one that claims none reads as a process
+  nobody stressed.
+
+Do not overstate the assistance either. Some of it is authored, some assisted, some generated and
+reviewed, and the honest form is a sentence per category rather than a single blanket claim.
+
+### 3. Data leakage mitigation — and the four-tier registry
+
+The guidelines frame leakage in cross-validation terms (preprocessing before folds, feature
+selection on test data, correlated samples split across folds). None of that applies literally:
+there is no training loop. **But the analogous problem is real and this paper already has it
+characterised** — criteria that were revised after reading the benchmark's error reports are tuned
+against the thing they are evaluated on.
+
+`run_categories.yaml` is already the mitigation, and it is stronger than a disclosure because it
+**stratifies runs by how much gold-standard information reached the schema**:
+
+| tier | what it is | leakage |
+|---|---|---|
+| `verbatim` | transcribed from the source paper before any results were seen | **none by construction.** Drafting help from a model does not disqualify a schema; revision against error reports does |
+| `manual` | the author revised by hand, having glanced at a few report examples | real but shallow |
+| `best` | the preferred config — benchmark-informed tuning fully allowed, curated not derived | deep |
+| `latest` | highest version number; in practice agent-written schemas produced by reading error reports in full | deep; **must never be presented as held-out** |
+
+Two existing notes belong *in this sub-section* rather than where they currently sit: §3's caveat
+that its schema revisions "read the benchmark's error reports, so they are tuned against it by
+construction… what they demonstrate is repair-given-feedback, not zero-shot schema authoring", and
+the whole of "The `best` tier, and what peeking bought". Under this journal these are not
+admissions to bury — they are the required content, and moving them promotes a defensive passage
+into a methodological credential.
+
+### 4. Hyperparameter tuning protocol
+
+The guidelines ask for "the search space, the optimization strategy used… and how test data were
+isolated and not used". The registry maps onto all three, which is why it is worth presenting as a
+protocol rather than as bookkeeping:
+
+- **Search space** — the criteria schema: inclusion/exclusion criteria and annotation column
+  definitions, expressed as configuration.
+- **Optimization strategy** — iterative revision against per-project error reports, performed by
+  hand (`manual`) or by an agent reading the reports in full (`latest`). Not automated search; no
+  objective was optimised numerically.
+- **Test-data isolation** — the tier itself. This is the part worth emphasising: a conventional
+  paper isolates test data and asserts it. **This design instead measures what isolation was
+  worth**, because `verbatim` → `best` is exactly the cost of peeking, on the same projects with
+  the same benchmark.
+
+Also record the selection rule, since it is a tuning decision with a stated cost: **canonical runs
+prefer recall over F1**, resolved that way in all four families where the two disagreed, because
+against a mixed pool it is not knowable why precision fell. That rule lives in
+`scripts/run_tiers.py` with a `best-reason` per entry.
+
+**The gap.** `verbatim` → `best` is designed but has never been run — the outline says "report" it,
+and no number exists. That is the single most valuable missing measurement for this sub-section,
+because it converts "we disclose that tuning occurred" into "tuning was worth X". It needs no new
+LLM calls for the runs that already exist; it is a comparison across registered tiers.
+
+### 5. Statistical reporting  **[have — added 2026-09-04]**
+
+Required: "both the mean and variance… of model predictions and metrics" and "p-values derived
+from rigorous statistical testing that directly compare the proposed method and baseline".
+
+Satisfied by `compile_best_baselines.py`, which now emits
+`reports/cross_project_best_baseline_stats.csv`:
+
+    best AVAILABLE   delta +0.101   95% CI [+0.045, +0.185]   sign test p = 2.2e-05
+    STRONGEST        delta +0.096   95% CI [+0.040, +0.179]   sign test p = 1.2e-04
+
+The bootstrap resamples **projects, not columns** — the 35 columns are not 35 independent
+observations, since a project's columns share a corpus, a search and a screening run. That widens
+the interval 1.8x and is the version to report; emotion_regulation_2022 alone carries mean delta
++0.369, so whether it lands in a resample moves the pooled mean substantially, which is precisely
+the uncertainty a column bootstrap hides. Percentile rather than t-based, because the deltas are
+right-skewed (mean +0.101, median +0.059).
+
+Still to add: per-column CIs in §7's table, and a decision on whether to bootstrap studies within
+studysets for map-level uncertainty (no LLM cost, but re-runs the meta per resample).
+
+---
+
 ## 9. Forward-looking close  **[idea]**
 
 The ceiling on this entire evaluation is the manual meta-analyses themselves — their scale,
