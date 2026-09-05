@@ -65,12 +65,18 @@ def load_gold() -> dict[str, set[str]]:
     return out
 
 
-def canonical_run(project_dir: Path) -> Path | None:
-    """Highest bare vN run -- the canonical family, excluding suffixed derivatives."""
+def canonical_run(project_dir: Path, suffix: str = "") -> Path | None:
+    """Highest-versioned run in one family.
+
+    suffix="" gives the canonical family (bare vN). suffix="-allstudies" gives the fixed-pool
+    family, which runs the same screening and annotation over a pool assembled without a
+    search-driven narrowing -- so comparing the two isolates what the pool contributes.
+    """
+    pattern = re.compile(rf"^v(\d+){re.escape(suffix)}$")
     versions = [
-        (int(BARE_VERSION.match(p.name).group(1)), p)
+        (int(pattern.match(p.name).group(1)), p)
         for p in project_dir.iterdir()
-        if p.is_dir() and BARE_VERSION.match(p.name) and (p / "outputs").is_dir()
+        if p.is_dir() and pattern.match(p.name) and (p / "outputs").is_dir()
     ]
     return max(versions)[1] if versions else None
 
@@ -111,6 +117,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--projects-root", type=Path, default=REPO_ROOT / "projects")
     ap.add_argument("--output", type=Path,
                     default=REPO_ROOT / "reports" / "gold_survival_by_stage.csv")
+    ap.add_argument("--suffix", default="",
+                    help='run-family suffix, e.g. "-allstudies" for the fixed-pool arm')
     args = ap.parse_args(argv)
 
     gold_sets = load_gold()
@@ -119,7 +127,7 @@ def main(argv: list[str] | None = None) -> int:
     print("-" * 80)
     for project, gold in sorted(gold_sets.items()):
         project_dir = args.projects_root / project
-        run = canonical_run(project_dir) if project_dir.is_dir() else None
+        run = canonical_run(project_dir, args.suffix) if project_dir.is_dir() else None
         if run is None:
             print(f"{project:<24}(no canonical run)")
             continue
@@ -137,7 +145,8 @@ def main(argv: list[str] | None = None) -> int:
             kept = len(gold & carried) if carried is not None else None
             cells.append(kept)
             rows.append({
-                "project": project, "run": run.name, "stage": stage,
+                "project": project, "run": run.name,
+                "family": "allstudies" if args.suffix else "canonical", "stage": stage,
                 "gold_total": len(gold),
                 "gold_surviving": "" if kept is None else kept,
                 "cumulative_recall": "" if kept is None else round(kept / len(gold), 4),
@@ -152,7 +161,13 @@ def main(argv: list[str] | None = None) -> int:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
         w.writerows(rows)
-    print(f"\n  wrote {args.output.relative_to(REPO_ROOT)}")
+    # relative_to raises when --output points outside the repo, which is the normal case for a
+    # scratch run; fall back to the absolute path rather than crashing after the work is done.
+    try:
+        shown = args.output.relative_to(REPO_ROOT)
+    except ValueError:
+        shown = args.output
+    print(f"\n  wrote {shown}")
     return 0
 
 
