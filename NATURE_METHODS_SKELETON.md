@@ -207,8 +207,8 @@ gives precision 0.863 / recall 0.810 (precision-heavy), exhausted-manual gives 0
 could have built per column.
 
 ```
-best AVAILABLE   0.423 vs 0.315   Δ +0.107   95% CI [+0.052, +0.164]   sign test p = 2.2e-05
-STRONGEST        0.423 vs 0.318   Δ +0.104   95% CI [+0.049, +0.162]   p = 2.2e-05
+best AVAILABLE   0.495 vs 0.394   Δ +0.101   95% CI [+0.045, +0.185]   sign test p = 2.2e-05
+STRONGEST        0.495 vs 0.399   Δ +0.096   95% CI [+0.040, +0.179]   p = 1.2e-04
 ```
 
 CI is cluster-bootstrapped over projects, not columns — a project's columns share a corpus, a
@@ -223,8 +223,7 @@ Built by `scripts/make_brain_map_figure.py`.
 
 Emotion regulation `decrease` is the case that carries it: the baseline is diffuse blue across
 frontal and parietal cortex, the pipeline resolves focal bilateral clusters, and the expert map
-matches the pipeline closely. Δ dice +0.278 (0.703 vs 0.425); this was Δ*R²* +0.491 before the
-metric switch below.
+matches the pipeline closely. Δ*R²* +0.491.
 
 **On cherry-picking.** Selecting exemplars by margin is cherry-picking and should be stated as
 such, then defused two ways. The figure runs `--mode contrast`, which pairs the three largest
@@ -248,41 +247,41 @@ them, and every triplet is verified by recomputing pipeline-vs-expert *R²* and 
 `cross_project_best_baseline.csv` (35/35 pass). A wrong path would produce a plausible figure that
 does not match the text, which is the failure mode worth engineering against.
 
-### Metric consistency — resolved 2026-09-04, unified on dice
+### Metric consistency — resolved 2026-09-04: r² for Figure 4, dice for Figure 5
 
-Figure 4 reported **r²** and Figure 5 **dice**, which was incidental rather than principled: each
-was whichever column its source file led with. `baseline_vs_autonima.csv` carries dice, pearson r
-*and* r²; `annotation_value.csv` carries dice and pearson r but **no r²**. So dice is the only
-metric available to both without recomputation.
+Figure 4 reports **r²** and Figure 5 **dice**. That started as an accident — each was whichever
+column its source file led with — and an attempt to unify on dice was tried and **reverted**,
+because the investigation turned up a reason the split is correct.
 
-Now unified on dice. `compile_best_baselines.py --metric {dice,r2,pearson_r}` keeps the robustness
-check runnable, and the columns of `cross_project_best_baseline.csv` are metric-neutral
-(`autonima`, `best_available`, `strongest`) with the metric in its own column. The headline is
-unchanged — the same 30 of 35 columns win under all three:
+**Dice is degenerate on this corpus.** Four `vbm_of_substance_use` columns (nicotine, opioids,
+stimulants, cannabis) score **dice 0.000 for every arm** — no suprathreshold overlap at all — so it
+cannot rank them. r² separates them cleanly (nicotine 0.187 vs 0.066, stimulants 0.269 vs 0.105).
+Under dice these register as "ties", which is not a tie but an unmeasured comparison, and dropping
+them would have taken p from 2.2e-05 to 3.0e-08 on the strength of the metric failing.
 
-| metric | autonima | baseline | Δ | 95% CI |
-|---|---|---|---|---|
-| **dice** | 0.423 | 0.315 | **+0.107** | [+0.052, +0.164] |
-| r² | 0.495 | 0.394 | +0.101 | [+0.045, +0.185] |
-| pearson r | 0.678 | 0.598 | +0.080 | [+0.035, +0.142] |
+**Dice also reverses the sign on vbm_of_ptsd**, and the reason generalises:
 
-**A trap the switch exposed, and why the sign test changed convention.** Dice is a *thresholded*
-overlap measure, so it produces genuine exact ties where r² resolves a difference: the same 35
-columns give 30 wins / 5 losses / 0 ties under r², but **30 / 1 / 4 under dice**. The four ties are
-real, not rounding. Dropping ties — the usual convention — would have shrunk n from 35 to 31 and
-dropped p from 2.2e-05 to **3.0e-08**: three orders of magnitude of apparent significance bought
-entirely by the metric being *coarser*. `sign_test()` now counts ties as non-wins, which keeps the
-test on the full column set and makes p metric-stable at 2.2e-05.
+| arm | dice | r² | pearson | studies | points |
+|---|---|---|---|---|---|
+| autonima | **0.111** | **0.456** | **+0.675** | **7** | **72** |
+| baseline | 0.325 | 0.247 | +0.497 | 29 | 386 |
 
-**Report this in Methods.** "We switched metric and significance improved a thousandfold" is
-exactly what a sceptical reviewer should catch, and it is far better volunteered.
+The pipeline map is *correct but sparse* — 7 studies and 72 peaks against 29 and 386. A
+thresholded overlap measure punishes missing extent; a correlation rewards matching shape. Across
+the corpus the columns where the two metrics disagree or tie have a median points ratio of 0.17
+against 0.28 for those where they agree, so this is systematic, not one odd column.
+
+**But r² cannot be used for Figure 5**: `annotation_value.csv` carries pearson for only **14 of 35
+rows**, so switching would cost 21 columns. Dice covers all 35 there.
+
+So the split stands, with a reason: **r² where maps differ in extent and sparsity matters
+(baseline comparison), dice where coverage of the column set matters more (annotation gain).** Say
+this in Methods in one sentence, and report the robustness check — `compile_best_baselines.py
+--metric dice` still runs and gives Δ +0.107, the same 30 of 35 columns.
 
 One argument against r² that turns out **not** to apply: r² discards sign, so an anti-correlated
 map would score as well as a correlated one. Checked — 0 of 104 comparisons have negative pearson
 r. Do not use it as the justification.
-
-Still to convert: §7's prose and the poster figures were written in r². §7's headline is updated;
-the rest is not.
 
 ### Result 5 — The gain comes from analysis selection, not paper selection — **Figure 5** (~350 w)
 
