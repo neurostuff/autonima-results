@@ -207,40 +207,82 @@ gives precision 0.863 / recall 0.810 (precision-heavy), exhausted-manual gives 0
 could have built per column.
 
 ```
-best AVAILABLE   0.495 vs 0.394   Δ +0.101   95% CI [+0.045, +0.185]   sign test p = 2.2e-05
-STRONGEST        0.495 vs 0.399   Δ +0.096   95% CI [+0.040, +0.179]   p = 1.2e-04
+best AVAILABLE   0.423 vs 0.315   Δ +0.107   95% CI [+0.052, +0.164]   sign test p = 2.2e-05
+STRONGEST        0.423 vs 0.318   Δ +0.104   95% CI [+0.049, +0.162]   p = 2.2e-05
 ```
 
 CI is cluster-bootstrapped over projects, not columns — a project's columns share a corpus, a
 search and a screening run. Say so in one clause; it pre-empts the obvious reviewer objection and
 costs nothing, since both intervals exclude zero.
 
-### Metric consistency — unresolved
+**Add the brain maps here.** Every number in this section is a similarity between two maps and the
+reader currently never sees one — a conspicuous gap in a neuroimaging paper, and the panel most
+likely to make the result *feel* true rather than merely reported. Panel **c**: axial slices for
+five columns, three arms each (search-only baseline / full pipeline / expert meta-analysis).
+Built by `scripts/make_brain_map_figure.py`.
 
-Figure 4 currently reports **r²** and Figure 5 **dice**, which is incidental rather than principled:
-each was whichever column its source file led with. `baseline_vs_autonima.csv` carries dice,
-pearson r *and* r²; `annotation_value.csv` carries dice and pearson r but **no r²**. So dice is the
-only metric available to both without recomputation.
+Emotion regulation `decrease` is the case that carries it: the baseline is diffuse blue across
+frontal and parietal cortex, the pipeline resolves focal bilateral clusters, and the expert map
+matches the pipeline closely. Δ dice +0.278 (0.703 vs 0.425); this was Δ*R²* +0.491 before the
+metric switch below.
 
-The headline is robust to the choice — same 30/35 columns win under all three:
+**On cherry-picking.** Selecting exemplars by margin is cherry-picking and should be stated as
+such, then defused two ways. The figure runs `--mode contrast`, which pairs the three largest
+margins with the two smallest so a near-tie is shown beside a win. And the supplement carries
+**all 35 columns** (`--mode all`), so the reader can check the selection. Figures 4a/4b already
+report the full distribution including the five columns where the pipeline loses, so the exemplars
+illustrate rather than stand in for the evidence.
 
-| metric | autonima | baseline | Δ | 95% CI | sign test |
-|---|---|---|---|---|---|
-| r² | 0.495 | 0.394 | +0.101 | [+0.045, +0.185] | 2.2e-05 |
-| **dice** | 0.423 | 0.315 | **+0.107** | **[+0.052, +0.164]** | 2.2e-05 |
-| pearson r | 0.678 | 0.598 | +0.080 | [+0.035, +0.142] | 2.2e-05 |
+**Two selection rules worth stating in the caption**, because both are choices a reviewer could
+otherwise read as convenient:
 
-**Recommendation: unify on dice**, and state in Methods that the result is unchanged under r² and
-pearson r. Dice is available to both figures, its interval is the narrowest, and reporting the
-robustness explicitly is stronger than picking one silently — "why this metric?" is otherwise a
-free shot for a reviewer.
+- **One row per project**, not the top five columns overall. Unfiltered, the top four are all
+  emotion regulation, which shows the same contrast four times and says nothing about breadth.
+- **Columns whose maps render blank are excluded from the main figure.** VBM PTSD has a healthy
+  +0.209 margin but only 21 gold studies, so 401 / 32 / 101 voxels survive FDR correction against
+  ~5,000–48,000 in the legible rows — three empty brains that occupy a row without informing.
+  Those columns still appear in the supplement.
+
+**Correctness note.** Map paths are resolved the way `compare_baselines_to_benchmark.py` resolves
+them, and every triplet is verified by recomputing pipeline-vs-expert *R²* and comparing against
+`cross_project_best_baseline.csv` (35/35 pass). A wrong path would produce a plausible figure that
+does not match the text, which is the failure mode worth engineering against.
+
+### Metric consistency — resolved 2026-09-04, unified on dice
+
+Figure 4 reported **r²** and Figure 5 **dice**, which was incidental rather than principled: each
+was whichever column its source file led with. `baseline_vs_autonima.csv` carries dice, pearson r
+*and* r²; `annotation_value.csv` carries dice and pearson r but **no r²**. So dice is the only
+metric available to both without recomputation.
+
+Now unified on dice. `compile_best_baselines.py --metric {dice,r2,pearson_r}` keeps the robustness
+check runnable, and the columns of `cross_project_best_baseline.csv` are metric-neutral
+(`autonima`, `best_available`, `strongest`) with the metric in its own column. The headline is
+unchanged — the same 30 of 35 columns win under all three:
+
+| metric | autonima | baseline | Δ | 95% CI |
+|---|---|---|---|---|
+| **dice** | 0.423 | 0.315 | **+0.107** | [+0.052, +0.164] |
+| r² | 0.495 | 0.394 | +0.101 | [+0.045, +0.185] |
+| pearson r | 0.678 | 0.598 | +0.080 | [+0.035, +0.142] |
+
+**A trap the switch exposed, and why the sign test changed convention.** Dice is a *thresholded*
+overlap measure, so it produces genuine exact ties where r² resolves a difference: the same 35
+columns give 30 wins / 5 losses / 0 ties under r², but **30 / 1 / 4 under dice**. The four ties are
+real, not rounding. Dropping ties — the usual convention — would have shrunk n from 35 to 31 and
+dropped p from 2.2e-05 to **3.0e-08**: three orders of magnitude of apparent significance bought
+entirely by the metric being *coarser*. `sign_test()` now counts ties as non-wins, which keeps the
+test on the full column set and makes p metric-stable at 2.2e-05.
+
+**Report this in Methods.** "We switched metric and significance improved a thousandfold" is
+exactly what a sceptical reviewer should catch, and it is far better volunteered.
 
 One argument against r² that turns out **not** to apply: r² discards sign, so an anti-correlated
 map would score as well as a correlated one. Checked — 0 of 104 comparisons have negative pearson
-r, so this is theoretical here. Do not use it as the justification.
+r. Do not use it as the justification.
 
-Cost of switching: §7 and the poster figures both use r² throughout, so the text needs editing.
-Not yet done.
+Still to convert: §7's prose and the poster figures were written in r². §7's headline is updated;
+the rest is not.
 
 ### Result 5 — The gain comes from analysis selection, not paper selection — **Figure 5** (~350 w)
 
