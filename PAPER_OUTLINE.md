@@ -1760,8 +1760,8 @@ So `annotated − all_analyses` asks: **given that you already found the right p
 closer to the manual meta-analysis does analysis-level selection get you?** Nothing else varies.
 Emitted by `scripts/annotation_value.py` as `reports/annotation_value.csv`.
 
-**Result: 35 columns across all 9 projects. Mean dice gain +0.067, median +0.037, positive in
-26/35.**
+**Result: 35 columns across all 9 projects. Mean Δ*R²* gain +0.099, median +0.073, positive in
+25/35.** (Dice, retained as secondary per §8d: mean +0.065, median +0.037, 26/35.)
 
 ### The gain scales with how selective the target is
 
@@ -1781,12 +1781,13 @@ flat. Where the manual column is a genuine subset, annotation is doing real work
 limit on a screening-free pool is that irrelevant analyses *inside retained papers* still
 contribute coordinates. Here the papers are held perfect and only the analyses vary, so the effect
 is isolated: removing irrelevant analyses within kept papers is worth +0.077 dice on a targeted
-column and nothing on a pooled one.
+column and nothing on a pooled one. (Not yet recomputed in r²; the r² gain is roughly 1.5x the
+dice gain corpus-wide, so expect a larger figure.)
 
 ### Annotation F1 does not predict map gain
 
-Pearson r between annotation F1 and dice gain is only **+0.261** across the 35 columns (F1 <0.85:
-mean gain +0.052; F1 ≥0.85: +0.075). The two measure different things — F1 scores the labelling
+Pearson r between annotation F1 and map gain is only **+0.345** in r² (+0.274 in dice) across the
+35 columns. The two measure different things — F1 scores the labelling
 decision on analyses that matched a gold analysis, dice scores the map that results — and a
 project can label almost perfectly while gaining nothing, because its target was never selective.
 `dementia/decrease` is the clean example: F1 1.000, gain +0.002. Report both; do not treat F1 as a
@@ -1841,7 +1842,9 @@ analysis-level selection get you?** Nothing else varies. Emitted by `scripts/ann
 as `reports/annotation_value.csv`. Annotation-only runs are used precisely because they have no
 screening, so study selection cannot leak into the difference.
 
-**35 columns across all 9 projects: mean dice gain +0.067, median +0.037, positive in 26 of 35.**
+**35 columns across all 9 projects: mean Δ*R²* gain +0.099, median +0.073, positive in 25 of 35.**
+Reported in r², matching §7 and §8d's ruling that dice is unusable at small N; in dice it is
++0.065 / +0.037 / 26 of 35, and the per-project ordering is nearly identical.
 
     project                   mean gain   positive
     vbm_of_substance_use        +0.156      5/6
@@ -1864,10 +1867,10 @@ construction almost the same set as `all_analyses`.
 ### Annotation F1 and map improvement measure different things
 
 Also reported per column is the annotation F1 on matched analyses — of the analyses that matched
-a gold analysis, how often annotation put them in the same construct. **Correlation with dice gain
-is only r = +0.26**, and the disagreements are systematic rather than noise:
+a gold analysis, how often annotation put them in the same construct. **Correlation with map gain
+is only r = +0.35 in r² (+0.27 in dice)**, and the disagreements are systematic rather than noise:
 
-    project              column           annotation F1   dice gain
+    project              column           annotation F1   dice gain (r² gain is ~1.5x)
     executive_function   inhibition           0.957         -0.019
     executive_function   all                  0.955         -0.025
     executive_function   working_memory       0.941         -0.014
@@ -1876,7 +1879,7 @@ is only r = +0.26**, and the disagreements are systematic rather than noise:
 These are columns where annotation labels almost perfectly and the resulting map is no better than
 pooling everything. That is not a failure of annotation — it means **selection had nothing to do**,
 because the target subset was already most of the pool. Report both numbers: F1 says whether the
-labelling decision is right, dice says whether it changed the answer, and a good schema on an
+labelling decision is right, the map metric says whether it changed the answer, and a good schema on an
 undifferentiated target will score high on the first and zero on the second.
 
 **Implication for the paper's framing.** Annotation's value is conditional on the sub-analyses
@@ -2269,7 +2272,8 @@ count is a screen, not an audit -- it needs a sample checked against source pape
 
 **Why it matters regardless.** Coordinate-based meta-analysis weights studies by their reported
 peaks, so a duplicated table silently doubles one study's influence. This is a plausible contributor
-to the recurring finding that annotation F1 barely predicts map gain (r = +0.261): if map quality is
+to the recurring finding that annotation F1 barely predicts map gain (r = +0.345 in r², +0.274 in
+dice): if map quality is
 partly hostage to parse-level duplication, annotation quality would not track it. Fixing this is a
 candidate lever on the map-level results that has nothing to do with screening or annotation.
 
@@ -2329,7 +2333,8 @@ studies happened to align well with the benchmark, so their extra weight was acc
   depend on how many times ACE happened to ingest its tables. Two runs of the same pipeline over the
   same corpus can weight a paper differently for reasons that have nothing to do with the paper.
 - It does **not** support the claim I made when flagging it -- that fixing this is a lever on the
-  map-level results, or that it explains annotation F1 failing to predict map gain (r = +0.261).
+  map-level results, or that it explains annotation F1 failing to predict map gain (r = +0.345 in
+  r², +0.274 in dice).
   That speculation is withdrawn.
 - The dementia test is small (10 analyses over 6 studies). `executive_function/v3` carries 36
   affected studies and 1774 duplicated points and would be a far stronger test; if the effect there
