@@ -36,16 +36,21 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_tiers import resolve_tier  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from nmb_mapping import load_mappings  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
@@ -54,7 +59,7 @@ POOLED = REPO_ROOT / "reports" / "cross_project_best_baseline.csv"
 DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
 
 SINGLE_COL, DOUBLE_COL = 89 / 25.4, 183 / 25.4
-INK, MUTED = "#1a1a1a", "#5a5a5a"
+INK, MUTED, RULE = "#1a1a1a", "#5a5a5a", "#c8c8c8"
 
 DISPLAY = {
     "cue_reactivity": "Cue reactivity", "decision_making": "Decision making",
@@ -168,6 +173,27 @@ def one_per_project(rows: list[dict]) -> list[dict]:
 
 ARM_FOR_SOURCE = {"targeted": "baseline_sub", "broad": "baseline_broad"}
 
+# Benchmark column names are internal identifiers -- wordproblems_mni_final, adm_july2019,
+# 2_drug_neutral_2020_wbonly -- and unreadable as figure labels. The pipeline's own annotation
+# name for the same column is almost always better (verbal_problem_solving, ambiguous_dm,
+# drug_cue_reactivity), and each project's nmb_mappings.json already records the correspondence,
+# so prefer it and prettify rather than maintaining a second hand-written label table.
+ABBREV = {"dm": "decision making", "wm": "working memory", "mni": "", "final": "",
+          "wbonly": "", "merged": "", "perception": "perception of"}
+
+
+def pretty_column(project: str, column: str) -> str:
+    mapping_file = REPO_ROOT / "projects" / project / "nmb_mappings.json"
+    name = column
+    if mapping_file.exists():
+        name = load_mappings(mapping_file).get(column, column)
+    # Drop the numeric prefix some benchmarks use for ordering, then expand or delete the
+    # shorthand fragments that survive into the annotation names.
+    name = re.sub(r"^\d+[_-]", "", name)
+    words = [ABBREV.get(w, w) for w in name.replace("-", "_").split("_")]
+    text = " ".join(w for w in words if w).strip()
+    return (text[:1].upper() + text[1:]) if text else column
+
 
 def per_column_metric(project: str, column: str, source: str,
                       metric: str) -> tuple[float, float] | None:
@@ -221,7 +247,8 @@ def candidates(tier: str, metric: str | None = None) -> list[dict]:
     return rows
 
 
-def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: float) -> None:
+def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: float,
+           break_after: int | None = None) -> None:
     from nilearn import plotting
 
     arms = [("baseline", "Search-only baseline"), ("autonima", "Full pipeline"),
@@ -242,7 +269,8 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
             )
             if i == 0:
                 ax.set_title(arm_label, fontsize=6.5, color=INK, pad=2)
-        lbl = f"{DISPLAY.get(row['project'], row['project'])}\n{row['manual_annotation']}"
+        lbl = (f"{DISPLAY.get(row['project'], row['project'])}\n"
+               f"{pretty_column(row['project'], row['manual_annotation'])}")
         axes[i][0].text(-0.04, 0.5, lbl, transform=axes[i][0].transAxes,
                         ha="right", va="center", fontsize=5.6, color=INK, linespacing=1.5)
         axes[i][2].text(1.01, 0.5, f"$\\Delta$ {row.get('metric', 'dice')}\n{row['delta']:+.3f}",
@@ -251,6 +279,24 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
     fig.text(0.5, 0.005, f"axial slices at z = {list(cut_coords)}, "
              f"FDR-corrected z thresholded at |z| > {threshold}",
              ha="center", fontsize=5.2, color=MUTED)
+
+    # Mark the discontinuity, before saving. Without it six rows read as a ranked run of six, and
+    # a reader counting downward takes row 4 as the fourth-largest margin rather than the
+    # third-smallest.
+    if break_after is not None and 0 < break_after < n:
+        upper = axes[break_after - 1][0].get_position()
+        lower = axes[break_after][0].get_position()
+        y = (upper.y0 + lower.y1) / 2
+        fig.add_artist(Line2D([0.08, 0.96], [y, y], transform=fig.transFigure,
+                              color=RULE, lw=0.7, ls=(0, (3, 3)), zorder=5))
+        fig.text(0.5, y + 0.004, "⋯", ha="center", va="bottom", fontsize=7, color=MUTED)
+        top_mid = (axes[0][0].get_position().y1 + upper.y0) / 2
+        bot_mid = (lower.y1 + axes[n - 1][0].get_position().y0) / 2
+        for text, ypos in ((f"{break_after} largest margins", top_mid),
+                           (f"{n - break_after} smallest", bot_mid)):
+            fig.text(0.012, ypos, text, rotation=90, va="center", ha="center",
+                     fontsize=5.4, color=MUTED)
+
     out_dir.mkdir(parents=True, exist_ok=True)
     for ext, kw in ((".pdf", {}), (".png", {"dpi": 400})):
         fig.savefig(out_dir / f"{name}{ext}", bbox_inches="tight", **kw)
@@ -265,7 +311,9 @@ def main() -> int:
     ap.add_argument("--n", type=int, default=3, help="rows per group")
     ap.add_argument("--tier", default="best")
     ap.add_argument("--threshold", type=float, default=2.3)
-    ap.add_argument("--cut-coords", type=int, nargs="*", default=[-12, 0, 12, 24, 36])
+    ap.add_argument("--cut-coords", type=int, nargs="*", default=[-12, 4, 20, 36],
+                    help="four slices rather than five: at 183mm across three arms, five columns "
+                         "of brains leaves each one too small to read")
     ap.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
     # 500 rather than a token 50. Measured counts in the legible rows run from ~5,000 to ~48,000
     # suprathreshold voxels; VBM PTSD has 401 in the expert map, 32 in the pipeline and 101 in the
@@ -338,7 +386,7 @@ def main() -> int:
         # typical, and Figures 4 and 5 already report that they are not.
         picked = diverse[:args.n] + diverse[-args.n:]
         render(picked, args.output_dir, "figure_brain_maps_contrast",
-               args.cut_coords, args.threshold)
+               args.cut_coords, args.threshold, break_after=args.n)
     return 0
 
 
