@@ -124,6 +124,37 @@ executive function (74% → 39%) and problem solving (88% → 58%), lose most of
 full-text screening rather than at the abstract stage, and both should be named rather than
 averaged away.
 
+**Dotted overlay: the fixed-pool arm** (`vN-allstudies`), for the three projects that have one.
+Same screening and annotation over a pool assembled without search-driven narrowing, so the gap
+between solid and dotted is what the *pool* contributes, separated from what screening contributes.
+
+Precision (panel b) is higher for the fixed pool at **every stage, in all three projects**:
+
+| project | canonical, full text | fixed pool |
+|---|---|---|
+| social | 0.406 | **0.685** |
+| dementia | 0.401 | 0.427 |
+| emotion regulation | 0.239 | **0.361** |
+
+So the canonical arm's lower precision is substantially a property of what the broad search
+returns, not of the screener's judgement — which is the direct answer to "is precision limited by
+the mixed pool?" for these three.
+
+**Retention (panel a) does not follow the same pattern, and the exception is the interesting
+part:**
+
+| project | search: canonical → fixed | end: canonical → fixed |
+|---|---|---|
+| dementia | 96% → **100%** | 85% → **91%** |
+| social | 95% → **100%** | 93% → **97%** |
+| emotion regulation | 90% → **64%** | 83% → **60%** |
+
+For dementia and social the fixed pool contains every gold study, so it dominates on both axes.
+**For emotion regulation it contains only 56 of 88** — the fixed pool *misses gold the search
+found*. That single case is worth naming rather than averaging: a hand-assembled pool is not
+automatically a superset of a search, and ER's is the project where the benchmark's own scope is
+hardest to reproduce.
+
 **Do not plot per-stage recall from `screening_metrics_top_v_stage_progression.csv`.** It holds
 *conditional retention* — the share entering a stage that survives it — so its denominator moves
 at every stage and the numbers rise across the funnel, which cumulative recall cannot do. Chaining

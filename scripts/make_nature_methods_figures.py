@@ -150,18 +150,27 @@ def figure2(out_dir: Path) -> None:
     stages = ["search", "abstract", "retrieval", "fulltext"]
     labels = ["Search", "Abstract\nscreening", "Full-text\nretrieval", "Full-text\nscreening"]
     surv: dict[str, dict[str, float]] = collections.defaultdict(dict)
+    allst: dict[str, dict[str, float]] = collections.defaultdict(dict)
     for r in rows:
-        if r["cumulative_recall"]:
-            surv[r["project"]][r["stage"]] = float(r["cumulative_recall"])
+        if not r["cumulative_recall"]:
+            continue
+        target = allst if r.get("family") == "allstudies" else surv
+        target[r["project"]][r["stage"]] = float(r["cumulative_recall"])
 
     prec: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    for r in read(REPO_ROOT / "reports" / "cross_project_screening"
-                  / "screening_metrics_top_v_stage_progression.csv"):
-        if r["metric"] == "precision":
-            try:
-                prec[r["project_name"]][r["stage"]] = float(r["value"])
-            except ValueError:
-                continue
+    prec_all: dict[str, dict[str, float]] = collections.defaultdict(dict)
+    for src, dest in (("screening_metrics_top_v_stage_progression.csv", prec),
+                      ("screening_metrics_top_v_allstudies_stage_progression.csv", prec_all)):
+        try:
+            src_rows = read(REPO_ROOT / "reports" / "cross_project_screening" / src)
+        except FileNotFoundError:
+            continue
+        for r in src_rows:
+            if r["metric"] == "precision":
+                try:
+                    dest[r["project_name"]][r["stage"]] = float(r["value"])
+                except ValueError:
+                    continue
 
     projects = [p for p in PROJECT_ORDER if len(surv.get(p, {})) == len(stages)]
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.4))
@@ -174,8 +183,16 @@ def figure2(out_dir: Path) -> None:
                 alpha=0.9, label=DISPLAY[p])
         ax.annotate(f"{ys[-1]:.0f}", (len(stages) - 1, ys[-1]), textcoords="offset points",
                     xytext=(4, -1.5), fontsize=5.2, color=COLORS[p])
-    losses = [(surv[p][stages[i - 1]] - surv[p][stages[i]]) * 100
-              for p in projects for i in range(1, len(stages))]
+    # Dotted overlay: the fixed-pool arm, for the three projects that have one. Same screening and
+    # annotation, a pool assembled without search-driven narrowing -- so the gap between solid and
+    # dotted is what the pool contributes, separated from what screening contributes.
+    for p in projects:
+        vals = allst.get(p, {})
+        ys = [vals.get(s) for s in stages]
+        if any(v is None for v in ys):
+            continue
+        ax.plot(range(len(stages)), [v * 100 for v in ys], ":", color=COLORS[p], lw=1.1,
+                alpha=0.9, zorder=2)
     ax.set_xticks(range(len(stages)))
     ax.set_xticklabels(labels)
     ax.set_xlim(-0.25, len(stages) - 0.45)
@@ -193,9 +210,11 @@ def figure2(out_dir: Path) -> None:
     pstages = ["search", "abstract", "fulltext"]
     for p in projects:
         ys = [prec.get(p, {}).get(s) for s in pstages]
-        if any(v is None for v in ys):
-            continue
-        ax.plot(range(len(pstages)), ys, "-o", color=COLORS[p], markeredgewidth=0, alpha=0.9)
+        if not any(v is None for v in ys):
+            ax.plot(range(len(pstages)), ys, "-o", color=COLORS[p], markeredgewidth=0, alpha=0.9)
+        ys_all = [prec_all.get(p, {}).get(s) for s in pstages]
+        if not any(v is None for v in ys_all):
+            ax.plot(range(len(pstages)), ys_all, ":", color=COLORS[p], lw=1.1, alpha=0.9)
     ax.set_xticks(range(len(pstages)))
     ax.set_xticklabels(["Search", "Abstract\nscreening", "Full-text\nscreening"])
     ax.set_ylim(0, 1.02)
@@ -206,6 +225,8 @@ def figure2(out_dir: Path) -> None:
 
     handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
                       label=DISPLAY[p]) for p in projects]
+    handles.append(Line2D([], [], ls=":", color=INK, lw=1.1,
+                          label="fixed pool (no search narrowing)"))
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
