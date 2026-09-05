@@ -46,12 +46,15 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
-def load_columns(projects_root: Path) -> dict[tuple[str, str], dict[str, float]]:
+METRICS = ("dice", "r2", "pearson_r")
+
+
+def load_columns(projects_root: Path, metric: str) -> dict[tuple[str, str], dict[str, float]]:
     by: dict[tuple[str, str], dict[str, float]] = collections.defaultdict(dict)
     for f in sorted(glob.glob(str(projects_root / "*" / "reports" / "baseline_vs_autonima.csv"))):
         for r in csv.DictReader(open(f)):
             try:
-                by[(r["project"], r["manual_annotation"])][r["arm"]] = float(r["r2"])
+                by[(r["project"], r["manual_annotation"])][r["arm"]] = float(r[metric])
             except (ValueError, TypeError, KeyError):
                 continue
     return by
@@ -94,10 +97,20 @@ def cluster_bootstrap(
 def sign_test(deltas: list[float]) -> float:
     """Exact two-sided binomial test that autonima beats the baseline no more often than chance.
 
-    Ties are dropped, which is the conservative convention: a tie is evidence for neither side.
+    Ties count as non-wins rather than being dropped, and that choice matters here.
+
+    The usual convention discards ties as evidence for neither side. Under dice that is actively
+    misleading, because dice is a thresholded overlap measure and produces genuine exact ties where
+    r2 resolves a difference: the same 35 columns give 30 wins / 5 losses / 0 ties under r2, but
+    30 / 1 / 4 under dice. Dropping those four shrinks n from 35 to 31 and drops p from 2.2e-05 to
+    3.0e-08 -- three orders of magnitude of apparent significance bought entirely by the metric
+    being coarser.
+
+    Counting a tie as a non-win keeps the test measuring the directional claim ("autonima beats the
+    baseline") on the full column set, and makes the result metric-stable: p = 2.2e-05 under both.
     """
     wins = sum(1 for d in deltas if d > 0)
-    trials = sum(1 for d in deltas if d != 0)
+    trials = len(deltas)
     if not trials:
         return 1.0
     tail = sum(math.comb(trials, i) for i in range(wins, trials + 1)) / 2 ** trials
@@ -111,9 +124,14 @@ def main() -> int:
     ap.add_argument("--resamples", type=int, default=20000,
                     help="bootstrap resamples for the pooled CI (default 20000)")
     ap.add_argument("--seed", type=int, default=0, help="bootstrap seed, so the CI is reproducible")
+    ap.add_argument("--metric", choices=METRICS, default="dice",
+                    help="map-similarity metric. dice is the default because it is the only one "
+                         "annotation_value.csv also carries, so Results 4 and 5 can report the "
+                         "same units. The headline is unchanged under all three -- the same 30 of "
+                         "35 columns win -- and re-running with --metric r2 reproduces that check")
     args = ap.parse_args()
 
-    by = load_columns(args.projects_root)
+    by = load_columns(args.projects_root, args.metric)
     rows = []
     for (proj, col), arms in sorted(by.items()):
         auto = arms.get("autonima")
@@ -128,12 +146,13 @@ def main() -> int:
         strong_src = max(candidates, key=lambda k: candidates[k])
         strong = candidates[strong_src]
         rows.append({
-            "project": proj, "manual_annotation": col, "autonima_r2": round(auto, 4),
-            "baseline_sub_r2": round(sub, 4) if sub is not None else "",
-            "baseline_broad_r2": round(broad, 4) if broad is not None else "",
+            "project": proj, "manual_annotation": col, "metric": args.metric,
+            "autonima": round(auto, 4),
+            "baseline_sub": round(sub, 4) if sub is not None else "",
+            "baseline_broad": round(broad, 4) if broad is not None else "",
             "targeting_possible": "yes" if sub is not None else "no",
-            "best_available_r2": round(avail, 4), "best_available_source": avail_src,
-            "strongest_r2": round(strong, 4), "strongest_source": strong_src,
+            "best_available": round(avail, 4), "best_available_source": avail_src,
+            "strongest": round(strong, 4), "strongest_source": strong_src,
             "delta_vs_available": round(auto - avail, 4),
             "delta_vs_strongest": round(auto - strong, 4),
         })
@@ -144,10 +163,10 @@ def main() -> int:
         w.writeheader()
         w.writerows(rows)
 
-    a = [r["autonima_r2"] for r in rows]
+    a = [r["autonima"] for r in rows]
     stats_rows = []
-    for lbl, key in (("best AVAILABLE (targeted if any)", "best_available_r2"),
-                     ("STRONGEST (max of targeted, broad)", "strongest_r2")):
+    for lbl, key in (("best AVAILABLE (targeted if any)", "best_available"),
+                     ("STRONGEST (max of targeted, broad)", "strongest")):
         b = [r[key] for r in rows]
         d = [x - y for x, y in zip(a, b)]
         by_project: dict[str, list[float]] = collections.defaultdict(list)
@@ -157,14 +176,19 @@ def main() -> int:
         p = sign_test(d)
         print(f"  {lbl:<36} autonima {st.mean(a):.3f}  baseline {st.mean(b):.3f}  "
               f"delta {st.mean(d):+.3f}  ahead {sum(1 for x in d if x > 0)}/{len(d)}")
+        ties = sum(1 for x in d if x == 0)
         print(f"  {'':<36} 95% CI [{boot['ci_low']:+.3f}, {boot['ci_high']:+.3f}]  "
-              f"sign test p = {p:.2e}  (median delta {st.median(d):+.3f})")
+              f"sign test p = {p:.2e}  (median {st.median(d):+.3f}"
+              f"{f', {ties} tied' if ties else ''})")
         stats_rows.append({
-            "comparison": key, "n_columns": len(d), "n_projects": boot["n_projects"],
-            "autonima_mean_r2": round(st.mean(a), 4), "baseline_mean_r2": round(st.mean(b), 4),
+            "comparison": key, "metric": args.metric,
+            "n_columns": len(d), "n_projects": boot["n_projects"],
+            "autonima_mean": round(st.mean(a), 4), "baseline_mean": round(st.mean(b), 4),
             "mean_delta": round(st.mean(d), 4), "median_delta": round(st.median(d), 4),
             "ci_low": round(boot["ci_low"], 4), "ci_high": round(boot["ci_high"], 4),
             "columns_ahead": sum(1 for x in d if x > 0),
+            "columns_tied": sum(1 for x in d if x == 0),
+            "columns_behind": sum(1 for x in d if x < 0),
             "sign_test_p": f"{p:.3e}",
             "bootstrap": "cluster over projects", "resamples": boot["resamples"], "seed": args.seed,
         })

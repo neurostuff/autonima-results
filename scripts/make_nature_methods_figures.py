@@ -352,9 +352,11 @@ def figure4(out_dir: Path) -> None:
     rows = read(REPO_ROOT / "reports" / "cross_project_best_baseline.csv")
     stats = {r["comparison"]: r for r in
              read(REPO_ROOT / "reports" / "cross_project_best_baseline_stats.csv")}
-    s = stats.get("best_available_r2")
+    s = stats.get("best_available")
+    metric = (rows[0].get("metric") if rows else None) or "dice"
+    axis = {"dice": "Dice", "r2": "$R^2$", "pearson_r": "Pearson $r$"}.get(metric, metric)
 
-    pts = [(r["project"], float(r["autonima_r2"]), float(r["best_available_r2"]),
+    pts = [(r["project"], float(r["autonima"]), float(r["best_available"]),
             float(r["delta_vs_available"])) for r in rows]
     pts.sort(key=lambda t: t[3])
 
@@ -368,7 +370,7 @@ def figure4(out_dir: Path) -> None:
         ax.scatter([base], [auto], s=13, color=COLORS.get(proj, "#7F7F7F"),
                    edgecolors="white", linewidths=0.35, zorder=3)
     ax.set_xlim(0, 1); ax.set_ylim(0, 1)
-    ax.set_xlabel("Best baseline $R^2$"); ax.set_ylabel("Pipeline $R^2$")
+    ax.set_xlabel(f"Best baseline {axis}"); ax.set_ylabel(f"Pipeline {axis}")
     ax.set_aspect("equal")
     ax.text(0.04, 0.93, "above the line =\npipeline better", fontsize=5.5, color=MUTED,
             transform=ax.transAxes, va="top")
@@ -387,7 +389,7 @@ def figure4(out_dir: Path) -> None:
     ax.set_xlim(-1, len(pts))
     ax.set_xticks([])
     ax.set_xlabel(f"{len(pts)} benchmark columns, ordered by advantage")
-    ax.set_ylabel("$\\Delta R^2$ vs best baseline")
+    ax.set_ylabel(f"$\\Delta$ {axis} vs best baseline")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     if s:
         ax.text(0.03, 0.96,

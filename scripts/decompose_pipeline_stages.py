@@ -82,6 +82,9 @@ def main() -> int:
     ap.add_argument("--project", required=True)
     ap.add_argument("--version", required=True, help="e.g. v4 -- expects vN, vN-allstudies, vN-annotation-only")
     ap.add_argument("--projects-root", type=Path, default=REPO_ROOT / "projects")
+    ap.add_argument("--append-csv", type=Path, default=None,
+                    help="append per-column rows to this CSV. Without it this analysis exists "
+                         "only as console output, so nothing downstream can cite it.")
     args = ap.parse_args()
 
     p = args.projects_root / args.project
@@ -118,6 +121,25 @@ def main() -> int:
     print(f"  2. screening a broad pool vs a curated one: {scr:+.3f}"
           f"   ({'screening MATCHES hand curation' if abs(scr) < 0.03 else ('screening BEATS it' if scr > 0 else 'curated pool still ahead')})")
     print(f"  3. own search vs fixed hand-assembled pool: {sea:+.3f}")
+
+    if args.append_csv:
+        args.append_csv.parent.mkdir(parents=True, exist_ok=True)
+        fields = ["project", "version", "column", "baseline", "annotation_only",
+                  "allstudies", "full"]
+        exists = args.append_csv.exists()
+        with open(args.append_csv, "a", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=fields)
+            if not exists:
+                w.writeheader()
+            for c in cols:
+                w.writerow({
+                    "project": args.project, "version": v, "column": c,
+                    "baseline": round(arms["baseline"][c], 4),
+                    "annotation_only": round(arms["annotation_only"][c], 4),
+                    "allstudies": round(arms["allstudies"][c], 4),
+                    "full": round(arms["full"][c], 4),
+                })
+        print(f"  appended {len(cols)} rows to {args.append_csv.name}")
     print(f"\n  NOT reported as an annotation share: annotation_only is restricted to gold studies,")
     print(f"  so its margin over the baseline bundles annotation with a perfect pool.")
     return 0
