@@ -224,22 +224,41 @@ advantage is not explained by retrieving better papers.
 +0.101 and measures a different thing; Result 5 must quote its own number rather than borrowing
 Result 4's.
 
-Single panel, deliberately. An earlier draft paired this with a slope plot of baseline vs annotated
-dice across all 35 columns — 35 crossing lines in 89mm, unreadable, and carrying nothing the gain
-distribution does not already show except absolute dice levels, which Figure 4 supplies.
+**Panel b answers "screening or annotation?" — as far as the design allows.** Four arms sharing
+byte-identical criteria and differing only in how studies enter, all in dice, for the three
+projects that carry all four (13 columns):
 
-**Two candidate mechanisms were tested and belong in the text, not in a panel:**
+| step | mean Δ dice | reading |
+|---|---|---|
+| search only → gold pool + annotation | **+0.219** | **upper bound, not annotation's share** |
+| gold pool → broad pool + screening | **−0.011** | screening ≈ hand curation |
+| fixed pool → own search | **+0.021** | your own search adds a little |
+
+**The first step must not be labelled "annotation".** It bundles annotation with being handed the
+gold pool, and a run restricted to gold studies matches the gold partly by construction. The panel
+labels arms by what they *are* rather than by the stage they add, for exactly this reason.
+
+The two later steps are clean, because every arm from there on applies the same annotation and
+differs only in pool. **−0.011 is the result worth stating: screening a broad pool substitutes for
+hand curation almost exactly** (ER +0.017, social +0.002, dementia −0.054). That is also the
+answer to "is precision limited by the mixed pool" — for two of three projects it is not, and
+dementia is the exception, consistent with its aggregation problem elsewhere.
+
+Scope limit to state plainly: only 3 of 9 projects have all four arms, so this is 13 columns, not
+35. Panel a carries the full set.
+
+An earlier draft paired panel a with a slope plot of baseline vs annotated dice across all 35
+columns — 35 crossing lines in 89mm, unreadable, and carrying nothing the gain distribution does
+not already show. **Two candidate replacements were tested and rejected:**
 
 | candidate | result | verdict |
 |---|---|---|
 | gain vs prevalence (target specificity) | Spearman −0.233, n = 9 projects | right direction, no power |
 | gain vs baseline dice (headroom) | Pearson −0.353, t = −2.17, n = 35 | marginal, and deflationary |
 
-The first is the mechanism the paper argues for — narrower target, more to gain from selecting —
-and it points the right way, but nine projects cannot support it. The second is the ceiling-effect
-objection a reviewer will raise unprompted, so **report it rather than wait for it**: gain is
-somewhat larger where the baseline was worse, though the quartiles are not monotone (+0.116,
-+0.035, +0.084, +0.007). Neither is strong enough to plot without implying more than it supports.
+The second is the ceiling-effect objection a reviewer raises unprompted, so **report it rather than
+wait for it**: gain is somewhat larger where the baseline was worse, though the quartiles are not
+monotone (+0.116, +0.035, +0.084, +0.007).
 
 That leaves the per-project ordering as the qualitative mechanism: the projects requiring a
 specific population contrast gain most, and the two that lose — executive function and social — are
