@@ -427,11 +427,16 @@ def figure5(out_dir: Path) -> None:
     +0.007). Both belong in the text as tested-and-weak, not in a panel that would imply more than
     they support.
     """
+    # r2, matching Figure 4. annotation_value.csv stores pearson r, and r2 is exactly its square
+    # (verified against baseline_vs_autonima.csv, 104/104 rows). Both pearson columns were only
+    # populated for 14 of 35 rows until the mapping bug in annotation_value.py was fixed, which is
+    # why an earlier version of this figure used dice.
     rows = read(REPO_ROOT / "reports" / "annotation_value.csv")
     pts = []
     for r in rows:
         try:
-            ann, allan = float(r["dice_annotated"]), float(r["dice_all_analyses"])
+            ann = float(r["pearson_annotated"]) ** 2
+            allan = float(r["pearson_all_analyses"]) ** 2
         except (ValueError, KeyError):
             continue
         pts.append((r["project"], ann - allan))
@@ -455,7 +460,7 @@ def figure5(out_dir: Path) -> None:
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
     ax.set_ylim(-0.7, len(order) - 0.3)
-    ax.set_xlabel("Dice gain from analysis selection\n(same studies, annotation on vs off)")
+    ax.set_xlabel("$\\Delta R^2$ from analysis selection\n(same studies, annotation on vs off)")
     ax.grid(axis="x", alpha=0.6)
     ax.set_axisbelow(True)
     improved = sum(1 for g in gains if g > 0)
