@@ -166,13 +166,57 @@ def one_per_project(rows: list[dict]) -> list[dict]:
     return sorted(best.values(), key=lambda x: -x["delta"])
 
 
-def candidates(tier: str) -> list[dict]:
+ARM_FOR_SOURCE = {"targeted": "baseline_sub", "broad": "baseline_broad"}
+
+
+def per_column_metric(project: str, column: str, source: str,
+                      metric: str) -> tuple[float, float] | None:
+    """Read one column's autonima-minus-best-baseline margin in an arbitrary metric.
+
+    The pooled table records the margin in whichever metric compile_best_baselines was run with,
+    which is r2 for Figures 4 and 5. This figure wants dice instead -- see the --metric help --
+    so it re-reads the per-project table for the same arm the pooled table already resolved as
+    "best available", rather than duplicating that resolution logic.
+    """
+    f = REPO_ROOT / "projects" / project / "reports" / "baseline_vs_autonima.csv"
+    if not f.exists():
+        return None
+    want = ARM_FOR_SOURCE.get(source)
+    auto = base = None
+    for r in csv.DictReader(open(f)):
+        if r["manual_annotation"] != column:
+            continue
+        try:
+            value = float(r[metric])
+        except (ValueError, KeyError):
+            continue
+        if r["arm"] == "autonima":
+            auto = value
+        elif r["arm"] == want:
+            base = value
+    # Both values are returned, not just the margin: the verification step re-derives the
+    # pipeline-vs-expert similarity from the map files and needs something in the SAME metric to
+    # compare against, or it rejects every column as a path error.
+    return None if auto is None or base is None else (auto, auto - base)
+
+
+def candidates(tier: str, metric: str | None = None) -> list[dict]:
     rows = []
     for r in csv.DictReader(open(POOLED)):
         paths = resolve_maps(r["project"], r["manual_annotation"],
                              r["best_available_source"], tier)
-        if paths:
-            rows.append({**r, "paths": paths, "delta": float(r["delta_vs_available"])})
+        if not paths:
+            continue
+        if metric and metric != r.get("metric"):
+            recomputed = per_column_metric(r["project"], r["manual_annotation"],
+                                           r["best_available_source"], metric)
+            if recomputed is None:
+                continue
+            auto_value, delta = recomputed
+            r = {**r, "metric": metric, "autonima": auto_value}
+        else:
+            delta = float(r["delta_vs_available"])
+        rows.append({**r, "paths": paths, "delta": delta})
     rows.sort(key=lambda x: -x["delta"])
     return rows
 
@@ -229,9 +273,16 @@ def main() -> int:
     ap.add_argument("--min-voxels", type=int, default=500,
                     help="skip columns with fewer suprathreshold voxels than this (see comment)")
     ap.add_argument("--skip-verify", action="store_true")
+    ap.add_argument("--metric", default="dice",
+                    help="metric for ranking and labelling exemplars. Defaults to dice HERE even "
+                         "though Figures 4 and 5 report r2, and the difference is deliberate: "
+                         "this figure renders maps THRESHOLDED at |z| > threshold, and dice "
+                         "measures overlap of thresholded maps, so it is the metric describing "
+                         "what the reader can actually see. r2 measures unthresholded "
+                         "correlation, which the rendered panels do not show.")
     args = ap.parse_args()
 
-    rows = candidates(args.tier)
+    rows = candidates(args.tier, args.metric)
     print(f"columns with all three maps present: {len(rows)}/35")
     if not rows:
         print("  nothing to render"); return 1
@@ -285,7 +336,7 @@ def main() -> int:
     else:
         # Best and worst together: a figure of only wins invites the reader to assume they are
         # typical, and Figures 4 and 5 already report that they are not.
-        picked = diverse[:args.n] + diverse[-max(args.n - 1, 1):]
+        picked = diverse[:args.n] + diverse[-args.n:]
         render(picked, args.output_dir, "figure_brain_maps_contrast",
                args.cut_coords, args.threshold)
     return 0
