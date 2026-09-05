@@ -255,37 +255,39 @@ them, and every triplet is verified by recomputing pipeline-vs-expert *R²* and 
 `cross_project_best_baseline.csv` (35/35 pass). A wrong path would produce a plausible figure that
 does not match the text, which is the failure mode worth engineering against.
 
-### Metric consistency — resolved 2026-09-04: r² for Figure 4, dice for Figure 5
+### Metric consistency — resolved 2026-09-04: r² throughout
 
-Figure 4 reports **r²** and Figure 5 **dice**. That started as an accident — each was whichever
-column its source file led with — and an attempt to unify on dice was tried and **reverted**,
-because the investigation turned up a reason the split is correct.
+Figures 4 and 5 originally reported different metrics by accident, each taking whichever column its
+source file led with. Both now report **r²**, and getting there turned up two things worth keeping.
 
-**Dice is degenerate on this corpus.** Four `vbm_of_substance_use` columns (nicotine, opioids,
-stimulants, cannabis) score **dice 0.000 for every arm** — no suprathreshold overlap at all — so it
-cannot rank them. r² separates them cleanly (nicotine 0.187 vs 0.066, stimulants 0.269 vs 0.105).
-Under dice these register as "ties", which is not a tie but an unmeasured comparison, and dropping
-them would have taken p from 2.2e-05 to 3.0e-08 on the strength of the metric failing.
+**Dice is degenerate on this corpus, so Figure 4 cannot use it.** Four `vbm_of_substance_use`
+columns (nicotine, opioids, stimulants, cannabis) score **dice 0.000 for every arm** — no
+suprathreshold overlap at all — so it cannot rank them, while r² separates them cleanly (nicotine
+0.187 vs 0.066). Dice also reverses the sign on vbm_of_ptsd, whose map is *correct but sparse*: 7
+studies and 72 peaks against the baseline's 29 and 386, scoring dice 0.111 vs 0.325 while scoring
+r² 0.456 vs 0.247. A thresholded overlap measure punishes missing extent; a correlation rewards
+matching shape. Corpus-wide, columns where the metrics disagree or tie have a median points ratio
+of **0.17** against **0.28** where they agree — systematic, not one odd column.
 
-**Dice also reverses the sign on vbm_of_ptsd**, and the reason generalises:
+**Figure 5 could not use r² until a bug was fixed.** `annotation_value.csv` populated
+`pearson_annotated` for only 14 of 35 rows, because that lookup used the manual column name where
+the dice lookup correctly used the mapped annotation name — so it returned blank for every project
+whose annotation names differ from its gold column names. One word in
+`scripts/annotation_value.py`; now 35/35.
 
-| arm | dice | r² | pearson | studies | points |
-|---|---|---|---|---|---|
-| autonima | **0.111** | **0.456** | **+0.675** | **7** | **72** |
-| baseline | 0.325 | 0.247 | +0.497 | 29 | 386 |
+With that fixed, r² is both available everywhere and the stronger measure for Result 5:
 
-The pipeline map is *correct but sparse* — 7 studies and 72 peaks against 29 and 386. A
-thresholded overlap measure punishes missing extent; a correlation rewards matching shape. Across
-the corpus the columns where the two metrics disagree or tie have a median points ratio of 0.17
-against 0.28 for those where they agree, so this is systematic, not one odd column.
+| metric | median gain | mean | improve |
+|---|---|---|---|
+| **r²** | **+0.0735** | **+0.0995** | 25/35 |
+| dice | +0.0372 | +0.0650 | 26/35 |
 
-**But r² cannot be used for Figure 5**: `annotation_value.csv` carries pearson for only **14 of 35
-rows**, so switching would cost 21 columns. Dice covers all 35 there.
+Per-project ordering is nearly identical (only decision_making flips sign, +0.025 → −0.006), so
+the choice does not drive the story — and reporting both results in the same units removes the
+awkwardness of Result 5's headline looking three times weaker than Result 4's for no real reason.
 
-So the split stands, with a reason: **r² where maps differ in extent and sparsity matters
-(baseline comparison), dice where coverage of the column set matters more (annotation gain).** Say
-this in Methods in one sentence, and report the robustness check — `compile_best_baselines.py
---metric dice` still runs and gives Δ +0.107, the same 30 of 35 columns.
+`compile_best_baselines.py --metric {r2,dice,pearson_r}` keeps the robustness check runnable:
+dice gives Δ +0.107 with the same 30 of 35 columns.
 
 One argument against r² that turns out **not** to apply: r² discards sign, so an anti-correlated
 map would score as well as a correlated one. Checked — 0 of 104 comparisons have negative pearson
@@ -296,9 +298,9 @@ r. Do not use it as the justification.
 §6. **This is the paper.** Holding the study pool fixed, annotation still improves the map — so the
 advantage is not explained by retrieving better papers.
 
-**Median +0.037 dice, 26 of 35 columns improve.** Note this is a softer headline than Result 4's
-+0.101 and measures a different thing; Result 5 must quote its own number rather than borrowing
-Result 4's.
+**Median Δ*R²* +0.074, 25 of 35 columns improve.** Same units as Result 4 now, but still a
+different comparison — Result 4 is pipeline vs search-only baseline, Result 5 is annotation on vs
+off with the study pool held fixed. Quote its own number.
 
 Single panel, deliberately. An earlier draft paired this with a slope plot of baseline vs annotated
 dice across all 35 columns — 35 crossing lines in 89mm, unreadable, and carrying nothing the gain

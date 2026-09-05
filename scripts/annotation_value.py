@@ -89,7 +89,11 @@ def main() -> int:
             rows.append({"project": pdir.name, "run": run, "manual_column": col,
                          "dice_annotated": round(ann, 4), "dice_all_analyses": round(alla, 4),
                          "dice_gain": round(ann - alla, 4),
-                         "pearson_annotated": round(P.get(col, {}).get(col), 4) if P.get(col, {}).get(col) is not None else "",
+                         # auto_row, not col -- same mapping the dice lookup above uses. Reading
+                         # the pearson diagonal with the manual name silently returned blank for
+                         # every project whose annotation names differ from its gold column names,
+                         # which was 21 of 35 rows.
+                         "pearson_annotated": round(P.get(auto_row, {}).get(col), 4) if P.get(auto_row, {}).get(col) is not None else "",
                          "pearson_all_analyses": round(P.get("all_analyses", {}).get(col), 4) if P.get("all_analyses", {}).get(col) is not None else "",
                          "annotation_f1": round(F[auto_row], 4) if auto_row in F else ""})
 
