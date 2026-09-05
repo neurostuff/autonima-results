@@ -338,9 +338,11 @@ def main() -> int:
     if not args.skip_verify:
         keep = []
         for r in rows:
-            # The metric must come from the table. compile_best_baselines.py is parameterised
-            # (--metric dice|r2|pearson_r) and now defaults to dice, so checking a dice column
-            # against an r-squared computation rejects almost everything as a path error.
+            # The recomputation must use the same metric as the value it is checked against.
+            # compile_best_baselines.py writes r2 (Figures 4 and 5), while this figure ranks by
+            # dice, so candidates() overrides both the metric and the autonima value together --
+            # checking a dice recomputation against an r2 table value rejected 29 of 35 columns
+            # as path errors.
             expected = float(r["autonima"]) if "autonima" in r else float(r["autonima_r2"])
             got = verify(r["paths"], expected, metric=(r.get("metric") or "r2").lower())
             if got is None:
