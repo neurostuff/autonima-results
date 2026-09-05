@@ -225,6 +225,14 @@ Emotion regulation `decrease` is the case that carries it: the baseline is diffu
 frontal and parietal cortex, the pipeline resolves focal bilateral clusters, and the expert map
 matches the pipeline closely. Δ*R²* +0.491.
 
+**Exemplars are chosen on end-to-end margin, which is the right criterion for this panel.** Result 4
+is the end-to-end claim; Result 5 is the analysis-selection claim. Social is the case that separates
+them and is worth a sentence: its annotation is the weakest in the set (F1 0.660, lift 1.8× over
+prevalence, median map gain −0.020) while its end-to-end performance is above average (mean dice
+0.543 against 0.423 pooled), because 93% gold retention and 94% analysis recovery do the work
+instead. That is a reason not to reuse social as a *Result 5* exemplar, not a reason to exclude it
+from a figure about end-to-end maps.
+
 **On cherry-picking.** Selecting exemplars by margin is cherry-picking and should be stated as
 such, then defused two ways. The figure runs `--mode contrast`, which pairs the three largest
 margins with the two smallest so a near-tie is shown beside a win. And the supplement carries
