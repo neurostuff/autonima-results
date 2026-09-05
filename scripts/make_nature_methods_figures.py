@@ -443,11 +443,7 @@ def figure5(out_dir: Path) -> None:
         by_proj[proj].append(g)
     order = sorted(by_proj, key=lambda p: st.median(by_proj[p]))
 
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.7),
-                             gridspec_kw={"width_ratios": [1, 1.1]})
-
-    # a: the gain itself, every column
-    ax = axes[0]
+    fig, ax = plt.subplots(figsize=(SINGLE_COL, 0.30 * len(order) + 1.0))
     ax.axvline(0, color=INK, lw=0.7, zorder=2)
     for i, proj in enumerate(order):
         vals = by_proj[proj]
@@ -457,58 +453,18 @@ def figure5(out_dir: Path) -> None:
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
     ax.set_ylim(-0.7, len(order) - 0.3)
-    ax.set_xlabel("Dice gain from analysis selection")
+    ax.set_xlabel("Dice gain from analysis selection\n(same studies, annotation on vs off)")
     ax.grid(axis="x", alpha=0.6)
     ax.set_axisbelow(True)
     improved = sum(1 for g in gains if g > 0)
-    ax.text(0.98, 0.02, f"median {st.median(gains):+.3f}\n{improved}/{len(gains)} columns improve",
+    ax.text(0.98, 0.02,
+            f"median {st.median(gains):+.3f}\n{improved}/{len(gains)} columns improve",
             transform=ax.transAxes, ha="right", va="bottom", fontsize=5.5, color=MUTED,
             linespacing=1.5)
-    panel_label(ax, "a", dx=-0.42)
-
-    # b: where the gain sits, for the three projects carrying all four arms
-    #
-    # Deliberately labelled by what each arm IS, not by the stage it adds. The first step bundles
-    # annotation with being handed the gold pool, so calling it "annotation" would overclaim -- a
-    # run restricted to gold studies matches the gold partly by construction. It is an upper
-    # bound. The two later steps are clean, because every arm from annot onward applies the same
-    # annotation and differs only in how studies entered.
-    ax = axes[1]
-    try:
-        dec = read(REPO_ROOT / "reports" / "stage_decomposition.csv")
-    except FileNotFoundError:
-        dec = []
-    if dec:
-        arms = ["baseline", "annotation_only", "allstudies", "full"]
-        labels = ["Search only\n(no screening)", "Gold pool\n+ annotation",
-                  "Broad pool\n+ screening", "Own search\n+ everything"]
-        for r in dec:
-            ys = [float(r[a]) for a in arms]
-            ax.plot(range(4), ys, "-", color=COLORS.get(r["project"], "#7F7F7F"),
-                    lw=0.8, alpha=0.6, zorder=2)
-            ax.scatter(range(4), ys, s=8, color=COLORS.get(r["project"], "#7F7F7F"),
-                       zorder=3, edgecolors="white", linewidths=0.25)
-        means = [st.mean(float(r[a]) for r in dec) for a in arms]
-        ax.plot(range(4), means, "-o", color=INK, lw=1.6, markersize=4, zorder=5,
-                markeredgecolor="white", markeredgewidth=0.5)
-        for i in range(1, 4):
-            ax.annotate(f"{means[i] - means[i-1]:+.3f}", ((i - 0.5), max(means) + 0.075),
-                        ha="center", fontsize=5.4, color=INK)
-        ax.set_xticks(range(4))
-        ax.set_xticklabels(labels)
-        ax.set_xlim(-0.3, 3.3)
-        ax.set_ylabel("Dice vs expert map")
-        ax.grid(axis="y", alpha=0.6)
-        ax.set_axisbelow(True)
-        projs = sorted({r["project"] for r in dec})
-        ax.text(0.5, -0.30,
-                f"{len(dec)} columns from the {len(projs)} projects with all four arms; "
-                "black = mean",
-                transform=ax.transAxes, ha="center", fontsize=5.2, color=MUTED)
-    panel_label(ax, "b", dx=-0.18)
-
-    fig.subplots_adjust(wspace=0.45)
-    save(fig, out_dir, "figure5_gain_and_stage_decomposition")
+    # Top-left: the highest-gain project sits well right of zero, so this corner is clear.
+    ax.text(0.02, 0.985, "vertical rule = project median", transform=ax.transAxes,
+            ha="left", va="top", fontsize=5.2, color=MUTED)
+    save(fig, out_dir, "figure5_gain_from_analysis_selection")
 
 
 # --------------------------------------------------------------------------- Figure 6
