@@ -1,0 +1,80 @@
+--- /home/zorro/.local/lib/python3.12/site-packages/pubget/_utils.py.orig	2026-09-04 20:07:05.220208522 -0500
++++ /home/zorro/.local/lib/python3.12/site-packages/pubget/_utils.py	2026-09-04 20:07:05.243208092 -0500
+@@ -131,10 +131,25 @@
+ 
+ 
+ def get_pmcid(article: Union[etree.ElementTree, etree.Element]) -> int:
+-    """Extract the PubMedCentral ID from an XML article."""
+-    return int(
+-        article.find("front/article-meta/article-id[@pub-id-type='pmc']").text
+-    )
++    """Extract the PubMedCentral ID from an XML article.
++
++    PATCHED (autonima-results, 2026-09-04). PMC no longer emits
++    pub-id-type='pmc' on newer records; it emits 'pmcaid' (bare integer) and
++    'pmcid' (prefixed, e.g. 'PMC12571962'). The original single-selector
++    lookup returned None and every caller crashed on .text, which aborted
++    extraction for a WHOLE articleset batch -- so one modern article silently
++    discarded hundreds of successfully downloaded ones. Try each id type.
++    """
++    meta = "front/article-meta/article-id"
++    for id_type in ("pmc", "pmcaid", "pmcid"):
++        element = article.find(f"{meta}[@pub-id-type='{id_type}']")
++        if element is not None and element.text:
++            text = element.text.strip()
++            if text.upper().startswith("PMC"):
++                text = text[3:]
++            if text.isdigit():
++                return int(text)
++    raise ValueError("article carries no usable PMC identifier")
+ 
+ 
+ def get_pmcid_from_article_dir(article_dir: Path) -> int:
+--- /home/zorro/.local/lib/python3.12/site-packages/pubget/_articles.py.orig	2026-09-04 20:07:05.221208504 -0500
++++ /home/zorro/.local/lib/python3.12/site-packages/pubget/_articles.py	2026-09-04 20:07:05.243208092 -0500
+@@ -146,7 +146,15 @@
+         tree = etree.parse(batch_fh)
+     n_articles = 0
+     for article in tree.iterfind("article"):
+-        pmcid = _utils.get_pmcid(article)
++        # PATCHED (autonima-results, 2026-09-04): skip an unidentifiable article
++        # instead of aborting the batch. See get_pmcid in _utils.py.
++        try:
++            pmcid = _utils.get_pmcid(article)
++        except (AttributeError, TypeError, ValueError):
++            _LOG.warning(
++                "skipping article with no usable PMC id in %s", batch_file.name
++            )
++            continue
+         bucket = _utils.article_bucket_from_pmcid(pmcid)
+         article_dir = output_dir.joinpath(bucket, f"pmcid_{pmcid}")
+         article_dir.mkdir(exist_ok=True, parents=True)
+--- /home/zorro/.local/lib/python3.12/site-packages/pubget/_text.py.orig	2026-09-04 20:08:20.791819456 -0500
++++ /home/zorro/.local/lib/python3.12/site-packages/pubget/_text.py	2026-09-04 20:08:20.814819041 -0500
+@@ -23,7 +23,9 @@
+         article_dir: pathlib.Path,
+         previous_extractors_output: Dict[str, Records],
+     ) -> Dict[str, Union[str, int]]:
+-        del article_dir, previous_extractors_output
++        # PATCHED (autonima-results, 2026-09-04): article_dir is kept, not
++        # discarded, so it can supply the PMCID when the stylesheet cannot.
++        del previous_extractors_output
+         result: Dict[str, Union[str, int]] = {}
+         # Stylesheet is not parsed in init because lxml.XSLT cannot be pickled
+         # so that would prevent the extractor from being passed to
+@@ -38,6 +40,13 @@
+             return result
+         for part_name in self.fields:
+             elem = transformed.find(part_name)
+-            result[part_name] = elem.text
+-        result["pmcid"] = int(result["pmcid"])
++            result[part_name] = elem.text if elem is not None else None
++        # PATCHED (autonima-results, 2026-09-04): newer PMC records drop
++        # pub-id-type='pmc', so the stylesheet yields no pmcid and int(None)
++        # raised, failing the text extractor for every modern article. The
++        # directory name already encodes the id, so fall back to it.
++        if result.get("pmcid") is None:
++            result["pmcid"] = _utils.get_pmcid_from_article_dir(article_dir)
++        else:
++            result["pmcid"] = int(result["pmcid"])
+         return result
