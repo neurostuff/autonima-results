@@ -257,8 +257,12 @@ does not match the text, which is the failure mode worth engineering against.
 
 ### Metric consistency — resolved 2026-09-04: r² throughout
 
-Figures 4 and 5 originally reported different metrics by accident, each taking whichever column its
-source file led with. Both now report **r²**, and getting there turned up two things worth keeping.
+Both figures report **r²**. Note this was **already decided** in `PAPER_OUTLINE.md` §8d — "Dice is
+unusable at small N — 8 of 12 sub-annotation comparisons gave exactly 0.000 — so R² on
+unthresholded maps should be the reported metric, with Dice at most secondary" — and again in §8a,
+"r² sits consistently above dice… and the reason r² is the primary metric". Figure 5 used dice only
+because of the bug below, not by choice. The re-derivation below adds the mechanism and one new
+case; it does not overturn anything.
 
 **Dice is degenerate on this corpus, so Figure 4 cannot use it.** Four `vbm_of_substance_use`
 columns (nicotine, opioids, stimulants, cannabis) score **dice 0.000 for every arm** — no
