@@ -576,10 +576,11 @@ wherever one was defined, the broad arm only where targeting is impossible. Emit
 corpus re-run: ER 0.663, cue_reactivity 0.568, problem_solving 0.629, social 0.520, dementia 0.330,
 vbm_of_su 0.255, EF 0.642, decision_making 0.352.)*
 
-**Pooled over the 35 columns (dice): autonima 0.423 vs 0.315, Δ +0.107, 95% CI [+0.052, +0.164],
-sign test p = 2.2e-05, ahead in 30 of 35.** Metric switched from r² to dice on 2026-09-04 so
-Results 4 and 5 report the same units; the conclusion is unchanged (r² gives Δ +0.101, same 30
-columns, same p). See "Metric consistency" in `NATURE_METHODS_SKELETON.md`. Median Δ is
+**Pooled over the 35 columns: autonima 0.495 vs 0.394, Δ +0.101, 95% CI [+0.045, +0.185],
+sign test p = 2.2e-05, ahead in 30 of 35.** Metric is r², deliberately: dice is degenerate here,
+scoring 0.000 for every arm on four vbm_of_substance_use columns, and reverses the sign on
+vbm_of_ptsd because that map is correct but sparse. See "Metric consistency" in
+`NATURE_METHODS_SKELETON.md`. Median Δ is
 +0.046 — the mean sits above it because a few large wins skew the distribution, so quote both.
 Pooling columns rather than averaging project means is deliberate: it stops a one-column project
 (`vbm_of_ptsd`) weighing as much as a six-column one (`vbm_of_substance_use`), and it avoids the
@@ -601,8 +602,7 @@ That has to be stated beside the margins, because it swallows some of them:
 | social | 0.543 | 0.428 | +0.115 | 0.035 | margin ≫ drift |
 | executive_function | 0.575 | 0.517 | +0.058 | 0.042 | **margin ≈ drift** |
 
-So **the pooled Δ (+0.107 dice, +0.101 r²) and the large per-project wins are safe, and the small
-ones are not.**
+So **the pooled Δ +0.101 and the large per-project wins are safe, and the small ones are not.**
 On the ±0.04 project-level floor, `decision_making` (+0.001), `dementia` (+0.005) and
 `executive_function` (+0.031) all sit inside the noise band and should be reported as ties, not
 wins. On the ±0.12 column-level floor, no single-column difference below that is interpretable

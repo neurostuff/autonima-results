@@ -97,17 +97,12 @@ def cluster_bootstrap(
 def sign_test(deltas: list[float]) -> float:
     """Exact two-sided binomial test that autonima beats the baseline no more often than chance.
 
-    Ties count as non-wins rather than being dropped, and that choice matters here.
-
-    The usual convention discards ties as evidence for neither side. Under dice that is actively
-    misleading, because dice is a thresholded overlap measure and produces genuine exact ties where
-    r2 resolves a difference: the same 35 columns give 30 wins / 5 losses / 0 ties under r2, but
-    30 / 1 / 4 under dice. Dropping those four shrinks n from 35 to 31 and drops p from 2.2e-05 to
-    3.0e-08 -- three orders of magnitude of apparent significance bought entirely by the metric
-    being coarser.
-
-    Counting a tie as a non-win keeps the test measuring the directional claim ("autonima beats the
-    baseline") on the full column set, and makes the result metric-stable: p = 2.2e-05 under both.
+    Ties count as non-wins rather than being dropped. Under the default r2 metric this is moot --
+    there are no ties -- but it matters if --metric dice is used for the robustness check, where
+    four columns score 0.000 for every arm. Dropping those as "ties" would shrink n from 35 to 31
+    and take p from 2.2e-05 to 3.0e-08: three orders of magnitude of apparent significance bought
+    by the metric failing to measure four columns at all. Counting them as non-wins keeps the test
+    on the full column set and conservative.
     """
     wins = sum(1 for d in deltas if d > 0)
     trials = len(deltas)
@@ -124,11 +119,15 @@ def main() -> int:
     ap.add_argument("--resamples", type=int, default=20000,
                     help="bootstrap resamples for the pooled CI (default 20000)")
     ap.add_argument("--seed", type=int, default=0, help="bootstrap seed, so the CI is reproducible")
-    ap.add_argument("--metric", choices=METRICS, default="dice",
-                    help="map-similarity metric. dice is the default because it is the only one "
-                         "annotation_value.csv also carries, so Results 4 and 5 can report the "
-                         "same units. The headline is unchanged under all three -- the same 30 of "
-                         "35 columns win -- and re-running with --metric r2 reproduces that check")
+    ap.add_argument("--metric", choices=METRICS, default="r2",
+                    help="map-similarity metric. r2 is the default because dice is DEGENERATE on "
+                         "this corpus: four vbm_of_substance_use columns score dice 0.000 for "
+                         "every arm (no suprathreshold overlap at all), so it cannot rank them, "
+                         "while r2 separates them cleanly. Dice also reverses the sign on "
+                         "vbm_of_ptsd, whose map is correct but sparse -- 7 studies / 72 points "
+                         "against the baseline's 29 / 386 -- which a thresholded overlap measure "
+                         "punishes and a correlation does not. The conclusion is otherwise "
+                         "metric-stable; --metric dice reproduces that check")
     args = ap.parse_args()
 
     by = load_columns(args.projects_root, args.metric)
