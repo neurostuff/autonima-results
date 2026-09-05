@@ -264,9 +264,23 @@ prevalence, median map gain −0.020) while its end-to-end performance is above 
 instead. That is a reason not to reuse social as a *Result 5* exemplar, not a reason to exclude it
 from a figure about end-to-end maps.
 
+**This figure reports dice, not r².** Deliberate, and the one place a different metric is
+correct: the panels are rendered *thresholded* at |z| > 2.3, and dice measures overlap of
+thresholded maps, so it describes what the reader can actually see. r² measures unthresholded
+correlation, which the rendered slices do not show. `make_brain_map_figure.py --metric` defaults to
+dice for this reason and re-reads the per-project tables rather than the pooled one.
+
 **On cherry-picking.** Selecting exemplars by margin is cherry-picking and should be stated as
 such, then defused two ways. The figure runs `--mode contrast`, which pairs the three largest
-margins with the two smallest so a near-tie is shown beside a win. And the supplement carries
+margins with the three smallest so near-ties are shown beside wins.
+
+**Say in the caption that the bottom rows are small wins, not losses**, and why — otherwise six
+positive margins read as selection. Under dice only **1 of 35** columns has a negative margin
+(vbm_of_ptsd, −0.214), and it is excluded because its maps render as empty brains at the display
+threshold; four more sit at exactly 0.000 and are excluded for the same reason. So among columns
+that can be *shown*, none lose. That is itself a reason r² is primary for Figures 4 and 5: r² has
+five losses across the same 35 columns, so it discriminates where dice compresses losses into
+ties and exclusions. And the supplement carries
 **all 35 columns** (`--mode all`), so the reader can check the selection. Figures 4a/4b already
 report the full distribution including the five columns where the pipeline loses, so the exemplars
 illustrate rather than stand in for the evidence.
