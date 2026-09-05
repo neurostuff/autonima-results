@@ -5,8 +5,8 @@ WHY THIS EXISTS
 
 The Nature Methods figures are all scatters and distributions. For a neuroimaging paper that is a
 conspicuous gap: every number in Result 4 is a similarity between two brain maps, and the reader
-never sees one. This renders the three arms side by side so the r2 has something to be a summary
-*of*.
+never sees one. This renders the three arms side by side so the similarity score has something to
+be a summary *of*.
 
 WHICH COLUMNS
 
@@ -23,8 +23,12 @@ Maps are resolved the way compare_baselines_to_benchmark.py resolves them: the c
 run_categories.yaml at the requested tier, the manual annotation key translated through the
 project's nmb_mappings.json, and the same FDR-corrected z map. Because a silently wrong path would
 produce a plausible-looking figure that does not match the text, every triplet is verified by
-recomputing r2 between the pipeline and expert maps and comparing against
+recomputing the pipeline-vs-expert similarity and comparing against
 cross_project_best_baseline.csv; a mismatch is reported and the column is skipped.
+
+The metric is read from that table rather than assumed, because compile_best_baselines.py is
+parameterised (--metric dice|r2|pearson_r) and now defaults to dice. Checking a dice column against
+an r-squared computation rejects 29 of 35 columns as path errors when the paths are fine.
 """
 
 from __future__ import annotations
