@@ -215,6 +215,33 @@ CI is cluster-bootstrapped over projects, not columns — a project's columns sh
 search and a screening run. Say so in one clause; it pre-empts the obvious reviewer objection and
 costs nothing, since both intervals exclude zero.
 
+### Metric consistency — unresolved
+
+Figure 4 currently reports **r²** and Figure 5 **dice**, which is incidental rather than principled:
+each was whichever column its source file led with. `baseline_vs_autonima.csv` carries dice,
+pearson r *and* r²; `annotation_value.csv` carries dice and pearson r but **no r²**. So dice is the
+only metric available to both without recomputation.
+
+The headline is robust to the choice — same 30/35 columns win under all three:
+
+| metric | autonima | baseline | Δ | 95% CI | sign test |
+|---|---|---|---|---|---|
+| r² | 0.495 | 0.394 | +0.101 | [+0.045, +0.185] | 2.2e-05 |
+| **dice** | 0.423 | 0.315 | **+0.107** | **[+0.052, +0.164]** | 2.2e-05 |
+| pearson r | 0.678 | 0.598 | +0.080 | [+0.035, +0.142] | 2.2e-05 |
+
+**Recommendation: unify on dice**, and state in Methods that the result is unchanged under r² and
+pearson r. Dice is available to both figures, its interval is the narrowest, and reporting the
+robustness explicitly is stronger than picking one silently — "why this metric?" is otherwise a
+free shot for a reviewer.
+
+One argument against r² that turns out **not** to apply: r² discards sign, so an anti-correlated
+map would score as well as a correlated one. Checked — 0 of 104 comparisons have negative pearson
+r, so this is theoretical here. Do not use it as the justification.
+
+Cost of switching: §7 and the poster figures both use r² throughout, so the text needs editing.
+Not yet done.
+
 ### Result 5 — The gain comes from analysis selection, not paper selection — **Figure 5** (~350 w)
 
 §6. **This is the paper.** Holding the study pool fixed, annotation still improves the map — so the
