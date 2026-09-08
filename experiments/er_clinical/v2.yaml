@@ -1,0 +1,493 @@
+# ============================ v2: CLINICAL-ENRICHED SEARCH ============================
+#
+# v1 established that the annotation works and the corpus does not. Sample attribution came out
+# clean -- 51 clinical, 508 healthy, zero contradictions -- but the headline cell held only 19
+# analyses, because v1 inherits v4's search, which targets HEALTHY reappraisal and picks up
+# clinical studies only incidentally.
+#
+# So this widens the SEARCH, not the criteria. v4's screening already admits clinical samples
+# verbatim ("Any healthy or clinical participant group qualifies, at ANY age"), so nothing in the
+# screening or annotation blocks changes. Only the query moves, which keeps every v1 label
+# comparable -- and after what v1 showed about context sensitivity, holding the prompt fixed
+# matters more than it looked.
+#
+# THE QUERY is the union of v4's original (kept inside its 2000-2019 window, so its 1,264 records
+# stay cache-valid) with a clinical-targeted arm that has NO date cap. Measured against PubMed:
+#
+#     v4 original, to 2019                    1,264   already screened, free from cache
+#     drop the date cap only                  2,369   +1,105, but mostly more HEALTHY studies
+#     widen ER synonyms                       3,914   +2,650, diluting rather than enriching
+#     clinical-targeted (ER x clinical)       1,530   805 overlap, 725 NEW      <-- chosen
+#     clinical-targeted, wide ER              2,489   1,684 new, 2.3x the cost
+#     UNION of v4-original and clinical       1,989   725 new to screen
+#
+# The healthy arm is already well powered at 179 analyses; the deficit is entirely clinical, so
+# the budget goes where the deficit is. Dropping the date cap wholesale would have bought mostly
+# healthy studies, and widening the ER synonyms would have diluted the pool -- both cost more and
+# fix less.
+#
+# EXPECTED YIELD, extrapolating v1's funnel (1,253 abstracts -> 560 -> 305 included -> 207
+# annotated): roughly 325 of the 725 new records should pass abstract screening. Because the new
+# arm is clinical by construction rather than incidentally, its clinical density should be far
+# above v1's, so the 19-analysis cell has room to clear the ~17-20 CBMA floor. That is the
+# hypothesis this run tests, and it can fail: if the clinical cell stays under 20 with a pool
+# built specifically to find clinical ER studies, the honest conclusion is that analysis-level
+# clinical ER coordinates are simply too scarce for a crossed design.
+#
+# CACHE. Seed from experiments/er_clinical/v1 the same way -- copy outputs/*.json INCLUDING
+# execution_manifest.json -- so the 1,264 shared abstracts and their full-text decisions and
+# annotations are reused, and only the 725 new records cost anything.
+
+# ER x clinical status -- candidate D from experiments/README.md section 6.
+#
+# WHAT THIS IS. projects/emotion_regulation_2022/v4.yaml, byte-identical in search, retrieval,
+# screening, parsing and in its four existing annotation columns, plus two new sample columns.
+# Holding everything else fixed is deliberate: the goal and strategy labels must stay comparable
+# to v4 so the crossed cells can be read against the +0.244 annotation result rather than against
+# a moved baseline.
+#
+# WHY IT IS WORTH RUNNING. Measured on v4's own studyset (580 studies, 1,763 analyses):
+#
+#     healthy / non-clinical                                1117  (66%)
+#     in a clinical study, group AMBIGUOUS from analysis name 457  (27%)   <-- the experiment
+#     patient-group map (clinical group named in the analysis)  65   (4%)
+#     patient-vs-control contrast named in the analysis          63   (4%)
+#
+# Only 4% of analyses announce their sample in their own name. Another 27% sit inside clinical
+# studies where the analysis name alone cannot say whether it is the patient arm, the control arm
+# or a contrast -- a regex cannot resolve those, and a reader needs the study text. That 27% is
+# the whole point: if annotation resolves most of it, the clinical cells roughly triple and the
+# design becomes powered; if it does not, that is a real negative result about analysis-level
+# sample attribution.
+#
+# WITHIN-GROUP ONLY, DELIBERATELY. v4 excludes between-group contrasts, and that exclusion is
+# kept verbatim below. So this is NOT a patient>control meta-analysis. It stratifies WITHIN-group
+# regulation maps by whose brain they came from, and compares the patient map against the healthy
+# map. Keeping v4's exclusion means the goal and strategy labels carry over unchanged; pooling
+# between-group contrasts would have changed what those labels mean and broken the comparison.
+# The 63 named contrasts are therefore out of scope here and are left for a separate arm.
+#
+# CELL COUNTS, estimated by regex on study text as a feasibility check only -- the real counts
+# come from this run:
+#
+#     decrease x reappraisal x healthy   174 analyses  1390 points
+#     decrease x reappraisal x clinical   51 analyses   312 points
+#     maintain x other       x healthy   157 analyses  1447 points
+#     maintain x other       x clinical   43 analyses   251 points
+#
+# Six of ten crossed cells clear 15 analyses. decrease x reappraisal is the headline contrast.
+#
+# VALIDATION IS THE WEAK HALF, as section 6 says. There is no clinical-ER map in neurometabench
+# -- 35413444 is healthy reappraisal. Two routes: directional predictions from the literature
+# (patients show reduced lateral prefrontal engagement during down-regulation), and optionally
+# anchoring against a published clinical-ER meta-analysis whose coordinates would have to be
+# entered by hand. Neither is as strong as an ENIGMA-style external map, and the scz_enigma
+# result argues against trusting spatial correspondence to a diffuse-effect benchmark anyway.
+#
+# CACHE. Seed from projects/emotion_regulation_2022/v4: search, retrieval, screening and parsing
+# are byte-identical, so only annotation recomputes. --copy-valid-cache-from did not work (it
+# copied nothing and the run began re-screening 1,253 abstracts); copying outputs/*.json by hand,
+# INCLUDING execution_manifest.json and execution_progress.json, does work. Without the manifest
+# the run aborts with "cache cannot be verified by this version".
+#
+# ============================ RESULT, 2026-09-04 ============================
+#
+# 1. ANNOTATION DID ITS JOB. Sample attribution came out clean: 51 clinical, 508 healthy, ZERO
+#    analyses labelled both, and only 38 coordinate-bearing regulation analyses left unresolved.
+#    It also beat the regex feasibility estimate by being more conservative and more correct --
+#    the regex inherited study-level clinical status to every analysis in a clinical study and so
+#    counted control arms as clinical, over-estimating the clinical cell by roughly 2.7x. The
+#    model separated the arms, which is exactly the judgement this experiment was built to test.
+#
+# 2. BUT THE CELLS ARE THIN. Measured, coordinate-bearing:
+#
+#      decrease x reappraisal x healthy    179 analyses  1423 points
+#      maintain x other       x healthy    146 analyses  1359 points
+#      decrease x reappraisal x CLINICAL    19 analyses    90 points   <-- headline contrast
+#      maintain x other       x CLINICAL    16 analyses   114 points
+#
+#    19 experiments sits at the very bottom of the usual CBMA guidance (~17-20 minimum), so the
+#    headline contrast is underpowered rather than impossible. The cause is structural: v4's
+#    search and screening target HEALTHY reappraisal, so clinical studies are incidental to the
+#    corpus rather than sought by it. A powered clinical arm needs a search designed for it --
+#    the same lesson as the ROI-effect-size check, where the corpus had been screened for the
+#    wrong thing.
+#
+# 3. ADDING COLUMNS PERTURBS THE EXISTING ONES. The header above claimed the four v4 labels stay
+#    comparable because their criteria are byte-identical. That is wrong, and worth recording:
+#    same criteria, same model, same 1,762 analyses, two extra columns in the prompt, and
+#
+#      reappraisal  291 -> 269 True,  62 analyses flipped  (3.5%)
+#      decrease     275 -> 267 True,  72 flipped           (4.1%)
+#      maintain     217 -> 195 True,  70 flipped           (4.0%)
+#      increase      59 ->  61 True,  10 flipped           (0.6%)
+#
+#    So annotation is context-sensitive to what else it is being asked in the same prompt. That
+#    is a reliability measurement of the kind PAPER_OUTLINE section 8a wants and currently lacks,
+#    and it is comparable in size to the 8.6% abstract-decision flip rate under byte-identical
+#    criteria already recorded there. It also means crossed-factorial designs cannot assume the
+#    base labels are fixed when a factor is added.
+
+# v4 -- DELIBERATELY LESS FAITHFUL THAN THE PAPER, to buy recall.
+#
+# Numbered v4, not v3: archive/v3-allstudies.yaml already holds a different v3 criteria set (one
+# that failed by being MORE restrictive), and reusing the number would conflate two opposite
+# experiments in the version history.
+#
+# Search and retrieval are byte-identical to v2, so v2 -> v4 isolates the criteria change. The
+# same query is also the baseline's, so the end-to-end comparison stays honest.
+#
+# WHY DEVIATE. v1 and v2 transcribe the paper's stated criteria faithfully, and three of those
+# criteria are contradicted by the paper's own realized inclusions. Faithfulness is measurably
+# costing recall (v2 full-text recall_all_meta 0.500), and the archived v3 header already
+# enumerated the exact price of each restriction it chose to keep:
+#
+#   static visual stimuli only   -- 5 gold studies lost (25631055, 17888411, 24782800, 17588776,
+#                                   and 25698699 at abstract). 7 of the paper's own 90 included
+#                                   studies use film.
+#   healthy adults only          -- 5 gold studies lost (21686071, 24646887, 28372994 at abstract;
+#                                   25439326, 26596970 at full text). The gold contains child,
+#                                   adolescent and mixed 10-25 samples.
+#   reappraisal narrowly read    -- v2 false negatives cite suppression, acceptance, "reality
+#                                   checking" and anticipation-period regulation as grounds for
+#                                   exclusion.
+#
+# SCREENING CHANGES
+#   1. Film and video stimuli now qualify; only NON-VISUAL stimuli are excluded.
+#   2. Any age qualifies -- children, adolescents, older adults, mixed samples.
+#   3. Strategy widened to adjacent antecedent-focused regulation (acceptance, reality checking,
+#      instructed cognitive control) and to regulation instructed during an anticipation period.
+#   4. Kept: whole-brain requirement, coordinates in standard space, within-group contrast,
+#      empirical-data requirement, and the empathy-without-regulation exclusion. Each is a genuine
+#      methodological limit rather than a stated-but-violated one.
+#
+# ANNOTATION CHANGES, all driven by the v2-annotation-only trial's criterion attribution
+# (errors vs correct citations, aggregated across the four constructs):
+#
+#   GLOBAL_E1  ROI/SVC exclusion      10 err /  3 correct  NET HARMFUL -> relaxed to explicit
+#                                                          ROI-only; it was firing on whole-brain
+#                                                          analyses with short coordinate tables.
+#   INCREASE_I3 dual-goal pooling      3 err /  0 correct  PURE HARM -> removed. Table S1 has 12
+#                                                          dual-goal contrasts but none reach the
+#                                                          matched universe, so it only misfired.
+#   GLOBAL_E4  non-reappraisal strategy 1 err / 0 correct  PURE HARM -> removed; screening now
+#                                                          admits those strategies anyway.
+#   MAINTAIN_I1                         7 err / 40 correct  broadened -- see below.
+#
+# THE MAINTAIN FIX IS THE SUBSTANTIVE ONE. In the trial `maintain` scored precision 1.000 with
+# recall 0.429: 16 false negatives, zero false positives. It under-selects and is never wrong when
+# it fires, which is the signature of a criterion that is too narrow rather than mis-specified.
+# The likely mechanism: its exclusion said maintain is "mutually exclusive" with regulation, and
+# since essentially every study here IS a reappraisal experiment, that reads as a reason to
+# withhold the label entirely. Now stated at the level of the CONTRAST, with an explicit note that
+# the Look condition is expected to live inside regulation studies as their control arm.
+#
+# RISK. Every change here trades precision for recall, and v2's full-text precision was already
+# only 0.484. If v4's precision falls below ~0.35 without a recall gain above ~0.60, the
+# deviation is not paying for itself and the individual relaxations should be tested separately
+# rather than together.
+
+# v2 -- the plain (search-driven) run. Same criteria as v2-allstudies and v2-annotation-only;
+# they differ only in how studies get into the pipeline, which is what a suffix denotes here.
+#
+#   v2-allstudies        fixed 275-PMID pool, annotation stage still disabled
+#   v2-annotation-only   fixed 88-PMID gold list, screening skipped
+#   v2 (this file)       real PubMed search, full pipeline end to end
+#
+# WHY THIS EXISTS. Until now ER had no plain vN run at all, which meant it could not appear in
+# the screening roll-up and its baseline could not be compared fairly. The broad baseline query
+# reaches 79 of 88 gold studies while the 275-PMID pool reaches 56, so an end-to-end margin
+# computed against that pool would have measured a difference between two searches rather than
+# the value of screening and annotation.
+#
+# THE SEARCH IS THE BASELINE'S SEARCH, DELIBERATELY -- byte-identical to
+# baselines/all_reappraisal.yaml. Both arms therefore start from the same 1,264-candidate pool and
+# the comparison isolates what autonima adds on top of it: screening, parsing and annotation.
+#
+# Its one deviation from the paper is the modality clause. The authors' stated keywords spell out
+# "functional magnetic resonance imaging" and "functional MRI" but never include the abbreviation
+# "fMRI"; on PubMed alone that caps recall at 0.636. Restoring fMRI[tiab] and the MeSH terms takes
+# it to 0.898. The topic clause is the paper's three keywords verbatim -- expanding it was
+# measured and recovered zero additional gold.
+#
+# CRITERIA ARE COPIED, NOT REWRITTEN. The screening block is byte-identical to v2-allstudies and
+# the annotation block byte-identical to v2-annotation-only, so this run introduces no new
+# criteria. Any difference in results against those runs is attributable to the search and to the
+# stages each of them skips.
+
+
+search:
+  database: "pubmed"
+  # Byte-identical to baselines/all_reappraisal.yaml.
+  query: >-
+    (((("functional magnetic resonance imaging"[tiab] OR "functional MRI"[tiab] OR fMRI[tiab] OR neuroimaging[tiab] OR "Magnetic Resonance Imaging"[Mesh] OR "Brain Mapping"[Mesh]) AND ("emotion regulation"[tiab] OR "affective regulation"[tiab] OR reappraisal[tiab])) AND ("2000/01/01"[Date - Publication] : "2019/12/31"[Date - Publication])) OR (("functional magnetic resonance imaging"[tiab] OR "functional MRI"[tiab] OR fMRI[tiab] OR neuroimaging[tiab] OR "Magnetic Resonance Imaging"[Mesh] OR "Brain Mapping"[Mesh]) AND ("emotion regulation"[tiab] OR "affective regulation"[tiab] OR reappraisal[tiab]) AND (patients[tiab] OR disorder*[tiab] OR depress*[tiab] OR anxiety[tiab] OR schizophren*[tiab] OR bipolar[tiab] OR PTSD[tiab] OR borderline[tiab] OR psychiatric[tiab] OR "Mental Disorders"[Mesh]))) NOT (Editorial[pt] OR Letter[pt] OR Comment[pt] OR "Case Reports"[pt] OR News[pt] OR Review[pt])
+  max_results: 20000
+  email: "delavega@utexas.edu"
+
+retrieval:
+  load_excluded: true
+  sources:
+    - pubget
+  full_text_sources:
+    - root_path: '/home/zorro/repos/autonima-results/articles/elsevier_output'
+      pmid_source: "folder_name"
+      text_path_templates:
+        - 'text.txt'
+      coordinates_path_templates:
+        - 'coordinates.json'
+    - root_path: '/home/zorro/repos/autonima-results/articles/ace_outputs'
+      pmid_source: "file_name"
+      allowed_extensions: [".html"]
+      processed_data_path: '/home/zorro/repos/autonima-results/articles/ace_outputs/processed'
+
+screening:
+  abstract:
+    model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+    objective: "Meta-analysis of fMRI studies in which participants regulate an emotional response to visual stimuli, or view them without regulating."
+    confidence_reporting: true
+    inclusion_criteria:
+      - Task-based fMRI study.
+      - >-
+        Human participants performing an emotion regulation task, broadly defined. Cognitive
+        reappraisal is the core case, and it covers reinterpretation, perspective-taking and
+        distancing. Also admit adjacent antecedent-focused strategies- acceptance, "reality
+        checking", cognitive control of emotion, and regulation applied during an anticipation or
+        cue period rather than during the stimulus itself.
+      - >-
+        Any healthy or clinical participant group qualifies, at ANY age- children, adolescents,
+        adults, older adults, and mixed-age samples all count. A patient study qualifies if a
+        control group is reported separately.
+      - Reports task-related brain activation results.
+    exclusion_criteria:
+      - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+      - >-
+        Empathy or perspective-taking studies in which participants adopt a self- or other-oriented
+        perspective toward a depicted person WITHOUT being instructed to amplify or dampen their
+        own emotional response.
+
+  fulltext:
+    model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+    objective: "Meta-analysis of fMRI studies in which participants regulate an emotional response to visual stimuli, or view them without regulating."
+    confidence_reporting: true
+    inclusion_criteria:
+      - Task-based fMRI study.
+      - >-
+        fMRI task- an emotion regulation strategy is instructed. Cognitive reappraisal is the core
+        case (reinterpretation, perspective-taking, distancing), and adjacent antecedent-focused
+        strategies also qualify- acceptance, "reality checking", and instructed cognitive control
+        of an emotional response. Regulation instructed during an anticipation or cue period
+        qualifies as well as regulation during the stimulus.
+      - >-
+        Stimuli- the emotional stimuli are VISUAL. Static images (IAPS pictures, photographs of
+        faces or scenes) are the common case, and film or video clips ALSO qualify. Exclude only
+        studies whose regulated stimuli are non-visual- purely auditory material, script-driven
+        imagery with no visual stimulus, or word and sentence stimuli.
+      - >-
+        Sample- any participant group at any age qualifies, including children, adolescents and
+        older adults. A study of a patient or clinical population qualifies when a control group's
+        results are reported separately.
+      - >-
+        Analysis- reports at least one within-task contrast related to emotion regulation (e.g.
+        "reappraise > look", "down-regulate > maintain", "up-regulate > maintain"), or an
+        unregulated viewing contrast (e.g. "emotion > baseline", "watch negative > neutral").
+      - >-
+        Whole-brain evidence- at least one analysis is a group-level, whole-brain (voxelwise)
+        task-evoked statistical map with peak coordinates in a standard anatomical space.
+      - >-
+        It is acceptable for qualifying whole-brain results to be reported in tables of
+        coordinates, figures, or supplementary materials, as long as they are clearly described in
+        the text.
+    exclusion_criteria:
+      - >-
+        Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without
+        original fMRI data.
+      - >-
+        Studies that report ONLY region-of-interest or small-volume-corrected results, or that used
+        partial brain coverage, with no accompanying whole-brain analysis.
+      - >-
+        Studies that report ONLY seed-based connectivity, effective connectivity (e.g. PPI, DCM) or
+        resting-state analyses, without also reporting a whole-brain task activation map.
+      - >-
+        Studies that report ONLY between-group contrasts or interactions, with no within-group task
+        effect for any group.
+      - >-
+        Empathy or perspective-taking studies in which participants take a self- or other-oriented
+        perspective toward a depicted person with no instruction to amplify or dampen their own
+        emotional response.
+
+parsing:
+  # ON, unlike v*-allstudies: annotation judges analyses by name/description/caption and needs
+  # the parsed structure. Matches v2-annotation-only.
+  parse_coordinates: true
+  coordinate_model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+
+annotation:
+  # Criteria from the source paper (Morawetz et al. 2022, NeuroImage 255:119194). Drafted by
+  # Claude (Opus 5); refined and streamlined by AD; REVIEWED AND APPROVED by AD 2026-08-27.
+  #
+  # SCOPE: ANALYSIS-LEVEL ONLY. Study-level eligibility -- task-based fMRI, reappraisal paradigm,
+  # healthy adult sample, static visual stimuli, whole-brain acquisition, empirical paper -- is
+  # screening's job and is not repeated here. In this annotation-only run screening is skipped and
+  # the fixed gold PMID list supplies that filtering instead; once these criteria are ported into
+  # v2-allstudies.yaml, the screening block enforces it.
+  #
+  # What DOES remain analysis-level: an eligible study can still contain ineligible analyses.
+  # Screening's exclusions are all of the form "studies that report ONLY ROI / only connectivity /
+  # only between-group contrasts", so a study passes on the strength of one qualifying analysis
+  # while its other analyses may be ROI, PPI, or group comparisons. Those must be rejected here.
+  #
+  # THE PAPER'S CATEGORIES (its section 2, p.4)
+  #   decrease (Dec)  down-regulation of emotion, reappraisal as the strategy
+  #   increase (Inc)  up-regulation of emotion, reappraisal as the strategy
+  #   maintain (Look) the control condition -- "participants are usually asked to just view the
+  #                   images passively and respond naturally without regulating their emotional
+  #                   responses". The paper calls this Look.
+  # Reappraisal is the union of Dec and Inc, so a regulation contrast carries two labels. Dec and
+  # Inc are not mutually exclusive: a contrast pooling both directions carries both.
+  #
+  # NO DIRECTION-DEFAULT RULE, DELIBERATELY. An earlier draft told the model to treat an
+  # undirected reappraisal contrast ("reappraise > view", no goal stated) as decrease. That is
+  # true of the benchmark -- 65 of its 128 decrease contrasts name no direction, while all 24
+  # increase contrasts do -- but it is nowhere in the paper's stated criteria. It is a pattern
+  # read off the authors' realized classification, so encoding it is fitting the answer key
+  # rather than the specification. Removed.
+  #
+  # Expect that to cost `decrease` recall: roughly half its gold contrasts state no direction and
+  # will now be labelled reappraisal only. That is the honest number. If it is later reinstated,
+  # the run must be reported as benchmark-tuned.
+  enabled: true
+  model: "@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07"
+  create_all_included_annotations: true
+  prompt_type: "multi_analysis"
+  metadata_fields:
+    - "analysis_name"
+    - "analysis_description"
+    - "table_caption"
+    - "study_title"
+    - "study_fulltext"
+  inclusion_criteria:
+    - >-
+      Voxelwise task evidence- this analysis must itself be a group-level, univariate, whole-brain
+      (voxelwise) task-evoked statistical map. A study qualifying on the strength of one
+      whole-brain analysis does not make its other analyses eligible.
+    - >-
+      The contrast must be WITHIN-group, and must concern either the regulation of an emotional
+      response or the passive unregulated viewing of emotional stimuli.
+    - >-
+      Direction- either an ACTIVATION or a DEACTIVATION effect qualifies.
+    - >-
+      Judge this analysis from its own name, description and table caption. An empty or generic
+      analysis name (e.g. "analysis_0") is never itself a reason to exclude- it usually means the
+      analysis is the only one in its table, so the caption describes it fully.
+    - >-
+      Assign every label that applies. A regulation contrast carries TWO labels: its goal
+      (decrease or increase) and the strategy label (reappraisal).
+  exclusion_criteria:
+    - >-
+      This analysis is EXPLICITLY described as region-of-interest or small-volume-corrected, with
+      no whole-brain result behind it. Do not infer an ROI analysis from a short coordinate table
+      or from anatomically focused results- whole-brain analyses routinely report few peaks.
+    - >-
+      This analysis is a connectivity or resting-state result- seed-based or effective
+      connectivity, PPI, DCM, ICA- rather than a task activation map.
+    - >-
+      This contrast is between two participant GROUPS, or a group x condition interaction,
+      including gender and other subgroup difference effects.
+  annotations:
+    - name: "reappraisal"
+      description: "Cognitive reappraisal as the regulation strategy: changing the meaning of a pictured situation in order to change one's emotional response to it. The union of the decrease and increase goals."
+      inclusion_criteria:
+        - >-
+          The contrast isolates a reappraisal regulation attempt against a less-regulated or
+          unregulated comparison- typical forms are reappraise > look, reappraise > view,
+          reappraise > watch, reappraise > maintain, decrease > look, or increase > maintain.
+        - >-
+          Either regulation goal qualifies, since this label is the union of decrease and
+          increase. Assign it IN ADDITION to the goal label, never instead of it.
+      exclusion_criteria:
+        - >-
+          Passive viewing contrasts with no regulation instruction.
+
+    - name: "decrease"
+      description: "Down-regulation goal: reappraisal used to reduce the intensity of an emotional response."
+      inclusion_criteria:
+        - >-
+          The contrast's regulation goal is to reduce or dampen the emotional response- e.g.
+          decrease > look, decrease > maintain, downregulate > view, "distance oneself".
+      exclusion_criteria:
+        - >-
+          Contrasts whose ONLY stated goal is to amplify emotion. 
+
+    - name: "increase"
+      description: "Up-regulation goal: reappraisal used to amplify the intensity of an emotional response."
+      inclusion_criteria:
+        - >-
+          The contrast's regulation goal is explicitly to amplify or intensify the emotional
+          response- e.g. increase > maintain, increase > look, increase > view, upregulate >
+          watch, "feel the emotion more intensely".
+        - >-
+          Up-regulation must be stated or clearly implied by the condition name.
+      exclusion_criteria:
+        - >-
+          Contrasts whose only stated goal is to dampen emotion.
+
+    - name: "maintain"
+      description: "Viewing emotional pictures passively and responding naturally, with no instruction to regulate."
+      inclusion_criteria:
+        - >-
+          The contrast reflects viewing emotional stimuli under NO regulation instruction- e.g.
+          emotion > baseline, look negative > baseline, view emotional > neutral, watch negative >
+          watch neutral, react > baseline, attend > rest.
+        - >-
+          Expect to find this INSIDE regulation studies. Almost every study in this benchmark is a
+          reappraisal experiment, and its Look/Watch/React condition is the control arm of that
+          same experiment. That the paper is about regulation is NOT a reason to withhold this
+          label from its unregulated condition- judge the contrast, not the study.
+      exclusion_criteria:
+        - >-
+          Contrasts in which THIS contrast's active condition involves a regulation attempt.
+          `maintain` is mutually exclusive with the other three labels at the level of the
+          contrast, not the study.
+
+
+    - name: "sample_clinical"
+      description: "This within-group analysis comes from a clinical or patient sample -- a group defined by a psychiatric or neurological diagnosis, or by clinically significant symptoms."
+      inclusion_criteria:
+        - >-
+          The participants contributing to THIS analysis are a diagnosed or clinically defined
+          group- for example major depression, anxiety disorder, PTSD, borderline personality
+          disorder, schizophrenia, bipolar disorder, OCD, ADHD, autism, or a substance use
+          disorder. Remitted and at-risk samples count as clinical.
+        - >-
+          Use the study text to decide, not only the analysis name. Most analyses in clinical
+          studies do not name their group- a study reporting both arms will often label them only
+          by condition. Work out which arm THIS analysis belongs to from the table caption and
+          the surrounding results text.
+      exclusion_criteria:
+        - >-
+          The analysis pools patients and controls into a single map without separating them.
+        - >-
+          The sample is a non-clinical subgroup selected on a trait or questionnaire score alone-
+          high trait anxiety, high rumination, high neuroticism- with no diagnosis.
+        - >-
+          You cannot determine from the available text which group this analysis came from. Do
+          not guess from the study being clinical, since clinical studies report control arms too.
+
+    - name: "sample_healthy"
+      description: "This within-group analysis comes from a healthy comparison or unselected sample, including the control arm of a clinical study."
+      inclusion_criteria:
+        - >-
+          The participants contributing to THIS analysis are healthy volunteers, an unselected
+          community or student sample, or the healthy control arm of a clinical study.
+        - >-
+          As above, decide from the study text rather than the analysis name. The control arm of
+          a clinical study belongs here even when the analysis name mentions only the condition.
+      exclusion_criteria:
+        - >-
+          The analysis pools patients and controls into a single map without separating them.
+        - >-
+          You cannot determine from the available text which group this analysis came from.
+
+output:
+  nimads: true
+  export_excluded_studies: true

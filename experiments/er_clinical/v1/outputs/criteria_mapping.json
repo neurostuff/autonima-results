@@ -1,0 +1,108 @@
+{
+  "screening": {
+    "abstract": {
+      "inclusion": {
+        "I1": "Task-based fMRI study.",
+        "I2": "Human participants performing an emotion regulation task, broadly defined. Cognitive reappraisal is the core case, and it covers reinterpretation, perspective-taking and distancing. Also admit adjacent antecedent-focused strategies- acceptance, \"reality checking\", cognitive control of emotion, and regulation applied during an anticipation or cue period rather than during the stimulus itself.",
+        "I3": "Any healthy or clinical participant group qualifies, at ANY age- children, adolescents, adults, older adults, and mixed-age samples all count. A patient study qualifies if a control group is reported separately.",
+        "I4": "Reports task-related brain activation results."
+      },
+      "exclusion": {
+        "E1": "Non-empirical papers (e.g., reviews, meta-analyses) without original human data.",
+        "E2": "Empathy or perspective-taking studies in which participants adopt a self- or other-oriented perspective toward a depicted person WITHOUT being instructed to amplify or dampen their own emotional response."
+      }
+    },
+    "fulltext": {
+      "inclusion": {
+        "I5": "Task-based fMRI study.",
+        "I6": "fMRI task- an emotion regulation strategy is instructed. Cognitive reappraisal is the core case (reinterpretation, perspective-taking, distancing), and adjacent antecedent-focused strategies also qualify- acceptance, \"reality checking\", and instructed cognitive control of an emotional response. Regulation instructed during an anticipation or cue period qualifies as well as regulation during the stimulus.",
+        "I7": "Stimuli- the emotional stimuli are VISUAL. Static images (IAPS pictures, photographs of faces or scenes) are the common case, and film or video clips ALSO qualify. Exclude only studies whose regulated stimuli are non-visual- purely auditory material, script-driven imagery with no visual stimulus, or word and sentence stimuli.",
+        "I8": "Sample- any participant group at any age qualifies, including children, adolescents and older adults. A study of a patient or clinical population qualifies when a control group's results are reported separately.",
+        "I9": "Analysis- reports at least one within-task contrast related to emotion regulation (e.g. \"reappraise > look\", \"down-regulate > maintain\", \"up-regulate > maintain\"), or an unregulated viewing contrast (e.g. \"emotion > baseline\", \"watch negative > neutral\").",
+        "I10": "Whole-brain evidence- at least one analysis is a group-level, whole-brain (voxelwise) task-evoked statistical map with peak coordinates in a standard anatomical space.",
+        "I11": "It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text."
+      },
+      "exclusion": {
+        "E3": "Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data.",
+        "E4": "Studies that report ONLY region-of-interest or small-volume-corrected results, or that used partial brain coverage, with no accompanying whole-brain analysis.",
+        "E5": "Studies that report ONLY seed-based connectivity, effective connectivity (e.g. PPI, DCM) or resting-state analyses, without also reporting a whole-brain task activation map.",
+        "E6": "Studies that report ONLY between-group contrasts or interactions, with no within-group task effect for any group.",
+        "E7": "Empathy or perspective-taking studies in which participants take a self- or other-oriented perspective toward a depicted person with no instruction to amplify or dampen their own emotional response."
+      }
+    }
+  },
+  "annotation": {
+    "global": {
+      "inclusion": {
+        "GLOBAL_I1": "Voxelwise task evidence- this analysis must itself be a group-level, univariate, whole-brain (voxelwise) task-evoked statistical map. A study qualifying on the strength of one whole-brain analysis does not make its other analyses eligible.",
+        "GLOBAL_I2": "The contrast must be WITHIN-group, and must concern either the regulation of an emotional response or the passive unregulated viewing of emotional stimuli.",
+        "GLOBAL_I3": "Direction- either an ACTIVATION or a DEACTIVATION effect qualifies.",
+        "GLOBAL_I4": "Judge this analysis from its own name, description and table caption. An empty or generic analysis name (e.g. \"analysis_0\") is never itself a reason to exclude- it usually means the analysis is the only one in its table, so the caption describes it fully.",
+        "GLOBAL_I5": "Assign every label that applies. A regulation contrast carries TWO labels: its goal (decrease or increase) and the strategy label (reappraisal)."
+      },
+      "exclusion": {
+        "GLOBAL_E1": "This analysis is EXPLICITLY described as region-of-interest or small-volume-corrected, with no whole-brain result behind it. Do not infer an ROI analysis from a short coordinate table or from anatomically focused results- whole-brain analyses routinely report few peaks.",
+        "GLOBAL_E2": "This analysis is a connectivity or resting-state result- seed-based or effective connectivity, PPI, DCM, ICA- rather than a task activation map.",
+        "GLOBAL_E3": "This contrast is between two participant GROUPS, or a group x condition interaction, including gender and other subgroup difference effects."
+      }
+    },
+    "annotations": {
+      "reappraisal": {
+        "inclusion": {
+          "REAPPRAISAL_I1": "The contrast isolates a reappraisal regulation attempt against a less-regulated or unregulated comparison- typical forms are reappraise > look, reappraise > view, reappraise > watch, reappraise > maintain, decrease > look, or increase > maintain.",
+          "REAPPRAISAL_I2": "Either regulation goal qualifies, since this label is the union of decrease and increase. Assign it IN ADDITION to the goal label, never instead of it."
+        },
+        "exclusion": {
+          "REAPPRAISAL_E1": "Passive viewing contrasts with no regulation instruction."
+        }
+      },
+      "decrease": {
+        "inclusion": {
+          "DECREASE_I1": "The contrast's regulation goal is to reduce or dampen the emotional response- e.g. decrease > look, decrease > maintain, downregulate > view, \"distance oneself\"."
+        },
+        "exclusion": {
+          "DECREASE_E1": "Contrasts whose ONLY stated goal is to amplify emotion. "
+        }
+      },
+      "increase": {
+        "inclusion": {
+          "INCREASE_I1": "The contrast's regulation goal is explicitly to amplify or intensify the emotional response- e.g. increase > maintain, increase > look, increase > view, upregulate > watch, \"feel the emotion more intensely\".",
+          "INCREASE_I2": "Up-regulation must be stated or clearly implied by the condition name."
+        },
+        "exclusion": {
+          "INCREASE_E1": "Contrasts whose only stated goal is to dampen emotion."
+        }
+      },
+      "maintain": {
+        "inclusion": {
+          "MAINTAIN_I1": "The contrast reflects viewing emotional stimuli under NO regulation instruction- e.g. emotion > baseline, look negative > baseline, view emotional > neutral, watch negative > watch neutral, react > baseline, attend > rest.",
+          "MAINTAIN_I2": "Expect to find this INSIDE regulation studies. Almost every study in this benchmark is a reappraisal experiment, and its Look/Watch/React condition is the control arm of that same experiment. That the paper is about regulation is NOT a reason to withhold this label from its unregulated condition- judge the contrast, not the study."
+        },
+        "exclusion": {
+          "MAINTAIN_E1": "Contrasts in which THIS contrast's active condition involves a regulation attempt. `maintain` is mutually exclusive with the other three labels at the level of the contrast, not the study."
+        }
+      },
+      "sample_clinical": {
+        "inclusion": {
+          "SAMPLE_CLINICAL_I1": "The participants contributing to THIS analysis are a diagnosed or clinically defined group- for example major depression, anxiety disorder, PTSD, borderline personality disorder, schizophrenia, bipolar disorder, OCD, ADHD, autism, or a substance use disorder. Remitted and at-risk samples count as clinical.",
+          "SAMPLE_CLINICAL_I2": "Use the study text to decide, not only the analysis name. Most analyses in clinical studies do not name their group- a study reporting both arms will often label them only by condition. Work out which arm THIS analysis belongs to from the table caption and the surrounding results text."
+        },
+        "exclusion": {
+          "SAMPLE_CLINICAL_E1": "The analysis pools patients and controls into a single map without separating them.",
+          "SAMPLE_CLINICAL_E2": "The sample is a non-clinical subgroup selected on a trait or questionnaire score alone- high trait anxiety, high rumination, high neuroticism- with no diagnosis.",
+          "SAMPLE_CLINICAL_E3": "You cannot determine from the available text which group this analysis came from. Do not guess from the study being clinical, since clinical studies report control arms too."
+        }
+      },
+      "sample_healthy": {
+        "inclusion": {
+          "SAMPLE_HEALTHY_I1": "The participants contributing to THIS analysis are healthy volunteers, an unselected community or student sample, or the healthy control arm of a clinical study.",
+          "SAMPLE_HEALTHY_I2": "As above, decide from the study text rather than the analysis name. The control arm of a clinical study belongs here even when the analysis name mentions only the condition."
+        },
+        "exclusion": {
+          "SAMPLE_HEALTHY_E1": "The analysis pools patients and controls into a single map without separating them.",
+          "SAMPLE_HEALTHY_E2": "You cannot determine from the available text which group this analysis came from."
+        }
+      }
+    }
+  }
+}
