@@ -237,6 +237,13 @@ gives precision 0.863 / recall 0.810 (precision-heavy), exhausted-manual gives 0
 §7, the headline. 35 columns, autonima against the strongest baseline a competent practitioner
 could have built per column.
 
+**Panel a encodes N.** Circle area is the number of analyses the pipeline pooled for that column
+(8 to 1699, so the scale is logarithmic), from `reports/analysis_counts.csv`. It answers the
+obvious "are the wins just the well-powered columns?" objection backwards: the pipeline wins 30 of
+35, and in **23 of those it pools fewer analyses than the baseline it beats** — median baseline
+2.5× larger, 11× for emotion regulation's `increase` (56 analyses at *R²* 0.50 against 627 at
+0.15). Selection beating volume is the thesis, so it belongs in the headline figure.
+
 ```
 best AVAILABLE   0.495 vs 0.394   Δ +0.101   95% CI [+0.045, +0.185]   sign test p = 2.2e-05
 STRONGEST        0.495 vs 0.399   Δ +0.096   95% CI [+0.040, +0.179]   p = 1.2e-04
@@ -245,6 +252,22 @@ STRONGEST        0.495 vs 0.399   Δ +0.096   95% CI [+0.040, +0.179]   p = 1.2e
 CI is cluster-bootstrapped over projects, not columns — a project's columns share a corpus, a
 search and a screening run. Say so in one clause; it pre-empts the obvious reviewer objection and
 costs nothing, since both intervals exclude zero.
+
+**A second candidate display item, new 2026-09-08:** `figure_er_surface_contrasts`, built by
+`scripts/make_er_surface_figure.py`. Three emotion-regulation contrasts on the cortical surface,
+expert above and pipeline below, against the single fixed-pool arm that cannot tell them apart —
+the analysis-unit argument rendered rather than scattered. *R²* per contrast is computed from the
+maps actually drawn, not read from `cross_project_best_baseline.csv`, whose "best available"
+baseline for two of these columns is a targeted search rather than the map shown; against the
+fixed-pool arm the margins are larger (reappraisal 0.81 vs 0.33, against 0.81 vs 0.51 for the
+targeted baseline), so the caption must say which baseline it is.
+
+This would be a **seventh** display item against Nature's limit of six. It competes with Figure 6
+(cost), which is the weakest of the set and moves comfortably to Extended Data. Two caveats for
+the caption: the cortical surface cannot show amygdala or other subcortical structure, which
+matters for emotion regulation specifically; and the shared colour ceiling is set to z = 5, which
+saturates the baseline (peak z 23) — conservative, since the claim is that the baseline is
+undifferentiated rather than weak.
 
 **Add the brain maps here.** Every number in this section is a similarity between two maps and the
 reader currently never sees one — a conspicuous gap in a neuroimaging paper, and the panel most
@@ -255,6 +278,28 @@ Built by `scripts/make_brain_map_figure.py`.
 Emotion regulation `decrease` is the case that carries it: the baseline is diffuse blue across
 frontal and parietal cortex, the pipeline resolves focal bilateral clusters, and the expert map
 matches the pipeline closely. Δ*R²* +0.491.
+
+> **⚠ `decrease` cannot be used as an exemplar — resolved 2026-09-08.** Its expert map correlates
+> **r = 0.972** with `reappraisal`'s. They are effectively the same map: neurometabench's
+> `Decrease.txt` holds the reappraisal union rather than the decrease contrast. The defect is
+> recorded in `projects/emotion_regulation_2022/nmb_mappings.json` ("the decrease and maintain
+> columns are not interpretable until the gold is rebuilt") and was confirmed independently by
+> direct gold-vs-gold comparison. It is also visible in the run's own similarity matrix, where
+> auto `reappraisal` scores 0.863 against gold `decrease` — nearly its 0.884 diagonal.
+>
+> This matters more than a single exemplar: `decrease` carries the **largest single advantage in
+> the whole benchmark** (Δ*R²* +0.491), so it is the most tempting column in the set and it is
+> currently doing rhetorical work in this section. Two consequences to settle before submission:
+>
+> 1. **Pick a different exemplar** — `reappraisal` (Δ +0.305) makes the same point on gold that is
+>    not duplicated. `scripts/make_er_surface_figure.py` already excludes `decrease` by default.
+> 2. **Decide whether `decrease` and `maintain` stay in the 35-column denominator at all.** They
+>    are currently counted in every pooled statistic in Results 4 and 5. If the gold is rebuilt
+>    they should be recomputed; if it is not, dropping them changes Δ and the sign test and that
+>    recomputation has not been done. `maintain` is the weaker claim of the two — its gold
+>    correlates 0.03–0.09 with every other ER contrast, which is equally consistent with a genuine
+>    contrast and with the missing-Look-experiments defect the note describes, and cannot be
+>    settled from the maps alone.
 
 **Exemplars are chosen on end-to-end margin, which is the right criterion for this panel.** Result 4
 is the end-to-end claim; Result 5 is the analysis-selection claim. Social is the case that separates
@@ -347,13 +392,36 @@ r. Do not use it as the justification.
 §6. **This is the paper.** Holding the study pool fixed, annotation still improves the map — so the
 advantage is not explained by retrieving better papers.
 
-**Median Δ*R²* +0.074, 25 of 35 columns improve.** Same units as Result 4 now, but still a
-different comparison — Result 4 is pipeline vs search-only baseline, Result 5 is annotation on vs
-off with the study pool held fixed. Quote its own number.
+> **⚠ Two changes here, 2026-09-08. Read both before quoting any number in this section.**
 
-Single panel, deliberately. An earlier draft paired this with a slope plot of baseline vs annotated
+**1. The comparison is now against a size-matched null, not against `all_analyses`.** The old
+comparison had a confound worth naming because a reviewer will find it: annotation both *chooses*
+analyses and *shrinks* the set, and a smaller CBMA is not simply a worse one — changing N changes
+the density map's scale and sparsity. So part of a gain over `all_analyses` could have come from
+using fewer analyses, whatever they were.
+
+`scripts/bootstrap_annotation_null.py` removes it. For each column it draws 500 random subsets of
+the annotated set's size from the same pool, runs the same MKDA + FDR, and scores each against the
+same expert map. The annotated map's position in that distribution is the effect of selecting
+*well*, with selecting *fewer* held constant. Figure 5a shows every column against its own null;
+5b summarises per project.
+
+**2. The old numbers came from stale inputs.** `annotation_value.csv` reads per-project similarity
+matrices that predate the maps they describe — the emotion-regulation matrix was written 15 hours
+before its maps. Recomputing straight from the `z_corr-FDR` files moves **26 of 35 columns**, some
+by more than 0.2 (`vbm_of_substance_use` cannabis 0.539 → 0.192, mostly downward). The headline
+survives — median Δ*R²* +0.074 → **+0.064**, 25 of 35 improving either way — but **no individual
+column's number does**, so nothing per-column from the old table can be quoted. The bootstrap
+script therefore recomputes the observed value through the identical path rather than reading the
+table.
+
+Same units as Result 4, but still a different comparison — Result 4 is pipeline vs search-only
+baseline, Result 5 is analysis selection against chance at matched N. Quote its own number.
+
+Two panels. An earlier draft was a single panel paired with a slope plot of baseline vs annotated
 dice across all 35 columns — 35 crossing lines in 89mm, unreadable, and carrying nothing the gain
-distribution does not already show except absolute dice levels, which Figure 4 supplies.
+distribution does not already show except absolute dice levels, which Figure 4 supplies. The
+per-column forest in 5a is what that slope plot was reaching for and could not deliver.
 
 **Two candidate mechanisms were tested and belong in the text, not in a panel:**
 

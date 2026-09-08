@@ -41,6 +41,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from make_brain_map_figure import pretty_column  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
 
@@ -484,48 +488,77 @@ def figure4(out_dir: Path) -> None:
 # --------------------------------------------------------------------------- Figure 5
 
 def figure5(out_dir: Path) -> None:
-    """The thesis: with the study pool held fixed, analysis selection still improves the map.
+    """The thesis, against a null that controls for selecting *fewer* analyses.
 
-    Single panel, deliberately. An earlier version paired this with a slope plot of baseline vs
-    annotated dice for all 35 columns, which was 35 crossing lines in 89mm -- unreadable, and it
-    carried nothing the gain distribution does not already show except absolute dice levels, which
-    Figure 4 supplies.
+    The earlier version compared the annotated map with `all_analyses` -- every parsed analysis
+    from the same studies. That isolates annotation from study selection, but it leaves one
+    confound standing: annotation both chooses analyses and shrinks the set, and a smaller CBMA is
+    not simply a worse one. A gain over `all_analyses` could partly be a gain from using fewer
+    analyses, whatever they were.
 
-    Two candidate replacements were tested against the data and rejected rather than drawn:
+    Panel a removes that. Each column's annotated map is placed against 500 random subsets of the
+    same size drawn from the same pool and put through the same MKDA + FDR, so the comparison is
+    selecting *well* against selecting *arbitrarily* at matched N.
 
-      gain vs prevalence (target specificity)   Spearman -0.233, n = 9 projects
-      gain vs baseline dice (headroom)          Pearson -0.353, t = -2.17, n = 35 columns
-
-    The first is the mechanism the paper argues for and points the right way, but nine projects
-    cannot support it. The second is marginally significant and deflationary -- gain is larger
-    where the baseline was worse -- and its quartiles are not monotone (+0.116, +0.035, +0.084,
-    +0.007). Both belong in the text as tested-and-weak, not in a panel that would imply more than
-    they support.
+    Panel b is the same quantity summarised per project. Both are computed by
+    bootstrap_annotation_null.py, which recomputes the observed value through the identical path
+    rather than reading annotation_value.csv -- that table derives from similarity matrices
+    written before the current maps, and 26 of 35 columns disagree with a fresh computation.
     """
-    # r2, matching Figure 4. annotation_value.csv stores pearson r, and r2 is exactly its square
-    # (verified against baseline_vs_autonima.csv, 104/104 rows). Both pearson columns were only
-    # populated for 14 of 35 rows until the mapping bug in annotation_value.py was fixed, which is
-    # why an earlier version of this figure used dice.
-    rows = read(REPO_ROOT / "reports" / "annotation_value.csv")
-    pts = []
-    for r in rows:
-        try:
-            ann = float(r["pearson_annotated"]) ** 2
-            allan = float(r["pearson_all_analyses"]) ** 2
-        except (ValueError, KeyError):
-            continue
-        pts.append((r["project"], ann - allan))
-    if not pts:
-        print("  figure5: no rows; skipped")
+    path = REPO_ROOT / "reports" / "annotation_bootstrap_null.csv"
+    if not path.exists():
+        print("  figure5: run scripts/bootstrap_annotation_null.py first; skipped")
         return
-    gains = [p[1] for p in pts]
+    rows = [r for r in read(path) if r.get("status") == "ok"]
+    if not rows:
+        print("  figure5: no usable rows; skipped")
+        return
 
+    for r in rows:
+        for k in ("observed_r2", "null_mean", "null_p05", "null_p50", "null_p95", "p_value"):
+            r[k] = float(r[k])
+        r["delta"] = r["observed_r2"] - r["null_mean"]
+
+    rank = {p: i for i, p in enumerate(PROJECT_ORDER)}
+    rows.sort(key=lambda r: (rank.get(r["project"], 99), -r["delta"]))
+
+    fig, axes = plt.subplots(
+        1, 2, figsize=(DOUBLE_COL, 0.115 * len(rows) + 1.05),
+        gridspec_kw={"width_ratios": [1.5, 1]})
+
+    # a: every column against its own size-matched null
+    ax = axes[0]
+    for i, r in enumerate(rows):
+        y = len(rows) - 1 - i
+        c = COLORS.get(r["project"], "#7F7F7F")
+        ax.plot([r["null_p05"], r["null_p95"]], [y, y], color=RULE, lw=1.6,
+                solid_capstyle="butt", zorder=2)
+        ax.plot([r["null_p50"]], [y], marker="|", color=MUTED, ms=3.2, mew=0.7, zorder=3)
+        ax.scatter([r["observed_r2"]], [y], s=11, color=c, edgecolors="white",
+                   linewidths=0.35, zorder=4)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels(
+        [f"{SHORT.get(r['project'], r['project'])} \u00b7 "
+         f"{pretty_column(r['project'], r['manual_column'])}" for r in reversed(rows)],
+        fontsize=4.6)
+    ax.tick_params(axis="y", length=0, pad=1.5)
+    ax.set_ylim(-0.8, len(rows) - 0.2)
+    ax.set_xlim(0, 1)
+    ax.set_xlabel("$R^2$ against the expert map")
+    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
+    n_boot = min(int(r["n_boot"]) for r in rows)
+    ax.text(0.985, 0.012,
+            f"grey bar = 5-95% of {n_boot} size-matched\nrandom selections; tick = its median",
+            transform=ax.transAxes, ha="right", va="bottom", fontsize=5.0, color=MUTED,
+            linespacing=1.4)
+    panel_label(ax, "a", dx=-0.42)
+
+    # b: the same gain, summarised per project
+    ax = axes[1]
     by_proj: dict[str, list[float]] = collections.defaultdict(list)
-    for proj, g in pts:
-        by_proj[proj].append(g)
+    for r in rows:
+        by_proj[r["project"]].append(r["delta"])
     order = sorted(by_proj, key=lambda p: st.median(by_proj[p]))
-
-    fig, ax = plt.subplots(figsize=(SINGLE_COL, 0.30 * len(order) + 1.0))
     ax.axvline(0, color=INK, lw=0.7, zorder=2)
     for i, proj in enumerate(order):
         vals = by_proj[proj]
@@ -535,17 +568,20 @@ def figure5(out_dir: Path) -> None:
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
     ax.set_ylim(-0.7, len(order) - 0.3)
-    ax.set_xlabel("$\\Delta R^2$ from analysis selection\n(same studies, annotation on vs off)")
-    ax.grid(axis="x", alpha=0.6)
-    ax.set_axisbelow(True)
-    improved = sum(1 for g in gains if g > 0)
+    ax.set_xlabel("$\\Delta R^2$ vs size-matched\nrandom selection")
+    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
+
+    gains = [r["delta"] for r in rows]
+    beat = sum(1 for r in rows if r["p_value"] < 0.05)
     ax.text(0.98, 0.02,
-            f"median {st.median(gains):+.3f}\n{improved}/{len(gains)} columns improve",
+            f"median {st.median(gains):+.3f}\n{beat}/{len(rows)} columns $P$ < 0.05",
             transform=ax.transAxes, ha="right", va="bottom", fontsize=5.5, color=MUTED,
             linespacing=1.5)
-    # Top-left: the highest-gain project sits well right of zero, so this corner is clear.
     ax.text(0.02, 0.985, "vertical rule = project median", transform=ax.transAxes,
             ha="left", va="top", fontsize=5.2, color=MUTED)
+    panel_label(ax, "b", dx=-0.30)
+
+    fig.subplots_adjust(wspace=0.52)
     save(fig, out_dir, "figure5_gain_from_analysis_selection")
 
 
