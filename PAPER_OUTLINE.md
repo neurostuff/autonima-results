@@ -454,6 +454,34 @@ here and it sets up §3's schema-specification argument with hard numbers.
 
 ## 6. Does better annotation produce better maps? The fair comparison  **[have]**
 
+> **⚠ Every per-column number in this section is stale — 2026-09-08.**
+>
+> `annotation_value.csv` is built from `projects/<p>/reports/manual_vs_auto_meta_<run>/tables/`
+> similarity matrices, and those matrices predate the maps they describe. Emotion regulation's was
+> written 2026-08-27 06:24; its maps were rewritten 21:22 the same day. Substance use's is 9 hours
+> behind its own maps. Recomputing pearson directly from the `z_corr-FDR_method-indep.nii.gz`
+> files moves **26 of 35 columns**, mostly downward and several by more than 0.2:
+>
+> | column | committed | recomputed |
+> |---|---|---|
+> | `vbm_of_substance_use` cannabis | 0.539 | 0.192 |
+> | `vbm_of_substance_use` stimulants | 0.663 | 0.388 |
+> | `vbm_of_ptsd` nonptsdgtptsd | 0.763 | 0.602 |
+> | `dementia` structural | 0.665 | 0.568 |
+>
+> The masking convention was ruled out first: all maps are finite over the same 902,629 voxels, so
+> the per-pair and common-mask conventions agree exactly. This is staleness, not method.
+>
+> **What survives:** the direction and the headline. Median Δ*R²* +0.0735 → **+0.0641**, and 25 of
+> 35 columns improve on either computation. **What does not:** every individual column, and
+> therefore the per-project table below and the selectivity breakdown that follows it.
+>
+> **Two fixes, in order.** (1) Regenerate the matrices with
+> `scripts/run_cross_project_manual_vs_auto_meta_fair.py` before quoting anything here. (2) Prefer
+> `reports/annotation_bootstrap_null.csv`, which recomputes observed values through the same MKDA
+> path it uses for the null and so cannot drift from the maps. Note §7 and Figure 4 were checked
+> and are **not** affected — every `baseline_vs_autonima.csv` postdates its maps.
+
 **Claim.** Restricted to studies both the manual authors and we had access to, maps built from
 annotation-selected analyses are closer to the manual result than maps built from all
 extracted analyses.
@@ -1762,6 +1790,19 @@ Emitted by `scripts/annotation_value.py` as `reports/annotation_value.csv`.
 
 **Result: 35 columns across all 9 projects. Mean Δ*R²* gain +0.099, median +0.073, positive in
 25/35.** (Dice, retained as secondary per §8d: mean +0.065, median +0.037, 26/35.)
+
+> **Stale — see the warning at the head of §6.** Recomputed from the current maps the median is
+> **+0.064**, still 25/35. The mean is not restated here because it is the statistic most moved by
+> the four substance-use columns that shifted furthest, and it should be recomputed rather than
+> patched.
+>
+> **A confound this comparison cannot address, independent of staleness.** `all_analyses` is not a
+> size-matched control: annotation both chooses analyses and shrinks the set, and a smaller CBMA
+> is not simply a worse one — N changes the density map's scale and sparsity. So some of this gain
+> could come from using fewer analyses whatever they were.
+> `scripts/bootstrap_annotation_null.py` replaces it with 500 random same-size subsets from the
+> same pool through the same MKDA + FDR, which holds N fixed and varies only *which* analyses.
+> That is now what Figure 5 reports.
 
 ### The gain scales with how selective the target is
 
