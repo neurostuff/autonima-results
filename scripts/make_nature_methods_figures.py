@@ -368,8 +368,36 @@ def figure3(out_dir: Path) -> None:
 
 # --------------------------------------------------------------------------- Figure 4
 
+# Marker areas for the Figure 4 size encoding. Analyses per column span 8 to 1699, a 200-fold
+# range, so area proportional to N would leave the smallest columns invisible next to the largest.
+# Log scaling keeps all 35 legible while preserving the ordering.
+SIZE_MIN, SIZE_MAX = 5.0, 62.0
+SIZE_TICKS = (10, 100, 1000)
+
+
+def size_scale(counts: list[int]):
+    """Map an analysis count to a marker area, and back for the legend."""
+    import math
+    lo, hi = math.log10(max(1, min(counts))), math.log10(max(counts))
+    span = hi - lo or 1.0
+
+    def area(n: int) -> float:
+        f = (math.log10(max(1, n)) - lo) / span
+        return SIZE_MIN + (SIZE_MAX - SIZE_MIN) * min(1.0, max(0.0, f))
+
+    return area
+
+
 def figure4(out_dir: Path) -> None:
-    """Headline: the pipeline against the strongest baseline available per column."""
+    """Headline: the pipeline against the strongest baseline available per column.
+
+    Circle area encodes how many analyses the pipeline pooled for that column. Without it a reader
+    cannot tell whether the advantage rides on well-populated columns, and the answer is the
+    opposite of the obvious guess: the pipeline beats its baseline in 30 of 35 columns, and in 23
+    of those it does so while pooling FEWER analyses than the baseline (median baseline 2.5x
+    larger, up to 11x for emotion regulation's `increase`). Selection beating volume is the
+    paper's thesis, so the N belongs in the headline figure rather than in the text alone.
+    """
     rows = read(REPO_ROOT / "reports" / "cross_project_best_baseline.csv")
     stats = {r["comparison"]: r for r in
              read(REPO_ROOT / "reports" / "cross_project_best_baseline_stats.csv")}
@@ -377,9 +405,20 @@ def figure4(out_dir: Path) -> None:
     metric = (rows[0].get("metric") if rows else None) or "dice"
     axis = {"dice": "Dice", "r2": "$R^2$", "pearson_r": "Pearson $r$"}.get(metric, metric)
 
+    # Analyses per column, keyed the same way as the baseline table so the join is exact.
+    counts_path = REPO_ROOT / "reports" / "analysis_counts.csv"
+    counts: dict[tuple[str, str], int] = {}
+    if counts_path.exists():
+        for r in read(counts_path):
+            if r["n_analyses_autonima"]:
+                counts[(r["project"], r["manual_annotation"])] = int(r["n_analyses_autonima"])
+
     pts = [(r["project"], float(r["autonima"]), float(r["best_available"]),
-            float(r["delta_vs_available"])) for r in rows]
+            float(r["delta_vs_available"]),
+            counts.get((r["project"], r["manual_annotation"]))) for r in rows]
     pts.sort(key=lambda t: t[3])
+    known = [n for *_, n in pts if n]
+    area = size_scale(known) if known else (lambda n: 13.0)
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.5),
                              gridspec_kw={"width_ratios": [1.15, 1]})
@@ -387,8 +426,10 @@ def figure4(out_dir: Path) -> None:
     # a: every column, autonima against its own best baseline
     ax = axes[0]
     ax.plot([0, 1], [0, 1], color=RULE, lw=0.6, zorder=1)
-    for proj, auto, base, _ in pts:
-        ax.scatter([base], [auto], s=13, color=COLORS.get(proj, "#7F7F7F"),
+    # Large circles last, so a big column cannot hide a small one behind it.
+    for proj, auto, base, _, n in sorted(pts, key=lambda t: -(t[4] or 0)):
+        ax.scatter([base], [auto], s=area(n) if n else 13.0,
+                   color=COLORS.get(proj, "#7F7F7F"),
                    edgecolors="white", linewidths=0.35, zorder=3)
     ax.set_xlim(0, 1); ax.set_ylim(0, 1)
     ax.set_xlabel(f"Best baseline {axis}"); ax.set_ylabel(f"Pipeline {axis}")
@@ -396,6 +437,19 @@ def figure4(out_dir: Path) -> None:
     ax.text(0.04, 0.93, "above the line =\npipeline better", fontsize=5.5, color=MUTED,
             transform=ax.transAxes, va="top")
     ax.grid(alpha=0.6); ax.set_axisbelow(True)
+    if known:
+        # Size key in the lower right: that corner is below the diagonal and far from it, where
+        # only a heavy loss would land, and none of the five losses is that severe.
+        keys = [n for n in SIZE_TICKS if min(known) <= n <= max(known)] or [min(known), max(known)]
+        handles = [Line2D([], [], marker="o", ls="", color=MUTED, alpha=0.55,
+                          markeredgecolor="white", markeredgewidth=0.35,
+                          markersize=area(n) ** 0.5, label=f"{n:,}") for n in keys]
+        key = ax.legend(handles=handles, loc="lower right", title="Analyses pooled",
+                        labelspacing=0.85, borderpad=0.5, handletextpad=0.7,
+                        fontsize=5.2, title_fontsize=5.2, borderaxespad=0.4)
+        key.get_title().set_color(MUTED)
+        for t in key.get_texts():
+            t.set_color(MUTED)
     panel_label(ax, "a", dx=-0.20)
 
     # b: per-column delta, sorted, with the pooled cluster-bootstrap CI behind it
@@ -405,7 +459,7 @@ def figure4(out_dir: Path) -> None:
         ax.axhspan(lo, hi, color="#0072B2", alpha=0.10, lw=0, zorder=0)
         ax.axhline(mean, color="#0072B2", lw=0.8, zorder=2)
     ax.axhline(0, color=INK, lw=0.6, zorder=2)
-    for i, (proj, _, _, dl) in enumerate(pts):
+    for i, (proj, _, _, dl, _n) in enumerate(pts):
         ax.bar(i, dl, width=0.78, color=COLORS.get(proj, "#7F7F7F"), lw=0, zorder=3)
     ax.set_xlim(-1, len(pts))
     ax.set_xticks([])
