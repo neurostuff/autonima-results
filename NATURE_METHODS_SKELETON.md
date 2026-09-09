@@ -498,19 +498,25 @@ same expert map. The annotated map's position in that distribution is the effect
 *well*, with selecting *fewer* held constant. Figure 5a shows every column against its own null;
 5b summarises per project.
 
-**The result is stronger than the comparison it replaces: median Δ*R²* +0.179 over a same-size
-random selection, and 32 of 35 columns clear their own null at *P* < 0.05** (against 25 of 35
-merely improving on `all_analyses`). 22 columns sit outside all 500 draws, i.e. *P* at the
-1/501 floor.
+**Final numbers, 32 columns, r² on unthresholded maps per the metric/map rule: median Δ*R²*
++0.211 over a same-size random selection, 29 of 32 columns clear their own null at *P* < 0.05,
+and 24 sit outside all 500 draws** (*P* at the 1/501 floor). Mean Δ +0.222. The dice arm from the
+same draws is reported as secondary: median Δdice +0.170, 24 of 32 at *P* < 0.05.
 
-**Report the three failures; they are the evidence the null discriminates.** A test that passed
-everything would be worthless, and each failure is interpretable:
+**Report the three failures; they are the evidence the null discriminates**, and they now tell one
+story rather than three:
 
-| column | k / pool | observed | null | *P* | reading |
+| column | k / pool | share of pool | observed | null | *P* |
 |---|---|---|---|---|---|
-| `decision_making` adm | 85 / 274 | 0.157 | 0.161 ± 0.038 | 0.52 | annotation is *exactly* chance here |
-| `social` all_merged | 557 / 720 | 0.807 | 0.792 ± 0.013 | 0.14 | pooled column: 77% of the pool, so there is almost nothing to select |
-| `vbm_of_substance_use` nicotine | 47 / 207 | 0.046 | 0.025 ± 0.017 | 0.13 | both arms near zero; no signal to separate |
+| `decision_making` adm | 85 / 274 | 31% | 0.272 | 0.251 | 0.26 |
+| `social` all_merged | 557 / 720 | 77% | 0.821 | 0.808 | 0.13 |
+| `social` others_merged | 449 / 720 | 62% | 0.727 | 0.702 | 0.06 |
+
+**All three select a large share of the pool, and that is the mechanism.** As the annotated set
+approaches the pool, the null approaches the observed value and there is nothing left to select —
+so a column can fail here without annotation having done anything wrong. This is §6's "the gain
+scales with how selective the target is" appearing as a mechanism rather than a correlation, and
+it is a much better sentence than "three columns were not significant".
 
 The middle row generalises and is worth one sentence in the text: **pooled/global columns have
 little headroom by construction**, because the annotated set approaches the pool and the null
