@@ -737,6 +737,103 @@ def figureS2(out_dir: Path) -> None:
     save(fig, out_dir, "figureS2_tier_progression")
 
 
+# -------------------------------------------------------------------- Supplementary S4
+
+def figureS4(out_dir: Path) -> None:
+    """A term is not an analysis: text-to-map prediction against curated synthesis.
+
+    Every baseline in Result 4 is a *search* baseline, which tests the pipeline against the
+    Neurosynth-style workflow but not against the current generation of automated map generators.
+    NeuroQuery predicts a map from free text with no studyset, no screening and no coordinate
+    extraction, so it is the strongest available "do nothing" arm and the one a reviewer will name.
+
+    The overall gap is large -- mean r-squared 0.075 against 0.574, behind on 32 of 32 columns --
+    but reporting only that would miss the finding, and would invite the fair suspicion that the
+    comparison is rigged. The structure of *where* it fails is the result:
+
+      canonical cognitive terms   executive function 0.308, working memory 0.278,
+                                  problem solving 0.256, mental arithmetic 0.240
+      condition contrasts         all three emotion-regulation contrasts 0.002
+      clinical group comparisons  alcohol 0.002, dementia functional 0.002, PTSD 0.022
+
+    NeuroQuery encodes term-level association. Where a benchmark column essentially *is* a term it
+    does respectably; where the column is a contrast between conditions or a between-group clinical
+    comparison it has no representation for the thing being asked and scores near zero. That is
+    this paper's analysis-unit argument arriving from an independent direction.
+
+    Two caveats belong in the caption. This is not like-for-like: NeuroQuery answers a different
+    and much cheaper question, so the comparison shows that term-level prediction cannot substitute
+    for contrast-level synthesis, not that NeuroQuery is poor at its own task. And r-squared is the
+    only applicable metric -- NeuroQuery produces no FDR-corrected map, so dice would require a
+    threshold with no error control, which the metric/map rule forbids.
+    """
+    path = REPO_ROOT / "reports" / "neuroquery_baseline.csv"
+    if not path.exists():
+        print("  figureS4: run scripts/neuroquery_baseline.py first; skipped")
+        return
+    rows = read(path)
+    for r in rows:
+        for k in ("neuroquery_r2", "autonima_r2", "best_baseline_r2"):
+            r[k] = float(r[k])
+
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.7),
+                             gridspec_kw={"width_ratios": [1.25, 1]})
+
+    # a: per-project means for the three arms, ordered by how well NeuroQuery does
+    ax = axes[0]
+    by: dict[str, list[dict]] = collections.defaultdict(list)
+    for r in rows:
+        by[r["project"]].append(r)
+    order = sorted(by, key=lambda p: st.mean([r["neuroquery_r2"] for r in by[p]]))
+    arms = (("neuroquery_r2", "NeuroQuery (text \u2192 map)", "#7F7F7F"),
+            ("best_baseline_r2", "best search baseline", "#B0B0B0"),
+            ("autonima_r2", "full pipeline", MEAN_COLOR))
+    h = 0.26
+    for j, (key, label, colour) in enumerate(arms):
+        ys = [i + (j - 1) * h for i in range(len(order))]
+        vals = [st.mean([r[key] for r in by[p]]) for p in order]
+        ax.barh(ys, vals, height=h * 0.92, color=colour, lw=0,
+                label=label, zorder=3)
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
+    ax.set_ylim(-0.6, len(order) - 0.4)
+    ax.set_xlabel("Mean $R^2$ against the expert map")
+    ax.set_xlim(0, 0.9)
+    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
+    ax.legend(loc="lower right", fontsize=5.0, handlelength=1.1, handletextpad=0.4,
+              borderaxespad=0.5)
+    # The two projects where NeuroQuery is not near zero are the two whose columns are closest to
+    # being plain terms, which is the point of ordering the panel this way.
+    # Top right: the two highest-NeuroQuery projects top out around 0.67, so this corner is free.
+    ax.text(0.985, 0.985, "ordered by NeuroQuery score.\nIt only competes in the top two,\n"
+            "whose columns are closest to\nbeing bare terms.",
+            transform=ax.transAxes, ha="right", va="top", fontsize=4.9, color=MUTED,
+            linespacing=1.45)
+    panel_label(ax, "a", dx=-0.42)
+
+    # b: per column, against the pipeline
+    ax = axes[1]
+    ax.plot([0, 0.9], [0, 0.9], color=RULE, lw=0.6, zorder=1)
+    for r in rows:
+        ax.scatter([r["neuroquery_r2"]], [r["autonima_r2"]], s=12,
+                   color=COLORS.get(r["project"], "#7F7F7F"), edgecolors="white",
+                   linewidths=0.35, zorder=3)
+    ax.set_xlim(0, 0.42); ax.set_ylim(0, 0.9)
+    ax.set_xlabel("NeuroQuery $R^2$")
+    ax.set_ylabel("Full pipeline $R^2$")
+    ax.grid(alpha=0.6); ax.set_axisbelow(True)
+    d = [r["autonima_r2"] - r["neuroquery_r2"] for r in rows]
+    ax.text(0.97, 0.06,
+            f"pipeline ahead in {sum(1 for x in d if x > 0)}/{len(d)}\n"
+            f"median $+${st.median(d):.3f}",
+            transform=ax.transAxes, ha="right", va="bottom", fontsize=5.2, color=INK,
+            linespacing=1.5)
+    panel_label(ax, "b", dx=-0.26)
+
+    fig.subplots_adjust(wspace=0.42)
+    save(fig, out_dir, "figureS4_neuroquery_baseline")
+
+
 # -------------------------------------------------------------------- Supplementary S3
 
 def _screening_metric(filename: str, metric: str) -> dict[str, dict[str, float]]:
@@ -916,7 +1013,7 @@ def figureS1(out_dir: Path) -> None:
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
 FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
-           "S1": figureS1, "S2": figureS2, "S3": figureS3}
+           "S1": figureS1, "S2": figureS2, "S3": figureS3, "S4": figureS4}
 
 
 def main() -> int:

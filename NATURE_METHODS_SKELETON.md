@@ -652,6 +652,53 @@ Everything below survives at full length outside the word count:
 | neurometabench citable | **needs a Zenodo DOI** before submission — reviewers will ask where the benchmark is |
 | preprint | post simultaneously; NM desk-rejects fast, so the downside is bounded time only if the preprint is already out |
 
+### Supplementary S4 — NeuroQuery: a term is not an analysis
+
+`scripts/neuroquery_baseline.py` → `reports/neuroquery_baseline.csv` → `--only S4`. Added
+2026-09-09 because every other baseline is a *search* baseline, which tests the pipeline against
+the Neurosynth-style workflow it descends from but not against the current generation of automated
+map generators. "Why not just ask NeuroQuery?" is the first question this paper's framing invites,
+and it had no answer.
+
+**Mean *R²* 0.075 against the pipeline's 0.574, behind on 32 of 32 columns, median gap +0.510.**
+
+**Do not report only that.** A gap that large invites the fair suspicion that the comparison is
+rigged, and the structure of *where* NeuroQuery fails is the actual finding:
+
+| kind of column | examples | NeuroQuery *R²* |
+|---|---|---|
+| canonical cognitive term | executive function, working memory, problem solving, mental arithmetic | 0.24–0.31 |
+| condition contrast | all three emotion-regulation contrasts | **0.002** |
+| clinical group comparison | alcohol, dementia functional, PTSD grey matter | 0.002–0.022 |
+
+Per project: executive function 0.216 and problem solving 0.184, everything else ≤ 0.043.
+
+**NeuroQuery encodes term-level association.** Where a benchmark column essentially *is* a term it
+does respectably; where the column is a contrast between conditions, or a between-group clinical
+comparison, the model has no representation for the thing being asked and scores near zero. **That
+is this paper's analysis-unit argument arriving from an independent direction**, and it is a better
+use of the result than a win count. Result 4 or the Discussion should make that point; the win
+count is secondary.
+
+**Three things the caption must say.**
+
+1. **Not like-for-like.** NeuroQuery answers a different and far cheaper question — no studyset, no
+   screening, no extraction, milliseconds. This shows term-level prediction cannot substitute for
+   contrast-level synthesis, *not* that NeuroQuery is poor at its own task. Say so; the alternative
+   reads as a straw man.
+2. **r² only.** NeuroQuery produces no FDR-corrected map, so dice would need a threshold with no
+   error control behind it — forbidden by the metric/map rule. "NeuroQuery scores no dice" would be
+   an artefact of the comparison.
+3. **The queries were fixed before scoring.** They are written out in the script and were not
+   revised against results. This matters more than usual here: S2 shows revising criteria against
+   feedback is worth +0.031, and tuning these queries would be the same mistake in our own favour.
+   Several column names are unusable as queries alone ("decrease", "functional", "alcohol"), so
+   they were spelled out from the construct rather than derived automatically.
+
+Also worth one line: corr(NeuroQuery *R²*, search-baseline *R²*) = 0.688, so NeuroQuery is
+strongest on the same columns the search baseline finds easy. It is not capturing something
+orthogonal that the pipeline misses.
+
 ### Supplementary S3 — how much of the low precision is a pool mismatch?
 
 `--only S3`. Precision is the weakest headline number in the paper, and there are two candidate
