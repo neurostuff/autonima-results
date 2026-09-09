@@ -1138,6 +1138,69 @@ gated by how much full text was obtained in the first place.
 - These are re-run costs against a **frozen corpus**. A first run also pays retrieval, which is
   network time rather than tokens, and is often the wall-clock bottleneck.
 
+## Reviewer objections we are choosing not to answer, and why  **[have — 2026-09-09]**
+
+Recorded so the decisions are deliberate rather than omissions, and so the Discussion can name
+them in one paragraph each.
+
+**MKDA everywhere, including where the source paper used ALE.** Five of the nine source papers
+name ALE in their abstracts (dementia, problem solving, social, VBM PTSD, VBM substance use); the
+remaining four do not state it there. Every neurometabench reference map is MKDA. **Decided
+2026-09-09: out of scope.** The benchmark's value is internal consistency — one estimator across
+all nine projects, so that cross-project comparisons mean something — and re-deriving nine
+reference sets under each paper's own algorithm is a neurometabench project, not this paper's.
+State the substitution plainly in Methods as a property of the benchmark.
+
+One consequence must still be reported, because we found it and it is real:
+`vbm_of_substance_use` **nicotine** is a case where the substitution *erases a published result*.
+Hill-Bowen et al. found significant PCC clusters; the gold inputs match the paper exactly (18
+experiments, 114 foci); the MKDA re-analysis yields nothing (max z 0.935). One clean example is
+enough to make the caveat concrete without opening the whole question.
+
+**No human-agreement ceiling for screening.** We score LLM screening against the published
+inclusion list as though it were truth, but abstract screening between two human raters typically
+runs κ ≈ 0.6–0.8, so a precision of 0.6 may sit at or near the achievable ceiling rather than
+below it. **Decided 2026-09-09: out of scope, note in Discussion.** Two sentences: the reference
+is one team's judgement, we have no inter-rater anchor, and precision against it is therefore a
+lower bound on agreement with *a* competent reviewer rather than an estimate of accuracy.
+
+**Failure modes are not characterised in the main text.** A methods audience adopts a tool on the
+basis of how it fails, and at present the five losing columns are bars in Figure 4b and nothing
+else. The material exists — `scripts/parser_failure_taxonomy.py`,
+`analyze_parser_failure_review.py` and the annotation review reports. **Decided 2026-09-09: add
+the point here now, and revisit as qualitative Discussion material if there is room.** The
+minimum shippable version is one Extended Data table of failure categories with counts plus ~150
+words; the better version separates *supply* failures (no full text, unparseable tables) from
+*judgement* failures (screened out wrongly, annotated into the wrong construct), because a reader
+can fix the first kind and not the second.
+
+## Test–retest: what actually exists  **[partial — checked 2026-09-09]**
+
+**There is no clean test–retest run.** Checked all 61 runs with an executed config across the nine
+projects: exactly one pair shares an identical config, `dementia/v3` and `dementia/v3-dedup`, and
+it is confounded — the name says a deduplication was applied, so the difference is not purely LLM
+sampling. Every other version bump changes the config (`-annotation-only`, `-allstudies`,
+`-recent`, `-2010`, `-gpt5`, `-lc`, `-all_pmids`, …), so none of them is a repeat.
+
+That one pair is still worth reporting, because what it shows is metric-specific:
+
+| dementia column | Δ*R²* | Δdice |
+|---|---|---|
+| all | −0.017 | −0.047 |
+| decrease | −0.019 | −0.055 |
+| functional | −0.018 | **−0.269** |
+| structural | −0.003 | −0.003 |
+
+**r² is stable across the repeat (|Δ| ≤ 0.019, against a +0.099 headline); dice is not.**
+`functional` falls from 0.269 to exactly 0.000 — one re-run pushed its whole map below threshold.
+That is nearly three times the Figure 4 effect, from re-running the same config. It is direct
+run-to-run evidence for what §8d argues cross-sectionally, and it is the strongest available
+argument for r² as the primary metric.
+
+**Still needed:** a real repeat, same config, at least two projects, ideally three draws. The
+dementia pair is n = 1 and confounded, so it cannot support a variance estimate — only the
+observation that dice is the fragile metric.
+
 ## M1. Methods: "AI Transparency and Reproducibility"  **[partial]**
 
 Not a narrative section. Imaging Neuroscience's [guidelines for AI methods
