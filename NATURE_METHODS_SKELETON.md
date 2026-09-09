@@ -140,6 +140,20 @@ So the canonical arm's lower precision is substantially a property of what the b
 returns, not of the screener's judgement — which is the direct answer to "is precision limited by
 the mixed pool?" for these three.
 
+**The two sentences that must appear in the body** (the quantification and its control live in
+**Supplementary S3**): across the three projects the pool accounts for **+0.142 of precision at
+full-text screening** — a mean of 0.349 on the search pool against 0.491 on the fixed pool, so
+29% of the precision achievable at that stage is a corpus difference rather than a screening
+failure. It is a genuine pool effect and not a threshold trade, because **recall is unchanged**
+(mean Δ +0.000 at abstract screening, +0.007 at full text): a precision gain bought by discarding
+borderline true positives would show up as a recall loss and does not.
+
+Without those two sentences a reader takes 0.35 as the pipeline's precision ceiling when 0.49 is
+reachable on a matched pool, so this is not an optional aside. S3's one visible exception is
+emotion regulation's search-stage recall (−0.261), which is the same fact as ER's fixed pool
+holding only 56 of 88 gold studies, described below — the two arms are different corpora at that
+stage by construction, and every later stage is ~0.
+
 **Retention (panel a) does not follow the same pattern, and the exception is the interesting
 part:**
 
