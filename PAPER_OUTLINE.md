@@ -480,19 +480,43 @@ here and it sets up §3's schema-specification argument with hard numbers.
 > went 8 → 11 and which is the one row above that `z.nii.gz` does not reproduce. But the mtimes
 > were a coincidence, not the cause of the other 25.
 >
-> **Which map is right.** The corrected one, for consistency with §7 and because an uncorrected
-> MKDA map's correlation is dominated by sub-threshold background. `reports/annotation_bootstrap_null.csv`
-> uses it. Two consequences to settle before submission: decide the convention **once** and
-> state it, and note that under it §6's headline becomes median Δ*R²* **+0.064** (from +0.074),
-> still 25 of 35 improving.
+> **Which map for which metric — settled 2026-09-09.** Neither script was right, and the answer
+> is not one map. **r² compares unthresholded maps; dice compares FDR-corrected thresholded
+> maps.** Each metric presupposes a map: dice is an overlap of suprathreshold volumes so it needs
+> a threshold that means something (the corrected *q* ≤ 0.05 boundary, which on these maps is
+> exactly *z* > 1.96), and r² is a correlation over all voxels so it needs the map that still has
+> them. See the metric/map section in `NATURE_METHODS_SKELETON.md` for the full argument.
 >
-> **A separate finding about four columns.** `vbm_of_substance_use` nicotine, opioids, stimulants
-> and cannabis are degenerate on the corrected map: nothing survives FDR, so dice is identically
-> 0.0000 — and for cannabis the *gold* map peaks at z = 0.496, so **no pipeline output whatever
-> could score above zero there**. Their *R²* is computed over ~902,000 voxels of which all but a
-> few hundred are exactly zero, so it is unstable rather than merely low. §8d already ruled dice
-> unusable at small N; this shows *R²* is not trustworthy for these four either, and they should
-> probably be reported as uninformative rather than as losses.
+> **Both fixed and regenerated.** `compare_baselines_to_benchmark.py` and
+> `compare_meta_to_benchmark.py` each now load both maps. The per-run matrices were rebuilt for
+> all nine projects with
+> `pixi run python scripts/compare_meta_to_benchmark.py --project-dir projects/<p> --run-dir <run>
+> --output-dir projects/<p>/reports/manual_vs_auto_meta_<run>`. That script only *reads* maps — it
+> runs no meta-analysis — so it is cheap to re-run whenever a run's maps change. (The heavier
+> `run_cross_project_manual_vs_auto_meta_fair.py` does fit metas, but only into the separate
+> fair-manual-subset tree and only under `--force`; those 35 maps are already cached. Neither
+> script touches the gold maps in `neurometabench/analysis`.) Both need the pixi environment for
+> seaborn.
+>
+> Effect on §6: dice falls across the board because corrected maps are sparser, while pearson
+> barely moves, having already been on the raw map. **Dice gain median +0.037 → +0.063, positive
+> in 22 of 32.** Two columns fall to dice 0.000 — `vbm_of_ptsd` nonptsdgtptsd and
+> `vbm_of_substance_use` nicotine — because their corrected maps have nothing suprathreshold. That
+> is §8d's "dice is unusable at small N" showing up directly rather than as a caveat.
+>
+> §7 and Figure 4 were checked for the same failure and are **not** affected — every
+> `baseline_vs_autonima.csv` postdates its maps.
+>
+> **Three columns are now excluded entirely, and the denominator is 32.** An earlier version of
+> this note called four `vbm_of_substance_use` columns degenerate and suggested reporting them as
+> uninformative. That was on the right track for the wrong reason. The actual position, from the
+> source paper: Hill-Bowen et al. 2022 (PMID 36115222) reports **no significant result** for
+> cannabis, opioids or stimulants — "Drug-specific meta-analyses for cannabis, opioids, and
+> stimulants failed to yield significant clusters" — so there is no reference finding to recover
+> and they are dropped from every analysis via `scripts/benchmark_exclusions.py`. **`nicotine`
+> stays**: the paper *did* find significant PCC clusters and the gold inputs match it exactly (18
+> experiments, 114 foci), yet the MKDA re-analysis finds nothing. That is a benchmark reproduction
+> failure and a finding in its own right, not an absent reference.
 
 **Claim.** Restricted to studies both the manual authors and we had access to, maps built from
 annotation-selected analyses are closer to the manual result than maps built from all
