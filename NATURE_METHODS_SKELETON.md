@@ -756,6 +756,38 @@ use of the result than a win count.
    `reports/neurovlm_maps/` as nifti. Scoring happens pixi-side from those files. The documented
    default head was used and **not** tuned; note the library warns that adapters are available but
    inactive on the forward pass, which is the documented default path.
+> **Query sensitivity — tested 2026-09-09, `scripts/query_sensitivity.py`.** The obvious
+> objection to a pre-registered query is that the arms might look weak because the queries were
+> poor. Five **uniform** strategies applied identically to all 32 columns (the pre-registered
+> query; the cleaned column name; project + column; the query's terse head term; the query plus
+> "fmri activation"), so no column is hand-tuned. The per-column maximum is also reported as an
+> **oracle upper bound** that no user could reach without the answers.
+>
+> | | NeuroQuery | NeuroVLM |
+> |---|---|---|
+> | strategy range | 0.067 – 0.079 | 0.207 – **0.298** |
+> | pre-registered | 0.075 | 0.238 |
+> | oracle max | 0.094 | 0.308 |
+> | oracle as share of search baseline | **19.7%** | **64.6%** |
+> | per-column spread, median | 0.027 | 0.103 |
+>
+> **The answer differs by model, and both halves matter.**
+>
+> **For NeuroQuery the query was not the limiting factor.** Every strategy lands in a 0.012-wide
+> band, the median per-column spread is 0.027, and even the oracle reaches under a fifth of the
+> search baseline. The pre-registered choice sits mid-band, so it was not unlucky either. Three
+> column names and two head terms produced *constant* maps — terms the model cannot encode at all.
+>
+> **For NeuroVLM the query matters substantially but does not close the gap.** Appending "fmri
+> activation" alone lifts it 0.238 → 0.298, and the per-column spread is 4× NeuroQuery's. So
+> **report NeuroVLM as a range, not a point: 0.24 pre-registered, 0.30 under the best uniform
+> prompt, 0.31 oracle ceiling.** Prompt sensitivity is itself a finding worth one sentence — a
+> tool whose answer moves 0.06 on a phrasing choice is harder to use well than one that does not.
+>
+> **What the objection cannot rescue.** Even the oracle stays below the search baseline (0.476)
+> and well below the pipeline (0.574). Query choice narrows NeuroVLM's gap from 2.0× to about
+> 1.6× and does not eliminate it, so the conclusion is robust to which of these numbers is quoted.
+
 3. **The queries were fixed before scoring.** They are written out in the script and were not
    revised against results. This matters more than usual here: S2 shows revising criteria against
    feedback is worth +0.031, and tuning these queries would be the same mistake in our own favour.
