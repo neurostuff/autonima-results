@@ -1174,32 +1174,58 @@ words; the better version separates *supply* failures (no full text, unparseable
 *judgement* failures (screened out wrongly, annotated into the wrong construct), because a reader
 can fix the first kind and not the second.
 
-## Test–retest: what actually exists  **[partial — checked 2026-09-09]**
+## Test–retest  **[have — `experiments/e2e_retest/`]**
 
-**There is no clean test–retest run.** Checked all 61 runs with an executed config across the nine
-projects: exactly one pair shares an identical config, `dementia/v3` and `dementia/v3-dedup`, and
-it is confounded — the name says a deduplication was applied, so the difference is not purely LLM
-sampling. Every other version bump changes the config (`-annotation-only`, `-allstudies`,
-`-recent`, `-2010`, `-gpt5`, `-lc`, `-all_pmids`, …), so none of them is a repeat.
+**This is done, and it is the strongest reproducibility material in the project.** See
+`experiments/e2e_retest/README.md`. An earlier note here claimed no test–retest existed; that was
+wrong — it searched `projects/` and the run registry and never looked in `experiments/`.
 
-That one pair is still worth reporting, because what it shows is metric-specific:
+**Design.** Corpus frozen and *verified* identical (search, abstract screening, retrieval);
+full-text screening, parsing, annotation and meta all recomputed. Three projects at `best` tier:
+executive_function v3, emotion_regulation_2022 v4, social v3. Abstract drift measured in its own
+arm because re-running it is incoherent with freezing the corpus — 2.24% and 2.83% flip rates,
+near-symmetric, both well under the 8.6% precedent §8a cites.
 
-| dementia column | Δ*R²* | Δdice |
-|---|---|---|
-| all | −0.017 | −0.047 |
-| decrease | −0.019 | −0.055 |
-| functional | −0.018 | **−0.269** |
-| structural | −0.003 | −0.003 |
+**Headline, and it belongs in the main text rather than the supplement: a per-column
+reproducibility floor of ±0.12 dice and a project-level floor of ±0.04.** Anything smaller than
+that cannot be distinguished from run-to-run noise on a single run. In §7's table that puts
+**decision_making (+0.001), dementia (+0.005) and executive_function (+0.031) inside the noise
+band** — which has to be said, because three of the reported margins are then not
+distinguishable from zero on one run.
 
-**r² is stable across the repeat (|Δ| ≤ 0.019, against a +0.099 headline); dice is not.**
-`functional` falls from 0.269 to exactly 0.000 — one re-run pushed its whole map below threshold.
-That is nearly three times the Figure 4 effect, from re-running the same config. It is direct
-run-to-run evidence for what §8d argues cross-sectionally, and it is the strongest available
-argument for r² as the primary metric.
+| project | margin over baseline | run drift | |
+|---|---|---|---|
+| emotion_regulation_2022 | +0.284 | 0.022 | margin ≫ drift |
+| social | +0.115 | 0.035 | margin ≫ drift |
+| executive_function | +0.058 | 0.042 | **margin ≈ drift** |
 
-**Still needed:** a real repeat, same config, at least two projects, ideally three draws. The
-dementia pair is n = 1 and confounded, so it cannot support a variance estimate — only the
-observation that dice is the fragile metric.
+**It independently confirms the metric ruling.** Map drift between identical runs is r² 0.89–0.96
+against dice 0.81–0.88; ER `increase` is r² 0.800 against dice 0.622. The continuous pattern is
+stable and what moves is where the FDR threshold lands. Two other lines of evidence now agree:
+the `dementia/v3` vs `v3-dedup` pair (Δ*R²* ≤ 0.019 while `functional`'s dice falls 0.269 → 0.000)
+and §8d's cross-sectional argument. **Three independent routes to "r² primary, dice secondary" is
+a strong Methods paragraph.**
+
+**Mechanism, which is the interesting part.** Instability tracks group size — r = +0.825 between
+voxel count and dice; groups under 40k voxels average dice 0.692 against 0.864 above. ER
+`increase` swung 19,160 → 36,675 voxels (+91%). One study entering or leaving moves a small map a
+great deal, which is how a sub-1% studyset change becomes a 0.11 dice change. The bypass arms
+(`all_*`) barely drift at all (r² 0.987), localising the instability to exactly the re-run stages.
+
+**Cost, measured not estimated:** ~$51 for three projects. Worth reporting that the pre-hoc
+estimate was $28.56 — under by 1.8×, because these projects' full texts are far longer than the
+corpus median the estimate extrapolated from. That gap is the argument for the token accounting
+existing.
+
+**Two caveats to carry.** Only the full-text rate is a clean per-stage measurement; parsing and
+annotation ran on already-drifted inputs, so report those as end-to-end. And it uncovered two real
+autonima bugs that produced *plausible but wrong* corpora rather than errors —
+[#66](https://github.com/neurostuff/autonima/issues/66) and
+[#65](https://github.com/neurostuff/autonima/issues/65). **The runs need
+`PYTHONPATH=/home/zorro/repos/ACE`** or retrieval silently loses most of the corpus.
+
+**Still open:** isolating parsing and annotation needs separate arms (clear only one stage at a
+time), not yet run. Three projects, one repeat each — no variance estimate, only a floor.
 
 ## M1. Methods: "AI Transparency and Reproducibility"  **[partial]**
 
