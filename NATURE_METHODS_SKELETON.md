@@ -548,7 +548,45 @@ Four beats, roughly 150 words each:
 
 1. **The benchmark is a reference, not truth.** Manual meta-analyses have their own scope,
    resolution and internal consistency. Where this binds, it binds hard — dementia's aggregation
-   explains its whole profile.
+   explains its whole profile. **`vbm_of_substance_use` is the sharpest case and it is checked
+   against the source paper** — see the box below; three of its six columns have no significant
+   published result to recover, and a fourth does not reproduce.
+
+> **⚠ `vbm_of_substance_use`: read the source paper before scoring it — 2026-09-09.**
+>
+> Hill-Bowen et al. 2022, *Drug Alcohol Depend* 240:109625 (PMID 36115222), 82 articles, **ALE**.
+> Verified against the full text. The paper reports drug-specific meta-analyses for five classes
+> and finds significance in only two:
+>
+> | column | paper's result | gold map (MKDA) | gold vs paper inputs |
+> |---|---|---|---|
+> | all drug classes | significant (mFG/vmPFC, ACC, insula) | 214 vox | — |
+> | alcohol | significant (bilat. cingulate, L IFG, L postcentral) | 441 vox | 22 exp / 213 foci — **exact** |
+> | nicotine | **significant** (multiple PCC) | **0 vox**, max z 0.935 | 18 exp / 114 foci — **exact** |
+> | cannabis | *"failed to yield significant clusters"* | 0 vox | 12 vs 9 exp, 153 vs 37 foci |
+> | opioids | *"failed to yield significant clusters"* | 0 vox | 13 vs 12 exp, 72 vs 70 foci |
+> | stimulants | *"failed to yield significant clusters"* | 0 vox | 18 vs 24 exp, 109 vs 236 foci |
+>
+> **Three consequences, in order of how much they matter.**
+>
+> **(a) cannabis, opioids and stimulants have no reference result.** The published finding is a
+> null. Scoring the pipeline against them measures agreement with nothing: dice is necessarily 0
+> because the *expert* map has no suprathreshold voxel, and r² is a correlation between two
+> sub-threshold density maps. **They belong outside the 35-column denominator** — a benchmark
+> *scope* decision, not a metric one. This supersedes an earlier retraction of mine in the
+> metric/map section: the corrected-map r² of 0.24–0.59 those columns gained is not recovered
+> signal, it is two null maps agreeing about where the literature happens to put coordinates.
+> That is a trap the unthresholded metric walks straight into, and worth one sentence of warning.
+>
+> **(b) nicotine is a reproduction failure, and a clean one.** The gold inputs match the paper
+> exactly — 18 experiments, 114 foci — yet MKDA finds nothing where ALE found PCC clusters. Same
+> data, different algorithm, and the reference result disappears. neurometabench re-analyses every
+> project with MKDA; this is the one place we can *prove* that substitution changes whether the
+> reference exists. It needs stating in the neurometabench data paper, not buried.
+>
+> **(c) cannabis and stimulants have coordinate-extraction discrepancies** against the paper's own
+> counts (153 vs 37 foci; 109 vs 236). Independent of significance, and independent of the
+> pipeline — this is the benchmark's own extraction. Worth an audit before either paper ships.
 2. **Where the gain appears and where it does not.** Specific targets gain; diffuse ones do not. Two
    accounts (squishy target vs model limitation) remain unresolved; say so rather than choosing.
 3. **What generalises.** The analysis-unit argument is not neuroimaging-specific; the *measurability*
