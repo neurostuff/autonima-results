@@ -634,9 +634,41 @@ Everything below survives at full length outside the word count:
 | §9 forward-looking close | **the gate.** scz_enigma is the live candidate; Elsevier blocker cleared |
 | statistical reporting | done — cluster bootstrap + sign test wired into `compile_best_baselines.py` |
 | cost and scale | done — measured, not estimated |
-| `verbatim → best` | designed, never run; needed for the leakage claim |
+| `verbatim → best` | **measured 2026-09-09** — Supplementary S2. See the note below; the result is not comfortable |
 | neurometabench citable | **needs a Zenodo DOI** before submission — reviewers will ask where the benchmark is |
 | preprint | post simultaneously; NM desk-rejects fast, so the downside is bounded time only if the preprint is already out |
+
+### Supplementary S2 — the leakage measurement, and what it costs us
+
+`scripts/compile_tier_progression.py` → `reports/tier_progression.csv` → `--only S2`. Mean *R²*
+against the expert map for each tier's run, paired within project.
+
+**verbatim → best: n = 6, mean +0.088, median +0.033, rises in 5 of 6.**
+
+Set that beside Figure 4's headline of **+0.099** and the problem is obvious: *at the mean, the
+rise from held-out criteria to report-tuned criteria is nearly as large as the pipeline's entire
+reported advantage over baselines.* Figure 4 is computed at the `best` tier, so the headline is a
+tuned-criteria number.
+
+**Do not report the mean alone.** It is carried by two projects where the verbatim criteria look
+broken rather than merely untuned — dementia 0.112 → 0.358 (a 3× rise) and cue reactivity 0.413 →
+0.624. The median of +0.033 is the more defensible summary, and against +0.099 it puts leakage at
+roughly a third of the headline. `vbm_of_substance_use` actually *falls* (−0.008), and executive
+function and decision making move +0.018 and +0.015 — so for half the measurable projects the
+effect is near zero.
+
+**What is still missing, and it is the number the argument actually needs.** This measures
+absolute *R²* by tier, not the **margin over baseline** by tier. The baselines do not change with
+tier, so the margin should shift by roughly the same amount — but "roughly" is not good enough for
+a claim this load-bearing, and it should be computed directly.
+`compare_baselines_to_benchmark.py` already takes `--tier`, so this is a re-run into a separate
+output dir plus a recompile, not new machinery. **Do it before submission**; a reviewer who reads
+`run_categories.yaml` will ask.
+
+Two coverage caveats for the caption: only four projects were ever hand-revised, so `manual` has a
+smaller n by construction; `vbm_of_ptsd` registers one run at all four tiers and contributes no
+progression (drawn as an open circle); and emotion regulation and social have no `verbatim` maps
+at all, so they appear only from `manual` onward.
 
 **Sequencing with the data paper.** neurometabench as a separate Data Resource paper is the right
 split, but it must be at least preprinted with a DOI before or alongside this one. "In a paper we

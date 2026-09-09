@@ -591,6 +591,97 @@ def figure5(out_dir: Path) -> None:
     save(fig, out_dir, "figure5_gain_from_analysis_selection")
 
 
+# -------------------------------------------------------------------- Supplementary S2
+
+def figureS2(out_dir: Path) -> None:
+    """Leakage: performance as criteria are allowed to see more of the benchmark.
+
+    run_categories.yaml separates runs by how much gold-standard information shaped their
+    criteria -- `verbatim` transcribed from the source paper before any results were seen,
+    `manual` lightly hand-revised after reading reports, `best` chosen on performance and in
+    practice agent-written from the error reports in full. The paper leans on that ordering for
+    its overfitting argument, so the rise along it is the quantity the argument needs and this is
+    the first time it has been measured.
+
+    The comparison is paired within project and never averaged across tiers, because the tiers
+    cover different project sets: only four projects were ever hand-revised, two have no verbatim
+    maps, and vbm_of_ptsd registers one run at every tier so it contributes no progression.
+    """
+    path = REPO_ROOT / "reports" / "tier_progression.csv"
+    if not path.exists():
+        print("  figureS2: run scripts/compile_tier_progression.py first; skipped")
+        return
+    rows = read(path)
+    TIER_ORDER = ["verbatim", "manual", "best"]
+    LABEL = {"verbatim": "verbatim\n(held out)", "manual": "manual\n(light revision)",
+             "best": "best\n(tuned on reports)"}
+
+    by: dict[str, dict[str, list[float]]] = collections.defaultdict(
+        lambda: collections.defaultdict(list))
+    flat: set[str] = set()
+    for r in rows:
+        by[r["project"]][r["tier"]].append(float(r["r2"]))
+        if r["tier"] == "verbatim" and r.get("same_run_as_best") == "yes":
+            flat.add(r["project"])
+
+    fig, ax = plt.subplots(figsize=(SINGLE_COL, 2.7))
+    deltas, ends, all_y = [], [], []
+    for proj in PROJECT_ORDER:
+        tiers = by.get(proj)
+        if not tiers:
+            continue
+        xs, ys = [], []
+        for i, t in enumerate(TIER_ORDER):
+            if tiers.get(t):
+                xs.append(i); ys.append(st.mean(tiers[t]))
+        all_y.extend(ys)
+        c = COLORS.get(proj, "#7F7F7F")
+        # A project whose verbatim run IS its best run is drawn as a single point: there is no
+        # progression to show and a flat line would imply one was measured.
+        style = dict(color=c, lw=0.9, zorder=3)
+        if proj in flat:
+            ax.scatter(xs[-1:], ys[-1:], s=16, facecolors="none", edgecolors=c,
+                       linewidths=0.9, zorder=4)
+        else:
+            ax.plot(xs, ys, marker="o", ms=3.4, mec="white", mew=0.35, **style)
+            if len(xs) >= 2 and 0 in xs:
+                deltas.append(ys[-1] - ys[0])
+        ends.append([xs[-1], ys[-1], proj, c])
+
+    # Direct labels collide where projects finish close together -- executive function and
+    # emotion regulation land within 0.003 of each other. Push them apart in data units, keeping
+    # the order, so each label still sits next to its own line.
+    ends.sort(key=lambda e: e[1])
+    span = (max(e[1] for e in ends) - min(e[1] for e in ends)) or 1.0
+    gap = span * 0.052
+    for i in range(1, len(ends)):
+        if ends[i][1] - ends[i - 1][1] < gap:
+            ends[i][1] = ends[i - 1][1] + gap
+    for x, y, proj, c in ends:
+        ax.annotate(SHORT.get(proj, proj), (x, y), textcoords="offset points",
+                    xytext=(5, 0), fontsize=4.8, color=c, va="center", annotation_clip=False)
+
+    ax.set_xticks(range(len(TIER_ORDER)))
+    ax.set_xticklabels([LABEL[t] for t in TIER_ORDER], linespacing=1.3)
+    ax.set_xlim(-0.35, len(TIER_ORDER) - 0.28)
+    lo, hi = min(all_y), max(all_y)
+    ax.set_ylim(lo - 0.10 * (hi - lo), hi + 0.22 * (hi - lo))
+    ax.set_ylabel("Mean $R^2$ against the expert map")
+    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
+    if deltas:
+        ax.text(0.02, 0.98,
+                f"verbatim \u2192 best, paired: n = {len(deltas)}\n"
+                f"mean {st.mean(deltas):+.3f}, median {st.median(deltas):+.3f}\n"
+                f"rises in {sum(1 for d in deltas if d > 0)}/{len(deltas)}",
+                transform=ax.transAxes, va="top", ha="left", fontsize=5.2, color=INK,
+                linespacing=1.5)
+    ax.text(0.97, 0.03, "open circle = one run registered at\nevery tier, so no progression\n"
+            "is measurable",
+            transform=ax.transAxes, va="bottom", ha="right", fontsize=4.8, color=MUTED,
+            linespacing=1.4)
+    save(fig, out_dir, "figureS2_tier_progression")
+
+
 # -------------------------------------------------------------------- Supplementary S1
 
 def figureS1(out_dir: Path) -> None:
@@ -640,7 +731,8 @@ def figureS1(out_dir: Path) -> None:
 
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
-FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5, "S1": figureS1}
+FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
+           "S1": figureS1, "S2": figureS2}
 
 
 def main() -> int:
