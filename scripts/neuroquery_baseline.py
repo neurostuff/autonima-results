@@ -53,6 +53,9 @@ from benchmark_exclusions import filter_rows  # noqa: E402
 _RESAMPLE_PARAMS: set[str] = set()
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
 UNCORRECTED_MAP = "z.nii.gz"
+CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
+DICE_THRESHOLD = 1.96
+MIN_TOPK = 200  # below this the gold cluster is too small for a stable ranked comparison
 
 # (project, manual_annotation) -> query. Written from the construct, not from the scores.
 QUERIES: dict[tuple[str, str], str] = {
@@ -92,6 +95,49 @@ QUERIES: dict[tuple[str, str], str] = {
 }
 
 
+def top_k_mask(a: np.ndarray, k: int) -> np.ndarray:
+    """The k highest-valued voxels, as a boolean mask."""
+    a = np.where(np.isfinite(a), a, -np.inf)
+    idx = np.argpartition(a.ravel(), -k)[-k:]
+    m = np.zeros(a.size, dtype=bool)
+    m[idx] = True
+    return m.reshape(a.shape)
+
+
+def top_k_dice(candidate: np.ndarray, gold_raw: np.ndarray, k: int) -> float:
+    """Overlap of the two maps' k strongest voxels.
+
+    WHY THIS IS HERE ALONGSIDE R-SQUARED, AND WHY IT IS THE FAIRER NUMBER
+
+    R-squared over all voxels quietly rewards sharing the expert map's *form*. Every MKDA arm is
+    about 94% exact zeros, non-negative, on the same mask and at a similar scale, so two MKDA maps
+    correlate substantially before any anatomy agrees. NeuroQuery is dense (100% non-zero), signed
+    (down to -5.7) and roughly five times smaller in typical magnitude, so it forgoes all of that
+    shared-background correlation regardless of where it puts its peaks.
+
+    Ranking each map and taking the same number of voxels removes sparsity, sign and scale, and
+    asks only whether the maps point at the same places. It narrows the NeuroQuery gap by about
+    2.4x -- which means the r-squared comparison alone overstates the case, and both belong in the
+    table.
+    """
+    return _dice_of(top_k_mask(gold_raw, k), top_k_mask(candidate, k))
+
+
+def _dice_of(m1: np.ndarray, m2: np.ndarray) -> float:
+    total = m1.sum() + m2.sum()
+    return 0.0 if total == 0 else float(2.0 * (m1 & m2).sum() / total)
+
+
+def auto_column(project: str, key: str) -> str:
+    f = REPO_ROOT / "projects" / project / "nmb_mappings.json"
+    if f.exists():
+        try:
+            return (json.loads(f.read_text()).get("annotation_mappings") or {}).get(key, key)
+        except ValueError:
+            pass
+    return key
+
+
 def gold_dir(project: str, key: str) -> Path | None:
     d = MANUAL_BASE / project / key
     if d.is_dir():
@@ -117,6 +163,7 @@ def main(argv: list[str] | None = None) -> int:
     import nibabel as nib
     from nilearn.image import resample_to_img
     from neuroquery import fetch_neuroquery_model, NeuroQueryModel
+    from run_tiers import resolve_tier
     import inspect
     global _RESAMPLE_PARAMS
     _RESAMPLE_PARAMS = set(inspect.signature(resample_to_img).parameters)
@@ -158,9 +205,40 @@ def main(argv: list[str] | None = None) -> int:
         m = np.isfinite(a) & np.isfinite(g)
         r2 = float(np.corrcoef(a[m].ravel(), g[m].ravel())[0, 1] ** 2)
 
+        # Comparators on the same footing: the pipeline's own column and the project-wide
+        # fixed-pool arm, both raw z, ranked against the same k.
+        run = resolve_tier(project, "canonical", "best")
+        meta = REPO_ROOT / "projects" / project / run / "outputs" / "meta_analysis_results"
+        gcor = gd / CORRECTED_MAP
+        k = int((nib.load(str(gcor)).get_fdata() > DICE_THRESHOLD).sum()) if gcor.exists() else 0
+        # The r-squared columns compare against the BEST AVAILABLE baseline, which per column is
+        # either the targeted search or the project-wide broad arm. The ranked metric has to use
+        # the same arm or the two measures are not describing the same comparison.
+        if r.get("best_available_source") == "targeted":
+            best_path = (REPO_ROOT / "projects" / project / "baselines" / key / "outputs"
+                         / "meta_analysis_results" / "all_analyses" / UNCORRECTED_MAP)
+        else:
+            best_path = meta / "all_studies" / UNCORRECTED_MAP
+
+        topk = {}
+        if k >= MIN_TOPK:
+            for name, path in (("neuroquery", None),
+                               ("pipeline", meta / auto_column(project, key) / UNCORRECTED_MAP),
+                               ("best_baseline", best_path),
+                               ("broad", meta / "all_studies" / UNCORRECTED_MAP)):
+                arr = a if path is None else (
+                    nib.load(str(path)).get_fdata() if path.exists() else None)
+                if arr is not None and arr.shape == g.shape:
+                    topk[name] = round(top_k_dice(arr, g, k), 6)
+
         rows.append({
             "project": project, "manual_annotation": key, "query": query,
             "neuroquery_r2": round(r2, 6),
+            "topk_k": k if k >= MIN_TOPK else "",
+            "topk_dice_neuroquery": topk.get("neuroquery", ""),
+            "topk_dice_pipeline": topk.get("pipeline", ""),
+            "topk_dice_best_baseline": topk.get("best_baseline", ""),
+            "topk_dice_broad": topk.get("broad", ""),
             # For reference, from the committed table -- both already r2 on unthresholded maps.
             "autonima_r2": r["autonima"], "best_baseline_r2": r["best_available"],
             "delta_autonima_vs_neuroquery": round(float(r["autonima"]) - r2, 6),
@@ -186,6 +264,17 @@ def main(argv: list[str] | None = None) -> int:
           f"autonima {st.mean(au):.3f}")
     print(f"  autonima - neuroquery: mean {st.mean(d):+.3f}, median {st.median(d):+.3f}, "
           f"ahead in {sum(1 for x in d if x > 0)}/{len(d)}")
+    tk = {n: [float(x[f"topk_dice_{n}"]) for x in rows if x[f"topk_dice_{n}"] != ""]
+          for n in ("neuroquery", "pipeline", "best_baseline", "broad")}
+    if tk["neuroquery"]:
+        print(f"\n  top-k dice (form-insensitive, n={len(tk['neuroquery'])}): "
+              f"neuroquery {st.mean(tk['neuroquery']):.3f}   "
+              f"best baseline {st.mean(tk['best_baseline']):.3f}   "
+              f"pipeline {st.mean(tk['pipeline']):.3f}")
+        rr = st.mean(nq) / st.mean(bb)
+        tr = st.mean(tk["neuroquery"]) / st.mean(tk["best_baseline"])
+        print(f"  neuroquery as a share of the best baseline: {rr:.1%} on r2, "
+              f"{tr:.1%} ranked  ->  r2 overstates the gap {tr / rr:.1f}x")
     for m_ in missing:
         print(f"  missing: {m_}")
     print(f"  wrote {args.output.relative_to(REPO_ROOT)}")

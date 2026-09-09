@@ -798,36 +798,55 @@ def figureS4(out_dir: Path) -> None:
     ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
     ax.set_ylim(-0.6, len(order) - 0.4)
     ax.set_xlabel("Mean $R^2$ against the expert map")
-    ax.set_xlim(0, 0.9)
+    ax.set_xlim(0, 1.12)
     ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
     ax.legend(loc="lower right", fontsize=5.0, handlelength=1.1, handletextpad=0.4,
               borderaxespad=0.5)
     # The two projects where NeuroQuery is not near zero are the two whose columns are closest to
     # being plain terms, which is the point of ordering the panel this way.
     # Top right: the two highest-NeuroQuery projects top out around 0.67, so this corner is free.
-    ax.text(0.985, 0.985, "ordered by NeuroQuery score.\nIt only competes in the top two,\n"
+    # Mid-height on the right: no bar in the middle rows passes 0.63 and the x limit is 1.12.
+    ax.text(0.985, 0.56, "ordered by NeuroQuery score.\nIt only competes in the top two,\n"
             "whose columns are closest to\nbeing bare terms.",
-            transform=ax.transAxes, ha="right", va="top", fontsize=4.9, color=MUTED,
+            transform=ax.transAxes, ha="right", va="center", fontsize=4.9, color=MUTED,
             linespacing=1.45)
     panel_label(ax, "a", dx=-0.42)
 
-    # b: per column, against the pipeline
+    # b: the same three arms under two measures, because r-squared is not a fair one here
     ax = axes[1]
-    ax.plot([0, 0.9], [0, 0.9], color=RULE, lw=0.6, zorder=1)
-    for r in rows:
-        ax.scatter([r["neuroquery_r2"]], [r["autonima_r2"]], s=12,
-                   color=COLORS.get(r["project"], "#7F7F7F"), edgecolors="white",
-                   linewidths=0.35, zorder=3)
-    ax.set_xlim(0, 0.42); ax.set_ylim(0, 0.9)
-    ax.set_xlabel("NeuroQuery $R^2$")
-    ax.set_ylabel("Full pipeline $R^2$")
-    ax.grid(alpha=0.6); ax.set_axisbelow(True)
-    d = [r["autonima_r2"] - r["neuroquery_r2"] for r in rows]
-    ax.text(0.97, 0.06,
-            f"pipeline ahead in {sum(1 for x in d if x > 0)}/{len(d)}\n"
-            f"median $+${st.median(d):.3f}",
-            transform=ax.transAxes, ha="right", va="bottom", fontsize=5.2, color=INK,
-            linespacing=1.5)
+    # All three arms must have a top-k value, or the three bars would be means over different
+    # column sets.
+    have = [r for r in rows
+            if all(r.get(f"topk_dice_{n}") not in ("", None)
+                   for n in ("neuroquery", "best_baseline", "pipeline"))]
+    groups = [("$R^2$\n(all voxels)",
+               [st.mean([r[k] for r in rows]) for k in
+                ("neuroquery_r2", "best_baseline_r2", "autonima_r2")])]
+    if have:
+        groups.append(("top-$k$ dice\n(ranked, form-free)",
+                       [st.mean([float(r[f"topk_dice_{n}"]) for r in have])
+                        for n in ("neuroquery", "best_baseline", "pipeline")]))
+    w = 0.24
+    for j, (key, label, colour) in enumerate(arms):
+        xs2 = [i + (j - 1) * w for i in range(len(groups))]
+        ax.bar(xs2, [g[1][j] for g in groups], width=w * 0.9, color=colour, lw=0, zorder=3)
+    ax.set_xticks(range(len(groups)))
+    ax.set_xticklabels([g[0] for g in groups], linespacing=1.3)
+    ax.set_xlim(-0.5, len(groups) - 0.5)
+    ax.set_ylabel("Mean agreement with the expert map")
+    ax.set_ylim(0, max(max(g[1]) for g in groups) * 1.75)
+    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
+    if len(groups) == 2:
+        r_ratio = groups[0][1][0] / groups[0][1][1]
+        t_ratio = groups[1][1][0] / groups[1][1][1]
+        ax.text(0.5, 0.97,
+                "$R^2$ rewards sharing the expert map's\nform: every MKDA arm is ~94% exact\n"
+                "zeros, NeuroQuery is dense and signed.\n"
+                f"Ranked, NeuroQuery reaches {t_ratio:.0%} of the\n"
+                f"search baseline rather than {r_ratio:.0%} —\n"
+                f"$R^2$ overstates the gap {t_ratio / r_ratio:.1f}$\\times$.",
+                transform=ax.transAxes, ha="center", va="top", fontsize=4.8, color=INK,
+                linespacing=1.45)
     panel_label(ax, "b", dx=-0.26)
 
     fig.subplots_adjust(wspace=0.42)

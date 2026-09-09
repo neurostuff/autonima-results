@@ -677,8 +677,37 @@ Per project: executive function 0.216 and problem solving 0.184, everything else
 does respectably; where the column is a contrast between conditions, or a between-group clinical
 comparison, the model has no representation for the thing being asked and scores near zero. **That
 is this paper's analysis-unit argument arriving from an independent direction**, and it is a better
-use of the result than a win count. Result 4 or the Discussion should make that point; the win
-count is secondary.
+use of the result than a win count.
+
+> **But that explains NeuroQuery's internal pattern, not the level difference — checked
+> 2026-09-09.** The search baseline is *also* driven by a term, so "term versus contrast" cannot by
+> itself account for 0.075 against 0.476. Three mechanisms do, and all three were measured:
+>
+> **(a) The search baseline is not a term encoder. It retrieves the experts' own studies.** A
+> targeted PubMed query returns real papers about that contrast, and their reported coordinates
+> are pooled — so it inherits the actual empirical signal rather than predicting it. Measured
+> across the 31 columns with a search arm, **the baseline retrieves a median 37% of the gold
+> studies (mean 51%, range 11–95%), and 15 of 31 arms retrieve more than half.** It is a noisy
+> superset of the expert studyset, not a text model. This is the biggest single reason and it
+> should be stated wherever the baseline is described.
+>
+> **(b) r² rewards sharing the expert map's *form*, which every MKDA arm gets free.** Gold and all
+> MKDA arms are ~94% exact zeros, non-negative, on the same mask, with typical non-zero magnitude
+> ~2.2–2.7. NeuroQuery is 100% non-zero, signed (to −5.7) and about five times smaller in typical
+> magnitude. Two sparse maps agreeing about which 94% of voxels are exactly zero correlate
+> substantially before any anatomy matches. **Ranking each map and taking the same number of top
+> voxels removes sparsity, sign and scale: NeuroQuery then reaches 43% of the best baseline rather
+> than 16%, so r² overstates the gap 2.8×** (top-*k* dice 0.189 vs 0.436 vs 0.526 for the
+> pipeline, n = 30). Panel b reports both, and the caption must not quote the r² gap alone.
+>
+> **(c) NeuroQuery is deliberately smooth and generic.** It predicts the *average* map associated
+> with a term across all of neuroimaging — robust for exploration, blunt for one contrast — and it
+> has one map per query, so it cannot express "drug cue > neutral in dependent users" at all.
+>
+> **What survives all three corrections:** on the form-fair measure NeuroQuery still trails
+> (0.189 vs 0.436), and the term-versus-contrast pattern persists there too — executive
+> function 0.610 and working memory 0.504 against ER `increase` 0.033 and dementia `functional`
+> 0.000. So the finding is real; it is the *size* of the r² gap that is partly an artefact.
 
 **Three things the caption must say.**
 
