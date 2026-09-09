@@ -120,7 +120,20 @@ def resolve(columns: list[str], tier: str) -> tuple[str, dict[str, dict[str, Pat
     return run, maps, baseline
 
 
-DICE_THRESHOLD = 1.96  # matches compare_baselines_to_benchmark.DICE_THRESHOLD
+# Matches compare_baselines_to_benchmark.DICE_THRESHOLD, and it is not an arbitrary display
+# choice: on these maps `z_corr > 1.96` selects EXACTLY the voxels with FDR-corrected p <= 0.05.
+# Verified voxel-identical on five columns across three projects -- z_corr is a strictly monotone
+# transform of the corrected p map (Spearman -1.0000 over tested voxels), so thresholding the z is
+# thresholding the q.
+#
+# One caveat worth knowing before defending the number. That equivalence uses the TWO-tailed z
+# convention, while MKDA is one-tailed (positive only), for which q <= 0.05 is z ~ 1.645. NiMARE's
+# own `label_corr-FDR_method-indep_tail-positive` mask uses the one-tailed boundary and so flags
+# more voxels than 1.96 does -- 4,865 vs 2,539 for emotion regulation `increase`, 22,096 vs 18,427
+# for `reappraisal`. So 1.96 is CONSERVATIVE: it discards voxels NiMARE calls significant. That is
+# the safe direction for a figure making a positive claim, and it keeps this figure's dice
+# comparable with every other dice number in the paper, which is why it is kept.
+DICE_THRESHOLD = 1.96
 
 
 def similarity(expert: Path, other: Path, metric: str, threshold: float) -> float:

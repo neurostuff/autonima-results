@@ -308,6 +308,22 @@ prevalence, median map gain −0.020) while its end-to-end performance is above 
 instead. That is a reason not to reuse social as a *Result 5* exemplar, not a reason to exclude it
 from a figure about end-to-end maps.
 
+> **What the dice threshold actually is — checked 2026-09-09.** `z_corr > 1.96` selects exactly
+> the voxels with FDR-corrected *p* ≤ 0.05 on these maps (voxel-identical on five columns across
+> three projects; `z_corr` is a strictly monotone transform of the corrected *p*, Spearman
+> −1.0000). So the project's 1.96 is the *q* ≤ 0.05 boundary, not an arbitrary display level —
+> worth one clause in Methods because it looks arbitrary otherwise.
+>
+> Two consequences. **(a)** The equivalence uses the two-tailed *z* convention while MKDA is
+> one-tailed, for which *q* ≤ 0.05 is *z* ≈ 1.645. NiMARE's own `tail-positive` label mask uses
+> that boundary and flags more voxels (22,096 vs 18,427 for `reappraisal`), so 1.96 is
+> **conservative** — the safe direction for a positive claim, but say so rather than let a
+> reviewer find it. **(b)** This figure renders at *z* > 2.3 while reporting dice computed at
+> 1.96, so the number does not describe the picture it is printed beside — 2.3 is roughly
+> *q* ≤ 0.025. Either render at 1.96 or recompute dice at 2.3; the surface figure ties the two
+> together for exactly this reason and verifies the result against
+> `baseline_vs_autonima.csv`.
+
 **This figure reports dice, not r².** Deliberate, and the one place a different metric is
 correct: the panels are rendered *thresholded* at |z| > 2.3, and dice measures overlap of
 thresholded maps, so it describes what the reader can actually see. r² measures unthresholded
