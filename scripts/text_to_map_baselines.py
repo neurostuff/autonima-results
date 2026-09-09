@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NeuroQuery as a baseline: does curating a studyset beat asking a trained model for the map?
+"""Text-to-map baselines: does curating a studyset beat asking a trained model for the map?
 
 WHY THIS EXISTS
 
@@ -9,8 +9,18 @@ current generation of automated map generators. Since the paper positions itself
 successor, the obvious reviewer question is "why not just ask NeuroQuery for a map of this
 construct?", and it currently has no answer.
 
-This answers it. NeuroQuery predicts a brain map from free text, with no studyset, no screening
-and no coordinate extraction, in milliseconds. It is the strongest available "do nothing" arm.
+This answers it, with two arms:
+
+    NeuroQuery   Dockes et al. 2020, a regularised text-to-map regression over ~13k studies.
+    NeuroVLM     Bi-directional vision-language model (bioRxiv 2026.02.06.704508), text -> map
+                 through a learned latent space over ~27k activation maps and publications.
+
+Both predict a brain map from free text with no studyset, no screening and no coordinate
+extraction, in milliseconds. Together they are the strongest available "do nothing" arm.
+
+NeuroVLM needs torch, which the project environment does not have and does not need, so its maps
+are generated in an isolated venv and scored here from disk. Both arms use the SAME query strings
+and the same scoring code, so they differ only in model.
 
 WHY R-SQUARED ONLY
 
@@ -154,7 +164,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--baseline-table", type=Path,
                     default=REPO_ROOT / "reports" / "cross_project_best_baseline.csv")
     ap.add_argument("--output", type=Path,
-                    default=REPO_ROOT / "reports" / "neuroquery_baseline.csv")
+                    default=REPO_ROOT / "reports" / "text_to_map_baselines.csv")
+    ap.add_argument("--neurovlm-maps", type=Path,
+                    default=REPO_ROOT / "reports" / "neurovlm_maps",
+                    help="pre-generated NeuroVLM maps; skipped when absent")
     ap.add_argument("--map-dir", type=Path,
                     default=REPO_ROOT / "reports" / "neuroquery_maps",
                     help="where the predicted maps are cached, one nifti per column")
@@ -231,9 +244,23 @@ def main(argv: list[str] | None = None) -> int:
                 if arr is not None and arr.shape == g.shape:
                     topk[name] = round(top_k_dice(arr, g, k), 6)
 
+        # NeuroVLM, from the isolated-venv run. Same query, same resampling, same metrics.
+        nvlm_path = args.neurovlm_maps / f"{project}__{key}.nii.gz"
+        nvlm_r2, nvlm_topk = "", ""
+        if nvlm_path.exists():
+            nv = nib.load(str(nvlm_path))
+            nv_r = resample_to_img(nv, gold_img, **kw)
+            nva = np.asarray(nv_r.dataobj)
+            mm = np.isfinite(nva) & np.isfinite(g)
+            nvlm_r2 = round(float(np.corrcoef(nva[mm].ravel(), g[mm].ravel())[0, 1] ** 2), 6)
+            if k >= MIN_TOPK and nva.shape == g.shape:
+                nvlm_topk = round(top_k_dice(nva, g, k), 6)
+
         rows.append({
             "project": project, "manual_annotation": key, "query": query,
             "neuroquery_r2": round(r2, 6),
+            "neurovlm_r2": nvlm_r2,
+            "topk_dice_neurovlm": nvlm_topk,
             "topk_k": k if k >= MIN_TOPK else "",
             "topk_dice_neuroquery": topk.get("neuroquery", ""),
             "topk_dice_pipeline": topk.get("pipeline", ""),
@@ -264,11 +291,15 @@ def main(argv: list[str] | None = None) -> int:
           f"autonima {st.mean(au):.3f}")
     print(f"  autonima - neuroquery: mean {st.mean(d):+.3f}, median {st.median(d):+.3f}, "
           f"ahead in {sum(1 for x in d if x > 0)}/{len(d)}")
+    nv = [float(x["neurovlm_r2"]) for x in rows if x["neurovlm_r2"] != ""]
+    if nv:
+        print(f"  mean r2   neurovlm {st.mean(nv):.3f}   (n={len(nv)})")
     tk = {n: [float(x[f"topk_dice_{n}"]) for x in rows if x[f"topk_dice_{n}"] != ""]
-          for n in ("neuroquery", "pipeline", "best_baseline", "broad")}
+          for n in ("neuroquery", "neurovlm", "pipeline", "best_baseline", "broad")}
     if tk["neuroquery"]:
         print(f"\n  top-k dice (form-insensitive, n={len(tk['neuroquery'])}): "
               f"neuroquery {st.mean(tk['neuroquery']):.3f}   "
+              f"neurovlm {st.mean(tk['neurovlm']):.3f}   "
               f"best baseline {st.mean(tk['best_baseline']):.3f}   "
               f"pipeline {st.mean(tk['pipeline']):.3f}")
         rr = st.mean(nq) / st.mean(bb)

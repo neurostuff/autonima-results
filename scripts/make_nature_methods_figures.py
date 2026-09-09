@@ -767,14 +767,16 @@ def figureS4(out_dir: Path) -> None:
     only applicable metric -- NeuroQuery produces no FDR-corrected map, so dice would require a
     threshold with no error control, which the metric/map rule forbids.
     """
-    path = REPO_ROOT / "reports" / "neuroquery_baseline.csv"
+    path = REPO_ROOT / "reports" / "text_to_map_baselines.csv"
     if not path.exists():
-        print("  figureS4: run scripts/neuroquery_baseline.py first; skipped")
+        print("  figureS4: run scripts/text_to_map_baselines.py first; skipped")
         return
     rows = read(path)
     for r in rows:
         for k in ("neuroquery_r2", "autonima_r2", "best_baseline_r2"):
             r[k] = float(r[k])
+        r["neurovlm_r2"] = float(r["neurovlm_r2"]) if r.get("neurovlm_r2") else None
+    has_nvlm = all(r["neurovlm_r2"] is not None for r in rows)
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.7),
                              gridspec_kw={"width_ratios": [1.25, 1]})
@@ -784,16 +786,20 @@ def figureS4(out_dir: Path) -> None:
     by: dict[str, list[dict]] = collections.defaultdict(list)
     for r in rows:
         by[r["project"]].append(r)
-    order = sorted(by, key=lambda p: st.mean([r["neuroquery_r2"] for r in by[p]]))
-    arms = (("neuroquery_r2", "NeuroQuery (text \u2192 map)", "#7F7F7F"),
-            ("best_baseline_r2", "best search baseline", "#B0B0B0"),
-            ("autonima_r2", "full pipeline", MEAN_COLOR))
-    h = 0.26
+    rank_key = "neurovlm_r2" if has_nvlm else "neuroquery_r2"
+    order = sorted(by, key=lambda p: st.mean([r[rank_key] for r in by[p]]))
+    # Shaded light-to-dark in performance order, so the ranking survives greyscale printing.
+    arms = [("neuroquery_r2", "NeuroQuery (text \u2192 map)", "#CFCFCF")]
+    if has_nvlm:
+        arms.append(("neurovlm_r2", "NeuroVLM (text \u2192 map)", "#9A9A9A"))
+    arms += [("best_baseline_r2", "best search baseline", "#5F5F5F"),
+             ("autonima_r2", "full pipeline", MEAN_COLOR)]
+    h = 0.86 / len(arms)
     for j, (key, label, colour) in enumerate(arms):
-        ys = [i + (j - 1) * h for i in range(len(order))]
+        off = (j - (len(arms) - 1) / 2) * h
+        ys = [i + off for i in range(len(order))]
         vals = [st.mean([r[key] for r in by[p]]) for p in order]
-        ax.barh(ys, vals, height=h * 0.92, color=colour, lw=0,
-                label=label, zorder=3)
+        ax.barh(ys, vals, height=h * 0.9, color=colour, lw=0, label=label, zorder=3)
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
     ax.set_ylim(-0.6, len(order) - 0.4)
@@ -806,10 +812,6 @@ def figureS4(out_dir: Path) -> None:
     # being plain terms, which is the point of ordering the panel this way.
     # Top right: the two highest-NeuroQuery projects top out around 0.67, so this corner is free.
     # Mid-height on the right: no bar in the middle rows passes 0.63 and the x limit is 1.12.
-    ax.text(0.985, 0.56, "ordered by NeuroQuery score.\nIt only competes in the top two,\n"
-            "whose columns are closest to\nbeing bare terms.",
-            transform=ax.transAxes, ha="right", va="center", fontsize=4.9, color=MUTED,
-            linespacing=1.45)
     panel_label(ax, "a", dx=-0.42)
 
     # b: the same three arms under two measures, because r-squared is not a fair one here
@@ -818,18 +820,22 @@ def figureS4(out_dir: Path) -> None:
     # column sets.
     have = [r for r in rows
             if all(r.get(f"topk_dice_{n}") not in ("", None)
-                   for n in ("neuroquery", "best_baseline", "pipeline"))]
-    groups = [("$R^2$\n(all voxels)",
-               [st.mean([r[k] for r in rows]) for k in
-                ("neuroquery_r2", "best_baseline_r2", "autonima_r2")])]
+                   for n in (["neuroquery"] + (["neurovlm"] if has_nvlm else [])
+                             + ["best_baseline", "pipeline"]))]
+    r2_keys = [a[0] for a in arms]
+    tk_names = {"neuroquery_r2": "neuroquery", "neurovlm_r2": "neurovlm",
+                "best_baseline_r2": "best_baseline", "autonima_r2": "pipeline"}
+    groups = [("$R^2$\n(all voxels)", [st.mean([r[k] for r in rows]) for k in r2_keys])]
     if have:
         groups.append(("top-$k$ dice\n(ranked, form-free)",
-                       [st.mean([float(r[f"topk_dice_{n}"]) for r in have])
-                        for n in ("neuroquery", "best_baseline", "pipeline")]))
-    w = 0.24
+                       [st.mean([float(r[f"topk_dice_{tk_names[k]}"]) for r in have])
+                        for k in r2_keys]))
+    w = 0.82 / len(arms)
     for j, (key, label, colour) in enumerate(arms):
-        xs2 = [i + (j - 1) * w for i in range(len(groups))]
-        ax.bar(xs2, [g[1][j] for g in groups], width=w * 0.9, color=colour, lw=0, zorder=3)
+        off = (j - (len(arms) - 1) / 2) * w
+        xs2 = [i + off for i in range(len(groups))]
+        ax.bar(xs2, [g[1][j] for g in groups], width=w * 0.88, color=colour, lw=0,
+               zorder=3)
     ax.set_xticks(range(len(groups)))
     ax.set_xticklabels([g[0] for g in groups], linespacing=1.3)
     ax.set_xlim(-0.5, len(groups) - 0.5)
@@ -837,20 +843,32 @@ def figureS4(out_dir: Path) -> None:
     ax.set_ylim(0, max(max(g[1]) for g in groups) * 1.75)
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     if len(groups) == 2:
-        r_ratio = groups[0][1][0] / groups[0][1][1]
-        t_ratio = groups[1][1][0] / groups[1][1][1]
-        ax.text(0.5, 0.97,
-                "$R^2$ rewards sharing the expert map's\nform: every MKDA arm is ~94% exact\n"
-                "zeros, NeuroQuery is dense and signed.\n"
-                f"Ranked, NeuroQuery reaches {t_ratio:.0%} of the\n"
-                f"search baseline rather than {r_ratio:.0%} —\n"
-                f"$R^2$ overstates the gap {t_ratio / r_ratio:.1f}$\\times$.",
-                transform=ax.transAxes, ha="center", va="top", fontsize=4.8, color=INK,
+        # Compare each text->map arm with the SEARCH BASELINE, which is arms[-2]; comparing
+        # neighbouring bars by position silently changed meaning when NeuroVLM was inserted.
+        i_base = len(arms) - 2
+        r_share = groups[0][1][0] / groups[0][1][i_base]
+        t_share = groups[1][1][0] / groups[1][1][i_base]
+        lines = ["$R^2$ rewards sharing the expert map's form.",
+                 "The expert maps are non-negative and ~6% non-zero;",
+                 "NeuroQuery is signed and 100% non-zero, NeuroVLM"
+                 if has_nvlm else "NeuroQuery is signed and 100% non-zero,",
+                 "non-negative and 25% non-zero." if has_nvlm else "",
+                 f"Ranked, NeuroQuery reaches {t_share:.0%} of the search",
+                 f"baseline rather than {r_share:.0%} \u2014 $R^2$ overstates "
+                 f"that gap {t_share / r_share:.1f}$\\times$."]
+        if has_nvlm:
+            nq_r2, nv_r2 = groups[0][1][0], groups[0][1][1]
+            nq_tk, nv_tk = groups[1][1][0], groups[1][1][1]
+            lines.append(f"NeuroVLM leads NeuroQuery {nv_r2 / nq_r2:.1f}$\\times$ on $R^2$ "
+                         f"but only {nv_tk / nq_tk:.1f}$\\times$")
+            lines.append("ranked: most of its edge is form, not localisation.")
+        ax.text(0.5, 0.985, "\n".join(x for x in lines if x),
+                transform=ax.transAxes, ha="center", va="top", fontsize=4.6, color=INK,
                 linespacing=1.45)
     panel_label(ax, "b", dx=-0.26)
 
     fig.subplots_adjust(wspace=0.42)
-    save(fig, out_dir, "figureS4_neuroquery_baseline")
+    save(fig, out_dir, "figureS4_text_to_map_baselines")
 
 
 # -------------------------------------------------------------------- Supplementary S3

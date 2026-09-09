@@ -658,15 +658,33 @@ Everything below survives at full length outside the word count:
 | neurometabench citable | **needs a Zenodo DOI** before submission — reviewers will ask where the benchmark is |
 | preprint | post simultaneously; NM desk-rejects fast, so the downside is bounded time only if the preprint is already out |
 
-### Supplementary S4 — NeuroQuery: a term is not an analysis
+### Supplementary S4 — text-to-map baselines: a term is not an analysis
 
-`scripts/neuroquery_baseline.py` → `reports/neuroquery_baseline.csv` → `--only S4`. Added
+`scripts/text_to_map_baselines.py` → `reports/text_to_map_baselines.csv` → `--only S4`. Added
 2026-09-09 because every other baseline is a *search* baseline, which tests the pipeline against
 the Neurosynth-style workflow it descends from but not against the current generation of automated
 map generators. "Why not just ask NeuroQuery?" is the first question this paper's framing invites,
 and it had no answer.
 
-**Mean *R²* 0.075 against the pipeline's 0.574, behind on 32 of 32 columns, median gap +0.510.**
+**Two arms**, both text → map with no studyset, screening or extraction, and both run on
+**identical query strings through identical scoring code** so they differ only in model:
+
+| arm | mean *R²* | mean top-*k* dice |
+|---|---|---|
+| NeuroQuery (Dockès 2020) | 0.075 | 0.189 |
+| **NeuroVLM** (bioRxiv 2026.02.06.704508) | **0.238** | **0.225** |
+| best search baseline | 0.476 | 0.436 |
+| full pipeline | 0.574 | 0.526 |
+
+**NeuroVLM is the stronger arm and the one to quote**, and it is much stronger on *R²* than
+NeuroQuery — but **most of that lead is form, not localisation**. NeuroVLM is non-negative and 25%
+non-zero, which is close to the expert maps (non-negative, ~6% non-zero); NeuroQuery is signed and
+100% non-zero. So NeuroVLM collects the shared-background correlation NeuroQuery forgoes: it leads
+**3.2× on *R²* but only 1.2× once ranked**. That is the clearest single demonstration of why the
+ranked metric had to be added, and it belongs in the caption.
+
+Neither arm reaches the search baseline on either measure. NeuroQuery is at 16% of it on *R²* and
+43% ranked; NeuroVLM 50% and 52%.
 
 **Do not report only that.** A gap that large invites the fair suspicion that the comparison is
 rigged, and the structure of *where* NeuroQuery fails is the actual finding:
@@ -677,7 +695,14 @@ rigged, and the structure of *where* NeuroQuery fails is the actual finding:
 | condition contrast | all three emotion-regulation contrasts | **0.002** |
 | clinical group comparison | alcohol, dementia functional, PTSD grey matter | 0.002–0.022 |
 
-Per project: executive function 0.216 and problem solving 0.184, everything else ≤ 0.043.
+Per project, NeuroQuery: executive function 0.216 and problem solving 0.184, everything else
+≤ 0.043. NeuroVLM shows the same ordering at a higher level — executive function 0.343, problem
+solving 0.333, social 0.298, cue reactivity 0.296, down to substance use 0.115 and emotion
+regulation 0.134. Its best columns are "social cognition" 0.40, "working memory" 0.39 and "problem
+solving reasoning" 0.38; its worst are "decreasing negative emotion" 0.07, "increasing emotional
+response" 0.08 and "alcohol dependence gray matter" 0.09. **Two independently trained models,
+different architectures, same failure structure** — which is much harder to dismiss than one
+model's weakness.
 
 **NeuroQuery encodes term-level association.** Where a benchmark column essentially *is* a term it
 does respectably; where the column is a contrast between conditions, or a between-group clinical
@@ -717,13 +742,20 @@ use of the result than a win count.
 
 **Three things the caption must say.**
 
-1. **Not like-for-like.** NeuroQuery answers a different and far cheaper question — no studyset, no
+1. **Not like-for-like.** Both arms answer a different and far cheaper question — no studyset, no
    screening, no extraction, milliseconds. This shows term-level prediction cannot substitute for
    contrast-level synthesis, *not* that NeuroQuery is poor at its own task. Say so; the alternative
    reads as a straw man.
 2. **r² only.** NeuroQuery produces no FDR-corrected map, so dice would need a threshold with no
    error control behind it — forbidden by the metric/map rule. "NeuroQuery scores no dice" would be
-   an artefact of the comparison.
+   an artefact of the comparison. NeuroVLM likewise has no error-controlled map.
+
+   **Reproducing the NeuroVLM arm:** `pip install neurovlm` needs torch, which the pixi
+   environment does not have and does not need, so its maps were generated in a throwaway venv
+   (`nvlm.text(q).to_brain(head="mse")`, CPU, ~600 MB of weights from HuggingFace) and written to
+   `reports/neurovlm_maps/` as nifti. Scoring happens pixi-side from those files. The documented
+   default head was used and **not** tuned; note the library warns that adapters are available but
+   inactive on the forward pass, which is the documented default path.
 3. **The queries were fixed before scoring.** They are written out in the script and were not
    revised against results. This matters more than usual here: S2 shows revising criteria against
    feedback is worth +0.031, and tuning these queries would be the same mistake in our own favour.
