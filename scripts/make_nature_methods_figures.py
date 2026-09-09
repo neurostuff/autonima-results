@@ -13,13 +13,17 @@ Figures map onto NATURE_METHODS_SKELETON.md:
     Figure 3  parsing + annotation               Result 3  (§5)
     Figure 4  pipeline vs best baseline          Result 4  (§7)  <- headline
     Figure 5  gain from analysis selection       Result 5  (§6)  <- the thesis
-    Figure 6  measured cost per stage            Result 6  (S1)
+    Figure S1 measured cost per stage            Supplementary  (S1)  <- was Figure 6
+
+Moved to the supplement 2026-09-09: Nature allows six display items, and the emotion-regulation
+surface figure (scripts/make_er_surface_figure.py) is a stronger use of the slot than a cost
+bar chart. Cost is a paragraph in the text plus S1.
 
 Figure 1 is a schematic (pipeline, benchmark, and the paper-vs-analysis unit) and is not
 generated here -- it wants a vector editor, and panel c is an argument rather than a plot.
 
 Every panel is generated from a committed report CSV, so figures cannot drift from the numbers
-in the text. The exception is Figure 6, whose per-stage costs currently live only in the S1 table
+in the text. The exception is Figure S1, whose per-stage costs currently live only in the S1 table
 in PAPER_OUTLINE.md; those are transcribed below as COST_PER_STAGE and should move into a
 generated CSV before submission.
 
@@ -584,9 +588,9 @@ def figure5(out_dir: Path) -> None:
     save(fig, out_dir, "figure5_gain_from_analysis_selection")
 
 
-# --------------------------------------------------------------------------- Figure 6
+# -------------------------------------------------------------------- Supplementary S1
 
-def figure6(out_dir: Path) -> None:
+def figureS1(out_dir: Path) -> None:
     """Measured cost per call, split by what is actually being paid for."""
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.0),
                             gridspec_kw={"width_ratios": [1, 1]})
@@ -628,18 +632,20 @@ def figure6(out_dir: Path) -> None:
     panel_label(ax, "b", dx=-0.20)
 
     fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figure6_measured_cost")
+    save(fig, out_dir, "figureS1_measured_cost")
 
 
-FIGURES = {2: figure2, 3: figure3, 4: figure4, 5: figure5, 6: figure6}
+# Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
+# allows six display items and the brain-surface figure is a stronger use of the slot.
+FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5, "S1": figureS1}
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
-    ap.add_argument("--only", type=int, nargs="*", choices=sorted(FIGURES),
-                    help="figure numbers to build (default: all)")
+    ap.add_argument("--only", nargs="*", choices=sorted(FIGURES), metavar="FIG",
+                    help=f"figures to build, from {' '.join(sorted(FIGURES))} (default: all)")
     args = ap.parse_args()
 
     house_style()
@@ -649,7 +655,7 @@ def main() -> int:
         try:
             FIGURES[n](args.output_dir)
         except FileNotFoundError as exc:
-            print(f"  figure{n}: missing input ({exc.filename}); skipped")
+            print(f"  figure {n}: missing input ({exc.filename}); skipped")
     return 0
 
 

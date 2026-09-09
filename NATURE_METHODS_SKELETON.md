@@ -262,9 +262,8 @@ baseline for two of these columns is a targeted search rather than the map shown
 fixed-pool arm the margins are larger (reappraisal 0.81 vs 0.33, against 0.81 vs 0.51 for the
 targeted baseline), so the caption must say which baseline it is.
 
-This would be a **seventh** display item against Nature's limit of six. It competes with Figure 6
-(cost), which is the weakest of the set and moves comfortably to Extended Data. Two caveats for
-the caption: the cortical surface cannot show amygdala or other subcortical structure, which
+This takes the sixth slot, freed by moving the cost figure to Supplementary S1 (decided
+2026-09-09). Two caveats for the caption: the cortical surface cannot show amygdala or other subcortical structure, which
 matters for emotion regulation specifically; and the shared colour ceiling is set to z = 5, which
 saturates the baseline (peak z 23) — conservative, since the claim is that the baseline is
 undifferentiated rather than weak.
@@ -425,14 +424,19 @@ little headroom by construction**, because the annotated set approaches the pool
 approaches the observed value. That is the same effect §6 records as "the gain scales with how
 selective the target is", now visible as a mechanism rather than a correlation.
 
-**2. The old numbers came from stale inputs.** `annotation_value.csv` reads per-project similarity
-matrices that predate the maps they describe — the emotion-regulation matrix was written 15 hours
-before its maps. Recomputing straight from the `z_corr-FDR` files moves **26 of 35 columns**, some
-by more than 0.2 (`vbm_of_substance_use` cannabis 0.539 → 0.192, mostly downward). The headline
-survives — median Δ*R²* +0.074 → **+0.064**, 25 of 35 improving either way — but **no individual
-column's number does**, so nothing per-column from the old table can be quoted. The bootstrap
-script therefore recomputes the observed value through the identical path rather than reading the
-table.
+**2. The old numbers were computed on a different brain map than Figure 4's.** Not staleness —
+that was an earlier misdiagnosis, corrected here. `annotation_value.csv` comes from
+`compare_meta_to_benchmark.py`, which defaults to the **uncorrected** `z.nii.gz`; Figure 4's table
+comes from `compare_baselines_to_benchmark.py`, which defaults to the **FDR-corrected**
+`z_corr-FDR_method-indep.nii.gz`. So Figures 4 and 5 were reporting *R²* on different maps.
+
+Confirmed by reproducing the committed values from `z.nii.gz` to four decimals (alcohol 0.8333,
+nicotine 0.4372, cannabis 0.5388), which a stale file could not do. Recomputing on the corrected
+map moves **26 of 35 columns, almost all downward**, because correction zeroes the sub-threshold
+voxels that carried much of the correlation. Median Δ*R²* +0.074 → **+0.064**, still 25/35.
+
+The bootstrap uses the corrected map, so Figure 5 is now consistent with Figure 4. **State the
+convention once in Methods** — this is the kind of split a reviewer recomputes and finds.
 
 Same units as Result 4, but still a different comparison — Result 4 is pipeline vs search-only
 baseline, Result 5 is analysis selection against chance at matched N. Quote its own number.
@@ -459,7 +463,12 @@ That leaves the per-project ordering as the qualitative mechanism: the projects 
 specific population contrast gain most, and the two that lose — executive function and social — are
 the most diffuse targets in the set. Say it as an observed ordering, not a tested relationship.
 
-### Result 6 — Cost and scale — **Figure 6** (~300 w)
+### Result 6 — Cost and scale — **Supplementary S1** (~200 w)
+
+> **Moved to the supplement 2026-09-09.** Nature allows six display items and the
+> emotion-regulation surface figure is a stronger use of the slot than a cost bar chart. Cost
+> becomes a short paragraph in the text pointing at S1, which frees Result 6's words as well.
+> `make_nature_methods_figures.py --only S1` builds it as `figureS1_measured_cost`.
 
 S1, now fully measured from per-stage token accounting rather than estimated.
 

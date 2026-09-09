@@ -454,33 +454,45 @@ here and it sets up §3's schema-specification argument with hard numbers.
 
 ## 6. Does better annotation produce better maps? The fair comparison  **[have]**
 
-> **⚠ Every per-column number in this section is stale — 2026-09-08.**
+> **⚠ §6 and §7 are computed on different brain maps — 2026-09-09.**
 >
-> `annotation_value.csv` is built from `projects/<p>/reports/manual_vs_auto_meta_<run>/tables/`
-> similarity matrices, and those matrices predate the maps they describe. Emotion regulation's was
-> written 2026-08-27 06:24; its maps were rewritten 21:22 the same day. Substance use's is 9 hours
-> behind its own maps. Recomputing pearson directly from the `z_corr-FDR_method-indep.nii.gz`
-> files moves **26 of 35 columns**, mostly downward and several by more than 0.2:
+> Not staleness. `annotation_value.csv` comes from `compare_meta_to_benchmark.py`, whose
+> `--map-filename` defaults to **`z.nii.gz`** — the *uncorrected* statistic map. §7's
+> `baseline_vs_autonima.csv` comes from `compare_baselines_to_benchmark.py`, whose default is
+> **`z_corr-FDR_method-indep.nii.gz`** — the FDR-corrected map. So the Δ*R²* in §6 and the *R²* in
+> §7 are not the same quantity, and Figures 4 and 5 inherit the split.
 >
-> | column | committed | recomputed |
-> |---|---|---|
-> | `vbm_of_substance_use` cannabis | 0.539 | 0.192 |
-> | `vbm_of_substance_use` stimulants | 0.663 | 0.388 |
-> | `vbm_of_ptsd` nonptsdgtptsd | 0.763 | 0.602 |
-> | `dementia` structural | 0.665 | 0.568 |
+> Recomputing §6 on the corrected map moves **26 of 35 columns, almost all downward**, because
+> correction zeroes the sub-threshold voxels that were carrying much of the correlation. Verified
+> by reproducing the committed values from `z.nii.gz` exactly — alcohol 0.8333, nicotine 0.4372,
+> cannabis 0.5388 all recover to four decimals, which a stale file would not do:
 >
-> The masking convention was ruled out first: all maps are finite over the same 902,629 voxels, so
-> the per-pair and common-mask conventions agree exactly. This is staleness, not method.
+> | column | committed | from `z.nii.gz` | from `z_corr` |
+> |---|---|---|---|
+> | `vbm_of_substance_use` alcohol | 0.8333 | **0.8333** | 0.7463 |
+> | `vbm_of_substance_use` nicotine | 0.4372 | **0.4372** | 0.2141 |
+> | `vbm_of_substance_use` cannabis | 0.5388 | **0.5388** | 0.1920 |
+> | `vbm_of_substance_use` opioids | 0.6259 | 0.7689 | 0.4037 |
 >
-> **What survives:** the direction and the headline. Median Δ*R²* +0.0735 → **+0.0641**, and 25 of
-> 35 columns improve on either computation. **What does not:** every individual column, and
-> therefore the per-project table below and the selectivity breakdown that follows it.
+> **An earlier version of this note blamed stale files. That was wrong** and is corrected here. The
+> matrices *do* predate their maps (emotion regulation's by 15 hours) and the annotation-only runs
+> *did* re-execute in between, so one column moved for a real reason — `opioids`, whose analyses
+> went 8 → 11 and which is the one row above that `z.nii.gz` does not reproduce. But the mtimes
+> were a coincidence, not the cause of the other 25.
 >
-> **Two fixes, in order.** (1) Regenerate the matrices with
-> `scripts/run_cross_project_manual_vs_auto_meta_fair.py` before quoting anything here. (2) Prefer
-> `reports/annotation_bootstrap_null.csv`, which recomputes observed values through the same MKDA
-> path it uses for the null and so cannot drift from the maps. Note §7 and Figure 4 were checked
-> and are **not** affected — every `baseline_vs_autonima.csv` postdates its maps.
+> **Which map is right.** The corrected one, for consistency with §7 and because an uncorrected
+> MKDA map's correlation is dominated by sub-threshold background. `reports/annotation_bootstrap_null.csv`
+> uses it. Two consequences to settle before submission: decide the convention **once** and
+> state it, and note that under it §6's headline becomes median Δ*R²* **+0.064** (from +0.074),
+> still 25 of 35 improving.
+>
+> **A separate finding about four columns.** `vbm_of_substance_use` nicotine, opioids, stimulants
+> and cannabis are degenerate on the corrected map: nothing survives FDR, so dice is identically
+> 0.0000 — and for cannabis the *gold* map peaks at z = 0.496, so **no pipeline output whatever
+> could score above zero there**. Their *R²* is computed over ~902,000 voxels of which all but a
+> few hundred are exactly zero, so it is unstable rather than merely low. §8d already ruled dice
+> unusable at small N; this shows *R²* is not trustworthy for these four either, and they should
+> probably be reported as uninformative rather than as losses.
 
 **Claim.** Restricted to studies both the manual authors and we had access to, maps built from
 annotation-selected analyses are closer to the manual result than maps built from all
@@ -1791,10 +1803,11 @@ Emitted by `scripts/annotation_value.py` as `reports/annotation_value.csv`.
 **Result: 35 columns across all 9 projects. Mean Δ*R²* gain +0.099, median +0.073, positive in
 25/35.** (Dice, retained as secondary per §8d: mean +0.065, median +0.037, 26/35.)
 
-> **Stale — see the warning at the head of §6.** Recomputed from the current maps the median is
-> **+0.064**, still 25/35. The mean is not restated here because it is the statistic most moved by
-> the four substance-use columns that shifted furthest, and it should be recomputed rather than
-> patched.
+> **Map-convention caveat — see the warning at the head of §6.** These numbers are on the
+> *uncorrected* `z.nii.gz` map. On the FDR-corrected map that §7 uses, the median is **+0.064**,
+> still 25/35. The mean is not restated because it is the statistic most moved by the four
+> degenerate substance-use columns, which should be reported as uninformative rather than
+> recomputed.
 >
 > **A confound this comparison cannot address, independent of staleness.** `all_analyses` is not a
 > size-matched control: annotation both chooses analyses and shrinks the set, and a smaller CBMA

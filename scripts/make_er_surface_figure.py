@@ -120,22 +120,61 @@ def resolve(columns: list[str], tier: str) -> tuple[str, dict[str, dict[str, Pat
     return run, maps, baseline
 
 
-def r2_against(expert: Path, other: Path) -> float:
-    """R-squared between two whole-brain maps, over voxels finite in both.
+DICE_THRESHOLD = 1.96  # matches compare_baselines_to_benchmark.DICE_THRESHOLD
 
-    Computed from the maps this figure actually draws rather than read from
-    cross_project_best_baseline.csv. That table's baseline is the *best available* per column,
-    which for `increase` and `reappraisal` is a per-column targeted search rather than the
-    fixed-pool arm shown here -- so quoting it beside these brains would caption one map with
-    another map's number.
+
+def similarity(expert: Path, other: Path, metric: str, threshold: float) -> float:
+    """Dice of the thresholded maps, or unthresholded R-squared.
+
+    Dice is the right metric for this figure and r-squared is not, for the same reason the
+    axial-slice figure gives: these panels are rendered *thresholded*, and dice measures overlap
+    of thresholded maps, so it describes what the reader can actually see. R-squared measures
+    unthresholded correlation over the whole volume, most of which is not on the page.
+
+    That only holds if the dice threshold is the threshold being displayed, which is why the two
+    are the same number here rather than separately configurable.
+
+    Computed from the maps this figure draws rather than read from cross_project_best_baseline.csv,
+    whose baseline for two of these columns is a targeted search and not the map shown.
     """
     import nibabel as nib
 
     a, b = nib.load(str(expert)).get_fdata(), nib.load(str(other)).get_fdata()
     if a.shape != b.shape:
         raise SystemExit(f"shape mismatch: {expert} {a.shape} vs {other} {b.shape}")
-    m = np.isfinite(a) & np.isfinite(b)
-    return float(np.corrcoef(a[m].ravel(), b[m].ravel())[0, 1] ** 2)
+    if metric == "r2":
+        m = np.isfinite(a) & np.isfinite(b)
+        return float(np.corrcoef(a[m].ravel(), b[m].ravel())[0, 1] ** 2)
+    ba, bb = a > threshold, b > threshold
+    total = ba.sum() + bb.sum()
+    return 0.0 if total == 0 else float(2.0 * (ba & bb).sum() / total)
+
+
+def verify_pipeline(columns: list[str], values: dict[str, float], metric: str,
+                    threshold: float) -> None:
+    """Check the pipeline-vs-expert numbers against the committed per-project table.
+
+    A silently wrong map path or a mismatched threshold would produce a plausible figure whose
+    numbers do not match the text, which is the failure worth engineering against. The table's
+    dice is computed at 1.96, so a figure rendered at any other threshold cannot agree with it --
+    this is what catches that.
+    """
+    table = REPO_ROOT / "projects" / PROJECT / "reports" / "baseline_vs_autonima.csv"
+    if not table.exists():
+        print("  (no per-project table to verify against)")
+        return
+    want = {r["manual_annotation"]: r for r in csv.DictReader(open(table))
+            if r["arm"] == "autonima"}
+    key = "dice" if metric == "dice" else "r2"
+    for c in columns:
+        if c not in want or not want[c].get(key):
+            continue
+        expected, got = float(want[c][key]), values[c]
+        flag = "ok" if abs(expected - got) < 0.005 else "MISMATCH"
+        note = "" if flag == "ok" else (
+            f"  <- table {key} is computed at z > {DICE_THRESHOLD}; this figure renders at "
+            f"{threshold}")
+        print(f"    verify {c:12} figure {got:.4f}  table {expected:.4f}  {flag}{note}")
 
 
 def project_to_surface(path: Path, fsavg, mesh_kind: str):
@@ -162,8 +201,14 @@ def main(argv: list[str] | None = None) -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--columns", nargs="*", default=DEFAULT_COLUMNS)
     ap.add_argument("--tier", default="best")
-    ap.add_argument("--threshold", type=float, default=2.3,
-                    help="z threshold; 2.3 matches make_brain_map_figure.py")
+    ap.add_argument("--metric", choices=("dice", "r2"), default="dice",
+                    help="dice of the thresholded maps (default -- describes the rendered "
+                         "panels) or unthresholded R-squared")
+    ap.add_argument("--threshold", type=float, default=DICE_THRESHOLD,
+                    help="z threshold for BOTH the rendering and the dice, deliberately one "
+                         "number. Defaults to 1.96, which is the threshold the project's dice "
+                         "tables use, so the reported dice matches both the picture and the "
+                         "rest of the paper.")
     ap.add_argument("--mesh", default="inflated", choices=("inflated", "pial"))
     ap.add_argument("--panels", nargs="*", default=["left:lateral", "left:medial"],
                     help='"hemi:view" pairs drawn for every map, e.g. left:lateral right:lateral')
@@ -254,17 +299,21 @@ def main(argv: list[str] | None = None) -> int:
              ha="center", va="bottom", fontsize=6.5, color=INK, linespacing=1.25)
 
     # Similarity to the expert map, for the maps drawn here.
+    label = "Dice" if args.metric == "dice" else "$R^2$"
     x = 0.055
-    print("  R^2 vs expert (maps as drawn):")
+    print(f"  {args.metric} vs expert (maps as drawn, z > {args.threshold}):")
+    pipeline_vals = {}
     for c, key in enumerate(args.columns):
         w = unit * nview
-        rp = r2_against(maps[key]["expert"], maps[key]["pipeline"])
-        rb = r2_against(maps[key]["expert"], baseline)
+        rp = similarity(maps[key]["expert"], maps[key]["pipeline"], args.metric, args.threshold)
+        rb = similarity(maps[key]["expert"], baseline, args.metric, args.threshold)
+        pipeline_vals[key] = rp
         print(f"    {key:12} pipeline {rp:.3f}   baseline {rb:.3f}")
         fig.text(x + w / 2, 0.085,
-                 f"$R^2$  pipeline {rp:.2f}  \u00b7  baseline {rb:.2f}",
+                 f"{label}  pipeline {rp:.2f}  \u00b7  baseline {rb:.2f}",
                  ha="center", va="bottom", fontsize=5.6, color=MUTED)
         x += w
+    verify_pipeline(args.columns, pipeline_vals, args.metric, args.threshold)
 
     # Shared colour bar, small and out of the way.
     import matplotlib as mpl
