@@ -119,7 +119,11 @@ def parse_args() -> argparse.Namespace:
         "--map-filename",
         type=str,
         default="z.nii.gz",
-        help="Map filename expected in each analysis directory.",
+        help="Unthresholded map, used for the pearson matrices. THE METRIC/MAP RULE: r-squared "
+             "compares unthresholded maps so it reads this one, and dice compares thresholded "
+             "maps so it reads --corrected-map-filename. Before 2026-09-09 the dice matrices "
+             "were also computed from this map, which thresholded an uncorrected image at a "
+             "level with no error control behind it.",
     )
     parser.add_argument(
         "--corrected-map-filename",
@@ -812,7 +816,18 @@ def load_maps_and_vectors(
     mapping_pairs: list[MappingPair],
     run_names: list[str],
     run_aggregate_paths: dict[str, dict[str, Path]],
+    filename_override: str | None = None,
 ) -> tuple[dict[str, np.ndarray], dict[str, dict[str, np.ndarray]], tuple[int, ...], int]:
+    """Load every map and vectorise it on the common finite-voxel support.
+
+    `filename_override` swaps the map file while keeping the directories already resolved into
+    `mapping_pairs`, so the caller can load the same analyses twice -- raw z for pearson and
+    FDR-corrected z for dice, per the metric/map rule -- without re-running the path resolution
+    and its validation.
+    """
+    def _p(path: Path) -> Path:
+        return path.parent / filename_override if filename_override else path
+
     manual_data: dict[str, np.ndarray] = {}
     auto_data_by_run: dict[str, dict[str, np.ndarray]] = {run_name: {} for run_name in run_names}
     shape_records: list[tuple[str, tuple[int, ...]]] = []
@@ -821,19 +836,19 @@ def load_maps_and_vectors(
         manual_name = pair.manual_name
         auto_name = pair.auto_name
 
-        manual_arr = nib.load(str(pair.manual_path)).get_fdata()
+        manual_arr = nib.load(str(_p(pair.manual_path))).get_fdata()
         manual_data[manual_name] = manual_arr
         shape_records.append((f"manual::{manual_name}", manual_arr.shape))
 
         for run_name in run_names:
-            auto_path = pair.auto_paths[run_name]
+            auto_path = _p(pair.auto_paths[run_name])
             auto_arr = nib.load(str(auto_path)).get_fdata()
             auto_data_by_run[run_name][auto_name] = auto_arr
             shape_records.append((f"{run_name}::{auto_name}", auto_arr.shape))
 
     for run_name in run_names:
         for aggregate_name, aggregate_path in run_aggregate_paths[run_name].items():
-            aggregate_arr = nib.load(str(aggregate_path)).get_fdata()
+            aggregate_arr = nib.load(str(_p(aggregate_path))).get_fdata()
             auto_data_by_run[run_name][aggregate_name] = aggregate_arr
             shape_records.append((f"{run_name}::{aggregate_name}", aggregate_arr.shape))
 
@@ -892,7 +907,14 @@ def compute_comparison_results(
     auto_vectors_by_run: dict[str, dict[str, np.ndarray]],
     run_aggregate_paths: dict[str, dict[str, Path]],
     dice_threshold: float,
+    dice_manual_vectors: dict[str, np.ndarray] | None = None,
+    dice_auto_vectors_by_run: dict[str, dict[str, np.ndarray]] | None = None,
 ) -> ComparisonResults:
+    # The metric/map rule: dice reads the thresholded (FDR-corrected) maps, pearson the raw ones.
+    # Falling back to the pearson vectors keeps older callers working, but that is the pairing
+    # this argument exists to avoid.
+    dice_manual_vectors = dice_manual_vectors or manual_vectors
+    dice_auto_vectors_by_run = dice_auto_vectors_by_run or auto_vectors_by_run
     manual_order = [pair.manual_name for pair in mapping_pairs]
     auto_order = [pair.auto_name for pair in mapping_pairs]
 
@@ -911,6 +933,9 @@ def compute_comparison_results(
 
         row_vectors = {name: run_auto_vectors[name] for name in matrix_rows}
         column_vectors = {name: manual_vectors[name] for name in manual_order}
+        dice_run_auto = dice_auto_vectors_by_run[run_name]
+        dice_rows = {name: dice_run_auto[name] for name in matrix_rows}
+        dice_cols = {name: dice_manual_vectors[name] for name in manual_order}
 
         dice_df = pd.DataFrame(index=matrix_rows, columns=matrix_columns, dtype=float)
         pearson_df = pd.DataFrame(index=matrix_rows, columns=matrix_columns, dtype=float)
@@ -920,7 +945,7 @@ def compute_comparison_results(
             for column_name in matrix_columns:
                 compare_vec = column_vectors[column_name]
                 dice_df.loc[row_name, column_name] = compute_dice(
-                    row_vec, compare_vec, dice_threshold
+                    dice_rows[row_name], dice_cols[column_name], dice_threshold
                 )
                 pearson_df.loc[row_name, column_name] = compute_pearson(row_vec, compare_vec)
 
@@ -1854,6 +1879,17 @@ def main() -> None:
     print(f"n_manual_maps:     {len(manual_vectors)}")
     print(f"n_automated_runs:  {len(auto_vectors_by_run)}")
 
+    # Second load on the FDR-corrected maps, for dice only.
+    dice_manual_vectors, dice_auto_vectors_by_run, dice_shape, dice_voxels = (
+        load_maps_and_vectors(
+            mapping_pairs=mapping_pairs,
+            run_names=run_names,
+            run_aggregate_paths=run_aggregate_paths,
+            filename_override=args.corrected_map_filename,
+        ))
+    print(f"dice map:          {args.corrected_map_filename} "
+          f"({dice_voxels} valid voxels)")
+
     results = compute_comparison_results(
         mapping_pairs=mapping_pairs,
         run_names=run_names,
@@ -1861,6 +1897,8 @@ def main() -> None:
         auto_vectors_by_run=auto_vectors_by_run,
         run_aggregate_paths=run_aggregate_paths,
         dice_threshold=args.dice_threshold,
+        dice_manual_vectors=dice_manual_vectors,
+        dice_auto_vectors_by_run=dice_auto_vectors_by_run,
     )
 
     output_tables_dir = output_dir / "tables"

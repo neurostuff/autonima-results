@@ -360,6 +360,50 @@ them, and every triplet is verified by recomputing pipeline-vs-expert *R²* and 
 `cross_project_best_baseline.csv` (35/35 pass). A wrong path would produce a plausible figure that
 does not match the text, which is the failure mode worth engineering against.
 
+### The metric/map rule — decided 2026-09-09
+
+**r² compares unthresholded maps. Dice compares FDR-corrected thresholded maps.** One sentence in
+Methods; it removes a whole class of reviewer objection.
+
+The reasoning is that each metric presupposes a map. Dice is an overlap of suprathreshold
+volumes, so it needs a map whose threshold means something — the FDR-corrected z at the corrected
+*q* ≤ 0.05 boundary, which on these maps is exactly *z* > 1.96 (verified voxel-identical against
+the corrected *p* map on five columns). r² is a correlation over all voxels, so it needs the map
+that still *has* all voxels; correlating a corrected map means correlating an image whose
+sub-threshold structure — most of what the correlation measures — has been zeroed.
+
+**Before this, each script had one half right and one half wrong:**
+
+| script | feeds | dice was on | r²/pearson was on |
+|---|---|---|---|
+| `compare_baselines_to_benchmark.py` | §7, Figure 4 | corrected ✓ | corrected ✗ |
+| `compare_meta_to_benchmark.py` | §6, old Figure 5 | uncorrected ✗ | uncorrected ✓ |
+
+Both are fixed and each now loads both maps. Two knock-on corrections:
+
+**Figure 4's headline moved, slightly upward.** Δ*R²* +0.101 → **+0.110**, columns ahead 30 →
+**31 of 35**, sign test *P* 2.2e-05 → **3.5e-06**, 95% CI [+0.043, +0.186]. Absolute *R²* rises
+(0.495 → 0.559) because unthresholded maps simply correlate better; the *margin* is what matters
+and it is unchanged in character.
+
+**The four "degenerate" substance-use columns were an artefact of the wrong map, not a real
+limitation.** An earlier note here called them uninformative because nothing survived FDR, so
+dice was identically zero and r² was computed over a near-empty image. On the unthresholded map
+they carry real signal: cannabis 0.021 → **0.235**, opioids 0.085 → **0.375**, stimulants 0.269 →
+**0.585**, nicotine 0.187 → **0.361**. Cannabis flips from a loss to a win, which is the single
+sign change across all 35 columns. **Retract the "report them as uninformative" recommendation.**
+What remains true is narrower: *dice* is unusable for them, because their corrected maps are
+genuinely empty — and for cannabis the *expert* map peaks at *z* = 0.496, so no pipeline output
+could score above zero on dice there. That is a fact about dice at small N, which §8d already
+records, not about the columns.
+
+Two display consequences, both now enforced in code rather than left to convention:
+
+- `make_brain_map_figure.py` rendered at *z* > 2.3 while printing dice computed at 1.96 — a number
+  describing a map the reader could not see. It now renders at 1.96.
+- `make_er_surface_figure.py` ties its display threshold to its dice threshold as one setting, and
+  `--metric r2` switches both map paths to the raw z rather than correlating the rendered map.
+
 ### Metric consistency — resolved 2026-09-04: r² throughout
 
 Both figures report **r²**. Note this was **already decided** in `PAPER_OUTLINE.md` §8d — "Dice is

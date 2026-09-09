@@ -71,11 +71,24 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MANUAL_ANALYSIS_BASE = Path("/home/zorro/repos/neurometabench/analysis")
 DEFAULT_MANUAL_NIMADS_BASE = Path("/home/zorro/repos/neurometabench/data/nimads")
 CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
+UNCORRECTED_MAP = "z.nii.gz"
 DICE_THRESHOLD = 1.96
+# THE METRIC/MAP RULE. Dice compares thresholded maps, so it reads the FDR-corrected z at the
+# corrected q <= 0.05 boundary (on these maps exactly z > 1.96). R-squared compares unthresholded
+# maps, so it reads the raw z. Before 2026-09-09 both metrics were computed from whichever single
+# map --map-filename named, which meant this script's r-squared correlated a mostly-zeroed image
+# whose sub-threshold structure had been discarded, while compare_meta_to_benchmark.py's dice
+# thresholded an uncorrected map at a level with no error control behind it. Each script had one
+# half right.
 BASELINE_PREFIX = "baseline-"   # legacy flat layout
 BASELINES_DIR = "baselines"     # current layout: <project>/baselines/<key>/
 BROAD_COLUMN = "all_studies"       # project-wide, screening-free pool from the broad search
 SUB_COLUMN = "all_analyses"        # the baseline run skips screening, so this is its pool
+
+
+def _sibling(path: Path, filename: str) -> Path:
+    """Same analysis directory, different map file."""
+    return path.parent / filename
 
 
 def compute_dice(a: np.ndarray, b: np.ndarray, threshold: float = DICE_THRESHOLD) -> float:
@@ -166,7 +179,10 @@ def main() -> int:
                          "(default: the --tier run, else highest vN)")
     add_tier_argument(ap)
     ap.add_argument("--manual-analysis-base", type=Path, default=DEFAULT_MANUAL_ANALYSIS_BASE)
-    ap.add_argument("--map-filename", default=CORRECTED_MAP)
+    ap.add_argument("--map-filename", default=CORRECTED_MAP,
+                    help="thresholded map, used for dice")
+    ap.add_argument("--unthresholded-map-filename", default=UNCORRECTED_MAP,
+                    help="raw map, used for pearson r and R^2")
     ap.add_argument("--dice-threshold", type=float, default=DICE_THRESHOLD)
     ap.add_argument("--output-dir", type=Path, default=None)
     args = ap.parse_args()
@@ -238,7 +254,8 @@ def main() -> int:
     print(f"broad arm      : {broad_label}")
     print(f"project        : {args.project}")
     print(f"autonima run   : {auto_run}   [{tier_source}]")
-    print(f"map            : {args.map_filename}   dice z > {args.dice_threshold}")
+    print(f"dice map       : {args.map_filename}   dice z > {args.dice_threshold}")
+    print(f"r2 map         : {args.unthresholded_map_filename}   (unthresholded)")
     print(f"pools are NOT equalised; sizes reported per arm\n")
 
     rows: list[dict[str, Any]] = []
@@ -277,25 +294,38 @@ def main() -> int:
             continue
 
         # Mask on voxels finite across the manual map and every arm actually available, so
-        # each sub-annotation is compared on its own common support.
-        loaded = {"manual": nib.load(str(manual_path)).get_fdata()}
-        for name, path in present.items():
-            loaded[name] = nib.load(str(path)).get_fdata()
-        shapes = {arr.shape for arr in loaded.values()}
-        if len(shapes) != 1:
-            print(f"  SKIP: mismatched map shapes {shapes}\n")
+        # each sub-annotation is compared on its own common support. Done twice: dice and
+        # r-squared read different maps, so each gets its own support.
+        def vectors(filename: str):
+            loaded = {"manual": nib.load(str(_sibling(manual_path, filename))).get_fdata()}
+            for name, path in present.items():
+                loaded[name] = nib.load(str(_sibling(path, filename))).get_fdata()
+            shapes = {arr.shape for arr in loaded.values()}
+            if len(shapes) != 1:
+                return None, None
+            m = np.ones(next(iter(shapes)), dtype=bool)
+            for arr in loaded.values():
+                m &= np.isfinite(arr)
+            return {n: arr[m].ravel() for n, arr in loaded.items()}, m
+
+        vecs, mask = vectors(args.map_filename)
+        if vecs is None:
+            print(f"  SKIP: mismatched map shapes for {args.map_filename}\n")
             continue
-        mask = np.ones(next(iter(shapes)), dtype=bool)
-        for arr in loaded.values():
-            mask &= np.isfinite(arr)
-        vecs = {name: arr[mask].ravel() for name, arr in loaded.items()}
-        print(f"  voxels compared: {int(mask.sum())}")
+        raw_vecs, raw_mask = vectors(args.unthresholded_map_filename)
+        if raw_vecs is None:
+            print(f"  SKIP: mismatched map shapes for "
+                  f"{args.unthresholded_map_filename}\n")
+            continue
+        print(f"  voxels compared: {int(mask.sum())} (dice), "
+              f"{int(raw_mask.sum())} (r2)")
 
         for name in ("autonima", "baseline_sub", "baseline_broad"):
             if name not in vecs:
                 continue
+            # Each metric on its map: dice thresholded/corrected, r on the raw z.
             dice = compute_dice(vecs["manual"], vecs[name], args.dice_threshold)
-            r = compute_pearson(vecs["manual"], vecs[name])
+            r = compute_pearson(raw_vecs["manual"], raw_vecs[name])
             r2 = r * r if r == r else float("nan")
             pool = pools.get(name) or {}
             print(f"  {name:<15} dice={dice:.3f}  r={r:.3f}  R2={r2:.3f}"

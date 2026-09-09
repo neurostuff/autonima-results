@@ -310,7 +310,12 @@ def main() -> int:
     ap.add_argument("--mode", choices=("showcase", "contrast", "all"), default="contrast")
     ap.add_argument("--n", type=int, default=3, help="rows per group")
     ap.add_argument("--tier", default="best")
-    ap.add_argument("--threshold", type=float, default=2.3)
+    # 1.96, not 2.3: this figure reports DICE, which is computed at z > 1.96 (the corrected
+    # q <= 0.05 boundary) in the tables it reads. Rendering at 2.3 printed a dice number beside a
+    # picture thresholded somewhere else -- roughly q <= 0.025 -- so the number described a map
+    # the reader could not see. Under the metric/map rule the display threshold and the dice
+    # threshold are the same quantity.
+    ap.add_argument("--threshold", type=float, default=1.96)
     ap.add_argument("--cut-coords", type=int, nargs="*", default=[-12, 4, 20, 36],
                     help="four slices rather than five: at 183mm across three arms, five columns "
                          "of brains leaves each one too small to read")

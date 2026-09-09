@@ -51,7 +51,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_tiers import resolve_tier  # noqa: E402
 
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
-MAP_NAME = "z_corr-FDR_method-indep.nii.gz"
+CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
+UNCORRECTED_MAP = "z.nii.gz"
+MAP_NAME = CORRECTED_MAP  # what gets rendered
 PROJECT = "emotion_regulation_2022"
 DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
 
@@ -152,6 +154,10 @@ def similarity(expert: Path, other: Path, metric: str, threshold: float) -> floa
     """
     import nibabel as nib
 
+    # The metric decides the map, not the caller: r-squared compares unthresholded maps and dice
+    # compares thresholded ones, so asking for r2 swaps both paths to the raw z.
+    if metric == "r2":
+        expert, other = (expert.parent / UNCORRECTED_MAP, other.parent / UNCORRECTED_MAP)
     a, b = nib.load(str(expert)).get_fdata(), nib.load(str(other)).get_fdata()
     if a.shape != b.shape:
         raise SystemExit(f"shape mismatch: {expert} {a.shape} vs {other} {b.shape}")

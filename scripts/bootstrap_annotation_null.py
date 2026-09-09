@@ -27,6 +27,14 @@ The MKDA + FDR path used here reproduces the stored maps exactly (max|difference
 r = 1.000000 on emotion regulation `increase`), so the null and the observed value are on the
 same footing as the pipeline's own outputs.
 
+BOTH METRICS, EACH ON ITS OWN MAP
+
+R-squared is computed on the raw z maps and dice on the FDR-corrected z maps, from the same fit.
+The pairing is not interchangeable: dice on an uncorrected map thresholds at a level with no error
+control behind it, and r-squared on a corrected map correlates an image whose sub-threshold
+structure -- most of what the correlation was measuring -- has been zeroed. Reporting both from
+one run also means the paper can settle the primary metric without another 35-column re-run.
+
 Writes reports/annotation_bootstrap_null.csv.
 """
 
@@ -48,7 +56,16 @@ sys.path.insert(0, "/home/zorro/repos/autonima")
 from run_tiers import resolve_tier  # noqa: E402
 
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
-MAP_NAME = "z_corr-FDR_method-indep.nii.gz"
+# THE METRIC/MAP RULE. R-squared compares *unthresholded* maps, so it reads the raw z. Dice
+# compares *thresholded* maps, so it reads the FDR-corrected z at the corrected q <= 0.05
+# boundary, which on these maps is exactly z > 1.96 (verified voxel-identical against the
+# corrected p map). Pairing either metric with the other map is what this file exists not to do:
+# dice on an uncorrected map thresholds at an arbitrary level with no error control, and
+# r-squared on a corrected map correlates a mostly-zeroed image whose sub-threshold structure has
+# been discarded.
+UNCORRECTED_MAP = "z.nii.gz"
+CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
+DICE_THRESHOLD = 1.96
 POOL_COLUMN = "all_analyses"
 
 
@@ -63,18 +80,23 @@ def auto_column(project: str, key: str) -> str:
     return key
 
 
-def gold_map(project: str, key: str) -> Path | None:
+def gold_dir(project: str, key: str) -> Path | None:
     d = MANUAL_BASE / project / key
-    if (d / MAP_NAME).exists():
-        return d / MAP_NAME
+    if d.is_dir():
+        return d
     for c in (MANUAL_BASE / project).glob("*"):
         if c.is_dir() and c.name.lower().replace("-", "_") == key.lower().replace("-", "_"):
-            return c / MAP_NAME
+            return c
     return None
 
 
 def _fit(studyset, analysis_ids):
-    """MKDA + FDR over one set of analyses; returns the corrected z map array."""
+    """MKDA + FDR over one set of analyses.
+
+    Returns BOTH maps from the single fit -- raw z for r-squared and FDR-corrected z for dice --
+    because the two metrics require different maps and refitting to get the second would double
+    the bootstrap's cost for nothing.
+    """
     from nimare.meta.cbma import MKDADensity
     from nimare.correct import FDRCorrector
 
@@ -86,14 +108,24 @@ def _fit(studyset, analysis_ids):
     ds = sub.to_dataset()
     res = MKDADensity().fit(ds)
     corrected = FDRCorrector(method="indep").transform(res)
-    return np.asarray(corrected.get_map("z_corr-FDR_method-indep").dataobj), len(ds.ids)
+    return (np.asarray(res.get_map("z").dataobj),
+            np.asarray(corrected.get_map("z_corr-FDR_method-indep").dataobj),
+            len(ds.ids))
 
 
 def _r2(a: np.ndarray, gold: np.ndarray) -> float:
+    """Unthresholded agreement. Both arguments must be raw z maps."""
     m = np.isfinite(a) & np.isfinite(gold)
     if m.sum() < 2:
         return float("nan")
     return float(np.corrcoef(a[m].ravel(), gold[m].ravel())[0, 1] ** 2)
+
+
+def _dice(a: np.ndarray, gold: np.ndarray) -> float:
+    """Thresholded overlap. Both arguments must be FDR-corrected z maps."""
+    ba, bb = a > DICE_THRESHOLD, gold > DICE_THRESHOLD
+    total = ba.sum() + bb.sum()
+    return 0.0 if total == 0 else float(2.0 * (ba & bb).sum() / total)
 
 
 def run_column(task: dict) -> dict:
@@ -109,11 +141,13 @@ def run_column(task: dict) -> dict:
     row = {"project": project, "manual_column": key, "auto_column": auto_column(project, key),
            "run": run, "n_boot": 0, "status": ""}
 
-    gpath = gold_map(project, key)
-    if gpath is None:
-        row["status"] = "no expert map"
+    gdir = gold_dir(project, key)
+    if gdir is None or not (gdir / UNCORRECTED_MAP).exists() \
+            or not (gdir / CORRECTED_MAP).exists():
+        row["status"] = "expert maps incomplete (need both raw and corrected z)"
         return row
-    gold = nib.load(str(gpath)).get_fdata()
+    gold_raw = nib.load(str(gdir / UNCORRECTED_MAP)).get_fdata()
+    gold_cor = nib.load(str(gdir / CORRECTED_MAP)).get_fdata()
 
     studyset = Studyset(json.loads((out / "nimads_studyset.json").read_text()))
     ann = json.loads((out / "nimads_annotation.json").read_text())
@@ -144,19 +178,23 @@ def run_column(task: dict) -> dict:
         row["status"] = f"column is the whole pool ({k}/{n_pool}); null undefined"
         return row
 
-    obs_map, n_used = _fit(studyset, selected)
-    if obs_map.shape != gold.shape:
-        row["status"] = f"shape mismatch {obs_map.shape} vs {gold.shape}"
+    obs_raw, obs_cor, n_used = _fit(studyset, selected)
+    if obs_raw.shape != gold_raw.shape:
+        row["status"] = f"shape mismatch {obs_raw.shape} vs {gold_raw.shape}"
         return row
-    observed = _r2(obs_map, gold)
+    observed = _r2(obs_raw, gold_raw)
+    observed_dice = _dice(obs_cor, gold_cor)
 
     rng = np.random.default_rng(seed)
-    null = []
+    null, null_d = [], []
     for _ in range(n_boot):
         draw = rng.choice(n_pool, size=k, replace=False)
-        m, _n = _fit(studyset, [pool[i] for i in draw])
-        null.append(_r2(m, gold))
-    null = np.asarray([v for v in null if np.isfinite(v)])
+        raw, cor, _n = _fit(studyset, [pool[i] for i in draw])
+        null.append(_r2(raw, gold_raw))
+        null_d.append(_dice(cor, gold_cor))
+    keep = [i for i, v in enumerate(null) if np.isfinite(v)]
+    null = np.asarray([null[i] for i in keep])
+    null_d = np.asarray([null_d[i] for i in keep])
 
     row.update(
         n_boot=int(null.size), observed_r2=round(observed, 6),
@@ -172,6 +210,15 @@ def run_column(task: dict) -> dict:
         p_value=round(float((int((null >= observed).sum()) + 1) / (null.size + 1)), 6),
         z_vs_null=round(float((observed - null.mean()) / null.std(ddof=1)), 4)
         if null.std(ddof=1) > 0 else "",
+        # Dice on the corrected maps, same draws. Reported alongside rather than instead: r2 is
+        # the primary metric per PAPER_OUTLINE section 8d, and dice is degenerate at small N.
+        observed_dice=round(observed_dice, 6),
+        dice_null_mean=round(float(null_d.mean()), 6),
+        dice_null_sd=round(float(null_d.std(ddof=1)), 6),
+        dice_null_p95=round(float(np.percentile(null_d, 95)), 6),
+        dice_delta_vs_null_mean=round(float(observed_dice - null_d.mean()), 6),
+        dice_p_value=round(float((int((null_d >= observed_dice).sum()) + 1)
+                                 / (null_d.size + 1)), 6),
         status="ok",
     )
     return row
@@ -222,7 +269,9 @@ def main(argv: list[str] | None = None) -> int:
     order = ["project", "manual_column", "auto_column", "run", "k_analyses", "pool_analyses",
              "observed_r2", "n_boot", "null_mean", "null_sd", "null_p05", "null_p50",
              "null_p95", "null_max", "delta_vs_null_mean", "n_null_ge_observed", "p_value",
-             "z_vs_null", "status"]
+             "z_vs_null",
+             "observed_dice", "dice_null_mean", "dice_null_sd", "dice_null_p95",
+             "dice_delta_vs_null_mean", "dice_p_value", "status"]
     rows.sort(key=lambda r: (r["project"], r["manual_column"]))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with open(args.output, "w", newline="") as f:
