@@ -544,13 +544,12 @@ def figure5(out_dir: Path) -> None:
     ax.tick_params(axis="y", length=0, pad=1.5)
     ax.set_ylim(-0.8, len(rows) - 0.2)
     ax.set_xlim(0, 1)
-    ax.set_xlabel("$R^2$ against the expert map")
-    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
     n_boot = min(int(r["n_boot"]) for r in rows)
-    ax.text(0.985, 0.012,
-            f"grey bar = 5-95% of {n_boot} size-matched\nrandom selections; tick = its median",
-            transform=ax.transAxes, ha="right", va="bottom", fontsize=5.0, color=MUTED,
-            linespacing=1.4)
+    # In the axis label rather than floated inside the panel: at 35 rows the bottom rows reach the
+    # lower right, which is the only corner an in-panel note fits, and it collided with them.
+    ax.set_xlabel("$R^2$ against the expert map\n"
+                  f"grey bar = 5-95% of {n_boot} size-matched random selections, tick = median")
+    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
     panel_label(ax, "a", dx=-0.42)
 
     # b: the same gain, summarised per project
