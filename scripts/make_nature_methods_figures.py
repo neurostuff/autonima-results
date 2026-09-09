@@ -194,12 +194,12 @@ def figure2(out_dir: Path) -> None:
 
     # a: cumulative share of the gold standard still in play
     ax = axes[0]
+    ends_a = []
     for p in projects:
         ys = [surv[p][s] * 100 for s in stages]
         ax.plot(range(len(stages)), ys, "-o", color=COLORS[p], markeredgewidth=0,
                 alpha=0.9, label=DISPLAY[p])
-        ax.annotate(f"{ys[-1]:.0f}", (len(stages) - 1, ys[-1]), textcoords="offset points",
-                    xytext=(4, -1.5), fontsize=5.2, color=COLORS[p])
+        ends_a.append([ys[-1], f"{ys[-1]:.0f}", COLORS[p], False])
     # Dotted overlay: the fixed-pool arm, for the three projects that have one. Same screening and
     # annotation, a pool assembled without search-driven narrowing -- so the gap between solid and
     # dotted is what the pool contributes, separated from what screening contributes.
@@ -213,9 +213,21 @@ def figure2(out_dir: Path) -> None:
     # Cross-project mean, over the same projects the panel draws.
     means_a = [st.mean([surv[p][s] * 100 for p in projects]) for s in stages]
     ax.plot(range(len(stages)), means_a, marker="o", ms=3.6, mec="white", mew=0.5, **MEAN_KW)
-    ax.annotate(f"{means_a[-1]:.0f}", (len(stages) - 1, means_a[-1]),
-                textcoords="offset points", xytext=(4, -1.5), fontsize=5.6,
-                fontweight="bold", color=MEAN_COLOR)
+    ends_a.append([means_a[-1], f"{means_a[-1]:.0f}", MEAN_COLOR, True])
+
+    # End labels collide where projects finish close together -- 85/83/80/76 were printed on top
+    # of one another, leaving one of them unreadable. Push them apart on the y axis, keeping
+    # order, so each label still sits beside its own line.
+    ends_a.sort(key=lambda e: e[0])
+    gap_a = 3.1
+    for i in range(1, len(ends_a)):
+        if ends_a[i][0] - ends_a[i - 1][0] < gap_a:
+            ends_a[i][0] = ends_a[i - 1][0] + gap_a
+    for yy, txt, col, is_mean in ends_a:
+        ax.annotate(txt, (len(stages) - 1, yy), textcoords="offset points",
+                    xytext=(4, -1.5), fontsize=5.6 if is_mean else 5.2,
+                    fontweight="bold" if is_mean else "normal", color=col,
+                    annotation_clip=False)
     ax.set_xticks(range(len(stages)))
     ax.set_xticklabels(labels)
     ax.set_xlim(-0.25, len(stages) - 0.45)
@@ -778,6 +790,32 @@ def figureS4(out_dir: Path) -> None:
         r["neurovlm_r2"] = float(r["neurovlm_r2"]) if r.get("neurovlm_r2") else None
     has_nvlm = all(r["neurovlm_r2"] is not None for r in rows)
 
+    # Prompt-sensitivity ranges from query_sensitivity.py. The interval is the min-to-max over
+    # five UNIFORM query strategies, i.e. what one global prompt decision is worth -- not the
+    # per-column oracle, which is an unreachable upper bound and would overstate the range.
+    sens_path = REPO_ROOT / "reports" / "query_sensitivity.csv"
+    prompt_range: dict[tuple[str, str], tuple[float, float]] = {}
+    overall_range: dict[str, tuple[float, float]] = {}
+    if sens_path.exists():
+        sens = read(sens_path)
+        for key, arm in (("neuroquery_r2", "neuroquery_r2"), ("neurovlm_r2", "neurovlm_r2")):
+            per_strategy_project: dict[str, dict[str, list[float]]] = collections.defaultdict(
+                lambda: collections.defaultdict(list))
+            per_strategy_all: dict[str, list[float]] = collections.defaultdict(list)
+            for x in sens:
+                if not x.get(key):
+                    continue
+                v = float(x[key])
+                per_strategy_project[x["project"]][x["strategy"]].append(v)
+                per_strategy_all[x["strategy"]].append(v)
+            for proj, by_strat in per_strategy_project.items():
+                means = [st.mean(v) for v in by_strat.values() if v]
+                if len(means) > 1:
+                    prompt_range[(proj, arm)] = (min(means), max(means))
+            means = [st.mean(v) for v in per_strategy_all.values() if v]
+            if len(means) > 1:
+                overall_range[arm] = (min(means), max(means))
+
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.7),
                              gridspec_kw={"width_ratios": [1.25, 1]})
 
@@ -804,6 +842,16 @@ def figureS4(out_dir: Path) -> None:
         ys = [i + off for i in range(len(order))]
         vals = [st.mean([r[key] for r in by[p]]) for p in order]
         ax.barh(ys, vals, height=h * 0.9, color=colour, lw=0, label=label, zorder=3)
+        # Prompt-sensitivity whisker, text->map arms only: the search baseline and the pipeline
+        # take no query, so they have no such range.
+        if key in ("neuroquery_r2", "neurovlm_r2"):
+            lo = [prompt_range.get((p, key), (v, v))[0] for p, v in zip(order, vals)]
+            hi = [prompt_range.get((p, key), (v, v))[1] for p, v in zip(order, vals)]
+            ax.hlines(ys, lo, hi, color=INK, lw=0.7, zorder=5)
+            ax.vlines(lo, [y - h * 0.28 for y in ys], [y + h * 0.28 for y in ys],
+                      color=INK, lw=0.7, zorder=5)
+            ax.vlines(hi, [y - h * 0.28 for y in ys], [y + h * 0.28 for y in ys],
+                      color=INK, lw=0.7, zorder=5)
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
     ax.set_ylim(-0.6, len(order) - 0.4)
@@ -840,6 +888,13 @@ def figureS4(out_dir: Path) -> None:
         xs2 = [i + off for i in range(len(groups))]
         ax.bar(xs2, [g[1][j] for g in groups], width=w * 0.88, color=colour, lw=0,
                zorder=3)
+        # Only the r-squared group (index 0) has a prompt range: per-strategy top-k dice was not
+        # computed for the variants, so a whisker there would be fabricated.
+        if key in overall_range:
+            lo, hi = overall_range[key]
+            ax.vlines(xs2[0], lo, hi, color=INK, lw=0.7, zorder=5)
+            ax.hlines([lo, hi], xs2[0] - w * 0.22, xs2[0] + w * 0.22, color=INK, lw=0.7,
+                      zorder=5)
     ax.set_xticks(range(len(groups)))
     ax.set_xticklabels([g[0] for g in groups], linespacing=1.3)
     ax.set_xlim(-0.5, len(groups) - 0.5)
@@ -847,28 +902,26 @@ def figureS4(out_dir: Path) -> None:
     ax.set_ylim(0, max(max(g[1]) for g in groups) * 1.75)
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     if len(groups) == 2:
-        # Compare each text->map arm with the SEARCH BASELINE, which is arms[-2]; comparing
-        # neighbouring bars by position silently changed meaning when NeuroVLM was inserted.
+        # Kept deliberately short: the form argument and the baseline shares are caption material
+        # and live in the docstring and NATURE_METHODS_SKELETON.md. Only what cannot be read off
+        # the bars goes in the panel -- what the whisker means, and the resulting range.
         i_base = len(arms) - 2
-        r_share = groups[0][1][0] / groups[0][1][i_base]
-        t_share = groups[1][1][0] / groups[1][1][i_base]
-        lines = ["$R^2$ rewards sharing the expert map's form.",
-                 "The expert maps are non-negative and ~6% non-zero;",
-                 "NeuroQuery is signed and 100% non-zero, NeuroVLM"
-                 if has_nvlm else "NeuroQuery is signed and 100% non-zero,",
-                 "non-negative and 25% non-zero." if has_nvlm else "",
-                 f"Ranked, NeuroQuery reaches {t_share:.0%} of the search",
-                 f"baseline rather than {r_share:.0%} \u2014 $R^2$ overstates "
-                 f"that gap {t_share / r_share:.1f}$\\times$."]
-        if has_nvlm:
-            nq_r2, nv_r2 = groups[0][1][0], groups[0][1][1]
-            nq_tk, nv_tk = groups[1][1][0], groups[1][1][1]
-            lines.append(f"NeuroVLM leads NeuroQuery {nv_r2 / nq_r2:.1f}$\\times$ on $R^2$ "
-                         f"but only {nv_tk / nq_tk:.1f}$\\times$")
-            lines.append("ranked: most of its edge is form, not localisation.")
-        ax.text(0.5, 0.985, "\n".join(x for x in lines if x),
-                transform=ax.transAxes, ha="center", va="top", fontsize=4.6, color=INK,
-                linespacing=1.45)
+        lines = []
+        if has_nvlm and "neurovlm_r2" in overall_range:
+            nv_lo, nv_hi = overall_range["neurovlm_r2"]
+            nq_lo, nq_hi = overall_range.get("neuroquery_r2", (0.0, 0.0))
+            lines += [
+                "whiskers = min\u2013max over five uniform query strategies",
+                f"NeuroVLM {nv_lo:.2f}\u2013{nv_hi:.2f} (bar = {groups[0][1][1]:.2f} "
+                f"pre-registered)",
+                f"NeuroQuery {nq_lo:.2f}\u2013{nq_hi:.2f}; even NeuroVLM's best prompt",
+                "stays below the search baseline",
+            ]
+        lines.append(f"NeuroVLM leads NeuroQuery "
+                     f"{groups[0][1][1] / groups[0][1][0]:.1f}$\\times$ on $R^2$, "
+                     f"{groups[1][1][1] / groups[1][1][0]:.1f}$\\times$ ranked")
+        ax.text(0.5, 0.985, "\n".join(lines), transform=ax.transAxes, ha="center", va="top",
+                fontsize=4.6, color=INK, linespacing=1.5)
     panel_label(ax, "b", dx=-0.26)
 
     fig.subplots_adjust(wspace=0.42)

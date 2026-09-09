@@ -671,10 +671,16 @@ and it had no answer.
 
 | arm | mean *R²* | mean top-*k* dice |
 |---|---|---|
-| NeuroQuery (Dockès 2020) | 0.075 | 0.189 |
-| **NeuroVLM** (bioRxiv 2026.02.06.704508) | **0.238** | **0.225** |
+| NeuroQuery (Dockès 2020) | 0.075 *(0.07–0.08)* | 0.189 |
+| **NeuroVLM** (bioRxiv 2026.02.06.704508) | **0.238** *(0.21–0.30)* | **0.225** |
 | best search baseline | 0.476 | 0.436 |
 | full pipeline | 0.574 | 0.526 |
+
+Parentheses are the **prompt-sensitivity range** — min to max over the five uniform query
+strategies, i.e. what one global prompt choice is worth. The figure draws them as whiskers, and
+the visual contrast is the point: NeuroVLM's are wide, NeuroQuery's are hairlines. Quote NeuroVLM
+as a range in the text too; a point estimate implies a stability it does not have. No whisker on
+top-*k*, because per-strategy ranked scores were not computed.
 
 **NeuroVLM is the stronger arm and the one to quote**, and it is much stronger on *R²* than
 NeuroQuery — but **most of that lead is form, not localisation**. NeuroVLM is non-negative and 25%
