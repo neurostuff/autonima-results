@@ -638,6 +638,42 @@ Everything below survives at full length outside the word count:
 | neurometabench citable | **needs a Zenodo DOI** before submission — reviewers will ask where the benchmark is |
 | preprint | post simultaneously; NM desk-rejects fast, so the downside is bounded time only if the preprint is already out |
 
+### Supplementary S3 — how much of the low precision is a pool mismatch?
+
+`--only S3`. Precision is the weakest headline number in the paper, and there are two candidate
+explanations: the screener admits studies the experts rejected, or **the pool it screens is not
+the pool the experts drew from**. Our PubMed query returns a different corpus than the one behind
+the published review, so studies that could never have appeared in the expert list are counted as
+false positives however well screening works.
+
+Three projects have a fixed-pool arm — same criteria, same screening, over a pool assembled
+without search-driven narrowing. Holding screening constant and swapping only the pool separates
+the two explanations.
+
+| stage | mean precision, search pool | mean precision, fixed pool | Δ |
+|---|---|---|---|
+| search | 0.106 | 0.276 | **+0.169** |
+| abstract screening | 0.201 | 0.373 | **+0.172** |
+| full-text screening | 0.349 | 0.491 | **+0.142** |
+
+**At full-text screening the pool accounts for +0.142 of precision — 29% of what is achievable
+there.** So a substantial share of the number that looks like a screening failure is a corpus
+difference, and it is separable.
+
+**Panel b carries the control that makes this claim, and without it panel a's gap would be
+uninterpretable.** The fixed pool buys precision at essentially no cost to *recall* — mean Δ
++0.000 at abstract and **+0.007** at full-text. A change that raised precision by quietly
+discarding borderline true positives would show up there as a recall loss, and it does not. This
+is the panel a reviewer will look for.
+
+One caveat to keep in the caption: the search-stage recall delta is −0.057, driven entirely by
+emotion regulation at −0.261. At that stage the two arms are different corpora by construction, so
+it is not a screening result; every later stage is ~0.
+
+**Where this goes.** Supplement, with two sentences in Result 2 pointing at it — the precision
+number cannot be quoted without it, since a reader will otherwise take 0.35 as the pipeline's
+ceiling when 0.49 is reachable on a matched pool. n = 3 projects, which the caption must state.
+
 ### Supplementary S2 — mis-specification is the real risk, not overfitting
 
 `scripts/compile_tier_progression.py` → `reports/tier_progression.csv` → `--only S2`. Mean *R²*

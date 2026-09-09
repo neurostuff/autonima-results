@@ -737,6 +737,135 @@ def figureS2(out_dir: Path) -> None:
     save(fig, out_dir, "figureS2_tier_progression")
 
 
+# -------------------------------------------------------------------- Supplementary S3
+
+def _screening_metric(filename: str, metric: str) -> dict[str, dict[str, float]]:
+    out: dict[str, dict[str, float]] = collections.defaultdict(dict)
+    path = REPO_ROOT / "reports" / "cross_project_screening" / filename
+    if not path.exists():
+        return out
+    for r in read(path):
+        if r.get("metric") != metric:
+            continue
+        try:
+            out[r["project_name"]][r["stage"]] = float(r["value"])
+        except (ValueError, KeyError):
+            continue
+    return out
+
+
+def figureS3(out_dir: Path) -> None:
+    """How much of the low screening precision is a pool mismatch rather than a screening failure?
+
+    Precision against the expert inclusion list is the weakest headline number in the paper, and
+    there are two candidate explanations. Either the screener admits studies the experts rejected,
+    or the *pool* it screens is not the pool the experts drew from -- our PubMed query returns a
+    different corpus than the one behind the published review, so studies that could never have
+    been in the expert list count as false positives no matter how well screening works.
+
+    Three projects have a fixed-pool arm: the same criteria, the same screening, over a pool
+    assembled without search-driven narrowing. Holding screening constant and swapping only the
+    pool separates the two explanations, and the answer is that a large share is the pool.
+
+    Panel b carries the control that makes the claim, and without it the panel a gap would be
+    uninterpretable: the fixed pool buys precision at essentially no cost to RECALL from abstract
+    screening onward (mean +0.000 and +0.007). A change that raised precision by discarding
+    borderline true positives would show up there as a recall loss, and it does not.
+
+    The search-stage recall delta is shown but should not be read as a screening result: at that
+    stage the two arms are different corpora by construction, which is why emotion regulation
+    reads -0.261 there and ~0 at every later stage.
+    """
+    STAGES = ["search", "abstract", "fulltext"]
+    LABELS = ["Search", "Abstract\nscreening", "Full-text\nscreening"]
+    SEARCH_FILE = "screening_metrics_top_v_stage_progression.csv"
+    FIXED_FILE = "screening_metrics_top_v_allstudies_stage_progression.csv"
+
+    prec_s, prec_f = (_screening_metric(SEARCH_FILE, "precision"),
+                      _screening_metric(FIXED_FILE, "precision"))
+    rec_s, rec_f = (_screening_metric(SEARCH_FILE, "recall"),
+                    _screening_metric(FIXED_FILE, "recall"))
+    projects = [p for p in PROJECT_ORDER
+                if all(p in d for d in (prec_s, prec_f, rec_s, rec_f))
+                and all(st_ in prec_s[p] and st_ in prec_f[p] for st_ in STAGES)]
+    if not projects:
+        print("  figureS3: no project has both pools; skipped")
+        return
+
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.5),
+                             gridspec_kw={"width_ratios": [1.1, 1]})
+    xs = range(len(STAGES))
+
+    # a: precision under each pool, same screening
+    ax = axes[0]
+    for p in projects:
+        c = COLORS.get(p, "#7F7F7F")
+        ax.plot(xs, [prec_s[p][s] for s in STAGES], "-o", color=c, ms=3.0,
+                markeredgewidth=0, alpha=0.9)
+        ax.plot(xs, [prec_f[p][s] for s in STAGES], ":o", color=c, ms=3.0,
+                markeredgewidth=0, alpha=0.9, lw=1.1)
+    m_s = [st.mean([prec_s[p][s] for p in projects]) for s in STAGES]
+    m_f = [st.mean([prec_f[p][s] for p in projects]) for s in STAGES]
+    ax.fill_between(list(xs), m_s, m_f, color=MEAN_COLOR, alpha=0.10, lw=0, zorder=1)
+    ax.plot(xs, m_s, marker="o", ms=4.0, mec="white", mew=0.5, **MEAN_KW)
+    ax.plot(xs, m_f, marker="o", ms=4.0, mec="white", mew=0.5, ls=":",
+            **{k: v for k, v in MEAN_KW.items() if k != "solid_capstyle"})
+    ax.text(0.02, 0.98,
+            f"shaded = pool contribution\nat full-text screening: {m_f[-1] - m_s[-1]:+.3f} "
+            f"precision\n({m_s[-1]:.3f} search pool \u2192 {m_f[-1]:.3f} fixed)",
+            transform=ax.transAxes, ha="left", va="top", fontsize=5.2, color=INK,
+            linespacing=1.5)
+    ax.set_xticks(list(xs)); ax.set_xticklabels(LABELS)
+    ax.set_xlim(-0.2, len(STAGES) - 0.35)
+    ax.set_ylim(0, 0.78)
+    ax.set_ylabel("Precision vs expert inclusion list")
+    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
+    panel_label(ax, "a", dx=-0.19)
+
+    # b: the paired deltas, precision against recall
+    ax = axes[1]
+    width = 0.17
+    for j, (label, ds, df, colour) in enumerate((
+            ("precision", prec_s, prec_f, "#0072B2"),
+            ("recall", rec_s, rec_f, "#D55E00"))):
+        for i, s in enumerate(STAGES):
+            vals = [df[p][s] - ds[p][s] for p in projects
+                    if s in ds[p] and s in df[p]]
+            if not vals:
+                continue
+            base = i + (j - 0.5) * 2 * width
+            ax.bar(base, st.mean(vals), width=width * 1.7, color=colour, alpha=0.30, lw=0,
+                   zorder=2, label=f"mean \u0394 {label}" if i == 0 else None)
+            ax.scatter([base] * len(vals), vals, s=9, color=colour, edgecolors="white",
+                       linewidths=0.3, zorder=4)
+    ax.axhline(0, color=INK, lw=0.6, zorder=3)
+    ax.set_xticks(list(xs)); ax.set_xticklabels(LABELS)
+    ax.set_xlim(-0.5, len(STAGES) - 0.5)
+    # Headroom above the tallest precision point so the note clears it.
+    lo, hi = ax.get_ylim()
+    ax.set_ylim(lo, hi + 0.30 * (hi - lo))
+    ax.set_ylabel("Fixed pool \u2212 search pool")
+    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
+    ax.legend(loc="lower right", fontsize=5.2, handlelength=1.0, handletextpad=0.4,
+              borderaxespad=0.4)
+    ax.text(0.02, 0.98,
+            "precision rises at every stage;\nrecall unchanged from abstract on.\n"
+            "The search-stage recall dip is one\nproject and is a corpus difference,\n"
+            "not a screening result.",
+            transform=ax.transAxes, ha="left", va="top", fontsize=4.9, color=MUTED,
+            linespacing=1.45)
+    panel_label(ax, "b", dx=-0.19)
+
+    handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
+                      label=DISPLAY[p]) for p in projects]
+    handles += [Line2D([], [], ls="-", color=MEAN_COLOR, lw=1.9, label="mean, search pool"),
+                Line2D([], [], ls=":", color=MEAN_COLOR, lw=1.9, label="mean, fixed pool")]
+    fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.17),
+               handletextpad=0.3, columnspacing=1.1, handlelength=1.3)
+    fig.subplots_adjust(wspace=0.30)
+    save(fig, out_dir, "figureS3_pool_mismatch")
+
+
 # -------------------------------------------------------------------- Supplementary S1
 
 def figureS1(out_dir: Path) -> None:
@@ -787,7 +916,7 @@ def figureS1(out_dir: Path) -> None:
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
 FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
-           "S1": figureS1, "S2": figureS2}
+           "S1": figureS1, "S2": figureS2, "S3": figureS3}
 
 
 def main() -> int:
