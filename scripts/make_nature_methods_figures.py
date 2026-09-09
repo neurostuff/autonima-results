@@ -72,9 +72,17 @@ DISPLAY = {
 # Colour-blind safe qualitative set, which matters at 6pt where shape cues are weak. Okabe-Ito
 # with its yellow (#F0E442) replaced by a violet: yellow-on-white is too low-contrast to read as a
 # 3pt marker, which is the size these actually print at.
+# The two VBM projects previously took #000000 and #7F7F7F. Black and grey are now reserved for
+# the cross-project mean line, which has to be unmistakably not-a-project, so they moved to wine
+# and brown -- both dark and warm, which also groups the two VBM projects visually, and both
+# distinguishable from the vermillion and pink already in use at 3pt.
 PALETTE = ["#0072B2", "#D55E00", "#009E73", "#CC79A7",
-           "#E69F00", "#56B4E9", "#785EF0", "#000000", "#7F7F7F"]
+           "#E69F00", "#56B4E9", "#785EF0", "#882255", "#8C564B"]
 COLORS = dict(zip(PROJECT_ORDER, PALETTE))
+
+# Reserved: no project may use these.
+MEAN_COLOR = "#000000"
+MEAN_KW = dict(color=MEAN_COLOR, lw=1.9, zorder=6, solid_capstyle="round")
 
 # Direct labels for dense panels, where a legend would cost more space than it saves and colour
 # alone leaves a reader unable to name a point.
@@ -202,6 +210,12 @@ def figure2(out_dir: Path) -> None:
             continue
         ax.plot(range(len(stages)), [v * 100 for v in ys], ":", color=COLORS[p], lw=1.1,
                 alpha=0.9, zorder=2)
+    # Cross-project mean, over the same projects the panel draws.
+    means_a = [st.mean([surv[p][s] * 100 for p in projects]) for s in stages]
+    ax.plot(range(len(stages)), means_a, marker="o", ms=3.6, mec="white", mew=0.5, **MEAN_KW)
+    ax.annotate(f"{means_a[-1]:.0f}", (len(stages) - 1, means_a[-1]),
+                textcoords="offset points", xytext=(4, -1.5), fontsize=5.6,
+                fontweight="bold", color=MEAN_COLOR)
     ax.set_xticks(range(len(stages)))
     ax.set_xticklabels(labels)
     ax.set_xlim(-0.25, len(stages) - 0.45)
@@ -224,6 +238,12 @@ def figure2(out_dir: Path) -> None:
         ys_all = [prec_all.get(p, {}).get(s) for s in pstages]
         if not any(v is None for v in ys_all):
             ax.plot(range(len(pstages)), ys_all, ":", color=COLORS[p], lw=1.1, alpha=0.9)
+    have_prec = [p for p in projects
+                 if all(prec.get(p, {}).get(s) is not None for s in pstages)]
+    if have_prec:
+        means_b = [st.mean([prec[p][s] for p in have_prec]) for s in pstages]
+        ax.plot(range(len(pstages)), means_b, marker="o", ms=3.6, mec="white", mew=0.5,
+                **MEAN_KW)
     ax.set_xticks(range(len(pstages)))
     ax.set_xticklabels(["Search", "Abstract\nscreening", "Full-text\nscreening"])
     ax.set_ylim(0, 1.02)
@@ -236,6 +256,8 @@ def figure2(out_dir: Path) -> None:
                       label=DISPLAY[p]) for p in projects]
     handles.append(Line2D([], [], ls=":", color=INK, lw=1.1,
                           label="fixed pool (no search narrowing)"))
+    handles.append(Line2D([], [], ls="-", color=MEAN_COLOR, lw=1.9, marker="o", markersize=3.2,
+                          label="mean across projects"))
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
@@ -594,18 +616,25 @@ def figure5(out_dir: Path) -> None:
 # -------------------------------------------------------------------- Supplementary S2
 
 def figureS2(out_dir: Path) -> None:
-    """Leakage: performance as criteria are allowed to see more of the benchmark.
+    """Two different effects live in the tier progression, and only the second one is overfitting.
 
-    run_categories.yaml separates runs by how much gold-standard information shaped their
-    criteria -- `verbatim` transcribed from the source paper before any results were seen,
-    `manual` lightly hand-revised after reading reports, `best` chosen on performance and in
-    practice agent-written from the error reports in full. The paper leans on that ordering for
-    its overfitting argument, so the rise along it is the quantity the argument needs and this is
-    the first time it has been measured.
+    run_categories.yaml orders runs by how much benchmark information shaped their criteria. It is
+    tempting to read the whole `verbatim -> best` rise as leakage, and an earlier version of this
+    figure did. That is wrong, and the split says why:
 
-    The comparison is paired within project and never averaged across tiers, because the tiers
-    cover different project sets: only four projects were ever hand-revised, two have no verbatim
-    maps, and vbm_of_ptsd registers one run at every tier so it contributes no progression.
+      verbatim -> manual   the project author, having seen reports, fixed MAJOR OVERSIGHTS in the
+                           criteria -- things that were simply mis-specified. n = 2, mean +0.221.
+      manual   -> best     criteria rewritten against the error reports in full. This is the
+                           overfitting estimate. n = 2, mean +0.031.
+
+    So almost the entire rise is the cost of getting the criteria wrong, not the benefit of having
+    seen the answers. That reframes the result from a caveat into a finding: the live risk in
+    LLM screening is mis-prompting, and it is far larger than the risk of tuning. It is also a
+    risk the authors ran into themselves, which is worth saying plainly.
+
+    Both n = 2, so neither number is more than an indication. Only four projects were ever
+    hand-revised, and two of those register the same run at `manual` and `best`, contributing no
+    second-segment measurement.
     """
     path = REPO_ROOT / "reports" / "tier_progression.csv"
     if not path.exists():
@@ -613,72 +642,98 @@ def figureS2(out_dir: Path) -> None:
         return
     rows = read(path)
     TIER_ORDER = ["verbatim", "manual", "best"]
-    LABEL = {"verbatim": "verbatim\n(held out)", "manual": "manual\n(light revision)",
-             "best": "best\n(tuned on reports)"}
+    LABEL = {"verbatim": "verbatim\n(from the paper,\nheld out)",
+             "manual": "manual\n(oversights\nfixed by hand)",
+             "best": "best\n(tuned on\nerror reports)"}
 
     by: dict[str, dict[str, list[float]]] = collections.defaultdict(
         lambda: collections.defaultdict(list))
-    flat: set[str] = set()
+    runs: dict[str, dict[str, str]] = collections.defaultdict(dict)
     for r in rows:
         by[r["project"]][r["tier"]].append(float(r["r2"]))
-        if r["tier"] == "verbatim" and r.get("same_run_as_best") == "yes":
-            flat.add(r["project"])
+        runs[r["project"]][r["tier"]] = r["run"]
 
-    fig, ax = plt.subplots(figsize=(SINGLE_COL, 2.7))
-    deltas, ends, all_y = [], [], []
+    means = {p: {t: st.mean(v) for t, v in tiers.items()} for p, tiers in by.items()}
+
+    def seg(a: str, b: str) -> list[float]:
+        """Paired deltas, excluding projects where both tiers resolve to the same run."""
+        out = []
+        for proj, m in means.items():
+            if a in m and b in m and runs[proj].get(a) != runs[proj].get(b):
+                out.append(m[b] - m[a])
+        return out
+
+    vm, mb = seg("verbatim", "manual"), seg("manual", "best")
+
+    fig, ax = plt.subplots(figsize=(SINGLE_COL, 2.9))
+    ends, all_y = [], []
     for proj in PROJECT_ORDER:
-        tiers = by.get(proj)
-        if not tiers:
+        m = means.get(proj)
+        if not m:
             continue
-        xs, ys = [], []
-        for i, t in enumerate(TIER_ORDER):
-            if tiers.get(t):
-                xs.append(i); ys.append(st.mean(tiers[t]))
+        xs = [i for i, t in enumerate(TIER_ORDER) if t in m]
+        ys = [m[TIER_ORDER[i]] for i in xs]
         all_y.extend(ys)
         c = COLORS.get(proj, "#7F7F7F")
-        # A project whose verbatim run IS its best run is drawn as a single point: there is no
-        # progression to show and a flat line would imply one was measured.
-        style = dict(color=c, lw=0.9, zorder=3)
-        if proj in flat:
-            ax.scatter(xs[-1:], ys[-1:], s=16, facecolors="none", edgecolors=c,
-                       linewidths=0.9, zorder=4)
+        n_runs = len({runs[proj].get(t) for t in TIER_ORDER if t in m})
+        if len(xs) == 1:
+            # Only one tier has maps at all. Missing data, not a measured flat progression, so it
+            # must not carry the open-circle marker that means "same run at several tiers".
+            ax.scatter(xs, ys, s=13, color=c, edgecolors="white", linewidths=0.35, zorder=4)
+        elif n_runs == 1:
+            # Registered at several tiers but resolving to one run: a line would imply a
+            # progression was measured when none was.
+            ax.scatter(xs[-1:], ys[-1:], s=15, facecolors="none", edgecolors=c, linewidths=0.9,
+                       zorder=4)
         else:
-            ax.plot(xs, ys, marker="o", ms=3.4, mec="white", mew=0.35, **style)
-            if len(xs) >= 2 and 0 in xs:
-                deltas.append(ys[-1] - ys[0])
+            ax.plot(xs, ys, marker="o", ms=3.2, mec="white", mew=0.35, color=c, lw=0.9, zorder=3)
         ends.append([xs[-1], ys[-1], proj, c])
 
-    # Direct labels collide where projects finish close together -- executive function and
-    # emotion regulation land within 0.003 of each other. Push them apart in data units, keeping
-    # the order, so each label still sits next to its own line.
+    # Mean over the projects present at ALL THREE tiers, so the line is one consistent subset
+    # rather than three different ones.
+    complete = [p for p in PROJECT_ORDER if p in means
+                and all(t in means[p] for t in TIER_ORDER)]
+    if complete:
+        mline = [st.mean([means[p][t] for p in complete]) for t in TIER_ORDER]
+        ax.plot(range(len(TIER_ORDER)), mline, marker="o", ms=4.0, mec="white", mew=0.5,
+                **MEAN_KW)
+        all_y.extend(mline)
+        ends.append([len(TIER_ORDER) - 1, mline[-1], "_mean", MEAN_COLOR])
+
     ends.sort(key=lambda e: e[1])
-    span = (max(e[1] for e in ends) - min(e[1] for e in ends)) or 1.0
-    gap = span * 0.052
+    span = (max(all_y) - min(all_y)) or 1.0
+    gap = span * 0.055
     for i in range(1, len(ends)):
         if ends[i][1] - ends[i - 1][1] < gap:
             ends[i][1] = ends[i - 1][1] + gap
     for x, y, proj, c in ends:
-        ax.annotate(SHORT.get(proj, proj), (x, y), textcoords="offset points",
-                    xytext=(5, 0), fontsize=4.8, color=c, va="center", annotation_clip=False)
+        txt = f"mean ({len(complete)})" if proj == "_mean" else SHORT.get(proj, proj)
+        ax.annotate(txt, (x, y), textcoords="offset points", xytext=(5, 0),
+                    fontsize=4.8, color=c, va="center", annotation_clip=False,
+                    fontweight="bold" if proj == "_mean" else "normal")
 
     ax.set_xticks(range(len(TIER_ORDER)))
-    ax.set_xticklabels([LABEL[t] for t in TIER_ORDER], linespacing=1.3)
-    ax.set_xlim(-0.35, len(TIER_ORDER) - 0.28)
+    ax.set_xticklabels([LABEL[t] for t in TIER_ORDER], linespacing=1.25, fontsize=5.4)
+    ax.set_xlim(-0.35, len(TIER_ORDER) - 0.22)
     lo, hi = min(all_y), max(all_y)
-    ax.set_ylim(lo - 0.10 * (hi - lo), hi + 0.22 * (hi - lo))
+    ax.set_ylim(lo - 0.10 * (hi - lo), hi + 0.30 * (hi - lo))
     ax.set_ylabel("Mean $R^2$ against the expert map")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
-    if deltas:
-        ax.text(0.02, 0.98,
-                f"verbatim \u2192 best, paired: n = {len(deltas)}\n"
-                f"mean {st.mean(deltas):+.3f}, median {st.median(deltas):+.3f}\n"
-                f"rises in {sum(1 for d in deltas if d > 0)}/{len(deltas)}",
-                transform=ax.transAxes, va="top", ha="left", fontsize=5.2, color=INK,
-                linespacing=1.5)
-    ax.text(0.97, 0.03, "open circle = one run registered at\nevery tier, so no progression\n"
-            "is measurable",
-            transform=ax.transAxes, va="bottom", ha="right", fontsize=4.8, color=MUTED,
-            linespacing=1.4)
+
+    # The two segments carry different meanings, so label them separately rather than quoting one
+    # end-to-end number.
+    y0, y1 = ax.get_ylim()
+    band = y1 - 0.055 * (y1 - y0)
+    for (x0, x1), lab, deltas in ((( -0.02, 0.98), "fixing\nmis-specification", vm),
+                                  ((1.02, 1.98), "overfitting", mb)):
+        ax.annotate("", xy=(x1, band), xytext=(x0, band),
+                    arrowprops=dict(arrowstyle="<->", lw=0.6, color=MUTED, shrinkA=0, shrinkB=0))
+        txt = f"{lab}\nmean {st.mean(deltas):+.3f} (n={len(deltas)})" if deltas else lab
+        ax.text((x0 + x1) / 2, band - 0.012 * (y1 - y0), txt, ha="center", va="top",
+                fontsize=4.9, color=MUTED, linespacing=1.35)
+
+    ax.text(0.98, 0.03, "open circle = one run registered at several tiers",
+            transform=ax.transAxes, va="bottom", ha="right", fontsize=4.6, color=MUTED)
     save(fig, out_dir, "figureS2_tier_progression")
 
 

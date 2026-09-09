@@ -638,38 +638,44 @@ Everything below survives at full length outside the word count:
 | neurometabench citable | **needs a Zenodo DOI** before submission — reviewers will ask where the benchmark is |
 | preprint | post simultaneously; NM desk-rejects fast, so the downside is bounded time only if the preprint is already out |
 
-### Supplementary S2 — the leakage measurement, and what it costs us
+### Supplementary S2 — mis-specification is the real risk, not overfitting
 
 `scripts/compile_tier_progression.py` → `reports/tier_progression.csv` → `--only S2`. Mean *R²*
-against the expert map for each tier's run, paired within project.
+against the expert map per tier, paired within project.
 
-**verbatim → best: n = 6, mean +0.088, median +0.033, rises in 5 of 6.**
+**The end-to-end `verbatim → best` number is the wrong thing to quote, and an earlier draft of
+this section quoted it.** Split into its two segments it says something different and more useful:
 
-Set that beside Figure 4's headline of **+0.099** and the problem is obvious: *at the mean, the
-rise from held-out criteria to report-tuned criteria is nearly as large as the pipeline's entire
-reported advantage over baselines.* Figure 4 is computed at the `best` tier, so the headline is a
-tuned-criteria number.
+| segment | what actually changed | n | mean |
+|---|---|---|---|
+| verbatim → manual | the author, having seen reports, fixed **major oversights** — criteria that were simply mis-specified | 2 | **+0.221** |
+| manual → best | criteria rewritten against the error reports in full — this is the overfitting | 2 | **+0.031** |
 
-**Do not report the mean alone.** It is carried by two projects where the verbatim criteria look
-broken rather than merely untuned — dementia 0.112 → 0.358 (a 3× rise) and cue reactivity 0.413 →
-0.624. The median of +0.033 is the more defensible summary, and against +0.099 it puts leakage at
-roughly a third of the headline. `vbm_of_substance_use` actually *falls* (−0.008), and executive
-function and decision making move +0.018 and +0.015 — so for half the measurable projects the
-effect is near zero.
+**Almost the entire rise is the cost of having got the criteria wrong, not the benefit of having
+seen the answers.** The mean line over the three projects with all three tiers goes 0.378 → 0.525
+→ 0.530: steep, then flat.
 
-**What is still missing, and it is the number the argument actually needs.** This measures
-absolute *R²* by tier, not the **margin over baseline** by tier. The baselines do not change with
-tier, so the margin should shift by roughly the same amount — but "roughly" is not good enough for
-a claim this load-bearing, and it should be computed directly.
-`compare_baselines_to_benchmark.py` already takes `--tier`, so this is a re-run into a separate
-output dir plus a recompile, not new machinery. **Do it before submission**; a reviewer who reads
-`run_categories.yaml` will ask.
+That converts the leakage objection into a **result**, and it is one of the more useful things the
+paper can say to a methods audience: *the live danger in LLM-assisted screening is mis-prompting,
+and it is roughly seven times larger than the danger of tuning.* Say plainly that this happened to
+us — the verbatim criteria for dementia (0.112 → 0.358) and cue reactivity (0.413 → 0.624) were
+not subtly suboptimal, they were missing something important, and nothing in the pipeline's output
+announced it. That is the argument for the whole error-report loop existing.
 
-Two coverage caveats for the caption: only four projects were ever hand-revised, so `manual` has a
-smaller n by construction; `vbm_of_ptsd` registers one run at all four tiers and contributes no
-progression (drawn as an open circle); and emotion regulation and social have no `verbatim` maps
-at all, so they appear only from `manual` onward.
+**Both n = 2, so neither figure is more than an indication.** Only four projects were ever
+hand-revised, and two of those (`dementia`, `vbm_of_ptsd`) register the same run at `manual` and
+`best`, contributing no second-segment measurement. The overfitting estimate in particular rests
+on cue reactivity (+0.014) and social (+0.048) alone. **Do not report it without the n.**
 
-**Sequencing with the data paper.** neurometabench as a separate Data Resource paper is the right
+**Still worth computing before submission:** this is absolute *R²* by tier, not **margin over
+baseline** by tier. Baselines do not move with tier so the margin should shift similarly, but that
+should be computed rather than assumed — `compare_baselines_to_benchmark.py` already takes
+`--tier`.
+
+Caption caveats: emotion regulation and social have maps at fewer than three tiers (drawn as a
+plain point, meaning missing data); `vbm_of_ptsd` registers one run at every tier and is drawn as
+an open circle, meaning no progression is measurable rather than none occurred.
+
+**Sequencing with the data paper.****Sequencing with the data paper.** neurometabench as a separate Data Resource paper is the right
 split, but it must be at least preprinted with a DOI before or alongside this one. "In a paper we
 have not submitted yet" is not an answer to "where is this benchmark".
