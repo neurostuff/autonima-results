@@ -38,6 +38,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_tiers import resolve_tier  # noqa: E402
 from nmb_mapping import load_mappings  # noqa: E402
+from benchmark_exclusions import is_excluded  # noqa: E402
 
 
 def matrix(project: Path, run: str, kind: str = "dice") -> dict[str, dict[str, float | None]]:
@@ -82,6 +83,9 @@ def main() -> int:
         mp = pdir / "nmb_mappings.json"
         auto_for = load_mappings(mp) if mp.exists() else {}
         for col in M["all_analyses"]:
+            if is_excluded(pdir.name, col):
+                print(f"  excluded {pdir.name}/{col} (no reference result in the source paper)")
+                continue
             auto_row = auto_for.get(col, col)
             ann, alla = M.get(auto_row, {}).get(col), M["all_analyses"].get(col)
             if ann is None or alla is None:

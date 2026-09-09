@@ -36,6 +36,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_tiers import resolve_tier  # noqa: E402
+from benchmark_exclusions import filter_rows  # noqa: E402
 
 # NiMARE's phrasing; the numbers are foci then experiments.
 COUNTS = re.compile(r"included\s+([\d,]+)\s+foci\s+from\s+([\d,]+)\s+experiments")
@@ -81,7 +82,8 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     with open(args.baseline_table) as f:
-        wanted = [(r["project"], r["manual_annotation"]) for r in csv.DictReader(f)]
+        table = filter_rows(list(csv.DictReader(f)), label="analysis counts")
+    wanted = [(r["project"], r["manual_annotation"]) for r in table]
 
     rows, missing = [], []
     runs: dict[str, str] = {}

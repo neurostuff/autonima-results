@@ -245,9 +245,28 @@ obvious "are the wins just the well-powered columns?" objection backwards: the p
 0.15). Selection beating volume is the thesis, so it belongs in the headline figure.
 
 ```
-best AVAILABLE   0.495 vs 0.394   Δ +0.101   95% CI [+0.045, +0.185]   sign test p = 2.2e-05
-STRONGEST        0.495 vs 0.399   Δ +0.096   95% CI [+0.040, +0.179]   p = 1.2e-04
+32 columns (see the exclusion note below; was 35)
+best AVAILABLE   0.574 vs 0.476   Δ +0.099   95% CI [+0.038, +0.181]   sign test p = 1.9e-05
+STRONGEST        0.574 vs 0.482   Δ +0.093   95% CI [+0.032, +0.176]   p = 1.1e-04
+                 ahead in 28/32 (best available), 27/32 (strongest); median +0.061
 ```
+
+> **The denominator is 32, not 35 — decided 2026-09-09.** `vbm_of_substance_use` cannabis,
+> opioids and stimulants are dropped from every analysis and every plot, because
+> **the source paper reports no significant result for them**: "Drug-specific meta-analyses for
+> cannabis, opioids, and stimulants failed to yield significant clusters" (Hill-Bowen et al. 2022,
+> PMID 36115222). There is no reference finding to recover, so any agreement score is measuring
+> agreement with a null. Encoded once in `scripts/benchmark_exclusions.py` and imported by every
+> compiler and figure, so the denominator cannot be 32 in one table and 35 in another.
+>
+> **State this in Methods as a scope decision**, with the quote. It is not a metric choice and it
+> does not depend on which metric a figure reports.
+>
+> Dropping them *lowered* the headline slightly — Δ +0.110 → +0.099, ahead 31/35 → 28/32 — because
+> under unthresholded r² all three scored as wins (cannabis +0.135, opioids +0.192, stimulants
+> +0.356). Those wins were two null maps agreeing about where the literature puts coordinates, so
+> removing them makes the number smaller and honest. Worth one clause: the exclusion costs us,
+> which is the best evidence it was not chosen to flatter the result.
 
 CI is cluster-bootstrapped over projects, not columns — a project's columns share a corpus, a
 search and a screening run. Say so in one clause; it pre-empts the obvious reviewer objection and

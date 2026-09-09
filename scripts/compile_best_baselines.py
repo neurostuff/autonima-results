@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import sys
 import csv
 import glob
 import math
@@ -43,20 +44,31 @@ import random
 import statistics as st
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from benchmark_exclusions import is_excluded, reason  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 METRICS = ("dice", "r2", "pearson_r")
 
 
-def load_columns(projects_root: Path, metric: str) -> dict[tuple[str, str], dict[str, float]]:
+def load_columns(projects_root: Path, metric: str,
+                 apply_exclusions: bool = True) -> dict[tuple[str, str], dict[str, float]]:
     by: dict[tuple[str, str], dict[str, float]] = collections.defaultdict(dict)
+    skipped: set[tuple[str, str]] = set()
     for f in sorted(glob.glob(str(projects_root / "*" / "reports" / "baseline_vs_autonima.csv"))):
         for r in csv.DictReader(open(f)):
+            key = (r.get("project", ""), r.get("manual_annotation", ""))
+            if apply_exclusions and is_excluded(*key):
+                skipped.add(key)
+                continue
             try:
-                by[(r["project"], r["manual_annotation"])][r["arm"]] = float(r[metric])
+                by[key][r["arm"]] = float(r[metric])
             except (ValueError, TypeError, KeyError):
                 continue
+    for project, column in sorted(skipped):
+        print(f"  excluded {project}/{column} -- {reason(project, column)}")
     return by
 
 

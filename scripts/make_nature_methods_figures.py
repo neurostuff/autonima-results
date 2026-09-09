@@ -48,6 +48,7 @@ from matplotlib.lines import Line2D
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from make_brain_map_figure import pretty_column  # noqa: E402
+from benchmark_exclusions import filter_rows  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
@@ -406,7 +407,8 @@ def figure4(out_dir: Path) -> None:
     larger, up to 11x for emotion regulation's `increase`). Selection beating volume is the
     paper's thesis, so the N belongs in the headline figure rather than in the text alone.
     """
-    rows = read(REPO_ROOT / "reports" / "cross_project_best_baseline.csv")
+    rows = filter_rows(read(REPO_ROOT / "reports" / "cross_project_best_baseline.csv"),
+                       label="figure 4")
     stats = {r["comparison"]: r for r in
              read(REPO_ROOT / "reports" / "cross_project_best_baseline_stats.csv")}
     s = stats.get("best_available")
@@ -513,7 +515,8 @@ def figure5(out_dir: Path) -> None:
     if not path.exists():
         print("  figure5: run scripts/bootstrap_annotation_null.py first; skipped")
         return
-    rows = [r for r in read(path) if r.get("status") == "ok"]
+    rows = filter_rows([r for r in read(path) if r.get("status") == "ok"],
+                       label="figure 5")
     if not rows:
         print("  figure5: no usable rows; skipped")
         return

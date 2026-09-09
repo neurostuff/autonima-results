@@ -54,6 +54,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, "/home/zorro/repos/autonima")
 from run_tiers import resolve_tier  # noqa: E402
+from benchmark_exclusions import filter_rows  # noqa: E402
 
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
 # THE METRIC/MAP RULE. R-squared compares *unthresholded* maps, so it reads the raw z. Dice
@@ -240,7 +241,8 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     with open(args.source) as f:
-        wanted = [(r["project"], r["manual_column"], r["run"]) for r in csv.DictReader(f)]
+        src = filter_rows(list(csv.DictReader(f)), label="bootstrap null")
+    wanted = [(r["project"], r["manual_column"], r["run"]) for r in src]
     if args.only_project:
         wanted = [w for w in wanted if w[0] in args.only_project]
 
