@@ -788,11 +788,15 @@ def figureS4(out_dir: Path) -> None:
         by[r["project"]].append(r)
     rank_key = "neurovlm_r2" if has_nvlm else "neuroquery_r2"
     order = sorted(by, key=lambda p: st.mean([r[rank_key] for r in by[p]]))
-    # Shaded light-to-dark in performance order, so the ranking survives greyscale printing.
-    arms = [("neuroquery_r2", "NeuroQuery (text \u2192 map)", "#CFCFCF")]
+    # Colour, not shades of grey: four grey bars at this size were not separable. Hue encodes the
+    # KIND of arm and lightness the ordering within a kind -- the two text->map models share a
+    # blue family (light = weaker), the search baseline is orange, the pipeline black. Okabe-Ito,
+    # so it survives colour-blind viewing; S4 draws no per-project colour, so there is no clash
+    # with the project palette used in the other figures.
+    arms = [("neuroquery_r2", "NeuroQuery (text \u2192 map)", "#56B4E9")]
     if has_nvlm:
-        arms.append(("neurovlm_r2", "NeuroVLM (text \u2192 map)", "#9A9A9A"))
-    arms += [("best_baseline_r2", "best search baseline", "#5F5F5F"),
+        arms.append(("neurovlm_r2", "NeuroVLM (text \u2192 map)", "#0072B2"))
+    arms += [("best_baseline_r2", "best search baseline", "#E69F00"),
              ("autonima_r2", "full pipeline", MEAN_COLOR)]
     h = 0.86 / len(arms)
     for j, (key, label, colour) in enumerate(arms):
