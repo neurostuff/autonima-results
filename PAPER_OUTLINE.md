@@ -96,6 +96,39 @@ screened. PubMed is a moving target, so our candidate set is not theirs. A "fals
 may be a study they never saw, or saw and excluded for a reason not recorded. Precision
 against an unknown screening pool is a lower bound.
 
+**How much of it is "never saw" — measured, 2026-09-09.** The paragraph above splits false
+positives into studies the authors never saw and studies they saw and rejected, but asserts the
+split rather than measuring it. `scripts/false_positive_composition.py` measures it directly, by
+asking of each false positive whether it appears in that project's fixed `pmids_file` — which for
+dementia and social *is* the authors' candidate list, since both contain 100% of the gold studies.
+
+**At full-text screening, 59% of false positives were never in the authors' pool at all** (385 of
+649 across three projects; 248 of 417 restricting to the two trustworthy pools). Those studies
+could not have reached the published inclusion list whatever we decided.
+
+**Do not generalise past that, because the split inverts between projects:**
+
+| project | never considered | considered and rejected |
+|---|---|---|
+| dementia | 27% | **73%** |
+| emotion regulation | 59% | 41% |
+| social | **69%** | 31% |
+
+For dementia — the controlled case this section leans on — the majority of false positives were
+adjudicated and rejected, so they are genuine disagreements, not pool artefacts. The defensible
+sentence is that the share attributable to the pool runs from about a quarter to about seven
+tenths depending on the project.
+
+**It corroborates the pool argument from an independent direction**, which is worth one clause:
+the per-project "never considered" share ranks the projects identically to the per-project
+precision gain from swapping in the fixed pool (27%/59%/69% against +0.025/+0.121/+0.279,
+r = 0.906, n = 3). Two different measurements, same ordering, same mechanism.
+
+**Caveat on the emotion-regulation row.** Its `pmids_file` is a PubMed search list holding only 56
+of 88 gold studies, so it is not the authors' candidate set and is missing gold our own search
+found. Read its 59% as a lower bound on "considered"; the CSV flags it as
+`pool_is_full_candidate_set = no`.
+
 **The controlled case: dementia.** Tahmasian et al. (PMID 35664889) publishes every screened
 and rejected study *with its rejection reason* — 495 records, resolving to a fixed 558-PMID
 pool. Two things become measurable that are otherwise not:
