@@ -44,6 +44,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.transforms import Bbox
 
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -147,12 +148,125 @@ def house_style() -> None:
     })
 
 
+def deoverlap_labels(fig, ax, texts, blockers=(), markers=(), marker_r_pt: float = 3.2,
+                     pad_pt: float = 0.9, max_shift_pt: float = 26.0) -> None:
+    """Place point labels so they clear each other, the plotted markers, and the axes edge.
+
+    Two passes, deliberately separated:
+
+    1. *Side choice.* Each label is tried on both sides of its marker and keeps whichever
+       overlaps fewer of the ``markers`` (data-space (x, y) points) and stays inside the axes.
+       Ties keep the caller's alternation. Markers only ever influence this choice -- letting
+       them push labels vertically cascades, since the interesting region of an ROC panel is
+       exactly where the markers are, and everything ends up jammed against the top.
+    2. *Vertical de-overlap.* Labels are then nudged up (or under, when there is no headroom)
+       until no two rendered boxes touch, considering only other labels and ``blockers``.
+
+    Both passes measure real text extents from the renderer rather than assuming a gap in data
+    units. A data-unit gap has to be retuned every time the font scale changes, and when it is
+    not, labels silently overprint at one preset while looking clean at the other.
+    """
+    fig.canvas.draw()
+    rend = fig.canvas.get_renderer()
+    px = fig.dpi / 72.0
+    frame, pad = ax.get_window_extent(rend), pad_pt * px
+    r = marker_r_pt * px
+    dots = []
+    for mx, my in markers:
+        cx, cy = ax.transData.transform((mx, my))
+        dots.append(Bbox.from_extents(cx - r, cy - r, cx + r, cy + r))
+
+    def _hits(box):
+        return sum(box.x0 < q.x1 + pad and q.x0 < box.x1 + pad
+                   and box.y0 < q.y1 + pad and q.y0 < box.y1 + pad for q in dots)
+
+    for t in texts:
+        box = t.get_window_extent(rend)
+        dx, dy = t.xyann
+        ax_x = ax.transData.transform(t.xy)[0]
+        w, off = box.x1 - box.x0, abs(dx) * px
+        # Own marker sits under the anchor, so it is discounted on both sides and cannot
+        # bias the choice.
+        here = Bbox.from_extents(box.x0, box.y0, box.x1, box.y1)
+        x0 = ax_x + off if dx < 0 else ax_x - off - w
+        there = Bbox.from_extents(x0, box.y0, x0 + w, box.y1)
+        score_h = _hits(here) + 99 * (here.x0 < frame.x0 or here.x1 > frame.x1)
+        score_t = _hits(there) + 99 * (there.x0 < frame.x0 or there.x1 > frame.x1)
+        if score_t < score_h:
+            t.set_ha("left" if dx < 0 else "right")
+            t.xyann = (-dx, dy)
+
+    placed = [b.get_window_extent(rend) for b in blockers]
+    for t in texts:
+        dx, dy = t.xyann
+        for _ in range(60):
+            box = t.get_window_extent(rend)
+            hit = next((q for q in placed
+                        if box.x0 < q.x1 + pad and q.x0 < box.x1 + pad
+                        and box.y0 < q.y1 + pad and q.y0 < box.y1 + pad), None)
+            if hit is None:
+                break
+            step = (hit.y1 + pad) - box.y0                  # clear the blocker upward
+            if box.y1 + step > frame.y1:
+                step = (hit.y0 - pad) - box.y1              # no headroom: duck under it
+            if abs(dy + step / px) > max_shift_pt:
+                break                                       # keep the label on its marker
+            dy += step / px
+            t.xyann = (dx, dy)
+        placed.append(t.get_window_extent(rend))
+
+
+# Deck type is 1.55x larger against the same axes width, so the two-line stage ticks collide
+# ("screeningscreening"). The stage is named in the slide title anyway, so the qualifier is
+# dropped rather than shrinking type that has to survive projection. Mapped explicitly, not by
+# truncating at the newline: figure 2 carries both a retrieval and a screening full-text stage,
+# and truncating would give it two ticks reading "Full-text".
+DECK_TICKS = {
+    "Abstract\nscreening": "Abstract",
+    "Full-text\nscreening": "Full-text",
+    "Full-text\nretrieval": "Retrieval",
+}
+
+
+def stage_ticks(labels):
+    """Stage tick labels, shortened when the active preset needs the room."""
+    if FONT_SCALE <= 1.2:
+        return list(labels)
+    return [DECK_TICKS.get(x, x) for x in labels]
+
+
 def panel_label(ax, letter: str, dx: float = -0.16, dy: float = 1.06) -> None:
-    ax.text(dx, dy, letter, transform=ax.transAxes, fontsize=fs(8), fontweight="bold",
-            va="top", ha="left", color=INK)
+    t = ax.text(dx, dy, letter, transform=ax.transAxes, fontsize=fs(8), fontweight="bold",
+                va="top", ha="left", color=INK)
+    t.set_gid("panel-label")           # save() shifts it clear of the y-label if it lands on it
+
+
+def _clear_panel_labels(fig) -> None:
+    """Shift any panel label that has landed on its own y-label further left.
+
+    dx is an axes-fraction constant, so a longer y-label or a larger font moves the y-label
+    under the letter without moving the letter. That is how "a" ended up printed across the
+    "(%)" of figure 2's y-label at deck scale, at 1.55x type against the same axes width.
+    Measuring the two and pushing the letter out fixes every figure at once, instead of each
+    dx being retuned per preset.
+    """
+    fig.canvas.draw()
+    rend = fig.canvas.get_renderer()
+    for ax in fig.axes:
+        letter = next((t for t in ax.texts if t.get_gid() == "panel-label"), None)
+        if letter is None or not ax.get_ylabel():
+            continue
+        span = ax.get_window_extent(rend).width or 1.0
+        for _ in range(40):
+            a, b = letter.get_window_extent(rend), ax.yaxis.label.get_window_extent(rend)
+            if not (a.x0 < b.x1 and b.x0 < a.x1 and a.y0 < b.y1 and b.y0 < a.y1):
+                break
+            dx, dy = letter.get_position()
+            letter.set_position((dx - (a.x1 - b.x0 + 2.0) / span, dy))
 
 
 def save(fig, out_dir: Path, name: str) -> None:
+    _clear_panel_labels(fig)
     out_dir.mkdir(parents=True, exist_ok=True)
     for ext, kw in ((".pdf", {}), (".png", {"dpi": 400})):
         fig.savefig(out_dir / f"{name}{ext}", bbox_inches="tight", **kw)
@@ -245,7 +359,7 @@ def figure2(out_dir: Path) -> None:
                     fontweight="bold" if is_mean else "normal", color=col,
                     annotation_clip=False)
     ax.set_xticks(range(len(stages)))
-    ax.set_xticklabels(labels)
+    ax.set_xticklabels(stage_ticks(labels))
     ax.set_xlim(-0.25, len(stages) - 0.45)
     ax.set_ylim(0, 100)
     ax.set_ylabel("Gold-standard studies retained (%)")
@@ -270,7 +384,8 @@ def figure2(out_dir: Path) -> None:
         ax.plot(range(len(pstages)), means_b, marker="o", ms=3.6, mec="white", mew=0.5,
                 **MEAN_KW)
     ax.set_xticks(range(len(pstages)))
-    ax.set_xticklabels(["Search", "Abstract\nscreening", "Full-text\nscreening"])
+    ax.set_xticklabels(stage_ticks(["Search", "Abstract\nscreening",
+                                    "Full-text\nscreening"]))
     ax.set_ylim(0, 1.02)
     ax.set_ylabel("Precision vs gold standard")
     ax.grid(axis="y", alpha=0.6)
@@ -355,7 +470,7 @@ def figure2alt(out_dir: Path) -> None:
                     xytext=(5, -1.5), fontsize=fs(5.8), fontweight="bold", color=MEAN_COLOR,
                     annotation_clip=False)
         ax.set_xticks(range(len(stages)))
-        ax.set_xticklabels(labels)
+        ax.set_xticklabels(stage_ticks(labels))
         ax.set_xlim(-0.25, len(stages) - 0.5)
         ax.set_ylim(0, 100 if scale == 100.0 else 1.0)
         ax.set_ylabel(ylab)
@@ -538,9 +653,15 @@ def figure3alt(out_dir: Path) -> None:
     point is a specific spot ON the diagonal, and no Monte Carlo is needed for the location.
 
     Only the spread needs a distribution, and that is hypergeometric in closed form, so it is
-    exact rather than sampled. Those bands turn out to be narrow -- median width 0.021 in FPR --
-    with the two small projects the exceptions (dementia 0.078, vbm_of_ptsd 0.133 off N = 40).
-    Drawing them is honest about where the small-N cases are soft.
+    exact rather than sampled. It is NOT drawn: the bands are narrow enough (median width 0.020
+    in FPR) that nine of them added clutter without changing any reading, and every project's
+    observed point sits far outside its own band regardless.
+
+    Two projects are the exception and the caption has to say so, because the figure no longer
+    shows it: dementia's band is 0.078 wide and vbm_of_ptsd's is 0.133 off N = 40. Both points
+    still clear their band comfortably -- dementia observed 0.291 against a null of 0.388-0.466,
+    PTSD 0.000 against 0.133-0.267 -- but the small-N softness is real and belongs in words now
+    that it is not visible.
 
     This is the same size-matched-null logic as Figure 5, in a different space, which is worth a
     clause: the paper then uses one idea for "beat an arbitrary selection of the same size" in
@@ -555,7 +676,6 @@ def figure3alt(out_dir: Path) -> None:
     if not ann:
         print("  figure3alt: no annotation rows; skipped")
         return
-    from scipy.stats import hypergeom
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.75)),
                              gridspec_kw={"width_ratios": [1.05, 1]})
@@ -593,7 +713,7 @@ def figure3alt(out_dir: Path) -> None:
     # b: annotation in ROC space, each project against its own size-matched null
     ax = axes[1]
     ax.plot([0, 1], [0, 1], color=RULE, lw=0.8, zorder=1)
-    js, labels = [], []
+    js, labels, dots = [], [], []
     for r in sorted(ann, key=lambda r: float(r["recall"])):
         proj = r["project_name"]
         tp, fp, fn, tn = (int(float(r[k])) for k in ("tp", "fp", "fn", "tn"))
@@ -604,12 +724,6 @@ def figure3alt(out_dir: Path) -> None:
         js.append(tpr - fpr)
         c = COLORS.get(proj, "#7F7F7F")
         null = k / N
-        # Exact hypergeometric 5-95% for the number of true positives a size-matched random
-        # draw would capture, mapped onto FPR.
-        lo_tp, hi_tp = hypergeom.ppf([0.05, 0.95], N, P, k)
-        lo_fpr, hi_fpr = (k - hi_tp) / (N - P), (k - lo_tp) / (N - P)
-        ax.plot([lo_fpr, hi_fpr], [null, null], color=c, lw=1.4, alpha=0.5, zorder=2,
-                solid_capstyle="butt")
         # Dotted and faint: the connector only has to say which null belongs to which
         # point. Drawn solid, nine of them read as data and crowded the panel.
         ax.plot([null, fpr], [null, tpr], color=c, lw=0.6, alpha=0.35, ls=":", zorder=2)
@@ -617,40 +731,33 @@ def figure3alt(out_dir: Path) -> None:
                    zorder=3)
         ax.scatter([fpr], [tpr], s=18, color=c, edgecolors="white", linewidths=0.4, zorder=4)
         labels.append([fpr, tpr, SHORT.get(proj, proj), c])
-    # Points cluster in TPR (six of nine between 0.78 and 0.96), so labels all set to the right
-    # at their own y overprint. Pushing them apart vertically was worse -- it slid labels so far
-    # from their markers that they stopped identifying them. Instead alternate sides, which
-    # halves the crowding on each side, and only then nudge within a side. Labels stay within
-    # 0.03 of their own point.
+        dots += [(fpr, tpr), (null, null)]
+    # Points cluster in TPR (six of nine between 0.78 and 0.96), so labels placed at their own
+    # y overprint each other. Alternating sides halves the crowding; whatever still collides is
+    # resolved in display space by deoverlap_labels() once the axes are final. Sizing the gap in
+    # data units instead looked fine at publication scale and broke at deck scale, twice.
     labels.sort(key=lambda e: e[1])
-    sides = []
+    texts = []
     for n, (lx, ly, txt, c) in enumerate(labels):
-        left = (n % 2 == 1) and lx > 0.20      # below this, a left label runs into
-                                       # PTSD's, which is pinned right at x=0
-        sides.append([lx, ly, txt, c, left])
-    for want_left in (False, True):
-        grp = [e for e in sides if e[4] == want_left]
-        for n in range(1, len(grp)):
-            if grp[n][1] - grp[n - 1][1] < 0.045:
-                grp[n][1] = grp[n - 1][1] + 0.045
-    for lx, ly, txt, c, left in sides:
-        ax.annotate(txt, (lx, ly), textcoords="offset points",
-                    xytext=(-6 if left else 6, 0), va="center",
-                    ha="right" if left else "left",
-                    fontsize=fs(5.2), color=c, annotation_clip=False)
+        left = (n % 2 == 1) and lx > 0.05   # only PTSD, at x = 0, cannot take a
+        texts.append(ax.annotate(           # left label without running off the axes
+            txt, (lx, ly), textcoords="offset points", xytext=(-6 if left else 6, 0),
+            va="center", ha="right" if left else "left",
+            fontsize=fs(5.2), color=c, annotation_clip=False))
 
     ax.set_xlim(-0.02, 0.62); ax.set_ylim(0, 1.04)
     ax.set_xlabel("False-positive rate")
     ax.set_ylabel("True-positive rate (recall)")
     ax.grid(alpha=0.6); ax.set_axisbelow(True)
-    ax.text(0.975, 0.165, f"mean TPR \u2212 FPR  {st.mean(js):.2f}   (chance = 0)",
-            transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.6), color=INK)
-    ax.text(0.975, 0.075, "open marker = same-size random selection "
-            "(bar = exact 5\u201395% null)",
-            transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.0), color=MUTED)
+    summary = ax.text(0.975, 0.215, f"mean TPR \u2212 FPR  {st.mean(js):.2f}\n(chance = 0)",
+                      transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.6),
+                      color=INK, linespacing=1.5)
+    note = ax.text(0.975, 0.065, "open marker = same-size random draw",
+                   transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.0), color=MUTED)
     panel_label(ax, "b", dx=-0.24)
 
     fig.subplots_adjust(wspace=0.40)
+    deoverlap_labels(fig, ax, texts, blockers=[summary, note], markers=dots)
     save(fig, out_dir, "figure3alt_annotation_roc")
 
 
@@ -1305,7 +1412,7 @@ def figureS3(out_dir: Path) -> None:
             f"({m_s[-1]:.3f} search pool \u2192 {m_f[-1]:.3f} fixed)",
             transform=ax.transAxes, ha="left", va="top", fontsize=fs(5.2), color=INK,
             linespacing=1.5)
-    ax.set_xticks(list(xs)); ax.set_xticklabels(LABELS)
+    ax.set_xticks(list(xs)); ax.set_xticklabels(stage_ticks(LABELS))
     ax.set_xlim(-0.2, len(STAGES) - 0.35)
     ax.set_ylim(0, 0.92)
     ax.set_ylabel("Precision vs expert inclusion list")
@@ -1329,7 +1436,7 @@ def figureS3(out_dir: Path) -> None:
             ax.scatter([base] * len(vals), vals, s=9, color=colour, edgecolors="white",
                        linewidths=0.3, zorder=4)
     ax.axhline(0, color=INK, lw=0.6, zorder=3)
-    ax.set_xticks(list(xs)); ax.set_xticklabels(LABELS)
+    ax.set_xticks(list(xs)); ax.set_xticklabels(stage_ticks(LABELS))
     ax.set_xlim(-0.5, len(STAGES) - 0.5)
     # Headroom above the tallest precision point so the six-line note clears it.
     lo, hi = ax.get_ylim()
