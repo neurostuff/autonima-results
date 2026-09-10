@@ -416,9 +416,10 @@ def figure2(out_dir: Path) -> None:
 
     Promoted from an alternate to Figure 2 on 2026-09-10. The raw-denominator version it
     replaced is Supplementary S6, which keeps the retrieval stage and the loss-by-stage
-    breakdown; figure2alt is the same four stages on the raw denominator.
+    breakdown. figure2alt, the same four stages on the raw denominator, was dropped as redundant
+    on 2026-09-10; its findings are recorded below.
 
-    figure2alt and Supplementary S6 divide every stage by all gold studies, which bills four
+    Supplementary S6 divides every stage by all gold studies, which bills four
     availability failures to screening judgement: a study the query never returned, one whose
     full text we could not obtain, one whose full text arrived too thin to screen
     (`fulltext_incomplete`), and one that parsed to zero analyses. This panel removes each at the
@@ -446,6 +447,25 @@ def figure2(out_dir: Path) -> None:
     This does not rescue a weak project. executive_function is still lowest at full text (0.807)
     because its abstract stage loses 15 gold studies to judgement, and those stay charged
     against a denominator that has shrunk, which is why its recall keeps falling.
+
+    THE ANNOTATION STAGE, AND WHY THE DENOMINATOR DECIDES THE VERDICT
+
+    Carried here from figure2alt, dropped 2026-09-10, which was the only record of it. A paper
+    survives annotation if it passed full-text screening AND had at least one analysis assigned
+    to a construct column -- the pipeline's own answer to "did this paper actually yield data for
+    a target contrast?". The stage exists because the screener is asked whether a paper *meets
+    the criteria* and often correctly says yes about a paper that then yields no usable
+    coordinates; the benchmark counts that as not included, so a decision right on the merits
+    scores as a false positive.
+
+    Across 9 projects the stage moves precision +0.147 (0.323 -> 0.470), improving in 9 of 9,
+    and costs recall -0.108 attainable (0.926 -> 0.818), falling in 9 of 9. Both unanimous.
+
+    The denominator decides whether that trade is worth taking, and this is the sharpest
+    illustration of why the figure was rebuilt: the precision gain exceeds the recall loss in
+    **6 of 9 projects on the attainable denominator and only 1 of 9 on the raw one** (where the
+    loss reads -0.248). Same runs, same decisions -- the raw denominator charges annotation for
+    papers that had nothing to annotate, and that alone inverts the conclusion.
 
     Search sits at 1.000 by construction -- it is a pure supply stage -- and is kept on the axis
     so the renormalisation is visible. The corpus ceiling it used to carry is stated in the
@@ -530,7 +550,7 @@ def figure2(out_dir: Path) -> None:
             transform=ax.transAxes, fontsize=fs(5.2), color=MUTED, linespacing=1.45)
     panel_label(ax, "a", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
-    # b: precision over the same four stages, unchanged from figure2alt
+    # b: precision over the same four stages
     ax = axes[1]
     have = [p for p in projects if all(prec.get(p, {}).get(s) is not None for s in stages)]
     for p in have:
@@ -559,106 +579,6 @@ def figure2(out_dir: Path) -> None:
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
     save(fig, out_dir, "figure2_attainable_recall_and_precision")
-
-
-# ----------------------------------------------------------------- Figure 2 (alternate)
-
-def figure2alt(out_dir: Path) -> None:
-    """Figure 2 with an annotation stage, and without retrieval on the retention panel.
-
-    THE QUESTION THIS VERSION ASKS
-
-    Figure 2's precision stops at full-text screening and looks poor (mean 0.32). The hypothesis
-    is that much of that is not a screening error: the screener is asked whether a paper *meets
-    the criteria* and often correctly says yes about a paper that then yields no usable
-    coordinates. The benchmark counts it as not included -- the expert meta-analysis could not use
-    it either -- so a decision that was right on the merits scores as a false positive.
-
-    Adding an annotation stage tests that. A paper survives it if it passed full-text screening
-    AND had at least one analysis assigned to a construct column, which is the pipeline's own
-    answer to "did this paper actually yield data for a target contrast?".
-
-    WHAT IT SHOWS, AND WHY THE TITLE CANNOT STAY THE SAME
-
-    Precision rises exactly as predicted: **+0.147 on average, in 9 of 9 projects** (0.323 ->
-    0.470). But recall falls further than precision rises: **-0.248, also 9 of 9** (0.728 ->
-    0.479). And that loss is not the same kind of thing -- a *gold* paper dropped here is one the
-    experts did extract coordinates from, so it is a parsing or annotation miss, not a paper
-    without data. The stage therefore mixes two effects it cannot separate: correctly discarding
-    papers with nothing to contribute, and failing to annotate papers that had something.
-
-    SUPERSEDED IN PART, 2026-09-10. The attainable denominator now in Figure 2 does separate them:
-    a gold paper that parsed to zero analyses leaves the denominator, so what remains charged at
-    annotation is the annotation miss on papers that did yield data. Measured that way the stage
-    costs 0.108 rather than 0.248, against a precision gain of 0.147. This figure is kept as the
-    raw-denominator view of the same four stages, and is largely redundant with Supplementary S6.
-
-    So this version supports the precision argument and simultaneously exposes the pipeline's
-    largest recall bottleneck. It cannot be captioned "at little cost to recall".
-
-    Retrieval is dropped from the retention panel as a display choice. It changes nothing
-    numerically -- a paper with no retrievable text fails full-text screening anyway, so the
-    cumulative curve at `fulltext` is identical either way -- it just removes a stage that is a
-    supply event rather than a decision.
-    """
-    path = REPO_ROOT / "reports" / "stage_precision_recall.csv"
-    if not path.exists():
-        print("  figure2alt: run scripts/compute_stage_precision_recall.py first; skipped")
-        return
-    rows = read(path)
-    stages = ["search", "abstract", "fulltext", "annotation"]
-    labels = ["Search", "Abstract\nscreening", "Full-text\nscreening", "Annotation"]
-
-    rec: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    prec: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    for r in rows:
-        if r["recall"] != "":
-            rec[r["project"]][r["stage"]] = float(r["recall"])
-        if r["precision"] != "":
-            prec[r["project"]][r["stage"]] = float(r["precision"])
-    projects = [p for p in PROJECT_ORDER if len(rec.get(p, {})) == len(stages)]
-    if not projects:
-        print("  figure2alt: no project has every stage; skipped")
-        return
-
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.4)))
-    for ax, (src, ylab, scale) in zip(axes, ((rec, "Gold-standard studies retained (%)", 100.0),
-                                             (prec, "Precision vs gold standard", 1.0))):
-        for p in projects:
-            ys = [src[p][st_] * scale for st_ in stages]
-            ax.plot(range(len(stages)), ys, "-o", color=COLORS[p], markeredgewidth=0,
-                    alpha=0.9, label=DISPLAY[p])
-        means = [st.mean([src[p][st_] * scale for p in projects]) for st_ in stages]
-        ax.plot(range(len(stages)), means, marker="o", ms=3.6, mec="white", mew=0.5, **MEAN_KW)
-        ax.annotate(f"{means[-1]:.0f}" if scale == 100.0 else f"{means[-1]:.2f}",
-                    (len(stages) - 1, means[-1]), textcoords="offset points",
-                    xytext=(5, -1.5), fontsize=fs(5.8), fontweight="bold", color=MEAN_COLOR,
-                    annotation_clip=False)
-        ax.set_xticks(range(len(stages)))
-        ax.set_xticklabels(stage_ticks(labels))
-        ax.set_xlim(-0.25, len(stages) - 0.5)
-        ax.set_ylim(0, 100 if scale == 100.0 else 1.0)
-        ax.set_ylabel(ylab)
-        ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
-    panel_label(axes[0], "a", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
-    panel_label(axes[1], "b", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
-
-    dp = st.mean([prec[p]["annotation"] - prec[p]["fulltext"] for p in projects])
-    dr = st.mean([rec[p]["annotation"] - rec[p]["fulltext"] for p in projects]) * 100
-    axes[1].text(0.03, 0.97,
-                 f"annotation stage:\n{dp:+.3f} precision, {dr:+.0f} pts recall\n"
-                 f"both in 9/9 projects",
-                 transform=axes[1].transAxes, va="top", ha="left", fontsize=fs(5.4),
-                 color=INK, linespacing=1.5)
-
-    handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
-                      label=DISPLAY[p]) for p in projects]
-    handles.append(Line2D([], [], ls="-", color=MEAN_COLOR, lw=1.9, marker="o", markersize=3.2,
-                          label="mean across projects"))
-    fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
-               handletextpad=0.3, columnspacing=1.1)
-    fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figure2alt_with_annotation_stage")
 
 
 # --------------------------------------------------------------------------- Figure 3
@@ -1677,7 +1597,7 @@ def figureS1(out_dir: Path) -> None:
 
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
-FIGURES = {"2": figure2, "2alt": figure2alt, "3": figure3, "3alt": figure3alt,
+FIGURES = {"2": figure2, "3": figure3, "3alt": figure3alt,
            "4": figure4, "5": figure5, "S1": figureS1, "S2": figureS2,
            "S3": figureS3, "S4": figureS4, "S5": figureS5, "S6": figureS6}
 

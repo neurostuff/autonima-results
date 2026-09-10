@@ -156,8 +156,16 @@ marginal loss-by-stage breakdown, in percentage points of gold:
 | full-text screening | **2.5** | 6.4 | 1/9 |
 
 That table is not recoverable from the new Figure 2, which folds retrieval into the denominator
-rather than drawing it. `figure2alt` is the same four stages as Figure 2 on the raw denominator, and
-is now largely redundant with S6 — pick one before submission.
+rather than drawing it. (`figure2alt`, a third view over the same funnel — Figure 2's four stages on
+the raw denominator — was **dropped 2026-09-10** as redundant with S6.)
+
+**The denominator decides the verdict on the annotation stage, and that is the argument for
+Figure 2.** The stage moves precision **+0.147** (0.323 → 0.470), improving in **9 of 9** projects,
+and costs **−0.108** of attainable recall (0.926 → 0.818), falling in **9 of 9**. Both unanimous. But
+whether the trade is worth taking depends entirely on the denominator: the precision gain exceeds
+the recall loss in **6 of 9 projects on the attainable denominator and only 1 of 9 on the raw one**,
+where the loss reads −0.248. Same runs, same decisions — the raw denominator charges annotation for
+papers that had nothing to annotate, and that alone inverts the conclusion.
 
 **S6's retrieval stage counts usable text, not the availability flag.** `fulltext_available` is true
 for 43 gold studies across the corpus that the screener then received as title and abstract only
