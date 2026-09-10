@@ -124,11 +124,16 @@ executive function (74% → 39%) and problem solving (88% → 58%), lose most of
 full-text screening rather than at the abstract stage, and both should be named rather than
 averaged away.
 
-**Dotted overlay: the fixed-pool arm** (`vN-allstudies`), for the three projects that have one.
-Same screening and annotation over a pool assembled without search-driven narrowing, so the gap
-between solid and dotted is what the *pool* contributes, separated from what screening contributes.
+**The fixed-pool arm is no longer drawn on Figure 2 — removed 2026-09-09.** It used to appear as
+a dotted overlay on both panels for the three projects (`vN-allstudies`) that have one. Two
+reasons to drop it: only three of nine projects have the arm, so it added six part-width dotted
+lines and invited the reader to compare curves covering different project sets; and the comparison
+it supports now has **Supplementary S3** to itself, where it also gets the recall control that
+makes it interpretable. Figure 2 is now cleanly about what screening costs and buys on the pool we
+actually search.
 
-Precision (panel b) is higher for the fixed pool at **every stage, in all three projects**:
+The numbers still belong in Result 2's text, pointing at S3. Precision is higher for the fixed
+pool at **every stage, in all three projects**:
 
 | project | canonical, full text | fixed pool |
 |---|---|---|
@@ -154,8 +159,8 @@ emotion regulation's search-stage recall (−0.261), which is the same fact as E
 holding only 56 of 88 gold studies, described below — the two arms are different corpora at that
 stage by construction, and every later stage is ~0.
 
-**Retention (panel a) does not follow the same pattern, and the exception is the interesting
-part:**
+**Retention does not follow the same pattern, and the exception is the interesting part** (these
+figures are in S3's underlying data, not on Figure 2):
 
 | project | search: canonical → fixed | end: canonical → fixed |
 |---|---|---|
@@ -657,6 +662,41 @@ Everything below survives at full length outside the word count:
 | `verbatim → best` | **measured 2026-09-09** — Supplementary S2. See the note below; the result is not comfortable |
 | neurometabench citable | **needs a Zenodo DOI** before submission — reviewers will ask where the benchmark is |
 | preprint | post simultaneously; NM desk-rejects fast, so the downside is bounded time only if the preprint is already out |
+
+### Supplementary S5 — decomposing the advantage: papers vs analyses
+
+`scripts/decompose_selection_gain.py` → `reports/selection_decomposition.csv` → `--only S5`.
+Added 2026-09-09. Result 5 argues the gain is analysis selection using the annotation-only arm,
+which holds the study pool fixed. **This tests the same claim from the other side, on the
+end-to-end arm**, by inserting a third map between the baseline and the pipeline: the canonical
+run's `all_analyses` column — every parsed analysis from the studies that survived screening, with
+no annotation. Papers chosen, analyses not.
+
+| step | mean Δ*R²* | median | improves |
+|---|---|---|---|
+| choosing papers (baseline → screening only) | **−0.000** | +0.001 | 16 / 32 |
+| choosing analyses (screening only → pipeline) | **+0.099** | +0.049 | 28 / 32 |
+| total (baseline → pipeline) | +0.099 | +0.061 | 28 / 32 |
+
+**Every point of the end-to-end advantage is attributable to analysis selection.** Paper selection
+is a coin flip — 16 of 32. Both panels share axes so the shape carries it: panel a's points sit on
+the diagonal, panel b's sit above it.
+
+> **⚠ State this carefully — the naive reading overclaims.** This does **not** show that paper
+> selection is worthless. 31 of the 32 baselines are **targeted searches built per contrast**, so
+> the baseline is not an unselected corpus either: it selects papers by query where the pipeline
+> selects them by LLM. The defensible claim is that **two different ways of selecting papers come
+> out even, and everything the pipeline gains comes from the step a search cannot perform at
+> all.** Written the other way, a reviewer who checks what the baseline is will find the hole.
+>
+> Second caveat for the caption: `all_analyses` is one map per project scored against each of that
+> project's contrasts. That is the honest representation of having no analysis selection — without
+> it you have a single map and no way to answer a specific contrast — but it does mean the
+> screening-only arm cannot differentiate contrasts by construction.
+
+**This is strong enough to consider promoting into Result 5 rather than the supplement.** It is
+the most direct evidence in the paper for the sentence the whole thing is organised around, and
+it needs no null model to read — just two scatters that look different.
 
 ### Supplementary S4 — text-to-map baselines: a term is not an analysis
 

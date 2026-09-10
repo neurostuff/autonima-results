@@ -182,22 +182,28 @@ def figure2(out_dir: Path) -> None:
     a named stage. Retrieval is shown separately from screening because they fail for different
     reasons -- no obtainable full text is a supply problem, a rejection is a judgement -- and in
     several projects retrieval is the larger loss.
+
+    The fixed-pool arm used to appear here as a dotted overlay on both panels. It was removed
+    2026-09-09: only three of nine projects have one, so it drew six extra part-width lines that
+    invited the reader to compare curves covering different project sets, and the comparison it
+    supports now has a figure of its own (Supplementary S3) where it gets the recall control that
+    makes it interpretable. This figure is about what screening costs and buys on the pool we
+    actually search.
     """
     rows = read(REPO_ROOT / "reports" / "gold_survival_by_stage.csv")
     stages = ["search", "abstract", "retrieval", "fulltext"]
     labels = ["Search", "Abstract\nscreening", "Full-text\nretrieval", "Full-text\nscreening"]
     surv: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    allst: dict[str, dict[str, float]] = collections.defaultdict(dict)
     for r in rows:
         if not r["cumulative_recall"]:
             continue
-        target = allst if r.get("family") == "allstudies" else surv
-        target[r["project"]][r["stage"]] = float(r["cumulative_recall"])
+        # The fixed-pool family is no longer drawn here -- that comparison is Supplementary S3.
+        if r.get("family") == "allstudies":
+            continue
+        surv[r["project"]][r["stage"]] = float(r["cumulative_recall"])
 
     prec: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    prec_all: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    for src, dest in (("screening_metrics_top_v_stage_progression.csv", prec),
-                      ("screening_metrics_top_v_allstudies_stage_progression.csv", prec_all)):
+    for src, dest in (("screening_metrics_top_v_stage_progression.csv", prec),):
         try:
             src_rows = read(REPO_ROOT / "reports" / "cross_project_screening" / src)
         except FileNotFoundError:
@@ -220,16 +226,6 @@ def figure2(out_dir: Path) -> None:
         ax.plot(range(len(stages)), ys, "-o", color=COLORS[p], markeredgewidth=0,
                 alpha=0.9, label=DISPLAY[p])
         ends_a.append([ys[-1], f"{ys[-1]:.0f}", COLORS[p], False])
-    # Dotted overlay: the fixed-pool arm, for the three projects that have one. Same screening and
-    # annotation, a pool assembled without search-driven narrowing -- so the gap between solid and
-    # dotted is what the pool contributes, separated from what screening contributes.
-    for p in projects:
-        vals = allst.get(p, {})
-        ys = [vals.get(s) for s in stages]
-        if any(v is None for v in ys):
-            continue
-        ax.plot(range(len(stages)), [v * 100 for v in ys], ":", color=COLORS[p], lw=1.1,
-                alpha=0.9, zorder=2)
     # Cross-project mean, over the same projects the panel draws.
     means_a = [st.mean([surv[p][s] * 100 for p in projects]) for s in stages]
     ax.plot(range(len(stages)), means_a, marker="o", ms=3.6, mec="white", mew=0.5, **MEAN_KW)
@@ -239,7 +235,7 @@ def figure2(out_dir: Path) -> None:
     # of one another, leaving one of them unreadable. Push them apart on the y axis, keeping
     # order, so each label still sits beside its own line.
     ends_a.sort(key=lambda e: e[0])
-    gap_a = 3.1
+    gap_a = 3.1 * FONT_SCALE
     for i in range(1, len(ends_a)):
         if ends_a[i][0] - ends_a[i - 1][0] < gap_a:
             ends_a[i][0] = ends_a[i - 1][0] + gap_a
@@ -258,7 +254,7 @@ def figure2(out_dir: Path) -> None:
     med_abs = st.median([(surv[p]["search"] - surv[p]["abstract"]) * 100 for p in projects])
     ax.text(0.03, 0.06, f"abstract screening costs a\nmedian {med_abs:.1f} points",
             transform=ax.transAxes, fontsize=fs(5.5), color=MUTED, linespacing=1.5)
-    panel_label(ax, "a", dx=-0.20)
+    panel_label(ax, "a", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
     # b: precision over the stages that change it
     ax = axes[1]
@@ -267,9 +263,6 @@ def figure2(out_dir: Path) -> None:
         ys = [prec.get(p, {}).get(s) for s in pstages]
         if not any(v is None for v in ys):
             ax.plot(range(len(pstages)), ys, "-o", color=COLORS[p], markeredgewidth=0, alpha=0.9)
-        ys_all = [prec_all.get(p, {}).get(s) for s in pstages]
-        if not any(v is None for v in ys_all):
-            ax.plot(range(len(pstages)), ys_all, ":", color=COLORS[p], lw=1.1, alpha=0.9)
     have_prec = [p for p in projects
                  if all(prec.get(p, {}).get(s) is not None for s in pstages)]
     if have_prec:
@@ -282,12 +275,10 @@ def figure2(out_dir: Path) -> None:
     ax.set_ylabel("Precision vs gold standard")
     ax.grid(axis="y", alpha=0.6)
     ax.set_axisbelow(True)
-    panel_label(ax, "b", dx=-0.20)
+    panel_label(ax, "b", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
     handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
                       label=DISPLAY[p]) for p in projects]
-    handles.append(Line2D([], [], ls=":", color=INK, lw=1.1,
-                          label="fixed pool (no search narrowing)"))
     handles.append(Line2D([], [], ls="-", color=MEAN_COLOR, lw=1.9, marker="o", markersize=3.2,
                           label="mean across projects"))
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
@@ -769,6 +760,74 @@ def figureS2(out_dir: Path) -> None:
     save(fig, out_dir, "figureS2_tier_progression")
 
 
+# -------------------------------------------------------------------- Supplementary S5
+
+def figureS5(out_dir: Path) -> None:
+    """Which selection step earns the advantage: choosing papers, or choosing analyses?
+
+    Result 5 argues the gain is analysis selection using the annotation-only arm, which holds the
+    study pool fixed. This tests the same claim from the other side, on the END-TO-END arm, by
+    inserting a third map between the baseline and the full pipeline: the canonical run's
+    `all_analyses` column, which is every parsed analysis from the studies that survived
+    screening, with no annotation. Papers chosen, analyses not.
+
+    Both panels share axes, so the shape carries the result: panel a's points sit ON the diagonal
+    and panel b's sit ABOVE it.
+
+    A caveat the caption must carry, because the naive reading overclaims. `all_analyses` is one
+    map per project scored against each of its contrasts -- the honest representation of having no
+    analysis selection. But 31 of 32 baselines are TARGETED searches built per contrast, so the
+    baseline is not an unselected corpus either: it selects papers by query where the pipeline
+    selects them by LLM. So panel a does not show that paper selection is worthless. It shows that
+    **two different ways of selecting papers come out even**, and that everything the pipeline
+    gains comes from the step a search cannot perform at all.
+    """
+    path = REPO_ROOT / "reports" / "selection_decomposition.csv"
+    if not path.exists():
+        print("  figureS5: run scripts/decompose_selection_gain.py first; skipped")
+        return
+    rows = read(path)
+    for r in rows:
+        for k in ("r2_baseline", "r2_screening_only", "r2_pipeline",
+                  "gain_paper_selection", "gain_analysis_selection"):
+            r[k] = float(r[k])
+
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(3.05)))
+    panels = (
+        ("a", "r2_baseline", "r2_screening_only", "Search baseline $R^2$",
+         "Screening only $R^2$", "gain_paper_selection",
+         "choosing papers", "on the line = no gain"),
+        ("b", "r2_screening_only", "r2_pipeline", "Screening only $R^2$",
+         "Full pipeline $R^2$", "gain_analysis_selection",
+         "choosing analyses", "above the line = gain"),
+    )
+    for ax, (letter, xk, yk, xl, yl, gk, what, hint) in zip(axes, panels):
+        ax.plot([0, 1], [0, 1], color=RULE, lw=0.7, zorder=1)
+        for r in rows:
+            ax.scatter([r[xk]], [r[yk]], s=15, color=COLORS.get(r["project"], "#7F7F7F"),
+                       edgecolors="white", linewidths=0.35, zorder=3)
+        g = [r[gk] for r in rows]
+        ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect("equal")
+        ax.set_xlabel(xl); ax.set_ylabel(yl)
+        ax.grid(alpha=0.6); ax.set_axisbelow(True)
+        ax.set_title(f"gain from {what}", fontsize=fs(7.5), color=INK, pad=4)
+        ax.text(0.035, 0.965, hint, transform=ax.transAxes, va="top", ha="left",
+                fontsize=fs(5.4), color=MUTED)
+        ax.text(0.97, 0.05,
+                f"mean $\\Delta$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}\n"
+                f"{sum(1 for x in g if x > 0)}/{len(g)} improve",
+                transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(5.6),
+                color=INK, linespacing=1.5)
+        panel_label(ax, letter, dx=-0.24)
+
+    handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.2,
+                      label=DISPLAY[p]) for p in PROJECT_ORDER]
+    fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.19),
+               handletextpad=0.3, columnspacing=1.1)
+    fig.subplots_adjust(wspace=0.34)
+    save(fig, out_dir, "figureS5_selection_decomposition")
+
+
 # -------------------------------------------------------------------- Supplementary S4
 
 def figureS4(out_dir: Path) -> None:
@@ -1127,7 +1186,7 @@ def figureS1(out_dir: Path) -> None:
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
 FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
-           "S1": figureS1, "S2": figureS2, "S3": figureS3, "S4": figureS4}
+           "S1": figureS1, "S2": figureS2, "S3": figureS3, "S4": figureS4, "S5": figureS5}
 
 
 def main() -> int:
