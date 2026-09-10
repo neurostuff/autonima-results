@@ -539,22 +539,87 @@ def figure4(out_dir: Path) -> None:
 # --------------------------------------------------------------------------- Figure 5
 
 def figure5(out_dir: Path) -> None:
-    """The thesis, against a null that controls for selecting *fewer* analyses.
+    """Which selection step earns the advantage: choosing papers, or choosing analyses?
 
-    The earlier version compared the annotated map with `all_analyses` -- every parsed analysis
-    from the same studies. That isolates annotation from study selection, but it leaves one
-    confound standing: annotation both chooses analyses and shrinks the set, and a smaller CBMA is
-    not simply a worse one. A gain over `all_analyses` could partly be a gain from using fewer
-    analyses, whatever they were.
+    Promoted to the main text 2026-09-09, replacing the size-matched-null forest that was Figure 5
+    (now Supplementary S5). It makes the same claim more directly -- two scatters that look
+    different, no null model needed to read them -- and it decomposes the Figure 4 margin rather
+    than opening a separate comparison.
 
-    Panel a removes that. Each column's annotated map is placed against 500 random subsets of the
-    same size drawn from the same pool and put through the same MKDA + FDR, so the comparison is
-    selecting *well* against selecting *arbitrarily* at matched N.
+    A third map is inserted between the baseline and the full pipeline: the canonical run's
+    `all_analyses` column, which is every parsed analysis from the studies that survived
+    screening, with no annotation. Papers chosen, analyses not.
 
-    Panel b is the same quantity summarised per project. Both are computed by
-    bootstrap_annotation_null.py, which recomputes the observed value through the identical path
-    rather than reading annotation_value.csv -- that table derives from similarity matrices
-    written before the current maps, and 26 of 35 columns disagree with a fresh computation.
+    Both panels share axes, so the shape carries the result: panel a's points sit ON the diagonal
+    and panel b's sit ABOVE it.
+
+    A caveat the caption must carry, because the naive reading overclaims. `all_analyses` is one
+    map per project scored against each of its contrasts -- the honest representation of having no
+    analysis selection. But 31 of 32 baselines are TARGETED searches built per contrast, so the
+    baseline is not an unselected corpus either: it selects papers by query where the pipeline
+    selects them by LLM. So panel a does not show that paper selection is worthless. It shows that
+    **two different ways of selecting papers come out even**, and that everything the pipeline
+    gains comes from the step a search cannot perform at all.
+    """
+    path = REPO_ROOT / "reports" / "selection_decomposition.csv"
+    if not path.exists():
+        print("  figureS5: run scripts/decompose_selection_gain.py first; skipped")
+        return
+    rows = read(path)
+    for r in rows:
+        for k in ("r2_baseline", "r2_screening_only", "r2_pipeline",
+                  "gain_paper_selection", "gain_analysis_selection"):
+            r[k] = float(r[k])
+
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(3.05)))
+    panels = (
+        ("a", "r2_baseline", "r2_screening_only", "Search baseline $R^2$",
+         "Screening only $R^2$", "gain_paper_selection",
+         "choosing papers", "on the line = no gain"),
+        ("b", "r2_screening_only", "r2_pipeline", "Screening only $R^2$",
+         "Full pipeline $R^2$", "gain_analysis_selection",
+         "choosing analyses", "above the line = gain"),
+    )
+    for ax, (letter, xk, yk, xl, yl, gk, what, hint) in zip(axes, panels):
+        ax.plot([0, 1], [0, 1], color=RULE, lw=0.7, zorder=1)
+        for r in rows:
+            ax.scatter([r[xk]], [r[yk]], s=15, color=COLORS.get(r["project"], "#7F7F7F"),
+                       edgecolors="white", linewidths=0.35, zorder=3)
+        g = [r[gk] for r in rows]
+        ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect("equal")
+        ax.set_xlabel(xl); ax.set_ylabel(yl)
+        ax.grid(alpha=0.6); ax.set_axisbelow(True)
+        ax.set_title(f"gain from {what}", fontsize=fs(7.5), color=INK, pad=4)
+        ax.text(0.035, 0.965, hint, transform=ax.transAxes, va="top", ha="left",
+                fontsize=fs(5.4), color=MUTED)
+        ax.text(0.97, 0.05,
+                f"mean $\\Delta$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}\n"
+                f"{sum(1 for x in g if x > 0)}/{len(g)} improve",
+                transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(5.6),
+                color=INK, linespacing=1.5)
+        panel_label(ax, letter, dx=-0.24)
+
+    handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.2,
+                      label=DISPLAY[p]) for p in PROJECT_ORDER]
+    fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.19),
+               handletextpad=0.3, columnspacing=1.1)
+    fig.subplots_adjust(wspace=0.34)
+    save(fig, out_dir, "figure5_selection_decomposition")
+
+
+def figureS5(out_dir: Path) -> None:
+    """Every column against its own size-matched null.
+
+    Promoted out of the main text 2026-09-09. This was Figure 5a; the decomposition that is now
+    Figure 5 makes the same claim more directly and without a null model, so this becomes the
+    supporting evidence rather than the headline. Its old panel b -- the same deltas rolled up per
+    project -- is dropped outright: it duplicated Figure 4's cross-project view and carried
+    nothing this panel does not already show column by column.
+
+    What it still uniquely rules out: that any smaller subset of the same analyses would have done
+    as well. Holding the study pool AND the subset size fixed, 500 random draws per column give the
+    distribution a chance selection would produce, and the annotated map's position in it is the
+    effect of selecting well.
     """
     path = REPO_ROOT / "reports" / "annotation_bootstrap_null.csv"
     if not path.exists():
@@ -574,12 +639,10 @@ def figure5(out_dir: Path) -> None:
     rank = {p: i for i, p in enumerate(PROJECT_ORDER)}
     rows.sort(key=lambda r: (rank.get(r["project"], 99), -r["delta"]))
 
-    fig, axes = plt.subplots(
-        1, 2, figsize=(DOUBLE_COL, fh(0.115 * len(rows)) + 1.05),
-        gridspec_kw={"width_ratios": [1.5, 1]})
+    fig, ax = plt.subplots(figsize=(SINGLE_COL * 1.55 * FONT_SCALE,
+                                    fh(0.115 * len(rows) + 1.0)))
 
     # a: every column against its own size-matched null
-    ax = axes[0]
     for i, r in enumerate(rows):
         y = len(rows) - 1 - i
         c = COLORS.get(r["project"], "#7F7F7F")
@@ -600,40 +663,20 @@ def figure5(out_dir: Path) -> None:
     # In the axis label rather than floated inside the panel: at 35 rows the bottom rows reach the
     # lower right, which is the only corner an in-panel note fits, and it collided with them.
     ax.set_xlabel("$R^2$ against the expert map\n"
-                  f"grey bar = 5-95% of {n_boot} size-matched random selections, tick = median")
-    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
-    panel_label(ax, "a", dx=-0.42)
-
-    # b: the same gain, summarised per project
-    ax = axes[1]
-    by_proj: dict[str, list[float]] = collections.defaultdict(list)
-    for r in rows:
-        by_proj[r["project"]].append(r["delta"])
-    order = sorted(by_proj, key=lambda p: st.median(by_proj[p]))
-    ax.axvline(0, color=INK, lw=0.7, zorder=2)
-    for i, proj in enumerate(order):
-        vals = by_proj[proj]
-        ax.scatter(vals, [i] * len(vals), s=13, color=COLORS.get(proj, "#7F7F7F"),
-                   edgecolors="white", linewidths=0.35, zorder=3, alpha=0.9)
-        ax.plot([st.median(vals)] * 2, [i - 0.32, i + 0.32], color=INK, lw=1.2, zorder=4)
-    ax.set_yticks(range(len(order)))
-    ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
-    ax.set_ylim(-0.7, len(order) - 0.3)
-    ax.set_xlabel("$\\Delta R^2$ vs size-matched\nrandom selection")
+                  f"grey bar = 5-95% of {n_boot} size-matched draws; tick = median")
     ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
 
     gains = [r["delta"] for r in rows]
     beat = sum(1 for r in rows if r["p_value"] < 0.05)
-    ax.text(0.98, 0.02,
-            f"median {st.median(gains):+.3f}\n{beat}/{len(rows)} columns $P$ < 0.05",
-            transform=ax.transAxes, ha="right", va="bottom", fontsize=fs(5.5), color=MUTED,
+    floor = sum(1 for r in rows if int(r.get("n_null_ge_observed", 1) or 1) == 0)
+    # Above the axes rather than inside: the bottom-right corner is where the strongest columns
+    # put their dots, and the summary was grazing them.
+    ax.text(0.995, 1.012,
+            f"median $\\Delta R^2$ {st.median(gains):+.3f}   \u00b7   {beat}/{len(rows)} "
+            f"columns $P$ < 0.05   \u00b7   {floor} outside all {n_boot} draws",
+            transform=ax.transAxes, ha="right", va="bottom", fontsize=fs(5.6), color=INK,
             linespacing=1.5)
-    ax.text(0.02, 0.985, "vertical rule = project median", transform=ax.transAxes,
-            ha="left", va="top", fontsize=fs(5.2), color=MUTED)
-    panel_label(ax, "b", dx=-0.30)
-
-    fig.subplots_adjust(wspace=0.52)
-    save(fig, out_dir, "figure5_gain_from_analysis_selection")
+    save(fig, out_dir, "figureS5_size_matched_null")
 
 
 # -------------------------------------------------------------------- Supplementary S2
@@ -758,74 +801,6 @@ def figureS2(out_dir: Path) -> None:
     ax.text(0.98, 0.03, "open circle = one run registered at several tiers",
             transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(4.6), color=MUTED)
     save(fig, out_dir, "figureS2_tier_progression")
-
-
-# -------------------------------------------------------------------- Supplementary S5
-
-def figureS5(out_dir: Path) -> None:
-    """Which selection step earns the advantage: choosing papers, or choosing analyses?
-
-    Result 5 argues the gain is analysis selection using the annotation-only arm, which holds the
-    study pool fixed. This tests the same claim from the other side, on the END-TO-END arm, by
-    inserting a third map between the baseline and the full pipeline: the canonical run's
-    `all_analyses` column, which is every parsed analysis from the studies that survived
-    screening, with no annotation. Papers chosen, analyses not.
-
-    Both panels share axes, so the shape carries the result: panel a's points sit ON the diagonal
-    and panel b's sit ABOVE it.
-
-    A caveat the caption must carry, because the naive reading overclaims. `all_analyses` is one
-    map per project scored against each of its contrasts -- the honest representation of having no
-    analysis selection. But 31 of 32 baselines are TARGETED searches built per contrast, so the
-    baseline is not an unselected corpus either: it selects papers by query where the pipeline
-    selects them by LLM. So panel a does not show that paper selection is worthless. It shows that
-    **two different ways of selecting papers come out even**, and that everything the pipeline
-    gains comes from the step a search cannot perform at all.
-    """
-    path = REPO_ROOT / "reports" / "selection_decomposition.csv"
-    if not path.exists():
-        print("  figureS5: run scripts/decompose_selection_gain.py first; skipped")
-        return
-    rows = read(path)
-    for r in rows:
-        for k in ("r2_baseline", "r2_screening_only", "r2_pipeline",
-                  "gain_paper_selection", "gain_analysis_selection"):
-            r[k] = float(r[k])
-
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(3.05)))
-    panels = (
-        ("a", "r2_baseline", "r2_screening_only", "Search baseline $R^2$",
-         "Screening only $R^2$", "gain_paper_selection",
-         "choosing papers", "on the line = no gain"),
-        ("b", "r2_screening_only", "r2_pipeline", "Screening only $R^2$",
-         "Full pipeline $R^2$", "gain_analysis_selection",
-         "choosing analyses", "above the line = gain"),
-    )
-    for ax, (letter, xk, yk, xl, yl, gk, what, hint) in zip(axes, panels):
-        ax.plot([0, 1], [0, 1], color=RULE, lw=0.7, zorder=1)
-        for r in rows:
-            ax.scatter([r[xk]], [r[yk]], s=15, color=COLORS.get(r["project"], "#7F7F7F"),
-                       edgecolors="white", linewidths=0.35, zorder=3)
-        g = [r[gk] for r in rows]
-        ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect("equal")
-        ax.set_xlabel(xl); ax.set_ylabel(yl)
-        ax.grid(alpha=0.6); ax.set_axisbelow(True)
-        ax.set_title(f"gain from {what}", fontsize=fs(7.5), color=INK, pad=4)
-        ax.text(0.035, 0.965, hint, transform=ax.transAxes, va="top", ha="left",
-                fontsize=fs(5.4), color=MUTED)
-        ax.text(0.97, 0.05,
-                f"mean $\\Delta$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}\n"
-                f"{sum(1 for x in g if x > 0)}/{len(g)} improve",
-                transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(5.6),
-                color=INK, linespacing=1.5)
-        panel_label(ax, letter, dx=-0.24)
-
-    handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.2,
-                      label=DISPLAY[p]) for p in PROJECT_ORDER]
-    fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.19),
-               handletextpad=0.3, columnspacing=1.1)
-    fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figureS5_selection_decomposition")
 
 
 # -------------------------------------------------------------------- Supplementary S4

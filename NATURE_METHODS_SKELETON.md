@@ -486,6 +486,28 @@ r. Do not use it as the justification.
 
 ### Result 5 — The gain comes from analysis selection, not paper selection — **Figure 5** (~350 w)
 
+> **Figure 5 changed 2026-09-09.** It is now the **decomposition** (was Supplementary S5). The
+> size-matched-null forest that used to be Figure 5a is now **Supplementary S5**, and its old
+> panel b — the same deltas rolled up per project — is **dropped**: it duplicated Figure 4's
+> cross-project view and showed nothing the forest does not already show column by column.
+>
+> The swap is because the decomposition argues the section's title directly and needs no null
+> model to read: two scatters, one on the diagonal and one above it. Quote it first.
+>
+> | step | mean Δ*R²* | improves |
+> |---|---|---|
+> | choosing papers (baseline → screening only) | **−0.000** | 16 / 32 |
+> | choosing analyses (screening only → pipeline) | **+0.099** | 28 / 32 |
+>
+> The two deltas sum to Figure 4's margin exactly (+0.0985), which is the check that all three
+> arms come from the same canonical run. **The wording matters** — see S5's entry: 31 of 32
+> baselines are targeted per-contrast searches, so the claim is that *two ways of selecting papers
+> come out even*, not that paper selection is worthless.
+>
+> **Keep both.** Supplementary S5 rules out a different objection — not "better papers" but "any
+> smaller subset would have done as well." Neither subsumes the other, and a reviewer will raise
+> whichever one you leave out.
+
 §6. **This is the paper.** Holding the study pool fixed, annotation still improves the map — so the
 advantage is not explained by retrieving better papers.
 
@@ -663,10 +685,12 @@ Everything below survives at full length outside the word count:
 | neurometabench citable | **needs a Zenodo DOI** before submission — reviewers will ask where the benchmark is |
 | preprint | post simultaneously; NM desk-rejects fast, so the downside is bounded time only if the preprint is already out |
 
-### Supplementary S5 — decomposing the advantage: papers vs analyses
+### Supplementary S5 — the size-matched null (promoted material lives in Figure 5)
 
-`scripts/decompose_selection_gain.py` → `reports/selection_decomposition.csv` → `--only S5`.
-Added 2026-09-09. Result 5 argues the gain is analysis selection using the annotation-only arm,
+**This section now describes what is in Figure 5.** `scripts/decompose_selection_gain.py` →
+`reports/selection_decomposition.csv` → `--only 5`. Added 2026-09-09, promoted the same day.
+Supplementary S5 is now the size-matched-null forest (`--only S5` →
+`figureS5_size_matched_null`), described under Result 5 above. Result 5 argues the gain is analysis selection using the annotation-only arm,
 which holds the study pool fixed. **This tests the same claim from the other side, on the
 end-to-end arm**, by inserting a third map between the baseline and the pipeline: the canonical
 run's `all_analyses` column — every parsed analysis from the studies that survived screening, with
