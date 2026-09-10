@@ -81,12 +81,28 @@ full text obtained and coordinates extractable — or it measures corpus availab
 screening. Define once, early, and use consistently. Separating retrieval as its own stage above is
 the first half of that discipline.
 
-The second half now exists as an alternate figure: `figure2recall_adjusted_denominator`, built by
-`--only 2recall`. It replots Figure 2a over the gold studies **the search actually returned**, so
-every project starts at 1.00 and the curve is what screening and retrieval cost on the pool the
-pipeline was handed, with the corpus ceiling stated in the panel note rather than baked into the
-numbers. Mean falls 1.00 → 0.84; executive_function (0.53) and problem_solving (0.66) are the
-outliers, and the six other projects finish at 0.89 or better.
+The second half now exists: `scripts/compute_attainable_recall.py` →
+`reports/attainable_recall_by_stage.csv`, plotted as `figure2recall_attainable_denominator`
+(`--only 2recall`). Each stage is divided by the gold studies **it could have kept**, dropping one
+availability failure at the stage where it happens and nothing else:
+
+| stage | denominator | drops |
+|---|---|---|
+| search | gold the search returned | gold the query never returned |
+| abstract | same as search | — (nothing becomes unavailable in between) |
+| fulltext | … minus gold whose full text we never obtained | retrieval failures |
+| annotation | … minus gold that parsed to zero analyses | nothing to annotate |
+
+Mean recall by stage, attainable vs raw: search 1.000/0.858, abstract 0.970/0.833, fulltext
+0.889/0.728, **annotation 0.779/0.479**. The annotation line is the one worth quoting — more than
+half of the apparent annotation loss is papers with nothing to annotate, not annotation failing.
+
+**Judgement losses stay charged.** Only availability leaves the denominator: a study rejected at
+abstract or full-text screening, or parsed and then assigned to no construct, stays in it. This is
+why the annotation denominator is *not* "gold with ≥ 1 parsed analysis" — that set excludes
+everything full-text screening discarded and would forgive every full-text rejection. The metric
+does not rescue a weak project: executive_function is still last (0.568) and still loses 15 gold
+studies to abstract-screening judgement, which no denominator forgives.
 
 **Do not confuse this with the "adjusted gold" of `projects/dementia/REPORT.md`,** which *adds* the
 studies excluded only for `Data Not Reported` (74 → 162). That set corrects *precision*; that report

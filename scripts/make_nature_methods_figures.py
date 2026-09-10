@@ -405,118 +405,129 @@ def figure2(out_dir: Path) -> None:
 # ------------------------------------------------- Figure 2 (recall-denominator alternate)
 
 def figure2recall(out_dir: Path) -> None:
-    """Figure 2 with panel a as recall conditioned on retrieval, not raw gold retention.
+    """Figure 2 with recall on an attainable denominator instead of the whole gold list.
 
-    Same data as figure2, different denominator. The published panel divides by every gold
-    study, so its search-stage value carries the corpus ceiling -- how much of the gold list
-    PubMed handed back at all -- and every later stage inherits it. That conflates two
-    unrelated failures: a study our query never returned, and a study screening threw away.
-    PAPER_OUTLINE.md makes exactly this objection ("or it measures corpus availability rather
-    than screening").
+    Panel a of figure2/figure2alt divides every stage by all gold studies, which bills three
+    availability failures to screening judgement: a study the query never returned, one whose
+    full text we could not obtain, and one that parsed to zero analyses. This panel removes each
+    at the stage where it happens and removes nothing else, so each point answers "of the gold
+    studies this stage could have kept, how many did it keep?".
 
-    Here the denominator is the gold studies the search actually retrieved, so every project
-    starts at 1.00 and the whole curve is what screening and retrieval cost on the pool the
-    pipeline was handed. The search column is kept, at 1.00 by construction, to make the
-    renormalisation visible rather than hiding it in an axis label; the corpus ceiling it used
-    to carry is stated in the panel note instead, since dropping it silently would flatter the
-    pipeline.
+    Judgement losses stay charged -- a study rejected at abstract or full-text screening, or
+    parsed and then assigned to no construct, stays in the denominator. That is why the
+    annotation denominator is not simply "gold with >= 1 parsed analysis": that set excludes
+    everything full-text screening discarded and would forgive every full-text rejection.
+    scripts/compute_attainable_recall.py builds it and documents the arithmetic.
 
-    NOTE ON THE TERM. This is not the "adjusted gold" of projects/dementia/REPORT.md, which
-    ADDS the studies excluded only for `Data Not Reported` (74 -> 162) and is a precision
-    correction; that report is explicit that using it as a recall denominator asks a harder
-    question, not a fairer one. That set is also only defined for dementia, so it cannot carry
-    a nine-project figure. The denominator here is the retrieval-conditioned one.
+    What it changes. Annotation recall is the headline: mean 0.479 on the raw denominator
+    against 0.779 attainable, so more than half of the apparent annotation loss is papers with
+    nothing to annotate rather than annotation failing. Full-text goes 0.728 -> 0.889 and
+    abstract 0.833 -> 0.970. The ordering across projects is largely preserved, so this does not
+    rescue a weak project: executive_function is still last at 0.568 and its abstract stage
+    still loses 15 gold studies to judgement, which no denominator forgives.
+
+    Search sits at 1.000 by construction -- it is a pure supply stage -- and is kept on the axis
+    so the renormalisation is visible. The corpus ceiling it used to carry is stated in the
+    panel note instead of being dropped silently.
+
+    This is NOT the "adjusted gold" of projects/dementia/REPORT.md, which ADDS the studies
+    excluded only for `Data Not Reported` (74 -> 162) as a precision correction; that report is
+    explicit that using it as a recall denominator asks a harder question, not a fairer one, and
+    it is defined for one project only.
     """
-    rows = read(REPO_ROOT / "reports" / "gold_survival_by_stage.csv")
-    stages = ["search", "abstract", "retrieval", "fulltext"]
-    labels = ["Search", "Abstract\nscreening", "Full-text\nretrieval", "Full-text\nscreening"]
-    surv: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    for r in rows:
-        if not r["cumulative_recall"] or r.get("family") == "allstudies":
-            continue
-        surv[r["project"]][r["stage"]] = float(r["cumulative_recall"])
+    path = REPO_ROOT / "reports" / "attainable_recall_by_stage.csv"
+    if not path.exists():
+        print("  figure2recall: run scripts/compute_attainable_recall.py first; skipped")
+        return
+    stages = ["search", "abstract", "fulltext", "annotation"]
+    labels = ["Search", "Abstract\nscreening", "Full-text\nscreening", "Annotation"]
+
+    adj: dict[str, dict[str, float]] = collections.defaultdict(dict)
+    raw: dict[str, dict[str, float]] = collections.defaultdict(dict)
+    attainable: dict[str, dict[str, int]] = collections.defaultdict(dict)
+    for r in read(path):
+        if r["recall_attainable"] != "":
+            adj[r["project"]][r["stage"]] = float(r["recall_attainable"])
+            raw[r["project"]][r["stage"]] = float(r["recall_raw"])
+            attainable[r["project"]][r["stage"]] = int(r["n_attainable"])
+    projects = [p for p in PROJECT_ORDER if len(adj.get(p, {})) == len(stages)]
+    if not projects:
+        print("  figure2recall: no project has every stage; skipped")
+        return
 
     prec: dict[str, dict[str, float]] = collections.defaultdict(dict)
-    try:
-        for r in read(REPO_ROOT / "reports" / "cross_project_screening"
-                      / "screening_metrics_top_v_stage_progression.csv"):
-            if r["metric"] == "precision":
-                try:
-                    prec[r["project_name"]][r["stage"]] = float(r["value"])
-                except ValueError:
-                    continue
-    except FileNotFoundError:
-        pass
-
-    projects = [p for p in PROJECT_ORDER
-                if len(surv.get(p, {})) == len(stages) and surv.get(p, {}).get("search")]
-    # Recall over what the search returned, not over the whole gold list.
-    adj = {p: {s: surv[p][s] / surv[p]["search"] for s in stages} for p in projects}
+    pr_path = REPO_ROOT / "reports" / "stage_precision_recall.csv"
+    if pr_path.exists():
+        for r in read(pr_path):
+            if r["precision"] != "":
+                prec[r["project"]][r["stage"]] = float(r["precision"])
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.4)))
 
+    # a: recall on the attainable denominator
     ax = axes[0]
-    ends_a = []
+    ends = []
     for p in projects:
         ys = [adj[p][s] for s in stages]
         ax.plot(range(len(stages)), ys, "-o", color=COLORS[p], markeredgewidth=0,
                 alpha=0.9, label=DISPLAY[p])
-        ends_a.append([ys[-1], f"{ys[-1]:.2f}", COLORS[p], False])
-    means_a = [st.mean([adj[p][s] for p in projects]) for s in stages]
-    ax.plot(range(len(stages)), means_a, marker="o", ms=3.6, mec="white", mew=0.5, **MEAN_KW)
-    ends_a.append([means_a[-1], f"{means_a[-1]:.2f}", MEAN_COLOR, True])
+        ends.append([ys[-1], f"{ys[-1]:.2f}", COLORS[p], False])
+    means = [st.mean([adj[p][s] for p in projects]) for s in stages]
+    ax.plot(range(len(stages)), means, marker="o", ms=3.6, mec="white", mew=0.5, **MEAN_KW)
+    ends.append([means[-1], f"{means[-1]:.2f}", MEAN_COLOR, True])
 
-    # Same de-overlap as figure2, rescaled: this axis is 0-1, not 0-100. Six of ten projects
-    # finish between 0.89 and 0.98, so the stack is tall enough to run off the top of a 0-1
-    # axis; push it back down from the ceiling once it does.
-    ends_a.sort(key=lambda e: e[0])
-    gap_a, ceiling = 0.031 * FONT_SCALE, 1.04
-    for i in range(1, len(ends_a)):
-        if ends_a[i][0] - ends_a[i - 1][0] < gap_a:
-            ends_a[i][0] = ends_a[i - 1][0] + gap_a
-    if ends_a and ends_a[-1][0] > ceiling:
-        ends_a[-1][0] = ceiling
-        for i in range(len(ends_a) - 2, -1, -1):
-            if ends_a[i + 1][0] - ends_a[i][0] < gap_a:
-                ends_a[i][0] = ends_a[i + 1][0] - gap_a
-    for yy, txt, col, is_mean in ends_a:
+    # End labels: same de-overlap as figure2, on a 0-1 axis, clamped so a crowded stack stays
+    # on the plot instead of floating above it.
+    ends.sort(key=lambda e: e[0])
+    gap, ceiling = 0.036 * FONT_SCALE, 1.02
+    for n in range(1, len(ends)):
+        if ends[n][0] - ends[n - 1][0] < gap:
+            ends[n][0] = ends[n - 1][0] + gap
+    if ends and ends[-1][0] > ceiling:
+        ends[-1][0] = ceiling
+        for n in range(len(ends) - 2, -1, -1):
+            if ends[n + 1][0] - ends[n][0] < gap:
+                ends[n][0] = ends[n + 1][0] - gap
+    for yy, txt, col, is_mean in ends:
         ax.annotate(txt, (len(stages) - 1, yy), textcoords="offset points",
                     xytext=(4, -1.5), fontsize=fs(5.6) if is_mean else fs(5.2),
                     fontweight="bold" if is_mean else "normal", color=col,
                     annotation_clip=False)
     ax.set_xticks(range(len(stages)))
     ax.set_xticklabels(stage_ticks(labels))
-    ax.set_xlim(-0.25, len(stages) - 0.45)
+    ax.set_xlim(-0.25, len(stages) - 0.42)
     ax.set_ylim(0, 1.04)
-    ax.set_ylabel("Recall (gold studies the search returned)")
-    ax.grid(axis="y", alpha=0.6)
-    ax.set_axisbelow(True)
-    raw = [surv[p]["search"] for p in projects]
-    ax.text(0.03, 0.06,
-            f"denominator = the {st.mean(raw):.0%} of gold\n"
-            f"the search returned ({min(raw):.0%}-{max(raw):.0%})",
-            transform=ax.transAxes, fontsize=fs(5.5), color=MUTED, linespacing=1.5)
+    ax.set_ylabel("Recall vs attainable gold")
+    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
+    ceil_raw = [raw[p]["search"] for p in projects]
+    d_ann = st.mean([raw[p]["annotation"] for p in projects])
+    ax.text(0.03, 0.085,
+            f"denominator drops only unavailable data\n"
+            f"search returned {st.mean(ceil_raw):.0%} of gold "
+            f"({min(ceil_raw):.0%}-{max(ceil_raw):.0%})\n"
+            f"annotation on the full list would read {d_ann:.2f}",
+            transform=ax.transAxes, fontsize=fs(5.2), color=MUTED, linespacing=1.45)
     panel_label(ax, "a", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
+    # b: precision over the same four stages, unchanged from figure2alt
     ax = axes[1]
-    pstages = ["search", "abstract", "fulltext"]
-    for p in projects:
-        ys = [prec.get(p, {}).get(s) for s in pstages]
-        if not any(v is None for v in ys):
-            ax.plot(range(len(pstages)), ys, "-o", color=COLORS[p], markeredgewidth=0, alpha=0.9)
-    have_prec = [p for p in projects
-                 if all(prec.get(p, {}).get(s) is not None for s in pstages)]
-    if have_prec:
-        means_b = [st.mean([prec[p][s] for p in have_prec]) for s in pstages]
-        ax.plot(range(len(pstages)), means_b, marker="o", ms=3.6, mec="white", mew=0.5,
+    have = [p for p in projects if all(prec.get(p, {}).get(s) is not None for s in stages)]
+    for p in have:
+        ax.plot(range(len(stages)), [prec[p][s] for s in stages], "-o", color=COLORS[p],
+                markeredgewidth=0, alpha=0.9)
+    if have:
+        means_b = [st.mean([prec[p][s] for p in have]) for s in stages]
+        ax.plot(range(len(stages)), means_b, marker="o", ms=3.6, mec="white", mew=0.5,
                 **MEAN_KW)
-    ax.set_xticks(range(len(pstages)))
-    ax.set_xticklabels(stage_ticks(["Search", "Abstract\nscreening",
-                                    "Full-text\nscreening"]))
+        ax.annotate(f"{means_b[-1]:.2f}", (len(stages) - 1, means_b[-1]),
+                    textcoords="offset points", xytext=(5, -1.5), fontsize=fs(5.8),
+                    fontweight="bold", color=MEAN_COLOR, annotation_clip=False)
+    ax.set_xticks(range(len(stages)))
+    ax.set_xticklabels(stage_ticks(labels))
+    ax.set_xlim(-0.25, len(stages) - 0.42)
     ax.set_ylim(0, 1.02)
     ax.set_ylabel("Precision vs gold standard")
-    ax.grid(axis="y", alpha=0.6)
-    ax.set_axisbelow(True)
+    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     panel_label(ax, "b", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
     handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
@@ -526,7 +537,7 @@ def figure2recall(out_dir: Path) -> None:
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figure2recall_adjusted_denominator")
+    save(fig, out_dir, "figure2recall_attainable_denominator")
 
 
 # ----------------------------------------------------------------- Figure 2 (alternate)
