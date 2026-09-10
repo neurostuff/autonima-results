@@ -1,11 +1,34 @@
 ---
-title: "Selecting analyses, not papers: automated meta-analysis at the unit that determines the result"
+title: "AutoNIMA: a harness for LLM-automated neuroimaging meta-analysis"
 subtitle: "Nature Methods — Article. Target 3,000 words, 6 display items, ~50 references."
-author:
-  - Alejandro de la Vega
-  - "[co-authors]"
-date: "Draft skeleton — 2026-09-10"
+date: "Draft — 2026-09-10"
 ---
+
+::: {custom-style="Affiliation"}
+Alejandro de la Vega^1^, James D. Kent^1^, Nicholas Lee^1^, Thomas E. Nichols^2,3^, Jean-Baptiste Poline^4^, Katherine L. Bottenhorn^5^, Angela R. Laird^6^
+
+^1^ Department of Psychology, University of Texas at Austin, Austin, TX, United States
+
+^2^ Nuffield Department of Population Health, University of Oxford, Oxford, United Kingdom
+
+^3^ Centre for Integrative Neuroimaging, FMRIB, Nuffield Department of Clinical Neurosciences, University of Oxford, Oxford, United Kingdom
+
+^4^ McConnell Brain Imaging Centre, The Neuro (Montreal Neurological Institute-Hospital), McGill University, Montreal, QC, Canada
+
+^5^ Department of Population and Public Health Sciences, Keck School of Medicine of USC, University of Southern California, Los Angeles, CA, United States
+
+^6^ Department of Physics, Florida International University, Miami, FL, United States
+
+Correspondence: Alejandro de la Vega (delavega@utexas.edu)
+:::
+
+> **BRIEF — author block needs confirming.** Affiliations are carried across from Kent et al.
+> (2026, *Imaging Neuroscience*), the most recent paper this group shares, so they are current as
+> of that publication but not independently verified here. **Author order is a placeholder**: de
+> la Vega is first because the skeleton had it that way, with co-authors in the order you listed
+> them. On the Compose paper de la Vega is senior/last author, so if that convention holds here
+> the order needs inverting. Kendra Oudyk, Taylor Salo and Julio Peraza are on the Compose paper
+> but not on your list — add them if they belong here.
 
 <!--
   HOW TO USE THIS DOCUMENT
@@ -38,6 +61,19 @@ date: "Draft skeleton — 2026-09-10"
 
 _150 words. No figure._
 
+Quantitative synthesis of the neuroimaging literature has been automated at the level of the
+publication, but the unit that determines a meta-analytic result is the individual analysis: a
+single paper typically reports many statistical contrasts, and only some of them bear on any
+given question. Here, we present AutoNIMA, a harness that executes the full
+systematic review workflow — search, abstract and full-text screening, coordinate extraction, and
+analysis-level annotation — and that selects at both the paper and the analysis level. We
+evaluated it against nine published, expert-conducted meta-analyses spanning 32 target contrasts.
+Maps produced by the pipeline recovered the published result more closely than the strongest
+search-based synthesis available for each contrast (mean *R*² 0.575 vs 0.476; ahead in 28 of 32,
+*p* = 1.9 × 10⁻⁵), while pooling fewer analyses. Decomposing this advantage, selecting papers
+contributed almost nothing (median Δ*R*² +0.001) and selecting analyses contributed nearly all of
+it (+0.049).
+
 > **CLAIM** — Automated evidence synthesis selects papers, but the analysis is the unit that
 > determines the result. We present a pipeline that selects at the analysis level and show it
 > recovers published meta-analytic maps better than any search-only synthesis available.
@@ -48,12 +84,44 @@ _150 words. No figure._
 > The decomposition is the finding: choosing papers is worth +0.001 (median, 16/32); choosing
 > analyses is worth +0.049 (28/32).
 >
-> **OPEN** — the abstract cannot be finalised until §9 (the forward-looking case) is settled,
-> since it decides whether the last sentence promises a demonstration or a direction.
+> **OPEN** — none. §9, the forward-looking case, was **dropped 2026-09-10**, so the abstract no
+> longer waits on it and the closing sentence can land on the decomposition.
 
 # Introduction
 
 _~350 words. Cites the neurometabench companion paper._
+
+The functional neuroimaging literature now comprises well over 60,000 published studies, and
+synthesizing knowledge across them remains a major bottleneck. Quantitative meta-analysis is the
+established remedy, but the traditional workflow — searching databases, screening thousands of
+abstracts and full texts against inclusion criteria, and manually extracting coordinates from each
+included study — is extraordinarily time consuming, and a single review can demand hundreds of
+researcher hours. As a result, published syntheses are expensive to produce and rapidly go stale.
+
+Automated approaches addressed the cost directly. Neurosynth demonstrated that coordinates could
+be extracted at scale and meta-analysed automatically, and the resulting maps recover broad
+cognitive domains with remarkable similarity to manual efforts. That scale came at a price in
+precision, however: because coordinates could not be reliably attributed to the specific contrast
+that produced them, the framework aggregated every coordinate reported in a paper into a single
+set per study. This is sufficient for mapping broad domains and insufficient for the targeted
+questions that motivate most meta-analyses, which pool results only from comparable experimental
+conditions or participant groups.
+
+We argue that this is not an incidental limitation of one system but a consequence of operating at
+the wrong unit. The unit that determines a meta-analytic result is not the paper but the
+*analysis*: a paper contributes k statistical contrasts, and a synthesis of "reappraisal versus
+passive viewing" is defined by which of those contrasts enter it. Selecting papers well and then
+pooling all of their coordinates answers a different question from the one the reviewer asked.
+Coordinate-based meta-analysis is an unusually favourable place to measure the cost of this error,
+because the published product is a spatial map that can be compared numerically against a
+reproduction.
+
+Here, we present AutoNIMA, a harness that selects at both levels, using large language models
+for screening and for analysis-level annotation, and we evaluate it against nine expert-conducted meta-analyses
+assembled into a benchmark (companion paper). In the following, we quantify what each stage of the
+pipeline costs and buys, compare the end-to-end result against the strongest search-based
+synthesis available for each target, and decompose the resulting advantage into the contribution
+of selecting papers and the contribution of selecting analyses.
 
 > **CLAIM** — Three moves, in order (`NATURE_METHODS_SKELETON.md:75`):
 >
@@ -104,6 +172,33 @@ _~300 words. **Figure 1** (schematic: a pipeline, b the unit distinction)._
 ## 2. Screening is nearly free; annotation is where recall is spent
 
 _~300 words. **Figure 2**; supporting: Supplementary S3, S6._
+
+Recall reported against the full list of expert-included studies conflates screening judgement
+with data availability: a study our query never returned, one whose full text we could not obtain,
+and one that yielded no parseable coordinates are all charged to the screener. We therefore report
+recall at each stage against an *attainable* denominator, which drops one availability failure at
+the stage where it occurs and never drops a study rejected on judgement (Methods).
+
+On this denominator, screening is close to free (Fig. 2). Abstract and full-text screening
+together raise precision against the expert inclusion list from 0.103 to 0.323 for 0.074 of
+attainable recall, and precision rises at every stage in 9 of 9 projects. Annotation behaves
+differently. Requiring that a paper also yield at least one analysis assigned to the target
+contrast raises precision by a further 0.147, again in 9 of 9, but costs 0.108 of attainable
+recall, also in 9 of 9. Recall falls further than precision rises, and the stage cannot be
+described as free.
+
+Whether that trade is worth taking depends on the denominator, which is the clearest argument for
+adopting the attainable one. Scored against every expert-included study, annotation appears to lose
+0.248 of recall and the gain exceeds the loss in only 1 of 9 projects; scored against the studies
+that actually yielded data, the same runs and the same decisions lose 0.108 and the gain exceeds
+the loss in 6 of 9. Charging annotation for papers that had nothing to annotate inverts the verdict
+on the stage.
+
+The residual precision is a lower bound. Because we do not know which candidate pool the original
+authors screened, a false positive may be a study they never considered rather than one they
+rejected. Holding the pool fixed raises full-text precision by 0.142 while recall moves far less
+(Supplementary S3), so a substantial share of the apparent screening failure is a corpus difference
+rather than a screening error.
 
 > **CLAIM** — Screening buys precision at almost no cost to recall. Annotation is where recall is
 > actually spent — and the *denominator* decides whether that trade is worth taking, which is the
@@ -275,7 +370,11 @@ _~600 words._
 >    deciding text (`PAPER_OUTLINE.md:1106`).
 > 3. **The analysis-unit argument generalises; its measurability does not.** Coordinate-based
 >    meta-analysis is unusual in producing a numerically comparable published product.
-> 4. **Close on §9**, the forward-looking case.
+> 4. **Close on what the method is for.** §9, a forward-looking demonstration on a question no
+>    manual synthesis had attempted, was **dropped 2026-09-10** as unnecessary for this paper.
+>    Close instead on the practical consequence: the ceiling on this whole evaluation is the
+>    manual meta-analyses themselves, so a method that reaches them at this cost changes what is
+>    worth attempting rather than only what is worth automating.
 >
 > Two out-of-scope items to note here rather than answer (`PAPER_OUTLINE.md:1230`, `:1243`):
 > MKDA is used throughout even where the source paper used ALE; and there is no human-agreement
@@ -296,8 +395,8 @@ _~600 words._
 > - **Do not report either without the n.** Both arms are two projects; an indication, not an
 >   estimate.
 >
-> **OPEN** — **§9 has no candidate and the outline says it likely gates submission**
-> (`PAPER_OUTLINE.md:1444`). `scz_enigma` is the live candidate.
+> **OPEN** — none. The §9 forward-looking case is dropped; `PAPER_OUTLINE.md:1434` and its
+> `[idea]`/`[need]` markers are now stale on that point.
 
 # Methods
 
@@ -372,6 +471,22 @@ _No word limit — Methods sits after references and costs nothing against the 3
 > or alongside this paper; reviewers will ask where the benchmark is.
 
 ## M1.2 Generative AI in development
+
+We distinguish two uses of generative AI in this work. The first is the object of study: large
+language models perform abstract and full-text screening, coordinate parsing, and analysis-level
+annotation within the pipeline, and their behaviour at each of those stages is what the paper
+measures. Models, versions, and prompts for every stage are specified above and released with the
+code.
+
+The second is the use of generative AI as a development tool, which we declare separately here.
+During the preparation of this work, the authors used [MODEL(S)] to assist with writing and
+revising code in the analysis repository, and with editing and revising the text of this
+manuscript for clarity, readability, and flow. All AI-generated code was reviewed and tested by
+the authors, and all AI-assisted text was critically reviewed and revised. No analysis result,
+figure, or numerical claim in this paper was produced by an unreviewed AI process; every number
+reported here is regenerated from the released artifacts by a script in the analysis repository.
+The authors take full responsibility for all content presented in this manuscript, including any
+portions assisted by AI.
 
 > **BRIEF** — ⚠ **`[need]` — nothing written yet**, and one of only two outstanding required items
 > in the whole plan (`PAPER_OUTLINE.md:1336`). The organising distinction is to keep AI-as-object-
@@ -520,7 +635,6 @@ _~50 references. Numbered, Nature style._
 | item | state |
 |---|---|
 | **neurometabench Zenodo DOI** | blocking. Reviewers will ask where the benchmark is |
-| **§9 forward-looking case** | `[need]`, no candidate chosen; the outline says it likely gates submission. `scz_enigma` is live |
 | **`projects/emotion_regulation_2022/nmb_mappings.json`** | still the unedited template (`MANUAL_NAME1` → `AUTOMATIC_NAME1`), which excludes ER from every cross-project analysis. Called "highest leverage per unit of work in the whole plan" (`PAPER_OUTLINE.md:1500`) |
 | **M1.2 Generative AI in development** | nothing written |
 | **"adjusted" used in two senses** | one must be dropped |
