@@ -722,6 +722,42 @@ the diagonal, panel b's sit above it.
 the most direct evidence in the paper for the sentence the whole thing is organised around, and
 it needs no null model to read — just two scatters that look different.
 
+### False-positive composition — how many did the researchers never see?
+
+`scripts/false_positive_composition.py` → `reports/false_positive_composition.csv`. Added
+2026-09-09. S3 argues the pool mismatch by *swapping* the pool; this asks the same question
+directly of each false positive: was it in the researchers' own candidate list, or absent from it
+entirely?
+
+**At full-text screening, 59% of false positives were never in the researchers' pool at all**
+(385 of 649 across three projects; 248 of 417 restricting to the two whose pool is a genuine
+candidate set). Those studies could not have reached the published inclusion list whatever we
+decided, so counting them as screening errors measures the corpus, not the screener.
+
+**But it does not hold uniformly, and the variation is the interesting part:**
+
+| project | FPs never considered | S3 precision gain from the fixed pool |
+|---|---|---|
+| dementia | 27% | +0.025 |
+| emotion regulation | 59% | +0.121 |
+| social | 69% | +0.279 |
+
+**The two rank the projects identically (r = 0.906, n = 3).** The more of a project's false
+positives the researchers never saw, the more precision the fixed pool recovers — which is what
+should happen if the pool mismatch is the mechanism, and it is arrived at from an independent
+direction. Worth one sentence; it is cheap corroboration of S3's central claim.
+
+**Do not say "most false positives are a pool artefact" without the per-project split.** For
+dementia the opposite is true: 73% of its false positives were adjudicated by the researchers and
+rejected, so those are real disagreements. The defensible sentence is that the share explained by
+the pool ranges from about a quarter to about seven tenths depending on the project.
+
+**One caveat on the emotion-regulation row.** Its `pmids_file` is a PubMed search list holding
+only 56 of 88 gold studies, so it is not the researchers' candidate set — it is missing gold our
+own search found. Its 59% should be read as a lower bound on "considered", and the CSV flags this
+with `pool_is_full_candidate_set = no`. Dementia and social both hold 100% of gold and are
+trustworthy.
+
 ### Supplementary S4 — text-to-map baselines: a term is not an analysis
 
 `scripts/text_to_map_baselines.py` → `reports/text_to_map_baselines.csv` → `--only S4`. Added
