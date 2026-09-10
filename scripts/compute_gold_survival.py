@@ -21,8 +21,25 @@ for the pipeline's largest loss in several projects.
 
     search      the gold study appeared in the PubMed results at all
     abstract    survived abstract screening
-    retrieval   full text was actually obtained
+    retrieval   full text was actually obtained AND was usable
     fulltext    survived full-text screening
+
+WHAT "USABLE" MEANS, AND WHY IT IS NOT JUST THE AVAILABILITY FLAG
+
+`fulltext_retrieval_results.json` sets `fulltext_available`, and that flag overstates what the
+screener received. In 43 gold studies across the corpus the flag is true and the screener was
+then handed title, abstract and metadata only (or hit an API error), recorded
+`fulltext_incomplete`, and said outright that it could not verify the inclusion criteria. Those
+studies had no usable full text, so counting them as retrieved put a supply failure inside the
+screening stage -- which is the exact distinction this file exists to draw. The retrieval stage
+therefore requires the flag AND the absence of a `fulltext_incomplete` decision.
+
+The effect is concentrated: executive_function alone accounts for 24 of the 43, which is why its
+abstract -> full-text drop read as a screening failure before this was corrected. Four projects
+have none.
+
+`retrieval_available` is also returned, carrying the raw flag, so the split between "no text at
+all" and "text too thin to screen" stays reportable and this correction stays auditable.
 
 Writes reports/gold_survival_by_stage.csv.
 """
@@ -89,6 +106,23 @@ def _read(path: Path) -> dict:
         return {}
 
 
+def incomplete_fulltext_pmids(outputs: Path) -> set[str] | None:
+    """PMIDs the full-text screener saw without usable full text.
+
+    `fulltext_incomplete` is the screener reporting that it received title/abstract/metadata
+    only, or that retrieval errored, so the inclusion criteria could not be checked. It is a
+    retrieval failure surfacing one stage late, not a judgement about the paper.
+    """
+    path = outputs / "fulltext_screening_results.json"
+    if not path.exists():
+        return None
+    rows = _read(path).get("screening_results")
+    if not rows:
+        return None
+    return {str(r.get("study_id")).strip() for r in rows
+            if isinstance(r, dict) and str(r.get("decision")) == "fulltext_incomplete"}
+
+
 def survivors(outputs: Path) -> dict[str, set[str] | None]:
     """PMIDs present after each stage. None where the stage produced no artifact."""
     out: dict[str, set[str] | None] = {}
@@ -105,9 +139,14 @@ def survivors(outputs: Path) -> dict[str, set[str] | None]:
                       if rows else None)
 
     rows = _read(outputs / "fulltext_retrieval_results.json").get("studies_with_fulltext")
-    out["retrieval"] = ({str(r.get("pmid")).strip() for r in rows
-                         if isinstance(r, dict) and r.get("fulltext_available")}
-                        if rows else None)
+    available = ({str(r.get("pmid")).strip() for r in rows
+                  if isinstance(r, dict) and r.get("fulltext_available")}
+                 if rows else None)
+    out["retrieval_available"] = available
+    # Usable text, not merely flagged text -- see the module docstring.
+    incomplete = incomplete_fulltext_pmids(outputs)
+    out["retrieval"] = (available if available is None or incomplete is None
+                        else available - incomplete)
     return out
 
 

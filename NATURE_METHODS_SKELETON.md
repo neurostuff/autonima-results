@@ -111,18 +111,27 @@ while precision roughly doubles or triples. Marginal loss by stage, in percentag
 | stage | median | max | projects losing >5pp |
 |---|---|---|---|
 | abstract screening | **1.4** | 8.8 | 2/9 |
-| full-text retrieval | 3.4 | 11.9 | 3/9 |
-| full-text screening | 4.0 | 14.6 | 3/9 |
+| full-text retrieval | 4.5 | 25.7 | 3/9 |
+| full-text screening | **2.5** | 6.4 | 1/9 |
+
+**The retrieval stage counts usable text, not the availability flag.** `fulltext_available` is true
+for 43 gold studies across the corpus that the screener then received as title and abstract only
+(or after an API error), recorded as `fulltext_incomplete`, and explicitly could not evaluate. Those
+are retrieval failures surfacing one stage late. Counting them as retrieved moved a supply failure
+into the screening column and inflated full-text screening's cost from 2.5 to 4.0 median points;
+executive_function alone accounts for 24 of the 43. Corrected 2026-09-10 — see
+`scripts/compute_gold_survival.py`.
 
 **Retrieval is shown as its own stage, not folded into screening.** They fail for different
-reasons — no obtainable full text is a supply problem, a rejection is a judgement — and in several
-projects retrieval is the larger loss. Merging them would blame screening for the pipeline's
-biggest cost.
+reasons — no obtainable full text is a supply problem, a rejection is a judgement. After the
+correction above the separation matters more, not less: retrieval's median loss (4.5pp) is now
+nearly double full-text screening's (2.5pp), and full-text screening exceeds 5pp in only one
+project. Merging them would blame screening for the pipeline's biggest cost.
 
 Seven of nine projects end within 11 points of where their search started. The two exceptions,
-executive function (74% → 39%) and problem solving (88% → 58%), lose most of it at retrieval and
-full-text screening rather than at the abstract stage, and both should be named rather than
-averaged away.
+executive function (74% → 39%) and problem solving (88% → 58%), lose it almost entirely at
+retrieval — 25.7pp and 19.0pp respectively, against 0.6pp and 6.4pp at full-text screening — and
+both should be named rather than averaged away.
 
 **The fixed-pool arm is no longer drawn on Figure 2 — removed 2026-09-09.** It used to appear as
 a dotted overlay on both panels for the three projects (`vN-allstudies`) that have one. Two

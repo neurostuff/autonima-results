@@ -74,7 +74,9 @@ that is false. **Post-search stages dominate the loss in 4 of 9 projects** — e
 (7 vs 8). The prediction was made before the cumulative artifact existed and does not survive it.
 The honest version is narrower and still worth having: abstract screening is nearly free, retrieval
 is the largest single loss in several projects, and the search ceiling binds hardest in
-decision_making (40% never found).
+decision_making (40% never found). *Updated 2026-09-10:* with retrieval counting usable text, it is
+the single largest loss in dementia and problem_solving and ties with search in executive_function,
+while full-text screening drops to a 2.5pp median.
 
 **Adjusted recall.** Recall must be reported over gold studies for which the data actually exists —
 full text obtained and coordinates extractable — or it measures corpus availability rather than
@@ -105,8 +107,13 @@ the screener records `fulltext_incomplete` and cannot verify the criteria. Corpu
 `executive_function` is the extreme — 24 of its 25 — which is what made its abstract→full-text drop
 look like a screening failure; its full-text recall is 0.626 with them charged and 0.807 without.
 
-*Consequence for Figure 2:* the `retrieval` stage it plots is optimistic by those 43 studies, since
-it counts availability rather than usable text. Worth fixing or caveating before submission.
+*Fixed for Figure 2, 2026-09-10.* `scripts/compute_gold_survival.py` now requires the availability
+flag **and** the absence of a `fulltext_incomplete` decision, so the `retrieval` stage counts usable
+text. Marginal loss by stage moves to: abstract 1.4pp median, retrieval 4.5pp (was 3.4), full-text
+screening **2.5pp (was 4.0)**. Retrieval's median loss is now nearly double full-text screening's,
+and full-text screening exceeds 5pp in one project rather than three. `executive_function` loses
+25.7pp at retrieval and 0.6pp at full-text screening; before the fix that read 11.7 and 14.6.
+`survivors()` also returns `retrieval_available` with the raw flag so the correction is auditable.
 
 **Judgement losses stay charged.** Only availability leaves the denominator: a study rejected at
 abstract or full-text screening, or parsed and then assigned to no construct, stays in it. This is

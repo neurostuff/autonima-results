@@ -22,6 +22,8 @@ wants answered: of the gold studies this stage COULD have kept, how many did it 
     abstract     same as search (no new supply loss)            --
     fulltext     ... minus gold with no usable full text        retrieval failures AND
                                                                 `fulltext_incomplete`
+                 (survivors()["retrieval"] enforces "usable"; the two are split in the CSV
+                  as lost_no_fulltext / lost_fulltext_incomplete for reporting only)
     annotation   ... minus gold that parsed to zero analyses    nothing to annotate
 
 WHY `fulltext_incomplete` COUNTS AS SUPPLY
@@ -70,7 +72,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from compute_gold_survival import load_gold, canonical_run, survivors  # noqa: E402
+from compute_gold_survival import (  # noqa: E402
+    load_gold, canonical_run, survivors, incomplete_fulltext_pmids)
 from compute_stage_precision_recall import annotated_pmids  # noqa: E402
 
 STAGES = ["search", "abstract", "fulltext", "annotation"]
@@ -98,37 +101,16 @@ def parsed_pmids(outputs: Path) -> set[str] | None:
     return out or None
 
 
-def incomplete_fulltext_pmids(outputs: Path) -> set[str] | None:
-    """PMIDs the full-text screener saw without usable full text.
-
-    `fulltext_incomplete` means the retriever reported the text as available but delivered
-    title/abstract/metadata only, or errored, so the screener could not check the inclusion
-    criteria and recorded that rather than a judgement. Treating these as rejections blames
-    screening for a retrieval failure noticed one stage late.
-    """
-    path = outputs / "fulltext_screening_results.json"
-    if not path.exists():
-        return None
-    try:
-        rows = json.loads(path.read_text()).get("screening_results")
-    except ValueError:
-        return None
-    if not rows:
-        return None
-    return {str(r.get("study_id")).strip() for r in rows
-            if isinstance(r, dict) and str(r.get("decision")) == "fulltext_incomplete"}
-
-
 def stage_rows(project: str, run: Path, gold: set[str]) -> list[dict]:
     """Attainable-denominator recall for one project, or [] if an artifact is missing."""
     outputs = run / "outputs"
     alive = survivors(outputs)
     search, abstract = alive.get("search"), alive.get("abstract")
     retrieval, fulltext = alive.get("retrieval"), alive.get("fulltext")
+    available = alive.get("retrieval_available")
     parsed, annotated = parsed_pmids(outputs), annotated_pmids(outputs)
-    incomplete = incomplete_fulltext_pmids(outputs)
-    if any(s is None for s in (search, abstract, retrieval, fulltext, parsed, annotated,
-                               incomplete)):
+    if any(s is None for s in (search, abstract, retrieval, available, fulltext, parsed,
+                               annotated)):
         return []
 
     # Cumulative gold survivors, one stage at a time.
@@ -139,18 +121,23 @@ def stage_rows(project: str, run: Path, gold: set[str]) -> list[dict]:
     g_parsed = g_full & parsed
     g_annot = g_full & annotated
 
-    lost_retrieval = len(g_abs) - len(g_retr)          # supply: no full text at all
-    lost_incomplete = len(g_retr & incomplete)         # supply: text too thin to screen
-    lost_parsing = len(g_full) - len(g_parsed)         # supply: nothing to annotate
+    # survivors()["retrieval"] already requires USABLE text, so the two supply failures at this
+    # stage are both inside `lost_retrieval`. They are split out only for reporting -- deriving
+    # the denominator from the split as well would subtract the incomplete studies twice.
+    lost_no_text = len(g_abs) - len(g_abs & available)      # supply: no full text at all
+    lost_incomplete = len(g_abs & available) - len(g_retr)  # supply: text too thin to screen
+    lost_retrieval = len(g_abs) - len(g_retr)               # == the two above
+    lost_parsing = len(g_full) - len(g_parsed)              # supply: nothing to annotate
+    assert lost_retrieval == lost_no_text + lost_incomplete
 
     d_search = d_abs = len(g_search)
-    d_full = d_abs - lost_retrieval - lost_incomplete
+    d_full = d_abs - lost_retrieval
     d_annot = d_full - lost_parsing
 
     per_stage = [
         ("search", len(g_search), d_search, 0),
         ("abstract", len(g_abs), d_abs, 0),
-        ("fulltext", len(g_full), d_full, lost_retrieval + lost_incomplete),
+        ("fulltext", len(g_full), d_full, lost_retrieval),
         ("annotation", len(g_annot), d_annot, lost_parsing),
     ]
     rows = []
@@ -161,6 +148,8 @@ def stage_rows(project: str, run: Path, gold: set[str]) -> list[dict]:
             "n_surviving": surviving,
             "n_attainable": attainable,
             "supply_lost_here": supply_lost,
+            "lost_no_fulltext": lost_no_text if stage == "fulltext" else 0,
+            "lost_fulltext_incomplete": lost_incomplete if stage == "fulltext" else 0,
             "recall_attainable": round(surviving / attainable, 6) if attainable else "",
             "recall_raw": round(surviving / len(gold), 6) if gold else "",
         })
