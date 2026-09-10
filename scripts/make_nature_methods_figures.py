@@ -610,7 +610,9 @@ def figure3alt(out_dir: Path) -> None:
         lo_fpr, hi_fpr = (k - hi_tp) / (N - P), (k - lo_tp) / (N - P)
         ax.plot([lo_fpr, hi_fpr], [null, null], color=c, lw=1.4, alpha=0.5, zorder=2,
                 solid_capstyle="butt")
-        ax.plot([null, fpr], [null, tpr], color=c, lw=0.8, alpha=0.55, zorder=2)
+        # Dotted and faint: the connector only has to say which null belongs to which
+        # point. Drawn solid, nine of them read as data and crowded the panel.
+        ax.plot([null, fpr], [null, tpr], color=c, lw=0.6, alpha=0.35, ls=":", zorder=2)
         ax.scatter([null], [null], s=13, facecolors="white", edgecolors=c, linewidths=0.9,
                    zorder=3)
         ax.scatter([fpr], [tpr], s=18, color=c, edgecolors="white", linewidths=0.4, zorder=4)
