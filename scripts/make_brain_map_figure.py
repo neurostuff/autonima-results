@@ -29,6 +29,14 @@ cross_project_best_baseline.csv; a mismatch is reported and the column is skippe
 The metric is read from that table rather than assumed, because compile_best_baselines.py is
 parameterised (--metric dice|r2|pearson_r) and now defaults to dice. Checking a dice column against
 an r-squared computation rejects 29 of 35 columns as path errors when the paths are fine.
+
+INTERPRETER
+
+Run this with the system `python3` (nilearn 0.13.x), NOT `pixi run python` (nilearn 0.10.1).
+The two pick different default colormaps for plot_stat_map, so the same data renders red-only
+under 0.10 and diverging under 0.13 -- a 3.7% pixel difference with no change in the underlying
+maps, which looks alarming in a diff and is purely cosmetic. Verified: regenerating under 0.13.1
+reproduces the committed figure to 0 differing pixels.
 """
 
 from __future__ import annotations
@@ -60,6 +68,17 @@ DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
 
 SINGLE_COL, DOUBLE_COL = 89 / 25.4, 183 / 25.4
 INK, MUTED, RULE = "#1a1a1a", "#5a5a5a", "#c8c8c8"
+
+# Deck preset. Same reasoning as make_nature_methods_figures.py: projected legibility needs type
+# larger RELATIVE to the panels, so --font-scale raises label sizes and --row-height gives each
+# row more space to absorb them. Publication output is the default (both 1.0) and is untouched.
+FONT_SCALE = 1.0
+ROW_HEIGHT = 0.62
+
+
+def fs(size: float) -> float:
+    return size * FONT_SCALE
+
 
 DISPLAY = {
     "cue_reactivity": "Cue reactivity", "decision_making": "Decision making",
@@ -248,7 +267,7 @@ def candidates(tier: str, metric: str | None = None) -> list[dict]:
 
 
 def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: float,
-           break_after: int | None = None) -> None:
+           break_after: int | None = None, group_labels: list[str] | None = None) -> None:
     from nilearn import plotting
 
     arms = [("baseline", "Search-only baseline"), ("autonima", "Full pipeline"),
@@ -256,9 +275,11 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
     n = len(rows)
     # nilearn leaves generous margins inside each axes, so rows need to be pulled together
     # explicitly or the figure is mostly whitespace.
-    fig, axes = plt.subplots(n, 3, figsize=(DOUBLE_COL, 0.62 * n),
+    fig, axes = plt.subplots(n, 3, figsize=(DOUBLE_COL, ROW_HEIGHT * n),
                              squeeze=False, facecolor="white")
-    fig.subplots_adjust(hspace=0.02, wspace=0.02, left=0.19, right=0.93, top=0.94, bottom=0.06)
+    left = min(0.34, 0.19 + 0.085 * (FONT_SCALE - 1.0))
+    fig.subplots_adjust(hspace=0.02, wspace=0.02, left=left, right=0.93,
+                        top=0.94, bottom=0.06)
     for i, row in enumerate(rows):
         for j, (arm, arm_label) in enumerate(arms):
             ax = axes[i][j]
@@ -268,17 +289,17 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
                 black_bg=False, draw_cross=False, cmap="cold_hot",
             )
             if i == 0:
-                ax.set_title(arm_label, fontsize=6.5, color=INK, pad=2)
+                ax.set_title(arm_label, fontsize=fs(6.5), color=INK, pad=2)
         lbl = (f"{DISPLAY.get(row['project'], row['project'])}\n"
                f"{pretty_column(row['project'], row['manual_annotation'])}")
         axes[i][0].text(-0.04, 0.5, lbl, transform=axes[i][0].transAxes,
-                        ha="right", va="center", fontsize=5.6, color=INK, linespacing=1.5)
+                        ha="right", va="center", fontsize=fs(5.6), color=INK, linespacing=1.5)
         axes[i][2].text(1.01, 0.5, f"$\\Delta$ {row.get('metric', 'dice')}\n{row['delta']:+.3f}",
                         transform=axes[i][2].transAxes, ha="left", va="center",
-                        fontsize=5.6, color=MUTED, linespacing=1.4)
+                        fontsize=fs(5.6), color=MUTED, linespacing=1.4)
     fig.text(0.5, 0.005, f"axial slices at z = {list(cut_coords)}, "
              f"FDR-corrected z thresholded at |z| > {threshold}",
-             ha="center", fontsize=5.2, color=MUTED)
+             ha="center", fontsize=fs(5.2), color=MUTED)
 
     # Mark the discontinuity, before saving. Without it six rows read as a ranked run of six, and
     # a reader counting downward takes row 4 as the fourth-largest margin rather than the
@@ -289,13 +310,13 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
         y = (upper.y0 + lower.y1) / 2
         fig.add_artist(Line2D([0.08, 0.96], [y, y], transform=fig.transFigure,
                               color=RULE, lw=0.7, ls=(0, (3, 3)), zorder=5))
-        fig.text(0.5, y + 0.004, "⋯", ha="center", va="bottom", fontsize=7, color=MUTED)
+        fig.text(0.5, y + 0.004, "⋯", ha="center", va="bottom", fontsize=fs(7), color=MUTED)
         top_mid = (axes[0][0].get_position().y1 + upper.y0) / 2
         bot_mid = (lower.y1 + axes[n - 1][0].get_position().y0) / 2
-        for text, ypos in ((f"{break_after} largest margins", top_mid),
-                           (f"{n - break_after} smallest", bot_mid)):
+        labels = group_labels or [f"{break_after} largest margins", f"{n - break_after} smallest"]
+        for text, ypos in zip(labels, (top_mid, bot_mid)):
             fig.text(0.012, ypos, text, rotation=90, va="center", ha="center",
-                     fontsize=5.4, color=MUTED)
+                     fontsize=fs(5.4), color=MUTED)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     for ext, kw in ((".pdf", {}), (".png", {"dpi": 400})):
@@ -333,7 +354,22 @@ def main() -> int:
                          "measures overlap of thresholded maps, so it is the metric describing "
                          "what the reader can actually see. r2 measures unthresholded "
                          "correlation, which the rendered panels do not show.")
+    ap.add_argument("--columns", nargs="*", default=None, metavar="PROJECT/COLUMN",
+                    help="render exactly these columns, in this order, instead of ranking. "
+                         "Use with --name and --break-after to build a specific comparison.")
+    ap.add_argument("--name", default=None, help="output filename stem")
+    ap.add_argument("--break-after", type=int, default=None,
+                    help="draw the group divider after this many rows (with --columns)")
+    ap.add_argument("--font-scale", type=float, default=1.0,
+                    help="scale all label sizes; use ~1.5 for slides")
+    ap.add_argument("--row-height", type=float, default=0.62,
+                    help="inches per row; raise it alongside --font-scale")
+    ap.add_argument("--group-labels", nargs="*", default=None,
+                    help="rotated labels for the two groups either side of --break-after")
     args = ap.parse_args()
+
+    global FONT_SCALE, ROW_HEIGHT
+    FONT_SCALE, ROW_HEIGHT = args.font_scale, args.row_height
 
     rows = candidates(args.tier, args.metric)
     print(f"columns with all three maps present: {len(rows)}/35")
@@ -357,6 +393,30 @@ def main() -> int:
             keep.append(r)
         print(f"  verified against cross_project_best_baseline.csv: {len(keep)}/{len(rows)}")
         rows = keep
+
+    if args.columns:
+        # Explicit selection. Rendered in the order given, with no showable/diversity filtering --
+        # the caller has decided, and silently reordering or dropping a requested row would make
+        # the figure disagree with the caption written for it.
+        index = {f"{r['project']}/{r['manual_annotation']}": r for r in rows}
+        picked, missing = [], []
+        for key in args.columns:
+            if key in index:
+                picked.append(index[key])
+            else:
+                missing.append(key)
+        for key in missing:
+            print(f"  NOT FOUND: {key}")
+        if not picked:
+            print("  none of the requested columns are available"); return 1
+        for r in picked:
+            print(f"  {r['project']}/{r['manual_annotation']}  "
+                  f"{r.get('metric', 'dice')} {float(r['autonima']):.3f}  "
+                  f"delta {r['delta']:+.3f}")
+        render(picked, args.output_dir, args.name or "figure_brain_maps_selected",
+               args.cut_coords, args.threshold, break_after=args.break_after,
+               group_labels=args.group_labels)
+        return 0
 
     if args.mode == "all":
         render(rows, args.output_dir, "figureS_brain_maps_all", args.cut_coords, args.threshold)

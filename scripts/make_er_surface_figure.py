@@ -61,6 +61,15 @@ SINGLE_COL, DOUBLE_COL = 89 / 25.4, 183 / 25.4
 INK, MUTED, RULE = "#1a1a1a", "#5a5a5a", "#c8c8c8"
 
 # Excludes `decrease`; see the module docstring.
+# Deck preset, matching the other figure scripts: --font-scale raises label sizes relative to the
+# panels, which is what projected legibility needs. Default 1.0 leaves publication output alone.
+FONT_SCALE = 1.0
+
+
+def fs(size: float) -> float:
+    return size * FONT_SCALE
+
+
 DEFAULT_COLUMNS = ["increase", "maintain", "reappraisal"]
 PRETTY = {
     "increase": "Increase\nemotion",
@@ -74,7 +83,7 @@ def house_style() -> None:
     plt.rcParams.update({
         "font.family": "sans-serif",
         "font.sans-serif": ["Helvetica", "Arial", "DejaVu Sans"],
-        "font.size": 6, "axes.labelsize": 6.5,
+        "font.size": fs(6), "axes.labelsize": fs(6.5),
         "figure.facecolor": "white", "savefig.facecolor": "white",
         "pdf.fonttype": 42, "ps.fonttype": 42,
     })
@@ -239,6 +248,8 @@ def main(argv: list[str] | None = None) -> int:
                          "conservative direction: the claim is that the baseline is "
                          "undifferentiated, not that it is weak.")
     ap.add_argument("--cmap", default="YlOrRd")
+    ap.add_argument("--font-scale", type=float, default=1.0,
+                    help="scale all label sizes; use ~1.5 for slides")
     ap.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
     ap.add_argument("--name", default="figure_er_surface_contrasts")
     args = ap.parse_args(argv)
@@ -246,6 +257,8 @@ def main(argv: list[str] | None = None) -> int:
     from nilearn import datasets
     from nilearn.plotting import plot_surf_stat_map
 
+    global FONT_SCALE
+    FONT_SCALE = args.font_scale
     house_style()
     run, maps, baseline = resolve(args.columns, args.tier)
     print(f"run {run}; columns {', '.join(args.columns)}")
@@ -297,7 +310,7 @@ def main(argv: list[str] | None = None) -> int:
                 draw(ax, surfaces[(arm, key)], hemi, view)
         # One row label per arm, on the left edge.
         fig.text(0.012, 0.68 - 0.40 * r, {"expert": "Expert", "pipeline": "Pipeline"}[arm],
-                 rotation=90, va="center", ha="center", fontsize=6.5, color=INK)
+                 rotation=90, va="center", ha="center", fontsize=fs(6.5), color=INK)
 
     # The single fixed-pool baseline, drawn once and spanning both rows.
     for v, (hemi, view) in enumerate(panels):
@@ -311,11 +324,11 @@ def main(argv: list[str] | None = None) -> int:
     for c, key in enumerate(args.columns):
         w = unit * nview
         fig.text(x + w / 2, 0.90, PRETTY.get(key, key), ha="center", va="bottom",
-                 fontsize=6.5, color=INK, linespacing=1.25)
+                 fontsize=fs(6.5), color=INK, linespacing=1.25)
         x += w
     x += unit * width_ratios[ncol * nview]
     fig.text(x + unit * nview / 2, 0.90, "Search-only baseline\n(one map, all contrasts)",
-             ha="center", va="bottom", fontsize=6.5, color=INK, linespacing=1.25)
+             ha="center", va="bottom", fontsize=fs(6.5), color=INK, linespacing=1.25)
 
     # Similarity to the expert map, for the maps drawn here.
     label = "Dice" if args.metric == "dice" else "$R^2$"
@@ -328,9 +341,12 @@ def main(argv: list[str] | None = None) -> int:
         rb = similarity(maps[key]["expert"], baseline, args.metric, args.threshold)
         pipeline_vals[key] = rp
         print(f"    {key:12} pipeline {rp:.3f}   baseline {rb:.3f}")
-        fig.text(x + w / 2, 0.085,
-                 f"{label}  pipeline {rp:.2f}  \u00b7  baseline {rb:.2f}",
-                 ha="center", va="bottom", fontsize=5.6, color=MUTED)
+        # At deck font scale the long form runs into its neighbours -- three of these across
+        # three columns is already tight at 1.0. Compact it rather than let them overlap.
+        text = (f"{label}  pipeline {rp:.2f}  \u00b7  baseline {rb:.2f}" if FONT_SCALE <= 1.2
+                else f"{label} {rp:.2f} vs {rb:.2f}")
+        fig.text(x + w / 2, 0.085, text,
+                 ha="center", va="bottom", fontsize=fs(5.6), color=MUTED)
         x += w
     verify_pipeline(args.columns, pipeline_vals, args.metric, args.threshold)
 
@@ -344,7 +360,7 @@ def main(argv: list[str] | None = None) -> int:
     cb.set_ticklabels([f"{args.threshold:g}", f"\u2265{vmax:g}"])
     cb.outline.set_linewidth(0.4)
     cax.tick_params(labelsize=5.2, length=1.6, width=0.4, colors=MUTED, pad=1.5)
-    cax.set_title("z (FDR)", fontsize=5.2, color=MUTED, pad=2)
+    cax.set_title("z (FDR)", fontsize=fs(5.2), color=MUTED, pad=2)
 
     out = args.output_dir
     out.mkdir(parents=True, exist_ok=True)

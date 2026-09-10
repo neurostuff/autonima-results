@@ -52,6 +52,7 @@ from benchmark_exclusions import filter_rows  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
+DECK_OUT = REPO_ROOT / "reports" / "deck_figures"
 
 # Nature: single column 89mm, double column 183mm, max height 247mm.
 SINGLE_COL = 89 / 25.4
@@ -93,6 +94,25 @@ SHORT = {
     "vbm_of_substance_use": "Subst. use",
 }
 
+# Deck preset. Projected legibility needs type that is LARGER RELATIVE TO THE AXES -- scaling the
+# figure and its fonts together just yields the same picture at more pixels. So the deck preset
+# raises every font size and gives the figure extra HEIGHT to absorb it, keeping the column width
+# (and so the slide fit) unchanged. Publication output is untouched: preset "print" is the default
+# and both scales are 1.0.
+FONT_SCALE = 1.0
+HEIGHT_SCALE = 1.0
+
+
+def fs(size: float) -> float:
+    """A font size, scaled for the active preset."""
+    return size * FONT_SCALE
+
+
+def fh(inches: float) -> float:
+    """A figure height, scaled for the active preset."""
+    return inches * HEIGHT_SCALE
+
+
 INK, MUTED, RULE = "#1a1a1a", "#5a5a5a", "#c8c8c8"
 
 # From S1 in PAPER_OUTLINE.md, measured from per-stage token accounting (usage_total in
@@ -111,9 +131,9 @@ def house_style() -> None:
     plt.rcParams.update({
         "font.family": "sans-serif",
         "font.sans-serif": ["Helvetica", "Arial", "DejaVu Sans"],
-        "font.size": 6,
-        "axes.labelsize": 6.5, "axes.titlesize": 7,
-        "xtick.labelsize": 6, "ytick.labelsize": 6, "legend.fontsize": 6,
+        "font.size": fs(6),
+        "axes.labelsize": fs(6.5), "axes.titlesize": fs(7),
+        "xtick.labelsize": fs(6), "ytick.labelsize": fs(6), "legend.fontsize": fs(6),
         "axes.linewidth": 0.6, "axes.edgecolor": INK, "axes.labelcolor": INK,
         "axes.spines.top": False, "axes.spines.right": False,
         "xtick.color": INK, "ytick.color": INK,
@@ -128,7 +148,7 @@ def house_style() -> None:
 
 
 def panel_label(ax, letter: str, dx: float = -0.16, dy: float = 1.06) -> None:
-    ax.text(dx, dy, letter, transform=ax.transAxes, fontsize=8, fontweight="bold",
+    ax.text(dx, dy, letter, transform=ax.transAxes, fontsize=fs(8), fontweight="bold",
             va="top", ha="left", color=INK)
 
 
@@ -190,7 +210,7 @@ def figure2(out_dir: Path) -> None:
                     continue
 
     projects = [p for p in PROJECT_ORDER if len(surv.get(p, {})) == len(stages)]
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.4))
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.4)))
 
     # a: cumulative share of the gold standard still in play
     ax = axes[0]
@@ -225,7 +245,7 @@ def figure2(out_dir: Path) -> None:
             ends_a[i][0] = ends_a[i - 1][0] + gap_a
     for yy, txt, col, is_mean in ends_a:
         ax.annotate(txt, (len(stages) - 1, yy), textcoords="offset points",
-                    xytext=(4, -1.5), fontsize=5.6 if is_mean else 5.2,
+                    xytext=(4, -1.5), fontsize=fs(5.6) if is_mean else 5.2,
                     fontweight="bold" if is_mean else "normal", color=col,
                     annotation_clip=False)
     ax.set_xticks(range(len(stages)))
@@ -237,7 +257,7 @@ def figure2(out_dir: Path) -> None:
     ax.set_axisbelow(True)
     med_abs = st.median([(surv[p]["search"] - surv[p]["abstract"]) * 100 for p in projects])
     ax.text(0.03, 0.06, f"abstract screening costs a\nmedian {med_abs:.1f} points",
-            transform=ax.transAxes, fontsize=5.5, color=MUTED, linespacing=1.5)
+            transform=ax.transAxes, fontsize=fs(5.5), color=MUTED, linespacing=1.5)
     panel_label(ax, "a", dx=-0.20)
 
     # b: precision over the stages that change it
@@ -303,7 +323,7 @@ def figure3(out_dir: Path) -> None:
            and r["scope"] == "project" and r["mode_id"] == "combined"
            and r["project_name"] in DISPLAY and r["project_name"] != "dementia"]
 
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.6))
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.6)))
 
     # a: LLM parsing against a table-only baseline
     rows = []
@@ -385,7 +405,7 @@ def figure3(out_dir: Path) -> None:
         ax.annotate(SHORT[proj], (rec, prec), textcoords="offset points",
                     xytext=(5 if right else -5, 0), va="center",
                     ha="left" if right else "right",
-                    fontsize=5.2, color=COLORS[proj])
+                    fontsize=fs(5.2), color=COLORS[proj])
     ax.set_xlim(0.62, 1.02)
     ax.set_ylim(0, 1.02)
     ax.set_xlabel("Recall")
@@ -400,11 +420,11 @@ def figure3(out_dir: Path) -> None:
     ax.text(0.03, 0.055,
             "a random selector scores its own prevalence\n"
             f"at every recall; span = lift, mean {st.mean([p[2] / p[3] for p in pts]):.1f}x",
-            transform=ax.transAxes, ha="left", fontsize=5.2, color=MUTED, linespacing=1.5)
+            transform=ax.transAxes, ha="left", fontsize=fs(5.2), color=MUTED, linespacing=1.5)
     panel_label(ax, "b", dx=-0.24)
 
     fig.text(0.5, -0.06, "* dementia excluded from b: its gold analyses pool several studies each",
-             ha="center", fontsize=5.2, color=MUTED)
+             ha="center", fontsize=fs(5.2), color=MUTED)
     fig.subplots_adjust(wspace=0.42)
     save(fig, out_dir, "figure3_recover_and_select_analyses")
 
@@ -464,7 +484,7 @@ def figure4(out_dir: Path) -> None:
     known = [n for *_, n in pts if n]
     area = size_scale(known) if known else (lambda n: 13.0)
 
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.5),
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.5)),
                              gridspec_kw={"width_ratios": [1.15, 1]})
 
     # a: every column, autonima against its own best baseline
@@ -478,7 +498,7 @@ def figure4(out_dir: Path) -> None:
     ax.set_xlim(0, 1); ax.set_ylim(0, 1)
     ax.set_xlabel(f"Best baseline {axis}"); ax.set_ylabel(f"Pipeline {axis}")
     ax.set_aspect("equal")
-    ax.text(0.04, 0.93, "above the line =\npipeline better", fontsize=5.5, color=MUTED,
+    ax.text(0.04, 0.93, "above the line =\npipeline better", fontsize=fs(5.5), color=MUTED,
             transform=ax.transAxes, va="top")
     ax.grid(alpha=0.6); ax.set_axisbelow(True)
     if known:
@@ -490,7 +510,7 @@ def figure4(out_dir: Path) -> None:
                           markersize=area(n) ** 0.5, label=f"{n:,}") for n in keys]
         key = ax.legend(handles=handles, loc="lower right", title="Analyses pooled",
                         labelspacing=0.85, borderpad=0.5, handletextpad=0.7,
-                        fontsize=5.2, title_fontsize=5.2, borderaxespad=0.4)
+                        fontsize=fs(5.2), title_fontsize=fs(5.2), borderaxespad=0.4)
         key.get_title().set_color(MUTED)
         for t in key.get_texts():
             t.set_color(MUTED)
@@ -514,7 +534,7 @@ def figure4(out_dir: Path) -> None:
         ax.text(0.03, 0.96,
                 f"$\\Delta$ = {mean:+.3f}\n95% CI [{lo:+.3f}, {hi:+.3f}]\n"
                 f"sign test $P$ = {float(s['sign_test_p']):.1e}",
-                transform=ax.transAxes, va="top", fontsize=5.5, color=INK, linespacing=1.5)
+                transform=ax.transAxes, va="top", fontsize=fs(5.5), color=INK, linespacing=1.5)
     panel_label(ax, "b", dx=-0.18)
 
     handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.2,
@@ -564,7 +584,7 @@ def figure5(out_dir: Path) -> None:
     rows.sort(key=lambda r: (rank.get(r["project"], 99), -r["delta"]))
 
     fig, axes = plt.subplots(
-        1, 2, figsize=(DOUBLE_COL, 0.115 * len(rows) + 1.05),
+        1, 2, figsize=(DOUBLE_COL, fh(0.115 * len(rows)) + 1.05),
         gridspec_kw={"width_ratios": [1.5, 1]})
 
     # a: every column against its own size-matched null
@@ -581,7 +601,7 @@ def figure5(out_dir: Path) -> None:
     ax.set_yticklabels(
         [f"{SHORT.get(r['project'], r['project'])} \u00b7 "
          f"{pretty_column(r['project'], r['manual_column'])}" for r in reversed(rows)],
-        fontsize=4.6)
+        fontsize=fs(4.6))
     ax.tick_params(axis="y", length=0, pad=1.5)
     ax.set_ylim(-0.8, len(rows) - 0.2)
     ax.set_xlim(0, 1)
@@ -615,10 +635,10 @@ def figure5(out_dir: Path) -> None:
     beat = sum(1 for r in rows if r["p_value"] < 0.05)
     ax.text(0.98, 0.02,
             f"median {st.median(gains):+.3f}\n{beat}/{len(rows)} columns $P$ < 0.05",
-            transform=ax.transAxes, ha="right", va="bottom", fontsize=5.5, color=MUTED,
+            transform=ax.transAxes, ha="right", va="bottom", fontsize=fs(5.5), color=MUTED,
             linespacing=1.5)
     ax.text(0.02, 0.985, "vertical rule = project median", transform=ax.transAxes,
-            ha="left", va="top", fontsize=5.2, color=MUTED)
+            ha="left", va="top", fontsize=fs(5.2), color=MUTED)
     panel_label(ax, "b", dx=-0.30)
 
     fig.subplots_adjust(wspace=0.52)
@@ -677,7 +697,7 @@ def figureS2(out_dir: Path) -> None:
 
     vm, mb = seg("verbatim", "manual"), seg("manual", "best")
 
-    fig, ax = plt.subplots(figsize=(SINGLE_COL, 2.9))
+    fig, ax = plt.subplots(figsize=(SINGLE_COL, fh(2.9)))
     ends, all_y = [], []
     for proj in PROJECT_ORDER:
         m = means.get(proj)
@@ -721,11 +741,11 @@ def figureS2(out_dir: Path) -> None:
     for x, y, proj, c in ends:
         txt = f"mean ({len(complete)})" if proj == "_mean" else SHORT.get(proj, proj)
         ax.annotate(txt, (x, y), textcoords="offset points", xytext=(5, 0),
-                    fontsize=4.8, color=c, va="center", annotation_clip=False,
+                    fontsize=fs(4.8), color=c, va="center", annotation_clip=False,
                     fontweight="bold" if proj == "_mean" else "normal")
 
     ax.set_xticks(range(len(TIER_ORDER)))
-    ax.set_xticklabels([LABEL[t] for t in TIER_ORDER], linespacing=1.25, fontsize=5.4)
+    ax.set_xticklabels([LABEL[t] for t in TIER_ORDER], linespacing=1.25, fontsize=fs(5.4))
     ax.set_xlim(-0.35, len(TIER_ORDER) - 0.22)
     lo, hi = min(all_y), max(all_y)
     ax.set_ylim(lo - 0.10 * (hi - lo), hi + 0.30 * (hi - lo))
@@ -742,10 +762,10 @@ def figureS2(out_dir: Path) -> None:
                     arrowprops=dict(arrowstyle="<->", lw=0.6, color=MUTED, shrinkA=0, shrinkB=0))
         txt = f"{lab}\nmean {st.mean(deltas):+.3f} (n={len(deltas)})" if deltas else lab
         ax.text((x0 + x1) / 2, band - 0.012 * (y1 - y0), txt, ha="center", va="top",
-                fontsize=4.9, color=MUTED, linespacing=1.35)
+                fontsize=fs(4.9), color=MUTED, linespacing=1.35)
 
     ax.text(0.98, 0.03, "open circle = one run registered at several tiers",
-            transform=ax.transAxes, va="bottom", ha="right", fontsize=4.6, color=MUTED)
+            transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(4.6), color=MUTED)
     save(fig, out_dir, "figureS2_tier_progression")
 
 
@@ -816,7 +836,7 @@ def figureS4(out_dir: Path) -> None:
             if len(means) > 1:
                 overall_range[arm] = (min(means), max(means))
 
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.7),
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.7)),
                              gridspec_kw={"width_ratios": [1.25, 1]})
 
     # a: per-project means for the three arms, ordered by how well NeuroQuery does
@@ -858,7 +878,7 @@ def figureS4(out_dir: Path) -> None:
     ax.set_xlabel("Mean $R^2$ against the expert map")
     ax.set_xlim(0, 1.12)
     ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
-    ax.legend(loc="lower right", fontsize=5.0, handlelength=1.1, handletextpad=0.4,
+    ax.legend(loc="lower right", fontsize=fs(5.0), handlelength=1.1, handletextpad=0.4,
               borderaxespad=0.5)
     # The two projects where NeuroQuery is not near zero are the two whose columns are closest to
     # being plain terms, which is the point of ordering the panel this way.
@@ -921,7 +941,7 @@ def figureS4(out_dir: Path) -> None:
                      f"{groups[0][1][1] / groups[0][1][0]:.1f}$\\times$ on $R^2$, "
                      f"{groups[1][1][1] / groups[1][1][0]:.1f}$\\times$ ranked")
         ax.text(0.5, 0.985, "\n".join(lines), transform=ax.transAxes, ha="center", va="top",
-                fontsize=4.6, color=INK, linespacing=1.5)
+                fontsize=fs(4.6), color=INK, linespacing=1.5)
     panel_label(ax, "b", dx=-0.26)
 
     fig.subplots_adjust(wspace=0.42)
@@ -983,7 +1003,7 @@ def figureS3(out_dir: Path) -> None:
         print("  figureS3: no project has both pools; skipped")
         return
 
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.5),
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.5)),
                              gridspec_kw={"width_ratios": [1.1, 1]})
     xs = range(len(STAGES))
 
@@ -1004,7 +1024,7 @@ def figureS3(out_dir: Path) -> None:
     ax.text(0.02, 0.98,
             f"shaded = pool contribution\nat full-text screening: {m_f[-1] - m_s[-1]:+.3f} "
             f"precision\n({m_s[-1]:.3f} search pool \u2192 {m_f[-1]:.3f} fixed)",
-            transform=ax.transAxes, ha="left", va="top", fontsize=5.2, color=INK,
+            transform=ax.transAxes, ha="left", va="top", fontsize=fs(5.2), color=INK,
             linespacing=1.5)
     ax.set_xticks(list(xs)); ax.set_xticklabels(LABELS)
     ax.set_xlim(-0.2, len(STAGES) - 0.35)
@@ -1037,13 +1057,13 @@ def figureS3(out_dir: Path) -> None:
     ax.set_ylim(lo, hi + 0.30 * (hi - lo))
     ax.set_ylabel("Fixed pool \u2212 search pool")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
-    ax.legend(loc="lower right", fontsize=5.2, handlelength=1.0, handletextpad=0.4,
+    ax.legend(loc="lower right", fontsize=fs(5.2), handlelength=1.0, handletextpad=0.4,
               borderaxespad=0.4)
     ax.text(0.02, 0.98,
             "precision rises at every stage;\nrecall unchanged from abstract on.\n"
             "The search-stage recall dip is one\nproject and is a corpus difference,\n"
             "not a screening result.",
-            transform=ax.transAxes, ha="left", va="top", fontsize=4.9, color=MUTED,
+            transform=ax.transAxes, ha="left", va="top", fontsize=fs(4.9), color=MUTED,
             linespacing=1.45)
     panel_label(ax, "b", dx=-0.19)
 
@@ -1061,7 +1081,7 @@ def figureS3(out_dir: Path) -> None:
 
 def figureS1(out_dir: Path) -> None:
     """Measured cost per call, split by what is actually being paid for."""
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 2.0),
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.0)),
                             gridspec_kw={"width_ratios": [1, 1]})
 
     names = [c[0] for c in COST_PER_STAGE]
@@ -1085,7 +1105,7 @@ def figureS1(out_dir: Path) -> None:
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     ax.legend(loc="upper left", handlelength=1.0, handletextpad=0.4)
     ax.text(0.02, 0.60, "output dominates\nthe cheap stage", transform=ax.transAxes,
-            fontsize=5.5, color=MUTED, va="top", linespacing=1.5)
+            fontsize=fs(5.5), color=MUTED, va="top", linespacing=1.5)
     panel_label(ax, "a", dx=-0.20)
 
     # b: output share -- the counter-intuitive part, and the one actionable lever
@@ -1097,7 +1117,7 @@ def figureS1(out_dir: Path) -> None:
     ax.set_ylim(0, 100)
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     for i, v in enumerate(share):
-        ax.text(i, v + 2.5, f"{v:.0f}%", ha="center", fontsize=5.5, color=INK)
+        ax.text(i, v + 2.5, f"{v:.0f}%", ha="center", fontsize=fs(5.5), color=INK)
     panel_label(ax, "b", dx=-0.20)
 
     fig.subplots_adjust(wspace=0.34)
@@ -1113,10 +1133,20 @@ FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
+    ap.add_argument("--preset", choices=("print", "deck"), default="print",
+                    help="print = Nature specs (default). deck = larger type for projection, "
+                         "written to reports/deck_figures so publication output is never "
+                         "overwritten.")
+    ap.add_argument("--output-dir", type=Path, default=None)
     ap.add_argument("--only", nargs="*", choices=sorted(FIGURES), metavar="FIG",
                     help=f"figures to build, from {' '.join(sorted(FIGURES))} (default: all)")
     args = ap.parse_args()
+
+    global FONT_SCALE, HEIGHT_SCALE
+    if args.preset == "deck":
+        FONT_SCALE, HEIGHT_SCALE = 1.55, 1.28
+    out_dir = args.output_dir or (DEFAULT_OUT if args.preset == "print" else DECK_OUT)
+    args.output_dir = out_dir
 
     house_style()
     wanted = args.only or sorted(FIGURES)
