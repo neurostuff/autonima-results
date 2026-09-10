@@ -142,7 +142,13 @@ def main(argv: list[str] | None = None) -> int:
         if v:
             print(f"  mean {stage:<11} precision {st.mean(v):.3f}   recall {st.mean(rc):.3f}"
                   f"   (n={len(v)})")
-    print(f"  wrote {args.output.relative_to(REPO_ROOT)}")
+    # relative_to raises when --output is relative or outside the repo, which is the normal case
+    # for a scratch run; fall back to the path as given rather than crashing after the work.
+    try:
+        shown = args.output.resolve().relative_to(REPO_ROOT)
+    except ValueError:
+        shown = args.output
+    print(f"  wrote {shown}")
     return 0
 
 

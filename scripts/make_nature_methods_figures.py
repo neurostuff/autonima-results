@@ -1115,15 +1115,25 @@ def figureS3(out_dir: Path) -> None:
     stage the two arms are different corpora by construction, which is why emotion regulation
     reads -0.261 there and ~0 at every later stage.
     """
-    STAGES = ["search", "abstract", "fulltext"]
-    LABELS = ["Search", "Abstract\nscreening", "Full-text\nscreening"]
-    SEARCH_FILE = "screening_metrics_top_v_stage_progression.csv"
-    FIXED_FILE = "screening_metrics_top_v_allstudies_stage_progression.csv"
+    STAGES = ["search", "abstract", "fulltext", "annotation"]
+    LABELS = ["Search", "Abstract\nscreening", "Full-text\nscreening", "Annotation"]
+    # Both arms now come from compute_stage_precision_recall.py rather than the older
+    # cross_project_screening tables, so the annotation stage is available and both metrics come
+    # from one source. Verified identical to the committed tables on all 36 shared stage-values.
+    SEARCH_FILE = REPO_ROOT / "reports" / "stage_precision_recall.csv"
+    FIXED_FILE = REPO_ROOT / "reports" / "stage_precision_recall_allstudies.csv"
 
-    prec_s, prec_f = (_screening_metric(SEARCH_FILE, "precision"),
-                      _screening_metric(FIXED_FILE, "precision"))
-    rec_s, rec_f = (_screening_metric(SEARCH_FILE, "recall"),
-                    _screening_metric(FIXED_FILE, "recall"))
+    def series(path: Path, metric: str) -> dict[str, dict[str, float]]:
+        out: dict[str, dict[str, float]] = collections.defaultdict(dict)
+        if not path.exists():
+            return out
+        for r in read(path):
+            if r.get(metric) not in ("", None):
+                out[r["project"]][r["stage"]] = float(r[metric])
+        return out
+
+    prec_s, prec_f = series(SEARCH_FILE, "precision"), series(FIXED_FILE, "precision")
+    rec_s, rec_f = series(SEARCH_FILE, "recall"), series(FIXED_FILE, "recall")
     projects = [p for p in PROJECT_ORDER
                 if all(p in d for d in (prec_s, prec_f, rec_s, rec_f))
                 and all(st_ in prec_s[p] and st_ in prec_f[p] for st_ in STAGES)]
@@ -1150,20 +1160,21 @@ def figureS3(out_dir: Path) -> None:
     ax.plot(xs, m_f, marker="o", ms=4.0, mec="white", mew=0.5, ls=":",
             **{k: v for k, v in MEAN_KW.items() if k != "solid_capstyle"})
     ax.text(0.02, 0.98,
-            f"shaded = pool contribution\nat full-text screening: {m_f[-1] - m_s[-1]:+.3f} "
-            f"precision\n({m_s[-1]:.3f} search pool \u2192 {m_f[-1]:.3f} fixed)",
+            f"shaded = pool contribution\nat {LABELS[-1].replace(chr(10), ' ').lower()}: "
+            f"{m_f[-1] - m_s[-1]:+.3f} precision\n"
+            f"({m_s[-1]:.3f} search pool \u2192 {m_f[-1]:.3f} fixed)",
             transform=ax.transAxes, ha="left", va="top", fontsize=fs(5.2), color=INK,
             linespacing=1.5)
     ax.set_xticks(list(xs)); ax.set_xticklabels(LABELS)
     ax.set_xlim(-0.2, len(STAGES) - 0.35)
-    ax.set_ylim(0, 0.78)
+    ax.set_ylim(0, 0.92)
     ax.set_ylabel("Precision vs expert inclusion list")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     panel_label(ax, "a", dx=-0.19)
 
     # b: the paired deltas, precision against recall
     ax = axes[1]
-    width = 0.17
+    width = 0.15
     for j, (label, ds, df, colour) in enumerate((
             ("precision", prec_s, prec_f, "#0072B2"),
             ("recall", rec_s, rec_f, "#D55E00"))):
@@ -1180,17 +1191,17 @@ def figureS3(out_dir: Path) -> None:
     ax.axhline(0, color=INK, lw=0.6, zorder=3)
     ax.set_xticks(list(xs)); ax.set_xticklabels(LABELS)
     ax.set_xlim(-0.5, len(STAGES) - 0.5)
-    # Headroom above the tallest precision point so the note clears it.
+    # Headroom above the tallest precision point so the six-line note clears it.
     lo, hi = ax.get_ylim()
-    ax.set_ylim(lo, hi + 0.30 * (hi - lo))
+    ax.set_ylim(lo, hi + 0.72 * (hi - lo))
     ax.set_ylabel("Fixed pool \u2212 search pool")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     ax.legend(loc="lower right", fontsize=fs(5.2), handlelength=1.0, handletextpad=0.4,
               borderaxespad=0.4)
     ax.text(0.02, 0.98,
-            "precision rises at every stage;\nrecall unchanged from abstract on.\n"
-            "The search-stage recall dip is one\nproject and is a corpus difference,\n"
-            "not a screening result.",
+            "precision rises at every stage. Recall is\nflat through screening, then falls at\n"
+            "annotation \u2014 where a lost GOLD paper is a\nparsing or annotation miss, not a paper\n"
+            "without data. The search-stage dip is one\nproject and is a corpus difference.",
             transform=ax.transAxes, ha="left", va="top", fontsize=fs(4.9), color=MUTED,
             linespacing=1.45)
     panel_label(ax, "b", dx=-0.19)
