@@ -9,6 +9,8 @@ screening judgement:
 
     never returned by the search      the query missed it; no screener ever saw it
     full text not obtainable          a supply event, not a decision
+    full text obtained but INCOMPLETE the screener got title/abstract only and could not
+                                      verify the criteria; a late-detected retrieval failure
     no coordinates parsed             the paper is in, but there is nothing to annotate
 
 Those are availability, not judgement. The denominator here removes each one at the stage where
@@ -18,8 +20,22 @@ wants answered: of the gold studies this stage COULD have kept, how many did it 
     stage        denominator                                    removes
     search       gold the search returned                       gold the query never returned
     abstract     same as search (no new supply loss)            --
-    fulltext     ... minus gold whose full text we never got    retrieval failures
+    fulltext     ... minus gold with no usable full text        retrieval failures AND
+                                                                `fulltext_incomplete`
     annotation   ... minus gold that parsed to zero analyses    nothing to annotate
+
+WHY `fulltext_incomplete` COUNTS AS SUPPLY
+
+The retrieval stage flags `fulltext_available`, and that flag OVERSTATES what the screener
+received: 43 gold studies across the corpus were marked available and then screened with only
+title, abstract and metadata (or after an API error), so the screener recorded
+`fulltext_incomplete` and could not verify the inclusion criteria. Those are retrieval failures
+detected one stage late, not judgements, and charging them to full-text screening is exactly the
+mistake this script exists to avoid. It is not a rounding detail: 43 of the 68 gold studies lost
+at full-text screening are of this kind, and in executive_function 24 of 25 are -- that project's
+full-text recall reads 0.626 with them charged and 0.807 with them removed.
+
+Genuine `excluded_fulltext` decisions stay charged. Corpus-wide there are 25 of those.
 
 Search is therefore 1.000 by construction: it is a pure supply stage. Abstract shares its
 denominator because nothing becomes unavailable in between.
@@ -82,6 +98,27 @@ def parsed_pmids(outputs: Path) -> set[str] | None:
     return out or None
 
 
+def incomplete_fulltext_pmids(outputs: Path) -> set[str] | None:
+    """PMIDs the full-text screener saw without usable full text.
+
+    `fulltext_incomplete` means the retriever reported the text as available but delivered
+    title/abstract/metadata only, or errored, so the screener could not check the inclusion
+    criteria and recorded that rather than a judgement. Treating these as rejections blames
+    screening for a retrieval failure noticed one stage late.
+    """
+    path = outputs / "fulltext_screening_results.json"
+    if not path.exists():
+        return None
+    try:
+        rows = json.loads(path.read_text()).get("screening_results")
+    except ValueError:
+        return None
+    if not rows:
+        return None
+    return {str(r.get("study_id")).strip() for r in rows
+            if isinstance(r, dict) and str(r.get("decision")) == "fulltext_incomplete"}
+
+
 def stage_rows(project: str, run: Path, gold: set[str]) -> list[dict]:
     """Attainable-denominator recall for one project, or [] if an artifact is missing."""
     outputs = run / "outputs"
@@ -89,7 +126,9 @@ def stage_rows(project: str, run: Path, gold: set[str]) -> list[dict]:
     search, abstract = alive.get("search"), alive.get("abstract")
     retrieval, fulltext = alive.get("retrieval"), alive.get("fulltext")
     parsed, annotated = parsed_pmids(outputs), annotated_pmids(outputs)
-    if any(s is None for s in (search, abstract, retrieval, fulltext, parsed, annotated)):
+    incomplete = incomplete_fulltext_pmids(outputs)
+    if any(s is None for s in (search, abstract, retrieval, fulltext, parsed, annotated,
+                               incomplete)):
         return []
 
     # Cumulative gold survivors, one stage at a time.
@@ -100,17 +139,18 @@ def stage_rows(project: str, run: Path, gold: set[str]) -> list[dict]:
     g_parsed = g_full & parsed
     g_annot = g_full & annotated
 
-    lost_retrieval = len(g_abs) - len(g_retr)      # supply: no full text
-    lost_parsing = len(g_full) - len(g_parsed)     # supply: nothing to annotate
+    lost_retrieval = len(g_abs) - len(g_retr)          # supply: no full text at all
+    lost_incomplete = len(g_retr & incomplete)         # supply: text too thin to screen
+    lost_parsing = len(g_full) - len(g_parsed)         # supply: nothing to annotate
 
     d_search = d_abs = len(g_search)
-    d_full = d_abs - lost_retrieval
+    d_full = d_abs - lost_retrieval - lost_incomplete
     d_annot = d_full - lost_parsing
 
     per_stage = [
         ("search", len(g_search), d_search, 0),
         ("abstract", len(g_abs), d_abs, 0),
-        ("fulltext", len(g_full), d_full, lost_retrieval),
+        ("fulltext", len(g_full), d_full, lost_retrieval + lost_incomplete),
         ("annotation", len(g_annot), d_annot, lost_parsing),
     ]
     rows = []

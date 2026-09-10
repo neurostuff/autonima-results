@@ -407,11 +407,12 @@ def figure2(out_dir: Path) -> None:
 def figure2recall(out_dir: Path) -> None:
     """Figure 2 with recall on an attainable denominator instead of the whole gold list.
 
-    Panel a of figure2/figure2alt divides every stage by all gold studies, which bills three
+    Panel a of figure2/figure2alt divides every stage by all gold studies, which bills four
     availability failures to screening judgement: a study the query never returned, one whose
-    full text we could not obtain, and one that parsed to zero analyses. This panel removes each
-    at the stage where it happens and removes nothing else, so each point answers "of the gold
-    studies this stage could have kept, how many did it keep?".
+    full text we could not obtain, one whose full text arrived too thin to screen
+    (`fulltext_incomplete`), and one that parsed to zero analyses. This panel removes each at the
+    stage where it happens and removes nothing else, so each point answers "of the gold studies
+    this stage could have kept, how many did it keep?".
 
     Judgement losses stay charged -- a study rejected at abstract or full-text screening, or
     parsed and then assigned to no construct, stays in the denominator. That is why the
@@ -419,12 +420,21 @@ def figure2recall(out_dir: Path) -> None:
     everything full-text screening discarded and would forgive every full-text rejection.
     scripts/compute_attainable_recall.py builds it and documents the arithmetic.
 
-    What it changes. Annotation recall is the headline: mean 0.479 on the raw denominator
-    against 0.779 attainable, so more than half of the apparent annotation loss is papers with
-    nothing to annotate rather than annotation failing. Full-text goes 0.728 -> 0.889 and
-    abstract 0.833 -> 0.970. The ordering across projects is largely preserved, so this does not
-    rescue a weak project: executive_function is still last at 0.568 and its abstract stage
-    still loses 15 gold studies to judgement, which no denominator forgives.
+    What it changes, raw -> attainable: abstract 0.833 -> 0.970, full-text 0.728 -> 0.926,
+    annotation 0.479 -> 0.818. Annotation is the headline -- most of the apparent annotation loss
+    is papers with nothing to annotate rather than annotation failing.
+
+    The full-text stage moved most when `fulltext_incomplete` was reclassified as supply, which
+    it plainly is: the retriever reported the text as available, then handed the screener title
+    and abstract only. 43 of the 68 gold studies lost at full-text screening corpus-wide are of
+    that kind against 25 genuine exclusions, and executive_function is the extreme -- 24 of its
+    25, taking its full-text recall from 0.626 to 0.807. Note that this makes
+    gold_survival_by_stage.csv's `retrieval` stage, which figure2 still plots, optimistic by
+    those 43 studies; it counts `fulltext_available` rather than usable text.
+
+    This does not rescue a weak project. executive_function is still lowest at full text (0.807)
+    because its abstract stage loses 15 gold studies to judgement, and those stay charged
+    against a denominator that has shrunk, which is why its recall keeps falling.
 
     Search sits at 1.000 by construction -- it is a pure supply stage -- and is kept on the axis
     so the renormalisation is visible. The corpus ceiling it used to carry is stated in the

@@ -90,12 +90,23 @@ availability failure at the stage where it happens and nothing else:
 |---|---|---|
 | search | gold the search returned | gold the query never returned |
 | abstract | same as search | — (nothing becomes unavailable in between) |
-| fulltext | … minus gold whose full text we never obtained | retrieval failures |
+| fulltext | … minus gold with no *usable* full text | retrieval failures **and `fulltext_incomplete`** |
 | annotation | … minus gold that parsed to zero analyses | nothing to annotate |
 
 Mean recall by stage, attainable vs raw: search 1.000/0.858, abstract 0.970/0.833, fulltext
-0.889/0.728, **annotation 0.779/0.479**. The annotation line is the one worth quoting — more than
-half of the apparent annotation loss is papers with nothing to annotate, not annotation failing.
+0.926/0.728, **annotation 0.818/0.479**. The annotation line is the one worth quoting — most of the
+apparent annotation loss is papers with nothing to annotate, not annotation failing.
+
+**`fulltext_incomplete` is a retrieval failure detected one stage late, and it is not small.** The
+retrieval stage counts `fulltext_available`, which overstates what the screener received: the
+retriever reports the text as available and then hands over title and abstract only (or errors), so
+the screener records `fulltext_incomplete` and cannot verify the criteria. Corpus-wide **43 of the
+68 gold studies lost at full-text screening are of this kind, against 25 genuine exclusions.**
+`executive_function` is the extreme — 24 of its 25 — which is what made its abstract→full-text drop
+look like a screening failure; its full-text recall is 0.626 with them charged and 0.807 without.
+
+*Consequence for Figure 2:* the `retrieval` stage it plots is optimistic by those 43 studies, since
+it counts availability rather than usable text. Worth fixing or caveating before submission.
 
 **Judgement losses stay charged.** Only availability leaves the denominator: a study rejected at
 abstract or full-text screening, or parsed and then assigned to no construct, stays in it. This is
