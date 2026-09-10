@@ -1,5 +1,5 @@
 ---
-title: "AutoNIMA: a harness for LLM-automated neuroimaging meta-analysis"
+title: "Selecting analyses, not papers: a large language model harness for automated neuroimaging meta-analysis"
 subtitle: "Nature Methods — Article. Target 3,000 words, 6 display items, ~50 references."
 date: "Draft — 2026-09-10"
 ---
@@ -21,6 +21,21 @@ Alejandro de la Vega^1^, James D. Kent^1^, Nicholas Lee^1^, Thomas E. Nichols^2,
 
 Correspondence: Alejandro de la Vega (delavega@utexas.edu)
 :::
+
+> **BRIEF — title.** Current: *Selecting analyses, not papers: a large language model harness for
+> automated neuroimaging meta-analysis.* The first clause carries the finding, the second is
+> harness-first; "large language model" is spelled out rather than LLM for formality. Variants
+> if you want the evaluation more explicit:
+>
+> - …harness for neuroimaging meta-analysis, **evaluated against nine expert syntheses** (longer,
+>   but states the evidence in the title)
+> - …harness for neuroimaging meta-analysis, **benchmarked against expert syntheses** (shorter
+>   version of the same)
+>
+> Deliberately avoids leading with a gerund ("Evaluating a…"), which reads as a study *of* a
+> method rather than a method — the skeleton's framing note is that the evaluation is the proof,
+> not the subject (`NATURE_METHODS_SKELETON.md:33`). AutoNIMA is dropped from the title but kept
+> as the system name in the abstract and introduction, as with Neuroscout and Neurosynth Compose.
 
 > **BRIEF — author block needs confirming.** Affiliations are carried across from Kent et al.
 > (2026, *Imaging Neuroscience*), the most recent paper this group shares, so they are current as
