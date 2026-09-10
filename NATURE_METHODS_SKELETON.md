@@ -251,6 +251,37 @@ State the aggregation dependence in one sentence, because it reverses the conclu
 gives precision 0.863 / recall 0.810 (precision-heavy), exhausted-manual gives 0.540 / 0.809
 (recall-heavy). Naming the variant is not optional.
 
+### Figure 3b alternate — annotation in ROC space  **[try, 2026-09-09]**
+
+`--only 3alt` → `figure3alt_annotation_roc`. Panel a unchanged; panel b redrawn.
+
+**The readability problem with the PR version is structural, not cosmetic.** A random selector's
+precision equals *that project's* prevalence, and prevalence ranges 0.104 to 0.345 here — so the
+panel needs **nine different no-skill levels**, and the reader has to find the right one before
+any point means anything. In ROC space there is one chance locus for every project (the
+diagonal), because a random selector has TPR = FPR whatever the prevalence. Lift becomes vertical
+distance from a single line.
+
+**The null needed almost no compute, contrary to expectation.** A size-matched random selector —
+one picking the same *k* of *N* analyses annotation picked — lands at exactly **(k/N, k/N)**:
+both coordinates reduce to the selection fraction, since E[TPR] = k/N and
+E[FPR] = k(1 − P/N)/(N − P) = k/N. So each project's own null is a specific point *on* the
+diagonal, computed in closed form. Only the spread needs a distribution, and that is
+hypergeometric — exact, not sampled. No Monte Carlo anywhere.
+
+**Result: mean TPR − FPR = 0.68 against 0 for chance, and every project is above the line.** The
+null bands are narrow (median width 0.021 in FPR); the two exceptions are the small projects and
+the figure shows them honestly — dementia 0.078 and `vbm_of_ptsd` 0.133 off N = 40.
+
+**Worth adopting for a second reason:** it is the same size-matched-null idea as Figure 5, in a
+different space. The paper would then use one concept for "beat an arbitrary selection of the
+same size" in both places, which is easier to explain once than twice.
+
+**What is lost.** The PR version's reordering insight goes with it — that social's 0.618
+precision is the *lowest* lift at 1.8× because its prevalence is highest, while
+`vbm_of_substance_use` turns a similar 0.584 into 5.6× off a prevalence of 0.104. That point is
+worth keeping in the text if 3b moves to ROC.
+
 ### Result 4 — The whole pipeline beats a search-only synthesis — **Figure 4** (~350 w)
 
 §7, the headline. 35 columns, autonima against the strongest baseline a competent practitioner

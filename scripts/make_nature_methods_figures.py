@@ -514,6 +514,144 @@ def figure3(out_dir: Path) -> None:
     save(fig, out_dir, "figure3_recover_and_select_analyses")
 
 
+# ----------------------------------------------------------------- Figure 3 (alternate 3b)
+
+def figure3alt(out_dir: Path) -> None:
+    """Figure 3 with annotation redrawn in ROC space instead of precision-recall space.
+
+    WHY TRY THIS
+
+    The PR version needs a SEPARATE no-skill level per project, because a random selector's
+    precision equals that project's prevalence and prevalence ranges 0.104 to 0.345 here. Nine
+    baselines on one panel is the readability problem: the eye has to find the right rule for
+    each point before the lift means anything.
+
+    In ROC space there is one chance locus for every project -- the diagonal -- because a random
+    selector has TPR = FPR whatever the prevalence. The lift becomes vertical distance from a
+    single line, which is what makes it readable at a glance.
+
+    THE NULL IS ANALYTIC, NOT SIMULATED
+
+    A size-matched random selector -- one that picks the same number of analyses k out of N that
+    annotation picked -- lands at exactly (k/N, k/N). Both coordinates reduce to the selection
+    fraction: E[TPR] = k/N, and E[FPR] = k(1 - P/N)/(N - P) = k/N. So each project's own null
+    point is a specific spot ON the diagonal, and no Monte Carlo is needed for the location.
+
+    Only the spread needs a distribution, and that is hypergeometric in closed form, so it is
+    exact rather than sampled. Those bands turn out to be narrow -- median width 0.021 in FPR --
+    with the two small projects the exceptions (dementia 0.078, vbm_of_ptsd 0.133 off N = 40).
+    Drawing them is honest about where the small-N cases are soft.
+
+    This is the same size-matched-null logic as Figure 5, in a different space, which is worth a
+    clause: the paper then uses one idea for "beat an arbitrary selection of the same size" in
+    both places.
+    """
+    parse = read(REPO_ROOT / "reports" / "cross_project_analysis" / "parsing_metrics_by_project.csv")
+    ann = [r for r in read(REPO_ROOT / "reports" / "cross_project_analysis"
+                           / "annotation_aggregates.csv")
+           if r["level"] == "analysis" and r["variant"] == "exhausted_manual_assumption"
+           and r["scope"] == "project" and r["mode_id"] == "combined"
+           and r["project_name"] in DISPLAY]
+    if not ann:
+        print("  figure3alt: no annotation rows; skipped")
+        return
+    from scipy.stats import hypergeom
+
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.75)),
+                             gridspec_kw={"width_ratios": [1.05, 1]})
+
+    # a: unchanged from Figure 3 -- parsing recovery against a table-only baseline.
+    ax = axes[0]
+    rows = []
+    for r in parse:
+        try:
+            rows.append((r["project_name"], float(r["manual_matched_pct"]) * 100,
+                         float(r["table_only_baseline_matched_pct"]) * 100))
+        except (ValueError, KeyError):
+            continue
+    rows.sort(key=lambda z: z[1])
+    for i, (proj, llm, tab) in enumerate(rows):
+        ax.plot([tab, llm], [i, i], color=RULE, lw=1.5, zorder=1)
+        ax.scatter([tab], [i], s=15, color="#7F7F7F", zorder=3, edgecolors="white", linewidths=0.3)
+        ax.scatter([llm], [i], s=15, color=COLORS.get(proj, "#7F7F7F"), zorder=3,
+                   edgecolors="white", linewidths=0.3)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels([DISPLAY.get(p, p) for p, _, _ in rows])
+    ax.set_ylim(-0.7, len(rows) - 0.3)
+    ax.set_xlim(0, 105)
+    ax.set_xlabel("Expert analyses recovered (%)")
+    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
+    pooled_llm = st.mean([llm for _, llm, _ in rows])
+    pooled_tab = st.mean([tab for _, _, tab in rows])
+    ax.legend(handles=[Line2D([], [], marker="o", ls="", color="#7F7F7F", markersize=3.4,
+                              label=f"Tables only ({pooled_tab:.0f}%)"),
+                       Line2D([], [], marker="o", ls="", color=INK, markersize=3.4,
+                              label=f"LLM parsing ({pooled_llm:.0f}%)")],
+              loc="lower right", handletextpad=0.3, fontsize=fs(5.6))
+    panel_label(ax, "a", dx=-0.40)
+
+    # b: annotation in ROC space, each project against its own size-matched null
+    ax = axes[1]
+    ax.plot([0, 1], [0, 1], color=RULE, lw=0.8, zorder=1)
+    js, labels = [], []
+    for r in sorted(ann, key=lambda r: float(r["recall"])):
+        proj = r["project_name"]
+        tp, fp, fn, tn = (int(float(r[k])) for k in ("tp", "fp", "fn", "tn"))
+        N, P, k = tp + fp + fn + tn, tp + fn, tp + fp
+        if not (N and P and (N - P)):
+            continue
+        tpr, fpr = tp / P, fp / (N - P)
+        js.append(tpr - fpr)
+        c = COLORS.get(proj, "#7F7F7F")
+        null = k / N
+        # Exact hypergeometric 5-95% for the number of true positives a size-matched random
+        # draw would capture, mapped onto FPR.
+        lo_tp, hi_tp = hypergeom.ppf([0.05, 0.95], N, P, k)
+        lo_fpr, hi_fpr = (k - hi_tp) / (N - P), (k - lo_tp) / (N - P)
+        ax.plot([lo_fpr, hi_fpr], [null, null], color=c, lw=1.4, alpha=0.5, zorder=2,
+                solid_capstyle="butt")
+        ax.plot([null, fpr], [null, tpr], color=c, lw=0.8, alpha=0.55, zorder=2)
+        ax.scatter([null], [null], s=13, facecolors="white", edgecolors=c, linewidths=0.9,
+                   zorder=3)
+        ax.scatter([fpr], [tpr], s=18, color=c, edgecolors="white", linewidths=0.4, zorder=4)
+        labels.append([fpr, tpr, SHORT.get(proj, proj), c])
+    # Points cluster in TPR (six of nine between 0.78 and 0.96), so labels all set to the right
+    # at their own y overprint. Pushing them apart vertically was worse -- it slid labels so far
+    # from their markers that they stopped identifying them. Instead alternate sides, which
+    # halves the crowding on each side, and only then nudge within a side. Labels stay within
+    # 0.03 of their own point.
+    labels.sort(key=lambda e: e[1])
+    sides = []
+    for n, (lx, ly, txt, c) in enumerate(labels):
+        left = (n % 2 == 1) and lx > 0.20      # below this, a left label runs into
+                                       # PTSD's, which is pinned right at x=0
+        sides.append([lx, ly, txt, c, left])
+    for want_left in (False, True):
+        grp = [e for e in sides if e[4] == want_left]
+        for n in range(1, len(grp)):
+            if grp[n][1] - grp[n - 1][1] < 0.045:
+                grp[n][1] = grp[n - 1][1] + 0.045
+    for lx, ly, txt, c, left in sides:
+        ax.annotate(txt, (lx, ly), textcoords="offset points",
+                    xytext=(-6 if left else 6, 0), va="center",
+                    ha="right" if left else "left",
+                    fontsize=fs(5.2), color=c, annotation_clip=False)
+
+    ax.set_xlim(-0.02, 0.62); ax.set_ylim(0, 1.04)
+    ax.set_xlabel("False-positive rate")
+    ax.set_ylabel("True-positive rate (recall)")
+    ax.grid(alpha=0.6); ax.set_axisbelow(True)
+    ax.text(0.975, 0.165, f"mean TPR \u2212 FPR  {st.mean(js):.2f}   (chance = 0)",
+            transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.6), color=INK)
+    ax.text(0.975, 0.075, "open marker = same-size random selection "
+            "(bar = exact 5\u201395% null)",
+            transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.0), color=MUTED)
+    panel_label(ax, "b", dx=-0.24)
+
+    fig.subplots_adjust(wspace=0.40)
+    save(fig, out_dir, "figure3alt_annotation_roc")
+
+
 # --------------------------------------------------------------------------- Figure 4
 
 # Marker areas for the Figure 4 size encoding. Analyses per column span 8 to 1699, a 200-fold
@@ -1265,7 +1403,7 @@ def figureS1(out_dir: Path) -> None:
 
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
-FIGURES = {"2": figure2, "2alt": figure2alt, "3": figure3, "4": figure4, "5": figure5,
+FIGURES = {"2": figure2, "2alt": figure2alt, "3alt": figure3alt, "3": figure3, "4": figure4, "5": figure5,
            "S1": figureS1, "S2": figureS2, "S3": figureS3, "S4": figureS4, "S5": figureS5}
 
 
