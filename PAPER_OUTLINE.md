@@ -81,6 +81,19 @@ full text obtained and coordinates extractable — or it measures corpus availab
 screening. Define once, early, and use consistently. Separating retrieval as its own stage above is
 the first half of that discipline.
 
+The second half now exists as an alternate figure: `figure2recall_adjusted_denominator`, built by
+`--only 2recall`. It replots Figure 2a over the gold studies **the search actually returned**, so
+every project starts at 1.00 and the curve is what screening and retrieval cost on the pool the
+pipeline was handed, with the corpus ceiling stated in the panel note rather than baked into the
+numbers. Mean falls 1.00 → 0.84; executive_function (0.53) and problem_solving (0.66) are the
+outliers, and the six other projects finish at 0.89 or better.
+
+**Do not confuse this with the "adjusted gold" of `projects/dementia/REPORT.md`,** which *adds* the
+studies excluded only for `Data Not Reported` (74 → 162). That set corrects *precision*; that report
+is explicit that using it as a recall denominator asks a harder question rather than a fairer one,
+and it is defined for dementia alone, so it cannot carry a nine-project figure. One of these two
+senses of "adjusted" has to be dropped from the paper's vocabulary before submission.
+
 **Figure.** Cumulative gold retention across the four stages beside the precision climb — Figure 2
 in `NATURE_METHODS_SKELETON.md`, built by `scripts/make_nature_methods_figures.py`.
 
