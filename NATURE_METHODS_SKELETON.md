@@ -100,13 +100,54 @@ The benchmark panel that would otherwise sit here belongs in the companion paper
 inset naming the nine meta-analyses is enough. That frees the third panel for the unit
 distinction to be drawn properly rather than crammed.
 
-### Result 2 — Screening raises precision at almost no cost to recall — **Figure 2** (~300 w)
+### Result 2 — Screening is nearly free; annotation is where recall is spent — **Figure 2** (~300 w)
 
-§1. Panel **a** is cumulative retention of the gold standard across search → abstract screening →
-full-text retrieval → full-text screening. Panel **b** is precision over the same funnel.
+**Heading changed 2026-09-10 and needs sign-off.** The previous one, "screening raises precision at
+almost no cost to recall", was written against the raw-denominator figure and no longer describes
+what Figure 2 draws. On the attainable denominator the two claims separate cleanly:
 
-The claim, now quantified: **abstract screening costs a median 1.4 points** of the gold standard,
-while precision roughly doubles or triples. Marginal loss by stage, in percentage points of gold:
+| | precision | attainable recall |
+|---|---|---|
+| screening (abstract + full-text) | 0.103 → 0.323 | 1.000 → 0.926 (**−0.074**) |
+| annotation | 0.323 → 0.470 | 0.926 → 0.818 (**−0.108**) |
+
+So "almost no cost" holds for screening — a third of a point of precision for seven points of
+recall — but not once annotation is on the same axis, where recall falls further than precision
+rises. The old heading would have been claiming something the figure contradicts.
+
+§1. **Figure 2 uses an attainable denominator — promoted 2026-09-10.** Panel **a** is recall across
+search → abstract screening → full-text screening → annotation, where each stage divides by the
+gold studies *it could have kept*: the denominator drops one availability failure at the stage where
+it happens and never drops a judgement. Panel **b** is precision over the same four stages. Built
+by `scripts/compute_attainable_recall.py` → `reports/attainable_recall_by_stage.csv`.
+
+| stage | denominator | drops |
+|---|---|---|
+| search | gold the search returned | gold the query never returned |
+| abstract | same as search | — |
+| full-text | … minus gold with no *usable* full text | retrieval failures and `fulltext_incomplete` |
+| annotation | … minus gold that parsed to zero analyses | nothing to annotate |
+
+Mean recall by stage, attainable vs raw: search 1.000/0.858, abstract 0.970/0.833, full-text
+0.926/0.728, **annotation 0.818/0.479**. Annotation is the line to quote: most of the apparent
+annotation loss is papers with nothing to annotate, not annotation failing. Search is 1.000 by
+construction, being a pure supply stage, and is kept on the axis so the renormalisation is visible;
+the corpus ceiling it used to carry is in the panel note.
+
+**Judgement losses stay charged.** A study rejected at abstract or full-text screening, or parsed
+and then assigned to no construct, stays in the denominator. This is why the annotation denominator
+is *not* "gold with ≥ 1 parsed analysis" — that set excludes everything full-text screening
+discarded and would forgive every full-text rejection. Nor is it the "adjusted gold" of
+`projects/dementia/REPORT.md`, which *adds* studies excluded only for `Data Not Reported` as a
+*precision* correction; those two senses of "adjusted" still need reconciling before submission.
+
+The metric does not flatter a weak project: `executive_function` is still lowest at full text
+(0.807), because the 15 gold studies its abstract stage rejects on judgement stay charged against a
+denominator that keeps shrinking.
+
+**The raw-denominator version is Supplementary S6** (`figureS6_gold_retention_raw`), which was
+Figure 2 until this promotion. It is the only figure that still shows the retrieval stage and the
+marginal loss-by-stage breakdown, in percentage points of gold:
 
 | stage | median | max | projects losing >5pp |
 |---|---|---|---|
@@ -114,7 +155,11 @@ while precision roughly doubles or triples. Marginal loss by stage, in percentag
 | full-text retrieval | 4.5 | 25.7 | 3/9 |
 | full-text screening | **2.5** | 6.4 | 1/9 |
 
-**The retrieval stage counts usable text, not the availability flag.** `fulltext_available` is true
+That table is not recoverable from the new Figure 2, which folds retrieval into the denominator
+rather than drawing it. `figure2alt` is the same four stages as Figure 2 on the raw denominator, and
+is now largely redundant with S6 — pick one before submission.
+
+**S6's retrieval stage counts usable text, not the availability flag.** `fulltext_available` is true
 for 43 gold studies across the corpus that the screener then received as title and abstract only
 (or after an API error), recorded as `fulltext_incomplete`, and explicitly could not evaluate. Those
 are retrieval failures surfacing one stage late. Counting them as retrieved moved a supply failure
@@ -122,18 +167,20 @@ into the screening column and inflated full-text screening's cost from 2.5 to 4.
 executive_function alone accounts for 24 of the 43. Corrected 2026-09-10 — see
 `scripts/compute_gold_survival.py`.
 
-**Retrieval is shown as its own stage, not folded into screening.** They fail for different
+**On S6, retrieval is its own stage, not folded into screening.** They fail for different
 reasons — no obtainable full text is a supply problem, a rejection is a judgement. After the
 correction above the separation matters more, not less: retrieval's median loss (4.5pp) is now
 nearly double full-text screening's (2.5pp), and full-text screening exceeds 5pp in only one
-project. Merging them would blame screening for the pipeline's biggest cost.
+project. Merging them would blame screening for the pipeline's biggest cost. Main-text Figure 2
+takes the other route — it removes retrieval from the numerator *and* the denominator, so screening
+is never charged for it.
 
 Seven of nine projects end within 11 points of where their search started. The two exceptions,
 executive function (74% → 39%) and problem solving (88% → 58%), lose it almost entirely at
 retrieval — 25.7pp and 19.0pp respectively, against 0.6pp and 6.4pp at full-text screening — and
 both should be named rather than averaged away.
 
-**The fixed-pool arm is no longer drawn on Figure 2 — removed 2026-09-09.** It used to appear as
+**The fixed-pool arm is no longer drawn on either version — removed 2026-09-09.** It used to appear as
 a dotted overlay on both panels for the three projects (`vN-allstudies`) that have one. Two
 reasons to drop it: only three of nine projects have the arm, so it added six part-width dotted
 lines and invited the reader to compare curves covering different project sets; and the comparison

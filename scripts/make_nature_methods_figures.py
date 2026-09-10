@@ -279,10 +279,17 @@ def read(path: Path) -> list[dict]:
         return list(csv.DictReader(f))
 
 
-# --------------------------------------------------------------------------- Figure 2
+# ---------------------------------------------------------------- Supplementary S6
 
-def figure2(out_dir: Path) -> None:
-    """Cumulative gold recovery barely falls through screening; precision climbs.
+def figureS6(out_dir: Path) -> None:
+    """Cumulative gold recovery on the RAW denominator, with retrieval as its own stage.
+
+    Was Figure 2 until 2026-09-10, when the attainable-denominator version took that slot. It is
+    kept because it is the only figure that still shows the retrieval stage and the raw
+    denominator, which is what the loss-by-stage table in NATURE_METHODS_SKELETON.md §1 is
+    computed from: abstract screening costs a median 1.4 points, retrieval 4.5, full-text
+    screening 2.5. Main-text Figure 2 folds retrieval into the denominator instead, so that
+    breakdown is not recoverable from it.
 
     This is §1's claim, and getting it right required not using
     screening_metrics_top_v_stage_progression.csv. That file holds *conditional retention* -- the
@@ -399,15 +406,19 @@ def figure2(out_dir: Path) -> None:
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figure2_gold_retention_and_precision")
+    save(fig, out_dir, "figureS6_gold_retention_raw")
 
 
-# ------------------------------------------------- Figure 2 (recall-denominator alternate)
+# --------------------------------------------------------------------------- Figure 2
 
-def figure2recall(out_dir: Path) -> None:
-    """Figure 2 with recall on an attainable denominator instead of the whole gold list.
+def figure2(out_dir: Path) -> None:
+    """Recall on an attainable denominator beside the precision climb.
 
-    Panel a of figure2/figure2alt divides every stage by all gold studies, which bills four
+    Promoted from an alternate to Figure 2 on 2026-09-10. The raw-denominator version it
+    replaced is Supplementary S6, which keeps the retrieval stage and the loss-by-stage
+    breakdown; figure2alt is the same four stages on the raw denominator.
+
+    figure2alt and Supplementary S6 divide every stage by all gold studies, which bills four
     availability failures to screening judgement: a study the query never returned, one whose
     full text we could not obtain, one whose full text arrived too thin to screen
     (`fulltext_incomplete`), and one that parsed to zero analyses. This panel removes each at the
@@ -547,7 +558,7 @@ def figure2recall(out_dir: Path) -> None:
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figure2recall_attainable_denominator")
+    save(fig, out_dir, "figure2_attainable_recall_and_precision")
 
 
 # ----------------------------------------------------------------- Figure 2 (alternate)
@@ -575,6 +586,12 @@ def figure2alt(out_dir: Path) -> None:
     experts did extract coordinates from, so it is a parsing or annotation miss, not a paper
     without data. The stage therefore mixes two effects it cannot separate: correctly discarding
     papers with nothing to contribute, and failing to annotate papers that had something.
+
+    SUPERSEDED IN PART, 2026-09-10. The attainable denominator now in Figure 2 does separate them:
+    a gold paper that parsed to zero analyses leaves the denominator, so what remains charged at
+    annotation is the annotation miss on papers that did yield data. Measured that way the stage
+    costs 0.108 rather than 0.248, against a precision gain of 0.147. This figure is kept as the
+    raw-denominator view of the same four stages, and is largely redundant with Supplementary S6.
 
     So this version supports the precision argument and simultaneously exposes the pipeline's
     largest recall bottleneck. It cannot be captioned "at little cost to recall".
@@ -1660,8 +1677,9 @@ def figureS1(out_dir: Path) -> None:
 
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
-FIGURES = {"2": figure2, "2alt": figure2alt, "2recall": figure2recall, "3alt": figure3alt, "3": figure3, "4": figure4, "5": figure5,
-           "S1": figureS1, "S2": figureS2, "S3": figureS3, "S4": figureS4, "S5": figureS5}
+FIGURES = {"2": figure2, "2alt": figure2alt, "3": figure3, "3alt": figure3alt,
+           "4": figure4, "5": figure5, "S1": figureS1, "S2": figureS2,
+           "S3": figureS3, "S4": figureS4, "S5": figureS5, "S6": figureS6}
 
 
 def main() -> int:

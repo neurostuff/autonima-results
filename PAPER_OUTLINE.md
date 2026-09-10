@@ -84,8 +84,9 @@ screening. Define once, early, and use consistently. Separating retrieval as its
 the first half of that discipline.
 
 The second half now exists: `scripts/compute_attainable_recall.py` →
-`reports/attainable_recall_by_stage.csv`, plotted as `figure2recall_attainable_denominator`
-(`--only 2recall`). Each stage is divided by the gold studies **it could have kept**, dropping one
+`reports/attainable_recall_by_stage.csv`, plotted as **Figure 2** itself
+(`figure2_attainable_recall_and_precision`, `--only 2`) since 2026-09-10; the raw-denominator
+version it displaced is Supplementary S6. Each stage is divided by the gold studies **it could have kept**, dropping one
 availability failure at the stage where it happens and nothing else:
 
 | stage | denominator | drops |
@@ -128,8 +129,10 @@ is explicit that using it as a recall denominator asks a harder question rather 
 and it is defined for dementia alone, so it cannot carry a nine-project figure. One of these two
 senses of "adjusted" has to be dropped from the paper's vocabulary before submission.
 
-**Figure.** Cumulative gold retention across the four stages beside the precision climb — Figure 2
-in `NATURE_METHODS_SKELETON.md`, built by `scripts/make_nature_methods_figures.py`.
+**Figure.** Recall on the attainable denominator across search → abstract → full-text → annotation,
+beside the precision climb — Figure 2 in `NATURE_METHODS_SKELETON.md`, built by
+`scripts/make_nature_methods_figures.py --only 2`. Cumulative retention on the raw denominator, with
+retrieval drawn as its own stage, is Supplementary S6 (`--only S6`).
 
 ---
 
