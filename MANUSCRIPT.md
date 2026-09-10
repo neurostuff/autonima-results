@@ -1,0 +1,543 @@
+---
+title: "Selecting analyses, not papers: automated meta-analysis at the unit that determines the result"
+subtitle: "Nature Methods — Article. Target 3,000 words, 6 display items, ~50 references."
+author:
+  - Alejandro de la Vega
+  - "[co-authors]"
+date: "Draft skeleton — 2026-09-10"
+---
+
+<!--
+  HOW TO USE THIS DOCUMENT
+
+  Every section has a heading, a budget/figure line, and one indented BRIEF block. Write over
+  the prose; delete the BRIEF block when you no longer need it. Nothing outside a BRIEF block is
+  scaffolding, so when the last one is gone the document is the manuscript.
+
+  BRIEF blocks carry three fields:
+    CLAIM    the one thing the section must establish
+    NUMBERS  the figures to quote, with the CSV they come from
+    OPEN     unresolved decisions that affect what you can write here
+
+  NUMBERS are re-derived from reports/, NOT copied from NATURE_METHODS_SKELETON.md or
+  PAPER_OUTLINE.md, both of which have drifted. Regenerate or re-check them with:
+
+      pixi run python scripts/manuscript_numbers.py
+
+  Rebuild the Word version (this will OVERWRITE MANUSCRIPT.docx and any prose typed into it —
+  write here, in the markdown, or copy the .docx aside first):
+
+      pandoc MANUSCRIPT.md -o MANUSCRIPT.docx --reference-doc=.pandoc/manuscript-reference.docx
+
+  The two planning documents keep their roles and are not superseded:
+    NATURE_METHODS_SKELETON.md  section spine, figure numbering, word budget, decision records
+    PAPER_OUTLINE.md            evidence map; §§1-9/S1/M1. Lines 1516-2693 are a lab notebook.
+-->
+
+# Abstract
+
+_150 words. No figure._
+
+> **CLAIM** — Automated evidence synthesis selects papers, but the analysis is the unit that
+> determines the result. We present a pipeline that selects at the analysis level and show it
+> recovers published meta-analytic maps better than any search-only synthesis available.
+>
+> **NUMBERS** — lead with the headline and the unanimity, not the mechanism:
+> 9 projects, 32 benchmark columns; pipeline r² 0.575 vs 0.476 for the strongest per-column
+> baseline, median Δ +0.061, ahead in 28/32, sign-test p = 1.9 × 10⁻⁵.
+> The decomposition is the finding: choosing papers is worth +0.001 (median, 16/32); choosing
+> analyses is worth +0.049 (28/32).
+>
+> **OPEN** — the abstract cannot be finalised until §9 (the forward-looking case) is settled,
+> since it decides whether the last sentence promises a demonstration or a direction.
+
+# Introduction
+
+_~350 words. Cites the neurometabench companion paper._
+
+> **CLAIM** — Three moves, in order (`NATURE_METHODS_SKELETON.md:75`):
+>
+> 1. Evidence synthesis selects *papers*, but the inferential result is the *analysis*. A paper
+>    contributes k analyses and typically only some of them address the question.
+> 2. Coordinate-based neuroimaging meta-analysis is the one place this error is directly
+>    measurable, because the published product is a spatial map that can be compared numerically.
+> 3. We built a pipeline that selects at both levels and evaluated it against nine expert
+>    meta-analyses.
+>
+> Frame as a *method* whose evaluation is its proof, not as an evaluation study — Neurosynth
+> (2011) is the precedent in this journal (`NATURE_METHODS_SKELETON.md:33`).
+>
+> The thesis sentence, already drafted (`NATURE_METHODS_SKELETON.md:48`): *Automated evidence
+> synthesis has been operating at the wrong unit. Selecting papers is not enough — the analysis
+> determines the result, and selecting at that level is both necessary and now feasible.*
+>
+> **NUMBERS** — none. Resist quoting results here.
+>
+> **OPEN** — benchmark construction is one sentence plus a citation to the neurometabench
+> companion paper, which **needs a Zenodo DOI before submission**.
+
+# Results
+
+## 1. The pipeline, the benchmark, and the unit that matters
+
+_~300 words. **Figure 1** (schematic: a pipeline, b the unit distinction)._
+
+> **CLAIM** — Establish what is being measured before any number appears. Panel b — one paper,
+> k analyses, one target contrast — is the argument of the paper in a picture and should be
+> drawn first (`NATURE_METHODS_SKELETON.md:96`).
+>
+> **NUMBERS** (`cross_project_best_baseline.csv`, `analysis_counts.csv`)
+>
+> - 9 projects, **32** benchmark columns scored
+> - pipeline maps pool a median of 227 analyses (range 8–1,699) and 1,870 foci
+>
+> **OPEN** — **Figure 1 does not exist yet.** It is a schematic and needs a vector editor;
+> `make_nature_methods_figures.py` does not generate it.
+> Benchmark construction belongs in the companion paper, which frees this panel.
+
+## 2. Screening is nearly free; annotation is where recall is spent
+
+_~300 words. **Figure 2**; supporting: Supplementary S3, S6._
+
+> **CLAIM** — Screening buys precision at almost no cost to recall. Annotation is where recall is
+> actually spent — and the *denominator* decides whether that trade is worth taking, which is the
+> argument for reporting recall against what each stage could attainably have kept.
+>
+> **NUMBERS** (`attainable_recall_by_stage.csv`, `stage_precision_recall.csv`; n = 9 projects)
+>
+> | stage | precision | attainable recall | raw recall |
+> |---|---|---|---|
+> | search | 0.103 | 1.000 | 0.858 |
+> | abstract screening | 0.196 | 0.970 | 0.833 |
+> | full-text screening | 0.323 | 0.926 | 0.728 |
+> | annotation | 0.470 | 0.818 | 0.479 |
+>
+> - screening (abstract + full-text): precision 0.103 → 0.323 for **−0.074** attainable recall
+> - annotation: precision **+0.147** (improves 9/9) for **−0.108** attainable recall (falls 9/9)
+> - the trade: precision gain exceeds recall loss in **6/9** projects on the attainable
+>   denominator and **1/9** on the raw one. Same runs, same decisions — charging annotation for
+>   papers that had nothing to annotate inverts the verdict on the stage
+> - search is 1.000 by construction (a pure supply stage); the corpus ceiling it carries is a
+>   mean of **85.8%** of gold returned, range 60–96%
+> - lowest at full text: `executive_function` 0.807, because the 15 gold studies its abstract
+>   stage rejects on judgement stay charged against a shrinking denominator
+>
+> The two sentences that must appear in the body (`NATURE_METHODS_SKELETON.md:212`) point at S3:
+> swapping only the study pool raises full-text precision +0.142, so a substantial share of the
+> apparent screening failure is a corpus difference.
+>
+> **OPEN**
+>
+> - **This heading was changed 2026-09-10 and needs sign-off.** The previous one — "screening
+>   raises precision at almost no cost to recall" — is true of screening but contradicted by the
+>   annotation stage now on the same axis.
+> - **"Adjusted" is used in two contradictory senses** and one must be dropped before submission:
+>   here it *narrows* the denominator to attainable studies; in `projects/dementia/REPORT.md:95`
+>   "adjusted gold" *widens* it (74 → 162) as a precision correction.
+> - S3's recall control reads **−0.044** at full text, not the +0.007 quoted in the skeleton. The
+>   control still holds — recall moves far less than precision — but the number needs restating.
+
+## 3. Recovering the analyses, then selecting among them
+
+_~350 words. **Figure 3** (a parsing, b annotation operating points)._
+
+> **CLAIM** — Selection is meaningless until the analyses exist, so this section is in pipeline
+> order: recover them, then select among them. Both steps are large effects, and the second only
+> looks impressive once you compare it against the right null.
+>
+> **NUMBERS**
+>
+> *3a, parsing* (`cross_project_analysis/parsing_metrics_by_project.csv`; n = 9)
+>
+> - LLM parsing recovers **91.4%** of expert analyses (median 94.7%)
+> - tables-only baseline recovers **33.3%** (median 29.9%)
+> - margin **+58.1 points**, ahead in **9/9** projects — the strongest single margin in the paper
+>
+> *3b, annotation* (`cross_project_analysis/annotation_aggregates.csv`; n = 9)
+>
+> - precision mean 0.571 against a prevalence (no-skill) mean of 0.197
+> - **lift over prevalence mean 3.1×**, range 1.8–5.6
+> - the lift *reorders* the projects relative to raw precision, which is the reason to plot it:
+>   `social` has the third-highest precision (0.618) but the **lowest** lift (1.8×) because its
+>   prevalence is the highest in the set (0.345), while `vbm_of_substance_use` turns a similar
+>   0.584 into **5.6×** off a prevalence of 0.104
+>
+> **OPEN** — **Figure 3b has an alternate rendering** (`figure3alt_annotation_roc`, `--only 3alt`)
+> that replaces nine per-project no-skill levels with one diagonal in ROC space, where the
+> size-matched null is closed-form at (k/N, k/N); mean TPR − FPR = **0.68** against 0 for chance.
+> It is cleaner but loses the precision-vs-lift reordering above. Pick one.
+
+## 4. The whole pipeline beats a search-only synthesis
+
+_~350 words. **Figure 4**; supporting: Supplementary S1, S4._
+
+> **CLAIM** — Run end to end from a plain PubMed search, the pipeline beats what you would get by
+> searching, extracting every coordinate and meta-analysing the lot — the Neurosynth-style
+> approach — and it does so while pooling *fewer* analyses. Selection beats volume.
+>
+> **NUMBERS** (`cross_project_best_baseline_stats.csv`; 32 columns, 9 projects, metric r²)
+>
+> | vs | pipeline | baseline | mean Δ | median Δ | 95% CI | ahead |
+> |---|---|---|---|---|---|---|
+> | best available | 0.575 | 0.476 | +0.099 | **+0.061** | [+0.038, +0.181] | **28/32** |
+> | strongest | 0.575 | 0.482 | +0.093 | +0.057 | [+0.032, +0.176] | 27/32 |
+>
+> - sign test p = **1.9 × 10⁻⁵** (best available), 1.1 × 10⁻⁴ (strongest)
+> - cluster bootstrap **over projects, not columns**; 20,000 resamples, seed 0
+> - selection beats volume: the pipeline pools fewer analyses than its baseline in **24/32**
+>   columns and wins in **21** of those; against the screening-only arm it pools fewer in
+>   **32/32** and wins in 28 (`analysis_counts.csv`)
+>
+> **OPEN**
+>
+> - The skeleton quotes a second, **stale** headline at L518 (Δ +0.110, p = 3.5 × 10⁻⁶, 31/35)
+>   from the 35-column era. Use the table above; the denominator is **32**.
+> - The skeleton also wants an **axial-slice panel c** from `make_brain_map_figure.py`. Two
+>   generated brain figures are currently unassigned to any slot:
+>   `figure_brain_maps_contrast` and `figureS_brain_maps_all`.
+> - `decrease` **cannot be used as the exemplar** — it duplicates `reappraisal` (r = 0.972).
+>   Use `reappraisal` instead (`NATURE_METHODS_SKELETON.md:414`).
+
+## 5. The gain comes from analysis selection, not paper selection
+
+_~350 words. **Figure 5**; supporting: Supplementary S5._
+
+> **CLAIM** — Decompose the Result 4 margin into its two selection steps. Choosing the right
+> papers is worth almost nothing; choosing the right analyses within them is worth nearly all of
+> it. This is the paper's finding, not a supporting detail.
+>
+> **NUMBERS** (`selection_decomposition.csv`; 32 columns, 9 projects, metric r²)
+>
+> | step | median | mean | positive in |
+> |---|---|---|---|
+> | paper selection (screening only) | **+0.001** | −0.000 | 16/32 |
+> | analysis selection (annotation) | **+0.049** | +0.099 | **28/32** |
+> | total | +0.061 | +0.099 | 28/32 |
+>
+> - three arms: baseline 0.476 → screening-only 0.476 → pipeline 0.574. The middle arm does not
+>   move, which is the whole point
+> - the sharpest mechanistic sentence in the paper (`PAPER_OUTLINE.md:809`):
+>   **it is not a search problem; it is a screening problem** — and more precisely, an
+>   analysis-selection problem
+>
+> *Supplementary S5, the size-matched null* (`annotation_bootstrap_null.csv`)
+>
+> - median Δr² **+0.211** against each column's own size-matched null; **29/32** clear p < 0.05
+> - state carefully: the naive reading overclaims, because 31/32 baselines are targeted searches
+>   (`NATURE_METHODS_SKELETON.md:804`)
+>
+> **OPEN** — the two medians do not sum to the total (+0.001 + 0.049 = +0.050 vs +0.061) because
+> medians are not additive; the *means* do (−0.000 + 0.099 = +0.099). Quote the means when you
+> need the decomposition to add up, and say which you are quoting.
+
+## 6. Cost and scale
+
+_~200 words (budget table says ~300 — settle this). **Supplementary S1**._
+
+> **CLAIM** — Fully measured, not estimated: a project runs for tens of dollars and hours against
+> months of person time. For a methods journal this is not an aside — it is why the method
+> matters (`NATURE_METHODS_SKELETON.md:703`).
+>
+> **NUMBERS** — ⚠ **the only block in this document not derived from a CSV.** Hardcoded as
+> `COST_PER_STAGE` in `make_nature_methods_figures.py`, transcribed from `PAPER_OUTLINE.md` S1.
+> The module docstring says these should move into a generated CSV before submission; verify
+> against `usage_total` in `execution_progress.json` before quoting.
+>
+> - per call: abstract screening $0.0023 · full-text screening $0.0138 · coordinate parsing
+>   $0.0059 · annotation $0.0211
+> - **mean $21.55 per project**; all nine from scratch **$194**
+> - quote **cost per study that reaches the map** ($0.085 median) rather than cost per hit — it is
+>   2.9× tighter and it is the unit a reader can act on
+>
+> **OPEN** — heading budget says ~200 w, the budget table says ~300.
+
+# Discussion
+
+_~600 words._
+
+> **CLAIM** — Four beats, in order (`NATURE_METHODS_SKELETON.md:706`):
+>
+> 1. **The benchmark is a reference, not truth.** `vbm_of_substance_use` is the sharpest case:
+>    three of its columns have no published result at all, so they are excluded and the
+>    denominator is 32 rather than 35. That is a better sentence than "three columns were not
+>    significant" (`NATURE_METHODS_SKELETON.md:641`).
+> 2. **The gain appears for specific targets and not diffuse ones**, and two accounts remain
+>    unresolved — a squishy target versus a model limitation. Say so rather than choosing
+>    (`NATURE_METHODS_SKELETON.md:752`). A third account is live: our own specification may have
+>    been wrong. A fourth is a confound — `pubmed.py:370` truncates structured abstracts, so
+>    26.6–30.6% of stored abstracts are under 450 characters and the model may never have seen the
+>    deciding text (`PAPER_OUTLINE.md:1106`).
+> 3. **The analysis-unit argument generalises; its measurability does not.** Coordinate-based
+>    meta-analysis is unusual in producing a numerically comparable published product.
+> 4. **Close on §9**, the forward-looking case.
+>
+> Two out-of-scope items to note here rather than answer (`PAPER_OUTLINE.md:1230`, `:1243`):
+> MKDA is used throughout even where the source paper used ALE; and there is no human-agreement
+> ceiling for screening.
+>
+> Also worth a clause: the dominant constraint is coordinate extraction, not screening —
+> `dementia` yields coordinates for 49% of included studies, "larger than every schema effect in
+> the paper combined" (`PAPER_OUTLINE.md:1118`).
+>
+> **NUMBERS** (Supplementary S2, `tier_progression.csv`) — the mis-specification point, which belongs
+> here as a caution about LLM screening generally:
+>
+> - verbatim → manual criteria: **+0.221** (n = 2 projects)
+> - manual → best criteria: **+0.031** (n = 2 projects)
+> - roughly **7×**. The drafted line (`NATURE_METHODS_SKELETON.md:1056`): *the live danger in
+>   LLM-assisted screening is mis-prompting, and it is roughly seven times larger than the danger
+>   of tuning.*
+> - **Do not report either without the n.** Both arms are two projects; an indication, not an
+>   estimate.
+>
+> **OPEN** — **§9 has no candidate and the outline says it likely gates submission**
+> (`PAPER_OUTLINE.md:1444`). `scz_enigma` is the live candidate.
+
+# Methods
+
+_No word limit — Methods sits after references and costs nothing against the 3,000._
+
+> **NOTE** — the five sub-areas below were written against *Imaging Neuroscience's* AI-methods
+> guidelines (`PAPER_OUTLINE.md:1313`). Check them against Nature Methods' own requirements
+> before submission.
+
+## Pipeline and configuration
+
+> **BRIEF** — stages in order: PubMed search → abstract screening → full-text retrieval →
+> coordinate parsing → analysis-level annotation → NiMADS output → meta-analysis. Model and
+> version per stage. Retrieval is via Elsevier and pubget, which do their own coordinate
+> ingestion; **not ACE**.
+
+## Benchmark and denominator
+
+> **BRIEF** — nine expert meta-analyses, 35 annotation columns, of which **32 are scored**.
+> `scripts/benchmark_exclusions.py` is the single source of truth: three `vbm_of_substance_use`
+> columns (cannabis, opioids, stimulants) are excluded because the source paper (Hill-Bowen et al.
+> 2022, *Drug Alcohol Depend* 240:109625, PMID 36115222) reports no significant result for them
+> and the expert map is empty. `nicotine` is deliberately **kept** — that is a reproduction
+> failure with identical inputs, not an absent reference.
+
+## The metric/map rule
+
+> **BRIEF** — state once, here; it removes a class of reviewer objection
+> (`NATURE_METHODS_SKELETON.md:659`):
+> **r² compares unthresholded maps; dice compares FDR-corrected thresholded maps** at z > 1.96.
+> `z_corr > 1.96` selects exactly the voxels with FDR-corrected p ≤ 0.05. It uses the two-tailed
+> convention; MKDA is one-tailed, so NiMARE's own positive-tail label (≈1.645) flags more voxels
+> and 1.96 is the conservative choice.
+> r² is the reported metric throughout: dice is degenerate on this corpus (four substance-use
+> columns sit at 0.000 for every arm) and reverses sign on `vbm_of_ptsd`.
+
+## Recall against an attainable denominator
+
+> **BRIEF** — `scripts/compute_attainable_recall.py`. Each stage divides by the gold studies it
+> could have kept; one availability failure leaves the denominator at the stage where it happens,
+> and no judgement ever leaves it.
+>
+> | stage | denominator | drops |
+> |---|---|---|
+> | search | gold the search returned | gold the query never returned |
+> | abstract | same as search | — nothing becomes unavailable in between |
+> | full-text | … minus gold with no *usable* full text | retrieval failures **and `fulltext_incomplete`** |
+> | annotation | … minus gold that parsed to zero analyses | nothing to annotate |
+>
+> Two points a reviewer will probe:
+>
+> - the annotation denominator is **not** "gold with ≥ 1 parsed analysis" — that set excludes
+>   everything full-text screening discarded and would forgive every full-text rejection
+> - the retrieval stage counts **usable** text, not the `fulltext_available` flag. The flag is
+>   true for 43 gold studies the screener then received as title and abstract only; those are
+>   retrieval failures surfacing one stage late, and 43 of the 68 gold studies lost at full-text
+>   screening are of that kind against 25 genuine exclusions
+
+## Null models
+
+> **BRIEF** — two spaces, same idea. In map space, 500 size-matched MKDA re-fits per column
+> (`scripts/bootstrap_annotation_null.py`). In ROC space it is closed-form: a size-matched random
+> selector lands at exactly (k/N, k/N) with hypergeometric spread, so no Monte Carlo is needed for
+> the location. Median band width 0.020 in FPR; the two small-N exceptions are `dementia` (0.078)
+> and `vbm_of_ptsd` (0.133 off N = 40).
+
+## M1.1 Code and data availability
+
+> **BRIEF** — three repositories: `neurostuff/autonima` (the pipeline, 161 tests), this results
+> repository, and neurometabench (the benchmark).
+> **OPEN — blocked on Zenodo DOIs.** neurometabench must be at least preprinted with a DOI before
+> or alongside this paper; reviewers will ask where the benchmark is.
+
+## M1.2 Generative AI in development
+
+> **BRIEF** — ⚠ **`[need]` — nothing written yet**, and one of only two outstanding required items
+> in the whole plan (`PAPER_OUTLINE.md:1336`). The organising distinction is to keep AI-as-object-
+> of-study separate from AI-as-development-tool, and to declare the latter explicitly.
+
+## M1.3 Data leakage mitigation
+
+> **BRIEF** — the four-tier run registry in `run_categories.yaml`: `verbatim` (criteria
+> transcribed from the published methods, held out by construction), `manual` (author-revised
+> after seeing reports), `best`, `latest`. Report what each tier saw. The `verbatim` tier is a
+> held-out schema run nine times, which is the overfitting rebuttal.
+
+## M1.4 Hyperparameter tuning protocol
+
+> **BRIEF** — `scripts/run_tiers.py` and the recorded `best-reason` for each promotion. The
+> honest framing is that `verbatim → manual` uncovered major oversights in the criteria rather
+> than tuning to the benchmark, which is why it is reported as mis-specification (Discussion)
+> rather than as overfitting.
+
+## M1.5 Statistical reporting
+
+> **BRIEF** — `[have]`. Cluster bootstrap **over projects, not columns**, because columns within a
+> project are not independent; percentile CIs; sign test over columns. 20,000 resamples, seed 0.
+> All arms share a retrieval vintage — a methodological requirement learned the hard way
+> (`PAPER_OUTLINE.md:956`), and it needs stating here.
+
+# References
+
+_~50 references. Numbered, Nature style._
+
+1\. [neurometabench companion paper — **needs Zenodo DOI**]
+
+2\. Yarkoni, T. et al. Large-scale automated synthesis of human functional neuroimaging data. *Nat. Methods* **8**, 665–670 (2011).
+
+3\. Hill-Bowen, L. D. et al. *Drug Alcohol Depend.* **240**, 109625 (2022). PMID 36115222.
+
+4\. [NiMARE]
+
+5\. [pubget]
+
+6\. [NeuroQuery]
+
+7\. [NeuroVLM]
+
+> **OPEN** — no bibliography exists. The 603 `.bib` files in the repo are per-run study lists
+> (`projects/**/outputs/meta_analysis_results/*/references.bib`), not paper citations.
+
+# Figure legends
+
+## Figure 1
+
+> **BRIEF** — a, pipeline schematic. b, the unit distinction: one paper, k analyses, one target
+> contrast. **Not yet drawn.**
+
+## Figure 2
+
+> **BRIEF** — must state: the denominator per stage; that search is 1.000 by construction; and
+> that judgement losses stay charged while availability failures leave the denominator. n = 9.
+
+## Figure 3
+
+> **BRIEF** — must state the two presentational choices (`NATURE_METHODS_SKELETON.md:283`), and in
+> panel b that the connector runs prevalence → achieved precision, so the span *is* the lift.
+
+## Figure 4
+
+> **BRIEF** — must say which baseline it is (best available per column, `targeted` for 31 of 32),
+> that circle area encodes the number of analyses, and that the bottom rows are small wins rather
+> than losses (`NATURE_METHODS_SKELETON.md:470`).
+
+## Figure 5
+
+> **BRIEF** — must state that the three arms are baseline / screening-only / full pipeline, all
+> from the canonical run, and that the middle arm isolates paper selection.
+
+## Figure 6
+
+> **BRIEF** — `figure_er_surface_contrasts`: three emotion-regulation maps against a single
+> baseline, on inflated surfaces. The honest framing is that this shows what a good case looks
+> like while Figures 4 and 5 report the whole distribution including the losses.
+
+# Supplementary Information
+
+> **BRIEF** — S1 measured cost · S2 mis-specification vs overfitting · S3 pool mismatch ·
+> S4 text-to-map baselines · S5 size-matched null · S6 raw-denominator gold retention.
+> Extended Data: the §3 cautionary case, per-project tables behind Figures 2–5, PRISMA funnels.
+
+## Supplementary S3 — how much of the low precision is a pool mismatch?
+
+> **NUMBERS** (`stage_precision_recall.csv` vs `stage_precision_recall_allstudies.csv`; n = 3
+> projects: dementia, emotion_regulation_2022, social)
+>
+> | stage | search pool | fixed pool | Δ precision | Δ recall |
+> |---|---|---|---|---|
+> | search | 0.106 | 0.276 | +0.169 | −0.057 |
+> | abstract | 0.201 | 0.373 | +0.172 | −0.057 |
+> | full-text | 0.349 | 0.491 | **+0.142** | −0.044 |
+> | annotation | 0.497 | 0.657 | +0.160 | −0.027 |
+>
+> Recall is the control: it moves far less than precision, so the gain is a corpus difference
+> rather than a screening effect. **n = 3 must appear in the caption.**
+>
+> *Corroboration, no figure of its own:* **59%** of full-text false positives (385 of 649) were
+> never in the researchers' pool. **Do not say "most false positives are a pool artefact" without
+> the per-project split** (`NATURE_METHODS_SKELETON.md:845`).
+
+## Supplementary S4 — a term is not an analysis
+
+> **NUMBERS** (`text_to_map_baselines.csv`; n = 32 columns)
+>
+> | arm | mean r² | median r² |
+> |---|---|---|
+> | NeuroQuery | 0.075 | 0.031 |
+> | NeuroVLM | 0.238 | 0.231 |
+> | best search baseline | 0.476 | 0.424 |
+> | pipeline | 0.574 | 0.607 |
+>
+> Both text-to-map models fall well short of even the search baseline, and they fail on the same
+> structure — contrasts and clinical comparisons — which is the analysis-unit argument arriving
+> from an independent direction. Panel b reports r² **and** top-k dice; the caption must not quote
+> the r² gap alone (`NATURE_METHODS_SKELETON.md:933`).
+
+## Supplementary S6 — raw denominator, retrieval as its own stage
+
+> **NUMBERS** (`gold_survival_by_stage.csv`) — marginal gold loss by stage, percentage points:
+>
+> | stage | median | max | projects > 5pp |
+> |---|---|---|---|
+> | abstract screening | **1.4** | 8.8 | 2/9 |
+> | full-text retrieval | 4.5 | 25.7 | 3/9 |
+> | full-text screening | **2.5** | 6.4 | 1/9 |
+>
+> This is the only figure that still shows the retrieval stage and the raw denominator, so this
+> table is not recoverable from Figure 2. Retrieval's median loss is nearly double full-text
+> screening's, which is the argument for keeping them as separate stages.
+
+---
+
+# SCAFFOLDING — DELETE BEFORE SUBMISSION
+
+## What actually gates submission
+
+| item | state |
+|---|---|
+| **neurometabench Zenodo DOI** | blocking. Reviewers will ask where the benchmark is |
+| **§9 forward-looking case** | `[need]`, no candidate chosen; the outline says it likely gates submission. `scz_enigma` is live |
+| **`projects/emotion_regulation_2022/nmb_mappings.json`** | still the unedited template (`MANUAL_NAME1` → `AUTOMATIC_NAME1`), which excludes ER from every cross-project analysis. Called "highest leverage per unit of work in the whole plan" (`PAPER_OUTLINE.md:1500`) |
+| **M1.2 Generative AI in development** | nothing written |
+| **"adjusted" used in two senses** | one must be dropped |
+| **Figure 1** | not drawn; needs a vector editor |
+| Result 2 heading | changed 2026-09-10, needs sign-off |
+| Figure 3b | PR-space vs ROC-space rendering, undecided |
+| Cost numbers | hardcoded, not CSV-derived |
+
+## Numbers in the planning documents that are stale — do not re-quote
+
+Found while building this skeleton, 2026-09-10. All corrected above.
+
+| document says | actual | source |
+|---|---|---|
+| parsing 90% vs 31%, +60 pts | **91.4% vs 33.3%, +58.1 pts** | `parsing_metrics_by_project.csv` |
+| Fig 4 Δ +0.110, p = 3.5e-06, 31/35 (skeleton L518) | **superseded**, 35-column era | — |
+| §7 0.495 vs 0.394, 30/35 (outline L691) | **superseded**, 35-column era | — |
+| — | **current: 0.575 vs 0.476, median Δ +0.061, 28/32, p = 1.9e-05** | `cross_project_best_baseline_stats.csv` |
+| annotation lift 3.3× | **3.1×** | `annotation_aggregates.csv` |
+| S3 recall control +0.007 | **−0.044** at full text | `stage_precision_recall*.csv` |
+| "35 columns" (skeleton L351/473/518/568/576) | **32** | `benchmark_exclusions.py` |
+
+Regenerate all of the above with `pixi run python scripts/manuscript_numbers.py`.
+
+## Budget arithmetic
+
+Skeleton budget: 150 + 350 + 1,900 + 600 = 3,000. Per-heading Results totals are
+300 + 300 + 350 + 350 + 350 + 200 = **1,850**, i.e. 50 short of the stated 1,900. Result 6's
+heading (~200 w) also disagrees with the budget table (~300). Settle before writing to length.
