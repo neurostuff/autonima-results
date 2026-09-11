@@ -55,8 +55,10 @@ RESAMPLES, SEED = 20000, 0
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--metric", default="r2", choices=["r2", "r2_allfinite"],
-                    help="r2 = brain-masked (default); r2_allfinite = whole-volume")
+    ap.add_argument("--metric", default=results.DEFAULT_MAP_METRIC,
+                    choices=["r2_nonzero", "r2", "r2_allfinite"],
+                    help="default drops voxels zero in both maps; r2 = brain-masked, "
+                         "r2_allfinite = the repo's whole-volume convention")
     ap.add_argument("--out-dir", type=Path, default=HERE / "figures")
     ap.add_argument("--out-csv", type=Path, default=HERE / "data/record_arms_vs_baseline.csv")
     args = ap.parse_args()
@@ -163,7 +165,7 @@ def main() -> int:
              f"Figure 4's comparison, per arm, over the {len(matched)} columns whose projects "
              "have record arms. Baselines are re-estimated from their own studysets with the "
              "settings the arms used,\nbecause the committed baseline table came from a "
-             "different estimator. Both sides use the brain-masked $R^2$. CI is a percentile "
+             f"different estimator. Both sides use {args.metric}. CI is a percentile "
              "bootstrap resampling projects, not columns.\nColour is the project and shape is "
              "the arm in both panels; the grey band in b spans the three arm means, which differ by "
              f"{hi_m - lo_m:.3f}.",

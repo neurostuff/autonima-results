@@ -197,12 +197,12 @@ def figure2_arms(out_dir: Path, projects_root: Path) -> None:
 
 # ------------------------------------------------------------------ figure 7, by arm
 
-def figure7_arms(out_dir: Path) -> None:
+def figure7_arms(out_dir: Path, metric: str = results.DEFAULT_MAP_METRIC) -> None:
     # End-to-end F1: scored against the whole gold set. `paired_f1` -- the column
     # compare_arms.py reported -- omits gold papers that never reached full-text screening,
     # which reads as recall but is not: PTSD is 0.727 paired against 0.653 end-to-end.
     f1 = results.screening("endtoend_f1")
-    raw, _baselines = results.maps("r2")
+    raw, _baselines = results.maps(metric)
     r2 = {p: {a: st.mean(v) for a, v in arms.items()} for p, arms in raw.items()}
     n_pairs = {p: len(next(iter(arms.values()), [])) for p, arms in raw.items()}
     # All four projects appear. VBM PTSD was excluded until its annotation stage was fixed:
@@ -220,7 +220,7 @@ def figure7_arms(out_dir: Path) -> None:
     offset = {"full text": -0.13, "record + evidence": 0.0, "record, no evidence": 0.13}
     for ax, data, ylabel, title, projects, ylim in (
         (axes[0], f1, "Screening F1 (end-to-end)", "Paper-level screening", PROJECTS, (0.4, 0.8)),
-        (axes[1], r2, "Map $R^2$ vs manual", "Meta-analytic map", shown, (0.2, 0.7)),
+        (axes[1], r2, "Map $R^2$ vs manual", "Meta-analytic map", shown, None),
     ):
         xs = range(len(projects))
         for arm in ARMS:
@@ -240,7 +240,10 @@ def figure7_arms(out_dir: Path) -> None:
         ax.set_xlim(-0.5, len(projects) - 0.5)
         ax.set_ylabel(ylabel)
         ax.set_title(title, pad=4)
-        ax.set_ylim(*ylim)
+        if ylim:
+            ax.set_ylim(*ylim)
+        else:
+            ax.margins(y=0.16)   # the masked metric spans a wider range than the old fixed limits
         ax.grid(axis="y", linewidth=0.4)
         ax.set_axisbelow(True)
     panel_label(axes[0], "a")
@@ -255,12 +258,13 @@ def figure7_arms(out_dir: Path) -> None:
     # width the unwrapped caption ran off both edges of the canvas.
     fig.text(0.5, -0.34,
              "MKDA density, NiMARE default kernel, FDR-independent correction; maps regenerated "
-             "identically for every arm.\n$R^2$ is over an MNI152 brain mask. The repo's "
-             "convention correlates every finite voxel, which on these sparse maps is 88-96% "
-             "voxels that are zero in both\nand inflates $R^2$ by roughly 0.05; restricting "
-             "further to voxels nonzero in either map roughly halves it again "
-             "(see data/<project>_maps.csv).\nPanel b averages each project's mapped "
-             "analyses, "
+             f"identically for every arm.\n$R^2$ is over voxels nonzero in either map "
+             f"({metric}), so it measures agreement about findings rather than about empty "
+             "space. The repo's\nconvention correlates every finite voxel, which on these "
+             "sparse maps is 88-96% voxels zero in both, and averages 0.533 against 0.236 "
+             "here; a brain mask\nremoves almost none of that, because the zeros are inside "
+             "the brain. All three are in data/<project>_maps.csv.\nPanel b averages each "
+             "project's mapped analyses, "
              "counted under its label, and offsets the arms horizontally so coincident points "
              "stay visible.\nNo mapped analysis comes from a paper its own arm rejected. Four "
              "of the five projects annotate from each arm's own document; VBM substance\nuse "
@@ -280,10 +284,13 @@ def main() -> int:
                     help="directory holding <project>_record_arms.csv")
     ap.add_argument("--r2", type=Path, default=DEFAULT_DATA / "record_arms_meta_metrics.csv")
     ap.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
+    ap.add_argument("--metric", default=results.DEFAULT_MAP_METRIC,
+                    choices=["r2_nonzero", "r2", "r2_allfinite"],
+                    help="map metric for figure 7 panel b; default drops voxels zero in both maps")
     args = ap.parse_args()
     house_style()
     figure2_arms(args.out_dir, args.projects_root)
-    figure7_arms(args.out_dir)
+    figure7_arms(args.out_dir, args.metric)
     return 0
 
 

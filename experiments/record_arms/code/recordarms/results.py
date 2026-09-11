@@ -15,6 +15,19 @@ from . import paths, spec as spec_mod
 
 ARM_ORDER = ["full text", "record + evidence", "record, no evidence"]
 
+#: Default map metric for the figures. Voxels nonzero in either map -- the shared empty
+#: background dropped. On these maps 88-96% of voxels are exactly zero in BOTH the arm's map
+#: and the manual one, because MKDA writes an exact zero wherever no peak contributes, so a
+#: whole-volume correlation is mostly agreement about emptiness: it averages 0.533 against
+#: 0.236 here. A brain mask removes almost none of that (0.489) because the zeros are inside
+#: the brain.
+#:
+#: The mask is chosen using the values being correlated, which biases the estimate upward.
+#: It is applied identically to every arm and to the baseline, so it does not favour any of
+#: them, but an absolute value under it is not a goodness-of-fit. `r2` (brain-masked) and
+#: `r2_allfinite` (the repo's convention) stay in the CSVs and both remain selectable.
+DEFAULT_MAP_METRIC = "r2_nonzero"
+
 
 def _read(path: Path) -> list[dict]:
     if not path.is_file():
@@ -48,7 +61,7 @@ def screening(metric: str = "endtoend_f1") -> dict[str, dict[str, float]]:
     return out
 
 
-def maps(metric: str = "r2") -> tuple[dict, dict]:
+def maps(metric: str = DEFAULT_MAP_METRIC) -> tuple[dict, dict]:
     """(arm values, baseline values), each project -> arm/column -> list of per-column numbers.
 
     The baseline is one row per manual column with `arm == "baseline"`, re-estimated from its
@@ -69,7 +82,7 @@ def maps(metric: str = "r2") -> tuple[dict, dict]:
     return arms, base
 
 
-def map_columns(metric: str = "r2") -> list[dict]:
+def map_columns(metric: str = DEFAULT_MAP_METRIC) -> list[dict]:
     """Tidy per-column rows, for a figure that pairs an arm against its own baseline."""
     rows = []
     for project in projects():
