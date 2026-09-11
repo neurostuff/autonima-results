@@ -82,13 +82,28 @@ def check_baseline_config(spec: Spec) -> Result:
         problems.append(f"bare model slug(s) {bare}: record-vs-text would be confounded with "
                         "provider routing")
 
-    for src in ((cfg.get("retrieval") or {}).get("full_text_sources") or []):
-        root = src.get("root_path")
-        if root and not Path(root).exists():
-            problems.append(f"retrieval root absent on this host: {root}")
+    # The baseline's retrieval roots only have to exist here if the baseline itself would
+    # have to run. It never does: the arms read their own record mirrors and consume the
+    # baseline's cached outputs. Re-running a baseline whose sources live on another host is
+    # what destroyed substance use's retrieval cache, so the condition is "outputs absent",
+    # not "roots absent" -- an absent root with outputs present is a note, not a failure.
+    absent = [src.get("root_path") for src in
+              ((cfg.get("retrieval") or {}).get("full_text_sources") or [])
+              if src.get("root_path") and not Path(src["root_path"]).exists()]
+    consumable = (paths.outputs(spec.project, spec.baseline_run)
+                  / "final_results.json").is_file()
+    notes = []
+    if absent:
+        if consumable:
+            notes.append(f"{len(absent)} retrieval root(s) live on another host; fine while "
+                         "the baseline is only a cache donor, but it cannot be re-run here")
+        else:
+            problems.append(f"retrieval roots absent and no cached outputs to consume: "
+                            f"{absent[:2]}")
 
-    return Result(not problems, "; ".join(problems) or "study_fulltext set, models namespaced, "
-                                                       "retrieval roots present")
+    detail = "; ".join(problems + notes) or ("study_fulltext set, models namespaced, "
+                                             "retrieval roots present")
+    return Result(not problems, detail)
 
 
 def _normalise(cfg):

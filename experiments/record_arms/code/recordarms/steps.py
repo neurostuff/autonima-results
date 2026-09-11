@@ -149,9 +149,23 @@ def mirrors(spec: Spec) -> None:
             shutil.rmtree(final)
         outs[0].rename(final)
         shutil.rmtree(outs[1])
-        print(f"  {arm}: deterministic over {len(list(final.iterdir()))} records")
+        n_rendered = len(list(final.iterdir()))
+        print(f"  {arm}: deterministic over {n_rendered} records")
+        # --cohort is required, not optional: build_record_corpus defaults to
+        # pmids/cohort.csv and silently drops every record absent from it as
+        # `not_in_cohort`. Omitting it here put 11 of 525 papers in the mirror and the arms
+        # would have screened that as the whole corpus.
         run([AUTO_PY, ARM_SCRIPTS / "build_record_corpus.py",
-             "--rendered", final, "--arm", arm])
+             "--rendered", final, "--arm", arm, "--cohort", spec.manifest])
+        # Count from the builder's own MANIFEST.csv, not the filesystem: the routes do not
+        # share a layout -- ace writes a flat <pmid>.txt while elsevier and pubget write
+        # <pmid>/text.txt -- so globbing text.txt undercounts by every ace paper.
+        mf = paths.MIRRORS / arm / "MANIFEST.csv"
+        built = sum(1 for _ in mf.open()) - 1 if mf.is_file() else 0
+        if built < n_rendered * 0.9:
+            sys.exit(f"mirror {arm} holds {built} papers against {n_rendered} rendered; "
+                     "check that the manifest covers the cohort")
+        print(f"  {arm}: mirror holds {built} papers")
 
 
 # ------------------------------------------------------------------ 5 configs
@@ -174,6 +188,7 @@ def arms(spec: Spec, jobs: int = 8) -> None:
     """
     donor = paths.REPO / "projects" / spec.project / spec.baseline_run
     for label, run_name in spec.record_arms.items():
+        _seed_manifest(donor, paths.REPO / "projects" / spec.project / run_name)
         run([AUTONIMA, "run", spec.arm_config(label), "-j", str(jobs),
              "--copy-valid-cache-from", donor])
         # annotation is never donated; drop any entry the copy brought across
@@ -182,6 +197,30 @@ def arms(spec: Spec, jobs: int = 8) -> None:
         print(f"  {run_name} done (next donor: {donor.name})")
         if stale.is_file():
             print(f"  note: {stale.name} present; contamination gate will verify it")
+
+
+def _seed_manifest(donor: Path, dest: Path) -> None:
+    """Put the donor's execution_manifest.json beside the artefacts it will donate.
+
+    `--copy-valid-cache-from` copies result files but not the manifest, and autonima then
+    refuses: `_has_cache_artifacts` is true while `manifest_is_modern` is false, so
+    `unsupported_cache` trips and the run aborts with "cannot be verified by this version".
+    Donation into a virgin run directory therefore always fails -- the four earlier projects
+    only worked because their arm directories already held a manifest from a previous run.
+
+    The donor's manifest is the right one to seed: it describes the stage hashes the copied
+    artefacts were produced under, so stages whose hashes differ under the arm's config --
+    retrieval and everything downstream of it -- are recomputed, which is the intent.
+    """
+    src = donor / "outputs/execution_manifest.json"
+    out = dest / "outputs"
+    if not src.is_file():
+        return
+    out.mkdir(parents=True, exist_ok=True)
+    target = out / "execution_manifest.json"
+    if not target.is_file():
+        shutil.copy2(src, target)
+        print(f"  seeded {target.relative_to(paths.REPO)} from {donor.name}")
 
 
 # ------------------------------------------------------------------ 7 maps

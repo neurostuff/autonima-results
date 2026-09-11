@@ -2,9 +2,37 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import os
 import sys
 
-from . import checks, scoring, spec as spec_mod, steps
+from . import checks, paths, scoring, spec as spec_mod, steps
+
+
+@contextlib.contextmanager
+def lock(project: str):
+    """One run per project at a time.
+
+    Killing a `run-all` wrapper does not kill the `autonima` it has already spawned, so a
+    relaunch can leave two -- and on one occasion three -- processes writing the same run
+    directory concurrently. Nothing downstream detects that; the outputs simply become a mix.
+    An exclusive lock file makes the second launch refuse instead.
+    """
+    paths.STATE.mkdir(parents=True, exist_ok=True)
+    path = paths.STATE / f"{project}.lock"
+    try:
+        fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        holder = path.read_text().strip() or "unknown"
+        sys.exit(f"{project} is already being run by pid {holder} ({path}).\n"
+                 f"If that process is gone: check `ps` for a stray `autonima run` on this "
+                 f"project first, then remove the lock.")
+    os.write(fd, str(os.getpid()).encode())
+    os.close(fd)
+    try:
+        yield
+    finally:
+        path.unlink(missing_ok=True)
 
 COMMANDS = {
     "status": None, "preflight": None,
@@ -43,6 +71,16 @@ def main(argv=None) -> int:
         return 1 if bad else 0
 
     if args.command == "run-all":
+        with lock(s.project):
+            return _run_all(s, args)
+
+    with lock(s.project):
+        _dispatch(args.command, s, args)
+    return 0
+
+
+def _run_all(s, args) -> int:
+    if True:
         for name, r in checks.preflight(s):
             print(f"  {name:18} {r}")
             if not r.ok:
@@ -61,9 +99,6 @@ def main(argv=None) -> int:
             _dispatch(name, s, args)
         report(s)
         return 0
-
-    _dispatch(args.command, s, args)
-    return 0
 
 
 def _dispatch(name, s, args) -> None:
