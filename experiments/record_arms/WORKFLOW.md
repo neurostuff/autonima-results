@@ -9,17 +9,27 @@ projects; the cost is named so none of them gets dropped as ceremony.
 `experiments/record_arms/arms/<project>.yaml` — nothing else is edited to add a project.
 
 ```yaml
-project:      emotion_regulation_2022   # directory name under projects/, and the key in
+project:      emotion_regulation_2022   # directory under projects/, and the key in
                                         # META_TO_PROJECT, which do not always agree
 meta_pmid:    "35413444"                # row key in the benchmark's included_studies.csv
-baseline_run: v4                        # copied from run_categories.yaml `best`, not guessed
+baseline_run: v4                        # from run_categories.yaml `best`; the arm-name stem
 pondie_run:   emotion_regulation        # name of the extraction run directory
-mapped_keys:  [decrease, increase, maintain, reappraisal]
+# fulltext_run: v1-A1-mini              # optional; defaults to baseline_run
+# only_keys: [increase]                 # optional; defaults to every mapped column
 ```
 
 Arm run names are derived, never spelled out: `<baseline_run>-record-with-evidence` and
 `<baseline_run>-record-no-evidence`. Spelling them by hand is how `v1-Qfull-mini` and
 `v5-gpt-record-*` ended up in the same experiment.
+
+`fulltext_run` exists because PTSD and cue reactivity screen full text through a rehomed
+`-A1-mini` variant so the text arm and the record arms share a provider. The stem stays `v1`
+while the text arm is `v1-A1-mini`, which keeps the arm names derived.
+
+The manual-to-auto column mapping is **not** in the descriptor: it is read from
+`projects/<project>/nmb_mappings.json`. Two copies of a mapping is how a figure ends up
+pairing the wrong maps. Note which side each name belongs to -- baseline run directories and
+manual maps are keyed by the *manual* column, arm maps by the *auto* annotation key.
 
 ## Fixed locations
 
@@ -207,11 +217,29 @@ code/make_figure4_record_arms.py           # figure 4, per arm
 
 Both read only `data/*.csv`, so they run anywhere the CSVs are.
 
+## The code
+
+`code/recordarms/` — `paths` (every location, env-overridable), `spec` (the descriptor and
+derived names), `checks` (preflight and per-step status), `steps` (the eight stages, wrapping
+the proven scripts rather than reimplementing them), `scoring`, `cli`.
+
+```
+python -m recordarms status                      # every project, every step
+python -m recordarms status   --project <p>
+python -m recordarms preflight --project <p>
+python -m recordarms run-all  --project <p>      # preflight gates it; satisfied steps skip
+python -m recordarms <step>   --project <p>      # manifest|corpus|extract|mirrors|
+                                                 # configs|arms|maps|score
+```
+
+`run-all` skips a step whose artefacts already satisfy its check, so a re-run costs only what
+is actually missing. `--force` redoes them; `--from-step` resumes.
+
 ## Adding a project: the whole checklist
 
-1. Write `arms/<project>.yaml` (five fields).
+1. Write `arms/<project>.yaml` (four required fields).
 2. Add the project to `PROJECT_RUNS` in `build_corpus.py`.
-3. Run steps 0–9.
+3. `python -m recordarms run-all --project <project>`.
 
 Everything else is derived. If a step needs a per-project exception, the exception belongs in
 the descriptor, not in the script.
