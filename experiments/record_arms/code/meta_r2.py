@@ -96,64 +96,70 @@ def rr(a, b):
     return round(r, 4), round(r * r, 4)
 
 
-rows = []
-for project, runs in ARMS.items():
-    mapping = json.loads((R / "projects" / project / "nmb_mappings.json").read_text())
-    for manual_name, auto_name in (mapping.get("annotation_mappings") or {}).items():
-        mpath = manual_base(project) / project / manual_name / "z.nii.gz"
-        if not mpath.is_file():
-            print(f"  {project}/{manual_name}: no manual map", file=sys.stderr)
-            continue
-        mimg = nib.load(str(mpath))
-        man = mimg.get_fdata()
-        for i, run in enumerate(runs):
-            apath = (R / "projects" / project / run / "outputs/meta_analysis_results"
-                     / auto_name / "z.nii.gz")
-            if not apath.is_file():
+def main() -> int:
+    rows = []
+    for project, runs in ARMS.items():
+        mapping = json.loads((R / "projects" / project / "nmb_mappings.json").read_text())
+        for manual_name, auto_name in (mapping.get("annotation_mappings") or {}).items():
+            mpath = manual_base(project) / project / manual_name / "z.nii.gz"
+            if not mpath.is_file():
+                print(f"  {project}/{manual_name}: no manual map", file=sys.stderr)
                 continue
-            auto = nib.load(str(apath)).get_fdata()
-            if auto.shape != man.shape:
-                print(f"  {project}/{run}/{auto_name}: shape {auto.shape} vs {man.shape}",
-                      file=sys.stderr)
-                continue
-            finite = np.isfinite(man) & np.isfinite(auto)
-            brain = finite & brain_mask(mimg)
-            a_all, b_all = man[finite], auto[finite]
-            a_br, b_br = man[brain], auto[brain]
-            nz = (a_br != 0) | (b_br != 0)
-            sg = (a_br > DICE_T) | (b_br > DICE_T)
+            mimg = nib.load(str(mpath))
+            man = mimg.get_fdata()
+            for i, run in enumerate(runs):
+                apath = (R / "projects" / project / run / "outputs/meta_analysis_results"
+                         / auto_name / "z.nii.gz")
+                if not apath.is_file():
+                    continue
+                auto = nib.load(str(apath)).get_fdata()
+                if auto.shape != man.shape:
+                    print(f"  {project}/{run}/{auto_name}: shape {auto.shape} vs {man.shape}",
+                          file=sys.stderr)
+                    continue
+                finite = np.isfinite(man) & np.isfinite(auto)
+                brain = finite & brain_mask(mimg)
+                a_all, b_all = man[finite], auto[finite]
+                a_br, b_br = man[brain], auto[brain]
+                nz = (a_br != 0) | (b_br != 0)
+                sg = (a_br > DICE_T) | (b_br > DICE_T)
 
-            r_all, r2_all = rr(a_all, b_all)
-            r_br, r2_br = rr(a_br, b_br)
-            r_nz, r2_nz = rr(a_br[nz], b_br[nz])
-            r_sg, r2_sg = rr(a_br[sg], b_br[sg])
-            rows.append({
-                "project": project, "arm": LABEL[i], "run": run,
-                "manual_analysis": manual_name, "auto_analysis": auto_name,
-                "dice": round(dice(a_all, b_all), 4),
-                "n_brain": int(brain.sum()),
-                "n_nonzero": int(nz.sum()), "n_sig": int(sg.sum()),
-                "pearson_r": r_br, "r2": r2_br,                 # primary: brain-masked
-                "r_allfinite": r_all, "r2_allfinite": r2_all,
-                "r_nonzero": r_nz, "r2_nonzero": r2_nz,
-                "r_sig": r_sg, "r2_sig": r2_sg,
-            })
+                r_all, r2_all = rr(a_all, b_all)
+                r_br, r2_br = rr(a_br, b_br)
+                r_nz, r2_nz = rr(a_br[nz], b_br[nz])
+                r_sg, r2_sg = rr(a_br[sg], b_br[sg])
+                rows.append({
+                    "project": project, "arm": LABEL[i], "run": run,
+                    "manual_analysis": manual_name, "auto_analysis": auto_name,
+                    "dice": round(dice(a_all, b_all), 4),
+                    "n_brain": int(brain.sum()),
+                    "n_nonzero": int(nz.sum()), "n_sig": int(sg.sum()),
+                    "pearson_r": r_br, "r2": r2_br,                 # primary: brain-masked
+                    "r_allfinite": r_all, "r2_allfinite": r2_all,
+                    "r_nonzero": r_nz, "r2_nonzero": r2_nz,
+                    "r_sig": r_sg, "r2_sig": r2_sg,
+                })
 
-if not rows:
-    sys.exit("no rows produced")
+    if not rows:
+        sys.exit("no rows produced")
 
-for out in (R / "reports/record_arms_meta_metrics.csv",
-            R / "experiments/record_arms/data/record_arms_meta_metrics.csv"):
-    out.parent.mkdir(parents=True, exist_ok=True)
-    with out.open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(rows[0]))
-        w.writeheader()
-        w.writerows(rows)
-    print(f"wrote {out}  ({len(rows)} rows)")
+    for out in (R / "reports/record_arms_meta_metrics.csv",
+                R / "experiments/record_arms/data/record_arms_meta_metrics.csv"):
+        out.parent.mkdir(parents=True, exist_ok=True)
+        with out.open("w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(rows[0]))
+            w.writeheader()
+            w.writerows(rows)
+        print(f"wrote {out}  ({len(rows)} rows)")
 
-print(f"\n{'project':22} {'analysis':26} {'arm':20} {'dice':>6} "
-      f"{'r2_brain':>9} {'r2_all':>8} {'r2_nonz':>8} {'r2_sig':>8}")
-for r_ in rows:
-    print(f"{r_['project'][:22]:22} {r_['manual_analysis'][:26]:26} {r_['arm']:20} "
-          f"{r_['dice']:>6} {str(r_['r2']):>9} {str(r_['r2_allfinite']):>8} "
-          f"{str(r_['r2_nonzero']):>8} {str(r_['r2_sig']):>8}")
+    print(f"\n{'project':22} {'analysis':26} {'arm':20} {'dice':>6} "
+          f"{'r2_brain':>9} {'r2_all':>8} {'r2_nonz':>8} {'r2_sig':>8}")
+    for r_ in rows:
+        print(f"{r_['project'][:22]:22} {r_['manual_analysis'][:26]:26} {r_['arm']:20} "
+              f"{r_['dice']:>6} {str(r_['r2']):>9} {str(r_['r2_allfinite']):>8} "
+              f"{str(r_['r2_nonzero']):>8} {str(r_['r2_sig']):>8}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
