@@ -263,7 +263,12 @@ def figure7_arms(out_dir: Path, reports: Path, r2_path: Path) -> None:
     # width the unwrapped caption ran off both edges of the canvas.
     fig.text(0.5, -0.34,
              "MKDA density, NiMARE default kernel, FDR-independent correction; maps regenerated "
-             "identically for every arm.\nPanel b averages each project's mapped analyses, "
+             "identically for every arm.\n$R^2$ is over an MNI152 brain mask. The repo's "
+             "convention correlates every finite voxel, which on these sparse maps is 88-96% "
+             "voxels that are zero in both\nand inflates $R^2$ by roughly 0.05; restricting "
+             "further to voxels nonzero in either map roughly halves it again "
+             "(see record_arms_meta_metrics.csv).\nPanel b averages each project's mapped "
+             "analyses, "
              "counted under its label, and offsets the arms horizontally so coincident points "
              "stay visible.\nNo mapped analysis comes from a paper its own arm rejected. "
              "Cue reactivity, dementia and VBM PTSD annotate from each arm's own\ndocument; "
