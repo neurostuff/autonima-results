@@ -41,11 +41,12 @@ HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 from compile_best_baselines import cluster_bootstrap, sign_test  # noqa: E402
+from recordarms import results  # noqa: E402
 from make_nature_methods_figures import (  # noqa: E402
     COLORS, DISPLAY, DOUBLE_COL, INK, MUTED, RULE, house_style, panel_label, read, save,
 )
 
-ARMS = ["full text", "record + evidence", "record, no evidence"]
+ARMS = results.ARM_ORDER
 STYLE = {"full text": ("o", INK),
          "record + evidence": ("s", "#0072B2"),
          "record, no evidence": ("^", "#D55E00")}
@@ -54,9 +55,6 @@ RESAMPLES, SEED = 20000, 0
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--arms", type=Path, default=HERE / "data/record_arms_meta_metrics.csv")
-    ap.add_argument("--baselines", type=Path,
-                    default=HERE / "data/baseline_meta_metrics.csv")
     ap.add_argument("--metric", default="r2", choices=["r2", "r2_allfinite"],
                     help="r2 = brain-masked (default); r2_allfinite = whole-volume")
     ap.add_argument("--out-dir", type=Path, default=HERE / "figures")
@@ -64,28 +62,15 @@ def main() -> int:
     args = ap.parse_args()
     house_style()
 
-    base = {}
-    for r in read(args.baselines):
-        v = r.get(args.metric)
-        if v not in (None, ""):
-            base[(r["project"], r["manual_analysis"])] = float(v)
-
-    arm_r2: dict = defaultdict(dict)
-    for r in read(args.arms):
-        v = r.get(args.metric)
-        if v not in (None, ""):
-            arm_r2[(r["project"], r["manual_analysis"])][r["arm"]] = float(v)
-
-    matched, unmatched = [], []
-    for key, per_arm in sorted(arm_r2.items()):
-        if key in base and len(per_arm) == len(ARMS):
-            matched.append((key, per_arm))
-        else:
-            unmatched.append(key)
-    if unmatched:
-        print("no baseline for: " + ", ".join(f"{p}/{c}" for p, c in unmatched), file=sys.stderr)
+    # Both sides come from `score`: each project's maps CSV carries its three arms and a
+    # `baseline` row per manual column, all estimated with the same settings. Only columns
+    # with all four are drawn -- emotion regulation's `maintain` has no baseline run.
+    rows_in = results.map_columns(args.metric)
+    base = {(r["project"], r["column"]): r["baseline"] for r in rows_in}
+    matched = [((r["project"], r["column"]), {a: r[a] for a in ARMS}) for r in rows_in]
     if not matched:
-        sys.exit("nothing matched between the arm metrics and the baseline table")
+        sys.exit("no column has all three arms and a baseline; run `score` first")
+    print(f"  {len(matched)} columns with all three arms and a baseline")
 
     rows, deltas, by_project = [], defaultdict(list), defaultdict(lambda: defaultdict(list))
     for (project, column), per_arm in matched:
@@ -175,11 +160,13 @@ def main() -> int:
     fig.legend(handles=handles, loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1)
     fig.text(0.5, -0.30,
-             "Figure 4's comparison, per arm, over the 14 columns whose projects have record "
-             "arms. Baselines are re-estimated from their own studysets with the settings the "
-             "arms used,\nbecause the committed baseline table came from a different estimator. "
-             "Both sides use the brain-masked $R^2$. CI is a percentile bootstrap resampling "
-             "projects, not columns.\nColour is the project and shape is the arm in both panels; the grey band in b spans the three arm means, which differ by 0.014.",
+             f"Figure 4's comparison, per arm, over the {len(matched)} columns whose projects "
+             "have record arms. Baselines are re-estimated from their own studysets with the "
+             "settings the arms used,\nbecause the committed baseline table came from a "
+             "different estimator. Both sides use the brain-masked $R^2$. CI is a percentile "
+             "bootstrap resampling projects, not columns.\nColour is the project and shape is "
+             "the arm in both panels; the grey band in b spans the three arm means, which differ by "
+             f"{hi_m - lo_m:.3f}.",
              ha="center", fontsize=5, color=MUTED, linespacing=1.6)
     fig.subplots_adjust(wspace=0.34)
     save(fig, args.out_dir, "figure4_record_arms")

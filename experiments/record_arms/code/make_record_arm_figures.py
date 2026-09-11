@@ -36,31 +36,28 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-from compute_gold_survival import STAGES, load_gold, survivors  # noqa: E402
+from compute_gold_survival import STAGES, survivors  # noqa: E402
 from make_nature_methods_figures import (  # noqa: E402
-    COLORS, DISPLAY, DOUBLE_COL, INK, MUTED, RULE, house_style, panel_label, read, save,
+    COLORS, DISPLAY, DOUBLE_COL, INK, MUTED, RULE, SHORT, house_style, panel_label,
+    read, save,
 )
 
 HERE = Path(__file__).resolve().parent.parent          # experiments/record_arms
 DEFAULT_OUT = HERE / "figures"
 DEFAULT_DATA = HERE / "data"
 
-PROJECTS = ["cue_reactivity", "dementia", "vbm_of_substance_use", "vbm_of_ptsd"]
-ARMS = ["full text", "record + evidence", "record, no evidence"]
-RUNS = {
-    "cue_reactivity": ("v5-gpt-A1-mini", "v5-gpt-record-with-evidence",
-                       "v5-gpt-record-no-evidence"),
-    "dementia": ("v3", "v3-record-with-evidence", "v3-record-no-evidence"),
-    "vbm_of_substance_use": ("v2", "v2-record-with-evidence", "v2-record-no-evidence"),
-    "vbm_of_ptsd": ("v1-A1-mini", "v1-record-with-evidence", "v1-record-no-evidence"),
-}
+#: Projects, arms and numbers all come from the package: `arms/<project>.yaml` says which
+#: runs an arm maps to and `score` writes the CSVs. Three hard-coded lists used to stand
+#: here, and adding a fifth project meant editing all three without them disagreeing.
+from recordarms import checks, results, spec as spec_mod  # noqa: E402
+
+PROJECTS = results.projects()
+ARMS = results.ARM_ORDER
+RUNS = {p: tuple(results.arms_for(p)[a] for a in ARMS) for p in PROJECTS}
 #: Shape as well as colour, so the arms stay separable in greyscale at 3pt.
 STYLE = {"full text": ("o", "-", INK),
          "record + evidence": ("s", "-", "#0072B2"),
          "record, no evidence": ("^", "--", "#D55E00")}
-SCREENING = {"vbm_of_ptsd": "ptsd_record_arms.csv", "cue_reactivity": "cue_record_arms.csv",
-             "dementia": "dementia_record_arms.csv",
-             "vbm_of_substance_use": "sud_record_arms.csv"}
 #: Single words: at three panels across, the two-line labels collided with their neighbours.
 #: The caption carries the full stage names.
 STAGE_LABELS = ["Search", "Abstract", "Retrieval", "Full text"]
@@ -80,7 +77,11 @@ def arm_of(run: str) -> str | None:
 
 def gather_survival(projects_root: Path) -> tuple[dict, dict]:
     """cumulative gold recall, and precision, per project x arm x stage."""
-    gold = load_gold()
+    # Gold from the package's pinned clone, not `load_gold()`. That helper reads the
+    # benchmark the repo is configured with, which on this host is a symlink into a stale
+    # checkout: it has no rows for emotion regulation at all and one extra paper for
+    # dementia. `checks.gold` reads `paths.BENCH`, which is the clone step 0 pins.
+    gold = {p: checks.gold(spec_mod.load(p).meta_pmid) for p in PROJECTS}
     recall: dict = defaultdict(lambda: defaultdict(dict))
     precision: dict = defaultdict(lambda: defaultdict(dict))
     for project in PROJECTS:
@@ -196,22 +197,12 @@ def figure2_arms(out_dir: Path, projects_root: Path) -> None:
 
 # ------------------------------------------------------------------ figure 7, by arm
 
-def figure7_arms(out_dir: Path, reports: Path, r2_path: Path) -> None:
-    f1: dict = defaultdict(dict)
-    for project, name in SCREENING.items():
-        path = reports / name
-        if not path.is_file():
-            print(f"  missing {path}", file=sys.stderr)
-            continue
-        for row in read(path):
-            arm = arm_of(row["arm"])
-            if arm:
-                f1[project][arm] = float(row["f1"])
-
-    raw: dict = defaultdict(lambda: defaultdict(list))
-    for row in read(r2_path):
-        if row.get("r2"):
-            raw[row["project"]][row["arm"]].append(float(row["r2"]))
+def figure7_arms(out_dir: Path) -> None:
+    # End-to-end F1: scored against the whole gold set. `paired_f1` -- the column
+    # compare_arms.py reported -- omits gold papers that never reached full-text screening,
+    # which reads as recall but is not: PTSD is 0.727 paired against 0.653 end-to-end.
+    f1 = results.screening("endtoend_f1")
+    raw, _baselines = results.maps("r2")
     r2 = {p: {a: st.mean(v) for a, v in arms.items()} for p, arms in raw.items()}
     n_pairs = {p: len(next(iter(arms.values()), [])) for p, arms in raw.items()}
     # All four projects appear. VBM PTSD was excluded until its annotation stage was fixed:
@@ -228,7 +219,7 @@ def figure7_arms(out_dir: Path, reports: Path, r2_path: Path) -> None:
     #: it. A fixed offset per arm, the same in both panels, keeps every arm visible.
     offset = {"full text": -0.13, "record + evidence": 0.0, "record, no evidence": 0.13}
     for ax, data, ylabel, title, projects, ylim in (
-        (axes[0], f1, "Screening F1", "Paper-level screening", PROJECTS, (0.4, 0.8)),
+        (axes[0], f1, "Screening F1 (end-to-end)", "Paper-level screening", PROJECTS, (0.4, 0.8)),
         (axes[1], r2, "Map $R^2$ vs manual", "Meta-analytic map", shown, (0.2, 0.7)),
     ):
         xs = range(len(projects))
@@ -241,9 +232,10 @@ def figure7_arms(out_dir: Path, reports: Path, r2_path: Path) -> None:
         for x in xs:
             ax.axvline(x, color=RULE, linewidth=0.4, zorder=0)
         ax.set_xticks(list(xs))
+        # SHORT, not DISPLAY: at five projects the full names collide.
         ax.set_xticklabels(
-            [DISPLAY[p] + (f"\n({n_pairs[p]} analysis)" if n_pairs.get(p) == 1
-                           else f"\n({n_pairs[p]} analyses)") if ax is axes[1] else DISPLAY[p]
+            [SHORT[p] + (f"\n({n_pairs[p]} analysis)" if n_pairs.get(p) == 1
+                         else f"\n({n_pairs[p]} analyses)") if ax is axes[1] else SHORT[p]
              for p in projects], fontsize=5.6)
         ax.set_xlim(-0.5, len(projects) - 0.5)
         ax.set_ylabel(ylabel)
@@ -267,15 +259,14 @@ def figure7_arms(out_dir: Path, reports: Path, r2_path: Path) -> None:
              "convention correlates every finite voxel, which on these sparse maps is 88-96% "
              "voxels that are zero in both\nand inflates $R^2$ by roughly 0.05; restricting "
              "further to voxels nonzero in either map roughly halves it again "
-             "(see record_arms_meta_metrics.csv).\nPanel b averages each project's mapped "
+             "(see data/<project>_maps.csv).\nPanel b averages each project's mapped "
              "analyses, "
              "counted under its label, and offsets the arms horizontally so coincident points "
-             "stay visible.\nNo mapped analysis comes from a paper its own arm rejected. "
-             "Cue reactivity, dementia and VBM PTSD annotate from each arm's own\ndocument; "
-             "VBM substance use annotates from title and abstract only, because its full-text "
-             "arm's articles are not on this host.\nRe-running one project's annotation "
-             "unchanged moved its arms by 0.034 $R^2$, which exceeds several of the "
-             "between-arm gaps shown here.",
+             "stay visible.\nNo mapped analysis comes from a paper its own arm rejected. Four "
+             "of the five projects annotate from each arm's own document; VBM substance\nuse "
+             "annotates from title and abstract only, because its full-text arm's articles are "
+             "not on this host.\nRe-running one project's annotation unchanged moved its arms "
+             "by 0.034 $R^2$, which exceeds every between-arm gap shown in b.",
              ha="center", va="top", fontsize=5, color=MUTED, linespacing=1.6)
     save(fig, out_dir, "figure7_record_arms")
 
@@ -292,7 +283,7 @@ def main() -> int:
     args = ap.parse_args()
     house_style()
     figure2_arms(args.out_dir, args.projects_root)
-    figure7_arms(args.out_dir, args.reports, args.r2)
+    figure7_arms(args.out_dir)
     return 0
 
 
