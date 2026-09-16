@@ -668,7 +668,7 @@ Found while building this skeleton, 2026-09-10. All corrected above.
 | Fig 4 Δ +0.110, p = 3.5e-06, 31/35 (skeleton L518) | **superseded**, 35-column era | — |
 | §7 0.495 vs 0.394, 30/35 (outline L691) | **superseded**, 35-column era | — |
 | — | **current: 0.575 vs 0.476, median Δ +0.061, 28/32, p = 1.9e-05** | `cross_project_best_baseline_stats.csv` |
-| annotation lift 3.3× | **3.1×** | `annotation_aggregates.csv` |
+| ~~annotation lift 3.3×~~ | **3.3× is correct** — my 3.1× included dementia, which Fig 3b excludes | `annotation_aggregates.csv` |
 | S3 recall control +0.007 | **−0.044** at full text | `stage_precision_recall*.csv` |
 | "35 columns" (skeleton L351/473/518/568/576) | **32** | `benchmark_exclusions.py` |
 
