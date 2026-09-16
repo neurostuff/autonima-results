@@ -1,0 +1,3396 @@
+{
+ "description": {
+  "extraction_status": "extracted",
+  "value": "A deep learning-based classifier was trained on raw 3D T1-weighted structural MRI volumes to classify Alzheimer’s disease, frontotemporal dementia and normal controls, and guided backpropagation was used to visualize voxel-based contribution maps.",
+  "value_source": "generated",
+  "evidence": {
+   "status": "present",
+   "sets": [
+    {
+     "source": "model_quote",
+     "spans": [
+      {
+       "text": "We trained a DL-based network directly based on raw T1 images to classify FTD, AD and corresponding NCs.",
+       "start_char": 1175,
+       "end_char": 1279
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "design": {
+  "description": {
+   "extraction_status": "extracted",
+   "value": "Retrospective study using data from two publicly available databases, with subject-level random division into training and testing datasets.",
+   "value_source": "generated",
+   "evidence": {
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "the loose datasets were randomly divided into training datasets and testing datasets at the subject level according to a ratio of 4:1",
+        "start_char": 14041,
+        "end_char": 14174
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "allocation": {
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
+   "evidence": {
+    "status": "not_found"
+   }
+  },
+  "assignment_structure": {
+   "extraction_status": "extracted",
+   "value": "parallel",
+   "value_source": "generated",
+   "evidence": {
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "the loose datasets were randomly divided into training datasets and testing datasets at the subject level according to a ratio of 4:1",
+        "start_char": 14041,
+        "end_char": 14174
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "blinding": {
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
+   "evidence": {
+    "status": "not_found"
+   }
+  },
+  "arms": [],
+  "timepoints": []
+ },
+ "analyses": [
+  {
+   "local_id": "ana_classifier",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "classification of FTD, AD and NC",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+         "start_char": 18669,
+         "end_char": 18766
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "classify FTD, AD and corresponding NCs",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "We trained a DL-based network directly based on raw T1 images to classify FTD, AD and corresponding NCs.",
+         "start_char": 1175,
+         "end_char": 1279
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": [
+     "exploratory"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The proposed network yielded an accuracy of 91.83% based on the most common T1-weighted sequence [magnetization-prepared rapid acquisition with gradient echo (MPRAGE)]."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The proposed network yielded an accuracy of 91.83% based on the most common T1-weighted sequence [magnetization-prepared rapid acquisition with gradient echo (MPRAGE)].",
+         "start_char": 1406,
+         "end_char": 1574
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": [
+     "whole_brain"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the contribution scores were quite uniformed across the whole brain",
+         "start_char": 25811,
+         "end_char": 25878
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_classification_accuracy",
+   "groups": [
+    {
+     "group": "grp_ad",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 422,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Based on the most common T1-weighted sequence (MPRAGE), the sample sizes of AD, AD_NC, FTD, and FTD_NC were 422, 469, 552, and 354, respectively.",
+           "start_char": 11046,
+           "end_char": 11191
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_ftd",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 552,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Based on the most common T1-weighted sequence (MPRAGE), the sample sizes of AD, AD_NC, FTD, and FTD_NC were 422, 469, 552, and 354, respectively.",
+           "start_char": 11046,
+           "end_char": 11191
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_nc",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 469,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Based on the most common T1-weighted sequence (MPRAGE), the sample sizes of AD, AD_NC, FTD, and FTD_NC were 422, 469, 552, and 354, respectively.",
+           "start_char": 11046,
+           "end_char": 11191
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "tr_diagnosis_classifier",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "AD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+            "start_char": 18669,
+            "end_char": 18766
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+            "start_char": 18669,
+            "end_char": 18766
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "tr_diagnosis_classifier",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "FTD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+            "start_char": 18669,
+            "end_char": 18766
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+            "start_char": 18669,
+            "end_char": 18766
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "tr_diagnosis_classifier",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "NC",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+            "start_char": 18669,
+            "end_char": 18766
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+            "start_char": 18669,
+            "end_char": 18766
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "omnibus",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+          "start_char": 18669,
+          "end_char": 18766
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "DecodingDetails",
+    "decoded_variable": {
+     "extraction_status": "extracted",
+     "value": "FTD, AD and NC",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+          "start_char": 18669,
+          "end_char": 18766
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "classes": [
+     {
+      "label": {
+       "extraction_status": "extracted",
+       "value": "FTD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+            "start_char": 18669,
+            "end_char": 18766
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "label": {
+       "extraction_status": "extracted",
+       "value": "AD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+            "start_char": 18669,
+            "end_char": 18766
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "label": {
+       "extraction_status": "extracted",
+       "value": "NC",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Considering that the problem discussed in this paper is the multiclassification of AD, FTD and NC",
+            "start_char": 18669,
+            "end_char": 18766
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "performance_metrics": [
+     {
+      "name": {
+       "extraction_status": "extracted",
+       "value": "accuracy",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The proposed network yielded an accuracy of 91.83% based on the most common T1-weighted sequence [magnetization-prepared rapid acquisition with gradient echo (MPRAGE)].",
+            "start_char": 1406,
+            "end_char": 1574
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "value": {
+       "extraction_status": "extracted",
+       "value": 91.83,
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The proposed network yielded an accuracy of 91.83% based on the most common T1-weighted sequence [magnetization-prepared rapid acquisition with gradient echo (MPRAGE)].",
+            "start_char": 1406,
+            "end_char": 1574
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "reference_value": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      },
+      "relation": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "validation_scheme": {
+     "extraction_status": "not_reported",
+     "evidence": {
+      "status": "not_applicable"
+     }
+    },
+    "generalization": {
+     "extraction_status": "not_reported",
+     "evidence": {
+      "status": "not_applicable"
+     }
+    }
+   },
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "tasks": [
+    "tsk_classification_of_ftd"
+   ],
+   "model_estimation": "mod_classifier",
+   "inference_settings": "inf_classifier",
+   "tables": [],
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "assessments": [],
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "ana_contribution_ttest",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "AD-FTD difference of the contribution maps",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "(  A3  ) the AD-FTD difference of the contribution maps, here showing T-value of two sample   t  -test and regions have   p   < 0.0001.",
+         "start_char": 27026,
+         "end_char": 27161
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "the difference between AD and FTD of the contribution maps",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The calculated unique contribution graphs of each disease.",
+         "start_char": 26799,
+         "end_char": 26857
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": [
+     "exploratory"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "widespread regions including inferior left temporal lobe, bilateral inferior frontal lobe, hippocampus, thalamus and medial frontal cortex may contribute more to classifying of AD. In contrast, the widespread white matter regions in the right hemisphere contributed in FTD significantly more than AD"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Two sample   t  -test showed that widespread regions including inferior left temporal lobe, bilateral inferior frontal lobe, hippocampus, thalamus and medial frontal cortex may contribute more to classifying of AD subjects compare to FTD. In contrast, the widespread white matter regions in the right hemisphere contributed in FTD significantly more than AD ( Figure 6A3 ).",
+         "start_char": 26421,
+         "end_char": 26794
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": [
+     "whole_brain"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the contribution scores were quite uniformed across the whole brain",
+         "start_char": 25811,
+         "end_char": 25878
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "regions": [],
+   "defines_regions": [],
+   "measure": "mea_contribution_map",
+   "groups": [
+    {
+     "group": "grp_ad",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "group": "grp_ftd",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "tr_diagnosis_contribution",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "AD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "widespread regions including inferior left temporal lobe, bilateral inferior frontal lobe, hippocampus, thalamus and medial frontal cortex may contribute more to classifying of AD subjects compare to FTD.",
+            "start_char": 26455,
+            "end_char": 26659
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "widespread regions including inferior left temporal lobe, bilateral inferior frontal lobe, hippocampus, thalamus and medial frontal cortex may contribute more to classifying of AD subjects compare to FTD.",
+            "start_char": 26455,
+            "end_char": 26659
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "AD subjects",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "classifying of AD subjects",
+            "start_char": 26617,
+            "end_char": 26643
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "term": "tr_diagnosis_contribution",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "FTD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "the widespread white matter regions in the right hemisphere contributed in FTD significantly more than AD",
+            "start_char": 26673,
+            "end_char": 26778
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "the widespread white matter regions in the right hemisphere contributed in FTD significantly more than AD",
+            "start_char": 26673,
+            "end_char": 26778
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "contrast",
+     "value_source": "generated",
+     "evidence": {
+      "status": "not_found"
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Two sample   t  -test showed that widespread regions including inferior left temporal lobe, bilateral inferior frontal lobe, hippocampus, thalamus and medial frontal cortex may contribute more to classifying of AD subjects compare to FTD.",
+           "start_char": 26421,
+           "end_char": 26659
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "tasks": [],
+   "model_estimation": "mod_contribution_ttest",
+   "inference_settings": "inf_contribution",
+   "tables": [],
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "MNI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Every image I  was first transformed into the standard MNI space using Statistical Parametric Mapping ( Penny et al., 2011 )",
+         "start_char": 22279,
+         "end_char": 22403
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessments": [],
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "acquisitions": [
+  {
+   "local_id": "acq_mri",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "sMRI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "3D T1-weighted structural MRI",
+         "start_char": 8750,
+         "end_char": 8779
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 3,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the field strength is equal to 3 tesla",
+         "start_char": 12556,
+         "end_char": 12594
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "MPRAGE",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the most common T1-weighted sequence (MPRAGE)",
+         "start_char": 11055,
+         "end_char": 11100
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_voxel_size_mm": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "external_datasets": [
+  {
+   "name": {
+    "extraction_status": "extracted",
+    "value": "ADNI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the ADNI",
+         "start_char": 1152,
+         "end_char": 1160
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "url": {
+    "extraction_status": "extracted",
+    "value": "https://www.adni-info.org",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "name": {
+    "extraction_status": "extracted",
+    "value": "NIFD",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the NIFD database",
+         "start_char": 7920,
+         "end_char": 7937
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "url": {
+    "extraction_status": "extracted",
+    "value": "http://memory.ucsf.edu/research/studies/nifd",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "For up-to-date information on participation and protocol, please visit   http://memory.ucsf.edu/research/studies/nifd  .",
+         "start_char": 11910,
+         "end_char": 12030
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "groups": [
+  {
+   "local_id": "grp_ad",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "AD",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "AD",
+         "start_char": 277,
+         "end_char": 279
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": [
+     "human"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "human participants",
+         "start_char": 43131,
+         "end_char": 43149
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Alzheimer's disease"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Alzheimer’s disease",
+         "start_char": 184,
+         "end_char": 203
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 422,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Based on the most common T1-weighted sequence (MPRAGE), the sample sizes of AD, AD_NC, FTD, and FTD_NC were 422, 469, 552, and 354, respectively.",
+         "start_char": 11046,
+         "end_char": 11191
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Patients with Alzheimer’s disease (AD) identified from the ADNI database and used as the AD class in the three-category MRI classification task.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "we collected FTD patient data from the NIFD database, AD patient data from the ADNI database",
+         "start_char": 10854,
+         "end_char": 10946
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "ambiguous",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "ADNI-defined probable Alzheimer’s disease",
+     "Sagittal 3-T MRI",
+     "Slice thickness 0.8–1.5 mm",
+     "150–250 slices"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The collected MRI volumes must meet all the following criteria: the scanning plane is the sagittal plane, the field strength is equal to 3 tesla, the slice thickness is between 0.8 and 1.5 mm, and the number of slices is between 150 and 250.",
+         "start_char": 12450,
+         "end_char": 12691
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "No additional exclusion or quality-control criteria were applied"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We also do not perform any selection or quality control of the volumes, such as having medical experts check the image quality.",
+         "start_char": 12865,
+         "end_char": 12992
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Secondary analysis of publicly available ADNI data.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The original contributions presented in the study are included in the article/supplementary material",
+         "start_char": 42875,
+         "end_char": 42975
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "AD patient data",
+         "start_char": 10908,
+         "end_char": 10923
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "ADNI diagnostic criteria, including NINCDS/ADRDA criteria for probable AD",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "AD participants; ADNI example inclusion criteria included MMSE 20–26 and CDR 0.5 or 1.0.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the inclusion criteria of AD in ADNI are  : MMSE (Mini-mental State Examination) scores between 20 and 26 (inclusive), CDR (Clinical Dementia Rating) of 0.5 or 1.0",
+         "start_char": 19565,
+         "end_char": 19728
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "grp_ftd",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "FTD",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "FTD",
+         "start_char": 247,
+         "end_char": 250
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": [
+     "human"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "human participants",
+         "start_char": 43131,
+         "end_char": 43149
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Frontotemporal dementia"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Frontotemporal dementia (FTD)",
+         "start_char": 222,
+         "end_char": 251
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 552,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Based on the most common T1-weighted sequence (MPRAGE), the sample sizes of AD, AD_NC, FTD, and FTD_NC were 422, 469, 552, and 354, respectively.",
+         "start_char": 11046,
+         "end_char": 11191
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Patients with frontotemporal dementia (FTD) identified from the NIFD database and used as the FTD class in the three-category MRI classification task.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "we collected FTD patient data from the NIFD database",
+         "start_char": 10854,
+         "end_char": 10906
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "ambiguous",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "NIFD-defined FTD",
+     "Sagittal 3-T MRI",
+     "Slice thickness 0.8–1.5 mm",
+     "150–250 slices"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The collected MRI volumes must meet all the following criteria: the scanning plane is the sagittal plane, the field strength is equal to 3 tesla, the slice thickness is between 0.8 and 1.5 mm, and the number of slices is between 150 and 250.",
+         "start_char": 12450,
+         "end_char": 12691
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "No additional exclusion or quality-control criteria were applied"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We also do not perform any selection or quality control of the volumes, such as having medical experts check the image quality.",
+         "start_char": 12865,
+         "end_char": 12992
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Secondary analysis of publicly available NIFD data collected through collaborative efforts at three North American sites.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The data are the result of collaborative efforts at three sites in North America.",
+         "start_char": 11828,
+         "end_char": 11909
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "FTD patient data",
+         "start_char": 10867,
+         "end_char": 10883
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "NIFD diagnostic criteria",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "FTD participants; subtypes were generally labeled together as FTD.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "generally labeled them as FTD",
+         "start_char": 39266,
+         "end_char": 39295
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "grp_nc",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "NC",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "NC",
+         "start_char": 557,
+         "end_char": 559
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": [
+     "human"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "human participants",
+         "start_char": 43131,
+         "end_char": 43149
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "normal control group data",
+         "start_char": 10952,
+         "end_char": 10977
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 469,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Based on the most common T1-weighted sequence (MPRAGE), the sample sizes of AD, AD_NC, FTD, and FTD_NC were 422, 469, 552, and 354, respectively.",
+         "start_char": 11046,
+         "end_char": 11191
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Normal control (NC) participants from ADNI and NIFD, used as the control class in the three-category MRI classification task.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "normal control group data from both databases",
+         "start_char": 10952,
+         "end_char": 10997
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "ambiguous",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Normal-control classification in ADNI or NIFD",
+     "Sagittal 3-T MRI",
+     "Slice thickness 0.8–1.5 mm",
+     "150–250 slices"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The collected MRI volumes must meet all the following criteria: the scanning plane is the sagittal plane, the field strength is equal to 3 tesla, the slice thickness is between 0.8 and 1.5 mm, and the number of slices is between 150 and 250.",
+         "start_char": 12450,
+         "end_char": 12691
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "No additional exclusion or quality-control criteria were applied"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We also do not perform any selection or quality control of the volumes, such as having medical experts check the image quality.",
+         "start_char": 12865,
+         "end_char": 12992
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Secondary analysis of publicly available ADNI and NIFD data.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "normal control group data from both databases",
+         "start_char": 10952,
+         "end_char": 10997
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "No dementia diagnosis; normal control"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Normal controls from the corresponding public databases.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "normal control group data from both databases",
+         "start_char": 10952,
+         "end_char": 10997
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "grp_ftd_nc",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "FTD_NC",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Normal control participants from the NIFD database used as the control group for FTD classification scenarios.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": [
+     "human"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 354,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Secondary analysis of publicly available NIFD data collected through collaborative efforts at three North American sites.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Sagittal scanning plane",
+     "Field strength equal to 3 tesla",
+     "Slice thickness between 0.8 and 1.5 mm",
+     "150 to 250 slices"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_classifier",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "classifier performance evaluation",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The accuracy curves of each scenario in the independent test datasets",
+         "start_char": 24842,
+         "end_char": 24911
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "search_volume": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "inf_contribution",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "in each voxel",
+         "start_char": 26889,
+         "end_char": 26902
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 0.0001,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "p   < 0.0001",
+         "start_char": 27148,
+         "end_char": 27160
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "extracted",
+    "value": "p",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "p",
+         "start_char": 3,
+         "end_char": 4
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "none reported",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": [
+     "whole_brain"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "search_volume": {
+    "extraction_status": "extracted",
+    "value": "whole brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.0001,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "significance threshold was set to 0.0001",
+         "start_char": 23552,
+         "end_char": 23592
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "measures": [
+  {
+   "local_id": "mea_classification_accuracy",
+   "family": {
+    "extraction_status": "extracted",
+    "value": [
+     "functional_bold"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "decoding_performance",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "classification performance",
+         "start_char": 10695,
+         "end_char": 10721
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "classification accuracy",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "accuracy",
+         "start_char": 1438,
+         "end_char": 1446
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "extracted",
+    "value": "percentage",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "%",
+         "start_char": 1455,
+         "end_char": 1456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "classification accuracy",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "accuracy",
+         "start_char": 1438,
+         "end_char": 1446
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "mea_contribution_map",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel-based contribution map",
+         "start_char": 25509,
+         "end_char": 25537
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry_other",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel-based contribution map",
+         "start_char": 25509,
+         "end_char": 25537
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "voxel-based contribution map",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel-based contribution map",
+         "start_char": 25509,
+         "end_char": 25537
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "contribution score",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "contribution score",
+         "start_char": 23199,
+         "end_char": 23217
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "model_estimations": [
+  {
+   "local_id": "mod_classifier",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "deep learning classifier",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "DL-based network",
+         "start_char": 1188,
+         "end_char": 1204
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "deep learning classifier",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "DL-based network",
+         "start_char": 1188,
+         "end_char": 1204
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "training and testing",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "JH, RL, MW, and PL contributed to coding, training and testing the model, and calculating the contribution graph.",
+         "start_char": 43488,
+         "end_char": 43601
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "stochastic gradient descent",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The whole network optimizer was the stochastic gradient descent algorithm, for which the momentum factor was 0.9 and the weight delay factor was 0.001.",
+         "start_char": 19097,
+         "end_char": 19248
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "PyTorch 1.2.0, Python 3.6.9, and CUDA 10.0",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All the network models were trained on a DGX-1 hardware platform, and the software frameworks were PyTorch 1.2.0, Python 3.6.9, and CUDA 10.0.",
+         "start_char": 18954,
+         "end_char": 19096
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel",
+         "start_char": 25509,
+         "end_char": 25514
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "tr_diagnosis_classifier",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "diagnosis",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "category",
+           "start_char": 8421,
+           "end_char": 8429
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "multiclassification",
+           "start_char": 18729,
+           "end_char": 18748
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "AD",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "AD",
+             "start_char": 277,
+             "end_char": 279
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_ad"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "FTD",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "FTD",
+             "start_char": 247,
+             "end_char": 250
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_ftd"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "NC",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "NC",
+             "start_char": 557,
+             "end_char": 559
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_nc"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Diagnostic class label assigned by the public database: AD, FTD, or NC.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The ground truth of the sample was marked by the public database",
+           "start_char": 19425,
+           "end_char": 19489
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "extracted",
+    "value": "not applicable; structural MRI classification does not model a timeseries",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "3D-ResNet50 encoder initialized from a pretrained segmentation model; stochastic gradient descent with momentum 0.9, weight decay 0.001, initial learning rate 0.001, cosine annealing scheduler, batch size 12, and three-class softmax classifier.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The prototype of the reused encoder was actually 3D-ResNet50",
+         "start_char": 18404,
+         "end_char": 18464
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "mod_contribution_ttest",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": [
+     "anova"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "two-sample t-test of contribution maps",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "two-sample   t-  test",
+         "start_char": 23525,
+         "end_char": 23546
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "group",
+         "start_char": 2601,
+         "end_char": 2606
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "two-sample t-test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "two-sample   t-  test",
+         "start_char": 23525,
+         "end_char": 23546
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": [
+     "voxel"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel",
+         "start_char": 25509,
+         "end_char": 25514
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "tr_diagnosis_contribution",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "diagnosis",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "AD and FTD",
+           "start_char": 23498,
+           "end_char": 23508
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "between AD and FTD",
+           "start_char": 23490,
+           "end_char": 23508
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "AD",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "AD",
+             "start_char": 277,
+             "end_char": 279
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_ad"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "FTD",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "FTD",
+             "start_char": 247,
+             "end_char": 250
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_ftd"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Diagnostic group contrast between AD and FTD contribution maps.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "to investigate how the scores were difference between AD and FTD, we performed a two-sample   t-  test",
+           "start_char": 23444,
+           "end_char": 23546
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "extracted",
+    "value": "not applicable; voxelwise contribution maps do not model a timeseries",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Two-sample t-test comparing AD and FTD voxelwise contribution maps; significance threshold p < 0.0001.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "significance threshold was set to 0.0001",
+         "start_char": 23552,
+         "end_char": 23592
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "AFNI; implementation details and version were not reported.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Results were represented by AFNI",
+         "start_char": 23070,
+         "end_char": 23102
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "local_id": "33551735",
+ "extraction_metadata": {
+  "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
+  "extractor_version": "pondie-1",
+  "source_text_hash": "e574a57f8da546625bb96a8ae61e8d87fa5229f34d50ef651a8c24b942fbd5cf",
+  "extraction_date": "2026-09-09",
+  "paper_sections": [
+   {
+    "ordinal": 0,
+    "title": "Deep Learning-Based Classification and Voxel-Based Visualization of Frontotemporal Dementia and Alzheimer’s Disease",
+    "level": 0,
+    "start_char": 0,
+    "end_char": 2535
+   },
+   {
+    "ordinal": 1,
+    "title": "Introduction",
+    "level": 1,
+    "start_char": 2536,
+    "end_char": 23598
+   },
+   {
+    "ordinal": 2,
+    "title": "Materials and Methods",
+    "level": 1,
+    "start_char": 10410,
+    "end_char": 23598
+   },
+   {
+    "ordinal": 3,
+    "title": "Data Collection",
+    "level": 2,
+    "start_char": 10439,
+    "end_char": 16538,
+    "parent_section": "Materials and Methods"
+   },
+   {
+    "ordinal": 4,
+    "title": "Data Augmentation",
+    "level": 2,
+    "start_char": 14326,
+    "end_char": 20506,
+    "parent_section": "Materials and Methods"
+   },
+   {
+    "ordinal": 5,
+    "title": "Network Architecture and Transfer Learning",
+    "level": 2,
+    "start_char": 16538,
+    "end_char": 21829,
+    "parent_section": "Materials and Methods"
+   },
+   {
+    "ordinal": 6,
+    "title": "Contribution Calculation",
+    "level": 2,
+    "start_char": 20506,
+    "end_char": 23598,
+    "parent_section": "Materials and Methods"
+   },
+   {
+    "ordinal": 7,
+    "title": "Model Visualization",
+    "level": 2,
+    "start_char": 21829,
+    "end_char": 23613,
+    "parent_section": "Materials and Methods"
+   },
+   {
+    "ordinal": 8,
+    "title": "Results",
+    "level": 1,
+    "start_char": 23598,
+    "end_char": 32522
+   },
+   {
+    "ordinal": 9,
+    "title": "Convergence Speed",
+    "level": 2,
+    "start_char": 23613,
+    "end_char": 25472,
+    "parent_section": "Results"
+   },
+   {
+    "ordinal": 10,
+    "title": "Diagnostic Accuracy",
+    "level": 2,
+    "start_char": 24814,
+    "end_char": 27357,
+    "parent_section": "Results"
+   },
+   {
+    "ordinal": 11,
+    "title": "Results on Visualization",
+    "level": 2,
+    "start_char": 25472,
+    "end_char": 32522,
+    "parent_section": "Results"
+   },
+   {
+    "ordinal": 12,
+    "title": "Generalizability",
+    "level": 2,
+    "start_char": 27357,
+    "end_char": 33182,
+    "parent_section": "Results"
+   },
+   {
+    "ordinal": 13,
+    "title": "Discussion",
+    "level": 1,
+    "start_char": 32522,
+    "end_char": 38155
+   },
+   {
+    "ordinal": 14,
+    "title": "Inherent Drawback of Studies Based on Traditional ML",
+    "level": 2,
+    "start_char": 33182,
+    "end_char": 35403,
+    "parent_section": "Discussion"
+   },
+   {
+    "ordinal": 15,
+    "title": "Shortcoming of Previous Studies Based on DL",
+    "level": 2,
+    "start_char": 34256,
+    "end_char": 38155,
+    "parent_section": "Discussion"
+   },
+   {
+    "ordinal": 16,
+    "title": "What Are the Features Used by the DL Network?",
+    "level": 2,
+    "start_char": 35403,
+    "end_char": 39532,
+    "parent_section": "Discussion"
+   },
+   {
+    "ordinal": 17,
+    "title": "Limitation and Conclusion",
+    "level": 1,
+    "start_char": 38155,
+    "end_char": 42840
+   },
+   {
+    "ordinal": 18,
+    "title": "Effect of Spatial and Intensity Normalization",
+    "level": 2,
+    "start_char": 39532,
+    "end_char": 42840,
+    "parent_section": "Limitation and Conclusion"
+   },
+   {
+    "ordinal": 19,
+    "title": "Early Stages of Disease",
+    "level": 2,
+    "start_char": 40860,
+    "end_char": 43045,
+    "parent_section": "Limitation and Conclusion"
+   },
+   {
+    "ordinal": 20,
+    "title": "Data Availability Statement",
+    "level": 1,
+    "start_char": 42840,
+    "end_char": 43381
+   },
+   {
+    "ordinal": 21,
+    "title": "Ethics Statement",
+    "level": 1,
+    "start_char": 43045,
+    "end_char": 43751
+   },
+   {
+    "ordinal": 22,
+    "title": "Author Contributions",
+    "level": 1,
+    "start_char": 43381,
+    "end_char": 43951
+   },
+   {
+    "ordinal": 23,
+    "title": "Conflict of Interest",
+    "level": 1,
+    "start_char": 43751,
+    "end_char": 43951
+   }
+  ],
+  "repaired_by": "pondie-repair-1"
+ },
+ "tasks": [
+  {
+   "local_id": "tsk_classification_of_ftd",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "classification of FTD, AD and NC",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Three-category classification of Alzheimer’s disease, frontotemporal dementia, and normal controls from 3D T1-weighted structural MRI volumes.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "design_type": {
+    "extraction_status": "extracted",
+    "value": "three-class classification",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "response_mode": {
+    "extraction_status": "extracted",
+    "value": [
+     "none"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquisitions": [
+    "acq_mri"
+   ]
+  }
+ ]
+}

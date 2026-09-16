@@ -1,0 +1,3115 @@
+{
+ "description": {
+  "extraction_status": "extracted",
+  "value": "The study evaluates voxel-based partial least squares classification of FDG PET images for differentiating normal controls, Alzheimer's disease, and frontotemporal dementia across scanners, including inter-scanner ratio-image normalization.",
+  "value_source": "generated",
+  "evidence": {
+   "status": "not_found"
+  }
+ },
+ "design": {
+  "description": {
+   "extraction_status": "extracted",
+   "value": "Retrospective and prospective clinical databases from two sites and three scanners were evaluated using supervised classification with training and test data.",
+   "value_source": "generated",
+   "evidence": {
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "Subjects for this study were recruited at two different sites",
+        "start_char": 6430,
+        "end_char": 6491
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "allocation": {
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
+   "evidence": {
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "In order to assess the impact of a scanner mismatch between an individual image (test data) and the classification databases (training data), the following database setups were investigated:",
+        "start_char": 16775,
+        "end_char": 16965
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "assignment_structure": {
+   "extraction_status": "extracted",
+   "value": "parallel",
+   "value_source": "generated",
+   "evidence": {
+    "status": "present",
+    "sets": [
+     {
+      "source": "literal_match",
+      "spans": [
+       {
+        "text": "In contrast to extraction of regions of interests, SSP retains high spatial resolution in directions parallel to the cortical surface.",
+        "start_char": 11842,
+        "end_char": 11976
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "blinding": {
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
+   "evidence": {
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "supervised learning",
+        "start_char": 13352,
+        "end_char": 13371
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "arms": [],
+  "timepoints": []
+ },
+ "analyses": [
+  {
+   "local_id": "ana_baseline_classification",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Baseline classification accuracies for the four different database setups",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Baseline classification accuracies for the four different database setups and three scanners, based on image volumes as input features.",
+         "start_char": 33780,
+         "end_char": 33915
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "classification accuracies for the in-scanner, x-scanner, train-other, and train-all database setups using image volumes as input features",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Baseline classification accuracies for the four different database setups and three scanners, based on image volumes as input features.",
+         "start_char": 33780,
+         "end_char": 33915
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": [
+     "exploratory"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The baseline “in-scanner” setup yielded classification accuracies between 89% and 98% for the three scanners, with an overall accuracy of 94%.",
+     "Training the classifier on a different scanner (“x-scanner”) severely degraded accuracy to 70 to 84% for the various scanner combinations, with average accuracy of 79%.",
+     "Increasing the amount of training data from a second mismatched scanner (“train-other”) did not have a notable impact on classification accuracy (80%).",
+     "Finally, adding training data from the correct scanner as well (“train-all”), i.e. training on all three scanners, improved accuracy to 91%."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The baseline “in-scanner” setup yielded classification accuracies between 89% and 98% for the three scanners, with an overall accuracy of 94%. Training the classifier on a different scanner (“x-scanner”) severely degraded accuracy to 70 to 84% for the various scanner combinations, with average accuracy of 79%. Increasing the amount of training data from a second mismatched scanner (“train-other”) did not have a notable impact on classification accuracy (80%). Finally, adding training data from the correct scanner as well (“train-all”), i.e. training on all three scanners, improved accuracy to 91%.",
+         "start_char": 18951,
+         "end_char": 19555
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": [
+     "whole_brain"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "measure": "mea_fdg_pet_classification_accuracy",
+   "groups": [
+    {
+     "group": "grp_nc",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "group": "grp_ad",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "group": "grp_ftd",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_diagnostic_category",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "NC",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "trm_diagnostic_category",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "AD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "trm_diagnostic_category",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "FTD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "omnibus",
+     "value_source": "generated",
+     "evidence": {
+      "status": "not_found"
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "DecodingDetails",
+    "decoded_variable": {
+     "extraction_status": "extracted",
+     "value": "AD, FTD, or NC",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "After the classifier has been trained, it is applied to test data , assigning one of the diagnostic categories (AD, FTD, or NC) to each image.",
+          "start_char": 16097,
+          "end_char": 16239
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "classes": [
+     {
+      "label": {
+       "extraction_status": "extracted",
+       "value": "NC",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Diagnostic categories included normal controls (NC, n A = 26, n B = 20, n C = 24 for each scanner respectively), Alzheimer's disease (AD, n A = 44, n B = 11, n C = 16), and frontotemporal dementia (FTD, n A = 13, n B = 13, n C = 5).",
+            "start_char": 1038,
+            "end_char": 1270
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "label": {
+       "extraction_status": "extracted",
+       "value": "AD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Diagnostic categories included normal controls (NC, n A = 26, n B = 20, n C = 24 for each scanner respectively), Alzheimer's disease (AD, n A = 44, n B = 11, n C = 16), and frontotemporal dementia (FTD, n A = 13, n B = 13, n C = 5).",
+            "start_char": 1038,
+            "end_char": 1270
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "label": {
+       "extraction_status": "extracted",
+       "value": "FTD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Diagnostic categories included normal controls (NC, n A = 26, n B = 20, n C = 24 for each scanner respectively), Alzheimer's disease (AD, n A = 44, n B = 11, n C = 16), and frontotemporal dementia (FTD, n A = 13, n B = 13, n C = 5).",
+            "start_char": 1038,
+            "end_char": 1270
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "performance_metrics": [
+     {
+      "name": {
+       "extraction_status": "extracted",
+       "value": "classification accuracy",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The baseline “in-scanner” setup yielded classification accuracies between 89% and 98% for the three scanners, with an overall accuracy of 94%.",
+            "start_char": 18951,
+            "end_char": 19093
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "value": {
+       "extraction_status": "extracted",
+       "value": 94.0,
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The baseline “in-scanner” setup yielded classification accuracies between 89% and 98% for the three scanners, with an overall accuracy of 94%.",
+            "start_char": 18951,
+            "end_char": 19093
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "relation": {
+       "extraction_status": "extracted",
+       "value": "above_reference",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     }
+    ],
+    "validation_scheme": {
+     "extraction_status": "extracted",
+     "value": "leave-one-out cross validation",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "Leave-one-out cross validation of individual images was applied for the in-scanner and train-all setups.",
+          "start_char": 17296,
+          "end_char": 17400
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "generalization": {
+     "extraction_status": "not_reported",
+     "evidence": {
+      "status": "not_applicable"
+     }
+    }
+   },
+   "acquisitions": [
+    "acq_pet"
+   ],
+   "tasks": [],
+   "model_estimation": "mod_pls_classification",
+   "inference_settings": {
+    "local_id": "inf_not_reported"
+   },
+   "tables": [
+    "t0005",
+    "t0010",
+    "t0015"
+   ],
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "MNI space",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Images were spatially normalized to a template brain image in MNI space using a validated method based on b-splines ( ).",
+         "start_char": 11082,
+         "end_char": 11202
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessments": [
+    "asm_nincds_adrda_criteria",
+    "asm_clinical_presentation_with"
+   ],
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "ana_ratio_normalized_classification",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Classification accuracy with inter-scanner normalization",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "classification accuracies for the different database scenarios after voxel-by-voxel ratio-image normalization",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Baseline results are without inter-scanner normalization, “normalized” results were obtained with ratio-image normalization.",
+         "start_char": 34502,
+         "end_char": 34626
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": [
+     "exploratory"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "For the x-scanner setup, ratio normalization improved average accuracy from 79% to 85%, for train-other from 80% to 88%.",
+     "ratio-image normalization has been demonstrated to effectively moderate these effects"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "For the x-scanner setup, ratio normalization improved average accuracy from 79% to 85%, for train-other from 80% to 88%.",
+         "start_char": 22454,
+         "end_char": 22574
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": [
+     "whole_brain"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "measure": "mea_fdg_pet_classification_accuracy",
+   "groups": [
+    {
+     "group": "grp_nc",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "group": "grp_ad",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "group": "grp_ftd",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_diagnostic_category",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "NC",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "trm_diagnostic_category",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "AD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "trm_diagnostic_category",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "FTD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "omnibus",
+     "value_source": "generated",
+     "evidence": {
+      "status": "not_found"
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "DecodingDetails",
+    "decoded_variable": {
+     "extraction_status": "extracted",
+     "value": "AD, FTD, or NC",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "After the classifier has been trained, it is applied to test data , assigning one of the diagnostic categories (AD, FTD, or NC) to each image.",
+          "start_char": 16097,
+          "end_char": 16239
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "classes": [],
+    "performance_metrics": [
+     {
+      "name": {
+       "extraction_status": "extracted",
+       "value": "classification accuracy",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The presented ratio-image normalization method mitigated this impact, and led to classification accuracies of 85–92% even for mismatched scanning setups.",
+            "start_char": 23006,
+            "end_char": 23159
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "value": {
+       "extraction_status": "extracted",
+       "value": 8592.0,
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The presented ratio-image normalization method mitigated this impact, and led to classification accuracies of 85–92% even for mismatched scanning setups.",
+            "start_char": 23006,
+            "end_char": 23159
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "relation": {
+       "extraction_status": "extracted",
+       "value": "above_reference",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     }
+    ],
+    "validation_scheme": {
+     "extraction_status": "extracted",
+     "value": "leave-one-out cross validation",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "Leave-one-out cross validation of individual images was applied for the in-scanner and train-all setups.",
+          "start_char": 17296,
+          "end_char": 17400
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "generalization": {
+     "extraction_status": "not_reported",
+     "evidence": {
+      "status": "not_applicable"
+     }
+    }
+   },
+   "acquisitions": [
+    "acq_pet"
+   ],
+   "tasks": [],
+   "model_estimation": "mod_pls_classification",
+   "inference_settings": {
+    "local_id": "inf_not_reported"
+   },
+   "tables": [
+    "t0005",
+    "t0010",
+    "t0015"
+   ],
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "MNI space",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Images were spatially normalized to a template brain image in MNI space using a validated method based on b-splines ( ).",
+         "start_char": 11082,
+         "end_char": 11202
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessments": [
+    "asm_nincds_adrda_criteria",
+    "asm_clinical_presentation_with"
+   ],
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "acquisitions": [
+  {
+   "local_id": "acq_pet",
+   "acquisition_type": "PET",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "PET",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A static emission scan of 20 min duration was acquired",
+         "start_char": 9463,
+         "end_char": 9517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "extracted",
+    "value": 1200,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A static emission scan of 20 min duration was acquired",
+         "start_char": 9463,
+         "end_char": 9517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "device": "dev_ecat_exact"
+  }
+ ],
+ "devices": [
+  {
+   "local_id": "dev_ecat_exact",
+   "manufacturer": {
+    "extraction_status": "extracted",
+    "value": "Siemens/CTI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "“Scanner A”: An ECAT EXACT 921/47 (Siemens/CTI, Knoxville, TN, USA) in 2D-mode.",
+         "start_char": 9311,
+         "end_char": 9390
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model": {
+    "extraction_status": "extracted",
+    "value": "ECAT EXACT 921/47",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "“Scanner A”: An ECAT EXACT 921/47 (Siemens/CTI, Knoxville, TN, USA) in 2D-mode.",
+         "start_char": 9311,
+         "end_char": 9390
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "dev_gemini_gxl_10",
+   "manufacturer": {
+    "extraction_status": "extracted",
+    "value": "Philips Healthcare",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The PET/CT system Gemini GXL 10 (Philips Healthcare, Andover, USA).",
+         "start_char": 9928,
+         "end_char": 9995
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model": {
+    "extraction_status": "extracted",
+    "value": "Gemini GXL 10",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "“Scanner B”: The PET/CT system Gemini GXL 10 (Philips Healthcare, Andover, USA).",
+         "start_char": 9915,
+         "end_char": 9995
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "dev_allegro",
+   "manufacturer": {
+    "extraction_status": "extracted",
+    "value": "Philips Healthcare",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "an Allegro scanner (Philips Healthcare, Andover, USA)",
+         "start_char": 10635,
+         "end_char": 10688
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model": {
+    "extraction_status": "extracted",
+    "value": "Allegro",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "an Allegro scanner (Philips Healthcare, Andover, USA)",
+         "start_char": 10635,
+         "end_char": 10688
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "groups": [
+  {
+   "local_id": "grp_nc",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "normal controls",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "normal controls (NC)",
+         "start_char": 8000,
+         "end_char": 8020
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": [
+     "human"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 70,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "leaving n = 26 subjects for scanner A and n = 20 for scanner B. For scanner C, the 24 NC subjects",
+         "start_char": 8832,
+         "end_char": 8929
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "normal controls"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "normal controls (NC)",
+         "start_char": 8000,
+         "end_char": 8020
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Normal control subjects recruited at Hamburg from clinical routine oncology patients without neurological or psychiatric disease and at Austin prospectively using clinical criteria indicating no functional impairment; used as the NC classification group.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "In Hamburg, consecutive patients from clinical routine were recruited as normal controls (NC). Whole-body FDG PET including the brain was performed in these subjects for a non-CNS oncological indication.",
+         "start_char": 7927,
+         "end_char": 8130
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 70,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "leaving n = 26 subjects for scanner A and n = 20 for scanner B. For scanner C, the 24 NC subjects",
+         "start_char": 8832,
+         "end_char": 8929
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Hamburg: brain FDG PET performed for a non-CNS oncological indication with the standard brain scanning protocol",
+     "Hamburg: no evidence of neurological or psychiatric disease",
+     "Austin: no evidence of functional impairment",
+     "Austin: MMSE score ≥29",
+     "Scanner C subjects: MMSE >28"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Whole-body FDG PET including the brain was performed in these subjects for a non-CNS oncological indication.",
+         "start_char": 8022,
+         "end_char": 8130
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Acute or prior psychiatric or neurological disorder",
+     "Psychotropic medication at the time of PET",
+     "Abnormal brain findings on visual PET evaluation",
+     "Significant hypo- or hypermetabolic cluster of 1.0 ml at p < 0.05 corrected for multiple comparisons on leave-one-out SPM2 evaluation"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusion criteria were (E1) acute or prior psychiatric or neurological disorder, (E2) psychotropic medication at the time of the PET, and (E3) abnormal findings in the brain based on visual evaluation of PET images by an experienced reader.",
+         "start_char": 8295,
+         "end_char": 8536
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Hamburg: consecutive patients from clinical routine undergoing whole-body FDG PET for a non-CNS oncological indication; Austin: prospective recruitment using clinical criteria.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "In Hamburg, consecutive patients from clinical routine were recruited as normal controls (NC).",
+         "start_char": 7927,
+         "end_char": 8021
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "ambiguous",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "ambiguous",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "In our study, one control group (scanner A) was significantly younger (50 ± 13 years) than the other two (68 ± 8 and 72 ± 7).",
+         "start_char": 30812,
+         "end_char": 30937
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "No evidence of functional impairment; scanner C controls had MMSE >28, and Austin controls had MMSE ≥29.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "For scanner C, the 24 NC subjects had no evidence of functional impairment, and a Mini Mental State Examination (MMSE) score greater than 28.",
+         "start_char": 8896,
+         "end_char": 9037
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "extracted",
+    "value": "Psychotropic medication at the time of PET was an exclusion criterion.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "psychotropic medication at the time of the PET",
+         "start_char": 8382,
+         "end_char": 8428
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "grp_ad",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Alzheimer's disease",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Alzheimer's disease (AD)",
+         "start_char": 2645,
+         "end_char": 2669
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": [
+     "human"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 71,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "R B/A voxel values ranged from 0.71 to 1.18 (mean 1.0).",
+         "start_char": 21410,
+         "end_char": 21465
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Alzheimer's disease"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Alzheimer's disease (AD)",
+         "start_char": 2645,
+         "end_char": 2669
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Patients with Alzheimer's disease included for voxel-based FDG PET classification; 44 scanned on scanner A, 11 on scanner B, and 16 on scanner C.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "AD, n A = 44, n B = 11, n C = 16",
+         "start_char": 1172,
+         "end_char": 1204
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 71,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "R B/A voxel values ranged from 0.71 to 1.18 (mean 1.0).",
+         "start_char": 21410,
+         "end_char": 21465
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Hamburg: brain FDG PET performed for early or differential diagnosis of neurodegenerative dementia",
+     "Hamburg: Alzheimer's disease clearly stated in the conclusion of the PET report",
+     "Austin: probable Alzheimer's disease according to NINCDS-ADRDA criteria"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "one of the following two diagnoses had been clearly stated in the conclusion part of the PET report: Alzheimer's disease (AD), or frontotemporal dementia (FTD).",
+         "start_char": 7235,
+         "end_char": 7395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Any reported PET finding not related to the diagnosis of neurodegenerative disease"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusion criterion: (E1) Any reported PET finding not related to the diagnosis of neurodegenerative disease.",
+         "start_char": 7396,
+         "end_char": 7505
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Hamburg: retrospective recruitment from all brain FDG PET examinations performed at the University Medical Center Hamburg-Eppendorf between 2002 and 2008; Austin: recruitment at the Centre for PET, Austin Hospital.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "In Hamburg, subjects with suspected dementia were recruited retrospectively from all brain FDG PET examinations performed between 2002 and 2008",
+         "start_char": 6888,
+         "end_char": 7031
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "extracted",
+    "value": "2002 to 2008 for the Hamburg retrospective cohort",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "between 2002 and 2008",
+         "start_char": 7010,
+         "end_char": 7031
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "ambiguous",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "ambiguous",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "In our study, one control group (scanner A) was significantly younger (50 ± 13 years) than the other two (68 ± 8 and 72 ± 7).",
+         "start_char": 30812,
+         "end_char": 30937
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "NINCDS-ADRDA criteria for probable Alzheimer's disease (Austin cohort)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "AD was determined using NINCDS-ADRDA criteria for probable AD",
+         "start_char": 7635,
+         "end_char": 7696
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Patients with suspected or clinically diagnosed neurodegenerative dementia; Austin AD cases met criteria for probable Alzheimer's disease.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "In Austin, 21 subjects with dementia were included.",
+         "start_char": 7583,
+         "end_char": 7634
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_nincds_adrda_criteria"
+   ]
+  },
+  {
+   "local_id": "grp_ftd",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "frontotemporal dementia",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "frontotemporal dementia (FTD)",
+         "start_char": 2673,
+         "end_char": 2702
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": [
+     "human"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 31,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "FTD, n A = 13, n B = 13, n C = 5",
+         "start_char": 1236,
+         "end_char": 1268
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Frontotemporal dementia"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "frontotemporal dementia (FTD)",
+         "start_char": 2673,
+         "end_char": 2702
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Patients with frontotemporal dementia included for voxel-based FDG PET classification; 13 scanned on scanner A, 13 on scanner B, and 5 on scanner C.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "FTD, n A = 13, n B = 13, n C = 5",
+         "start_char": 1236,
+         "end_char": 1268
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 31,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "FTD, n A = 13, n B = 13, n C = 5",
+         "start_char": 1236,
+         "end_char": 1268
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Hamburg: brain FDG PET performed for early or differential diagnosis of neurodegenerative dementia",
+     "Hamburg: frontotemporal dementia clearly stated in the conclusion of the PET report",
+     "Austin: characteristic clinical presentation with concordant frontal or temporal hypometabolism and atrophy on FDG PET and T1-weighted MRI"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "one of the following two diagnoses had been clearly stated in the conclusion part of the PET report: Alzheimer's disease (AD), or frontotemporal dementia (FTD).",
+         "start_char": 7235,
+         "end_char": 7395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Any reported PET finding not related to the diagnosis of neurodegenerative disease"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusion criterion: (E1) Any reported PET finding not related to the diagnosis of neurodegenerative disease.",
+         "start_char": 7396,
+         "end_char": 7505
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Hamburg: retrospective recruitment from all brain FDG PET examinations performed at the University Medical Center Hamburg-Eppendorf between 2002 and 2008; Austin: recruitment at the Centre for PET, Austin Hospital.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "In Hamburg, subjects with suspected dementia were recruited retrospectively from all brain FDG PET examinations performed between 2002 and 2008",
+         "start_char": 6888,
+         "end_char": 7031
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "extracted",
+    "value": "2002 to 2008 for the Hamburg retrospective cohort",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "between 2002 and 2008",
+         "start_char": 7010,
+         "end_char": 7031
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "ambiguous",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "ambiguous",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "In our study, one control group (scanner A) was significantly younger (50 ± 13 years) than the other two (68 ± 8 and 72 ± 7).",
+         "start_char": 30812,
+         "end_char": 30937
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Patients with suspected or clinically diagnosed frontotemporal dementia; Austin cases had characteristic clinical presentation with concordant frontal or temporal hypometabolism and atrophy.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "FTD from characteristic clinical presentation in addition to concordant hypometabolism and atrophy of frontal or temporal lobes according to visual evaluation of FDG PET and T1-weighted MRI.",
+         "start_char": 7706,
+         "end_char": 7896
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_clinical_presentation_with"
+   ]
+  }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_not_reported",
+   "inference_level": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "search_volume": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "measures": [
+  {
+   "local_id": "mea_fdg_pet_classification_accuracy",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "molecular_imaging",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "FDG PET",
+         "start_char": 32,
+         "end_char": 39
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "decoding_performance",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "classification accuracy",
+         "start_char": 863,
+         "end_char": 886
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "FDG PET classification accuracy",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "classification accuracy",
+         "start_char": 863,
+         "end_char": 886
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "classification accuracy",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "classification accuracy",
+         "start_char": 863,
+         "end_char": 886
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "model_estimations": [
+  {
+   "local_id": "mod_pls_classification",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "partial least squares",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Here, PLS was used to estimate a linear classification model.",
+         "start_char": 12170,
+         "end_char": 12231
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "partial least squares classification",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "### Partial least squares classification",
+         "start_char": 11978,
+         "end_char": 12018
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "subject and group",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "For the purpose of classification, the maximum likelihood criterion was applied.",
+         "start_char": 15662,
+         "end_char": 15742
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "NIPALS algorithm",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "During training, a joint and linear decomposition of X and Y is performed in an iterative fashion using the NIPALS algorithm ( ).",
+         "start_char": 13785,
+         "end_char": 13914
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": [
+     "voxel"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "high-dimensional image classification promises better capturing of the underlying spatial patterns of neuropathology on the voxel-level.",
+         "start_char": 4107,
+         "end_char": 4243
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_diagnostic_category",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "diagnostic categories",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "diagnostic categories",
+           "start_char": 16186,
+           "end_char": 16207
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "For k -class classification a k -dimensional class vector y i is obtained",
+           "start_char": 12357,
+           "end_char": 12430
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The results for classifying individual volume images as AD, FTD or NC are given in .",
+           "start_char": 18866,
+           "end_char": 18950
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "NC",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "normal controls (NC)",
+             "start_char": 8000,
+             "end_char": 8020
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_nc"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "NC, AD, or FTD",
+             "start_char": 1318,
+             "end_char": 1332
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "AD",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "Alzheimer's disease (AD)",
+             "start_char": 2645,
+             "end_char": 2669
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_ad"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "NC, AD, or FTD",
+             "start_char": 1318,
+             "end_char": 1332
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "FTD",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "frontotemporal dementia (FTD)",
+             "start_char": 2673,
+             "end_char": 2702
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_ftd"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 3,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "NC, AD, or FTD",
+             "start_char": 1318,
+             "end_char": 1332
+            }
+           ]
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Diagnostic category/class label: normal control, Alzheimer's disease, or frontotemporal dementia.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "assigning one of the diagnostic categories (AD, FTD, or NC) to each image.",
+           "start_char": 16165,
+           "end_char": 16239
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Partial least squares classification using supervised learning and the NIPALS algorithm; one-against-all binary classifiers with Pool-Adjacent Violators isotonic regression for score-to-probability conversion; leave-one-out cross-validation for in-scanner and train-all setups.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The “one-against-all” approach was chosen for doing so",
+         "start_char": 14572,
+         "end_char": 14626
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "preprocessing": [
+    "prp_pet_normalization"
+   ]
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_pet_normalization",
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Images were spatially normalized, smoothed, and intensity normalized before classification.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Images were spatially normalized to a template brain image in MNI space using a validated method based on b-splines ( ).",
+         "start_char": 11082,
+         "end_char": 11202
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "spatial normalization",
+     "Gaussian smoothing",
+     "image intensity normalization"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Images were spatially normalized to a template brain image in MNI space using a validated method based on b-splines ( ). Resulting images had 91 × 109 × 91 isotropic 2 mm voxels. To improve signal to noise for the expected hypometabolic patterns of neurodegenerative dementias, images were smoothed with an isotropic Gaussian of 10 mm FWHM. Finally, image intensity was normalized to a common median in a pre-defined gray and white matter mask containing approximately 210,000 voxels ( ).",
+         "start_char": 11082,
+         "end_char": 11570
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     10
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "images were smoothed with an isotropic Gaussian of 10 mm FWHM",
+         "start_char": 11360,
+         "end_char": 11421
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "Validated b-spline spatial normalization method",
+     "SPM2 used for normal-control statistical evaluation"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "using a validated method based on b-splines",
+         "start_char": 11154,
+         "end_char": 11197
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "tables": [
+  {
+   "local_id": "t0005",
+   "table_number": {
+    "extraction_status": "extracted",
+    "value": "Table 1",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "caption": {
+    "extraction_status": "extracted",
+    "value": "Characteristics for the different image databases. Age is given as mean ± standard deviation. Scanners A: Hamburg-ECAT, B: Hamburg-GXL, C: Austin-Allegro. NC: Normal controls, AD: Alzheimer's disease, FTD: frontotemporal dementia.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "footer": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "t0010",
+   "table_number": {
+    "extraction_status": "extracted",
+    "value": "Table 2",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "caption": {
+    "extraction_status": "extracted",
+    "value": "Baseline classification accuracies for the four different database setups and three scanners, based on image volumes as input features. For the x-scanner setups, the scanner used in training is indicated.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "footer": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "t0015",
+   "table_number": {
+    "extraction_status": "extracted",
+    "value": "Table 3",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "caption": {
+    "extraction_status": "extracted",
+    "value": "Classification accuracy for the four different database setups and image processing methods. Baseline results are without inter-scanner normalization, “normalized” results were obtained with ratio-image normalization. Mean and standard deviation are given over all possible combinations.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "footer": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "local_id": "23541799",
+ "extraction_metadata": {
+  "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
+  "extractor_version": "pondie-1",
+  "source_text_hash": "373ce0db9d59428acd4a1c4f6defb47ea97fb559a99fed6b1262250fbe548c21",
+  "extraction_date": "2026-09-09",
+  "paper_sections": [
+   {
+    "ordinal": 0,
+    "title": "Voxel-based classification of FDG PET in dementia using inter-scanner normalization",
+    "level": 0,
+    "start_char": 0,
+    "end_char": 35092
+   },
+   {
+    "ordinal": 2,
+    "title": "Keywords",
+    "level": 1,
+    "start_char": 149,
+    "end_char": 2471,
+    "parent_section": "Voxel-based classification of FDG PET in dementia using inter-scanner normalization"
+   },
+   {
+    "ordinal": 3,
+    "title": "Abstract",
+    "level": 1,
+    "start_char": 263,
+    "end_char": 6404,
+    "parent_section": "Voxel-based classification of FDG PET in dementia using inter-scanner normalization"
+   },
+   {
+    "ordinal": 4,
+    "title": "Introduction",
+    "level": 1,
+    "start_char": 2471,
+    "end_char": 18816,
+    "parent_section": "Voxel-based classification of FDG PET in dementia using inter-scanner normalization"
+   },
+   {
+    "ordinal": 5,
+    "title": "Materials and methods",
+    "level": 1,
+    "start_char": 6404,
+    "end_char": 18816,
+    "parent_section": "Voxel-based classification of FDG PET in dementia using inter-scanner normalization"
+   },
+   {
+    "ordinal": 6,
+    "title": "Subjects with dementia",
+    "level": 2,
+    "start_char": 6860,
+    "end_char": 9229,
+    "parent_section": "Materials and methods"
+   },
+   {
+    "ordinal": 7,
+    "title": "Normal control subjects",
+    "level": 2,
+    "start_char": 7898,
+    "end_char": 11060,
+    "parent_section": "Materials and methods"
+   },
+   {
+    "ordinal": 8,
+    "title": "PET imaging",
+    "level": 2,
+    "start_char": 9229,
+    "end_char": 11978,
+    "parent_section": "Materials and methods"
+   },
+   {
+    "ordinal": 9,
+    "title": "Image processing",
+    "level": 2,
+    "start_char": 11060,
+    "end_char": 14102,
+    "parent_section": "Materials and methods"
+   },
+   {
+    "ordinal": 10,
+    "title": "Partial least squares classification",
+    "level": 2,
+    "start_char": 11978,
+    "end_char": 15833,
+    "parent_section": "Materials and methods"
+   },
+   {
+    "ordinal": 11,
+    "title": "Conversion of scores to probabilities",
+    "level": 2,
+    "start_char": 14102,
+    "end_char": 17926,
+    "parent_section": "Materials and methods"
+   },
+   {
+    "ordinal": 12,
+    "title": "Database setups",
+    "level": 2,
+    "start_char": 15833,
+    "end_char": 18816,
+    "parent_section": "Materials and methods"
+   },
+   {
+    "ordinal": 13,
+    "title": "Inter-scanner normalization",
+    "level": 2,
+    "start_char": 17926,
+    "end_char": 18828,
+    "parent_section": "Materials and methods"
+   },
+   {
+    "ordinal": 14,
+    "title": "Results",
+    "level": 1,
+    "start_char": 18816,
+    "end_char": 22831,
+    "parent_section": "Voxel-based classification of FDG PET in dementia using inter-scanner normalization"
+   },
+   {
+    "ordinal": 15,
+    "title": "Classification with mixed setups",
+    "level": 2,
+    "start_char": 18828,
+    "end_char": 22831,
+    "parent_section": "Results"
+   },
+   {
+    "ordinal": 16,
+    "title": "Inter-scanner normalization",
+    "level": 2,
+    "start_char": 21230,
+    "end_char": 23161,
+    "parent_section": "Results"
+   },
+   {
+    "ordinal": 17,
+    "title": "Discussion",
+    "level": 1,
+    "start_char": 22831,
+    "end_char": 32085,
+    "parent_section": "Voxel-based classification of FDG PET in dementia using inter-scanner normalization"
+   },
+   {
+    "ordinal": 18,
+    "title": "General classification accuracy",
+    "level": 2,
+    "start_char": 23161,
+    "end_char": 27863,
+    "parent_section": "Discussion"
+   },
+   {
+    "ordinal": 19,
+    "title": "Classification method",
+    "level": 2,
+    "start_char": 24251,
+    "end_char": 28710,
+    "parent_section": "Discussion"
+   },
+   {
+    "ordinal": 20,
+    "title": "Discrimination images",
+    "level": 2,
+    "start_char": 27863,
+    "end_char": 29474,
+    "parent_section": "Discussion"
+   },
+   {
+    "ordinal": 21,
+    "title": "X-scanner impact",
+    "level": 2,
+    "start_char": 28710,
+    "end_char": 32085,
+    "parent_section": "Discussion"
+   },
+   {
+    "ordinal": 22,
+    "title": "Ratio normalization",
+    "level": 2,
+    "start_char": 29474,
+    "end_char": 33178,
+    "parent_section": "Discussion"
+   },
+   {
+    "ordinal": 23,
+    "title": "Conclusion",
+    "level": 1,
+    "start_char": 32085,
+    "end_char": 35092,
+    "parent_section": "Voxel-based classification of FDG PET in dementia using inter-scanner normalization"
+   },
+   {
+    "ordinal": 24,
+    "title": "Tables",
+    "level": 1,
+    "start_char": 33178,
+    "end_char": 35092,
+    "parent_section": "Voxel-based classification of FDG PET in dementia using inter-scanner normalization"
+   },
+   {
+    "ordinal": 25,
+    "title": "Table 1",
+    "level": 2,
+    "start_char": 33189,
+    "end_char": 34396,
+    "parent_section": "Tables"
+   },
+   {
+    "ordinal": 26,
+    "title": "Table 2",
+    "level": 2,
+    "start_char": 33767,
+    "end_char": 35092,
+    "parent_section": "Tables"
+   },
+   {
+    "ordinal": 27,
+    "title": "Table 3",
+    "level": 2,
+    "start_char": 34396,
+    "end_char": 35092,
+    "parent_section": "Tables"
+   }
+  ],
+  "repaired_by": "pondie-repair-1"
+ },
+ "assessments": [
+  {
+   "local_id": "asm_nincds_adrda_criteria",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "NINCDS-ADRDA criteria",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "NINCDS-ADRDA criteria",
+         "start_char": 7659,
+         "end_char": 7680
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Criteria used to determine probable Alzheimer's disease in Austin participants.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "diagnostic criteria",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_clinical_presentation_with",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Clinical presentation with concordant FDG PET and T1-weighted MRI findings",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Frontotemporal dementia was determined from characteristic clinical presentation together with concordant frontal or temporal hypometabolism and atrophy on visual evaluation of FDG PET and T1-weighted MRI.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "diagnostic evaluation",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ]
+}
