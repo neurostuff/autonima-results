@@ -269,19 +269,28 @@ _~350 words. **Figure 3** (a parsing, b annotation operating points)._
 > - tables-only baseline recovers **33.3%** (median 29.9%)
 > - margin **+58.1 points**, ahead in **9/9** projects — the strongest single margin in the paper
 >
-> *3b, annotation* (`cross_project_analysis/annotation_aggregates.csv`; n = 9)
+> *3b, annotation in ROC space* (`cross_project_analysis/annotation_aggregates.csv`; **n = 9**,
+> all projects)
 >
-> - precision mean 0.571 against a prevalence (no-skill) mean of 0.197
-> - **lift over prevalence mean 3.1×**, range 1.8–5.6
-> - the lift *reorders* the projects relative to raw precision, which is the reason to plot it:
->   `social` has the third-highest precision (0.618) but the **lowest** lift (1.8×) because its
->   prevalence is the highest in the set (0.345), while `vbm_of_substance_use` turns a similar
->   0.584 into **5.6×** off a prevalence of 0.104
+> - **mean TPR − FPR 0.68** against 0 for chance — what the panel reports. The size-matched null
+>   is closed-form: a random selector of the same size lands at exactly (k/N, k/N), so one
+>   diagonal replaces nine per-project no-skill levels
+> - pooled **precision 0.539, recall 0.810**, F1 0.647 over 11,126 candidate analyses and
+>   **32** target contrasts
+> - lift over prevalence mean **3.1×**, range **1.8–5.6** (`social` to `vbm_of_substance_use`)
+> - **dementia is included** (promoted 2026-09-16). It contributes 29 expert assignments against
+>   `social`'s 1,159 and sits at a lift of 2.1×, inside the range rather than outside it
 >
-> **OPEN** — **Figure 3b has an alternate rendering** (`figure3alt_annotation_roc`, `--only 3alt`)
-> that replaces nine per-project no-skill levels with one diagonal in ROC space, where the
-> size-matched null is closed-form at (k/N, k/N); mean TPR − FPR = **0.68** against 0 for chance.
-> It is cleaner but loses the precision-vs-lift reordering above. Pick one.
+> **NOTE ON UNITS** — panel a's denominator is *analyses*; panel b's positives are
+> *analysis-to-contrast assignments*. `vbm_of_ptsd` has 10 analyses and 1 contrast, so 10
+> positives; `social` has 529 analyses across 5 contrasts and 1,159. Say "assignment recall"
+> rather than "recall" for panel b.
+>
+> **OPEN** — the precision-recall rendering is now **Supplementary S7** (`--only S7`). It is the
+> only panel showing the precision-vs-lift reordering ROC space cannot: `social` has the
+> third-highest precision (0.618) but the **lowest** lift (1.8×) because its prevalence is
+> highest (0.345), while `vbm_of_substance_use` turns a similar 0.584 into **5.6×** off 0.104.
+> S7 still excludes dementia, so its numbers are n = 8 and will not match panel b's.
 
 ## 4. The whole pipeline beats a search-only synthesis
 
@@ -566,8 +575,11 @@ _~50 references. Numbered, Nature style._
 
 ## Figure 3
 
-> **BRIEF** — must state the two presentational choices (`NATURE_METHODS_SKELETON.md:283`), and in
-> panel b that the connector runs prevalence → achieved precision, so the span *is* the lift.
+> **BRIEF** — panel a: dumbbell, tables-only against LLM parsing, all nine projects; must state
+> that parsing is scored only on papers from which at least one analysis was extracted. Panel b:
+> annotation in ROC space, all nine projects; must state that the diagonal is chance, that each
+> open marker is that project's own same-size random selection, and that the unit is
+> analysis-to-contrast assignments rather than analyses.
 
 ## Figure 4
 
@@ -589,7 +601,9 @@ _~50 references. Numbered, Nature style._
 # Supplementary Information
 
 > **BRIEF** — S1 measured cost · S2 mis-specification vs overfitting · S3 pool mismatch ·
-> S4 text-to-map baselines · S5 size-matched null · S6 raw-denominator gold retention.
+> S4 text-to-map baselines · S5 size-matched null · S6 raw-denominator gold retention ·
+> S7 annotation in precision-recall space (was Figure 3b until 2026-09-16; n = 8, excludes
+> dementia, and carries the precision-vs-lift reordering).
 > Extended Data: the §3 cautionary case, per-project tables behind Figures 2–5, PRISMA funnels.
 
 ## Supplementary S3 — how much of the low precision is a pool mismatch?
@@ -655,7 +669,6 @@ _~50 references. Numbered, Nature style._
 | **"adjusted" used in two senses** | one must be dropped |
 | **Figure 1** | panel a drawn (`figures/figure1_pipeline_schematic.svg`); panel b, the unit distinction, still to draw |
 | Result 2 heading | changed 2026-09-10, needs sign-off |
-| Figure 3b | PR-space vs ROC-space rendering, undecided |
 | Cost numbers | hardcoded, not CSV-derived |
 
 ## Numbers in the planning documents that are stale — do not re-quote
@@ -668,7 +681,7 @@ Found while building this skeleton, 2026-09-10. All corrected above.
 | Fig 4 Δ +0.110, p = 3.5e-06, 31/35 (skeleton L518) | **superseded**, 35-column era | — |
 | §7 0.495 vs 0.394, 30/35 (outline L691) | **superseded**, 35-column era | — |
 | — | **current: 0.575 vs 0.476, median Δ +0.061, 28/32, p = 1.9e-05** | `cross_project_best_baseline_stats.csv` |
-| ~~annotation lift 3.3×~~ | **3.3× is correct** — my 3.1× included dementia, which Fig 3b excludes | `annotation_aggregates.csv` |
+| annotation lift | **3.1×** for Figure 3b as it now stands (n = 9, dementia included). 3.3× is the n = 8 value and is correct for Supplementary S7 only — the two panels have different project sets, which is why this number moved twice | `annotation_aggregates.csv` |
 | S3 recall control +0.007 | **−0.044** at full text | `stage_precision_recall*.csv` |
 | "35 columns" (skeleton L351/473/518/568/576) | **32** | `benchmark_exclusions.py` |
 

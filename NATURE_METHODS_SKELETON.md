@@ -319,6 +319,14 @@ gives precision 0.863 / recall 0.810 (precision-heavy), exhausted-manual gives 0
 
 `--only 3alt` → `figure3alt_annotation_roc`. Panel a unchanged; panel b redrawn.
 
+> **RESOLVED 2026-09-16 — this is now Figure 3, not an alternate.** The ROC rendering was
+> promoted (`--only 3`, `figure3_recover_and_select_analyses`) and the precision-recall
+> version demoted to **Supplementary S7** (`--only S7`). The `3alt` key no longer exists.
+> Main-text panel b now includes **dementia** (n = 9): the exclusion below applied to the
+> PR version and overstated the problem, since its matched analyses score no differently
+> from any other project's. S7 still excludes it, so S7 is n = 8 and its lift reads 3.3×
+> against Figure 3's 3.1×.
+
 **The readability problem with the PR version is structural, not cosmetic.** A random selector's
 precision equals *that project's* prevalence, and prevalence ranges 0.104 to 0.345 here — so the
 panel needs **nine different no-skill levels**, and the reader has to find the right one before

@@ -584,7 +584,160 @@ def figure2(out_dir: Path) -> None:
 # --------------------------------------------------------------------------- Figure 3
 
 def figure3(out_dir: Path) -> None:
-    """Analysis-level work, in pipeline order: recover the analyses, then select among them.
+    """Recover the analyses, then select among them, with selection scored in ROC space.
+
+    Promoted from an alternate to Figure 3 on 2026-09-16. The precision-recall version it
+    replaced is Supplementary S7, which keeps the precision-vs-lift reordering that ROC space
+    cannot show.
+
+    All nine projects appear in both panels. The PR version dropped dementia from panel b
+    because its source meta-analysis pools several studies into one gold analysis; that is a
+    real caveat about how many of its analyses can be matched at all, but the ones that do match
+    are scored no differently from any other project's, so excluding the project overstated the
+    problem. Dementia simply contributes fewer matched analyses (29 expert assignments against
+    social's 1,159) and sits at a lift of 2.1x, inside the 1.8-5.6 range rather than outside it.
+
+    WHY ROC RATHER THAN PRECISION-RECALL
+
+    The PR version needs a SEPARATE no-skill level per project, because a random selector's
+    precision equals that project's prevalence and prevalence ranges 0.104 to 0.345 here. Nine
+    baselines on one panel is the readability problem: the eye has to find the right rule for
+    each point before the lift means anything.
+
+    In ROC space there is one chance locus for every project -- the diagonal -- because a random
+    selector has TPR = FPR whatever the prevalence. The lift becomes vertical distance from a
+    single line, which is what makes it readable at a glance.
+
+    THE NULL IS ANALYTIC, NOT SIMULATED
+
+    A size-matched random selector -- one that picks the same number of analyses k out of N that
+    annotation picked -- lands at exactly (k/N, k/N). Both coordinates reduce to the selection
+    fraction: E[TPR] = k/N, and E[FPR] = k(1 - P/N)/(N - P) = k/N. So each project's own null
+    point is a specific spot ON the diagonal, and no Monte Carlo is needed for the location.
+
+    Only the spread needs a distribution, and that is hypergeometric in closed form, so it is
+    exact rather than sampled. It is NOT drawn: the bands are narrow enough (median width 0.020
+    in FPR) that nine of them added clutter without changing any reading, and every project's
+    observed point sits far outside its own band regardless.
+
+    Two projects are the exception and the caption has to say so, because the figure no longer
+    shows it: dementia's band is 0.078 wide and vbm_of_ptsd's is 0.133 off N = 40. Both points
+    still clear their band comfortably -- dementia observed 0.291 against a null of 0.388-0.466,
+    PTSD 0.000 against 0.133-0.267 -- but the small-N softness is real and belongs in words now
+    that it is not visible.
+
+    This is the same size-matched-null logic as Figure 5, in a different space, which is worth a
+    clause: the paper then uses one idea for "beat an arbitrary selection of the same size" in
+    both places.
+    """
+    parse = read(REPO_ROOT / "reports" / "cross_project_analysis" / "parsing_metrics_by_project.csv")
+    ann = [r for r in read(REPO_ROOT / "reports" / "cross_project_analysis"
+                           / "annotation_aggregates.csv")
+           if r["level"] == "analysis" and r["variant"] == "exhausted_manual_assumption"
+           and r["scope"] == "project" and r["mode_id"] == "combined"
+           and r["project_name"] in DISPLAY]
+    if not ann:
+        print("  figure3: no annotation rows; skipped")
+        return
+
+    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.75)),
+                             gridspec_kw={"width_ratios": [1.05, 1]})
+
+    # a: unchanged from Figure 3 -- parsing recovery against a table-only baseline.
+    ax = axes[0]
+    rows = []
+    for r in parse:
+        try:
+            rows.append((r["project_name"], float(r["manual_matched_pct"]) * 100,
+                         float(r["table_only_baseline_matched_pct"]) * 100))
+        except (ValueError, KeyError):
+            continue
+    rows.sort(key=lambda z: z[1])
+    for i, (proj, llm, tab) in enumerate(rows):
+        ax.plot([tab, llm], [i, i], color=RULE, lw=1.5, zorder=1)
+        ax.scatter([tab], [i], s=15, color="#7F7F7F", zorder=3, edgecolors="white", linewidths=0.3)
+        ax.scatter([llm], [i], s=15, color=COLORS.get(proj, "#7F7F7F"), zorder=3,
+                   edgecolors="white", linewidths=0.3)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels([DISPLAY.get(p, p) for p, _, _ in rows])
+    ax.set_ylim(-0.7, len(rows) - 0.3)
+    ax.set_xlim(0, 105)
+    ax.set_xlabel("Expert analyses recovered (%)")
+    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
+    pooled_llm = st.mean([llm for _, llm, _ in rows])
+    pooled_tab = st.mean([tab for _, _, tab in rows])
+    ax.legend(handles=[Line2D([], [], marker="o", ls="", color="#7F7F7F", markersize=3.4,
+                              label=f"Tables only ({pooled_tab:.0f}%)"),
+                       Line2D([], [], marker="o", ls="", color=INK, markersize=3.4,
+                              label=f"LLM parsing ({pooled_llm:.0f}%)")],
+              loc="lower right", handletextpad=0.3, fontsize=fs(5.6))
+    panel_label(ax, "a", dx=-0.40)
+
+    # b: annotation in ROC space, each project against its own size-matched null
+    ax = axes[1]
+    ax.plot([0, 1], [0, 1], color=RULE, lw=0.8, zorder=1)
+    js, labels, dots = [], [], []
+    for r in sorted(ann, key=lambda r: float(r["recall"])):
+        proj = r["project_name"]
+        tp, fp, fn, tn = (int(float(r[k])) for k in ("tp", "fp", "fn", "tn"))
+        N, P, k = tp + fp + fn + tn, tp + fn, tp + fp
+        if not (N and P and (N - P)):
+            continue
+        tpr, fpr = tp / P, fp / (N - P)
+        js.append(tpr - fpr)
+        c = COLORS.get(proj, "#7F7F7F")
+        null = k / N
+        # Dotted and faint: the connector only has to say which null belongs to which
+        # point. Drawn solid, nine of them read as data and crowded the panel.
+        ax.plot([null, fpr], [null, tpr], color=c, lw=0.6, alpha=0.35, ls=":", zorder=2)
+        ax.scatter([null], [null], s=13, facecolors="white", edgecolors=c, linewidths=0.9,
+                   zorder=3)
+        ax.scatter([fpr], [tpr], s=18, color=c, edgecolors="white", linewidths=0.4, zorder=4)
+        labels.append([fpr, tpr, SHORT.get(proj, proj), c])
+        dots += [(fpr, tpr), (null, null)]
+    # Points cluster in TPR (six of nine between 0.78 and 0.96), so labels placed at their own
+    # y overprint each other. Alternating sides halves the crowding; whatever still collides is
+    # resolved in display space by deoverlap_labels() once the axes are final. Sizing the gap in
+    # data units instead looked fine at publication scale and broke at deck scale, twice.
+    labels.sort(key=lambda e: e[1])
+    texts = []
+    for n, (lx, ly, txt, c) in enumerate(labels):
+        left = (n % 2 == 1) and lx > 0.05   # only PTSD, at x = 0, cannot take a
+        texts.append(ax.annotate(           # left label without running off the axes
+            txt, (lx, ly), textcoords="offset points", xytext=(-6 if left else 6, 0),
+            va="center", ha="right" if left else "left",
+            fontsize=fs(5.2), color=c, annotation_clip=False))
+
+    ax.set_xlim(-0.02, 0.62); ax.set_ylim(0, 1.04)
+    ax.set_xlabel("False-positive rate")
+    ax.set_ylabel("True-positive rate (recall)")
+    ax.grid(alpha=0.6); ax.set_axisbelow(True)
+    summary = ax.text(0.975, 0.215, f"mean TPR \u2212 FPR  {st.mean(js):.2f}\n(chance = 0)",
+                      transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.6),
+                      color=INK, linespacing=1.5)
+    note = ax.text(0.975, 0.065, "open marker = same-size random draw",
+                   transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.0), color=MUTED)
+    panel_label(ax, "b", dx=-0.24)
+
+    fig.subplots_adjust(wspace=0.40)
+    deoverlap_labels(fig, ax, texts, blockers=[summary, note], markers=dots)
+    save(fig, out_dir, "figure3_recover_and_select_analyses")
+
+
+# ---------------------------------------------------------------- Supplementary S7
+
+def figureS7(out_dir: Path) -> None:
+    """Annotation as an operating point in precision-recall space.
+
+    Was Figure 3 until 2026-09-16, when the ROC version took that slot. It is kept because it
+    is the only panel that shows the precision-vs-lift reordering: social has the third-highest
+    precision (0.618) but the LOWEST lift (1.8x) because its prevalence is the highest in the
+    set (0.345), while vbm_of_substance_use turns a similar 0.584 into 5.6x off a prevalence of
+    0.104. ROC space replaces the nine per-project no-skill levels with one diagonal, which is
+    the readability win, and loses exactly that comparison.
+
+    Panel b here excludes dementia; main-text Figure 3 does not. See that docstring for why the
+    exclusion was dropped.
 
     Two operations that both live below the paper, combined into one display item to stay inside
     Nature's six. Panel a is recovery -- did the pipeline reconstruct the analyses the experts
@@ -711,139 +864,7 @@ def figure3(out_dir: Path) -> None:
     fig.text(0.5, -0.06, "* dementia excluded from b: its gold analyses pool several studies each",
              ha="center", fontsize=fs(5.2), color=MUTED)
     fig.subplots_adjust(wspace=0.42)
-    save(fig, out_dir, "figure3_recover_and_select_analyses")
-
-
-# ----------------------------------------------------------------- Figure 3 (alternate 3b)
-
-def figure3alt(out_dir: Path) -> None:
-    """Figure 3 with annotation redrawn in ROC space instead of precision-recall space.
-
-    WHY TRY THIS
-
-    The PR version needs a SEPARATE no-skill level per project, because a random selector's
-    precision equals that project's prevalence and prevalence ranges 0.104 to 0.345 here. Nine
-    baselines on one panel is the readability problem: the eye has to find the right rule for
-    each point before the lift means anything.
-
-    In ROC space there is one chance locus for every project -- the diagonal -- because a random
-    selector has TPR = FPR whatever the prevalence. The lift becomes vertical distance from a
-    single line, which is what makes it readable at a glance.
-
-    THE NULL IS ANALYTIC, NOT SIMULATED
-
-    A size-matched random selector -- one that picks the same number of analyses k out of N that
-    annotation picked -- lands at exactly (k/N, k/N). Both coordinates reduce to the selection
-    fraction: E[TPR] = k/N, and E[FPR] = k(1 - P/N)/(N - P) = k/N. So each project's own null
-    point is a specific spot ON the diagonal, and no Monte Carlo is needed for the location.
-
-    Only the spread needs a distribution, and that is hypergeometric in closed form, so it is
-    exact rather than sampled. It is NOT drawn: the bands are narrow enough (median width 0.020
-    in FPR) that nine of them added clutter without changing any reading, and every project's
-    observed point sits far outside its own band regardless.
-
-    Two projects are the exception and the caption has to say so, because the figure no longer
-    shows it: dementia's band is 0.078 wide and vbm_of_ptsd's is 0.133 off N = 40. Both points
-    still clear their band comfortably -- dementia observed 0.291 against a null of 0.388-0.466,
-    PTSD 0.000 against 0.133-0.267 -- but the small-N softness is real and belongs in words now
-    that it is not visible.
-
-    This is the same size-matched-null logic as Figure 5, in a different space, which is worth a
-    clause: the paper then uses one idea for "beat an arbitrary selection of the same size" in
-    both places.
-    """
-    parse = read(REPO_ROOT / "reports" / "cross_project_analysis" / "parsing_metrics_by_project.csv")
-    ann = [r for r in read(REPO_ROOT / "reports" / "cross_project_analysis"
-                           / "annotation_aggregates.csv")
-           if r["level"] == "analysis" and r["variant"] == "exhausted_manual_assumption"
-           and r["scope"] == "project" and r["mode_id"] == "combined"
-           and r["project_name"] in DISPLAY]
-    if not ann:
-        print("  figure3alt: no annotation rows; skipped")
-        return
-
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.75)),
-                             gridspec_kw={"width_ratios": [1.05, 1]})
-
-    # a: unchanged from Figure 3 -- parsing recovery against a table-only baseline.
-    ax = axes[0]
-    rows = []
-    for r in parse:
-        try:
-            rows.append((r["project_name"], float(r["manual_matched_pct"]) * 100,
-                         float(r["table_only_baseline_matched_pct"]) * 100))
-        except (ValueError, KeyError):
-            continue
-    rows.sort(key=lambda z: z[1])
-    for i, (proj, llm, tab) in enumerate(rows):
-        ax.plot([tab, llm], [i, i], color=RULE, lw=1.5, zorder=1)
-        ax.scatter([tab], [i], s=15, color="#7F7F7F", zorder=3, edgecolors="white", linewidths=0.3)
-        ax.scatter([llm], [i], s=15, color=COLORS.get(proj, "#7F7F7F"), zorder=3,
-                   edgecolors="white", linewidths=0.3)
-    ax.set_yticks(range(len(rows)))
-    ax.set_yticklabels([DISPLAY.get(p, p) for p, _, _ in rows])
-    ax.set_ylim(-0.7, len(rows) - 0.3)
-    ax.set_xlim(0, 105)
-    ax.set_xlabel("Expert analyses recovered (%)")
-    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
-    pooled_llm = st.mean([llm for _, llm, _ in rows])
-    pooled_tab = st.mean([tab for _, _, tab in rows])
-    ax.legend(handles=[Line2D([], [], marker="o", ls="", color="#7F7F7F", markersize=3.4,
-                              label=f"Tables only ({pooled_tab:.0f}%)"),
-                       Line2D([], [], marker="o", ls="", color=INK, markersize=3.4,
-                              label=f"LLM parsing ({pooled_llm:.0f}%)")],
-              loc="lower right", handletextpad=0.3, fontsize=fs(5.6))
-    panel_label(ax, "a", dx=-0.40)
-
-    # b: annotation in ROC space, each project against its own size-matched null
-    ax = axes[1]
-    ax.plot([0, 1], [0, 1], color=RULE, lw=0.8, zorder=1)
-    js, labels, dots = [], [], []
-    for r in sorted(ann, key=lambda r: float(r["recall"])):
-        proj = r["project_name"]
-        tp, fp, fn, tn = (int(float(r[k])) for k in ("tp", "fp", "fn", "tn"))
-        N, P, k = tp + fp + fn + tn, tp + fn, tp + fp
-        if not (N and P and (N - P)):
-            continue
-        tpr, fpr = tp / P, fp / (N - P)
-        js.append(tpr - fpr)
-        c = COLORS.get(proj, "#7F7F7F")
-        null = k / N
-        # Dotted and faint: the connector only has to say which null belongs to which
-        # point. Drawn solid, nine of them read as data and crowded the panel.
-        ax.plot([null, fpr], [null, tpr], color=c, lw=0.6, alpha=0.35, ls=":", zorder=2)
-        ax.scatter([null], [null], s=13, facecolors="white", edgecolors=c, linewidths=0.9,
-                   zorder=3)
-        ax.scatter([fpr], [tpr], s=18, color=c, edgecolors="white", linewidths=0.4, zorder=4)
-        labels.append([fpr, tpr, SHORT.get(proj, proj), c])
-        dots += [(fpr, tpr), (null, null)]
-    # Points cluster in TPR (six of nine between 0.78 and 0.96), so labels placed at their own
-    # y overprint each other. Alternating sides halves the crowding; whatever still collides is
-    # resolved in display space by deoverlap_labels() once the axes are final. Sizing the gap in
-    # data units instead looked fine at publication scale and broke at deck scale, twice.
-    labels.sort(key=lambda e: e[1])
-    texts = []
-    for n, (lx, ly, txt, c) in enumerate(labels):
-        left = (n % 2 == 1) and lx > 0.05   # only PTSD, at x = 0, cannot take a
-        texts.append(ax.annotate(           # left label without running off the axes
-            txt, (lx, ly), textcoords="offset points", xytext=(-6 if left else 6, 0),
-            va="center", ha="right" if left else "left",
-            fontsize=fs(5.2), color=c, annotation_clip=False))
-
-    ax.set_xlim(-0.02, 0.62); ax.set_ylim(0, 1.04)
-    ax.set_xlabel("False-positive rate")
-    ax.set_ylabel("True-positive rate (recall)")
-    ax.grid(alpha=0.6); ax.set_axisbelow(True)
-    summary = ax.text(0.975, 0.215, f"mean TPR \u2212 FPR  {st.mean(js):.2f}\n(chance = 0)",
-                      transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.6),
-                      color=INK, linespacing=1.5)
-    note = ax.text(0.975, 0.065, "open marker = same-size random draw",
-                   transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.0), color=MUTED)
-    panel_label(ax, "b", dx=-0.24)
-
-    fig.subplots_adjust(wspace=0.40)
-    deoverlap_labels(fig, ax, texts, blockers=[summary, note], markers=dots)
-    save(fig, out_dir, "figure3alt_annotation_roc")
+    save(fig, out_dir, "figureS7_annotation_precision_recall")
 
 
 # --------------------------------------------------------------------------- Figure 4
@@ -1597,9 +1618,9 @@ def figureS1(out_dir: Path) -> None:
 
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
-FIGURES = {"2": figure2, "3": figure3, "3alt": figure3alt,
-           "4": figure4, "5": figure5, "S1": figureS1, "S2": figureS2,
-           "S3": figureS3, "S4": figureS4, "S5": figureS5, "S6": figureS6}
+FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
+           "S1": figureS1, "S2": figureS2, "S3": figureS3, "S4": figureS4,
+           "S5": figureS5, "S6": figureS6, "S7": figureS7}
 
 
 def main() -> int:

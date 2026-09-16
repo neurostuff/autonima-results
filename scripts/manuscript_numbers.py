@@ -140,15 +140,14 @@ def result3() -> None:
     print(f"  margin                      {st.mean(llm)-st.mean(tab):+.1f} pts, "
           f"LLM ahead in {sum(1 for a, b in zip(llm, tab) if a > b)}/{len(llm)}")
 
-    # figure3 panel b EXCLUDES dementia -- its source meta-analysis pools several studies into
-    # one gold analysis, so per-analysis annotation cannot be scored against it. Omitting this
-    # filter here computed the lift over nine projects and reported 3.1x against the figure's
-    # 3.3x, which is exactly the text-disagrees-with-its-own-figure failure this script exists
-    # to prevent. Panel a keeps all nine; only panel b drops it.
+    # All nine projects, matching Figure 3 since the ROC version was promoted on 2026-09-16.
+    # The old precision-recall panel dropped dementia because its source meta-analysis pools
+    # several studies into one gold analysis; the matched analyses are scored no differently
+    # from any other project's, so the project is kept and simply contributes fewer of them.
+    # Supplementary S7 still excludes it, so its numbers are n=8 and will not match these.
     ann = [r for r in read(REPORTS / "cross_project_analysis" / "annotation_aggregates.csv")
            if r["level"] == "analysis" and r["variant"] == "exhausted_manual_assumption"
-           and r["scope"] == "project" and r["mode_id"] == "combined"
-           and r["project_name"] != "dementia"]
+           and r["scope"] == "project" and r["mode_id"] == "combined"]
     pts = []
     for r in ann:
         tp, fp, fn, tn = (int(float(r[k])) for k in ("tp", "fp", "fn", "tn"))
