@@ -149,7 +149,8 @@ def house_style() -> None:
 
 
 def deoverlap_labels(fig, ax, texts, blockers=(), markers=(), marker_r_pt: float = 3.2,
-                     pad_pt: float = 0.9, max_shift_pt: float = 26.0) -> None:
+                     pad_pt: float = 0.9, max_shift_pt: float = 40.0,
+                     headroom_pt: float = 16.0) -> None:
     """Place point labels so they clear each other, the plotted markers, and the axes edge.
 
     Two passes, deliberately separated:
@@ -170,6 +171,11 @@ def deoverlap_labels(fig, ax, texts, blockers=(), markers=(), marker_r_pt: float
     rend = fig.canvas.get_renderer()
     px = fig.dpi / 72.0
     frame, pad = ax.get_window_extent(rend), pad_pt * px
+    # Labels may sit a little ABOVE the axes: annotation_clip is off and save() writes with
+    # bbox_inches="tight", so anything just outside the box is still in the image. Treating the
+    # axes top as a hard ceiling is what jammed the deck preset -- points at TPR 0.96 against a
+    # 1.01 limit had nowhere to go, so crowded labels ducked back down into each other.
+    ceiling = frame.y1 + headroom_pt * px
     r = marker_r_pt * px
     dots = []
     for mx, my in markers:
@@ -207,7 +213,7 @@ def deoverlap_labels(fig, ax, texts, blockers=(), markers=(), marker_r_pt: float
             if hit is None:
                 break
             step = (hit.y1 + pad) - box.y0                  # clear the blocker upward
-            if box.y1 + step > frame.y1:
+            if box.y1 + step > ceiling:
                 step = (hit.y0 - pad) - box.y1              # no headroom: duck under it
             if abs(dy + step / px) > max_shift_pt:
                 break                                       # keep the label on its marker
@@ -708,7 +714,12 @@ def figure3(out_dir: Path) -> None:
             va="center", ha="right" if left else "left",
             fontsize=fs(5.2), color=c, annotation_clip=False))
 
-    ax.set_xlim(-0.02, 0.62); ax.set_ylim(0, 1.04)
+    # Full 0-1 on both axes so the whole ROC square is shown and the diagonal reaches both
+    # corners: the chance line is the reference the panel is built on, and cropping it at the
+    # data hid that. Every point sits below FPR 0.5, which is the result rather than a reason to
+    # zoom. Not set_aspect("equal"): with adjustable="box" matplotlib resizes the axes at draw
+    # time, after deoverlap_labels() has measured it, and the labels collide.
+    ax.set_xlim(-0.01, 1.01); ax.set_ylim(-0.01, 1.01)
     ax.set_xlabel("False-positive rate")
     ax.set_ylabel("True-positive rate (recall)")
     ax.grid(alpha=0.6); ax.set_axisbelow(True)
