@@ -34,6 +34,13 @@ from benchmark_exclusions import filter_rows  # noqa: E402
 
 REPORTS = REPO_ROOT / "reports"
 
+# Dementia is excluded from the MAP-LEVEL comparison (Figures 4, 5, S5): its source
+# meta-analysis pools several studies into one gold analysis, so the analysis counts entering
+# its maps are not comparable with the other projects. It is KEPT in the analysis-level figures
+# (2, 3). The benchmark itself is 32 columns over 9 projects; the map-level subset is 28 over 8,
+# and conflating the two is the easiest mistake to make when quoting these numbers.
+MAP_LEVEL_EXCLUDED = ("dementia",)
+
 
 def read(path: Path) -> list[dict]:
     with open(path, newline="") as f:
@@ -47,11 +54,15 @@ def head(title: str, source: str) -> None:
 def result1() -> None:
     head("RESULT 1 / Figure 1 — the pipeline, the benchmark, and the unit",
          "reports/analysis_counts.csv, reports/cross_project_best_baseline.csv")
-    rows = filter_rows(read(REPORTS / "cross_project_best_baseline.csv"), announce=False)
-    projects = sorted({r["project"] for r in rows})
-    print(f"benchmark columns scored      {len(rows)}")
-    print(f"projects                      {len(projects)}")
     counts = filter_rows(read(REPORTS / "analysis_counts.csv"), announce=False)
+    # analysis_counts.csv covers all nine projects, so it is the stable source for benchmark
+    # size. cross_project_best_baseline.csv is now the map-level table (28 columns) and would
+    # under-report the benchmark by four.
+    print(f"benchmark columns scored      {len(counts)}   over "
+          f"{len({r['project'] for r in counts})} projects")
+    rows = filter_rows(read(REPORTS / "cross_project_best_baseline.csv"), announce=False)
+    print(f"map-level subset (Fig 4/5/S5) {len(rows)}   over "
+          f"{len({r['project'] for r in rows})} projects (dementia excluded)")
     a_pipe = [int(r["n_analyses_autonima"]) for r in counts if r.get("n_analyses_autonima")]
     f_pipe = [int(r["n_foci_autonima"]) for r in counts if r.get("n_foci_autonima")]
     if a_pipe:
@@ -211,7 +222,8 @@ def result5() -> None:
 
     head("SUPPLEMENTARY S5 — every column against its own size-matched null",
          "reports/annotation_bootstrap_null.csv")
-    nr = [r for r in read(REPORTS / "annotation_bootstrap_null.csv") if r.get("status") == "ok"]
+    nr = [r for r in read(REPORTS / "annotation_bootstrap_null.csv")
+          if r.get("status") == "ok" and r["project"] not in MAP_LEVEL_EXCLUDED]
     nr = filter_rows(nr, project_key="project", announce=False)
     d = [float(r["observed_r2"]) - float(r["null_mean"]) for r in nr]
     beat = sum(1 for r in nr if float(r["p_value"]) < 0.05)

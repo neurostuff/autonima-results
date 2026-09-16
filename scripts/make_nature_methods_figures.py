@@ -83,6 +83,16 @@ PALETTE = ["#0072B2", "#D55E00", "#009E73", "#CC79A7",
 COLORS = dict(zip(PROJECT_ORDER, PALETTE))
 
 # Reserved: no project may use these.
+# Dementia is excluded from the MAP-LEVEL figures (4, 5, S5). Its source meta-analysis pools
+# several studies into one gold analysis, so the number of analyses entering its maps is not
+# comparable with the other projects and a per-column margin against them is not interpretable.
+# This is a project-level call about map-level comparability, distinct from benchmark_exclusions,
+# which drops individual columns with no published result. Dementia is deliberately KEPT in the
+# analysis-level figures (2, 3), where its matched analyses score normally -- see figure3.
+# compile_best_baselines.py --exclude-project dementia applies the same rule upstream, so the
+# bootstrap CI and sign test are computed on the same 28 columns rather than filtered after.
+MAP_LEVEL_EXCLUDED_PROJECTS = ("dementia",)
+
 MEAN_COLOR = "#000000"
 MEAN_KW = dict(color=MEAN_COLOR, lw=1.9, zorder=6, solid_capstyle="round")
 
@@ -986,8 +996,11 @@ def figure4(out_dir: Path) -> None:
                 transform=ax.transAxes, va="top", fontsize=fs(5.5), color=INK, linespacing=1.5)
     panel_label(ax, "b", dx=-0.18)
 
+    # Legend from the projects actually drawn, not the fixed order: with dementia excluded
+    # from the map-level figures a fixed list advertises a colour absent from the panel.
+    drawn = {r["project"] for r in rows}
     handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.2,
-                      label=DISPLAY[p]) for p in PROJECT_ORDER]
+                      label=DISPLAY[p]) for p in PROJECT_ORDER if p in drawn]
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.16),
                handletextpad=0.3, columnspacing=1.1)
     fig.subplots_adjust(wspace=0.34)
@@ -1057,8 +1070,11 @@ def figure5(out_dir: Path) -> None:
                 color=INK, linespacing=1.5)
         panel_label(ax, letter, dx=-0.24)
 
+    # Legend from the projects actually drawn, not the fixed order: with dementia excluded
+    # from the map-level figures a fixed list advertises a colour absent from the panel.
+    drawn = {r["project"] for r in rows}
     handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.2,
-                      label=DISPLAY[p]) for p in PROJECT_ORDER]
+                      label=DISPLAY[p]) for p in PROJECT_ORDER if p in drawn]
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.19),
                handletextpad=0.3, columnspacing=1.1)
     fig.subplots_adjust(wspace=0.34)
@@ -1083,7 +1099,8 @@ def figureS5(out_dir: Path) -> None:
     if not path.exists():
         print("  figure5: run scripts/bootstrap_annotation_null.py first; skipped")
         return
-    rows = filter_rows([r for r in read(path) if r.get("status") == "ok"],
+    rows = filter_rows([r for r in read(path) if r.get("status") == "ok"
+                        and r["project"] not in MAP_LEVEL_EXCLUDED_PROJECTS],
                        label="figure 5")
     if not rows:
         print("  figure5: no usable rows; skipped")

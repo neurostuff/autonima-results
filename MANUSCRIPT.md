@@ -84,20 +84,20 @@ systematic review workflow — search, abstract and full-text screening, coordin
 analysis-level annotation — and that selects at both the paper and the analysis level. We
 evaluated it against nine published, expert-conducted meta-analyses spanning 32 target contrasts.
 Maps produced by the pipeline recovered the published result more closely than the strongest
-search-based synthesis available for each contrast (mean *R*² 0.575 vs 0.476; ahead in 28 of 32,
-*p* = 1.9 × 10⁻⁵), while pooling fewer analyses. Decomposing this advantage, selecting papers
-contributed almost nothing (median Δ*R*² +0.001) and selecting analyses contributed nearly all of
-it (+0.049).
+search-based synthesis available for each contrast (mean *R*² 0.606 vs 0.491; ahead in 26 of 28,
+*p* = 3.0 × 10⁻⁶), while pooling fewer analyses. Decomposing this advantage, selecting papers
+contributed little (mean Δ*R*² +0.005) and selecting analyses contributed 96% of it (+0.109).
 
 > **CLAIM** — Automated evidence synthesis selects papers, but the analysis is the unit that
 > determines the result. We present a pipeline that selects at the analysis level and show it
 > recovers published meta-analytic maps better than any search-only synthesis available.
 >
 > **NUMBERS** — lead with the headline and the unanimity, not the mechanism:
-> 9 projects, 32 benchmark columns; pipeline r² 0.575 vs 0.476 for the strongest per-column
-> baseline, median Δ +0.061, ahead in 28/32, sign-test p = 1.9 × 10⁻⁵.
-> The decomposition is the finding: choosing papers is worth +0.001 (median, 16/32); choosing
-> analyses is worth +0.049 (28/32).
+> 9 projects and 32 benchmark contrasts; the map-level comparison uses **28 over 8** (dementia
+> excluded). Pipeline r² 0.606 vs 0.491 for the strongest per-column baseline, mean Δ +0.114,
+> ahead in 26/28, sign-test p = 3.0 × 10⁻⁶.
+> The decomposition is the finding: choosing papers is worth +0.005 (mean, 16/28); choosing
+> analyses is worth +0.109 (25/28) — 96% of the total.
 >
 > **OPEN** — none. §9, the forward-looking case, was **dropped 2026-09-10**, so the abstract no
 > longer waits on it and the closing sentence can land on the decomposition.
@@ -300,18 +300,23 @@ _~350 words. **Figure 4**; supporting: Supplementary S1, S4._
 > searching, extracting every coordinate and meta-analysing the lot — the Neurosynth-style
 > approach — and it does so while pooling *fewer* analyses. Selection beats volume.
 >
-> **NUMBERS** (`cross_project_best_baseline_stats.csv`; 32 columns, 9 projects, metric r²)
+> **NUMBERS** (`cross_project_best_baseline_stats.csv`; **28 columns, 8 projects** — dementia
+> excluded, see OPEN — metric r²)
 >
 > | vs | pipeline | baseline | mean Δ | median Δ | 95% CI | ahead |
 > |---|---|---|---|---|---|---|
-> | best available | 0.575 | 0.476 | +0.099 | **+0.061** | [+0.038, +0.181] | **28/32** |
-> | strongest | 0.575 | 0.482 | +0.093 | +0.057 | [+0.032, +0.176] | 27/32 |
+> | best available | 0.606 | 0.491 | +0.114 | **+0.070** | [+0.052, +0.201] | **26/28** |
+> | strongest | 0.606 | 0.498 | +0.107 | +0.061 | [+0.044, +0.196] | 25/28 |
 >
-> - sign test p = **1.9 × 10⁻⁵** (best available), 1.1 × 10⁻⁴ (strongest)
+> - sign test p = **3.0 × 10⁻⁶** (best available), 2.7 × 10⁻⁵ (strongest)
 > - cluster bootstrap **over projects, not columns**; 20,000 resamples, seed 0
-> - selection beats volume: the pipeline pools fewer analyses than its baseline in **24/32**
->   columns and wins in **21** of those; against the screening-only arm it pools fewer in
->   **32/32** and wins in 28 (`analysis_counts.csv`)
+> - baseline arms: targeted where a contrast is a separable search topic (**27/28**), broad
+>   otherwise (only `emotion_regulation_2022/maintain`). Narrowing the search made the baseline
+>   *worse* in **8/28** columns, which is why `strongest` is a robustness check and not the
+>   primary: it lets the baseline switch arms with hindsight
+> - selection beats volume: the pipeline pools fewer analyses than its baseline in **20/28**
+>   columns and wins in **19** of those; against the screening-only arm it pools fewer in
+>   **28/28** and wins in 26 (`analysis_counts.csv`)
 >
 > **OPEN**
 >
@@ -331,29 +336,33 @@ _~350 words. **Figure 5**; supporting: Supplementary S5._
 > papers is worth almost nothing; choosing the right analyses within them is worth nearly all of
 > it. This is the paper's finding, not a supporting detail.
 >
-> **NUMBERS** (`selection_decomposition.csv`; 32 columns, 9 projects, metric r²)
+> **NUMBERS** (`selection_decomposition.csv`; **28 columns, 8 projects** — same set as Figure 4,
+> metric r²)
 >
 > | step | median | mean | positive in |
 > |---|---|---|---|
-> | paper selection (screening only) | **+0.001** | −0.000 | 16/32 |
-> | analysis selection (annotation) | **+0.049** | +0.099 | **28/32** |
-> | total | +0.061 | +0.099 | 28/32 |
+> | paper selection (screening only) | +0.015 | **+0.005** | 16/28 |
+> | analysis selection (annotation) | +0.056 | **+0.109** | **25/28** |
+> | total | +0.070 | +0.114 | 26/28 |
 >
-> - three arms: baseline 0.476 → screening-only 0.476 → pipeline 0.574. The middle arm does not
->   move, which is the whole point
+> - three arms: baseline 0.491 → screening-only 0.496 → pipeline 0.605. The middle arm barely
+>   moves, which is the whole point: **96%** of the total is analysis selection
+> - the means sum exactly to Figure 4's margin (+0.005 + 0.109 = +0.114), which is the check
+>   that the two figures describe the same corpus. Quote means, not medians, when the
+>   decomposition needs to add up
 > - the sharpest mechanistic sentence in the paper (`PAPER_OUTLINE.md:809`):
 >   **it is not a search problem; it is a screening problem** — and more precisely, an
 >   analysis-selection problem
 >
 > *Supplementary S5, the size-matched null* (`annotation_bootstrap_null.csv`)
 >
-> - median Δr² **+0.211** against each column's own size-matched null; **29/32** clear p < 0.05
+> - median Δr² **+0.179** against each column's own size-matched null; **25/28** clear p < 0.05
 > - state carefully: the naive reading overclaims, because 31/32 baselines are targeted searches
 >   (`NATURE_METHODS_SKELETON.md:804`)
 >
-> **OPEN** — the two medians do not sum to the total (+0.001 + 0.049 = +0.050 vs +0.061) because
-> medians are not additive; the *means* do (−0.000 + 0.099 = +0.099). Quote the means when you
-> need the decomposition to add up, and say which you are quoting.
+> **OPEN** — the two medians do not sum to the total (+0.015 + 0.056 = +0.071 vs +0.070) because
+> medians are not additive; the *means* do exactly (+0.005 + 0.109 = +0.114). Quote the means
+> when you need the decomposition to add up, and say which you are quoting.
 
 ## 6. Cost and scale
 
@@ -667,6 +676,7 @@ _~50 references. Numbered, Nature style._
 | **`projects/emotion_regulation_2022/nmb_mappings.json`** | still the unedited template (`MANUAL_NAME1` → `AUTOMATIC_NAME1`), which excludes ER from every cross-project analysis. Called "highest leverage per unit of work in the whole plan" (`PAPER_OUTLINE.md:1500`) |
 | **M1.2 Generative AI in development** | nothing written |
 | **"adjusted" used in two senses** | one must be dropped |
+| **dementia excluded from Figures 4, 5, S5** | justified but it *helps* the headline (+0.099 → +0.114), so Methods must state the reason and the 32-column result belongs in the text as a robustness check |
 | **Figure 1** | panel a drawn (`figures/figure1_pipeline_schematic.svg`); panel b, the unit distinction, still to draw |
 | Result 2 heading | changed 2026-09-10, needs sign-off |
 | Cost numbers | hardcoded, not CSV-derived |
@@ -680,7 +690,7 @@ Found while building this skeleton, 2026-09-10. All corrected above.
 | parsing 90% vs 31%, +60 pts | **91.4% vs 33.3%, +58.1 pts** | `parsing_metrics_by_project.csv` |
 | Fig 4 Δ +0.110, p = 3.5e-06, 31/35 (skeleton L518) | **superseded**, 35-column era | — |
 | §7 0.495 vs 0.394, 30/35 (outline L691) | **superseded**, 35-column era | — |
-| — | **current: 0.575 vs 0.476, median Δ +0.061, 28/32, p = 1.9e-05** | `cross_project_best_baseline_stats.csv` |
+| — | **current: 0.606 vs 0.491, mean Δ +0.114, 26/28, p = 3.0e-06** — the map-level set is 28 columns over 8 projects since dementia was excluded 2026-09-16; the benchmark is still 32 over 9 | `cross_project_best_baseline_stats.csv` |
 | annotation lift | **3.1×** for Figure 3b as it now stands (n = 9, dementia included). 3.3× is the n = 8 value and is correct for Supplementary S7 only — the two panels have different project sets, which is why this number moved twice | `annotation_aggregates.csv` |
 | S3 recall control +0.007 | **−0.044** at full text | `stage_precision_recall*.csv` |
 | "35 columns" (skeleton L351/473/518/568/576) | **32** | `benchmark_exclusions.py` |

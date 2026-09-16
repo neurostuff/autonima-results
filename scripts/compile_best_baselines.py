@@ -140,9 +140,23 @@ def main() -> int:
                          "against the baseline's 29 / 386 -- which a thresholded overlap measure "
                          "punishes and a correlation does not. The conclusion is otherwise "
                          "metric-stable; --metric dice reproduces that check")
+    ap.add_argument("--exclude-project", action="append", default=[], metavar="PROJECT",
+                    help="drop a whole project from the map-level comparison. Used for dementia: "
+                         "its source meta-analysis pools several studies into one gold analysis, "
+                         "so the number of analyses entering its maps is not comparable with the "
+                         "other projects and the per-column margin is not interpretable against "
+                         "them. This is a PROJECT-level call about map-level comparability, "
+                         "separate from benchmark_exclusions.py, which drops individual columns "
+                         "that have no published result. Dementia is deliberately KEPT in the "
+                         "analysis-level figures, where its matched analyses score normally.")
     args = ap.parse_args()
 
+    dropped = {p.strip() for p in args.exclude_project if p.strip()}
     by = load_columns(args.projects_root, args.metric)
+    if dropped:
+        before = len(by)
+        by = {k: v for k, v in by.items() if k[0] not in dropped}
+        print(f"excluded {before - len(by)} column(s) from {sorted(dropped)}")
     rows = []
     for (proj, col), arms in sorted(by.items()):
         auto = arms.get("autonima")
