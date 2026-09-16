@@ -296,6 +296,32 @@ _~350 words. **Figure 3** (a parsing, b annotation operating points)._
 
 _~350 words. **Figure 4**; supporting: Supplementary S1, S4._
 
+We next tested whether AutoNIMA's end-to-end workflow translated improved evidence selection into
+more faithful recovery of published neuroimaging meta-analytic maps. As a baseline comparison akin
+to term-based large-scale meta-analysis (e.g. Neurosynth), we generated search-only meta-analyses
+that pooled every analysis extracted from articles retrieved through PubMed, without subsequent
+article screening or analysis-level selection.
+
+For each target contrast we used the strongest baseline a practitioner could actually have built
+in advance: a contrast-targeted search wherever the contrast is a separable search topic (27 of 28
+contrasts), and the project's broad search otherwise. The single exception is instructive.
+Emotion regulation's *maintain* contrast is a direction within one paradigm rather than a distinct
+topic, and no query distinguishes maintaining from up- or down-regulating an emotional response,
+so the broad search is not a fallback but genuinely the best baseline anyone could construct.
+Because this rule fixes each baseline before seeing the result, we also report a robustness check
+in which each contrast takes whichever arm scored higher; narrowing the search in fact made the
+baseline *worse* in 8 of 28 contrasts, and the two definitions differ by 0.007 in mean baseline
+*R*². All arms shared a retrieval vintage and were meta-analysed identically — MKDA with a 10 mm
+spherical kernel in NiMARE, thresholded by Benjamini–Hochberg FDR — so the arms differ only in
+which analyses enter them.
+
+Correspondence with the reference maps was quantified as the squared voxelwise Pearson correlation
+between unthresholded *z* maps, computed over voxels with finite values in both (*R*²; Methods).
+All correlations were positive, so squaring discards no directional information. Dementia is
+excluded from this comparison: its reference meta-analysis pools several studies into each gold
+analysis, so the number of analyses entering its maps is not comparable with the other projects
+(Methods).
+
 > **CLAIM** — Run end to end from a plain PubMed search, the pipeline beats what you would get by
 > searching, extracting every coordinate and meta-analysing the lot — the Neurosynth-style
 > approach — and it does so while pooling *fewer* analyses. Selection beats volume.
