@@ -16,7 +16,7 @@ Figures map onto NATURE_METHODS_SKELETON.md:
     Figure S1  criteria tier progression              --only S1
     Figure S2  pool mismatch                          --only S2
     Figure S3  size-matched null                      --only S3
-    Figure S4  brain maps, all columns                scripts/make_brain_map_figure.py
+    Figure S4  brain maps, all columns                --only S4  (~2 min, shells out)
     Figure S5  measured cost per stage                --only S5
 
 Supplementary figures were renumbered 2026-09-16. Three that previously carried S-numbers are
@@ -45,6 +45,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import subprocess
 import csv
 import statistics as st
 from pathlib import Path
@@ -1610,6 +1611,38 @@ def figureS2(out_dir: Path) -> None:
     save(fig, out_dir, "figureS2_pool_mismatch")
 
 
+# -------------------------------------------------------------------- Supplementary S4
+
+BRAIN_MAP_SCRIPT = REPO_ROOT / "scripts" / "make_brain_map_figure.py"
+
+
+def figureS4(out_dir: Path) -> None:
+    """Axial slices for every scored column, all three arms side by side.
+
+    Shelled out rather than drawn here, for two reasons worth stating so nobody "tidies" it
+    into this module. It needs nilearn 0.13 for the current plot_stat_map API and the pixi
+    environment pins 0.10.1, so it runs under the system interpreter. And it takes about two
+    minutes against a couple of seconds for every other figure, so main() reports and skips it
+    on a full run; `--only S4` builds it.
+
+    Its column set is read from cross_project_best_baseline.csv, so it inherits the dementia
+    exclusion automatically and stays at 28 rows, consistent with Figures 4, 5 and S3. Before
+    this was wired up the figure was outside the registry entirely, which meant a full rebuild
+    silently left it stale -- it sat at the pre-exclusion 32-column version for a week.
+    """
+    cmd = ["python3", str(BRAIN_MAP_SCRIPT), "--mode", "all",
+           "--output-dir", str(out_dir), "--name", "figureS4_brain_maps_all"]
+    if FONT_SCALE != 1.0:
+        cmd += ["--font-scale", f"{FONT_SCALE}"]
+    print(f"  figureS4: rendering via {BRAIN_MAP_SCRIPT.name} under system python3 "
+          f"(~2 min)...")
+    try:
+        subprocess.run(cmd, check=True, cwd=REPO_ROOT)
+    except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+        print(f"  figureS4: FAILED ({exc}). Build it directly with:")
+        print("    python3 scripts/make_brain_map_figure.py --mode all")
+
+
 # -------------------------------------------------------------------- Supplementary S5
 
 def figureS5(out_dir: Path) -> None:
@@ -1659,14 +1692,19 @@ def figureS5(out_dir: Path) -> None:
 
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
-# S4 is figureS4_brain_maps_all, produced by scripts/make_brain_map_figure.py, so it is not
-# in this registry. The three figures with descriptive keys lost their S-numbers on
-# 2026-09-16 -- they are still built and still correct, just no longer cited.
+# S4 shells out to make_brain_map_figure.py and is SKIPPED on a full run -- see SLOW_FIGURES.
+# The three figures with descriptive keys lost their S-numbers on 2026-09-16; they are
+# still built and still correct, just no longer cited.
 FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
-           "S1": figureS1, "S2": figureS2, "S3": figureS3, "S5": figureS5,
+           "S1": figureS1, "S2": figureS2, "S3": figureS3, "S4": figureS4,
+           "S5": figureS5,
            "text2map": figure_text_to_map,
            "retention": figure_gold_retention_raw_fig,
            "annotationpr": figure_annotation_pr}
+
+
+SLOW_FIGURES = {"S4": "~2 min, shells out to make_brain_map_figure.py "
+                      "under system python3 for nilearn 0.13"}
 
 
 def main() -> int:
@@ -1691,6 +1729,12 @@ def main() -> int:
     wanted = args.only or sorted(FIGURES)
     print(f"writing to {args.output_dir.relative_to(REPO_ROOT)}")
     for n in wanted:
+        # Reported rather than silently omitted: the whole reason S4 is in the registry is that
+        # being outside it let a full rebuild leave the figure stale without saying so.
+        if n in SLOW_FIGURES and not args.only:
+            print(f"  figure {n}: {SLOW_FIGURES[n]} -- skipped on a full run, "
+                  f"build with --only {n}")
+            continue
         try:
             FIGURES[n](args.output_dir)
         except FileNotFoundError as exc:

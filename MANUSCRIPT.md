@@ -640,7 +640,9 @@ _~50 references. Numbered, Nature style._
 > - **S1** criteria tier progression — mis-specification vs overfitting (`--only S1`)
 > - **S2** pool mismatch (`--only S2`)
 > - **S3** size-matched null (`--only S3`)
-> - **S4** brain maps, all columns (`scripts/make_brain_map_figure.py --mode all`)
+> - **S4** brain maps, all columns (`--only S4`; shells out to
+>   `scripts/make_brain_map_figure.py` under system python3 and takes ~2 min, so a full
+>   figure rebuild reports it and skips it)
 > - **S5** measured cost per stage (`--only S5`)
 >
 > Three figures are still built and still correct but no longer cited, so they carry
