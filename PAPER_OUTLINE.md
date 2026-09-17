@@ -1130,6 +1130,24 @@ maps should be the reported metric, with Dice at most secondary.
 
 ---
 
+> **⚠ SUPPLEMENTARY FIGURES WERE RENUMBERED 2026-09-17.** Every `S1`-`S7` reference *below this
+> line* uses the OLD numbering and has not been rewritten, because these sections are dated
+> decision records. Translate with this table:
+>
+> | old | new |
+> |---|---|
+> | S1 measured cost | **S5** |
+> | S2 tier progression | **S1** |
+> | S3 pool mismatch | **S2** |
+> | S4 text-to-map baselines | **unnumbered** (`--only text2map`) |
+> | S5 size-matched null | **S3** |
+> | S6 raw gold retention | **unnumbered** (`--only retention`) |
+> | S7 annotation precision-recall | **unnumbered** (`--only annotationpr`) |
+> | — | **S4** is now the all-columns brain-map figure |
+>
+> The current numbering is authoritative in `MANUSCRIPT.md` and in
+> `scripts/make_nature_methods_figures.py`'s module docstring.
+
 ## S1. Supplement: cost and scale  **[have — measured 2026-09-04]**
 
 Not a headline result, but the question every reader with a meta-analysis to run will ask. All

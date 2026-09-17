@@ -220,7 +220,7 @@ def result5() -> None:
           f"screening-only {st.mean(float(r['r2_screening_only']) for r in rows):.3f} -> "
           f"pipeline {st.mean(float(r['r2_pipeline']) for r in rows):.3f}")
 
-    head("SUPPLEMENTARY S5 — every column against its own size-matched null",
+    head("SUPPLEMENTARY S3 — every column against its own size-matched null",
          "reports/annotation_bootstrap_null.csv")
     nr = [r for r in read(REPORTS / "annotation_bootstrap_null.csv")
           if r.get("status") == "ok" and r["project"] not in MAP_LEVEL_EXCLUDED]
@@ -232,7 +232,7 @@ def result5() -> None:
 
 
 def result6() -> None:
-    head("RESULT 6 / Supplementary S1 — cost and scale",
+    head("RESULT 6 / Supplementary S5 — cost and scale",
          "!! NOT CSV-DERIVED — hardcoded as COST_PER_STAGE in make_nature_methods_figures.py, "
          "transcribed from PAPER_OUTLINE.md S1")
     print("  abstract screening   $0.0023/call      full-text screening  $0.0138/call")
@@ -245,7 +245,7 @@ def result6() -> None:
 
 
 def supplementary() -> None:
-    head("SUPPLEMENTARY S2 — mis-specification, not overfitting",
+    head("SUPPLEMENTARY S1 — mis-specification, not overfitting",
          "reports/tier_progression.csv")
     # Mirrors figureS2 exactly: average a project's columns first, then take paired PROJECT
     # deltas, skipping projects where the two tiers resolve to the same run (no contrast there).
@@ -272,7 +272,7 @@ def supplementary() -> None:
     print(f"  NOTE n={len(vm)} and n={len(mb)} projects; an indication, not an estimate. "
           "Do not report without the n.")
 
-    head("SUPPLEMENTARY S3 — how much of the low precision is a pool mismatch?",
+    head("SUPPLEMENTARY S2 — how much of the low precision is a pool mismatch?",
          "reports/stage_precision_recall.csv, reports/stage_precision_recall_allstudies.csv")
     def load(name):
         out = {}
@@ -296,7 +296,7 @@ def supplementary() -> None:
     print("  recall is the control: it barely moves, so the precision gain is a corpus "
           "difference, not a screening effect.")
 
-    head("SUPPLEMENTARY S4 — a term is not an analysis",
+    head("TEXT-TO-MAP BASELINES (unnumbered) — a term is not an analysis",
          "reports/text_to_map_baselines.csv")
     rows = filter_rows(read(REPORTS / "text_to_map_baselines.csv"), announce=False)
     for label, key in (("NeuroQuery", "neuroquery_r2"), ("NeuroVLM", "neurovlm_r2"),
@@ -306,7 +306,7 @@ def supplementary() -> None:
             print(f"  {label:<22} mean r^2 {st.mean(v):.3f}  median {st.median(v):.3f}  "
                   f"(n={len(v)})")
 
-    head("SUPPLEMENTARY S6 — raw denominator, retrieval as its own stage",
+    head("RAW-DENOMINATOR GOLD RETENTION (unnumbered)",
          "reports/gold_survival_by_stage.csv")
     rows = [r for r in read(REPORTS / "gold_survival_by_stage.csv")
             if r["family"] == "canonical" and r["cumulative_recall"]]

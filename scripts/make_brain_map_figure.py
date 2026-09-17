@@ -419,7 +419,7 @@ def main() -> int:
         return 0
 
     if args.mode == "all":
-        render(rows, args.output_dir, "figureS_brain_maps_all", args.cut_coords, args.threshold)
+        render(rows, args.output_dir, "figureS4_brain_maps_all", args.cut_coords, args.threshold)
         return 0
 
     # Drop columns where the expert map has nothing above the display threshold. VBM PTSD is the

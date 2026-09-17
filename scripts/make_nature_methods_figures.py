@@ -9,21 +9,30 @@ is a separate module with its own house style.
 
 Figures map onto NATURE_METHODS_SKELETON.md:
 
-    Figure 2  gold retention + precision gain    Result 2  (§1)
-    Figure 3  parsing + annotation               Result 3  (§5)
-    Figure 4  pipeline vs best baseline          Result 4  (§7)  <- headline
-    Figure 5  gain from analysis selection       Result 5  (§6)  <- the thesis
-    Figure S1 measured cost per stage            Supplementary  (S1)  <- was Figure 6
+    Figure 2   attainable recall + precision gain   Result 2  (§1)
+    Figure 3   parsing + annotation in ROC space      Result 3  (§5)
+    Figure 4   pipeline vs best baseline              Result 4  (§7)  <- headline
+    Figure 5   gain from analysis selection           Result 5  (§6)  <- the thesis
+    Figure S1  criteria tier progression              --only S1
+    Figure S2  pool mismatch                          --only S2
+    Figure S3  size-matched null                      --only S3
+    Figure S4  brain maps, all columns                scripts/make_brain_map_figure.py
+    Figure S5  measured cost per stage                --only S5
+
+Supplementary figures were renumbered 2026-09-16. Three that previously carried S-numbers are
+still built and still correct but are no longer cited, so they keep descriptive keys instead:
+`--only text2map` (text-to-map baselines, was S4), `--only retention` (raw-denominator gold
+retention, was S6) and `--only annotationpr` (annotation in precision-recall space, was S7).
 
 Moved to the supplement 2026-09-09: Nature allows six display items, and the emotion-regulation
 surface figure (scripts/make_er_surface_figure.py) is a stronger use of the slot than a cost
-bar chart. Cost is a paragraph in the text plus S1.
+bar chart. Cost is a paragraph in the text plus S5.
 
 Figure 1 is a schematic (pipeline, benchmark, and the paper-vs-analysis unit) and is not
 generated here -- it wants a vector editor, and panel c is an argument rather than a plot.
 
 Every panel is generated from a committed report CSV, so figures cannot drift from the numbers
-in the text. The exception is Figure S1, whose per-stage costs currently live only in the S1 table
+in the text. The exception is Figure S5, whose per-stage costs currently live only in the S1 table
 in PAPER_OUTLINE.md; those are transcribed below as COST_PER_STAGE and should move into a
 generated CSV before submission.
 
@@ -295,9 +304,9 @@ def read(path: Path) -> list[dict]:
         return list(csv.DictReader(f))
 
 
-# ---------------------------------------------------------------- Supplementary S6
+# ------------------------------------------- Raw-denominator gold retention (unnumbered)
 
-def figureS6(out_dir: Path) -> None:
+def figure_gold_retention_raw_fig(out_dir: Path) -> None:
     """Cumulative gold recovery on the RAW denominator, with retrieval as its own stage.
 
     Was Figure 2 until 2026-09-10, when the attainable-denominator version took that slot. It is
@@ -323,7 +332,7 @@ def figureS6(out_dir: Path) -> None:
     The fixed-pool arm used to appear here as a dotted overlay on both panels. It was removed
     2026-09-09: only three of nine projects have one, so it drew six extra part-width lines that
     invited the reader to compare curves covering different project sets, and the comparison it
-    supports now has a figure of its own (Supplementary S3) where it gets the recall control that
+    supports now has a figure of its own (Supplementary S2) where it gets the recall control that
     makes it interpretable. This figure is about what screening costs and buys on the pool we
     actually search.
     """
@@ -334,7 +343,7 @@ def figureS6(out_dir: Path) -> None:
     for r in rows:
         if not r["cumulative_recall"]:
             continue
-        # The fixed-pool family is no longer drawn here -- that comparison is Supplementary S3.
+        # The fixed-pool family is no longer drawn here -- that comparison is Supplementary S2.
         if r.get("family") == "allstudies":
             continue
         surv[r["project"]][r["stage"]] = float(r["cumulative_recall"])
@@ -422,7 +431,7 @@ def figureS6(out_dir: Path) -> None:
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figureS6_gold_retention_raw")
+    save(fig, out_dir, "figure_gold_retention_raw")
 
 
 # --------------------------------------------------------------------------- Figure 2
@@ -431,11 +440,12 @@ def figure2(out_dir: Path) -> None:
     """Recall on an attainable denominator beside the precision climb.
 
     Promoted from an alternate to Figure 2 on 2026-09-10. The raw-denominator version it
-    replaced is Supplementary S6, which keeps the retrieval stage and the loss-by-stage
+    replaced is the raw-retention figure (--only retention), which keeps the retrieval stage
+    and the loss-by-stage
     breakdown. figure2alt, the same four stages on the raw denominator, was dropped as redundant
     on 2026-09-10; its findings are recorded below.
 
-    Supplementary S6 divides every stage by all gold studies, which bills four
+    The raw-retention figure divides every stage by all gold studies, which bills four
     availability failures to screening judgement: a study the query never returned, one whose
     full text we could not obtain, one whose full text arrived too thin to screen
     (`fulltext_incomplete`), and one that parsed to zero analyses. This panel removes each at the
@@ -603,7 +613,8 @@ def figure3(out_dir: Path) -> None:
     """Recover the analyses, then select among them, with selection scored in ROC space.
 
     Promoted from an alternate to Figure 3 on 2026-09-16. The precision-recall version it
-    replaced is Supplementary S7, which keeps the precision-vs-lift reordering that ROC space
+    replaced is the precision-recall figure (--only annotationpr), which keeps the
+    precision-vs-lift reordering that ROC space
     cannot show.
 
     All nine projects appear in both panels. The PR version dropped dementia from panel b
@@ -745,9 +756,9 @@ def figure3(out_dir: Path) -> None:
     save(fig, out_dir, "figure3_recover_and_select_analyses")
 
 
-# ---------------------------------------------------------------- Supplementary S7
+# ------------------------------------ Annotation precision-recall space (unnumbered)
 
-def figureS7(out_dir: Path) -> None:
+def figure_annotation_pr(out_dir: Path) -> None:
     """Annotation as an operating point in precision-recall space.
 
     Was Figure 3 until 2026-09-16, when the ROC version took that slot. It is kept because it
@@ -885,7 +896,7 @@ def figureS7(out_dir: Path) -> None:
     fig.text(0.5, -0.06, "* dementia excluded from b: its gold analyses pool several studies each",
              ha="center", fontsize=fs(5.2), color=MUTED)
     fig.subplots_adjust(wspace=0.42)
-    save(fig, out_dir, "figureS7_annotation_precision_recall")
+    save(fig, out_dir, "figure_annotation_precision_recall")
 
 
 # --------------------------------------------------------------------------- Figure 4
@@ -1013,7 +1024,7 @@ def figure5(out_dir: Path) -> None:
     """Which selection step earns the advantage: choosing papers, or choosing analyses?
 
     Promoted to the main text 2026-09-09, replacing the size-matched-null forest that was Figure 5
-    (now Supplementary S5). It makes the same claim more directly -- two scatters that look
+    (now Supplementary S3). It makes the same claim more directly -- two scatters that look
     different, no null model needed to read them -- and it decomposes the Figure 4 margin rather
     than opening a separate comparison.
 
@@ -1034,7 +1045,7 @@ def figure5(out_dir: Path) -> None:
     """
     path = REPO_ROOT / "reports" / "selection_decomposition.csv"
     if not path.exists():
-        print("  figureS5: run scripts/decompose_selection_gain.py first; skipped")
+        print("  figureS3: run scripts/decompose_selection_gain.py first; skipped")
         return
     rows = read(path)
     for r in rows:
@@ -1081,7 +1092,9 @@ def figure5(out_dir: Path) -> None:
     save(fig, out_dir, "figure5_selection_decomposition")
 
 
-def figureS5(out_dir: Path) -> None:
+# -------------------------------------------------------------------- Supplementary S3
+
+def figureS3(out_dir: Path) -> None:
     """Every column against its own size-matched null.
 
     Promoted out of the main text 2026-09-09. This was Figure 5a; the decomposition that is now
@@ -1151,12 +1164,12 @@ def figureS5(out_dir: Path) -> None:
             f"columns $P$ < 0.05   \u00b7   {floor} outside all {n_boot} draws",
             transform=ax.transAxes, ha="right", va="bottom", fontsize=fs(5.6), color=INK,
             linespacing=1.5)
-    save(fig, out_dir, "figureS5_size_matched_null")
+    save(fig, out_dir, "figureS3_size_matched_null")
 
 
-# -------------------------------------------------------------------- Supplementary S2
+# -------------------------------------------------------------------- Supplementary S1
 
-def figureS2(out_dir: Path) -> None:
+def figureS1(out_dir: Path) -> None:
     """Two different effects live in the tier progression, and only the second one is overfitting.
 
     run_categories.yaml orders runs by how much benchmark information shaped their criteria. It is
@@ -1179,7 +1192,7 @@ def figureS2(out_dir: Path) -> None:
     """
     path = REPO_ROOT / "reports" / "tier_progression.csv"
     if not path.exists():
-        print("  figureS2: run scripts/compile_tier_progression.py first; skipped")
+        print("  figureS1: run scripts/compile_tier_progression.py first; skipped")
         return
     rows = read(path)
     TIER_ORDER = ["verbatim", "manual", "best"]
@@ -1275,12 +1288,12 @@ def figureS2(out_dir: Path) -> None:
 
     ax.text(0.98, 0.03, "open circle = one run registered at several tiers",
             transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(4.6), color=MUTED)
-    save(fig, out_dir, "figureS2_tier_progression")
+    save(fig, out_dir, "figureS1_tier_progression")
 
 
-# -------------------------------------------------------------------- Supplementary S4
+# ------------------------------------------------- Text-to-map baselines (unnumbered)
 
-def figureS4(out_dir: Path) -> None:
+def figure_text_to_map(out_dir: Path) -> None:
     """A term is not an analysis: text-to-map prediction against curated synthesis.
 
     Every baseline in Result 4 is a *search* baseline, which tests the pipeline against the
@@ -1310,7 +1323,7 @@ def figureS4(out_dir: Path) -> None:
     """
     path = REPO_ROOT / "reports" / "text_to_map_baselines.csv"
     if not path.exists():
-        print("  figureS4: run scripts/text_to_map_baselines.py first; skipped")
+        print("  figure_text_to_map: run scripts/text_to_map_baselines.py first; skipped")
         return
     rows = read(path)
     for r in rows:
@@ -1358,7 +1371,7 @@ def figureS4(out_dir: Path) -> None:
     # Colour, not shades of grey: four grey bars at this size were not separable. Hue encodes the
     # KIND of arm and lightness the ordering within a kind -- the two text->map models share a
     # blue family (light = weaker), the search baseline is orange, the pipeline black. Okabe-Ito,
-    # so it survives colour-blind viewing; S4 draws no per-project colour, so there is no clash
+    # so it survives colour-blind viewing; this figure draws no per-project colour, so no clash
     # with the project palette used in the other figures.
     arms = [("neuroquery_r2", "NeuroQuery (text \u2192 map)", "#56B4E9")]
     if has_nvlm:
@@ -1454,10 +1467,10 @@ def figureS4(out_dir: Path) -> None:
     panel_label(ax, "b", dx=-0.26)
 
     fig.subplots_adjust(wspace=0.42)
-    save(fig, out_dir, "figureS4_text_to_map_baselines")
+    save(fig, out_dir, "figure_text_to_map_baselines")
 
 
-# -------------------------------------------------------------------- Supplementary S3
+# -------------------------------------------------------------------- Supplementary S2
 
 def _screening_metric(filename: str, metric: str) -> dict[str, dict[str, float]]:
     out: dict[str, dict[str, float]] = collections.defaultdict(dict)
@@ -1474,7 +1487,7 @@ def _screening_metric(filename: str, metric: str) -> dict[str, dict[str, float]]
     return out
 
 
-def figureS3(out_dir: Path) -> None:
+def figureS2(out_dir: Path) -> None:
     """How much of the low screening precision is a pool mismatch rather than a screening failure?
 
     Precision against the expert inclusion list is the weakest headline number in the paper, and
@@ -1519,7 +1532,7 @@ def figureS3(out_dir: Path) -> None:
                 if all(p in d for d in (prec_s, prec_f, rec_s, rec_f))
                 and all(st_ in prec_s[p] and st_ in prec_f[p] for st_ in STAGES)]
     if not projects:
-        print("  figureS3: no project has both pools; skipped")
+        print("  figureS2: no project has both pools; skipped")
         return
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.5)),
@@ -1594,12 +1607,12 @@ def figureS3(out_dir: Path) -> None:
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.17),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.3)
     fig.subplots_adjust(wspace=0.30)
-    save(fig, out_dir, "figureS3_pool_mismatch")
+    save(fig, out_dir, "figureS2_pool_mismatch")
 
 
-# -------------------------------------------------------------------- Supplementary S1
+# -------------------------------------------------------------------- Supplementary S5
 
-def figureS1(out_dir: Path) -> None:
+def figureS5(out_dir: Path) -> None:
     """Measured cost per call, split by what is actually being paid for."""
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.0)),
                             gridspec_kw={"width_ratios": [1, 1]})
@@ -1641,14 +1654,19 @@ def figureS1(out_dir: Path) -> None:
     panel_label(ax, "b", dx=-0.20)
 
     fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figureS1_measured_cost")
+    save(fig, out_dir, "figureS5_measured_cost")
 
 
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
+# S4 is figureS4_brain_maps_all, produced by scripts/make_brain_map_figure.py, so it is not
+# in this registry. The three figures with descriptive keys lost their S-numbers on
+# 2026-09-16 -- they are still built and still correct, just no longer cited.
 FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
-           "S1": figureS1, "S2": figureS2, "S3": figureS3, "S4": figureS4,
-           "S5": figureS5, "S6": figureS6, "S7": figureS7}
+           "S1": figureS1, "S2": figureS2, "S3": figureS3, "S5": figureS5,
+           "text2map": figure_text_to_map,
+           "retention": figure_gold_retention_raw_fig,
+           "annotationpr": figure_annotation_pr}
 
 
 def main() -> int:

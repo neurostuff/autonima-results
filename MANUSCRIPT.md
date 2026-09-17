@@ -186,7 +186,7 @@ _~300 words. **Figure 1** (schematic: a pipeline, b the unit distinction)._
 
 ## 2. Screening is nearly free; annotation is where recall is spent
 
-_~300 words. **Figure 2**; supporting: Supplementary S3, S6._
+_~300 words. **Figure 2**; supporting: Supplementary S2, and the raw-retention figure._
 
 Recall reported against the full list of expert-included studies conflates screening judgement
 with data availability: a study our query never returned, one whose full text we could not obtain,
@@ -212,7 +212,7 @@ on the stage.
 The residual precision is a lower bound. Because we do not know which candidate pool the original
 authors screened, a false positive may be a study they never considered rather than one they
 rejected. Holding the pool fixed raises full-text precision by 0.142 while recall moves far less
-(Supplementary S3), so a substantial share of the apparent screening failure is a corpus difference
+(Supplementary S2), so a substantial share of the apparent screening failure is a corpus difference
 rather than a screening error.
 
 > **CLAIM** — Screening buys precision at almost no cost to recall. Annotation is where recall is
@@ -238,7 +238,7 @@ rather than a screening error.
 > - lowest at full text: `executive_function` 0.807, because the 15 gold studies its abstract
 >   stage rejects on judgement stay charged against a shrinking denominator
 >
-> The two sentences that must appear in the body (`NATURE_METHODS_SKELETON.md:212`) point at S3:
+> The two sentences that must appear in the body (`NATURE_METHODS_SKELETON.md:212`) point at S2:
 > swapping only the study pool raises full-text precision +0.142, so a substantial share of the
 > apparent screening failure is a corpus difference.
 >
@@ -250,7 +250,7 @@ rather than a screening error.
 > - **"Adjusted" is used in two contradictory senses** and one must be dropped before submission:
 >   here it *narrows* the denominator to attainable studies; in `projects/dementia/REPORT.md:95`
 >   "adjusted gold" *widens* it (74 → 162) as a precision correction.
-> - S3's recall control reads **−0.044** at full text, not the +0.007 quoted in the skeleton. The
+> - S2's recall control reads **−0.044** at full text, not the +0.007 quoted in the skeleton. The
 >   control still holds — recall moves far less than precision — but the number needs restating.
 
 ## 3. Recovering the analyses, then selecting among them
@@ -286,15 +286,15 @@ _~350 words. **Figure 3** (a parsing, b annotation operating points)._
 > positives; `social` has 529 analyses across 5 contrasts and 1,159. Say "assignment recall"
 > rather than "recall" for panel b.
 >
-> **OPEN** — the precision-recall rendering is now **Supplementary S7** (`--only S7`). It is the
+> **OPEN** — the precision-recall rendering is now **unnumbered** (`--only annotationpr`). It is the
 > only panel showing the precision-vs-lift reordering ROC space cannot: `social` has the
 > third-highest precision (0.618) but the **lowest** lift (1.8×) because its prevalence is
 > highest (0.345), while `vbm_of_substance_use` turns a similar 0.584 into **5.6×** off 0.104.
-> S7 still excludes dementia, so its numbers are n = 8 and will not match panel b's.
+> It still excludes dementia, so its numbers are n = 8 and will not match panel b's.
 
 ## 4. The whole pipeline beats a search-only synthesis
 
-_~350 words. **Figure 4**; supporting: Supplementary S1, S4._
+_~350 words. **Figure 4**; supporting: Supplementary S5, and the text-to-map figure._
 
 We next tested whether AutoNIMA's end-to-end workflow translated improved evidence selection into
 more faithful recovery of published neuroimaging meta-analytic maps. As a baseline comparison akin
@@ -350,13 +350,13 @@ analysis, so the number of analyses entering its maps is not comparable with the
 >   from the 35-column era. Use the table above; the denominator is **32**.
 > - The skeleton also wants an **axial-slice panel c** from `make_brain_map_figure.py`. Two
 >   generated brain figures are currently unassigned to any slot:
->   `figure_brain_maps_contrast` and `figureS_brain_maps_all`.
+>   `figure_brain_maps_contrast` and `figureS4_brain_maps_all`.
 > - `decrease` **cannot be used as the exemplar** — it duplicates `reappraisal` (r = 0.972).
 >   Use `reappraisal` instead (`NATURE_METHODS_SKELETON.md:414`).
 
 ## 5. The gain comes from analysis selection, not paper selection
 
-_~350 words. **Figure 5**; supporting: Supplementary S5._
+_~350 words. **Figure 5**; supporting: Supplementary S3._
 
 > **CLAIM** — Decompose the Result 4 margin into its two selection steps. Choosing the right
 > papers is worth almost nothing; choosing the right analyses within them is worth nearly all of
@@ -380,7 +380,7 @@ _~350 words. **Figure 5**; supporting: Supplementary S5._
 >   **it is not a search problem; it is a screening problem** — and more precisely, an
 >   analysis-selection problem
 >
-> *Supplementary S5, the size-matched null* (`annotation_bootstrap_null.csv`)
+> *Supplementary S3, the size-matched null* (`annotation_bootstrap_null.csv`)
 >
 > - median Δr² **+0.179** against each column's own size-matched null; **25/28** clear p < 0.05
 > - state carefully: the naive reading overclaims, because 31/32 baselines are targeted searches
@@ -392,7 +392,7 @@ _~350 words. **Figure 5**; supporting: Supplementary S5._
 
 ## 6. Cost and scale
 
-_~200 words (budget table says ~300 — settle this). **Supplementary S1**._
+_~200 words (budget table says ~300 — settle this). **Supplementary S5**._
 
 > **CLAIM** — Fully measured, not estimated: a project runs for tens of dollars and hours against
 > months of person time. For a methods journal this is not an aside — it is why the method
@@ -443,7 +443,7 @@ _~600 words._
 > `dementia` yields coordinates for 49% of included studies, "larger than every schema effect in
 > the paper combined" (`PAPER_OUTLINE.md:1118`).
 >
-> **NUMBERS** (Supplementary S2, `tier_progression.csv`) — the mis-specification point, which belongs
+> **NUMBERS** (Supplementary S1, `tier_progression.csv`) — the mis-specification point, which belongs
 > here as a caution about LLM screening generally:
 >
 > - verbatim → manual criteria: **+0.221** (n = 2 projects)
@@ -635,13 +635,22 @@ _~50 references. Numbered, Nature style._
 
 # Supplementary Information
 
-> **BRIEF** — S1 measured cost · S2 mis-specification vs overfitting · S3 pool mismatch ·
-> S4 text-to-map baselines · S5 size-matched null · S6 raw-denominator gold retention ·
-> S7 annotation in precision-recall space (was Figure 3b until 2026-09-16; n = 8, excludes
-> dementia, and carries the precision-vs-lift reordering).
+> **BRIEF** — renumbered 2026-09-17:
+>
+> - **S1** criteria tier progression — mis-specification vs overfitting (`--only S1`)
+> - **S2** pool mismatch (`--only S2`)
+> - **S3** size-matched null (`--only S3`)
+> - **S4** brain maps, all columns (`scripts/make_brain_map_figure.py --mode all`)
+> - **S5** measured cost per stage (`--only S5`)
+>
+> Three figures are still built and still correct but no longer cited, so they carry
+> descriptive keys rather than S-numbers: `--only text2map` (text-to-map baselines),
+> `--only retention` (raw-denominator gold retention) and `--only annotationpr`
+> (annotation in precision-recall space). Extended Data: the §3 cautionary case,
+> per-project tables behind Figures 2–5, PRISMA funnels.
 > Extended Data: the §3 cautionary case, per-project tables behind Figures 2–5, PRISMA funnels.
 
-## Supplementary S3 — how much of the low precision is a pool mismatch?
+## Supplementary S2 — how much of the low precision is a pool mismatch?
 
 > **NUMBERS** (`stage_precision_recall.csv` vs `stage_precision_recall_allstudies.csv`; n = 3
 > projects: dementia, emotion_regulation_2022, social)
@@ -660,7 +669,7 @@ _~50 references. Numbered, Nature style._
 > never in the researchers' pool. **Do not say "most false positives are a pool artefact" without
 > the per-project split** (`NATURE_METHODS_SKELETON.md:845`).
 
-## Supplementary S4 — a term is not an analysis
+## Text-to-map baselines — a term is not an analysis (unnumbered)
 
 > **NUMBERS** (`text_to_map_baselines.csv`; n = 32 columns)
 >
@@ -676,7 +685,7 @@ _~50 references. Numbered, Nature style._
 > from an independent direction. Panel b reports r² **and** top-k dice; the caption must not quote
 > the r² gap alone (`NATURE_METHODS_SKELETON.md:933`).
 
-## Supplementary S6 — raw denominator, retrieval as its own stage
+## Raw denominator, retrieval as its own stage (unnumbered)
 
 > **NUMBERS** (`gold_survival_by_stage.csv`) — marginal gold loss by stage, percentage points:
 >
@@ -702,7 +711,7 @@ _~50 references. Numbered, Nature style._
 | **`projects/emotion_regulation_2022/nmb_mappings.json`** | still the unedited template (`MANUAL_NAME1` → `AUTOMATIC_NAME1`), which excludes ER from every cross-project analysis. Called "highest leverage per unit of work in the whole plan" (`PAPER_OUTLINE.md:1500`) |
 | **M1.2 Generative AI in development** | nothing written |
 | **"adjusted" used in two senses** | one must be dropped |
-| **dementia excluded from Figures 4, 5, S5** | justified but it *helps* the headline (+0.099 → +0.114), so Methods must state the reason and the 32-column result belongs in the text as a robustness check |
+| **dementia excluded from Figures 4, 5, S3** | justified but it *helps* the headline (+0.099 → +0.114), so Methods must state the reason and the 32-column result belongs in the text as a robustness check |
 | **Figure 1** | panel a drawn (`figures/figure1_pipeline_schematic.svg`); panel b, the unit distinction, still to draw |
 | Result 2 heading | changed 2026-09-10, needs sign-off |
 | Cost numbers | hardcoded, not CSV-derived |
@@ -717,8 +726,8 @@ Found while building this skeleton, 2026-09-10. All corrected above.
 | Fig 4 Δ +0.110, p = 3.5e-06, 31/35 (skeleton L518) | **superseded**, 35-column era | — |
 | §7 0.495 vs 0.394, 30/35 (outline L691) | **superseded**, 35-column era | — |
 | — | **current: 0.606 vs 0.491, mean Δ +0.114, 26/28, p = 3.0e-06** — the map-level set is 28 columns over 8 projects since dementia was excluded 2026-09-16; the benchmark is still 32 over 9 | `cross_project_best_baseline_stats.csv` |
-| annotation lift | **3.1×** for Figure 3b as it now stands (n = 9, dementia included). 3.3× is the n = 8 value and is correct for Supplementary S7 only — the two panels have different project sets, which is why this number moved twice | `annotation_aggregates.csv` |
-| S3 recall control +0.007 | **−0.044** at full text | `stage_precision_recall*.csv` |
+| annotation lift | **3.1×** for Figure 3b as it now stands (n = 9, dementia included). 3.3× is the n = 8 value and is correct for the unnumbered precision-recall figure only — the two panels have different project sets, which is why this number moved twice | `annotation_aggregates.csv` |
+| S2 recall control +0.007 | **−0.044** at full text | `stage_precision_recall*.csv` |
 | "35 columns" (skeleton L351/473/518/568/576) | **32** | `benchmark_exclusions.py` |
 
 Regenerate all of the above with `pixi run python scripts/manuscript_numbers.py`.
