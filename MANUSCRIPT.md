@@ -595,43 +595,76 @@ _~50 references. Numbered, Nature style._
 
 # Figure legends
 
-## Figure 1
+> **BRIEF — numbering follows order of first citation**, which Nature requires and which matches
+> the placeholder layout in the draft: the emotion-regulation exemplar is first cited in the
+> Figure 4 section, so it is **Figure 5**, and the decomposition is **Figure 6**. The repo
+> currently names these the other way round (`figure5_selection_decomposition`,
+> `figure_er_surface_contrasts`); the files need renaming to match, and the draft's one inline
+> "(Fig. 6)" for the emotion-regulation map becomes "(Fig. 5)".
 
-> **BRIEF** — a, pipeline schematic: expert configuration → search → screening (abstract,
-> retrieval, full-text) → coordinate parsing → analysis annotation → meta-analysis, with the LLM
-> decision step drawn out at each stage that has one. Drawn:
-> `figures/figure1_pipeline_schematic.svg`. b, the unit distinction: one paper, k analyses, one
-> target contrast — **still to draw**.
+**Fig. 1 | AutoNIMA, and the unit that determines a meta-analytic result.**
+**a**, The workflow. A research question is expressed as explicit article- and contrast-level
+eligibility criteria, which govern a sequence of assessments over progressively more detailed
+evidence: a PubMed search, abstract screening, full-text retrieval and screening, heuristic
+identification of candidate coordinate tables, LLM parsing of those tables into distinct
+analyses, and LLM assignment of each analysis to the target contrasts it satisfies. Coordinates
+from the selected analyses are submitted to coordinate-based meta-analysis, yielding one spatial
+map per target contrast. **b**, Article eligibility is not analysis eligibility. A single eligible
+article reports *k* statistical comparisons, and typically only a subset addresses any one target;
+pooling every coordinate in the article answers a different question from the one posed.
 
-## Figure 2
+**Fig. 2 | Screening raises precision against expert curation while retaining most assessable
+studies.** **a**, Recall at each stage, computed against an *attainable* denominator: at each
+stage the denominator drops the studies that became unavailable there — not returned by the
+search, no usable full text, or no parseable coordinates — and never drops a study that was
+rejected on judgement. The search stage is therefore 1.000 by construction, being a pure
+availability stage. **b**, Precision, the proportion of retained articles present in the expert
+inclusion list. Each line is one project (*n* = 9); the heavy black line is the cross-project
+mean. Because availability losses leave the denominator but screening decisions do not, the
+decline in **a** is attributable to eligibility judgements alone.
 
-> **BRIEF** — must state: the denominator per stage; that search is 1.000 by construction; and
-> that judgement losses stay charged while availability failures leave the denominator. n = 9.
+**Fig. 3 | LLM parsing recovers individual analyses; LLM assignment selects among them.**
+**a**, Percentage of expert-curated analyses recovered by LLM parsing (coloured) against treating
+each coordinate table as a single analysis (grey), for each project. Parsing is scored only on the
+663 of 1,047 expert-included articles (63%) from which at least one analysis was automatically
+extracted; articles yielding none are attributable to retrieval or extraction failure rather than
+mis-parsing and are accounted for in Fig. 2. **b**, Analysis-to-contrast assignment in ROC space.
+Each filled marker is one project's operating point; the diagonal is chance, and the open marker
+on it is that project's own same-size random selection, which lands at (*k*/*N*, *k*/*N*) in
+closed form. The unit is analysis-to-contrast assignments rather than analyses, since one analysis
+may be eligible for more than one contrast.
 
-## Figure 3
+**Fig. 4 | End-to-end synthesis recovers published maps more faithfully than search-only
+synthesis.** **a**, Pipeline against baseline *R*² for each of 28 target contrasts in eight
+projects; points above the identity line favour the pipeline, and circle area encodes the number
+of analyses pooled. **b**, The same contrasts ordered by advantage, with the cross-contrast mean
+and its 95% confidence interval. The baseline is the strongest one a practitioner could have built
+in advance for that contrast: a contrast-targeted PubMed search where the contrast is a separable
+search topic (27 of 28) and the project's broad search otherwise. All arms were meta-analysed
+identically by MKDA and compared as squared voxelwise correlation between unthresholded maps.
+Confidence intervals are cluster bootstrap over projects, not contrasts (20,000 resamples);
+*P* is a two-sided sign test over contrasts. The dementia project is excluded because its
+reference data pool coordinates across studies, giving analysis units that are not comparable with
+those extracted from individual articles. The two negative bars are small losses, not failures of
+the same magnitude as the gains at the other end.
 
-> **BRIEF** — panel a: dumbbell, tables-only against LLM parsing, all nine projects; must state
-> that parsing is scored only on papers from which at least one analysis was extracted. Panel b:
-> annotation in ROC space, all nine projects; must state that the diagonal is chance, that each
-> open marker is that project's own same-size random selection, and that the unit is
-> analysis-to-contrast assignments rather than analyses.
+**Fig. 5 | Analysis-level selection recovers a target contrast that article-level pooling cannot
+(emotion regulation).** Reference, search-only baseline and pipeline maps for three
+emotion-regulation contrasts — increasing, maintaining and reappraising an emotional response —
+rendered on inflated cortical surfaces and thresholded at *z* > 1.96. A single reappraisal study
+can report all three comparisons; article-level pooling combines their coordinates, whereas
+analysis-level selection retains only those matching each target. The fourth annotated contrast
+(*decrease*) is omitted because its reference map duplicates the reappraisal contrast in the
+benchmark source data rather than representing a distinct comparison. This is an exemplar: Figs 4
+and 6 report the full distribution, including the contrasts where the pipeline does not gain.
 
-## Figure 4
-
-> **BRIEF** — must say which baseline it is (best available per column, `targeted` for 31 of 32),
-> that circle area encodes the number of analyses, and that the bottom rows are small wins rather
-> than losses (`NATURE_METHODS_SKELETON.md:470`).
-
-## Figure 5
-
-> **BRIEF** — must state that the three arms are baseline / screening-only / full pipeline, all
-> from the canonical run, and that the middle arm isolates paper selection.
-
-## Figure 6
-
-> **BRIEF** — `figure_er_surface_contrasts`: three emotion-regulation maps against a single
-> baseline, on inflated surfaces. The honest framing is that this shows what a good case looks
-> like while Figures 4 and 5 report the whole distribution including the losses.
+**Fig. 6 | The advantage comes from selecting analyses, not from selecting articles.** Three arms
+over the same 28 contrasts, all from the same pipeline run: the search-only baseline; a
+screening-only arm that applies article-level eligibility criteria and then pools every parsed
+analysis from the retained articles; and the full pipeline, which additionally selects analyses per
+contrast. The middle arm isolates the contribution of article screening. Mean gains are additive
+and sum to the total margin in Fig. 4 (+0.005 from article screening, +0.109 from analysis
+selection, +0.114 in total), so 96% of the advantage is attributable to selection within articles.
 
 # Supplementary Information
 
@@ -651,6 +684,49 @@ _~50 references. Numbered, Nature style._
 > (annotation in precision-recall space). Extended Data: the §3 cautionary case,
 > per-project tables behind Figures 2–5, PRISMA funnels.
 > Extended Data: the §3 cautionary case, per-project tables behind Figures 2–5, PRISMA funnels.
+
+## Supplementary figure legends
+
+**Supplementary Fig. S1 | Criteria refined against benchmark feedback add little beyond correcting
+oversights.** Map recovery (*R*²) for each project across three criteria tiers: `verbatim`,
+transcribed from the published methods section; `manual`, after the project author corrected
+oversights found by reading the pipeline's own reports; and `best`, after further refinement
+against benchmark feedback. Averaged over each project's contrasts, `verbatim` → `manual` gains
++0.221 and `manual` → `best` a further +0.031, roughly a sevenfold difference. **Both segments
+rest on two projects only**, since the other seven resolve to the same run at more than one tier;
+these are indications of direction, not estimates of effect size. The practical reading is that
+the live risk in LLM-assisted screening is mis-specifying the criteria, not tuning them.
+
+**Supplementary Fig. S2 | Most of the apparent screening imprecision is a difference in candidate
+pool.** Precision against the expert inclusion list at each stage, for the same criteria applied
+to two candidate pools: the articles returned by our PubMed search (solid) and the candidate list
+obtained from the original authors (dotted). **Available for three projects only** — dementia,
+emotion regulation and social. Holding the pool fixed raises precision at every stage, by +0.160 at
+analysis-level selection (0.497 → 0.657), while recall moves far less, which is the control that
+makes the comparison interpretable: the gain reflects which articles were ever considered rather
+than which were correctly judged.
+
+**Supplementary Fig. S3 | Each contrast beats a size-matched random selection of analyses.**
+Observed *R*² against the mean of a size-matched null for each of 28 contrasts, with the null's
+5th–95th percentile range. For each contrast the null draws the same number of analyses at random
+from that contrast's candidate pool and re-fits the meta-analysis, 500 times, so it controls for
+the possibility that the pipeline's advantage comes from pooling fewer analyses rather than better
+ones. Median Δ*R*² is +0.179 and 25 of 28 contrasts clear *P* < 0.05. The null is widest for the
+two smallest projects, where few analyses are available to permute.
+
+**Supplementary Fig. S4 | Reference, baseline and pipeline maps for every contrast.** Axial slices
+at four levels for all 28 contrasts, showing the expert reference map, the search-only baseline and
+the full pipeline side by side, thresholded at *z* > 1.96 — the same threshold at which the
+reported overlap statistics are computed. Included in full rather than as selected examples, so the
+contrasts where the pipeline gains little or loses are visible alongside those where it gains most.
+
+**Supplementary Fig. S5 | Measured model-use cost per pipeline stage.** Cost per LLM call for each
+stage, split by input, cached input and output tokens, from token accounting recorded during the
+runs rather than estimated from list prices. Abstract screening costs $0.0023 per call, full-text
+screening $0.0138, coordinate parsing $0.0059 and analysis annotation $0.0211; output tokens
+dominate the cheapest stage. A complete project averages $21.55 and all nine cost $194 to build
+from scratch. Cost per study that reaches the map ($0.085 median) is a more stable unit than cost
+per call, because the stages differ by an order of magnitude in how many calls they make.
 
 ## Supplementary S2 — how much of the low precision is a pool mismatch?
 
