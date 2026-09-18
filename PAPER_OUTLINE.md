@@ -85,9 +85,11 @@ the first half of that discipline.
 
 The second half now exists: `scripts/compute_attainable_recall.py` →
 `reports/attainable_recall_by_stage.csv`, plotted as **Figure 2** itself
-(`figure2_attainable_recall_and_precision`, `--only 2`) since 2026-09-10; the raw-denominator
+(`figure2_precision_and_attainable_recall`, `--only 2`) since 2026-09-10; the raw-denominator
 version it displaced is Supplementary S6. Each stage is divided by the gold studies **it could have kept**, dropping one
 availability failure at the stage where it happens and nothing else:
+
+*Panels swapped 2026-09-18:* **a** is now precision, **b** attainable recall. Precision is the claim; recall is the control that makes it interpretable.
 
 | stage | denominator | drops |
 |---|---|---|

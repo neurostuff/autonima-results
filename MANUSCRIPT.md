@@ -614,14 +614,14 @@ article reports *k* statistical comparisons, and typically only a subset address
 pooling every coordinate in the article answers a different question from the one posed.
 
 **Fig. 2 | Screening raises precision against expert curation while retaining most assessable
-studies.** **a**, Recall at each stage, computed against an *attainable* denominator: at each
-stage the denominator drops the studies that became unavailable there — not returned by the
-search, no usable full text, or no parseable coordinates — and never drops a study that was
-rejected on judgement. The search stage is therefore 1.000 by construction, being a pure
-availability stage. **b**, Precision, the proportion of retained articles present in the expert
-inclusion list. Each line is one project (*n* = 9); the heavy black line is the cross-project
-mean. Because availability losses leave the denominator but screening decisions do not, the
-decline in **a** is attributable to eligibility judgements alone.
+studies.** **a**, Precision, the proportion of retained articles present in the expert inclusion
+list, at each stage of the workflow. **b**, Recall at each stage, computed against an
+*attainable* denominator: at each stage the denominator drops the studies that became unavailable
+there — not returned by the search, no usable full text, or no parseable coordinates — and never
+drops a study that was rejected on judgement. The search stage is therefore 1.000 by
+construction, being a pure availability stage. Each line is one project (*n* = 9); the heavy black
+line is the cross-project mean. Because availability losses leave the denominator but screening
+decisions do not, the decline in **b** is attributable to eligibility judgements alone.
 
 **Fig. 3 | LLM parsing recovers individual analyses; LLM assignment selects among them.**
 **a**, Percentage of expert-curated analyses recovered by LLM parsing (coloured) against treating

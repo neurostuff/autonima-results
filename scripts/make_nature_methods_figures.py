@@ -9,7 +9,7 @@ is a separate module with its own house style.
 
 Figures map onto NATURE_METHODS_SKELETON.md:
 
-    Figure 2   attainable recall + precision gain   Result 2  (§1)
+    Figure 2   precision gain + attainable recall   Result 2  (§1)
     Figure 3   parsing + annotation in ROC space      Result 3  (§5)
     Figure 4   pipeline vs best baseline              Result 4  (§7)  <- headline
     Figure 5   gain from analysis selection           Result 5  (§6)  <- the thesis
@@ -438,7 +438,10 @@ def figure_gold_retention_raw_fig(out_dir: Path) -> None:
 # --------------------------------------------------------------------------- Figure 2
 
 def figure2(out_dir: Path) -> None:
-    """Recall on an attainable denominator beside the precision climb.
+    """The precision climb beside recall on an attainable denominator.
+
+    Panels swapped 2026-09-18 so precision leads: it is the claim Result 2 makes, and the recall
+    panel is the control that makes it interpretable rather than a finding in its own right.
 
     Promoted from an alternate to Figure 2 on 2026-09-10. The raw-denominator version it
     replaced is the raw-retention figure (--only retention), which keeps the retrieval stage
@@ -532,8 +535,29 @@ def figure2(out_dir: Path) -> None:
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.4)))
 
-    # a: recall on the attainable denominator
+    # a: precision over the four stages
     ax = axes[0]
+    have = [p for p in projects if all(prec.get(p, {}).get(s) is not None for s in stages)]
+    for p in have:
+        ax.plot(range(len(stages)), [prec[p][s] for s in stages], "-o", color=COLORS[p],
+                markeredgewidth=0, alpha=0.9)
+    if have:
+        means_b = [st.mean([prec[p][s] for p in have]) for s in stages]
+        ax.plot(range(len(stages)), means_b, marker="o", ms=3.6, mec="white", mew=0.5,
+                **MEAN_KW)
+        ax.annotate(f"{means_b[-1]:.2f}", (len(stages) - 1, means_b[-1]),
+                    textcoords="offset points", xytext=(5, -1.5), fontsize=fs(5.8),
+                    fontweight="bold", color=MEAN_COLOR, annotation_clip=False)
+    ax.set_xticks(range(len(stages)))
+    ax.set_xticklabels(stage_ticks(labels))
+    ax.set_xlim(-0.25, len(stages) - 0.42)
+    ax.set_ylim(0, 1.02)
+    ax.set_ylabel("Precision vs gold standard")
+    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
+    panel_label(ax, "a", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
+
+    # b: recall on the attainable denominator
+    ax = axes[1]
     ends = []
     for p in projects:
         ys = [adj[p][s] for s in stages]
@@ -575,27 +599,6 @@ def figure2(out_dir: Path) -> None:
             f"({min(ceil_raw):.0%}-{max(ceil_raw):.0%})\n"
             f"annotation on the full list would read {d_ann:.2f}",
             transform=ax.transAxes, fontsize=fs(5.2), color=MUTED, linespacing=1.45)
-    panel_label(ax, "a", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
-
-    # b: precision over the same four stages
-    ax = axes[1]
-    have = [p for p in projects if all(prec.get(p, {}).get(s) is not None for s in stages)]
-    for p in have:
-        ax.plot(range(len(stages)), [prec[p][s] for s in stages], "-o", color=COLORS[p],
-                markeredgewidth=0, alpha=0.9)
-    if have:
-        means_b = [st.mean([prec[p][s] for p in have]) for s in stages]
-        ax.plot(range(len(stages)), means_b, marker="o", ms=3.6, mec="white", mew=0.5,
-                **MEAN_KW)
-        ax.annotate(f"{means_b[-1]:.2f}", (len(stages) - 1, means_b[-1]),
-                    textcoords="offset points", xytext=(5, -1.5), fontsize=fs(5.8),
-                    fontweight="bold", color=MEAN_COLOR, annotation_clip=False)
-    ax.set_xticks(range(len(stages)))
-    ax.set_xticklabels(stage_ticks(labels))
-    ax.set_xlim(-0.25, len(stages) - 0.42)
-    ax.set_ylim(0, 1.02)
-    ax.set_ylabel("Precision vs gold standard")
-    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     panel_label(ax, "b", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
     handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
@@ -605,7 +608,7 @@ def figure2(out_dir: Path) -> None:
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figure2_attainable_recall_and_precision")
+    save(fig, out_dir, "figure2_precision_and_attainable_recall")
 
 
 # --------------------------------------------------------------------------- Figure 3
