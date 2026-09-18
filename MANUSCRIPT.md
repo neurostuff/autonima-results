@@ -626,19 +626,25 @@ availability losses leave the denominator but screening decisions do not, the de
 attributable to eligibility judgements alone. Scored instead against every expert-included study,
 recall at analysis selection reads 0.48 rather than 0.82.
 
-**Fig. 3 | LLM parsing recovers individual analyses; LLM assignment selects among them.**
-**a**, Percentage of expert-curated analyses recovered for each project: open markers, treating
-each coordinate table as a single analysis; filled markers, LLM parsing. Marker fill encodes the
-method and colour identifies the project, so the comparison survives greyscale reproduction and
-any form of colour-vision deficiency. The same convention holds in **b**, where open marks the
-reference being beaten and filled the pipeline result. Parsing is scored only on the
-663 of 1,047 expert-included articles (63%) from which at least one analysis was automatically
-extracted; articles yielding none are attributable to retrieval or extraction failure rather than
-mis-parsing and are accounted for in Fig. 2. **b**, Analysis-to-contrast assignment in ROC space.
-Each filled marker is one project's operating point; the diagonal is chance, and the open marker
-on it is that project's own same-size random selection, which lands at (*k*/*N*, *k*/*N*) in
-closed form. The unit is analysis-to-contrast assignments rather than analyses, since one analysis
-may be eligible for more than one contrast.
+**Fig. 3 | LLMs recover expert-curated analyses and identify relevant contrast assignments.**
+**a**, LLM-based parsing recovered a mean of 91.4% of expert-curated analyses (filled markers),
+compared with 33.3% when each coordinate table was treated as a single analysis (open markers);
+colour identifies the project, and marker fill encodes the method, so the comparison holds in
+greyscale and under colour-vision deficiency. In seven of nine projects the single-analysis-per-
+table baseline regroups the same extracted coordinates, holding extraction fixed so that only the
+grouping differs. Automatically extracted and expert-curated analyses were matched using optimal
+one-to-one assignment based on coordinate and label similarity (Methods). Parsing was scored on
+the 663 of 1,047 expert-included articles (63%) that yielded at least one automatically extracted
+analysis; post-hoc review of the remainder identified absence of coordinate data from the main
+text — most often results reported only in supplementary tables — as the single largest cause of
+extraction failure. **b**, True-positive rate (recall) against false-positive rate for
+analysis-to-contrast assignments, across nine projects and 32 target contrasts. Filled markers
+represent individual projects, all of which performed above the chance diagonal (mean
+TPR − FPR 0.68). The diagonal indicates equal true-positive and false-positive rates under random
+selection. Open markers show the expected performance of uniformly selecting the same number of
+candidate assignments as AutoNIMA, which lies on the diagonal at that project's prevalence. Note
+that the unit in **b** is the analysis-to-contrast assignment rather than the analysis, since one
+analysis may be eligible for more than one contrast.
 
 **Fig. 4 | End-to-end synthesis recovers published maps more faithfully than search-only
 synthesis.** **a**, Pipeline against baseline *R*² for each of 28 target contrasts in eight
