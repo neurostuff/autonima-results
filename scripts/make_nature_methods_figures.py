@@ -1048,9 +1048,25 @@ def figure5(out_dir: Path) -> None:
     different, no null model needed to read them -- and it decomposes the Figure 4 margin rather
     than opening a separate comparison.
 
-    A third map is inserted between the baseline and the full pipeline: the canonical run's
-    `all_analyses` column, which is every parsed analysis from the studies that survived
-    screening, with no annotation. Papers chosen, analyses not.
+    THE TWO PANELS ARE TWO DIFFERENT DESIGNS, ON PURPOSE
+
+    Panel a is a step in the end-to-end chain: the canonical run's `all_analyses` column -- every
+    parsed analysis from the studies that survived screening, no annotation -- against the search
+    baseline. Articles chosen, analyses not.
+
+    Panel b changed 2026-09-18 and is NOT the next step in that chain. It is the annotation-only
+    arm, which starts from the expert inclusion list and never screens, so the study pool is held
+    fixed and the only thing that varies is whether analyses were selected. Its baseline is the
+    `all_analyses` map from that same pool. This is the design the Results text describes, and it
+    is the cleaner test of analysis selection because no article-level difference can leak into
+    it.
+
+    WHAT THIS COSTS: the panels no longer sum. The old panel b was the second half of an additive
+    decomposition of Figure 4's margin (+0.005 and +0.109 summing to +0.114). Panel b now lives on
+    a different arm and a different pool, so nothing adds up and the caption must not claim it
+    does. What is gained is a second, independent estimate of the same quantity: +0.109 from the
+    chain and +0.100 with the pool held fixed. The additive decomposition still exists in
+    reports/selection_decomposition.csv and can be quoted from there.
 
     Both panels share axes, so the shape carries the result: panel a's points sit ON the diagonal
     and panel b's sit ABOVE it.
@@ -1065,29 +1081,45 @@ def figure5(out_dir: Path) -> None:
     """
     path = REPO_ROOT / "reports" / "selection_decomposition.csv"
     if not path.exists():
-        print("  figureS3: run scripts/decompose_selection_gain.py first; skipped")
+        print("  figure5: run scripts/decompose_selection_gain.py first; skipped")
         return
-    rows = read(path)
+    rows = filter_rows(read(path), announce=False)
+    rows = [r for r in rows if r["project"] not in MAP_LEVEL_EXCLUDED_PROJECTS]
     for r in rows:
-        for k in ("r2_baseline", "r2_screening_only", "r2_pipeline",
-                  "gain_paper_selection", "gain_analysis_selection"):
+        for k in ("r2_baseline", "r2_screening_only", "gain_paper_selection"):
             r[k] = float(r[k])
+
+    # Panel b: the annotation-only arm, pool held fixed. r-squared from the stored Pearson r,
+    # which compare_meta_to_benchmark computes on the UNTHRESHOLDED maps, per the metric/map
+    # rule. All correlations in this corpus are positive, so squaring loses no sign.
+    apath = REPO_ROOT / "reports" / "annotation_value.csv"
+    if not apath.exists():
+        print("  figure5: run scripts/annotation_value.py first; skipped")
+        return
+    arows = filter_rows(read(apath), project_key="project", announce=False)
+    arows = [r for r in arows if r["project"] not in MAP_LEVEL_EXCLUDED_PROJECTS
+             and r["pearson_annotated"] and r["pearson_all_analyses"]]
+    for r in arows:
+        r["r2_all_analyses"] = float(r["pearson_all_analyses"]) ** 2
+        r["r2_annotated"] = float(r["pearson_annotated"]) ** 2
+        r["gain_analysis_only"] = r["r2_annotated"] - r["r2_all_analyses"]
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(3.05)))
     panels = (
         ("a", "r2_baseline", "r2_screening_only", "Search-only baseline $R^2$",
          "Article screening only $R^2$", "gain_paper_selection",
          "Article selection only"),
-        ("b", "r2_screening_only", "r2_pipeline", "Article screening only $R^2$",
-         "Full pipeline $R^2$", "gain_analysis_selection",
-         "Article + analysis selection"),
+        ("b", "r2_all_analyses", "r2_annotated", "All analyses, fixed pool $R^2$",
+         "Analysis selection only $R^2$", "gain_analysis_only",
+         "Analysis selection only"),
     )
     for ax, (letter, xk, yk, xl, yl, gk, what) in zip(axes, panels):
+        src = rows if letter == "a" else arows
         ax.plot([0, 1], [0, 1], color=RULE, lw=0.7, zorder=1)
-        for r in rows:
+        for r in src:
             ax.scatter([r[xk]], [r[yk]], s=26, color=COLORS.get(r["project"], "#7F7F7F"),
                        edgecolors="white", linewidths=0.45, zorder=3)
-        g = [r[gk] for r in rows]
+        g = [r[gk] for r in src]
         ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect("equal")
         ax.set_xlabel(xl); ax.set_ylabel(yl)
         ax.grid(alpha=0.6); ax.set_axisbelow(True)
@@ -1102,7 +1134,7 @@ def figure5(out_dir: Path) -> None:
 
     # Legend from the projects actually drawn, not the fixed order: with dementia excluded
     # from the map-level figures a fixed list advertises a colour absent from the panel.
-    drawn = {r["project"] for r in rows}
+    drawn = {r["project"] for r in rows} | {r["project"] for r in arows}
     handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.8,
                       label=DISPLAY[p]) for p in PROJECT_ORDER if p in drawn]
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.19),

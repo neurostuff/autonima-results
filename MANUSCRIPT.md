@@ -376,6 +376,17 @@ _~350 words. **Figure 5**; supporting: Supplementary S3._
 > - the means sum exactly to Figure 4's margin (+0.005 + 0.109 = +0.114), which is the check
 >   that the two figures describe the same corpus. Quote means, not medians, when the
 >   decomposition needs to add up
+>
+> **⚠ THE FIGURE NO LONGER SHOWS THIS DECOMPOSITION.** Panel b was repointed 2026-09-18 at the
+> annotation-only arm (pool held fixed at the expert inclusion list): 0.521 → 0.621, mean
+> **+0.100**, median +0.075, **19/28** improve. That is an *independent* estimate of analysis
+> selection, not the chain's second step, so panels a and b do not sum and the +0.114 total is
+> no longer readable off the figure. Two consequences to settle:
+>
+> 1. The **abstract** quotes +0.109 and "96% of it" from the chain. Either keep those and name
+>    their source in the text, or switch the abstract to the figure's +0.100.
+> 2. The two estimates converging (+0.109 end-to-end, +0.100 with the pool fixed) is arguably a
+>    stronger claim than one additive split, since they fail differently. Worth one sentence.
 > - the sharpest mechanistic sentence in the paper (`PAPER_OUTLINE.md:809`):
 >   **it is not a search problem; it is a screening problem** — and more precisely, an
 >   analysis-selection problem
@@ -670,22 +681,21 @@ analysis-level selection retains only those matching each target. The fourth ann
 benchmark source data rather than representing a distinct comparison. This is an exemplar: Figs 4
 and 6 report the full distribution, including the contrasts where the pipeline does not gain.
 
-**Fig. 6 | The advantage comes from selecting analyses, not from selecting articles.** Three arms
-over the same 28 target contrasts, all from the same pipeline run: a search-only baseline; an
-article-screening-only arm, which applies article-level eligibility criteria and then pools every
-parsed analysis from the retained articles; and the full pipeline, which additionally selects
-analyses against contrast-specific criteria. **a**, Article selection only, against the
-search-only baseline: the increment is the contribution of selecting articles. **b**, Article and
-analysis selection together, against article selection alone: the increment is the contribution
-of selecting analyses within the retained articles. Panel titles name the arm plotted on the
-*y* axis, so **b** is the full pipeline rather than an analysis-selection-only condition; the
-analysis-selection-only arm described in Results holds the study pool fixed at the expert
-inclusion list and is a separate comparison. Each
-marker is one target contrast and colour identifies the project; markers above the identity line
-are contrasts where that step improved correspondence with the reference map. Mean gains are
-additive and sum to the total margin in Fig. 4 — +0.005 from article selection, +0.109 from
-analysis selection, +0.114 in total — so 96% of the advantage is attributable to selection within
-articles.
+**Fig. 6 | The advantage comes from selecting analyses, not from selecting articles.** Each panel
+isolates one selection step over the same 28 target contrasts in eight projects; each marker is
+one contrast and colour identifies the project. Markers above the identity line are contrasts
+where that step improved correspondence with the reference map. **a**, Article selection only.
+The *y* arm applies article-level eligibility criteria and then pools every parsed analysis from
+the retained articles, against a search-only baseline on the *x* axis. **b**, Analysis selection
+only. Both arms start from the expert inclusion list, so the study pool is held fixed and the
+only difference is whether analyses were selected against contrast-specific criteria; the *x*
+axis pools every parsed analysis from that same pool. Because the two panels use different arms
+and different study pools their gains are not additive and should not be summed; the additive
+decomposition of the Fig. 4 margin is reported separately in the text. Panel a should not be read
+as showing that article selection is worthless: 27 of 28 baselines are contrast-targeted
+searches, so the *x* arm already selects articles, by query rather than by model. What panel a
+shows is that two ways of selecting articles come out even, and panel b that the gain comes from
+the step a search cannot perform at all.
 
 
 ## Supplementary figure legends

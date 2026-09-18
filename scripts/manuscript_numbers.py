@@ -219,6 +219,26 @@ def result5() -> None:
     print(f"  arms: baseline {st.mean(float(r['r2_baseline']) for r in rows):.3f} -> "
           f"screening-only {st.mean(float(r['r2_screening_only']) for r in rows):.3f} -> "
           f"pipeline {st.mean(float(r['r2_pipeline']) for r in rows):.3f}")
+    print("  (the additive chain above is what the ABSTRACT quotes; Figure 6b plots a different\n"
+          "   design -- see below -- so the two panels of Figure 6 do not sum)")
+
+    # Figure 6b since 2026-09-18: the annotation-only arm, study pool held fixed at the expert
+    # inclusion list, against the all-analyses map from that same pool. An independent estimate
+    # of the same quantity as the chain's analysis-selection step, not a continuation of it.
+    av = filter_rows(read(REPORTS / "annotation_value.csv"), project_key="project",
+                     announce=False)
+    av = [r for r in av if r["project"] not in MAP_LEVEL_EXCLUDED
+          and r["pearson_annotated"] and r["pearson_all_analyses"]]
+    x = [float(r["pearson_all_analyses"]) ** 2 for r in av]
+    y = [float(r["pearson_annotated"]) ** 2 for r in av]
+    g = [b - a for a, b in zip(x, y)]
+    print(f"\n  FIGURE 6b (annotation-only arm, pool fixed): n={len(g)} contrasts, "
+          f"{len({r['project'] for r in av})} projects")
+    print(f"    all-analyses {st.mean(x):.3f} -> analysis selection {st.mean(y):.3f}")
+    print(f"    gain mean {st.mean(g):+.3f}  median {st.median(g):+.3f}  "
+          f"positive {sum(1 for v in g if v > 0)}/{len(g)}")
+    print(f"    vs the chain's analysis step: mean {st.mean(ga):+.3f} -- two designs, "
+          f"converging estimates")
 
     head("SUPPLEMENTARY S3 — every column against its own size-matched null",
          "reports/annotation_bootstrap_null.csv")
