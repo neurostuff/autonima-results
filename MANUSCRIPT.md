@@ -627,8 +627,11 @@ attributable to eligibility judgements alone. Scored instead against every exper
 recall at analysis selection reads 0.48 rather than 0.82.
 
 **Fig. 3 | LLM parsing recovers individual analyses; LLM assignment selects among them.**
-**a**, Percentage of expert-curated analyses recovered by LLM parsing (coloured) against treating
-each coordinate table as a single analysis (grey), for each project. Parsing is scored only on the
+**a**, Percentage of expert-curated analyses recovered for each project: open markers, treating
+each coordinate table as a single analysis; filled markers, LLM parsing. Marker fill encodes the
+method and colour identifies the project, so the comparison survives greyscale reproduction and
+any form of colour-vision deficiency. The same convention holds in **b**, where open marks the
+reference being beaten and filled the pipeline result. Parsing is scored only on the
 663 of 1,047 expert-included articles (63%) from which at least one analysis was automatically
 extracted; articles yielding none are attributable to retrieval or extraction failure rather than
 mis-parsing and are accounted for in Fig. 2. **b**, Analysis-to-contrast assignment in ROC space.

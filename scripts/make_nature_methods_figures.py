@@ -690,11 +690,17 @@ def figure3(out_dir: Path) -> None:
         except (ValueError, KeyError):
             continue
     rows.sort(key=lambda z: z[1])
+    # Shape encodes the ARM, colour only identifies the project -- the same division of labour
+    # as every other panel. The two arms used to be grey against the project colour, which made
+    # colour carry the comparison: the one job colour cannot do safely, since grey against a
+    # mid-lightness hue like #8C564B separates poorly under deuteranopia and not at all in
+    # greyscale. Open vs filled survives both.
     for i, (proj, llm, tab) in enumerate(rows):
-        ax.plot([tab, llm], [i, i], color=RULE, lw=1.5, zorder=1)
-        ax.scatter([tab], [i], s=15, color="#7F7F7F", zorder=3, edgecolors="white", linewidths=0.3)
-        ax.scatter([llm], [i], s=15, color=COLORS.get(proj, "#7F7F7F"), zorder=3,
-                   edgecolors="white", linewidths=0.3)
+        c = COLORS.get(proj, "#7F7F7F")
+        ax.plot([tab, llm], [i, i], color=c, lw=1.6, alpha=0.45, zorder=1,
+                solid_capstyle="round")
+        ax.scatter([tab], [i], s=16, facecolors="white", edgecolors=c, linewidths=1.1, zorder=3)
+        ax.scatter([llm], [i], s=16, color=c, zorder=3)
     ax.set_yticks(range(len(rows)))
     ax.set_yticklabels([DISPLAY.get(p, p) for p, _, _ in rows])
     ax.set_ylim(-0.7, len(rows) - 0.3)
@@ -703,7 +709,9 @@ def figure3(out_dir: Path) -> None:
     ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
     pooled_llm = st.mean([llm for _, llm, _ in rows])
     pooled_tab = st.mean([tab for _, _, tab in rows])
-    ax.legend(handles=[Line2D([], [], marker="o", ls="", color="#7F7F7F", markersize=3.4,
+    ax.legend(handles=[Line2D([], [], marker="o", ls="", markerfacecolor="white",
+                              markeredgecolor=INK, markeredgewidth=1.1,
+                              color=INK, markersize=3.4,
                               label=f"Tables only ({pooled_tab:.0f}%)"),
                        Line2D([], [], marker="o", ls="", color=INK, markersize=3.4,
                               label=f"LLM parsing ({pooled_llm:.0f}%)")],
