@@ -598,14 +598,15 @@ def figure2(out_dir: Path) -> None:
     ax.set_ylim(0, 1.04)
     ax.set_ylabel("Recall vs attainable gold")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
+    # The grey in-panel note was removed 2026-09-18. It carried three things: the denominator
+    # rule, the corpus ceiling (search returned a mean 86% of gold, 60-96%) and the raw-
+    # denominator comparison (0.48 at analysis selection). All three are now in the caption --
+    # printed here so they are not lost if anyone wonders what the panel used to say.
     ceil_raw = [raw[p]["search"] for p in projects]
     d_ann = st.mean([raw[p]["annotation"] for p in projects])
-    ax.text(0.03, 0.085,
-            f"denominator drops only unavailable data\n"
-            f"search returned {st.mean(ceil_raw):.0%} of gold "
-            f"({min(ceil_raw):.0%}-{max(ceil_raw):.0%})\n"
-            f"selection on the full list would read {d_ann:.2f}",
-            transform=ax.transAxes, fontsize=fs(5.2), color=MUTED, linespacing=1.45)
+    print(f"  figure2 caption facts: search returned {st.mean(ceil_raw):.0%} of gold "
+          f"({min(ceil_raw):.0%}-{max(ceil_raw):.0%}); "
+          f"raw-denominator value at analysis selection {d_ann:.2f}")
     panel_label(ax, "b", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
     handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,

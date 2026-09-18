@@ -619,9 +619,12 @@ list, at each stage of the workflow. **b**, Recall at each stage, computed again
 *attainable* denominator: at each stage the denominator drops the studies that became unavailable
 there — not returned by the search, no usable full text, or no parseable coordinates — and never
 drops a study that was rejected on judgement. The search stage is therefore 1.000 by
-construction, being a pure availability stage. Each line is one project (*n* = 9); the heavy black
-line is the cross-project mean. Because availability losses leave the denominator but screening
-decisions do not, the decline in **b** is attributable to eligibility judgements alone.
+construction, being a pure availability stage; the PubMed search returned a mean of 86% of the
+expert-included studies (range 60–96%), and that ceiling is the quantity the denominator removes.
+Each line is one project (*n* = 9); the heavy black line is the cross-project mean. Because
+availability losses leave the denominator but screening decisions do not, the decline in **b** is
+attributable to eligibility judgements alone. Scored instead against every expert-included study,
+recall at analysis selection reads 0.48 rather than 0.82.
 
 **Fig. 3 | LLM parsing recovers individual analyses; LLM assignment selects among them.**
 **a**, Percentage of expert-curated analyses recovered by LLM parsing (coloured) against treating
