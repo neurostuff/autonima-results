@@ -707,7 +707,14 @@ def figure3(out_dir: Path) -> None:
                               label=f"Tables only ({pooled_tab:.0f}%)"),
                        Line2D([], [], marker="o", ls="", color=INK, markersize=3.4,
                               label=f"LLM parsing ({pooled_llm:.0f}%)")],
-              loc="lower right", handletextpad=0.3, fontsize=fs(5.6))
+              # Above the axes, not inside them: every row's dumbbell spans most of the x
+              # range, so there is no in-panel corner that does not sit on data. At lower right
+              # it covered the Executive function and Emotion regulation rows.
+              # Two columns at publication scale; stacked at deck scale, where 1.55x type makes
+              # the pair wider than panel a and it ran into panel b's label.
+              loc="lower left", bbox_to_anchor=(0.0, 1.0),
+              ncol=2 if FONT_SCALE <= 1.2 else 1, frameon=False,
+              handletextpad=0.3, columnspacing=1.4, borderaxespad=0.25, fontsize=fs(5.6))
     panel_label(ax, "a", dx=-0.40)
 
     # b: annotation in ROC space, each project against its own size-matched null
