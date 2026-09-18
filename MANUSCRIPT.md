@@ -358,6 +358,30 @@ analysis, so the number of analyses entering its maps is not comparable with the
 
 _~350 words. **Figure 5**; supporting: Supplementary S3._
 
+To isolate the effects of article screening and analysis-level selection, we evaluated each
+component against a corresponding baseline (Fig. 6). The screening-only condition applied
+article-level eligibility criteria and pooled all parsed analyses from retained articles; its
+baseline pooled all available analyses from the original PubMed search results. The
+analysis-selection-only condition began with expert-included articles from NeuroMetaBench and
+selected analyses using contrast-specific criteria, without article screening. Its baseline
+pooled all parsed analyses from the same expert-included articles, holding the article pool
+constant.
+
+Article screening produced little additional spatial correspondence with the benchmark (mean
+Δ*r*², +0.005). Because 27 of 28 search baselines already targeted individual contrasts, this
+comparison measures the additional benefit of screening beyond targeted retrieval. In contrast,
+analysis selection within the expert-curated article pool improved correspondence in 19 of 28
+contrasts (mean Δ*r*², +0.100; median, +0.075). This mean gain was similar to that observed when
+adding analysis selection after article screening in the end-to-end workflow (mean Δ*r*², +0.109).
+That end-to-end sequence also permits a direct comparison of the two steps, since both are
+measured against a shared baseline on the same runs and article pool: analysis selection exceeded
+article screening by a mean Δ*r*² of +0.105 (95% CI +0.035 to +0.201, cluster bootstrap over
+projects; Wilcoxon signed-rank *P* = 0.016 across eight projects) and was the larger of the two in
+20 of 28 contrasts. A separate control showed that selected analyses outperformed equally sized
+random subsets in 25 of 28 contrasts (per-contrast *P* < 0.05; Supplementary Fig. S3), indicating
+that selecting fewer analyses alone did not explain the benefit. Together, these results support
+analysis-level selection as a major contributor to improved spatial correspondence.
+
 > **CLAIM** — Decompose the Result 4 margin into its two selection steps. Choosing the right
 > papers is worth almost nothing; choosing the right analyses within them is worth nearly all of
 > it. This is the paper's finding, not a supporting detail.
