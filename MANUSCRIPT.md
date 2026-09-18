@@ -674,9 +674,13 @@ and 6 report the full distribution, including the contrasts where the pipeline d
 over the same 28 target contrasts, all from the same pipeline run: a search-only baseline; an
 article-screening-only arm, which applies article-level eligibility criteria and then pools every
 parsed analysis from the retained articles; and the full pipeline, which additionally selects
-analyses against contrast-specific criteria. **a**, Article screening against the search-only
-baseline, isolating the contribution of selecting articles. **b**, The full pipeline against
-article screening alone, isolating the contribution of selecting analyses within them. Each
+analyses against contrast-specific criteria. **a**, Article selection only, against the
+search-only baseline: the increment is the contribution of selecting articles. **b**, Article and
+analysis selection together, against article selection alone: the increment is the contribution
+of selecting analyses within the retained articles. Panel titles name the arm plotted on the
+*y* axis, so **b** is the full pipeline rather than an analysis-selection-only condition; the
+analysis-selection-only arm described in Results holds the study pool fixed at the expert
+inclusion list and is a separate comparison. Each
 marker is one target contrast and colour identifies the project; markers above the identity line
 are contrasts where that step improved correspondence with the reference map. Mean gains are
 additive and sum to the total margin in Fig. 4 — +0.005 from article selection, +0.109 from

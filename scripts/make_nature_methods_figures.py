@@ -1077,10 +1077,10 @@ def figure5(out_dir: Path) -> None:
     panels = (
         ("a", "r2_baseline", "r2_screening_only", "Search-only baseline $R^2$",
          "Article screening only $R^2$", "gain_paper_selection",
-         "Contribution of article selection"),
+         "Article selection only"),
         ("b", "r2_screening_only", "r2_pipeline", "Article screening only $R^2$",
          "Full pipeline $R^2$", "gain_analysis_selection",
-         "Contribution of analysis selection"),
+         "Article + analysis selection"),
     )
     for ax, (letter, xk, yk, xl, yl, gk, what) in zip(axes, panels):
         ax.plot([0, 1], [0, 1], color=RULE, lw=0.7, zorder=1)
