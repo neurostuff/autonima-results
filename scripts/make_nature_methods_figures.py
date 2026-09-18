@@ -143,7 +143,7 @@ COST_PER_STAGE = [
     ("Abstract\nscreening", 708, 1007, 0.109, 1034, 0.0023),
     ("Full-text\nscreening", 1211, 46310, 0.017, 1211, 0.0138),
     ("Coordinate\nparsing", 1299, 4962, 0.102, 2359, 0.0059),
-    ("Annotation", 1091, 52117, 0.070, 4424, 0.0211),
+    ("Analysis\nselection", 1091, 52117, 0.070, 4424, 0.0211),
 ]
 PRICE_IN, PRICE_CACHED, PRICE_OUT = 0.25e-6, 0.03e-6, 2.00e-6
 
@@ -247,8 +247,15 @@ def deoverlap_labels(fig, ax, texts, blockers=(), markers=(), marker_r_pt: float
 # dropped rather than shrinking type that has to survive projection. Mapped explicitly, not by
 # truncating at the newline: figure 2 carries both a retrieval and a screening full-text stage,
 # and truncating would give it two ticks reading "Full-text".
+# The fourth stage is labelled "Analysis selection" for readers, not "Annotation". The paper
+# never uses "annotation" as a stage name -- it says analysis-level selection, and Fig. 3b reports
+# assignment precision and recall. The INTERNAL key stays `annotation`: it is the pipeline's own
+# stage name and it keys annotation_aggregates.csv, nimads_annotation.json and every run
+# artifact, so renaming it would be a large refactor with no reader-facing benefit. Display name
+# and data key differ on purpose.
 DECK_TICKS = {
     "Abstract\nscreening": "Abstract",
+    "Analysis\nselection": "Analysis",
     "Full-text\nscreening": "Full-text",
     "Full-text\nretrieval": "Retrieval",
 }
@@ -511,7 +518,7 @@ def figure2(out_dir: Path) -> None:
         print("  figure2recall: run scripts/compute_attainable_recall.py first; skipped")
         return
     stages = ["search", "abstract", "fulltext", "annotation"]
-    labels = ["Search", "Abstract\nscreening", "Full-text\nscreening", "Annotation"]
+    labels = ["Search", "Abstract\nscreening", "Full-text\nscreening", "Analysis\nselection"]
 
     adj: dict[str, dict[str, float]] = collections.defaultdict(dict)
     raw: dict[str, dict[str, float]] = collections.defaultdict(dict)
@@ -597,7 +604,7 @@ def figure2(out_dir: Path) -> None:
             f"denominator drops only unavailable data\n"
             f"search returned {st.mean(ceil_raw):.0%} of gold "
             f"({min(ceil_raw):.0%}-{max(ceil_raw):.0%})\n"
-            f"annotation on the full list would read {d_ann:.2f}",
+            f"selection on the full list would read {d_ann:.2f}",
             transform=ax.transAxes, fontsize=fs(5.2), color=MUTED, linespacing=1.45)
     panel_label(ax, "b", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
@@ -1514,7 +1521,7 @@ def figureS2(out_dir: Path) -> None:
     reads -0.261 there and ~0 at every later stage.
     """
     STAGES = ["search", "abstract", "fulltext", "annotation"]
-    LABELS = ["Search", "Abstract\nscreening", "Full-text\nscreening", "Annotation"]
+    LABELS = ["Search", "Abstract\nscreening", "Full-text\nscreening", "Analysis\nselection"]
     # Both arms now come from compute_stage_precision_recall.py rather than the older
     # cross_project_screening tables, so the annotation stage is available and both metrics come
     # from one source. Verified identical to the committed tables on all 36 shared stage-values.

@@ -81,7 +81,7 @@ publication, but the unit that determines a meta-analytic result is the individu
 single paper typically reports many statistical contrasts, and only some of them bear on any
 given question. Here, we present AutoNIMA, a harness that executes the full
 systematic review workflow — search, abstract and full-text screening, coordinate extraction, and
-analysis-level annotation — and that selects at both the paper and the analysis level. We
+analysis-level selection — and that selects at both the article and the analysis level. We
 evaluated it against nine published, expert-conducted meta-analyses spanning 32 target contrasts.
 Maps produced by the pipeline recovered the published result more closely than the strongest
 search-based synthesis available for each contrast (mean *R*² 0.606 vs 0.491; ahead in 26 of 28,
@@ -132,7 +132,7 @@ because the published product is a spatial map that can be compared numerically 
 reproduction.
 
 Here, we present AutoNIMA, a harness that selects at both levels, using large language models
-for screening and for analysis-level annotation, and we evaluate it against nine expert-conducted meta-analyses
+for screening and for analysis-level selection, and we evaluate it against nine expert-conducted meta-analyses
 assembled into a benchmark (companion paper). In the following, we quantify what each stage of the
 pipeline costs and buys, compare the end-to-end result against the strongest search-based
 synthesis available for each target, and decompose the resulting advantage into the contribution
@@ -184,7 +184,7 @@ _~300 words. **Figure 1** (schematic: a pipeline, b the unit distinction)._
 > calls the argument of the paper in a picture.
 > Benchmark construction belongs in the companion paper, which frees this panel.
 
-## 2. Screening is nearly free; annotation is where recall is spent
+## 2. Screening is nearly free; analysis selection is where recall is spent
 
 _~300 words. **Figure 2**; supporting: Supplementary S2, and the raw-retention figure._
 
@@ -196,18 +196,18 @@ the stage where it occurs and never drops a study rejected on judgement (Methods
 
 On this denominator, screening is close to free (Fig. 2). Abstract and full-text screening
 together raise precision against the expert inclusion list from 0.103 to 0.323 for 0.074 of
-attainable recall, and precision rises at every stage in 9 of 9 projects. Annotation behaves
-differently. Requiring that a paper also yield at least one analysis assigned to the target
+attainable recall, and precision rises at every stage in 9 of 9 projects. Analysis selection
+behaves differently. Requiring that a paper also yield at least one analysis assigned to the target
 contrast raises precision by a further 0.147, again in 9 of 9, but costs 0.108 of attainable
 recall, also in 9 of 9. Recall falls further than precision rises, and the stage cannot be
 described as free.
 
 Whether that trade is worth taking depends on the denominator, which is the clearest argument for
-adopting the attainable one. Scored against every expert-included study, annotation appears to lose
+adopting the attainable one. Scored against every expert-included study, analysis selection appears to lose
 0.248 of recall and the gain exceeds the loss in only 1 of 9 projects; scored against the studies
 that actually yielded data, the same runs and the same decisions lose 0.108 and the gain exceeds
-the loss in 6 of 9. Charging annotation for papers that had nothing to annotate inverts the verdict
-on the stage.
+the loss in 6 of 9. Charging the stage for papers that had nothing to select from inverts the
+verdict on it.
 
 The residual precision is a lower bound. Because we do not know which candidate pool the original
 authors screened, a false positive may be a study they never considered rather than one they
@@ -255,7 +255,7 @@ rather than a screening error.
 
 ## 3. Recovering the analyses, then selecting among them
 
-_~350 words. **Figure 3** (a parsing, b annotation operating points)._
+_~350 words. **Figure 3** (a parsing, b analysis-selection operating points)._
 
 > **CLAIM** — Selection is meaningless until the analyses exist, so this section is in pipeline
 > order: recover them, then select among them. Both steps are large effects, and the second only
@@ -533,7 +533,7 @@ _No word limit — Methods sits after references and costs nothing against the 3
 
 We distinguish two uses of generative AI in this work. The first is the object of study: large
 language models perform abstract and full-text screening, coordinate parsing, and analysis-level
-annotation within the pipeline, and their behaviour at each of those stages is what the paper
+analysis selection within the pipeline, and their behaviour at each of those stages is what the paper
 measures. Models, versions, and prompts for every stage are specified above and released with the
 code.
 
@@ -723,7 +723,7 @@ contrasts where the pipeline gains little or loses are visible alongside those w
 **Supplementary Fig. S5 | Measured model-use cost per pipeline stage.** Cost per LLM call for each
 stage, split by input, cached input and output tokens, from token accounting recorded during the
 runs rather than estimated from list prices. Abstract screening costs $0.0023 per call, full-text
-screening $0.0138, coordinate parsing $0.0059 and analysis annotation $0.0211; output tokens
+screening $0.0138, coordinate parsing $0.0059 and analysis selection $0.0211; output tokens
 dominate the cheapest stage. A complete project averages $21.55 and all nine cost $194 to build
 from scratch. Cost per study that reaches the map ($0.085 median) is a more stable unit than cost
 per call, because the stages differ by an order of magnitude in how many calls they make.
