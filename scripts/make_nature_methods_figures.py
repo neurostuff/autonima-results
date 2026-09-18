@@ -405,9 +405,7 @@ def figure_gold_retention_raw_fig(out_dir: Path) -> None:
     ax.set_ylabel("Gold-standard studies retained (%)")
     ax.grid(axis="y", alpha=0.6)
     ax.set_axisbelow(True)
-    med_abs = st.median([(surv[p]["search"] - surv[p]["abstract"]) * 100 for p in projects])
-    ax.text(0.03, 0.06, f"abstract screening costs a\nmedian {med_abs:.1f} points",
-            transform=ax.transAxes, fontsize=fs(5.5), color=MUTED, linespacing=1.5)
+    # in-panel result text removed 2026-09-18; the caption carries it.
     panel_label(ax, "a", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
     # b: precision over the stages that change it
@@ -759,12 +757,11 @@ def figure3(out_dir: Path) -> None:
     summary = ax.text(0.975, 0.215, f"mean TPR \u2212 FPR  {st.mean(js):.2f}\n(chance = 0)",
                       transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.6),
                       color=INK, linespacing=1.5)
-    note = ax.text(0.975, 0.065, "open marker = same-size random draw",
-                   transform=ax.transAxes, va="top", ha="right", fontsize=fs(5.0), color=MUTED)
+    # "open marker = same-size random draw" removed 2026-09-18; the caption defines the glyph.
     panel_label(ax, "b", dx=-0.24)
 
     fig.subplots_adjust(wspace=0.40)
-    deoverlap_labels(fig, ax, texts, blockers=[summary, note], markers=dots)
+    deoverlap_labels(fig, ax, texts, blockers=[summary], markers=dots)
     save(fig, out_dir, "figure3_recover_and_select_analyses")
 
 
@@ -899,10 +896,7 @@ def figure_annotation_pr(out_dir: Path) -> None:
                        Line2D([], [], marker="_", ls="", color=INK, markersize=5,
                               markeredgewidth=1.2, label="Random, at this recall")],
               loc="upper left", handletextpad=0.4, borderaxespad=0.4)
-    ax.text(0.03, 0.055,
-            "a random selector scores its own prevalence\n"
-            f"at every recall; span = lift, mean {st.mean([p[2] / p[3] for p in pts]):.1f}x",
-            transform=ax.transAxes, ha="left", fontsize=fs(5.2), color=MUTED, linespacing=1.5)
+    # in-panel explainer removed 2026-09-18; the caption carries it.
     panel_label(ax, "b", dx=-0.24)
 
     fig.text(0.5, -0.06, "* dementia excluded from b: its gold analyses pool several studies each",
@@ -980,8 +974,7 @@ def figure4(out_dir: Path) -> None:
     ax.set_xlim(0, 1); ax.set_ylim(0, 1)
     ax.set_xlabel(f"Best baseline {axis}"); ax.set_ylabel(f"Pipeline {axis}")
     ax.set_aspect("equal")
-    ax.text(0.04, 0.93, "above the line =\npipeline better", fontsize=fs(5.5), color=MUTED,
-            transform=ax.transAxes, va="top")
+    # in-panel explainer removed 2026-09-18; the caption defines it.
     ax.grid(alpha=0.6); ax.set_axisbelow(True)
     if known:
         # Size key in the lower right: that corner is below the diagonal and far from it, where
@@ -1068,13 +1061,11 @@ def figure5(out_dir: Path) -> None:
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(3.05)))
     panels = (
         ("a", "r2_baseline", "r2_screening_only", "Search baseline $R^2$",
-         "Screening only $R^2$", "gain_paper_selection",
-         "choosing papers", "on the line = no gain"),
+         "Screening only $R^2$", "gain_paper_selection", "choosing papers"),
         ("b", "r2_screening_only", "r2_pipeline", "Screening only $R^2$",
-         "Full pipeline $R^2$", "gain_analysis_selection",
-         "choosing analyses", "above the line = gain"),
+         "Full pipeline $R^2$", "gain_analysis_selection", "choosing analyses"),
     )
-    for ax, (letter, xk, yk, xl, yl, gk, what, hint) in zip(axes, panels):
+    for ax, (letter, xk, yk, xl, yl, gk, what) in zip(axes, panels):
         ax.plot([0, 1], [0, 1], color=RULE, lw=0.7, zorder=1)
         for r in rows:
             ax.scatter([r[xk]], [r[yk]], s=15, color=COLORS.get(r["project"], "#7F7F7F"),
@@ -1084,8 +1075,7 @@ def figure5(out_dir: Path) -> None:
         ax.set_xlabel(xl); ax.set_ylabel(yl)
         ax.grid(alpha=0.6); ax.set_axisbelow(True)
         ax.set_title(f"gain from {what}", fontsize=fs(7.5), color=INK, pad=4)
-        ax.text(0.035, 0.965, hint, transform=ax.transAxes, va="top", ha="left",
-                fontsize=fs(5.4), color=MUTED)
+        # in-panel explainer removed 2026-09-18; the caption defines the geometry.
         ax.text(0.97, 0.05,
                 f"mean $\\Delta$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}\n"
                 f"{sum(1 for x in g if x > 0)}/{len(g)} improve",
@@ -1221,15 +1211,23 @@ def figureS1(out_dir: Path) -> None:
 
     means = {p: {t: st.mean(v) for t, v in tiers.items()} for p, tiers in by.items()}
 
-    def seg(a: str, b: str) -> list[float]:
-        """Paired deltas, excluding projects where both tiers resolve to the same run."""
-        out = []
-        for proj, m in means.items():
-            if a in m and b in m and runs[proj].get(a) != runs[proj].get(b):
-                out.append(m[b] - m[a])
-        return out
+    def seg(a: str, b: str) -> dict[str, float]:
+        """Paired deltas by project, excluding projects where both tiers are the same run.
+
+        Keyed by project rather than a bare list so segments can be compared by membership --
+        the verbatim -> best segment below is defined as the projects in neither paired segment.
+        """
+        return {proj: m[b] - m[a] for proj, m in means.items()
+                if a in m and b in m and runs[proj].get(a) != runs[proj].get(b)}
 
     vm, mb = seg("verbatim", "manual"), seg("manual", "best")
+    # Four projects never had a distinct manual stage, so they contribute to neither paired
+    # segment above and their lines run straight from verbatim to best. Quoting only the paired
+    # segments left them invisible in the summary while being visible in the panel, which
+    # overstated how general the large mis-specification gain is: end to end they move +0.018
+    # against +0.228 for the two that were reworked by hand.
+    vb = seg("verbatim", "best")
+    vb_nomanual = {k: v for k, v in vb.items() if k not in (set(vm) | set(mb))}
 
     fig, ax = plt.subplots(figsize=(SINGLE_COL, fh(2.9)))
     ends, all_y = [], []
@@ -1282,7 +1280,7 @@ def figureS1(out_dir: Path) -> None:
     ax.set_xticklabels([LABEL[t] for t in TIER_ORDER], linespacing=1.25, fontsize=fs(5.4))
     ax.set_xlim(-0.35, len(TIER_ORDER) - 0.22)
     lo, hi = min(all_y), max(all_y)
-    ax.set_ylim(lo - 0.10 * (hi - lo), hi + 0.30 * (hi - lo))
+    ax.set_ylim(lo - 0.10 * (hi - lo), hi + 0.46 * (hi - lo))   # headroom for three arrows
     ax.set_ylabel("Mean $R^2$ against the expert map")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
 
@@ -1294,12 +1292,21 @@ def figureS1(out_dir: Path) -> None:
                                   ((1.02, 1.98), "overfitting", mb)):
         ax.annotate("", xy=(x1, band), xytext=(x0, band),
                     arrowprops=dict(arrowstyle="<->", lw=0.6, color=MUTED, shrinkA=0, shrinkB=0))
-        txt = f"{lab}\nmean {st.mean(deltas):+.3f} (n={len(deltas)})" if deltas else lab
+        txt = (f"{lab}\nmean {st.mean(deltas.values()):+.3f} (n={len(deltas)})"
+               if deltas else lab)
         ax.text((x0 + x1) / 2, band - 0.012 * (y1 - y0), txt, ha="center", va="top",
                 fontsize=fs(4.9), color=MUTED, linespacing=1.35)
 
-    ax.text(0.98, 0.03, "open circle = one run registered at several tiers",
-            transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(4.6), color=MUTED)
+    # The four projects with no distinct manual stage, end to end, drawn under the paired pair
+    # so the contrast in magnitude is the thing the eye picks up.
+    if vb_nomanual:
+        band2 = y1 - 0.205 * (y1 - y0)
+        ax.annotate("", xy=(1.98, band2), xytext=(-0.02, band2),
+                    arrowprops=dict(arrowstyle="<->", lw=0.6, color=MUTED, shrinkA=0, shrinkB=0))
+        ax.text(0.98, band2 - 0.012 * (y1 - y0),
+                f"no manual stage\nmean {st.mean(vb_nomanual.values()):+.3f} "
+                f"(n={len(vb_nomanual)})",
+                ha="center", va="top", fontsize=fs(4.9), color=MUTED, linespacing=1.35)
     save(fig, out_dir, "figureS1_tier_progression")
 
 
@@ -1604,12 +1611,7 @@ def figureS2(out_dir: Path) -> None:
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     ax.legend(loc="lower right", fontsize=fs(5.2), handlelength=1.0, handletextpad=0.4,
               borderaxespad=0.4)
-    ax.text(0.02, 0.98,
-            "precision rises at every stage. Recall is\nflat through screening, then falls at\n"
-            "annotation \u2014 where a lost GOLD paper is a\nparsing or annotation miss, not a paper\n"
-            "without data. The search-stage dip is one\nproject and is a corpus difference.",
-            transform=ax.transAxes, ha="left", va="top", fontsize=fs(4.9), color=MUTED,
-            linespacing=1.45)
+    # in-panel commentary removed 2026-09-18; the caption carries it.
     panel_label(ax, "b", dx=-0.19)
 
     handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
@@ -1681,8 +1683,7 @@ def figureS5(out_dir: Path) -> None:
     ax.set_ylabel("USD per call")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     ax.legend(loc="upper left", handlelength=1.0, handletextpad=0.4)
-    ax.text(0.02, 0.60, "output dominates\nthe cheap stage", transform=ax.transAxes,
-            fontsize=fs(5.5), color=MUTED, va="top", linespacing=1.5)
+    # in-panel explainer removed 2026-09-18; the caption defines it.
     panel_label(ax, "a", dx=-0.20)
 
     # b: output share -- the counter-intuitive part, and the one actionable lever

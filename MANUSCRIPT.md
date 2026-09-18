@@ -665,7 +665,8 @@ and 6 report the full distribution, including the contrasts where the pipeline d
 over the same 28 contrasts, all from the same pipeline run: the search-only baseline; a
 screening-only arm that applies article-level eligibility criteria and then pools every parsed
 analysis from the retained articles; and the full pipeline, which additionally selects analyses per
-contrast. The middle arm isolates the contribution of article screening. Mean gains are additive
+contrast. Each panel plots one arm against the next, so points above the identity line are
+contrasts where that step gained; the middle arm isolates the contribution of article screening. Mean gains are additive
 and sum to the total margin in Fig. 4 (+0.005 from article screening, +0.109 from analysis
 selection, +0.114 in total), so 96% of the advantage is attributable to selection within articles.
 
@@ -695,10 +696,17 @@ oversights.** Map recovery (*R*²) for each project across three criteria tiers:
 transcribed from the published methods section; `manual`, after the project author corrected
 oversights found by reading the pipeline's own reports; and `best`, after further refinement
 against benchmark feedback. Averaged over each project's contrasts, `verbatim` → `manual` gains
-+0.221 and `manual` → `best` a further +0.031, roughly a sevenfold difference. **Both segments
-rest on two projects only**, since the other seven resolve to the same run at more than one tier;
-these are indications of direction, not estimates of effect size. The practical reading is that
-the live risk in LLM-assisted screening is mis-specifying the criteria, not tuning them.
++0.221 and `manual` → `best` a further +0.031, roughly a sevenfold difference — but **each of
+those segments rests on two projects only**, since the rest resolve to the same run at more than
+one tier. Four further projects never had a distinct `manual` stage and so appear as single
+verbatim-to-best segments; end to end they gain **+0.018** (*n* = 4, range −0.008 to +0.048),
+against +0.228 for the two that were reworked by hand. The large mis-specification gain is
+therefore concentrated in the projects where an author actually rewrote the criteria after
+reading the pipeline's error reports, and is not a general property of refinement — though that
+comparison is confounded with effort rather than controlled. An open circle marks a project
+registered at several tiers that resolves to a single run, where no progression was measured. The
+practical reading is that the live risk in LLM-assisted screening is mis-specifying the criteria,
+not tuning them.
 
 **Supplementary Fig. S2 | Most of the apparent screening imprecision is a difference in candidate
 pool.** Precision against the expert inclusion list at each stage, for the same criteria applied
