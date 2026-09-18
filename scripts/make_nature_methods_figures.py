@@ -1075,21 +1075,23 @@ def figure5(out_dir: Path) -> None:
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(3.05)))
     panels = (
-        ("a", "r2_baseline", "r2_screening_only", "Search baseline $R^2$",
-         "Screening only $R^2$", "gain_paper_selection", "choosing papers"),
-        ("b", "r2_screening_only", "r2_pipeline", "Screening only $R^2$",
-         "Full pipeline $R^2$", "gain_analysis_selection", "choosing analyses"),
+        ("a", "r2_baseline", "r2_screening_only", "Search-only baseline $R^2$",
+         "Article screening only $R^2$", "gain_paper_selection",
+         "Contribution of article selection"),
+        ("b", "r2_screening_only", "r2_pipeline", "Article screening only $R^2$",
+         "Full pipeline $R^2$", "gain_analysis_selection",
+         "Contribution of analysis selection"),
     )
     for ax, (letter, xk, yk, xl, yl, gk, what) in zip(axes, panels):
         ax.plot([0, 1], [0, 1], color=RULE, lw=0.7, zorder=1)
         for r in rows:
-            ax.scatter([r[xk]], [r[yk]], s=15, color=COLORS.get(r["project"], "#7F7F7F"),
-                       edgecolors="white", linewidths=0.35, zorder=3)
+            ax.scatter([r[xk]], [r[yk]], s=26, color=COLORS.get(r["project"], "#7F7F7F"),
+                       edgecolors="white", linewidths=0.45, zorder=3)
         g = [r[gk] for r in rows]
         ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect("equal")
         ax.set_xlabel(xl); ax.set_ylabel(yl)
         ax.grid(alpha=0.6); ax.set_axisbelow(True)
-        ax.set_title(f"gain from {what}", fontsize=fs(7.5), color=INK, pad=4)
+        ax.set_title(what, fontsize=fs(7.0), color=INK, pad=4)
         # in-panel explainer removed 2026-09-18; the caption defines the geometry.
         ax.text(0.97, 0.05,
                 f"mean $\\Delta$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}\n"
@@ -1101,7 +1103,7 @@ def figure5(out_dir: Path) -> None:
     # Legend from the projects actually drawn, not the fixed order: with dementia excluded
     # from the map-level figures a fixed list advertises a colour absent from the panel.
     drawn = {r["project"] for r in rows}
-    handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.2,
+    handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.8,
                       label=DISPLAY[p]) for p in PROJECT_ORDER if p in drawn]
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.19),
                handletextpad=0.3, columnspacing=1.1)

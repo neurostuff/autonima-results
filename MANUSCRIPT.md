@@ -671,32 +671,18 @@ benchmark source data rather than representing a distinct comparison. This is an
 and 6 report the full distribution, including the contrasts where the pipeline does not gain.
 
 **Fig. 6 | The advantage comes from selecting analyses, not from selecting articles.** Three arms
-over the same 28 contrasts, all from the same pipeline run: the search-only baseline; a
-screening-only arm that applies article-level eligibility criteria and then pools every parsed
-analysis from the retained articles; and the full pipeline, which additionally selects analyses per
-contrast. Each panel plots one arm against the next, so points above the identity line are
-contrasts where that step gained; the middle arm isolates the contribution of article screening. Mean gains are additive
-and sum to the total margin in Fig. 4 (+0.005 from article screening, +0.109 from analysis
-selection, +0.114 in total), so 96% of the advantage is attributable to selection within articles.
+over the same 28 target contrasts, all from the same pipeline run: a search-only baseline; an
+article-screening-only arm, which applies article-level eligibility criteria and then pools every
+parsed analysis from the retained articles; and the full pipeline, which additionally selects
+analyses against contrast-specific criteria. **a**, Article screening against the search-only
+baseline, isolating the contribution of selecting articles. **b**, The full pipeline against
+article screening alone, isolating the contribution of selecting analyses within them. Each
+marker is one target contrast and colour identifies the project; markers above the identity line
+are contrasts where that step improved correspondence with the reference map. Mean gains are
+additive and sum to the total margin in Fig. 4 — +0.005 from article selection, +0.109 from
+analysis selection, +0.114 in total — so 96% of the advantage is attributable to selection within
+articles.
 
-# Supplementary Information
-
-> **BRIEF** — renumbered 2026-09-17:
->
-> - **S1** criteria tier progression — mis-specification vs overfitting (`--only S1`)
-> - **S2** pool mismatch (`--only S2`)
-> - **S3** size-matched null (`--only S3`)
-> - **S4** brain maps, all columns (`--only S4`; shells out to
->   `scripts/make_brain_map_figure.py` under system python3 and takes ~2 min, so a full
->   figure rebuild reports it and skips it)
-> - **S5** measured cost per stage (`--only S5`)
->
-> Three figures are still built and still correct but no longer cited, so they carry
-> descriptive keys rather than S-numbers: `--only text2map` (text-to-map baselines),
-> `--only retention` (raw-denominator gold retention) and `--only annotationpr`
-> (annotation in precision-recall space). Extended Data: the §3 cautionary case,
-> per-project tables behind Figures 2–5, PRISMA funnels.
-> Extended Data: the §3 cautionary case, per-project tables behind Figures 2–5, PRISMA funnels.
 
 ## Supplementary figure legends
 
