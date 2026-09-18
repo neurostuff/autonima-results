@@ -496,71 +496,134 @@ _~600 words._
 
 _No word limit — Methods sits after references and costs nothing against the 3,000._
 
-> **NOTE** — the five sub-areas below were written against *Imaging Neuroscience's* AI-methods
+> **BRIEF** — the M1.x sub-areas were written against *Imaging Neuroscience*'s AI-methods
 > guidelines (`PAPER_OUTLINE.md:1313`). Check them against Nature Methods' own requirements
 > before submission.
 
 ## Pipeline and configuration
 
-> **BRIEF** — stages in order: PubMed search → abstract screening → full-text retrieval →
-> coordinate parsing → analysis-level annotation → NiMADS output → meta-analysis. Model and
-> version per stage. Retrieval is via Elsevier and pubget, which do their own coordinate
-> ingestion; **not ACE**.
+A project is specified by a single YAML configuration giving the PubMed query, the article-level
+eligibility criteria, and one set of analysis-level criteria per target contrast. The pipeline
+executes seven stages in order:
+
+1. **Search.** PubMed via the Entrez API, with an explicit query, date range and a cap of 5,000
+   records per project.
+2. **Abstract screening.** Each returned record is judged against the article-level criteria.
+3. **Full-text retrieval.** Full text is obtained from PubMed Central through pubget and from
+   Elsevier through its text-mining API. Both ingest coordinate tables themselves; ACE is not
+   used.
+4. **Full-text screening.** Retained records are re-judged against the same criteria with the
+   full text in context. Records whose retrieved text is incomplete are recorded as
+   `fulltext_incomplete` rather than as rejections (see *Recall against an attainable
+   denominator*).
+5. **Coordinate parsing.** Candidate coordinate tables are identified heuristically, then an LLM
+   separates each table into the distinct analyses that produced it, with their coordinates.
+6. **Analysis-level selection.** Each parsed analysis is judged against the contrast-specific
+   criteria, with the article's full text as context, and assigned to the contrasts it satisfies.
+7. **Output and meta-analysis.** Selected analyses are written as a NiMADS studyset and
+   submitted to coordinate-based meta-analysis.
+
+- **Model.** All four LLM stages use `gpt-5-mini-2025-08-07`. Screening and selection use
+  structured outputs against Pydantic schemas, so every decision carries a machine-readable
+  verdict, the criteria applied, and free-text reasoning.
+- **Caching and provenance.** Stage artifacts are hashed and recorded in an execution manifest,
+  so re-runs skip completed stages and every reported figure traces to a specific run directory.
+- **Meta-analysis.** Multilevel kernel density analysis (MKDA) in NiMARE 0.2.1, with a 10 mm
+  spherical kernel, the maximum retained where spheres overlap, summary statistics converted to
+  *p*-values against an approximate null, and Benjamini–Hochberg FDR correction.
+- **Retrieval vintage.** All arms within a comparison share a retrieval vintage. Comparing arms
+  built from corpora fetched at different times confounds pipeline differences with changes in
+  what was available, which we learned by doing it (`PAPER_OUTLINE.md:956`).
 
 ## Benchmark and denominator
 
-> **BRIEF** — nine expert meta-analyses, 35 annotation columns, of which **32 are scored**.
-> `scripts/benchmark_exclusions.py` is the single source of truth: three `vbm_of_substance_use`
-> columns (cannabis, opioids, stimulants) are excluded because the source paper (Hill-Bowen et al.
-> 2022, *Drug Alcohol Depend* 240:109625, PMID 36115222) reports no significant result for them
-> and the expert map is empty. `nicotine` is deliberately **kept** — that is a reproduction
-> failure with identical inputs, not an absent reference.
+The benchmark comprises nine published, expert-conducted meta-analyses with 35 annotated target
+contrasts, of which **32 are scored**. `scripts/benchmark_exclusions.py` is the single source of
+truth for exclusions.
+
+- Three `vbm_of_substance_use` contrasts — cannabis, opioids and stimulants — are excluded
+  because the source paper (Hill-Bowen et al. 2022, *Drug Alcohol Depend* **240**:109625,
+  PMID 36115222) reports no significant result for them, leaving an empty reference map that no
+  similarity metric can score.
+- `nicotine` from the same paper is deliberately **kept**. It has a published map that we fail to
+  reproduce from identical inputs, which is a reproduction failure and belongs in the
+  denominator.
+- The **map-level** comparisons (Figs 4 and 6, Supplementary Fig. S3) additionally exclude the
+  dementia project, leaving 28 contrasts across eight projects. Its reference meta-analysis pools
+  coordinates across studies, so the number of analyses entering its maps is not comparable with
+  projects whose analyses come from individual articles. Dementia is retained in the
+  analysis-level comparisons (Figs 2 and 3), where its matched analyses score normally.
 
 ## The metric/map rule
 
-> **BRIEF** — state once, here; it removes a class of reviewer objection
-> (`NATURE_METHODS_SKELETON.md:659`):
-> **r² compares unthresholded maps; dice compares FDR-corrected thresholded maps** at z > 1.96.
-> `z_corr > 1.96` selects exactly the voxels with FDR-corrected p ≤ 0.05. It uses the two-tailed
-> convention; MKDA is one-tailed, so NiMARE's own positive-tail label (≈1.645) flags more voxels
-> and 1.96 is the conservative choice.
-> r² is the reported metric throughout: dice is degenerate on this corpus (four substance-use
-> columns sit at 0.000 for every arm) and reverses sign on `vbm_of_ptsd`.
+Two similarity metrics are used, each on the map it is defined for:
+
+- ***r*² compares unthresholded maps.** The squared Pearson correlation between the two
+  unthresholded *z* maps, over voxels finite in both.
+- **Dice compares FDR-corrected thresholded maps**, at *z* > 1.96.
+
+`z_corr > 1.96` selects exactly the voxels with FDR-corrected *p* ≤ 0.05. It is the two-tailed
+convention; MKDA is one-tailed, so NiMARE's own positive-tail label (≈1.645) flags more voxels
+and 1.96 is the conservative choice.
+
+***r*² is the reported metric throughout.** Dice is degenerate on this corpus — four
+substance-use contrasts sit at 0.000 for every arm, so it cannot rank them — and it reverses sign
+on `vbm_of_ptsd`, whose map is correct but sparse, which a thresholded overlap measure punishes
+and a correlation does not. All correlations in this corpus are positive, so squaring discards no
+directional information.
+
+## Matching automated analyses to expert records
+
+Automatically parsed analyses are matched to expert-curated records by optimal one-to-one
+assignment (Hungarian algorithm) on a combined coordinate- and label-similarity score.
+Coordinates reported in Talairach space are transformed where a mapping is available, and
+analyses whose coordinates are reported at decimal precision are handled under an explicit policy
+rather than silently dropped. Matching is performed only for articles present in both the expert
+record and the automated output; articles yielding no automated analyses are excluded from
+analysis-level comparisons and accounted for at the retrieval and parsing stages instead.
 
 ## Recall against an attainable denominator
 
-> **BRIEF** — `scripts/compute_attainable_recall.py`. Each stage divides by the gold studies it
-> could have kept; one availability failure leaves the denominator at the stage where it happens,
-> and no judgement ever leaves it.
->
-> | stage | denominator | drops |
-> |---|---|---|
-> | search | gold the search returned | gold the query never returned |
-> | abstract | same as search | — nothing becomes unavailable in between |
-> | full-text | … minus gold with no *usable* full text | retrieval failures **and `fulltext_incomplete`** |
-> | annotation | … minus gold that parsed to zero analyses | nothing to annotate |
->
-> Two points a reviewer will probe:
->
-> - the annotation denominator is **not** "gold with ≥ 1 parsed analysis" — that set excludes
->   everything full-text screening discarded and would forgive every full-text rejection
-> - the retrieval stage counts **usable** text, not the `fulltext_available` flag. The flag is
->   true for 43 gold studies the screener then received as title and abstract only; those are
->   retrieval failures surfacing one stage late, and 43 of the 68 gold studies lost at full-text
->   screening are of that kind against 25 genuine exclusions
+`scripts/compute_attainable_recall.py`. Each stage divides by the gold studies it could have
+kept: one availability failure leaves the denominator at the stage where it occurs, and no
+judgement ever leaves it.
+
+| stage | denominator | drops |
+|---|---|---|
+| search | gold the search returned | gold the query never returned |
+| abstract | same as search | — nothing becomes unavailable in between |
+| full-text | … minus gold with no *usable* full text | retrieval failures and `fulltext_incomplete` |
+| analysis selection | … minus gold that parsed to zero analyses | nothing to select from |
+
+Two points a reviewer will probe:
+
+- The analysis-selection denominator is **not** "gold with ≥ 1 parsed analysis". That set
+  excludes everything full-text screening discarded, and would therefore forgive every full-text
+  rejection and drive recall towards 1.
+- The retrieval stage counts **usable** text, not the `fulltext_available` flag. The flag is true
+  for 43 gold studies that the screener then received as title and abstract only; those are
+  retrieval failures surfacing one stage late. **43 of the 68 gold studies lost at full-text
+  screening are of that kind, against 25 genuine exclusions.**
 
 ## Null models
 
-> **BRIEF** — two spaces, same idea. In map space, 500 size-matched MKDA re-fits per column
-> (`scripts/bootstrap_annotation_null.py`). In ROC space it is closed-form: a size-matched random
-> selector lands at exactly (k/N, k/N) with hypergeometric spread, so no Monte Carlo is needed for
-> the location. Median band width 0.020 in FPR; the two small-N exceptions are `dementia` (0.078)
-> and `vbm_of_ptsd` (0.133 off N = 40).
+The same idea in two spaces.
+
+- **Map space.** For each contrast, the same number of analyses is drawn at random from that
+  contrast's candidate pool and the meta-analysis re-fitted, 500 times
+  (`scripts/bootstrap_annotation_null.py`). This controls for the possibility that the advantage
+  comes from pooling fewer analyses rather than better ones.
+- **ROC space.** Closed-form: a size-matched random selector lands at exactly (*k*/*N*, *k*/*N*),
+  so no Monte Carlo is needed for the location, and the spread is hypergeometric. Median band
+  width is 0.020 in FPR; the two small-*N* exceptions are dementia (0.078) and `vbm_of_ptsd`
+  (0.133 off *N* = 40).
 
 ## M1.1 Code and data availability
 
-> **BRIEF** — three repositories: `neurostuff/autonima` (the pipeline, 161 tests), this results
-> repository, and neurometabench (the benchmark).
+Three repositories: `neurostuff/autonima` (the pipeline, with a suite of 197 tests), this
+analysis repository (configurations, run artifacts, report scripts and every figure), and
+neurometabench (the benchmark).
+
 > **OPEN — blocked on Zenodo DOIs.** neurometabench must be at least preprinted with a DOI before
 > or alongside this paper; reviewers will ask where the benchmark is.
 
@@ -568,7 +631,7 @@ _No word limit — Methods sits after references and costs nothing against the 3
 
 We distinguish two uses of generative AI in this work. The first is the object of study: large
 language models perform abstract and full-text screening, coordinate parsing, and analysis-level
-analysis selection within the pipeline, and their behaviour at each of those stages is what the paper
+selection within the pipeline, and their behaviour at each of those stages is what the paper
 measures. Models, versions, and prompts for every stage are specified above and released with the
 code.
 
@@ -582,30 +645,51 @@ reported here is regenerated from the released artifacts by a script in the anal
 The authors take full responsibility for all content presented in this manuscript, including any
 portions assisted by AI.
 
-> **BRIEF** — ⚠ **`[need]` — nothing written yet**, and one of only two outstanding required items
-> in the whole plan (`PAPER_OUTLINE.md:1336`). The organising distinction is to keep AI-as-object-
-> of-study separate from AI-as-development-tool, and to declare the latter explicitly.
-
 ## M1.3 Data leakage mitigation
 
-> **BRIEF** — the four-tier run registry in `run_categories.yaml`: `verbatim` (criteria
-> transcribed from the published methods, held out by construction), `manual` (author-revised
-> after seeing reports), `best`, `latest`. Report what each tier saw. The `verbatim` tier is a
-> held-out schema run nine times, which is the overfitting rebuttal.
+Criteria could in principle be tuned against the benchmark they are scored on, so every run is
+registered in `run_categories.yaml` under one of four tiers, and analyses state which tier they
+use:
+
+- **`verbatim`** — criteria transcribed from the source paper *before any results were seen*.
+  Held out by construction. Drafting assistance from a model or a person does not disqualify a
+  schema; revision against error reports does.
+- **`manual`** — the highest version the project author revised *by hand* after seeing reports.
+  Informed by them, but lightly: a few examples inspected, obvious patterns fixed.
+- **`best`** — the best-performing registered version, with the reason for promotion recorded.
+- **`latest`** — the highest version number, in practice the agent-written schemas produced by
+  reading a project's error reports in full.
+
+The overfitting rebuttal rests on the `verbatim` tier: it is a held-out specification, run across
+nine projects, and it is what the tier-progression analysis (Supplementary Fig. S1) starts from.
 
 ## M1.4 Hyperparameter tuning protocol
 
-> **BRIEF** — `scripts/run_tiers.py` and the recorded `best-reason` for each promotion. The
-> honest framing is that `verbatim → manual` uncovered major oversights in the criteria rather
-> than tuning to the benchmark, which is why it is reported as mis-specification (Discussion)
-> rather than as overfitting.
+Promotions between tiers are executed by `scripts/run_tiers.py`, and each carries a recorded
+`best-reason`. No numeric hyperparameter is tuned against the benchmark; what varies between
+tiers is the *eligibility criteria*, which are the object of study rather than a free parameter.
+
+The honest framing of the progression is that `verbatim` → `manual` largely uncovered major
+oversights in the transcribed criteria rather than tuning to the benchmark, which is why it is
+reported as mis-specification in the Discussion rather than as overfitting. Supplementary Fig. S1
+reports the progression, including the four projects with no distinct `manual` stage, whose
+end-to-end gain is far smaller.
 
 ## M1.5 Statistical reporting
 
-> **BRIEF** — `[have]`. Cluster bootstrap **over projects, not columns**, because columns within a
-> project are not independent; percentile CIs; sign test over columns. 20,000 resamples, seed 0.
-> All arms share a retrieval vintage — a methodological requirement learned the hard way
-> (`PAPER_OUTLINE.md:956`), and it needs stating here.
+- **Clustering.** Confidence intervals are percentile bootstrap intervals resampling **whole
+  projects, not contrasts**. Contrasts within a project share a corpus, a search and a screening
+  run, so resampling contrasts would treat correlated measurements as independent and report a
+  narrower interval than the evidence supports; measured, the cluster interval is about 1.8× the
+  naive one.
+- **Why percentile rather than *t*-based.** The deltas are visibly right-skewed — mean +0.114
+  against a median of +0.070 — so a symmetric interval would be misplaced.
+- **Resampling.** 20,000 resamples, seed 0, so every interval is reproducible.
+- **Sign tests** over contrasts accompany the intervals; ties count as non-wins rather than being
+  dropped.
+- **Paired comparisons between pipeline stages** are made within the end-to-end chain, where both
+  steps are measured against a shared baseline on the same runs and article pool. Comparisons
+  across arms with different baselines are reported descriptively only.
 
 # References
 
