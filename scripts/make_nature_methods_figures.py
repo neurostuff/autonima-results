@@ -1126,8 +1126,7 @@ def figure5(out_dir: Path) -> None:
         ax.set_title(what, fontsize=fs(7.0), color=INK, pad=4)
         # in-panel explainer removed 2026-09-18; the caption defines the geometry.
         ax.text(0.97, 0.05,
-                f"mean $\\Delta$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}\n"
-                f"{sum(1 for x in g if x > 0)}/{len(g)} improve",
+                f"mean $\\Delta$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}",
                 transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(5.6),
                 color=INK, linespacing=1.5)
         panel_label(ax, letter, dx=-0.24)

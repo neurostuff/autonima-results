@@ -240,6 +240,49 @@ def result5() -> None:
     print(f"    vs the chain's analysis step: mean {st.mean(ga):+.3f} -- two designs, "
           f"converging estimates")
 
+    # Does analysis selection beat article selection? Tested on the CHAIN, where both steps
+    # share a run, a study pool and a baseline. The cross-arm version -- Fig 6a against Fig 6b --
+    # compares gains measured against different references, and its rank tests are null
+    # (sign test p = 0.57) even though its mean difference is similar, so it cannot carry
+    # the claim.
+    import collections
+    from compile_best_baselines import cluster_bootstrap, sign_test
+    d = [float(r["gain_analysis_selection"]) - float(r["gain_paper_selection"]) for r in rows]
+    by = collections.defaultdict(list)
+    for r, v in zip(rows, d):
+        by[r["project"]].append(v)
+    ci = cluster_bootstrap(by, resamples=20000, seed=0)
+    pm = [st.mean(v) for v in by.values()]
+    print(f"\n  ANALYSIS vs ARTICLE SELECTION (paired, same chain, n={len(d)} contrasts)")
+    print(f"    difference mean {st.mean(d):+.4f}  median {st.median(d):+.4f}  "
+          f"analysis larger in {sum(1 for v in d if v > 0)}/{len(d)}")
+    print(f"    cluster bootstrap over projects 95% CI "
+          f"[{ci['ci_low']:+.4f}, {ci['ci_high']:+.4f}]  (primary, per M1.5)")
+    print(f"    sign test over contrasts p = {sign_test(d):.3g}")
+    try:
+        from scipy import stats as sps
+        t, pv = sps.ttest_1samp(pm, 0.0)
+        print(f"    project-level paired t-test (n={len(pm)}): t = {t:.3f}, p = {pv:.4f}")
+        print(f"    Wilcoxon signed-rank (n={len(pm)}): p = {sps.wilcoxon(pm).pvalue:.4f}")
+    except ImportError:
+        pass
+
+    # Which projects gain most from analysis selection. Reported under both designs because the
+    # ordering, not the magnitude, is what the Discussion leans on -- and the two agree closely
+    # (Spearman rho +0.93), so the ranking is not an artefact of either design.
+    fixed = collections.defaultdict(list)
+    for r in av:
+        fixed[r["project"]].append(float(r["pearson_annotated"]) ** 2
+                                   - float(r["pearson_all_analyses"]) ** 2)
+    chain = collections.defaultdict(list)
+    for r in rows:
+        chain[r["project"]].append(float(r["gain_analysis_selection"]))
+    print(f"\n  MEAN ANALYSIS-SELECTION GAIN BY PROJECT")
+    print(f"    {'project':<24}{'n':>3}{'chain':>9}{'pool fixed':>12}")
+    for pr in sorted(fixed, key=lambda k: -st.mean(fixed[k])):
+        print(f"    {pr:<24}{len(fixed[pr]):>3}{st.mean(chain[pr]):>+9.3f}"
+              f"{st.mean(fixed[pr]):>+12.3f}")
+
     head("SUPPLEMENTARY S3 — every column against its own size-matched null",
          "reports/annotation_bootstrap_null.csv")
     nr = [r for r in read(REPORTS / "annotation_bootstrap_null.csv")
