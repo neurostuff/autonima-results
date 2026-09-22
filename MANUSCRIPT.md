@@ -567,15 +567,23 @@ a NiMARE-generated boilerplate paragraph and BibTeX file recording the settings 
 the two similarity metrics read the unthresholded and the corrected map respectively (see *The
 metric/map rule*). In total 431 meta-analyses were fitted across all projects and arms.
 
-Two conventions are worth stating explicitly. Analyses with missing or malformed coordinates are
-dropped before the studyset is converted to a NiMARE dataset, and are accounted for as parsing
-failures rather than as selection decisions. And coordinates enter the meta-analysis in the space
-the article reported them in: pubget's detected coordinate space is carried through per study,
-but no Talairach-to-MNI transform is applied at this stage — that transform is used only when
-matching automated analyses to expert records. Across the canonical runs, 33.8% of parsed
-coordinates carry an explicit MNI label, 15.6% Talairach and the remainder none. This bounds
-absolute agreement with any published map, but it applies identically to every arm of every
-comparison and so cannot account for differences between arms.
+Two conventions are worth stating explicitly. First, analyses with missing or malformed
+coordinates are dropped before the studyset is converted to a NiMARE dataset, and are accounted
+for as parsing failures rather than as selection decisions.
+
+Second, stereotactic space is carried through the pipeline and resolved by NiMARE rather than by
+us. Each parsed coordinate is labelled MNI or Talairach from the extraction itself, falling back
+to pubget's detected per-study coordinate space, and any value that resolves to neither is
+recorded as unknown. On conversion to a NiMARE dataset the target space is `mni152_2mm`, so
+Talairach coordinates are passed through NiMARE's `tal2mni` (a port of BrainMap's
+`tal2icbm_other`) and MNI coordinates are left untouched. In the canonical runs 33.8% of parsed
+coordinates are labelled MNI and 15.6% Talairach; all of the latter are converted. The remaining
+50.6% carry no usable label, and NiMARE leaves those untransformed and treats them as already in
+the target space — an implicit MNI assumption, and the one residual source of spatial error in
+this pipeline. The label is in practice study-level: only 5 of the 13,297 analyses with
+coordinates carry more than one label, and NiMARE applies the first point's label to the whole
+analysis. This bounds absolute agreement with any published map, but it applies identically to
+every arm of every comparison and so cannot account for differences between arms.
 
 ## Benchmark and denominator
 
