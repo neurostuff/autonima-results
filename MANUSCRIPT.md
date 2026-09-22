@@ -528,12 +528,54 @@ executes seven stages in order:
   verdict, the criteria applied, and free-text reasoning.
 - **Caching and provenance.** Stage artifacts are hashed and recorded in an execution manifest,
   so re-runs skip completed stages and every reported figure traces to a specific run directory.
-- **Meta-analysis.** Multilevel kernel density analysis (MKDA) in NiMARE 0.2.1, with a 10 mm
-  spherical kernel, the maximum retained where spheres overlap, summary statistics converted to
-  *p*-values against an approximate null, and Benjamini–Hochberg FDR correction.
+- **Meta-analysis.** Multilevel kernel density analysis (MKDA) in NiMARE 0.2.1; see
+  *Meta-analytic modeling*.
 - **Retrieval vintage.** All arms within a comparison share a retrieval vintage. Comparing arms
   built from corpora fetched at different times confounds pipeline differences with changes in
   what was available, which we learned by doing it (`PAPER_OUTLINE.md:956`).
+
+## Meta-analytic modeling
+
+Coordinates from the analyses selected for each target contrast were submitted to
+coordinate-based meta-analysis, independently for each target. Selected analyses and their
+coordinates were represented in the NeuroImaging Meta-Analysis Data Structure (NiMADS), a
+standardised format for representing neuroimaging studies, their constituent analyses and the
+coordinates those analyses report. NiMADS is the pipeline's single interchange point with the
+NiMARE library for quantitative neuroimaging meta-analysis (0.2.1, RRID:SCR_017398). Because the
+unit of selection is the analysis and not the article, one article may contribute analyses to
+several target contrasts, to one, or to none.
+
+NiMARE exposes a range of coordinate-based algorithms and autonima passes any of ALE, KDA or
+MKDA through to it, so a user is free to choose. For this evaluation, however, every
+meta-analysis — reference, baseline and each pipeline arm — was fitted with multilevel kernel
+density analysis (MKDA; Wager et al. 2007), so that arms differ only in which analyses they
+contain. Five of the nine source papers name ALE in their abstracts; using MKDA throughout is
+therefore a deliberate property of the benchmark rather than a reproduction of each paper's own
+procedure. Every comparison in this paper is accordingly against an MKDA reference map re-fitted
+from the expert inclusion list, not against the published figure.
+
+Model settings were NiMARE's defaults and were not tuned, per project or otherwise. Each
+coordinate was convolved with a sphere of 10 mm radius and unit value; where spheres overlapped,
+the maximum was retained; the resulting study-wise modelled activation maps were combined into
+an MKDA density statistic; and those summary statistics were converted to *p*-values against an
+approximate null distribution rather than by Monte Carlo resampling. Multiple comparisons were
+controlled by the Benjamini–Hochberg false discovery rate procedure at *q* = 0.05 under the
+independence assumption. Maps were estimated on NiMARE's 2 mm MNI152 grid (91 × 109 × 91), and a
+focus-counter diagnostic was run for each fit. Each meta-analysis writes an unthresholded *z*
+map with its statistic and *p* maps, the FDR-corrected *z* and *p* maps and a cluster table, and
+a NiMARE-generated boilerplate paragraph and BibTeX file recording the settings actually used;
+the two similarity metrics read the unthresholded and the corrected map respectively (see *The
+metric/map rule*). In total 431 meta-analyses were fitted across all projects and arms.
+
+Two conventions are worth stating explicitly. Analyses with missing or malformed coordinates are
+dropped before the studyset is converted to a NiMARE dataset, and are accounted for as parsing
+failures rather than as selection decisions. And coordinates enter the meta-analysis in the space
+the article reported them in: pubget's detected coordinate space is carried through per study,
+but no Talairach-to-MNI transform is applied at this stage — that transform is used only when
+matching automated analyses to expert records. Across the canonical runs, 33.8% of parsed
+coordinates carry an explicit MNI label, 15.6% Talairach and the remainder none. This bounds
+absolute agreement with any published map, but it applies identically to every arm of every
+comparison and so cannot account for differences between arms.
 
 ## Benchmark and denominator
 
