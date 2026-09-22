@@ -1,7 +1,7 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study investigated cognitive and cortical structural differences associated with low versus high recent levamisole exposure among chronic cocaine users, compared with stimulant-naive controls.",
+  "value": "We examined cognitive performance and cortical structural differences between chronic cocaine users with low and high recent exposure to levamisole and matched stimulant-naive controls.",
   "value_source": "reported",
   "evidence": {
    "status": "present",
@@ -10,9 +10,9 @@
      "source": "model_quote",
      "spans": [
       {
-       "text": "The aim of the present studies was to examine whether the worldwide highly prevalent cocaine adulterant levamisole is associated with higher risks for cognitive impairment and structural brain alterations in chronic CU with recent levamisole exposure.",
-       "start_char": 28541,
-       "end_char": 28792
+       "text": "We examined cognitive performance and cortical structural differences between chronic cocaine users with low and high recent exposure to levamisole objectively determined by quantitative toxicological hair analyses.",
+       "start_char": 455,
+       "end_char": 670
       }
      ]
     }
@@ -45,13 +45,13 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Cross-sectional case-control studies comparing chronic cocaine users with low or high recent levamisole exposure and stimulant-naive controls; Study 2 used structural MRI.",
+   "value": "cross-sectional case–control study design",
    "value_source": "reported",
    "evidence": {
     "status": "present",
     "sets": [
      {
-      "source": "model_quote",
+      "source": "literal_match",
       "spans": [
        {
         "text": "Finally, the applied cross-sectional case–control study design makes it impossible to determine the causal relationship between levamisole and neurocognitive and imaging measures.",
@@ -64,8 +64,14 @@
    }
   },
   "allocation": {
+   "extraction_status": "not_reported",
+   "evidence": {
+    "status": "not_applicable"
+   }
+  },
+  "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -74,21 +80,13 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "cross-sectional case–control study design",
-        "start_char": 35558,
-        "end_char": 35599
+        "text": "we compared 26 chronic cocaine users with low levamisole exposure (lowLevCU), 49 matched cocaine users with high levamisole exposure (highLevCU), and 78 matched stimulant-naive controls",
+        "start_char": 683,
+        "end_char": 868
        }
       ]
      }
     ]
-   }
-  },
-  "assignment_structure": {
-   "extraction_status": "extracted",
-   "value": "parallel",
-   "value_source": "generated",
-   "evidence": {
-    "status": "not_found"
    }
   },
   "blinding": {
@@ -96,24 +94,34 @@
    "evidence": {
     "status": "not_applicable"
    }
-  },
-  "arms": [],
-  "timepoints": []
+  }
  },
  "analyses": [
   {
-   "local_id": "ana_mfg_omnibus",
+   "local_id": "ana_mfg_three_group",
    "name": {
     "extraction_status": "extracted",
-    "value": "group effect on MFG cortical thickness",
-    "value_source": "generated",
+    "value": "three-group comparison of cortical thickness in the middle frontal gyrus",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Three-group comparisons revealed significant group effects on cortical thickness for the whole brain ROI (  F  (2,61) = 3.90,   p   < 0.05), and the MFG (  F  (2,61) = 3.61,   p   < 0.05; Fig.  3a , Table  S1 ).",
+         "start_char": 26539,
+         "end_char": 26750
+        }
+       ]
+      }
+     ]
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Three-group comparisons revealed significant group effects on cortical thickness for the MFG",
+    "value": "Three-group comparisons revealed significant group effects on cortical thickness for the MFG.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -133,10 +141,22 @@
    },
    "prespecification": {
     "extraction_status": "extracted",
-    "value": "preregistered",
+    "value": "exploratory",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "An exploratory analysis of the IDE stages revealed that highLevCU made more errors specifically in the intradimensional set-shifting (pre-ED errors: (  F  (1,68) = 0.01,   p   < 0.05,   d   = 0.64) but not in the extradimensional set-shifting (ED errors:   F  (1,68) = 6.02,   p   = 0.94,   d   = 0.02; Figure  S3 ).",
+         "start_char": 24866,
+         "end_char": 25182
+        }
+       ]
+      }
+     ]
     }
    },
    "spatial_scope": {
@@ -159,6 +179,13 @@
      ]
     }
    },
+   "regions": [
+    "r_mfg",
+    "reg_inferior_frontal_gyrus",
+    "reg_lateral_orbitofrontal_gyrus",
+    "reg_superior_frontal_gyrus",
+    "reg_pericalcarine_cortex"
+   ],
    "measure": "mea_cortical_thickness",
    "groups": [
     {
@@ -185,7 +212,7 @@
      }
     },
     {
-     "group": "grp_lowlevcu",
+     "group": "grp_lowLevCU",
      "n": {
       "extraction_status": "extracted",
       "value": 12,
@@ -208,7 +235,7 @@
      }
     },
     {
-     "group": "grp_highlevcu",
+     "group": "grp_highLevCU",
      "n": {
       "extraction_status": "extracted",
       "value": 17,
@@ -234,26 +261,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_group_three_group",
       "level": {
        "extraction_status": "extracted",
        "value": "stimulant-naive controls",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "undirected",
-       "value_source": "generated",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "healthy controls",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -269,17 +280,6 @@
           ]
          }
         ]
-       }
-      }
-     },
-     {
-      "term": "trm_group",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "lowLevCU",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
        }
       },
       "direction": {
@@ -298,13 +298,62 @@
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_group_three_group",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "lowLevCU",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "CU were assigned to either the lowLevCU (  n   = 12) or the highLevCU (  n   = 17) group, respectively.",
+            "start_char": 11356,
+            "end_char": 11459
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "trm_group_three_group",
       "level": {
        "extraction_status": "extracted",
        "value": "highLevCU",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "CU were assigned to either the lowLevCU (  n   = 12) or the highLevCU (  n   = 17) group, respectively.",
+            "start_char": 11356,
+            "end_char": 11459
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
@@ -328,7 +377,19 @@
      "value": "omnibus",
      "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Three-group comparisons revealed significant group effects on cortical thickness for the whole brain ROI (  F  (2,61) = 3.90,   p   < 0.05), and the MFG (  F  (2,61) = 3.61,   p   < 0.05; Fig.  3a , Table  S1 ).",
+          "start_char": 26539,
+          "end_char": 26750
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
@@ -363,9 +424,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Three-group comparisons revealed significant group effects on cortical thickness for the whole brain ROI (  F  (2,61) = 3.90,   p   < 0.05), and the MFG (  F  (2,61) = 3.61,   p   < 0.05; Fig.  3a , Table  S1 ).",
-           "start_char": 26539,
-           "end_char": 26750
+           "text": "the MFG (  F  (2,61) = 3.61,   p   < 0.05; Fig.  3a , Table  S1 )",
+           "start_char": 26684,
+           "end_char": 26749
           }
          ]
         }
@@ -383,9 +444,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Three-group comparisons revealed significant group effects on cortical thickness for the whole brain ROI (  F  (2,61) = 3.90,   p   < 0.05), and the MFG (  F  (2,61) = 3.61,   p   < 0.05; Fig.  3a , Table  S1 ).",
-           "start_char": 26539,
-           "end_char": 26750
+           "text": "the MFG (  F  (2,61) = 3.61,   p   < 0.05; Fig.  3a , Table  S1 )",
+           "start_char": 26684,
+           "end_char": 26749
           }
          ]
         }
@@ -397,14 +458,15 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_study2_ancova",
    "acquisitions": [
-    "acq_t1_mri"
+    "acq_mri"
    ],
+   "model_estimation": "mod_ancova_three_group",
+   "inference_settings": "inf_p05_sidak",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "There was a significant group effect on cortical thickness in the middle frontal gyrus (MFG). Cortical thickness was significantly decreased in highLevCU compared to controls."
+     "Three-group comparisons revealed a significant group effect on cortical thickness for the middle frontal gyrus (F(2,61)=3.61, p<0.05). The measure showed a significant linear trend across groups, and post hoc pairwise comparisons indicated that cortical thickness was significantly decreased in highLevCU compared to controls."
     ],
     "value_source": "reported",
     "evidence": {
@@ -414,8 +476,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Both measures showed significant linear trends across groups (  p   < 0.05) and post hoc pairwise comparisons indicated that cortical thickness was significantly decreased in highLevCU compared to controls.",
-         "start_char": 26751,
+         "text": "Three-group comparisons revealed significant group effects on cortical thickness for the whole brain ROI (  F  (2,61) = 3.90,   p   < 0.05), and the MFG (  F  (2,61) = 3.61,   p   < 0.05; Fig.  3a , Table  S1 ). Both measures showed significant linear trends across groups (  p   < 0.05) and post hoc pairwise comparisons indicated that cortical thickness was significantly decreased in highLevCU compared to controls.",
+         "start_char": 26539,
          "end_char": 26957
         }
        ]
@@ -442,30 +504,45 @@
      "status": "not_applicable"
     }
    },
-   "regions": [
-    "reg_middle_frontal_gyrus"
-   ],
    "tables": [
-    "Tab1"
+    "tbltable1"
    ],
    "assessments": [
-    "asm_structured_clinical_intervie"
+    "asm_adhd_sr",
+    "asm_verbal_iq",
+    "asm_structured_clinical_intervie",
+    "asm_interview_for_psychotropic"
+   ],
+   "tasks": [
+    "tsk_neuropsychological_test_batt"
    ]
   },
   {
-   "local_id": "ana_mfg_high_low",
+   "local_id": "ana_mfg_two_cu",
    "name": {
     "extraction_status": "extracted",
-    "value": "highLevCU versus lowLevCU MFG cortical thickness",
+    "value": "lowLevCU versus highLevCU cortical thickness in the middle frontal gyrus",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A significant group difference was found for the MFG showing a strong effect size (  F  (1,22) = 5.65,   p   < 0.05,   d   = 0.84).",
+         "start_char": 27151,
+         "end_char": 27282
+        }
+       ]
+      }
+     ]
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "A significant group difference was found for the MFG in the lowLevCU versus highLevCU comparison",
-    "value_source": "generated",
+    "value": "A significant group difference was found for the MFG, with cortical thickness decreased in highLevCU compared to lowLevCU.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -484,10 +561,22 @@
    },
    "prespecification": {
     "extraction_status": "extracted",
-    "value": "preregistered",
+    "value": "exploratory",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "An exploratory analysis of the IDE stages revealed that highLevCU made more errors specifically in the intradimensional set-shifting (pre-ED errors: (  F  (1,68) = 0.01,   p   < 0.05,   d   = 0.64) but not in the extradimensional set-shifting (ED errors:   F  (1,68) = 6.02,   p   = 0.94,   d   = 0.02; Figure  S3 ).",
+         "start_char": 24866,
+         "end_char": 25182
+        }
+       ]
+      }
+     ]
     }
    },
    "spatial_scope": {
@@ -510,10 +599,17 @@
      ]
     }
    },
+   "regions": [
+    "r_mfg",
+    "reg_inferior_frontal_gyrus",
+    "reg_lateral_orbitofrontal_gyrus",
+    "reg_superior_frontal_gyrus",
+    "reg_pericalcarine_cortex"
+   ],
    "measure": "mea_cortical_thickness",
    "groups": [
     {
-     "group": "grp_lowlevcu",
+     "group": "grp_lowLevCU",
      "n": {
       "extraction_status": "extracted",
       "value": 12,
@@ -536,7 +632,7 @@
      }
     },
     {
-     "group": "grp_highlevcu",
+     "group": "grp_highLevCU",
      "n": {
       "extraction_status": "extracted",
       "value": 17,
@@ -562,18 +658,30 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_group_two_cu",
       "level": {
        "extraction_status": "extracted",
-       "value": "highLevCU",
+       "value": "lowLevCU",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "CU were assigned to either the lowLevCU (  n   = 12) or the highLevCU (  n   = 17) group, respectively.",
+            "start_char": 11356,
+            "end_char": 11459
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
-       "value": "negative",
+       "value": "positive",
        "value_source": "generated",
        "evidence": {
         "status": "present",
@@ -582,9 +690,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "A significant group difference was found for the MFG showing a strong effect size (  F  (1,22) = 5.65,   p   < 0.05,   d   = 0.84).",
-            "start_char": 27151,
-            "end_char": 27282
+            "text": "As in Study 1 two additional cocaine-related covariates were added for the two-group ANCOVAs (lowLevCU vs. highLevCU): abstinence duration and cumulative lifetime dose (Fig.  3b , Table  S2 ).",
+            "start_char": 26958,
+            "end_char": 27150
            }
           ]
          }
@@ -599,18 +707,30 @@
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_group_two_cu",
       "level": {
        "extraction_status": "extracted",
-       "value": "lowLevCU",
+       "value": "highLevCU",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "CU were assigned to either the lowLevCU (  n   = 12) or the highLevCU (  n   = 17) group, respectively.",
+            "start_char": 11356,
+            "end_char": 11459
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
+       "value": "negative",
        "value_source": "generated",
        "evidence": {
         "status": "present",
@@ -619,9 +739,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "A significant group difference was found for the MFG showing a strong effect size (  F  (1,22) = 5.65,   p   < 0.05,   d   = 0.84).",
-            "start_char": 27151,
-            "end_char": 27282
+            "text": "Both measures showed significant linear trends across groups (  p   < 0.05) and post hoc pairwise comparisons indicated that cortical thickness was significantly decreased in highLevCU compared to controls.",
+            "start_char": 26751,
+            "end_char": 26957
            }
           ]
          }
@@ -641,7 +761,19 @@
      "value": "contrast",
      "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "A significant group difference was found for the MFG showing a strong effect size (  F  (1,22) = 5.65,   p   < 0.05,   d   = 0.84).",
+          "start_char": 27151,
+          "end_char": 27282
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
@@ -710,14 +842,15 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_study2_ancova",
    "acquisitions": [
-    "acq_t1_mri"
+    "acq_mri"
    ],
+   "model_estimation": "mod_ancova_two_cu",
+   "inference_settings": "inf_p05_sidak",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "A significant group difference was found for the MFG, with highLevCU showing lower cortical thickness than lowLevCU; this effect had a strong effect size (d = 0.84)."
+     "A significant group difference was found for middle frontal gyrus cortical thickness in the lowLevCU versus highLevCU comparison, with a strong effect size (F(1,22)=5.65, p<0.05, d=0.84). This effect remained significant when alcohol consumption was included as an additional covariate (F(1,21)=5.16, p<0.05, d=0.80)."
     ],
     "value_source": "reported",
     "evidence": {
@@ -727,9 +860,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A significant group difference was found for the MFG showing a strong effect size (  F  (1,22) = 5.65,   p   < 0.05,   d   = 0.84).",
+         "text": "A significant group difference was found for the MFG showing a strong effect size (  F  (1,22) = 5.65,   p   < 0.05,   d   = 0.84). This effect remained significant, when alcohol (pure ethanol in g per week) was considered as an additional covariate (  F  (1,21) = 5.16,   p   < 0.05,   d   = 0.80) of potential impact on cortical thickness.",
          "start_char": 27151,
-         "end_char": 27282
+         "end_char": 27492
         }
        ]
       }
@@ -755,20 +888,23 @@
      "status": "not_applicable"
     }
    },
-   "regions": [
-    "reg_middle_frontal_gyrus"
-   ],
    "tables": [
-    "Tab1"
+    "tbltable1"
    ],
    "assessments": [
-    "asm_structured_clinical_intervie"
+    "asm_adhd_sr",
+    "asm_verbal_iq",
+    "asm_structured_clinical_intervie",
+    "asm_interview_for_psychotropic"
+   ],
+   "tasks": [
+    "tsk_neuropsychological_test_batt"
    ]
   }
  ],
  "acquisitions": [
   {
-   "local_id": "acq_t1_mri",
+   "local_id": "acq_mri",
    "acquisition_type": "MRI",
    "modality": {
     "extraction_status": "extracted",
@@ -781,22 +917,36 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "structural magnetic resonance imaging (MRI)",
-         "start_char": 7213,
-         "end_char": 7256
+         "text": "High-resolution structural scans were collected using a standard T1-weighted 3D magnetization-prepared rapid gradient echo (MPRAGE) pulse sequence",
+         "start_char": 12891,
+         "end_char": 13037
         }
        ]
       }
      ]
     }
    },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
+   "device": "dev_philips_achieva",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were scanned using a 3T Philips Achieva whole-body scanner",
+         "start_char": 12773,
+         "end_char": 12844
+        }
+       ]
+      }
+     ]
     }
    },
-   "device": "dev_philips_achieva",
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3,
@@ -808,9 +958,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects were scanned using a 3T Philips Achieva whole-body scanner equipped with a 32-channel receive head coil.",
+         "text": "All subjects were scanned using a 3T Philips Achieva whole-body scanner",
          "start_char": 12773,
-         "end_char": 12890
+         "end_char": 12844
         }
        ]
       }
@@ -868,9 +1018,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "High-resolution structural scans were collected using a standard T1-weighted 3D magnetization-prepared rapid gradient echo (MPRAGE) pulse sequence with repetition time (TR) = 8.08 ms, echo time (TE) = 3.7, field of view (FOV) = 240×240 mm, 160 slices, voxel size of (1×1×1)mm .",
-         "start_char": 12891,
-         "end_char": 13168
+         "text": "repetition time (TR) = 8.08 ms",
+         "start_char": 13043,
+         "end_char": 13073
         }
        ]
       }
@@ -890,9 +1040,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "High-resolution structural scans were collected using a standard T1-weighted 3D magnetization-prepared rapid gradient echo (MPRAGE) pulse sequence with repetition time (TR) = 8.08 ms, echo time (TE) = 3.7, field of view (FOV) = 240×240 mm, 160 slices, voxel size of (1×1×1)mm .",
-         "start_char": 12891,
-         "end_char": 13168
+         "text": "echo time (TE) = 3.7",
+         "start_char": 13075,
+         "end_char": 13095
         }
        ]
       }
@@ -927,6 +1077,218 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "assessments": [
+  {
+   "local_id": "asm_adhd_sr",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "ADHD self-rating scale (ADHD-SR)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Drug use was assessed with the Interview for Psychotropic Drug Consumption and ADHD symptoms by means of the ADHD self-rating scale (ADHD-SR)  The verbal IQ was estimated by a standard German vocabulary test .",
+         "start_char": 11639,
+         "end_char": 11848
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "ADHD self-rating scale used to assess ADHD symptoms and provide an ADHD covariate in analyses of cognitive performance and cortical thickness.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ADHD symptoms by means of the ADHD self-rating scale (ADHD-SR)",
+         "start_char": 11718,
+         "end_char": 11780
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "Clinical questionnaire",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ADHD self-rating scale",
+         "start_char": 11748,
+         "end_char": 11770
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_verbal_iq",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Mehrfachwahl–Wortschatz–Intelligenztest",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Mehrfachwahl–Wortschatz–Intelligenztest",
+         "start_char": 16611,
+         "end_char": 16650
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Mehrfachwahl–Wortschatz–Intelligenztest, a standard German vocabulary test used to estimate verbal IQ and for group matching and covariate adjustment.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The verbal IQ was estimated by a standard German vocabulary test",
+         "start_char": 11782,
+         "end_char": 11846
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "Cognitive test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Analogous to our previous work , 15 predefined cognitive test parameters were   z  -transformed on the basis of means and standard deviations of the control group (  n   = 78) and—in respect of data reduction—combined into four cognitive domains (attention, working memory, declarative memory, and executive function).",
+         "start_char": 12296,
+         "end_char": 12614
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_structured_clinical_intervie",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Structured Clinical Interview (SCID-I)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Structured Clinical Interview (SCID-I)",
+         "start_char": 11578,
+         "end_char": 11616
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Structured Clinical Interview conducted according to DSM-IV to assess psychiatric disorders.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "Diagnostic interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_interview_for_psychotropic",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Interview for Psychotropic Drug Consumption",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Interview for Psychotropic Drug Consumption",
+         "start_char": 11670,
+         "end_char": 11713
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Interview used to assess drug use.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "Clinical interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    }
   }
@@ -990,26 +1352,6 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "stimulant-naive controls",
-         "start_char": 844,
-         "end_char": 868
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Healthy and stimulant-naive controls.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
          "text": "78 healthy and stimulant-naive healthy controls",
          "start_char": 7970,
          "end_char": 8017
@@ -1039,9 +1381,213 @@
      ]
     }
    },
-   "is_healthy": {
+   "acquired_count": {
     "extraction_status": "extracted",
-    "value": true,
+    "value": 78,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "78 healthy and stimulant-naive healthy controls",
+         "start_char": 7970,
+         "end_char": 8017
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Sex (f/m)",
+           "start_char": 17564,
+           "end_char": 17573
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 23,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "23/55",
+           "start_char": 17574,
+           "end_char": 17579
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 29.4872,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 78,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Controls (n = 78)",
+           "start_char": 17429,
+           "end_char": 17446
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "extracted",
+      "value": "Sex reported as female/male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Sex (f/m)",
+           "start_char": 17564,
+           "end_char": 17573
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Sex (f/m)",
+           "start_char": 17564,
+           "end_char": 17573
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 55,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "23/55",
+           "start_char": 17574,
+           "end_char": 17579
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 70.5128,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 78,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Controls (n = 78)",
+           "start_char": 17429,
+           "end_char": 17446
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "extracted",
+      "value": "Sex reported as female/male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "none reported; stimulant-naive healthy controls"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1059,9 +1605,29 @@
      ]
     }
    },
-   "acquired_count": {
+   "is_healthy": {
     "extraction_status": "extracted",
-    "value": 38,
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "78 healthy and stimulant-naive healthy controls",
+         "start_char": 7970,
+         "end_char": 8017
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Healthy, stimulant-naive controls matched to cocaine-user groups on age, verbal intelligence, sex, and smoking status; used as the control group in cognitive and MRI analyses.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1070,121 +1636,15 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A total of 29 CU and 38 healthy cocaine-naive controls were included in Study 2.",
-         "start_char": 9626,
-         "end_char": 9706
+         "text": "The three groups were matched for age, verbal intelligence, sex, and smoking status.",
+         "start_char": 8076,
+         "end_char": 8160
         }
        ]
       }
      ]
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "female",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "count": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 29.4871794872,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 78,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Sex (f/m)",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Sex (f/m)\t23/55\t7/19\t11/38\tx2 = 0.76\t2\t0.68",
-           "start_char": 17564,
-           "end_char": 17607
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "count": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 70.5128205128,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 78,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Sex (f/m)",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Sex (f/m)\t23/55\t7/19\t11/38\tx2 = 0.76\t2\t0.68",
-           "start_char": 17564,
-           "end_char": 17607
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
    "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1208,8 +1668,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The study included 75 CU, 78 healthy and stimulant-naive healthy controls",
-         "start_char": 7944,
+         "text": "78 healthy and stimulant-naive healthy controls",
+         "start_char": 7970,
          "end_char": 8017
         }
        ]
@@ -1226,10 +1686,9 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Healthy",
-     "Stimulant-naive",
+     "Healthy and stimulant-naive",
      "No current or former Axis I DSM-IV psychiatric disorder",
-     "No addiction or regular illegal drug use (lifetime >15 occasions), except recreational cannabis use"
+     "No addiction or regular illegal drug use exceeding 15 lifetime occasions, except recreational cannabis use"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1255,7 +1714,7 @@
      "Clinically significant medical disease",
      "Use of prescription drugs affecting the brain",
      "Current or former Axis I DSM-IV psychiatric disorder",
-     "Any form of addiction or regular illegal drug use (lifetime >15 occasions), except recreational cannabis use"
+     "Any form of addiction or regular illegal drug use exceeding 15 lifetime occasions, except recreational cannabis use"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1364,11 +1823,11 @@
      ]
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Healthy",
-     "Stimulant-naive"
+     "Stimulant-naive",
+     "Mostly non-smoking or smoking status matched to cocaine-user groups"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1378,8 +1837,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "78 healthy and stimulant-naive healthy controls",
-         "start_char": 7970,
+         "text": "healthy and stimulant-naive healthy controls",
+         "start_char": 7973,
          "end_char": 8017
         }
        ]
@@ -1388,25 +1847,39 @@
     }
    },
    "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Healthy and stimulant-naive",
+    "value": "DSM-IV",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "The study included 75 CU, 78 healthy and stimulant-naive healthy controls (for recruitment and selection details see Methods  S1 ).",
-         "start_char": 7944,
-         "end_char": 8075
+         "text": "Axis I DSM-IV psychiatric disorder",
+         "start_char": 8864,
+         "end_char": 8898
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Healthy controls with no current or former Axis I psychiatric disorder, addiction, or regular illegal drug use.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "healthy and stimulant-naive healthy controls",
+         "start_char": 7973,
+         "end_char": 8017
         }
        ]
       }
@@ -1421,7 +1894,7 @@
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "stimulant-naive",
+    "value": "Stimulant-naive",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1441,7 +1914,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "10.7 (1.7) years",
+    "value": "10.7 (1.7) years of education",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1450,8 +1923,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Education (y)\t10.7 (1.7)",
-         "start_char": 17684,
+         "text": "10.7 (1.7)",
+         "start_char": 17698,
          "end_char": 17708
         }
        ]
@@ -1461,7 +1934,15 @@
    },
    "socioeconomic_status_summary": {
     "extraction_status": "extracted",
-    "value": "Socioeconomic status was assessed and was comparable with the cocaine user groups; instrument or measure not reported",
+    "value": "Socioeconomic background was assessed and comparable with the cocaine-user groups; instrument not reported.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "previously_reported",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1470,21 +1951,39 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Additionally, there were no differences regarding the average price paid for 1 g of cocaine (Table  1 ) and socioeconomic status between both groups (Table  S4 ).",
-         "start_char": 22159,
-         "end_char": 22321
+         "text": "The sample of Study 1 shows a 91% overlap with a sample that was previously published",
+         "start_char": 8161,
+         "end_char": 8246
         }
        ]
       }
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_structured_clinical_intervie"
-   ]
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "undetermined",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
   },
   {
-   "local_id": "grp_lowlevcu",
+   "local_id": "grp_lowLevCU",
    "name": {
     "extraction_status": "extracted",
     "value": "lowLevCU",
@@ -1496,29 +1995,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "lowLevCU",
-         "start_char": 750,
-         "end_char": 758
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Chronic cocaine users with low recent levamisole exposure.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "26 CU with a LCR of <25% (low levamisole exposure CU, lowLevCU)",
-         "start_char": 11090,
-         "end_char": 11153
+         "text": "low levamisole exposure CU, lowLevCU",
+         "start_char": 11116,
+         "end_char": 11152
         }
        ]
       }
@@ -1545,10 +2024,10 @@
      ]
     }
    },
-   "is_healthy": {
+   "acquired_count": {
     "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
+    "value": 26,
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1556,9 +2035,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "cocaine users",
-         "start_char": 433,
-         "end_char": 446
+         "text": "26 CU with a LCR of <25%",
+         "start_char": 11090,
+         "end_char": 11114
         }
        ]
       }
@@ -1578,18 +2057,21 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "chronic cocaine users",
-         "start_char": 533,
-         "end_char": 554
+         "text": "75 CU",
+         "start_char": 7963,
+         "end_char": 7968
         }
        ]
       }
      ]
     }
    },
-   "acquired_count": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": 12,
+    "value": [
+     "low recent levamisole exposure",
+     "cocaine users"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1598,9 +2080,69 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "CU were assigned to either the lowLevCU (  n   = 12) or the highLevCU (  n   = 17) group, respectively.",
-         "start_char": 11356,
-         "end_char": 11459
+         "text": "26 CU with a LCR of <25% (low levamisole exposure CU, lowLevCU)",
+         "start_char": 11090,
+         "end_char": 11153
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medication_status": {
+    "extraction_status": "extracted",
+    "value": "abstained from illegal substances for at least 72 h before testing",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "participants were asked to abstain from illegal substances for at least 72 h",
+         "start_char": 9217,
+         "end_char": 9293
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "75 CU",
+         "start_char": 7963,
+         "end_char": 7968
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Chronic cocaine users with low recent levamisole exposure, defined by a levamisole-to-cocaine hair concentration ratio below 25%; n=26 in Study 1 and n=12 in Study 2.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "CU were split into 26 CU with a LCR of <25% (low levamisole exposure CU, lowLevCU)",
+         "start_char": 11071,
+         "end_char": 11153
         }
        ]
       }
@@ -1630,9 +2172,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "CU were split into 26 CU with a LCR of <25% (low levamisole exposure CU, lowLevCU)",
-         "start_char": 11071,
-         "end_char": 11153
+         "text": "26 CU with a LCR of <25%",
+         "start_char": 11090,
+         "end_char": 11114
         }
        ]
       }
@@ -1648,10 +2190,10 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Cocaine as primary used illegal drug",
-     "Cocaine use >0.5 g per month",
-     "Abstinence duration <6 months",
-     "Levamisole–cocaine ratio <25%"
+     "Cocaine as primary illegal drug",
+     "Cocaine use exceeding 0.5 g per month",
+     "Abstinence duration shorter than 6 months",
+     "Levamisole-cocaine ratio below 25%"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1676,11 +2218,9 @@
      "Acute or previous neurological disorder or head injury",
      "Clinically significant medical disease",
      "Use of prescription drugs affecting the brain",
-     "Use of opioids",
+     "Opioid use",
      "Polysubstance use",
-     "Any Axis I DSM-IV adult psychiatric disorder, except cocaine, cannabis, and alcohol abuse",
-     "Acute major depression",
-     "Attention-deficit hyperactivity disorder (ADHD)"
+     "Any Axis I DSM-IV adult psychiatric disorder except cocaine, cannabis, and alcohol abuse, with specified exceptions for affective disorders and ADHD"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1690,9 +2230,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Additional specific exclusion criteria for both CU groups were the use of opioids, polysubstance use, and any Axis I DSM-IV adult psychiatric disorder—with the exception of cocaine, cannabis, and alcohol abuse; a history of affective disorders (acute major depression was excluded); and attention-deficit hyperactivity disorder (ADHD).",
+         "text": "Additional specific exclusion criteria for both CU groups were the use of opioids, polysubstance use, and any Axis I DSM-IV adult psychiatric disorder",
          "start_char": 8448,
-         "end_char": 8783
+         "end_char": 8598
         }
        ]
       }
@@ -1800,8 +2340,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "any Axis I DSM-IV adult psychiatric disorder",
-         "start_char": 8554,
+         "text": "Axis I DSM-IV adult psychiatric disorder",
+         "start_char": 8558,
          "end_char": 8598
         }
        ]
@@ -1811,7 +2351,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Chronic cocaine users; cocaine use >0.5 g/month; abstinence duration <6 months; low recent levamisole exposure defined by levamisole–cocaine ratio <25%",
+    "value": "Chronic cocaine users; mean cocaine use duration 7.7 years; low recent levamisole exposure based on hair toxicology.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1820,9 +2360,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "CU were split into 26 CU with a LCR of <25% (low levamisole exposure CU, lowLevCU)",
-         "start_char": 11071,
-         "end_char": 11153
+         "text": "chronic cocaine users",
+         "start_char": 533,
+         "end_char": 554
         }
        ]
       }
@@ -1835,9 +2375,9 @@
      "status": "not_applicable"
     }
    },
-   "medication_status": {
+   "education_summary": {
     "extraction_status": "extracted",
-    "value": "No prescription drugs affecting the brain",
+    "value": "9.8 (1.3) years of education",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1846,26 +2386,26 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "use of prescription drugs affecting the brain",
-         "start_char": 8401,
-         "end_char": 8446
+         "text": "9.8 (1.3)",
+         "start_char": 17709,
+         "end_char": 17718
         }
        ]
       }
      ]
     }
    },
-   "education_summary": {
+   "socioeconomic_status_summary": {
     "extraction_status": "extracted",
-    "value": "9.8 (1.3) years",
+    "value": "Comparable socioeconomic background with highLevCU; instrument not reported.",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
    },
-   "socioeconomic_status_summary": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": "Socioeconomic status was comparable with the highLevCU group; instrument or measure not reported",
+    "value": "previously_reported",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1874,21 +2414,39 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "socioeconomic status between both groups",
-         "start_char": 22267,
-         "end_char": 22307
+         "text": "The sample of Study 1 shows a 91% overlap with a sample that was previously published",
+         "start_char": 8161,
+         "end_char": 8246
         }
        ]
       }
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_structured_clinical_intervie"
-   ]
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "undetermined",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
   },
   {
-   "local_id": "grp_highlevcu",
+   "local_id": "grp_highLevCU",
    "name": {
     "extraction_status": "extracted",
     "value": "highLevCU",
@@ -1900,29 +2458,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "highLevCU",
-         "start_char": 817,
-         "end_char": 826
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Chronic cocaine users with high recent levamisole exposure.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "49 CU with a LCR of >25% (high levamisole exposure CU, highLevCU)",
-         "start_char": 11158,
-         "end_char": 11223
+         "text": "high levamisole exposure CU, highLevCU",
+         "start_char": 11184,
+         "end_char": 11222
         }
        ]
       }
@@ -1949,10 +2487,10 @@
      ]
     }
    },
-   "is_healthy": {
+   "acquired_count": {
     "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
+    "value": 49,
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1960,9 +2498,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "cocaine users",
-         "start_char": 433,
-         "end_char": 446
+         "text": "49 CU with a LCR of >25%",
+         "start_char": 11158,
+         "end_char": 11182
         }
        ]
       }
@@ -1982,18 +2520,21 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "chronic cocaine users",
-         "start_char": 533,
-         "end_char": 554
+         "text": "75 CU",
+         "start_char": 7963,
+         "end_char": 7968
         }
        ]
       }
      ]
     }
    },
-   "acquired_count": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": 17,
+    "value": [
+     "high recent levamisole exposure",
+     "cocaine users"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2002,13 +2543,42 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "CU were assigned to either the lowLevCU (  n   = 12) or the highLevCU (  n   = 17) group, respectively.",
-         "start_char": 11356,
-         "end_char": 11459
+         "text": "49 CU with a LCR of >25% (high levamisole exposure CU, highLevCU)",
+         "start_char": 11158,
+         "end_char": 11223
         }
        ]
       }
      ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "75 CU",
+         "start_char": 7963,
+         "end_char": 7968
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Chronic cocaine users with high recent levamisole exposure, defined by a levamisole-to-cocaine hair concentration ratio above 25%; n=49 in Study 1 and n=17 in Study 2.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "approached_count": {
@@ -2034,9 +2604,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "49 matched cocaine users with high levamisole exposure (highLevCU)",
-         "start_char": 761,
-         "end_char": 827
+         "text": "49 CU with a LCR of >25%",
+         "start_char": 11158,
+         "end_char": 11182
         }
        ]
       }
@@ -2052,14 +2622,26 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Cocaine as primary used illegal drug",
-     "Cocaine use of more than 0.5 g per month",
-     "Abstinence duration of less than 6 months",
-     "Levamisole-to-cocaine concentration ratio above 25%"
+     "Cocaine as primary illegal drug",
+     "Cocaine use exceeding 0.5 g per month",
+     "Abstinence duration shorter than 6 months",
+     "Levamisole-cocaine ratio above 25%"
     ],
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Inclusion criteria for the two user groups were cocaine as primary used illegal drug, cocaine use of >0.5 g per month, and an abstinence duration of <6 months.",
+         "start_char": 9029,
+         "end_char": 9188
+        }
+       ]
+      }
+     ]
     }
    },
    "exclusion_criteria": {
@@ -2070,13 +2652,23 @@
      "Use of prescription drugs affecting the brain",
      "Opioid use",
      "Polysubstance use",
-     "Any Axis I DSM-IV adult psychiatric disorder except cocaine, cannabis, and alcohol abuse",
-     "Acute major depression",
-     "Attention-deficit hyperactivity disorder"
+     "Any Axis I DSM-IV adult psychiatric disorder except cocaine, cannabis, and alcohol abuse, with specified exceptions for affective disorders and ADHD"
     ],
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Additional specific exclusion criteria for both CU groups were the use of opioids, polysubstance use, and any Axis I DSM-IV adult psychiatric disorder",
+         "start_char": 8448,
+         "end_char": 8598
+        }
+       ]
+      }
+     ]
     }
    },
    "recruitment_method": {
@@ -2116,7 +2708,19 @@
     "value": 9.1,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "31.5 (9.1)",
+         "start_char": 17533,
+         "end_char": 17543
+        }
+       ]
+      }
+     ]
     }
    },
    "age_minimum": {
@@ -2168,8 +2772,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "any Axis I DSM-IV adult psychiatric disorder",
-         "start_char": 8554,
+         "text": "Axis I DSM-IV adult psychiatric disorder",
+         "start_char": 8558,
          "end_char": 8598
         }
        ]
@@ -2179,7 +2783,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Chronic cocaine users; cocaine use >0.5 g/month; abstinence duration <6 months; high recent levamisole exposure defined by levamisole–cocaine ratio >25%",
+    "value": "Chronic cocaine users; mean cocaine use duration 8.6 years; high recent levamisole exposure based on hair toxicology.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2188,9 +2792,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "CU were split into 26 CU with a LCR of <25% (low levamisole exposure CU, lowLevCU) and 49 CU with a LCR of >25% (high levamisole exposure CU, highLevCU).",
-         "start_char": 11071,
-         "end_char": 11224
+         "text": "chronic cocaine users",
+         "start_char": 533,
+         "end_char": 554
         }
        ]
       }
@@ -2204,8 +2808,14 @@
     }
    },
    "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
     "extraction_status": "extracted",
-    "value": "No prescription drugs affecting the brain",
+    "value": "9.8 (1.7) years of education",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2214,26 +2824,26 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "use of prescription drugs affecting the brain",
-         "start_char": 8401,
-         "end_char": 8446
+         "text": "9.8 (1.7)",
+         "start_char": 17720,
+         "end_char": 17729
         }
        ]
       }
      ]
     }
    },
-   "education_summary": {
+   "socioeconomic_status_summary": {
     "extraction_status": "extracted",
-    "value": "9.8 (1.7) years",
+    "value": "Comparable socioeconomic background with lowLevCU; instrument not reported.",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
    },
-   "socioeconomic_status_summary": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": "Socioeconomic status was comparable with the lowLevCU group; instrument or measure not reported",
+    "value": "previously_reported",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2242,17 +2852,163 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "socioeconomic status between both groups",
-         "start_char": 22267,
-         "end_char": 22307
+         "text": "The sample of Study 1 shows a 91% overlap with a sample that was previously published",
+         "start_char": 8161,
+         "end_char": 8246
         }
        ]
       }
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_structured_clinical_intervie"
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "undetermined",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_p05_sidak",
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "Sidak-corrected post hoc comparisons",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Group differences analyses in cognitive performance and cortical thickness were conducted by analyses of covariance (ANCOVA), followed by Sidak-corrected post hoc comparisons.",
+         "start_char": 14732,
+         "end_char": 14907
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All confirmatory statistical comparisons were carried out on a significance level of   p   < 0.05.",
+         "start_char": 16082,
+         "end_char": 16180
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inference_level": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "search_volume": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_regions": [
+    "r_mfg",
+    "reg_inferior_frontal_gyrus",
+    "reg_lateral_orbitofrontal_gyrus",
+    "reg_superior_frontal_gyrus",
+    "reg_pericalcarine_cortex"
    ]
   }
  ],
@@ -2270,9 +3026,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Cortical surface reconstruction was performed",
-         "start_char": 13169,
-         "end_char": 13214
+         "text": "cortical thickness",
+         "start_char": 988,
+         "end_char": 1006
         }
        ]
       }
@@ -2319,12 +3075,6 @@
      ]
     }
    },
-   "specific_metric": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "unit": {
     "extraction_status": "extracted",
     "value": "mm",
@@ -2344,12 +3094,32 @@
       }
      ]
     }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Cortical thickness",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "cortical thickness",
+         "start_char": 988,
+         "end_char": 1006
+        }
+       ]
+      }
+     ]
+    }
    }
   }
  ],
  "model_estimations": [
   {
-   "local_id": "mod_study2_ancova",
+   "local_id": "mod_ancova_three_group",
    "model_family": {
     "extraction_status": "extracted",
     "value": "ancova",
@@ -2372,6 +3142,490 @@
    },
    "model_type": {
     "extraction_status": "extracted",
+    "value": "three-group ANCOVA",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Three-group ANCOVAs",
+         "start_char": 23239,
+         "end_char": 23258
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Three-group ANCOVAs (controls vs. lowLevCU vs. highLevCU)",
+         "start_char": 23239,
+         "end_char": 23296
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_three_group",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "group",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "group effects",
+           "start_char": 23444,
+           "end_char": 23457
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "stimulant-naive controls",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls vs. lowLevCU vs. highLevCU",
+             "start_char": 23260,
+             "end_char": 23295
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_stimulant_naive_controls"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "lowLevCU",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls vs. lowLevCU vs. highLevCU",
+             "start_char": 23260,
+             "end_char": 23295
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_lowLevCU"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "highLevCU",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls vs. lowLevCU vs. highLevCU",
+             "start_char": 23260,
+             "end_char": 23295
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_highLevCU"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 3,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Linear trends across groups were shown",
+           "start_char": 23483,
+           "end_char": 23521
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Three participant groups: stimulant-naive controls, lowLevCU, and highLevCU.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_age_three_group",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "age",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age",
+           "start_char": 3744,
+           "end_char": 3747
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age and verbal IQ were introduced as covariates",
+           "start_char": 14948,
+           "end_char": 14995
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "years",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Age (y)",
+           "start_char": 17503,
+           "end_char": 17510
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Participant age.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_verbal_iq_three_group",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "verbal IQ",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "verbal IQ",
+           "start_char": 11786,
+           "end_char": 11795
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age and verbal IQ were introduced as covariates",
+           "start_char": 14948,
+           "end_char": 14995
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "assessment": "asm_verbal_iq",
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Verbal IQ estimated with the Mehrfachwahl–Wortschatz–Intelligenztest.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_adhd_three_group",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "ADHD-SR score",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Because ADHD has been linked to cognitive functioning in CU , and to alterations in brain structure , all ANCOVAs were additionally adjusted for the ADHD-SR score .",
+           "start_char": 14997,
+           "end_char": 15161
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "all ANCOVAs were additionally adjusted for the ADHD-SR score",
+           "start_char": 15099,
+           "end_char": 15159
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "assessment": "asm_adhd_sr",
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "ADHD symptoms measured by the ADHD self-rating scale.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Three-group ANCOVA adjusted for age, verbal IQ, and ADHD-SR score; Sidak-corrected post hoc comparisons.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All values corrected for age, verbal IQ, and ADHD",
+         "start_char": 25501,
+         "end_char": 25550
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
     "value": "ANCOVA",
     "value_source": "reported",
     "evidence": {
@@ -2390,15 +3644,41 @@
      ]
     }
    },
-   "hrf_model": {
+   "software": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "model_settings": {
+   "preprocessing": [
+    "prp_freesurfer"
+   ]
+  },
+  {
+   "local_id": "mod_ancova_two_cu",
+   "model_family": {
     "extraction_status": "extracted",
-    "value": "Age, verbal IQ, ADHD-SR score, abstinence duration, and cumulative cocaine dose were included as covariates for the cocaine-group cortical thickness comparisons.",
+    "value": "ancova",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Group differences analyses in cognitive performance and cortical thickness were conducted by analyses of covariance (ANCOVA), followed by Sidak-corrected post hoc comparisons.",
+         "start_char": 14732,
+         "end_char": 14907
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "two-group ANCOVA comparing lowLevCU and highLevCU",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2407,9 +3687,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "In the ANCOVAs that focused on the cocaine group comparison (lowLevCU vs. highLevCU), we introduced two further covariates: abstinence duration (as lowLevCU and highLevCU differed in self-reported days since last use, see Table  1 ) and cumulative cocaine dose because of the increased risk of cognitive impairment by ascending lifetime use of cocaine .",
-         "start_char": 15405,
-         "end_char": 15758
+         "text": "two-group ANCOVAs (lowLevCU vs. highLevCU)",
+         "start_char": 27033,
+         "end_char": 27075
         }
        ]
       }
@@ -2427,50 +3707,24 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Group differences analyses in cognitive performance and cortical thickness were conducted by analyses of covariance (ANCOVA), followed by Sidak-corrected post hoc comparisons.",
-         "start_char": 14732,
-         "end_char": 14907
+         "text": "the two-group ANCOVAs (lowLevCU vs. highLevCU)",
+         "start_char": 27029,
+         "end_char": 27075
         }
        ]
       }
      ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ROIs were extracted by parcelating the cortex using the Desikan–Killiany Atlas .",
-         "start_char": 13317,
-         "end_char": 13397
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "terms": [
     {
-     "local_id": "trm_group",
+     "local_id": "trm_group_two_cu",
      "name": {
       "extraction_status": "extracted",
       "value": "group",
@@ -2482,9 +3736,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "group",
-           "start_char": 1041,
-           "end_char": 1046
+           "text": "group difference",
+           "start_char": 10293,
+           "end_char": 10309
           }
          ]
         }
@@ -2494,45 +3748,32 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
       }
      },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "stimulant-naive controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
           {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "controls",
-             "start_char": 860,
-             "end_char": 868
-            }
-           ]
+           "text": "lowLevCU vs. highLevCU",
+           "start_char": 15466,
+           "end_char": 15488
           }
          ]
         }
-       },
-       "groups": [
-        "grp_stimulant_naive_controls"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
+       ]
+      }
+     },
+     "levels": [
       {
        "level": {
         "extraction_status": "extracted",
@@ -2545,9 +3786,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "lowLevCU",
-             "start_char": 750,
-             "end_char": 758
+             "text": "lowLevCU vs. highLevCU",
+             "start_char": 15466,
+             "end_char": 15488
             }
            ]
           }
@@ -2555,12 +3796,12 @@
         }
        },
        "groups": [
-        "grp_lowlevcu"
+        "grp_lowLevCU"
        ],
        "order": {
         "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
+        "value": 1,
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -2572,22 +3813,99 @@
         "value": "highLevCU",
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "lowLevCU vs. highLevCU",
+             "start_char": 15466,
+             "end_char": 15488
+            }
+           ]
+          }
+         ]
         }
        },
        "groups": [
-        "grp_highlevcu"
+        "grp_highLevCU"
        ],
        "order": {
         "extraction_status": "extracted",
-        "value": 3,
-        "value_source": "reported",
+        "value": 2,
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
        }
       }
      ],
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "ANCOVAs",
+           "start_char": 15103,
+           "end_char": 15110
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Two cocaine-user groups: lowLevCU and highLevCU.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_age_two_cu",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "age",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age",
+           "start_char": 3744,
+           "end_char": 3747
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
      "variation_level": {
       "extraction_status": "extracted",
       "value": "between_subject",
@@ -2599,9 +3917,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "both CU groups",
-           "start_char": 8491,
-           "end_char": 8505
+           "text": "age and verbal IQ were introduced as covariates",
+           "start_char": 14948,
+           "end_char": 14995
           }
          ]
         }
@@ -2609,9 +3927,99 @@
       }
      },
      "functional_form": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "years",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Age (y)",
+           "start_char": 17503,
+           "end_char": 17510
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Participant age.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_verbal_iq_two_cu",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "verbal IQ",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "verbal IQ",
+           "start_char": 11786,
+           "end_char": 11795
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age and verbal IQ were introduced as covariates",
+           "start_char": 14948,
+           "end_char": 14995
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "assessment": "asm_verbal_iq",
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
       }
      },
      "unit": {
@@ -2621,13 +4029,315 @@
       }
      },
      "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Verbal IQ estimated with the Mehrfachwahl–Wortschatz–Intelligenztest.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_adhd_two_cu",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "ADHD-SR score",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Because ADHD has been linked to cognitive functioning in CU , and to alterations in brain structure , all ANCOVAs were additionally adjusted for the ADHD-SR score .",
+           "start_char": 14997,
+           "end_char": 15161
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "all ANCOVAs were additionally adjusted for the ADHD-SR score",
+           "start_char": 15099,
+           "end_char": 15159
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "assessment": "asm_adhd_sr",
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "unit": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "ADHD symptoms measured by the ADHD self-rating scale.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_abstinence_two_cu",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "abstinence duration",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "abstinence duration",
+           "start_char": 9155,
+           "end_char": 9174
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "lowLevCU and highLevCU differed in self-reported days since last use",
+           "start_char": 15553,
+           "end_char": 15621
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "days",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "days",
+           "start_char": 15602,
+           "end_char": 15606
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Self-reported days since last cocaine use.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_cumulative_cocaine_two_cu",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "cumulative lifetime dose of cocaine",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "cumulative cocaine dose",
+           "start_char": 15642,
+           "end_char": 15665
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "cumulative cocaine dose",
+           "start_char": 15642,
+           "end_char": 15665
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "g",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "g",
+           "start_char": 2,
+           "end_char": 3
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Cumulative lifetime cocaine dose.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
      }
     }
    ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Two-group ANCOVA comparing lowLevCU and highLevCU, adjusted for age, verbal IQ, ADHD-SR score, abstinence duration, and cumulative lifetime cocaine dose; Sidak-corrected post hoc comparisons.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "age, verbal IQ, ADHD, abstinence duration, and cumulative cocaine dose",
+         "start_char": 25725,
+         "end_char": 25795
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "ANCOVA",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Group differences analyses in cognitive performance and cortical thickness were conducted by analyses of covariance (ANCOVA), followed by Sidak-corrected post hoc comparisons.",
+         "start_char": 14732,
+         "end_char": 14907
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "preprocessing": [
     "prp_freesurfer"
    ]
@@ -2636,19 +4346,10 @@
  "preprocessings": [
   {
    "local_id": "prp_freesurfer",
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Cortical surface reconstruction and ROI extraction from structural MRI.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "software": {
     "extraction_status": "extracted",
     "value": [
-     "FreeSurfer v5.3.0",
-     "Desikan–Killiany Atlas"
+     "FreeSurfer v5.3.0"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2671,10 +4372,9 @@
     "extraction_status": "extracted",
     "value": [
      "cortical surface reconstruction",
-     "cortical parcellation",
-     "ROI extraction"
+     "cortical parcellation"
     ],
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2696,12 +4396,413 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "FreeSurfer v5.3.0 was used for cortical surface reconstruction from high-resolution T1-weighted MPRAGE scans and extraction of regional cortical thickness measures after Desikan–Killiany Atlas parcellation.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ROIs were extracted by parcelating the cortex using the Desikan–Killiany Atlas",
+         "start_char": 13317,
+         "end_char": 13395
+        }
+       ]
+      }
+     ]
+    }
    }
   }
  ],
+ "regions": [
+  {
+   "local_id": "r_mfg",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "middle frontal gyrus",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "middle frontal gyrus",
+         "start_char": 1556,
+         "end_char": 1576
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "ROIs were extracted by parcelating the cortex using the Desikan–Killiany Atlas .",
+         "start_char": 13317,
+         "end_char": 13397
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ROIs",
+         "start_char": 13317,
+         "end_char": 13321
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "Desikan–Killiany Atlas",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "ROIs were extracted by parcelating the cortex using the Desikan–Killiany Atlas .",
+         "start_char": 13317,
+         "end_char": 13397
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Middle frontal gyrus region of interest, comprising the caudal and rostral middle frontal gyri, extracted by cortical parcellation using the Desikan–Killiany Atlas.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the middle frontal gyrus (MFG, caudal and rostral MFG)",
+         "start_char": 13590,
+         "end_char": 13644
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "reg_inferior_frontal_gyrus",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "inferior frontal gyrus",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "inferior frontal gyrus",
+         "start_char": 13646,
+         "end_char": 13668
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "Desikan–Killiany Atlas",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Desikan–Killiany Atlas",
+         "start_char": 13373,
+         "end_char": 13395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Inferior frontal gyrus region of interest comprising pars opercularis, pars orbitalis, and pars triangularis.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_lateral_orbitofrontal_gyrus",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "lateral orbitofrontal gyrus",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "lateral orbitofrontal gyrus",
+         "start_char": 13737,
+         "end_char": 13764
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "Desikan–Killiany Atlas",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Desikan–Killiany Atlas",
+         "start_char": 13373,
+         "end_char": 13395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Lateral orbitofrontal gyrus region of interest.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_superior_frontal_gyrus",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "superior frontal gyrus",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "superior frontal gyrus",
+         "start_char": 13794,
+         "end_char": 13816
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "Desikan–Killiany Atlas",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Desikan–Killiany Atlas",
+         "start_char": 13373,
+         "end_char": 13395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Superior frontal gyrus region of interest associated with executive functions.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_pericalcarine_cortex",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "pericalcarine cortex",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "pericalcarine cortex",
+         "start_char": 13875,
+         "end_char": 13895
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "Desikan–Killiany Atlas",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Desikan–Killiany Atlas",
+         "start_char": 13373,
+         "end_char": 13395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Pericalcarine cortex region used as a control region because of its low concentration of dopamine transporters and low involvement in executive functions.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ],
+ "study_type": [
+  "Comparative Study",
+  "Journal Article",
+  "Research Support, Non-U.S. Gov't"
+ ],
+ "language": [
+  "eng"
+ ],
  "tables": [
   {
-   "local_id": "Tab1",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -2733,7 +4834,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "0bd3a6f5d5afa7b93f7e315c0a3a67a211e50e09fa75fffcaff5c2aa7cb6a8ca",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2916,12 +5017,12 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "assessments": [
+ "tasks": [
   {
-   "local_id": "asm_structured_clinical_intervie",
+   "local_id": "tsk_neuropsychological_test_batt",
    "name": {
     "extraction_status": "extracted",
-    "value": "Structured Clinical Interview (SCID-I)",
+    "value": "Neuropsychological test battery",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2930,9 +5031,9 @@
        "source": "repair_pass",
        "spans": [
         {
-         "text": "Structured Clinical Interview (SCID-I)",
-         "start_char": 11578,
-         "end_char": 11616
+         "text": "Neuropsychological test battery",
+         "start_char": 11856,
+         "end_char": 11887
         }
        ]
       }
@@ -2941,82 +5042,39 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Structured Clinical Interview conducted according to DSM-IV.",
+    "value": "Study 1 cognitive test battery consisting of the Letter Number Sequencing Task, German Rey Auditory Verbal Learning Test, and CANTAB Rapid Visual Processing, Spatial Working Memory, Intra/Extradimensional Set-Shifting, and Paired Associates Learning tests.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    },
-   "assessment_type": {
+   "stimulus_modality": {
     "extraction_status": "extracted",
-    "value": "structured clinical interview",
+    "value": [
+     "none"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
-   }
+   },
+   "performance_measures": {
+    "extraction_status": "extracted",
+    "value": [
+     "Global cognitive index",
+     "Attention",
+     "Working memory",
+     "Declarative memory",
+     "Executive function"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquisitions": [
+    "acq_mri"
+   ]
   }
- ],
- "regions": [
-  {
-   "local_id": "reg_middle_frontal_gyrus",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "middle frontal gyrus (MFG)",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "Desikan–Killiany Atlas",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Desikan–Killiany Atlas",
-         "start_char": 13373,
-         "end_char": 13395
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Middle frontal gyrus ROI comprising caudal and rostral middle frontal gyrus.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
- "study_type": [
-  "Comparative Study",
-  "Journal Article",
-  "Research Support, Non-U.S. Gov't"
  ]
 }

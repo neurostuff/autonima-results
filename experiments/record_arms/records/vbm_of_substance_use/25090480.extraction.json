@@ -22,22 +22,11 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "A 2×2 full factorial model was used to explore differences in GMV between NDs and Controls, NDs and Controls by sex, and group X sex interactions.",
+   "value": "Eighty NDs (41 males) and 80 Controls (41 males) matched by age, sex, and education years, met inclusion/exclusion criteria.",
    "value_source": "reported",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "literal_match",
-      "spans": [
-       {
-        "text": "A 2×2 full factorial model was used to explore differences in GMV between NDs and Controls, NDs and Controls by sex, and group X sex interactions.",
-        "start_char": 10488,
-        "end_char": 10634
-       }
-      ]
-     }
-    ]
+    "status": "not_found",
+    "unlocated_quotes": 1
    }
   },
   "allocation": {
@@ -50,7 +39,7 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -69,11 +58,15 @@
    }
   },
   "blinding": {
-   "extraction_status": "not_reported",
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
    "evidence": {
-    "status": "not_applicable"
+    "status": "not_found"
    }
-  }
+  },
+  "arms": [],
+  "timepoints": []
  },
  "analyses": [
   {
@@ -89,9 +82,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Among NDs compared to Controls, less GMV was observed in the thalamus, extending through to the medial orbitofrontal cortex, and bilateral cerebellum",
-         "start_char": 12225,
-         "end_char": 12374
+         "text": "NDs<Controls",
+         "start_char": 14240,
+         "end_char": 14252
         }
        ]
       }
@@ -119,11 +112,9 @@
     }
    },
    "prespecification": {
-    "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -172,7 +163,7 @@
      }
     },
     {
-     "group": "grp_controls",
+     "group": "grp_control",
      "n": {
       "extraction_status": "extracted",
       "value": 80,
@@ -204,15 +195,39 @@
        "value": "NDs",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "less GMV was observed in NDs",
+            "start_char": 19155,
+            "end_char": 19183
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "less GMV",
+            "start_char": 1205,
+            "end_char": 1213
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -229,15 +244,39 @@
        "value": "Controls",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Controls",
+            "start_char": 1196,
+            "end_char": 1204
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "positive",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "greater GMV",
+            "start_char": 1272,
+            "end_char": 1283
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -251,9 +290,21 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "contrast",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "A 2×2 full factorial model was used to explore differences in GMV between NDs and Controls",
+          "start_char": 10488,
+          "end_char": 10578
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
@@ -262,16 +313,28 @@
       "value": "t",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "T-value",
+           "start_char": 14116,
+           "end_char": 14123
+          }
+         ]
+        }
+       ]
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -282,30 +345,18 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_vbm_factorial",
-   "inference_settings": "inf_whole_brain_fwe",
+   "model_estimation": "mod_vbm",
+   "inference_settings": "inf_vbm",
    "tables": [
-    "pone-0104102-t002",
-    "pone-0104102-t001"
+    "tbltable2",
+    "tbltable1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "pone-0104102-t002#1",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Clusters of gray matter volume differences between NDs and Controls.",
-         "start_char": 13956,
-         "end_char": 14024
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "coordinate_space": {
@@ -357,9 +408,6 @@
      "status": "not_applicable"
     }
    },
-   "acquisitions": [
-    "acq_mri_t1"
-   ],
    "assessments": [
     "asm_fagerstrom_test_for"
    ]
@@ -377,9 +425,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Among NDs compared to Controls, less GMV was observed in the thalamus, extending through to the medial orbitofrontal cortex, and bilateral cerebellum whereas greater GMV was observed in bilateral putamen and right parahippocampus",
-         "start_char": 12225,
-         "end_char": 12454
+         "text": "NDs>Controls",
+         "start_char": 14490,
+         "end_char": 14502
         }
        ]
       }
@@ -407,11 +455,9 @@
     }
    },
    "prespecification": {
-    "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -460,7 +506,7 @@
      }
     },
     {
-     "group": "grp_controls",
+     "group": "grp_control",
      "n": {
       "extraction_status": "extracted",
       "value": 80,
@@ -492,15 +538,28 @@
        "value": "NDs",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "not_found",
+        "unlocated_quotes": 1
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "positive",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "greater GMV",
+            "start_char": 1272,
+            "end_char": 1283
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -517,15 +576,39 @@
        "value": "Controls",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Controls",
+            "start_char": 1196,
+            "end_char": 1204
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "less GMV",
+            "start_char": 1205,
+            "end_char": 1213
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -539,9 +622,21 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "contrast",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "A 2×2 full factorial model was used to explore differences in GMV between NDs and Controls",
+          "start_char": 10488,
+          "end_char": 10578
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
@@ -550,16 +645,28 @@
       "value": "t",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "T-value",
+           "start_char": 14116,
+           "end_char": 14123
+          }
+         ]
+        }
+       ]
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -570,30 +677,18 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_vbm_factorial",
-   "inference_settings": "inf_whole_brain_fwe",
+   "model_estimation": "mod_vbm",
+   "inference_settings": "inf_vbm",
    "tables": [
-    "pone-0104102-t002",
-    "pone-0104102-t001"
+    "tbltable2",
+    "tbltable1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "pone-0104102-t002#2",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Clusters of gray matter volume differences between NDs and Controls.",
-         "start_char": 13956,
-         "end_char": 14024
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "coordinate_space": {
@@ -621,23 +716,12 @@
     "value": [
      "Among NDs compared to Controls, greater GMV was observed in bilateral putamen and right parahippocampus.",
      "In the present study, NDs had more GMV than Controls in the bilateral putamen.",
-     "In the present study, the parahippocampus showed greater GMV in NDs compared to Controls."
+     "The parahippocampus showed greater GMV in NDs compared to Controls."
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Among NDs compared to Controls, less GMV was observed in the thalamus, extending through to the medial orbitofrontal cortex, and bilateral cerebellum whereas greater GMV was observed in bilateral putamen and right parahippocampus",
-         "start_char": 12225,
-         "end_char": 12454
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "model_representation_notes": {
@@ -646,9 +730,6 @@
      "status": "not_applicable"
     }
    },
-   "acquisitions": [
-    "acq_mri_t1"
-   ],
    "assessments": [
     "asm_fagerstrom_test_for"
    ]
@@ -666,26 +747,6 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Female NDs had less GMV than female Controls in the thalamus, left cerebellum, left ventrolateral prefrontal cortex, and medial orbitofrontal cortex.",
-         "start_char": 12610,
-         "end_char": 12759
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Females: NDs < Controls",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
          "text": "Females: NDs<Controls",
          "start_char": 14769,
          "end_char": 14790
@@ -695,12 +756,30 @@
      ]
     }
    },
-   "prespecification": {
+   "definition": {
     "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
+    "value": "Female NDs < female Controls",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Female NDs had less GMV than female Controls",
+         "start_char": 12610,
+         "end_char": 12654
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -738,9 +817,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "39",
-           "start_char": 7468,
-           "end_char": 7470
+           "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
+           "start_char": 6902,
+           "end_char": 6950
           }
          ]
         }
@@ -749,7 +828,7 @@
      }
     },
     {
-     "group": "grp_controls_female",
+     "group": "grp_control_female",
      "n": {
       "extraction_status": "extracted",
       "value": 39,
@@ -761,9 +840,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "39",
-           "start_char": 7468,
-           "end_char": 7470
+           "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
+           "start_char": 6902,
+           "end_char": 6950
           }
          ]
         }
@@ -781,15 +860,39 @@
        "value": "NDs",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Female NDs",
+            "start_char": 1431,
+            "end_char": 1441
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "less GMV",
+            "start_char": 1205,
+            "end_char": 1213
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -806,15 +909,39 @@
        "value": "Controls",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "female Controls",
+            "start_char": 12117,
+            "end_char": 12132
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "positive",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "greater GMV",
+            "start_char": 1272,
+            "end_char": 1283
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -828,16 +955,28 @@
       "term": "trm_sex",
       "level": {
        "extraction_status": "extracted",
-       "value": "female",
+       "value": "Female",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Female NDs",
+            "start_char": 1431,
+            "end_char": 1441
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "held",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -853,9 +992,21 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "contrast",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Female NDs had less GMV than female Controls",
+          "start_char": 12610,
+          "end_char": 12654
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
@@ -864,16 +1015,28 @@
       "value": "t",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "T-value",
+           "start_char": 14116,
+           "end_char": 14123
+          }
+         ]
+        }
+       ]
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -884,30 +1047,18 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_vbm_factorial",
-   "inference_settings": "inf_whole_brain_fwe",
+   "model_estimation": "mod_vbm",
+   "inference_settings": "inf_vbm",
    "tables": [
-    "pone-0104102-t002",
-    "pone-0104102-t001"
+    "tbltable2",
+    "tbltable1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "pone-0104102-t002#3",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Clusters of gray matter volume differences between NDs and Controls.",
-         "start_char": 13956,
-         "end_char": 14024
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "coordinate_space": {
@@ -934,7 +1085,8 @@
     "extraction_status": "extracted",
     "value": [
      "Female NDs had less GMV than female Controls in the thalamus, left cerebellum, left ventrolateral prefrontal cortex, and medial orbitofrontal cortex.",
-     "Female NDs also had lower GMV in the left cerebellum and in the ventral medial cortex and medial orbitofrontal cortex with no areas of greater GMV."
+     "There were no brain regions in which female NDs had greater GMV than female Controls.",
+     "GMV in prefrontal regions was unchanged in male NDs compared to male Controls but was less in female NDs compared to female Controls."
     ],
     "value_source": "reported",
     "evidence": {
@@ -959,9 +1111,6 @@
      "status": "not_applicable"
     }
    },
-   "acquisitions": [
-    "acq_mri_t1"
-   ],
    "assessments": [
     "asm_fagerstrom_test_for"
    ]
@@ -979,26 +1128,6 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "ND males had significantly less GMV in the thalamus and bilateral cerebellum and significantly greater GMV in the bilateral parahippocampus (extending into the left putamen) compared to male Controls.",
-         "start_char": 12846,
-         "end_char": 13046
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Males: NDs < Controls",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
          "text": "Males: NDs<Controls",
          "start_char": 15291,
          "end_char": 15310
@@ -1008,12 +1137,19 @@
      ]
     }
    },
-   "prespecification": {
+   "definition": {
     "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
+    "value": "Male NDs < male Controls",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -1051,9 +1187,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "41",
-           "start_char": 642,
-           "end_char": 644
+           "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
+           "start_char": 6902,
+           "end_char": 6950
           }
          ]
         }
@@ -1062,7 +1198,7 @@
      }
     },
     {
-     "group": "grp_controls_male",
+     "group": "grp_control_male",
      "n": {
       "extraction_status": "extracted",
       "value": 41,
@@ -1074,9 +1210,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "41",
-           "start_char": 642,
-           "end_char": 644
+           "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
+           "start_char": 6902,
+           "end_char": 6950
           }
          ]
         }
@@ -1094,15 +1230,39 @@
        "value": "NDs",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "ND males",
+            "start_char": 12846,
+            "end_char": 12854
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "less GMV",
+            "start_char": 1205,
+            "end_char": 1213
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -1119,15 +1279,39 @@
        "value": "Controls",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "male Controls",
+            "start_char": 12068,
+            "end_char": 12081
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "positive",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "greater GMV",
+            "start_char": 1272,
+            "end_char": 1283
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -1141,16 +1325,28 @@
       "term": "trm_sex",
       "level": {
        "extraction_status": "extracted",
-       "value": "male",
+       "value": "Male",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "male",
+            "start_char": 645,
+            "end_char": 649
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "held",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -1166,9 +1362,10 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "contrast",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "not_found",
+      "unlocated_quotes": 1
      }
     },
     "statistic": {
@@ -1177,16 +1374,28 @@
       "value": "t",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "T-value",
+           "start_char": 14116,
+           "end_char": 14123
+          }
+         ]
+        }
+       ]
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -1197,30 +1406,18 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_vbm_factorial",
-   "inference_settings": "inf_whole_brain_fwe",
+   "model_estimation": "mod_vbm",
+   "inference_settings": "inf_vbm",
    "tables": [
-    "pone-0104102-t002",
-    "pone-0104102-t001"
+    "tbltable2",
+    "tbltable1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "pone-0104102-t002#4",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Clusters of gray matter volume differences between NDs and Controls.",
-         "start_char": 13956,
-         "end_char": 14024
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "coordinate_space": {
@@ -1247,23 +1444,12 @@
     "extraction_status": "extracted",
     "value": [
      "ND males had significantly less GMV in the thalamus and bilateral cerebellum compared to male Controls.",
-     "Male NDs had lower GMV in bilateral cerebellum."
+     "The cerebellum was identified as a region wherein less GMV was observed in NDs compared to Controls; however, sex-specific analyses show this finding to be stronger and bilateral in male NDs."
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ND males had significantly less GMV in the thalamus and bilateral cerebellum and significantly greater GMV in the bilateral parahippocampus (extending into the left putamen) compared to male Controls.",
-         "start_char": 12846,
-         "end_char": 13046
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "model_representation_notes": {
@@ -1272,9 +1458,6 @@
      "status": "not_applicable"
     }
    },
-   "acquisitions": [
-    "acq_mri_t1"
-   ],
    "assessments": [
     "asm_fagerstrom_test_for"
    ]
@@ -1292,26 +1475,6 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "ND males had significantly less GMV in the thalamus and bilateral cerebellum and significantly greater GMV in the bilateral parahippocampus (extending into the left putamen) compared to male Controls.",
-         "start_char": 12846,
-         "end_char": 13046
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Males: NDs > Controls",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
          "text": "Males: NDs>Controls",
          "start_char": 15544,
          "end_char": 15563
@@ -1321,12 +1484,19 @@
      ]
     }
    },
-   "prespecification": {
+   "definition": {
     "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
+    "value": "Male NDs > male Controls",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -1364,9 +1534,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "41",
-           "start_char": 642,
-           "end_char": 644
+           "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
+           "start_char": 6902,
+           "end_char": 6950
           }
          ]
         }
@@ -1375,7 +1545,7 @@
      }
     },
     {
-     "group": "grp_controls_male",
+     "group": "grp_control_male",
      "n": {
       "extraction_status": "extracted",
       "value": 41,
@@ -1387,9 +1557,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "41",
-           "start_char": 642,
-           "end_char": 644
+           "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
+           "start_char": 6902,
+           "end_char": 6950
           }
          ]
         }
@@ -1407,15 +1577,39 @@
        "value": "NDs",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "ND males",
+            "start_char": 12846,
+            "end_char": 12854
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "positive",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "greater GMV",
+            "start_char": 1272,
+            "end_char": 1283
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -1432,15 +1626,39 @@
        "value": "Controls",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "male Controls",
+            "start_char": 12068,
+            "end_char": 12081
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "less GMV",
+            "start_char": 1205,
+            "end_char": 1213
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
@@ -1454,16 +1672,28 @@
       "term": "trm_sex",
       "level": {
        "extraction_status": "extracted",
-       "value": "male",
+       "value": "Male",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "male",
+            "start_char": 645,
+            "end_char": 649
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "held",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -1479,9 +1709,10 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "contrast",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "not_found",
+      "unlocated_quotes": 1
      }
     },
     "statistic": {
@@ -1490,16 +1721,28 @@
       "value": "t",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "T-value",
+           "start_char": 14116,
+           "end_char": 14123
+          }
+         ]
+        }
+       ]
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -1510,30 +1753,18 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_vbm_factorial",
-   "inference_settings": "inf_whole_brain_fwe",
+   "model_estimation": "mod_vbm",
+   "inference_settings": "inf_vbm",
    "tables": [
-    "pone-0104102-t002",
-    "pone-0104102-t001"
+    "tbltable2",
+    "tbltable1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "pone-0104102-t002#5",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Clusters of gray matter volume differences between NDs and Controls.",
-         "start_char": 13956,
-         "end_char": 14024
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "coordinate_space": {
@@ -1560,7 +1791,61 @@
     "extraction_status": "extracted",
     "value": [
      "ND males had significantly greater GMV in the bilateral parahippocampus, extending into the left putamen, compared to male Controls.",
-     "Male NDs had greater GMV in bilateral parahippocampus extending into the left putamen."
+     "In the present study, the parahippocampus showed greater GMV in NDs compared to Controls, but sex-specific analyses showed greater GMV in the parahippocampus only in male NDs."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "assessments": [
+    "asm_fagerstrom_test_for"
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "local_id": "grp_nd",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "NDs",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "nicotine dependence"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1570,118 +1855,47 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "ND males had significantly less GMV in the thalamus and bilateral cerebellum and significantly greater GMV in the bilateral parahippocampus (extending into the left putamen) compared to male Controls.",
-         "start_char": 12846,
-         "end_char": 13046
+         "text": "The Fagerstrom Test for Nicotine Dependence (FTND)  [26]  assessed severity of nicotine dependence among NDs.",
+         "start_char": 6342,
+         "end_char": 6451
         }
        ]
       }
      ]
     }
    },
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "acquisitions": [
-    "acq_mri_t1"
-   ],
-   "assessments": [
-    "asm_fagerstrom_test_for"
-   ]
-  },
-  {
-   "local_id": "a_prose_1",
-   "name": {
+   "acquired_count": {
     "extraction_status": "extracted",
-    "value": "Within male NDs, GMV in the left putamen was correlated with number of pack years",
+    "value": 80,
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Within male NDs, GMV in the left putamen was correlated with number of pack years.",
-         "start_char": 1677,
-         "end_char": 1759
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Within male NDs, GMV in the left putamen was correlated with number of pack years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Within male NDs, GMV in the left putamen was correlated with number of pack years.",
-         "start_char": 1677,
-         "end_char": 1759
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "prespecification": {
-    "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Within the group of ND individuals, correlation analyses revealed that number of pack years was positively correlated with GMV in the left putamen in males",
-         "start_char": 16093,
-         "end_char": 16248
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "(2011b) observed a trend in dorsolateral prefrontal cortex, yet no correlations were observed in the ROI analysis conducted by Brody and colleagues  [10] .",
-         "start_char": 24364,
-         "end_char": 24519
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "regions": [
-    "reg_left_putamen"
-   ],
-   "measure": "mea_gmv",
-   "groups": [
+   "sex_distribution": [
     {
-     "group": "grp_nd_male",
-     "n": {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Male",
+           "start_char": 1567,
+           "end_char": 1571
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
       "extraction_status": "extracted",
       "value": 41,
       "value_source": "reported",
@@ -1700,264 +1914,146 @@
         }
        ]
       }
-     }
-    }
-   ],
-   "effect": {
-    "cells": [
-     {
-      "term": "trm_pack_years",
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "level": {
-       "extraction_status": "extracted",
-       "value": "number of pack years",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "number of pack years",
-            "start_char": 1738,
-            "end_char": 1758
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "number of pack years",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "number of pack years",
-            "start_char": 1738,
-            "end_char": 1758
-           }
-          ]
-         }
-        ]
-       }
-      }
-     }
-    ],
-    "kind": {
-     "extraction_status": "extracted",
-     "value": "cross_subject_regression",
-     "value_source": "reported",
-     "evidence": {
-      "status": "not_found"
-     }
-    },
-    "statistic": {
-     "family": {
+     },
+     "percentage": {
       "extraction_status": "extracted",
-      "value": "correlation",
+      "value": 51.3,
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "51.3",
+           "start_char": 7463,
+           "end_char": 7467
+          }
+         ]
+        }
+       ]
       }
      },
-     "degrees_of_freedom_numerator": {
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 80,
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Eighty NDs (41 males)",
+           "start_char": 6902,
+           "end_char": 6923
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
+     }
+    },
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Female",
+           "start_char": 1431,
+           "end_char": 1437
+          }
+         ]
+        }
+       ]
+      }
      },
-     "degrees_of_freedom_denominator": {
+     "count": {
+      "extraction_status": "extracted",
+      "value": 39,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "39",
+           "start_char": 7468,
+           "end_char": 7470
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 48.7,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "48.7",
+           "start_char": 7471,
+           "end_char": 7475
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 80,
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
+           "start_char": 6902,
+           "end_char": 6950
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      }
     }
-   },
-   "details": {
-    "details_type": "MassUnivariateDetails"
-   },
-   "acquisitions": [
-    "acq_mri_t1"
    ],
-   "model_estimation": "mod_vbm_factorial",
-   "source_table_analysis": {
-    "extraction_status": "extracted",
-    "value": "prose#1",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Within the group of ND individuals, correlation analyses revealed that number of pack years was positively correlated with GMV in the left putamen in males",
-         "start_char": 16093,
-         "end_char": 16248
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "coordinate_space": {
-    "extraction_status": "extracted",
-    "value": "MNI",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Coordinates listed are in Montreal Neurological Institute (MNI) space.",
-         "start_char": 15902,
-         "end_char": 15972
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Within male NDs, GMV in the left putamen was positively correlated with number of pack years (r=.38, p=.018).",
-     "Positive associations were observed between pack years and GMV in the left putamen in male NDs."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Within the group of ND individuals, correlation analyses revealed that number of pack years was positively correlated with GMV in the left putamen in males (  r =   .38,   p   = 0.018).",
-         "start_char": 16093,
-         "end_char": 16278
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "tables": [
-    "pone-0104102-t002"
-   ],
-   "assessments": [
-    "asm_fagerstrom_test_for"
-   ]
-  }
- ],
- "groups": [
-  {
-   "local_id": "grp_nd",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "NDs",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Eighty NDs (41 males) and 80 Controls (41 males) matched by age, sex, and education years, met inclusion/exclusion criteria",
-         "start_char": 6902,
-         "end_char": 7025
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Physically healthy NDs and Controls were recruited",
-         "start_char": 5948,
-         "end_char": 5998
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Physically healthy NDs and Controls were recruited",
-         "start_char": 5948,
-         "end_char": 5998
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 80,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
-         "start_char": 6902,
-         "end_char": 6950
-        }
-       ]
-      }
-     ]
-    }
-   },
    "description": {
     "extraction_status": "extracted",
-    "value": "Physically healthy nicotine-dependent cigarette smokers, compared with matched nonsmoking controls in a voxel-based morphometry study.",
+    "value": "Physically healthy nicotine-dependent cigarette smokers; group compared with matched nonsmoking controls using voxel-based morphometry.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1966,9 +2062,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Physically healthy NDs and Controls were recruited",
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
          "start_char": 5948,
-         "end_char": 5998
+         "end_char": 6092
         }
        ]
       }
@@ -1992,19 +2088,8 @@
     "value": 80,
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
-         "start_char": 6902,
-         "end_char": 6950
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "excluded_count": {
@@ -2016,9 +2101,10 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Nicotine dependence",
      "Physically healthy",
-     "Met study screening requirements"
+     "Nicotine dependent",
+     "Cigarette smoker",
+     "Met study inclusion and exclusion criteria"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2028,9 +2114,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Physically healthy NDs",
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
          "start_char": 5948,
-         "end_char": 5970
+         "end_char": 6092
         }
        ]
       }
@@ -2041,9 +2127,9 @@
     "extraction_status": "extracted",
     "value": [
      "Current DSM-IV Axis I diagnoses other than nicotine dependence",
-     "Lifetime head injury with loss of consciousness for more than 3 minutes",
+     "Lifetime history of head injury with loss of consciousness for more than 3 minutes",
      "Significant alcohol or drug history",
-     "MRI contraindications",
+     "Contraindications for MRI",
      "Clinically significant medical conditions"
     ],
     "value_source": "reported",
@@ -2141,10 +2227,10 @@
      ]
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Nicotine dependence"
+     "Nicotine-dependent cigarette smokers"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2154,9 +2240,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "nicotine dependence",
-         "start_char": 481,
-         "end_char": 500
+         "text": "Characteristics of nicotine-dependent cigarette smokers and non-smoking controls.",
+         "start_char": 7171,
+         "end_char": 7252
         }
        ]
       }
@@ -2185,7 +2271,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Fagerstrom Test for Nicotine Dependence was used to assess severity; smokers smoked a cigarette to satiety approximately 45 minutes before scanning.",
+    "value": "Nicotine dependence assessed with the Fagerstrom Test for Nicotine Dependence; male participants smoked more cigarettes per day and had higher pack-years than female participants.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2217,7 +2303,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Years of education; male NDs mean 14.1 (SD 2.0), female NDs mean 14.8 (SD 2.4).",
+    "value": "Years of education; male NDs mean 14.1 years (SD 2.0) and female NDs mean 14.8 years (SD 2.4).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2226,9 +2312,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Education level\t14.1\t2.0\t14.8\t2.4",
+         "text": "Education level\t14.1\t2.0\t14.8\t2.4\t13.6\t2.2\t14.2\t2.0",
          "start_char": 7575,
-         "end_char": 7608
+         "end_char": 7626
         }
        ]
       }
@@ -2241,12 +2327,64 @@
      "status": "not_applicable"
     }
    },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
    "diagnostic_instrument": [
     "asm_fagerstrom_test_for"
    ]
   },
   {
-   "local_id": "grp_controls",
+   "local_id": "grp_control",
    "name": {
     "extraction_status": "extracted",
     "value": "Controls",
@@ -2278,19 +2416,21 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Physically healthy NDs and Controls were recruited",
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
          "start_char": 5948,
-         "end_char": 5998
+         "end_char": 6092
         }
        ]
       }
      ]
     }
    },
-   "is_healthy": {
+   "medical_condition": {
     "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
+    "value": [
+     "no reported medical, neurological, or psychiatric condition"
+    ],
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2298,9 +2438,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Physically healthy NDs and Controls were recruited",
-         "start_char": 5948,
-         "end_char": 5998
+         "text": "Urine drug screens verified the absence of illicit drugs in all subjects and the absence of nicotine and its major metabolite, cotinine, in Controls.",
+         "start_char": 6752,
+         "end_char": 6901
         }
        ]
       }
@@ -2312,27 +2452,17 @@
     "value": 80,
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "80 Controls",
-         "start_char": 6928,
-         "end_char": 6939
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Physically healthy nonsmoking control participants matched to nicotine-dependent participants by age, sex, and education years.",
+    "value": "Physically healthy nonsmoking controls matched to nicotine-dependent participants by age, sex, and education years.",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "approached_count": {
@@ -2352,19 +2482,8 @@
     "value": 80,
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "80 Controls",
-         "start_char": 6928,
-         "end_char": 6939
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "excluded_count": {
@@ -2377,13 +2496,24 @@
     "extraction_status": "extracted",
     "value": [
      "Physically healthy",
-     "Nonsmoking status",
-     "Matched by age, sex, and education years",
-     "Negative urine screen for nicotine and cotinine"
+     "Nonsmoker",
+     "Met study inclusion and exclusion criteria"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
     }
    },
    "exclusion_criteria": {
@@ -2392,8 +2522,9 @@
      "Current DSM-IV Axis I diagnoses",
      "Lifetime head injury with loss of consciousness for more than 3 minutes",
      "Significant alcohol or drug history",
-     "MRI contraindications",
-     "Clinically significant medical conditions"
+     "Contraindications for MRI",
+     "Clinically significant medical conditions",
+     "Positive urine test for nicotine or cotinine"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2490,10 +2621,10 @@
      ]
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "No current DSM-IV Axis I diagnosis; healthy controls"
+     "Nonsmokers"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2503,9 +2634,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "clinically significant medical conditions",
-         "start_char": 6709,
-         "end_char": 6750
+         "text": "Characteristics of nicotine-dependent cigarette smokers and non-smoking controls.",
+         "start_char": 7171,
+         "end_char": 7252
         }
        ]
       }
@@ -2534,7 +2665,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Nonsmoking controls; urine drug screen verified absence of illicit drugs, nicotine, and cotinine.",
+    "value": "No current DSM-IV Axis I diagnosis, significant alcohol or drug history, or clinically significant medical condition.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2566,7 +2697,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Years of education; male controls mean 13.6 (SD 2.2), female controls mean 14.2 (SD 2.0).",
+    "value": "Years of education; male controls mean 13.6 years (SD 2.2) and female controls mean 14.2 years (SD 2.0).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2589,6 +2720,58 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
    }
   },
   {
@@ -2604,9 +2787,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Female",
-         "start_char": 1431,
-         "end_char": 1437
+         "text": "Females: NDs<Controls",
+         "start_char": 14769,
+         "end_char": 14790
         }
        ]
       }
@@ -2624,29 +2807,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
-         "start_char": 6902,
-         "end_char": 6950
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Physically healthy NDs",
-         "start_char": 5948,
-         "end_char": 5970
+         "text": "Female NDs had less GMV than female Controls in the thalamus, left cerebellum, left ventrolateral prefrontal cortex, and medial orbitofrontal cortex.",
+         "start_char": 12610,
+         "end_char": 12759
         }
        ]
       }
@@ -2655,7 +2818,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Female nicotine-dependent cigarette smokers; n=39, analyzed as the female ND subgroup.",
+    "value": "Female nicotine-dependent cigarette smokers included in the sex-specific comparison with female nonsmoking controls.",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -2722,10 +2885,10 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Female",
-     "Nicotine dependent cigarette smoker",
      "Physically healthy",
-     "Met study screening requirements"
+     "Nicotine dependent",
+     "Female cigarette smoker",
+     "Met study inclusion and exclusion criteria"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2735,9 +2898,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Physically healthy NDs",
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
          "start_char": 5948,
-         "end_char": 5970
+         "end_char": 6092
         }
        ]
       }
@@ -2748,9 +2911,9 @@
     "extraction_status": "extracted",
     "value": [
      "Current DSM-IV Axis I diagnoses other than nicotine dependence",
-     "Head injury with loss of consciousness for more than 3 minutes",
+     "Lifetime head injury with loss of consciousness for more than 3 minutes",
      "Significant alcohol or drug history",
-     "MRI contraindications",
+     "Contraindications for MRI",
      "Clinically significant medical conditions"
     ],
     "value_source": "reported",
@@ -2761,8 +2924,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "lifetime history of head injury with loss of consciousness for more than 3 minutes, significant alcohol or drug history, contraindications for MRI, and clinically significant medical conditions.",
-         "start_char": 6557,
+         "text": "Exclusion criteria included current DSM-IV Axis I diagnoses (other than nicotine dependence in smokers), lifetime history of head injury with loss of consciousness for more than 3 minutes, significant alcohol or drug history, contraindications for MRI, and clinically significant medical conditions.",
+         "start_char": 6452,
          "end_char": 6751
         }
        ]
@@ -2874,10 +3037,10 @@
      ]
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Nicotine dependence"
+     "Nicotine-dependent cigarette smokers"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2887,9 +3050,31 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "nicotine dependence",
-         "start_char": 481,
-         "end_char": 500
+         "text": "Characteristics of nicotine-dependent cigarette smokers and non-smoking controls.",
+         "start_char": 7171,
+         "end_char": 7252
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "nicotine dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The Fagerstrom Test for Nicotine Dependence (FTND)  [26]  assessed severity of nicotine dependence among NDs.",
+         "start_char": 6342,
+         "end_char": 6451
         }
        ]
       }
@@ -2918,7 +3103,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Mean smoking duration 12.0 years; 13.2 cigarettes per day; FTND 4.3; 7.9 pack-years.",
+    "value": "Mean years smoking 12.0 (SD 8.4), cigarettes per day 13.2 (SD 5.6), FTND 4.3 (SD 1.9), and pack-years 7.9 (SD 6.0).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2950,7 +3135,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Mean 14.8 years of education (SD 2.4).",
+    "value": "Mean education 14.8 years (SD 2.4).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2959,9 +3144,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Education level\t14.1\t2.0\t14.8\t2.4",
+         "text": "Education level\t14.1\t2.0\t14.8\t2.4\t13.6\t2.2\t14.2\t2.0",
          "start_char": 7575,
-         "end_char": 7608
+         "end_char": 7626
         }
        ]
       }
@@ -2974,12 +3159,64 @@
      "status": "not_applicable"
     }
    },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
    "diagnostic_instrument": [
     "asm_fagerstrom_test_for"
    ]
   },
   {
-   "local_id": "grp_controls_female",
+   "local_id": "grp_control_female",
    "name": {
     "extraction_status": "extracted",
     "value": "female Controls",
@@ -2991,9 +3228,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Female",
-         "start_char": 1431,
-         "end_char": 1437
+         "text": "Females: NDs<Controls",
+         "start_char": 14769,
+         "end_char": 14790
         }
        ]
       }
@@ -3011,29 +3248,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "80 Controls",
-         "start_char": 6928,
-         "end_char": 6939
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Physically healthy NDs and Controls were recruited",
-         "start_char": 5948,
-         "end_char": 5998
+         "text": "Female NDs had less GMV than female Controls in the thalamus, left cerebellum, left ventrolateral prefrontal cortex, and medial orbitofrontal cortex.",
+         "start_char": 12610,
+         "end_char": 12759
         }
        ]
       }
@@ -3042,7 +3259,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Female nonsmoking healthy controls; n=39, matched to female nicotine-dependent participants.",
+    "value": "Female healthy nonsmoking controls included in the sex-specific comparison with female nicotine-dependent smokers.",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -3109,24 +3326,10 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
+     "Physically healthy",
+     "Nonsmoker",
      "Female",
-     "Healthy nonsmoker",
-     "Matched by age, sex, and education years",
-     "Negative urine nicotine and cotinine screen"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Current DSM-IV Axis I diagnosis",
-     "Head injury with loss of consciousness for more than 3 minutes",
-     "Significant alcohol or drug history",
-     "MRI contraindications",
-     "Clinically significant medical conditions"
+     "Met study inclusion and exclusion criteria"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3136,8 +3339,35 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "lifetime history of head injury with loss of consciousness for more than 3 minutes, significant alcohol or drug history, contraindications for MRI, and clinically significant medical conditions.",
-         "start_char": 6557,
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Current DSM-IV Axis I diagnoses",
+     "Lifetime head injury with loss of consciousness for more than 3 minutes",
+     "Significant alcohol or drug history",
+     "Contraindications for MRI",
+     "Clinically significant medical conditions",
+     "Positive urine test for nicotine or cotinine"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusion criteria included current DSM-IV Axis I diagnoses (other than nicotine dependence in smokers), lifetime history of head injury with loss of consciousness for more than 3 minutes, significant alcohol or drug history, contraindications for MRI, and clinically significant medical conditions.",
+         "start_char": 6452,
          "end_char": 6751
         }
        ]
@@ -3249,10 +3479,10 @@
      ]
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Healthy nonsmoker"
+     "Nonsmokers"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3262,9 +3492,31 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "clinically significant medical conditions",
-         "start_char": 6709,
-         "end_char": 6750
+         "text": "Characteristics of nicotine-dependent cigarette smokers and non-smoking controls.",
+         "start_char": 7171,
+         "end_char": 7252
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "No current DSM-IV Axis I diagnosis"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "There were no significant differences between NDs and Controls on age, sex, or education years.",
+         "start_char": 11491,
+         "end_char": 11586
         }
        ]
       }
@@ -3292,23 +3544,9 @@
     }
    },
    "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Nonsmoking control participants; negative urine screen for illicit drugs, nicotine, and cotinine.",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "the absence of nicotine and its major metabolite, cotinine, in Controls",
-         "start_char": 6829,
-         "end_char": 6900
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "medications": {
@@ -3325,7 +3563,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Mean 14.2 years of education (SD 2.0).",
+    "value": "Mean education 14.2 years (SD 2.0).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3348,6 +3586,58 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
    }
   },
   {
@@ -3363,9 +3653,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Male",
-         "start_char": 1567,
-         "end_char": 1571
+         "text": "Males: NDs<Controls",
+         "start_char": 15291,
+         "end_char": 15310
         }
        ]
       }
@@ -3383,29 +3673,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Eighty NDs (41 males) and 80 Controls (41 males)",
-         "start_char": 6902,
-         "end_char": 6950
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Physically healthy NDs",
-         "start_char": 5948,
-         "end_char": 5970
+         "text": "ND males had significantly less GMV in the thalamus and bilateral cerebellum and significantly greater GMV in the bilateral parahippocampus (extending into the left putamen) compared to male Controls.",
+         "start_char": 12846,
+         "end_char": 13046
         }
        ]
       }
@@ -3414,7 +3684,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Male nicotine-dependent cigarette smokers; n=41, analyzed as the male ND subgroup.",
+    "value": "Male nicotine-dependent cigarette smokers included in the sex-specific comparison with male nonsmoking controls.",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -3481,10 +3751,10 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Male",
-     "Nicotine dependent cigarette smoker",
      "Physically healthy",
-     "Met study screening requirements"
+     "Nicotine dependent",
+     "Male cigarette smoker",
+     "Met study inclusion and exclusion criteria"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3494,9 +3764,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Physically healthy NDs",
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
          "start_char": 5948,
-         "end_char": 5970
+         "end_char": 6092
         }
        ]
       }
@@ -3507,9 +3777,9 @@
     "extraction_status": "extracted",
     "value": [
      "Current DSM-IV Axis I diagnoses other than nicotine dependence",
-     "Head injury with loss of consciousness for more than 3 minutes",
+     "Lifetime head injury with loss of consciousness for more than 3 minutes",
      "Significant alcohol or drug history",
-     "MRI contraindications",
+     "Contraindications for MRI",
      "Clinically significant medical conditions"
     ],
     "value_source": "reported",
@@ -3520,8 +3790,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "lifetime history of head injury with loss of consciousness for more than 3 minutes, significant alcohol or drug history, contraindications for MRI, and clinically significant medical conditions.",
-         "start_char": 6557,
+         "text": "Exclusion criteria included current DSM-IV Axis I diagnoses (other than nicotine dependence in smokers), lifetime history of head injury with loss of consciousness for more than 3 minutes, significant alcohol or drug history, contraindications for MRI, and clinically significant medical conditions.",
+         "start_char": 6452,
          "end_char": 6751
         }
        ]
@@ -3633,10 +3903,10 @@
      ]
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Nicotine dependence"
+     "Nicotine-dependent cigarette smokers"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3646,9 +3916,31 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "nicotine dependence",
-         "start_char": 481,
-         "end_char": 500
+         "text": "Characteristics of nicotine-dependent cigarette smokers and non-smoking controls.",
+         "start_char": 7171,
+         "end_char": 7252
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "nicotine dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The Fagerstrom Test for Nicotine Dependence (FTND)  [26]  assessed severity of nicotine dependence among NDs.",
+         "start_char": 6342,
+         "end_char": 6451
         }
        ]
       }
@@ -3677,7 +3969,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Mean smoking duration 16.0 years; 16.1 cigarettes per day; FTND 4.6; 13.0 pack-years.",
+    "value": "Mean years smoking 16.0 (SD 11.3), cigarettes per day 16.1 (SD 6.1), FTND 4.6 (SD 1.7), and pack-years 13.0 (SD 9.9).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3709,7 +4001,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Mean 14.1 years of education (SD 2.0).",
+    "value": "Mean education 14.1 years (SD 2.0).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3718,9 +4010,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Education level\t14.1\t2.0\t14.8\t2.4",
+         "text": "Education level\t14.1\t2.0\t14.8\t2.4\t13.6\t2.2\t14.2\t2.0",
          "start_char": 7575,
-         "end_char": 7608
+         "end_char": 7626
         }
        ]
       }
@@ -3733,12 +4025,64 @@
      "status": "not_applicable"
     }
    },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
    "diagnostic_instrument": [
     "asm_fagerstrom_test_for"
    ]
   },
   {
-   "local_id": "grp_controls_male",
+   "local_id": "grp_control_male",
    "name": {
     "extraction_status": "extracted",
     "value": "male Controls",
@@ -3750,9 +4094,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Male",
-         "start_char": 1567,
-         "end_char": 1571
+         "text": "Males: NDs<Controls",
+         "start_char": 15291,
+         "end_char": 15310
         }
        ]
       }
@@ -3770,29 +4114,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "80 Controls",
-         "start_char": 6928,
-         "end_char": 6939
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Physically healthy NDs and Controls were recruited",
-         "start_char": 5948,
-         "end_char": 5998
+         "text": "ND males had significantly less GMV in the thalamus and bilateral cerebellum and significantly greater GMV in the bilateral parahippocampus (extending into the left putamen) compared to male Controls.",
+         "start_char": 12846,
+         "end_char": 13046
         }
        ]
       }
@@ -3801,7 +4125,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Male nonsmoking healthy controls; n=41, matched to male nicotine-dependent participants.",
+    "value": "Male healthy nonsmoking controls included in the sex-specific comparison with male nicotine-dependent smokers.",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -3868,24 +4192,10 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
+     "Physically healthy",
+     "Nonsmoker",
      "Male",
-     "Healthy nonsmoker",
-     "Matched by age, sex, and education years",
-     "Negative urine nicotine and cotinine screen"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Current DSM-IV Axis I diagnosis",
-     "Head injury with loss of consciousness for more than 3 minutes",
-     "Significant alcohol or drug history",
-     "MRI contraindications",
-     "Clinically significant medical conditions"
+     "Met study inclusion and exclusion criteria"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3895,8 +4205,35 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "lifetime history of head injury with loss of consciousness for more than 3 minutes, significant alcohol or drug history, contraindications for MRI, and clinically significant medical conditions.",
-         "start_char": 6557,
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Current DSM-IV Axis I diagnoses",
+     "Lifetime head injury with loss of consciousness for more than 3 minutes",
+     "Significant alcohol or drug history",
+     "Contraindications for MRI",
+     "Clinically significant medical conditions",
+     "Positive urine test for nicotine or cotinine"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusion criteria included current DSM-IV Axis I diagnoses (other than nicotine dependence in smokers), lifetime history of head injury with loss of consciousness for more than 3 minutes, significant alcohol or drug history, contraindications for MRI, and clinically significant medical conditions.",
+         "start_char": 6452,
          "end_char": 6751
         }
        ]
@@ -4008,10 +4345,10 @@
      ]
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Healthy nonsmoker"
+     "Nonsmokers"
     ],
     "value_source": "reported",
     "evidence": {
@@ -4021,9 +4358,31 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "clinically significant medical conditions",
-         "start_char": 6709,
-         "end_char": 6750
+         "text": "Characteristics of nicotine-dependent cigarette smokers and non-smoking controls.",
+         "start_char": 7171,
+         "end_char": 7252
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "No current DSM-IV Axis I diagnosis"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "There were no significant differences between NDs and Controls on age, sex, or education years.",
+         "start_char": 11491,
+         "end_char": 11586
         }
        ]
       }
@@ -4051,23 +4410,9 @@
     }
    },
    "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Nonsmoking control participants; negative urine screen for illicit drugs, nicotine, and cotinine.",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "the absence of nicotine and its major metabolite, cotinine, in Controls",
-         "start_char": 6829,
-         "end_char": 6900
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "medications": {
@@ -4084,7 +4429,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Mean 13.6 years of education (SD 2.2).",
+    "value": "Mean education 13.6 years (SD 2.2).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4107,56 +4452,10 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  }
- ],
- "acquisitions": [
-  {
-   "local_id": "acq_mri_t1",
-   "acquisition_type": "MRI",
-   "modality": {
-    "extraction_status": "extracted",
-    "value": "sMRI",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "High-resolution T1-weighted anatomical images were obtained",
-         "start_char": 8299,
-         "end_char": 8358
-        }
-       ]
-      }
-     ]
-    }
    },
-   "magnetic_field_strength_tesla": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": 3,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "3 Tesla",
-         "start_char": 8155,
-         "end_char": 8162
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "pulse_sequence_type": {
-    "extraction_status": "extracted",
-    "value": "3D-MPRAGE",
+    "value": "recruited",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4165,127 +4464,41 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "High-resolution T1-weighted anatomical images were obtained using a three dimensional- magnetization prepared rapid acquisition gradient echo (3D-MPRAGE) sequence (TR = 1620 ms, TE = 3 ms, flip angle = 15°, 160 contiguous slices of 1.0 mm).",
-         "start_char": 8299,
-         "end_char": 8539
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
         }
        ]
       }
      ]
     }
    },
-   "repetition_time_seconds": {
-    "extraction_status": "extracted",
-    "value": 1.62,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "TR = 1620 ms",
-         "start_char": 8463,
-         "end_char": 8475
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "echo_time_seconds": {
-    "extraction_status": "extracted",
-    "value": [
-     0.003
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "TE = 3 ms",
-         "start_char": 8477,
-         "end_char": 8486
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquisition_voxel_size_mm": {
-    "extraction_status": "extracted",
-    "value": [
-     1,
-     1,
-     1
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "160 contiguous slices of 1.0 mm",
-         "start_char": 8506,
-         "end_char": 8537
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquisition_duration_seconds": {
+   "sample_source_reference": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "device": "dev_siemens_trio"
-  }
- ],
- "devices": [
-  {
-   "local_id": "dev_siemens_trio",
-   "manufacturer": {
-    "extraction_status": "extracted",
-    "value": "Siemens",
-    "value_source": "reported",
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Imaging data were acquired on a Siemens 3 Tesla Trio whole-body scanner (Erlangen, Germany) at the Hospital of the University of Pennsylvania using a product eight-channel array coil.",
-         "start_char": 8115,
-         "end_char": 8298
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
-   "model": {
+   "is_healthy": {
     "extraction_status": "extracted",
-    "value": "Trio",
+    "value": true,
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Imaging data were acquired on a Siemens 3 Tesla Trio whole-body scanner (Erlangen, Germany) at the Hospital of the University of Pennsylvania using a product eight-channel array coil.",
-         "start_char": 8115,
-         "end_char": 8298
+         "text": "Physically healthy NDs and Controls were recruited via advertisements, flyers, and referrals for fMRI studies at the University of Pennsylvania.",
+         "start_char": 5948,
+         "end_char": 6092
         }
        ]
       }
@@ -4308,9 +4521,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "gray matter volume (GMV)",
-         "start_char": 301,
-         "end_char": 325
+         "text": "Voxel-based morphometry (VBM) studies have examined the effects of chronic smoking on the brain by comparing gray matter volume (GMV)",
+         "start_char": 3074,
+         "end_char": 3207
         }
        ]
       }
@@ -4387,203 +4600,12 @@
    }
   }
  ],
- "regions": [
-  {
-   "local_id": "reg_left_putamen",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "left putamen",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "L Putamen",
-         "start_char": 14581,
-         "end_char": 14590
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "same_study_analysis",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Clusters of gray matter volume differences between NDs and Controls.",
-         "start_char": 13956,
-         "end_char": 14024
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "functional_cluster",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Clusters of gray matter volume differences between NDs and Controls.",
-         "start_char": 13956,
-         "end_char": 14024
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Left putamen cluster identified by whole-brain VBM group comparison; peak MNI coordinate −28, 8, −8.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "L Putamen\t777\t−28\t8\t−8\t7.16\t0.001",
-         "start_char": 14581,
-         "end_char": 14614
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
- ],
- "preprocessings": [
-  {
-   "local_id": "prp_spm8_dartel",
-   "software": {
-    "extraction_status": "extracted",
-    "value": [
-     "SPM8",
-     "Matlab R2013"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Data were preprocessed using statistical mapping software, version 8 (SPM8; Wellcome Department of Cognitive Neurology, London, UK;   www.fil.ion.ucl.ac/spm  ) implemented in MatlabR2013 (MathWorksInc., Natick, MA, USA).",
-         "start_char": 8570,
-         "end_char": 8790
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "steps": {
-    "extraction_status": "extracted",
-    "value": [
-     "reorientation",
-     "segmentation",
-     "DARTEL registration",
-     "normalization to MNI space",
-     "Jacobian modulation",
-     "spatial smoothing"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The normalized modulated images were then smoothed with an 8-mm full width half maximum isotropic Gaussian kernel for statistical analyses.",
-         "start_char": 10089,
-         "end_char": 10228
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "smoothing_fwhm_mm": {
-    "extraction_status": "extracted",
-    "value": [
-     8
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "8-mm full width half maximum isotropic Gaussian kernel",
-         "start_char": 10148,
-         "end_char": 10202
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "T1-weighted images were reoriented, segmented into gray matter, white matter, and cerebrospinal fluid in SPM8, registered with study-specific DARTEL templates, normalized to MNI space, Jacobian-modulated, and smoothed with an 8-mm FWHM Gaussian kernel.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Reorientated images were segmented into gray matter, white matter and cerebral spinal fluid in native space using the New Segmentation algorithm implemented in SPM8.",
-         "start_char": 8916,
-         "end_char": 9081
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
- ],
  "model_estimations": [
   {
-   "local_id": "mod_vbm_factorial",
+   "local_id": "mod_vbm",
    "model_family": {
     "extraction_status": "extracted",
-    "value": [
-     "anova",
-     "ancova"
-    ],
+    "value": "anova",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -4603,7 +4625,7 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "2 × 2 full factorial model",
+    "value": "2 × 2 full factorial VBM model",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4612,9 +4634,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A 2×2 full factorial model",
+         "text": "A 2×2 full factorial model was used to explore differences in GMV between NDs and Controls, NDs and Controls by sex, and group X sex interactions.",
          "start_char": 10488,
-         "end_char": 10514
+         "end_char": 10634
         }
        ]
       }
@@ -4632,9 +4654,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Statistical parametric maps were created in SPM8 to perform between-group comparisons",
-         "start_char": 10342,
-         "end_char": 10427
+         "text": "A 2×2 full factorial model was used to explore differences in GMV between NDs and Controls, NDs and Controls by sex, and group X sex interactions.",
+         "start_char": 10488,
+         "end_char": 10634
         }
        ]
       }
@@ -4646,12 +4668,21 @@
     "value": "voxel",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Whole-brain GMV analyses were conducted using random field-based cluster-size testing",
+         "start_char": 10828,
+         "end_char": 10913
+        }
+       ]
+      }
+     ]
     }
    },
-   "preprocessing": [
-    "prp_spm8_dartel"
-   ],
    "terms": [
     {
      "local_id": "trm_group",
@@ -4666,9 +4697,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "differences in GMV between NDs and Controls",
-           "start_char": 10535,
-           "end_char": 10578
+           "text": "group X sex interactions",
+           "start_char": 10609,
+           "end_char": 10633
           }
          ]
         }
@@ -4680,19 +4711,7 @@
       "value": "categorical",
       "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "A 2×2 full factorial model",
-           "start_char": 10488,
-           "end_char": 10514
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "variation_level": {
@@ -4700,7 +4719,19 @@
       "value": "between_subject",
       "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "differences in GMV between NDs and Controls",
+           "start_char": 10535,
+           "end_char": 10578
+          }
+         ]
+        }
+       ]
       }
      },
      "levels": [
@@ -4726,16 +4757,12 @@
         }
        },
        "groups": [
-        "grp_nd",
-        "grp_nd_female",
-        "grp_nd_male"
+        "grp_nd"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "not_found"
+         "status": "not_applicable"
         }
        }
       },
@@ -4761,16 +4788,12 @@
         }
        },
        "groups": [
-        "grp_controls",
-        "grp_controls_female",
-        "grp_controls_male"
+        "grp_control"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "not_found"
+         "status": "not_applicable"
         }
        }
       }
@@ -4789,7 +4812,7 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Smoking group factor comparing nicotine-dependent participants with nonsmoking controls.",
+      "value": "Nicotine-dependent participants versus Controls",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -4835,19 +4858,7 @@
       "value": "categorical",
       "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "sex-specific volume differences",
-           "start_char": 12552,
-           "end_char": 12583
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "variation_level": {
@@ -4855,14 +4866,26 @@
       "value": "between_subject",
       "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "NDs and Controls by sex",
+           "start_char": 10580,
+           "end_char": 10603
+          }
+         ]
+        }
+       ]
       }
      },
      "levels": [
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "female",
+        "value": "Female",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -4882,21 +4905,19 @@
        },
        "groups": [
         "grp_nd_female",
-        "grp_controls_female"
+        "grp_control_female"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "not_found"
+         "status": "not_applicable"
         }
        }
       },
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "male",
+        "value": "Male",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -4916,14 +4937,12 @@
        },
        "groups": [
         "grp_nd_male",
-        "grp_controls_male"
+        "grp_control_male"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "not_found"
+         "status": "not_applicable"
         }
        }
       }
@@ -4942,7 +4961,7 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Sex factor comparing female and male participants.",
+      "value": "Sex category",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -4960,117 +4979,6 @@
        ]
       }
      }
-    },
-    {
-     "local_id": "trm_pack_years",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "number of pack years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "number of pack years",
-           "start_char": 1738,
-           "end_char": 1758
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "number of pack years",
-           "start_char": 1738,
-           "end_char": 1758
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Pack-years, smoking years X CPD/20.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "SD, standard deviation; CPD, cigarettes smoked per day; FTND, Fagerstrom Test for Nicotine Dependence; Pack-years, smoking years X CPD/20.aMale NDs>female NDs, t(79) = 2.21, p = 0.03.bMale NDs>female NDs, t(79) = 2.81, p = 0.007.",
-           "start_char": 7769,
-           "end_char": 7998
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "positively correlated",
-           "start_char": 16189,
-           "end_char": 16210
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "pack-years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Pack-years",
-           "start_char": 7872,
-           "end_char": 7882
-          }
-         ]
-        }
-       ]
-      }
-     }
     }
    ],
    "hrf_model": {
@@ -5081,33 +4989,36 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "2×2 full factorial model with age and estimated total global GMV as covariates; random-field-based cluster-size testing.",
+    "value": "2×2 full factorial model with age and estimated total global GMV as covariates; random field-based cluster-size testing; voxel threshold p≤0.001 and whole-brain FWE cluster probability p<0.025.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "Random field-based cluster-size testing",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "covariates included age and an estimate of total global GMV",
-         "start_char": 10767,
-         "end_char": 10826
+         "text": "Whole-brain GMV analyses were conducted using random field-based cluster-size testing, with structural differences considered significant if   p  ≤0.001, with a whole brain FWE-corrected cluster probability of   p  <0.025.",
+         "start_char": 10828,
+         "end_char": 11050
         }
        ]
       }
      ]
     }
    },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "software": {
     "extraction_status": "extracted",
-    "value": "SPM8 implemented in Matlab R2013.",
+    "value": "SPM8 implemented in MATLAB R2013",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -5116,9 +5027,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "SPM8",
-         "start_char": 946,
-         "end_char": 950
+         "text": "Data were preprocessed using statistical mapping software, version 8 (SPM8; Wellcome Department of Cognitive Neurology, London, UK;   www.fil.ion.ucl.ac/spm  ) implemented in MatlabR2013 (MathWorksInc., Natick, MA, USA).",
+         "start_char": 8570,
+         "end_char": 8790
         }
        ]
       }
@@ -5129,11 +5040,11 @@
  ],
  "inference_settings": [
   {
-   "local_id": "inf_whole_brain_fwe",
+   "local_id": "inf_vbm",
    "inference_level": {
     "extraction_status": "extracted",
     "value": "cluster",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -5221,9 +5132,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "FWE-corrected",
-         "start_char": 1124,
-         "end_char": 1137
+         "text": "whole brain FWE-corrected cluster probability",
+         "start_char": 1112,
+         "end_char": 1157
         }
        ]
       }
@@ -5257,11 +5168,9 @@
     }
    },
    "search_volume": {
-    "extraction_status": "extracted",
-    "value": "whole brain",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "neighborhood_definition": {
@@ -5281,8 +5190,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "random field-based cluster-size testing",
-         "start_char": 10874,
+         "text": "Whole-brain GMV analyses were conducted using random field-based cluster-size testing",
+         "start_char": 10828,
          "end_char": 10913
         }
        ]
@@ -5330,9 +5239,17 @@
    }
   }
  ],
+ "language": [
+  "eng"
+ ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, N.I.H., Extramural",
+  "Research Support, Non-U.S. Gov't"
+ ],
  "tables": [
   {
-   "local_id": "pone-0104102-t001",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -5359,7 +5276,7 @@
    }
   },
   {
-   "local_id": "pone-0104102-t002",
+   "local_id": "tbltable2",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 2",
@@ -5391,14 +5308,6 @@
     "evidence": {
      "status": "not_found"
     }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Clusters of gray matter volume differences between nicotine-dependent smokers and controls, including group and sex-specific effects.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
    }
   }
  ],
@@ -5407,7 +5316,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "8ad9bf9cb2236673cc3c6ab3ec1886b6bce1a5cfea09f3786adc7d0047cf2340",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -5504,7 +5413,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Assessment of severity of nicotine dependence among nicotine-dependent cigarette smokers.",
+    "value": "Assessment of severity of nicotine dependence among nicotine-dependent smokers.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -5512,17 +5421,12 @@
    },
    "assessment_type": {
     "extraction_status": "extracted",
-    "value": "nicotine dependence assessment",
+    "value": "nicotine dependence severity",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    }
   }
- ],
- "study_type": [
-  "Journal Article",
-  "Research Support, N.I.H., Extramural",
-  "Research Support, Non-U.S. Gov't"
  ]
 }

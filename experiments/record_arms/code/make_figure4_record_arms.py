@@ -47,9 +47,13 @@ from make_nature_methods_figures import (  # noqa: E402
 )
 
 ARMS = results.ARM_ORDER
+#: Hollow so a marker sitting on another is still two markers.
+HOLLOW = {"record, no evidence", "query, permissive"}
 STYLE = {"full text": ("o", INK),
          "record + evidence": ("s", "#0072B2"),
-         "record, no evidence": ("^", "#D55E00")}
+         "record, no evidence": ("^", "#D55E00"),
+         "query, strict": ("D", "#009E73"),
+         "query, permissive": ("v", "#CC79A7")}
 RESAMPLES, SEED = 20000, 0
 
 
@@ -69,14 +73,15 @@ def main() -> int:
     # with all four are drawn -- emotion regulation's `maintain` has no baseline run.
     rows_in = results.map_columns(args.metric)
     base = {(r["project"], r["column"]): r["baseline"] for r in rows_in}
-    matched = [((r["project"], r["column"]), {a: r[a] for a in ARMS}) for r in rows_in]
+    matched = [((r["project"], r["column"]), {a: r[a] for a in ARMS if a in r})
+               for r in rows_in]
     if not matched:
         sys.exit("no column has all three arms and a baseline; run `score` first")
-    print(f"  {len(matched)} columns with all three arms and a baseline")
+    print(f"  {len(matched)} columns with all three model arms and a baseline")
 
     rows, deltas, by_project = [], defaultdict(list), defaultdict(lambda: defaultdict(list))
     for (project, column), per_arm in matched:
-        for arm in ARMS:
+        for arm in per_arm:
             d = per_arm[arm] - base[(project, column)]
             deltas[arm].append(d)
             by_project[arm][project].append(d)
@@ -92,7 +97,7 @@ def main() -> int:
     print(f"wrote {args.out_csv}  ({len(rows)} rows, {len(matched)} columns)")
 
     stats = {}
-    for arm in ARMS:
+    for arm in [a for a in ARMS if deltas[a]]:
         d = deltas[arm]
         boot = cluster_bootstrap(by_project[arm], RESAMPLES, SEED)
         stats[arm] = {"mean": st.mean(d), "median": st.median(d),
@@ -112,7 +117,7 @@ def main() -> int:
     ax.plot([0, 1], [0, 1], color=RULE, lw=0.6, zorder=1)
     for key, per_arm in matched:
         project, _column = key
-        for arm in ARMS:
+        for arm in per_arm:
             marker, _ = STYLE[arm]
             ax.scatter([base[key]], [per_arm[arm]], s=12, marker=marker,
                        color=COLORS.get(project, "#7F7F7F"), edgecolors="white",
@@ -129,19 +134,21 @@ def main() -> int:
     # Colour means project and shape means arm in BOTH panels; a second colour encoding for
     # the arms here would contradict panel a. The three arm means are within 0.014 of each
     # other, so they are drawn as one grey band rather than three lines that would overplot.
-    lo_m, hi_m = min(stats[a]["mean"] for a in ARMS), max(stats[a]["mean"] for a in ARMS)
+    model_means = [stats[a]["mean"] for a in results.AUTONIMA_ARMS if a in stats]
+    lo_m, hi_m = min(model_means), max(model_means)
     ax.axhspan(lo_m, hi_m, color=MUTED, alpha=0.18, lw=0, zorder=1)
     for x, i in enumerate(order):
         key, per_arm = matched[i]
         project = key[0]
-        ys = [per_arm[a] - base[key] for a in ARMS]
+        here = [a for a in ARMS if a in per_arm]
+        ys = [per_arm[a] - base[key] for a in here]
         ax.plot([x, x], [min(ys), max(ys)], color=RULE, lw=0.5, zorder=2)
-        for arm, y in zip(ARMS, ys):
+        for arm, y in zip(here, ys):
             marker, _ = STYLE[arm]
             colour = COLORS.get(project, "#7F7F7F")
             ax.plot([x], [y], marker=marker, color=colour, markersize=3,
                     markeredgewidth=0.5, zorder=3,
-                    markerfacecolor=colour if arm != "record, no evidence" else "white")
+                    markerfacecolor=colour if arm not in HOLLOW else "white")
     ax.set_xlim(-1, len(matched))
     ax.set_xticks([])
     ax.set_xlabel(f"{len(matched)} benchmark columns, ordered by full-text advantage")
@@ -149,7 +156,8 @@ def main() -> int:
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     txt = "\n".join(
         f"{arm}: {stats[arm]['mean']:+.3f}  [{stats[arm]['lo']:+.3f}, {stats[arm]['hi']:+.3f}]"
-        for arm in ARMS)
+        f"  ({stats[arm]['n']})"
+        for arm in ARMS if arm in stats)
     ax.text(0.03, 0.97, txt, transform=ax.transAxes, va="top", fontsize=5,
             color=INK, linespacing=1.5)
     panel_label(ax, "b", dx=-0.18)
@@ -157,8 +165,8 @@ def main() -> int:
     handles = [Line2D([], [], marker="o", ls="", color=COLORS[p], markersize=3.2,
                       label=DISPLAY[p]) for p in dict.fromkeys(k[0] for k, _ in matched)]
     handles += [Line2D([], [], marker=STYLE[a][0], ls="", color=INK, markersize=3.2,
-                       markerfacecolor=INK if a != "record, no evidence" else "white",
-                       label=a) for a in ARMS]
+                       markerfacecolor=INK if a not in HOLLOW else "white",
+                       label=a) for a in ARMS if a in stats]
     fig.legend(handles=handles, loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1)
     fig.text(0.5, -0.30,
@@ -167,8 +175,10 @@ def main() -> int:
              "settings the arms used,\nbecause the committed baseline table came from a "
              f"different estimator. Both sides use {args.metric}. CI is a percentile "
              "bootstrap resampling projects, not columns.\nColour is the project and shape is "
-             "the arm in both panels; the grey band in b spans the three arm means, which differ by "
-             f"{hi_m - lo_m:.3f}.",
+             "the arm in both panels; the grey band in b spans the three model arm means, which differ by "
+             f"{hi_m - lo_m:.3f}. The query arms are predicates over the record rather "
+             "than a model, and are scored on the columns where they map at least "
+             f"{results.MIN_ANALYSES} analyses; n per arm is in brackets.",
              ha="center", fontsize=5, color=MUTED, linespacing=1.6)
     fig.subplots_adjust(wspace=0.34)
     save(fig, args.out_dir, "figure4_record_arms")

@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "A controlled longitudinal structural MRI study examined regional gray- and white-matter volume trajectories across adolescence in continuous controls and heavy drinkers.",
-  "value_source": "generated",
+  "value": "A longitudinal study examined gray and white matter volume trajectories in adolescents who transitioned into heavy drinking and adolescents who remained light to non-drinkers over roughly 3.5 years.",
+  "value_source": "reported",
   "evidence": {
    "status": "present",
    "sets": [
@@ -10,9 +10,9 @@
      "source": "model_quote",
      "spans": [
       {
-       "text": "This longitudinal study examined gray and white matter volume trajectories in 134 adolescents",
+       "text": "This longitudinal study examined gray and white matter volume trajectories in 134 adolescents (75 who transitioned into heavy drinking and 59 who remained light to non-drinkers over roughly 3.5 years).",
        "start_char": 525,
-       "end_char": 618
+       "end_char": 726
       }
      ]
     }
@@ -33,9 +33,9 @@
      "source": "model_quote",
      "spans": [
       {
-       "text": "1) adolescents who refrained from drinking would have cortical gray matter volume decline and volume expansion of white matter brain structures; 2) adolescents who transitioned into heavy drinking would show deviations from the normal developmental volume trajectories, specifically, accelerated regional cortical volume loss and slowed white matter expansion relative to non-drinking youth.",
-       "start_char": 5974,
-       "end_char": 6365
+       "text": "adolescents who refrained from drinking would have cortical gray matter volume decline and volume expansion of white matter brain structures;",
+       "start_char": 5977,
+       "end_char": 6118
       }
      ]
     }
@@ -45,15 +45,27 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Controlled longitudinal observational study with repeated MRI sessions over adolescence; participants were classified as continuous controls or heavy drinkers based on substance-use history.",
-   "value_source": "generated",
+   "value": "Controlled longitudinal observational study of adolescents followed over multiple MRI sessions; participants were classified as heavy drinkers or controls at each annual time point.",
+   "value_source": "reported",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "This longitudinal study examined gray and white matter volume trajectories in 134 adolescents",
+        "start_char": 525,
+        "end_char": 618
+       }
+      ]
+     }
+    ]
    }
   },
   "allocation": {
    "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -73,10 +85,22 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "Participants completed substance use interviews every 3 months, and at each annual time point were defined as heavy drinkers or controls",
+        "start_char": 9283,
+        "end_char": 9419
+       }
+      ]
+     }
+    ]
    }
   },
   "blinding": {
@@ -90,18 +114,10 @@
  },
  "analyses": [
   {
-   "local_id": "ana_alcohol_age_interaction",
+   "local_id": "ana_total_neocortex",
    "name": {
     "extraction_status": "extracted",
-    "value": "alcohol use-by-centered-age trajectory interaction",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Group differences in slopes of regional brain volumes adjusted for supratentorial volume",
+    "value": "greater volume reduction in the total neocortex",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -110,41 +126,18 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "The lmer function also allowed for testing of nested random effects; herein, the effects of age and drinking status were tested first to identify group differences in slopes of regional brain volumes adjusted for supratentorial volume.",
-         "start_char": 17262,
-         "end_char": 17497
+         "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 ) and specifically in the frontal ( p =.0191), lateral frontal ( p =.0127), and temporal cortices ( p =.0012) ( Figure 6 ).",
+         "start_char": 19014,
+         "end_char": 19268
         }
        ]
       }
      ]
     }
    },
-   "prespecification": {
+   "definition": {
     "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Secondary analyses considered the potential compounding effect of other drug use with heavy alcohol drinking.",
-         "start_char": 6366,
-         "end_char": 6475
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Heavy-drinking adolescents showed accelerated gray matter reduction in cortical lateral frontal and temporal volumes and attenuated white matter growth of the corpus callosum and pons relative to controls.",
-     "These results were essentially the same when marijuana and other drug use were examined."
-    ],
+    "value": "group-by-centered-age trajectory interactions in total neocortical volume",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -153,13 +146,21 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Heavy-drinking adolescents showed accelerated gray matter reduction in cortical lateral frontal and temporal volumes and attenuated white matter growth of the corpus callosum and pons relative to controls. These results were essentially the same when marijuana and other drug use were examined.",
-         "start_char": 1235,
-         "end_char": 1529
+         "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+         "start_char": 18386,
+         "end_char": 18650
         }
        ]
       }
      ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "preregistered",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "spatial_scope": {
@@ -182,7 +183,7 @@
      ]
     }
    },
-   "measure": "mea_regional_brain_volume",
+   "measure": "mea_regional_volume",
    "groups": [
     {
      "group": "grp_controls",
@@ -197,9 +198,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "59 continuous controls",
-           "start_char": 9550,
-           "end_char": 9572
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
           }
          ]
         }
@@ -220,9 +221,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "75 heavy drinkers",
-           "start_char": 9641,
-           "end_char": 9658
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
           }
          ]
         }
@@ -234,11 +235,19 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_alcohol_age_interaction",
+      "term": "trm_age_x_alcohol",
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
        "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "extracted",
+       "value": "heavy_drinkers",
+       "value_source": "reported",
        "evidence": {
         "status": "present",
         "sets": [
@@ -246,16 +255,16 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Negative t-values indicate drinkers had greater volume reduction than controls.",
-            "start_char": 20487,
-            "end_char": 20566
+            "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 )",
+            "start_char": 19014,
+            "end_char": 19146
            }
           ]
          }
         ]
        }
       },
-      "level": {
+      "label": {
        "extraction_status": "extracted",
        "value": "heavy drinkers",
        "value_source": "reported",
@@ -266,29 +275,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction",
+            "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 )",
             "start_char": 19014,
-            "end_char": 19098
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "drinkers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Negative t-values indicate drinkers had greater volume reduction than controls.",
-            "start_char": 20487,
-            "end_char": 20566
+            "end_char": 19146
            }
           ]
          }
@@ -308,9 +297,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "alcohol users and non-users?",
-          "start_char": 18058,
-          "end_char": 18086
+          "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+          "start_char": 18386,
+          "end_char": 18650
          }
         ]
        }
@@ -323,19 +312,7 @@
       "value": "t",
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Values from t-tests for group-by-age centered slope interactions",
-           "start_char": 20357,
-           "end_char": 20421
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "degrees_of_freedom_numerator": {
@@ -355,12 +332,1378 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_longitudinal_mixed_effects",
    "acquisitions": [
     "acq_mri_3t"
    ],
+   "model_estimation": "mod_group_lme",
+   "tables": [],
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Heavy drinkers exhibited greater volume reduction in the total neocortex relative to non-drinking controls, indicating accelerated gray matter decline over adolescence and young adulthood."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 )",
+         "start_char": 19014,
+         "end_char": 19146
+        }
+       ]
+      }
+     ]
+    }
+   },
    "source_table_analysis": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "regions": [
+    "reg_total_neocortex"
+   ],
+   "assessments": [
+    "asm_nimh_diagnostic_interview",
+    "asm_customary_drinking_and",
+    "asm_timeline_followback",
+    "asm_family_history_assessment",
+    "asm_pubertal_development_scale",
+    "asm_child_behavior_checklist",
+    "asm_adult_self_report",
+    "asm_beck_depression_inventory"
+   ]
+  },
+  {
+   "local_id": "ana_lateral_frontal",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "greater volume reduction in the lateral frontal cortex",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 ) and specifically in the frontal ( p =.0191), lateral frontal ( p =.0127), and temporal cortices ( p =.0012) ( Figure 6 ).",
+         "start_char": 19014,
+         "end_char": 19268
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "group-by-centered-age trajectory interaction for lateral frontal cortical volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+         "start_char": 18386,
+         "end_char": 18650
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "preregistered",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All regions of interest were identified with the SRI24 atlas with tissue segmented into gray matter and white matter ( 16 ).",
+         "start_char": 16054,
+         "end_char": 16178
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_regional_volume",
+   "groups": [
+    {
+     "group": "grp_controls",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 59,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_heavy_drinkers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 75,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_age_x_alcohol",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "extracted",
+       "value": "heavy_drinkers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 ) and specifically in the frontal ( p =.0191), lateral frontal ( p =.0127), and temporal cortices ( p =.0012) ( Figure 6 ).",
+            "start_char": 19014,
+            "end_char": 19268
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "heavy drinkers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 ) and specifically in the frontal ( p =.0191), lateral frontal ( p =.0127), and temporal cortices ( p =.0012) ( Figure 6 ).",
+            "start_char": 19014,
+            "end_char": 19268
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "interaction",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+          "start_char": 18386,
+          "end_char": 18650
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri_3t"
+   ],
+   "model_estimation": "mod_group_lme",
+   "tables": [],
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Heavy drinkers exhibited greater volume reduction in the lateral frontal cortex relative to non-drinking controls, indicating accelerated cortical gray matter decline."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 ) and specifically in the frontal ( p =.0191), lateral frontal ( p =.0127), and temporal cortices ( p =.0012) ( Figure 6 ).",
+         "start_char": 19014,
+         "end_char": 19268
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "regions": [
+    "reg_lateral_frontal_cortex"
+   ],
+   "assessments": [
+    "asm_nimh_diagnostic_interview",
+    "asm_customary_drinking_and",
+    "asm_timeline_followback",
+    "asm_family_history_assessment",
+    "asm_pubertal_development_scale",
+    "asm_child_behavior_checklist",
+    "asm_adult_self_report",
+    "asm_beck_depression_inventory"
+   ]
+  },
+  {
+   "local_id": "ana_temporal",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "greater volume reduction in the temporal cortex",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 ) and specifically in the frontal ( p =.0191), lateral frontal ( p =.0127), and temporal cortices ( p =.0012) ( Figure 6 ).",
+         "start_char": 19014,
+         "end_char": 19268
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "group-by-centered-age trajectory interaction for temporal cortical volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+         "start_char": 18386,
+         "end_char": 18650
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "preregistered",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All regions of interest were identified with the SRI24 atlas with tissue segmented into gray matter and white matter ( 16 ).",
+         "start_char": 16054,
+         "end_char": 16178
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_regional_volume",
+   "groups": [
+    {
+     "group": "grp_controls",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 59,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_heavy_drinkers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 75,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_age_x_alcohol",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "extracted",
+       "value": "heavy_drinkers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 ) and specifically in the frontal ( p =.0191), lateral frontal ( p =.0127), and temporal cortices ( p =.0012) ( Figure 6 ).",
+            "start_char": 19014,
+            "end_char": 19268
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "heavy drinkers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 ) and specifically in the frontal ( p =.0191), lateral frontal ( p =.0127), and temporal cortices ( p =.0012) ( Figure 6 ).",
+            "start_char": 19014,
+            "end_char": 19268
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "interaction",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+          "start_char": 18386,
+          "end_char": 18650
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri_3t"
+   ],
+   "model_estimation": "mod_group_lme",
+   "tables": [],
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Heavy drinkers exhibited greater volume reduction in the temporal cortex relative to non-drinking controls, indicating accelerated cortical gray matter decline."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Relative to non-drinking controls, heavy drinkers exhibited greater volume reduction in the total neocortex ( p =.0133) ( Figure 5 ) and specifically in the frontal ( p =.0191), lateral frontal ( p =.0127), and temporal cortices ( p =.0012) ( Figure 6 ).",
+         "start_char": 19014,
+         "end_char": 19268
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "regions": [
+    "reg_temporal_cortex"
+   ],
+   "assessments": [
+    "asm_nimh_diagnostic_interview",
+    "asm_customary_drinking_and",
+    "asm_timeline_followback",
+    "asm_family_history_assessment",
+    "asm_pubertal_development_scale",
+    "asm_child_behavior_checklist",
+    "asm_adult_self_report",
+    "asm_beck_depression_inventory"
+   ]
+  },
+  {
+   "local_id": "ana_pons",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "attenuated white matter growth of the pons",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Growth trajectories were attenuated, however, in the heavy drinkers relative to nondrinkers in the pons (male p =.0085, female p =.0250, male+female p =.0012) and corpus callosum (male p =.0039, female p =.0029 male+female p =.0001) ( Figures 4 and 7 ).",
+         "start_char": 22399,
+         "end_char": 22652
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "group-by-centered-age trajectory interaction for pons volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+         "start_char": 18386,
+         "end_char": 18650
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "preregistered",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All regions of interest were identified with the SRI24 atlas with tissue segmented into gray matter and white matter ( 16 ).",
+         "start_char": 16054,
+         "end_char": 16178
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_regional_volume",
+   "groups": [
+    {
+     "group": "grp_controls",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 59,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_heavy_drinkers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 75,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_age_x_alcohol",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "extracted",
+       "value": "heavy_drinkers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Growth trajectories were attenuated, however, in the heavy drinkers relative to nondrinkers in the pons (male p =.0085, female p =.0250, male+female p =.0012)",
+            "start_char": 22399,
+            "end_char": 22557
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "heavy drinkers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Growth trajectories were attenuated, however, in the heavy drinkers relative to nondrinkers in the pons (male p =.0085, female p =.0250, male+female p =.0012)",
+            "start_char": 22399,
+            "end_char": 22557
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "interaction",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+          "start_char": 18386,
+          "end_char": 18650
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri_3t"
+   ],
+   "model_estimation": "mod_group_lme",
+   "tables": [],
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Growth trajectories were attenuated in heavy drinkers relative to nondrinkers in the pons, indicating slowed white matter expansion."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Growth trajectories were attenuated, however, in the heavy drinkers relative to nondrinkers in the pons (male p =.0085, female p =.0250, male+female p =.0012)",
+         "start_char": 22399,
+         "end_char": 22557
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "regions": [
+    "reg_pons"
+   ],
+   "assessments": [
+    "asm_nimh_diagnostic_interview",
+    "asm_customary_drinking_and",
+    "asm_timeline_followback",
+    "asm_family_history_assessment",
+    "asm_pubertal_development_scale",
+    "asm_child_behavior_checklist",
+    "asm_adult_self_report",
+    "asm_beck_depression_inventory"
+   ]
+  },
+  {
+   "local_id": "ana_corpus_callosum",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "attenuated white matter growth of the corpus callosum",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Heavy-drinking adolescents showed accelerated gray matter reduction in cortical lateral frontal and temporal volumes and attenuated white matter growth of the corpus callosum and pons relative to controls.",
+         "start_char": 1235,
+         "end_char": 1440
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "group-by-centered-age trajectory interaction for corpus callosum volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+         "start_char": 18386,
+         "end_char": 18650
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "preregistered",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All regions of interest were identified with the SRI24 atlas with tissue segmented into gray matter and white matter ( 16 ).",
+         "start_char": 16054,
+         "end_char": 16178
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_regional_volume",
+   "groups": [
+    {
+     "group": "grp_controls",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 59,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_heavy_drinkers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 75,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_age_x_alcohol",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "extracted",
+       "value": "heavy_drinkers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found",
+        "unlocated_quotes": 1
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "heavy drinkers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found",
+        "unlocated_quotes": 1
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "interaction",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Outputs of interest were group differences in ( 1 ) mean slope of each volume over time, indicative of normal development in nondrinkers; and ( 2 ) alcohol use-by- centered-age trajectory (i.e., slope) interactions, indicative of deviation from normal development.",
+          "start_char": 18386,
+          "end_char": 18650
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri_3t"
+   ],
+   "model_estimation": "mod_group_lme",
+   "tables": [],
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Growth trajectories were attenuated in heavy drinkers relative to nondrinkers in the corpus callosum, indicating slowed white matter expansion."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "regions": [
+    "reg_corpus_callosum"
+   ],
+   "assessments": [
+    "asm_nimh_diagnostic_interview",
+    "asm_customary_drinking_and",
+    "asm_timeline_followback",
+    "asm_family_history_assessment",
+    "asm_pubertal_development_scale",
+    "asm_child_behavior_checklist",
+    "asm_adult_self_report",
+    "asm_beck_depression_inventory"
+   ]
+  },
+  {
+   "local_id": "ana_drug_interaction",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "centered-age x drug_use interaction",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "In only the corpus callosum, using the 100 drug_use_days_per_year criterion, was there a significant centered-age x alcohol_use and a significant centered-age x drug_use interaction (male+female, t=−4.514, p=.00001 for alcohol; t=2.142, p=.033 for drug+alcohol).",
+         "start_char": 24560,
+         "end_char": 24822
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "interaction of centered-age and non-alcohol drug use",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The mixed effects Model 1 was extended to Model 2 to include the interaction of centered-age and non-alcohol drug use (drug_use) as a dichotomous variable and tested with the three criteria.",
+         "start_char": 24203,
+         "end_char": 24393
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All regions of interest were identified with the SRI24 atlas with tissue segmented into gray matter and white matter ( 16 ).",
+         "start_char": 16054,
+         "end_char": 16178
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_regional_volume",
+   "groups": [
+    {
+     "group": "grp_controls",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 59,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_heavy_drinkers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 75,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+           "start_char": 9502,
+           "end_char": 9709
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_age_x_drug_use",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "drug use",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Here, the alcohol users exhibited retarded corpus callosum growth, whereas the alcohol plus drug using participants had accelerated corpus callosum growth.",
+            "start_char": 24823,
+            "end_char": 24978
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "interaction",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "In only the corpus callosum, using the 100 drug_use_days_per_year criterion, was there a significant centered-age x alcohol_use and a significant centered-age x drug_use interaction (male+female, t=−4.514, p=.00001 for alcohol; t=2.142, p=.033 for drug+alcohol).",
+          "start_char": 24560,
+          "end_char": 24822
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri_3t"
+   ],
+   "model_estimation": "mod_group_lme",
+   "tables": [],
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Adding drug use by centered-age to the model confirmed the regional original alcohol use effects with insubstantial changes in significance values. In the corpus callosum, under the 100 drug-use-days-per-year criterion, alcohol users exhibited retarded corpus callosum growth, whereas alcohol plus drug-using participants had accelerated corpus callosum growth."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Adding drug_use x centered-age to the model confirmed the regional original alcohol use effects with insubstantial changes in significance values (e.g., Figure 8 ). In only the corpus callosum, using the 100 drug_use_days_per_year criterion, was there a significant centered-age x alcohol_use and a significant centered-age x drug_use interaction (male+female, t=−4.514, p=.00001 for alcohol; t=2.142, p=.033 for drug+alcohol). Here, the alcohol users exhibited retarded corpus callosum growth, whereas the alcohol plus drug using participants had accelerated corpus callosum growth.",
+         "start_char": 24395,
+         "end_char": 24978
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -378,14 +1721,14 @@
     }
    },
    "assessments": [
-    "asm_cddr",
+    "asm_nimh_diagnostic_interview",
+    "asm_customary_drinking_and",
     "asm_timeline_followback",
     "asm_family_history_assessment",
     "asm_pubertal_development_scale",
     "asm_child_behavior_checklist",
     "asm_adult_self_report",
-    "asm_beck_depression_inventory",
-    "asm_nimh_diagnostic_interview"
+    "asm_beck_depression_inventory"
    ]
   }
  ],
@@ -413,27 +1756,6 @@
      ]
     }
    },
-   "acquisition_duration_seconds": {
-    "extraction_status": "extracted",
-    "value": 540,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "9 minutes",
-         "start_char": 12618,
-         "end_char": 12627
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "device": "dev_ge_cxk4",
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3,
@@ -465,9 +1787,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "T1-weighted",
-         "start_char": 12479,
-         "end_char": 12490
+         "text": "sagittal high-resolution 3d T1-weighted anatomical MRI",
+         "start_char": 12451,
+         "end_char": 12505
         }
        ]
       }
@@ -565,15 +1887,10 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  }
- ],
- "assessments": [
-  {
-   "local_id": "asm_cddr",
-   "name": {
+   },
+   "acquisition_duration_seconds": {
     "extraction_status": "extracted",
-    "value": "Customary Drinking and Drug Use Record",
+    "value": 540,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -582,333 +1899,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The Customary Drinking and Drug Use Record",
-         "start_char": 9916,
-         "end_char": 9958
+         "text": "9 minutes",
+         "start_char": 12618,
+         "end_char": 12627
         }
        ]
       }
      ]
     }
    },
-   "description": {
+   "brain_coverage": {
     "extraction_status": "extracted",
-    "value": "Obtained self-reported quantity and frequency of lifetime and past 3-month alcohol, tobacco, and other drug use, withdrawal/hangover symptoms, and endorsement of substance use disorder criteria.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The Customary Drinking and Drug Use Record ( 19 ) obtained self-reported quantity and frequency of lifetime and past 3-month alcohol, tobacco, and other drug use (i.e., amphetamines, barbiturates, hallucinogens, cocaine, inhalants, opiates, spice, benzodiazepines, ecstasy, ketamine, gamma hydroxybutyrate, and other misused prescription medications), withdrawal/hangover symptoms, and endorsement of substance use disorder criteria.",
-         "start_char": 9916,
-         "end_char": 10349
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "substance use measure",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Substance use measures",
-         "start_char": 9892,
-         "end_char": 9914
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_timeline_followback",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Timeline Followback",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The Timeline Followback assessed substance use for the 30 days prior to the scan, and a parent or informant (e.g., roommate, sibling, friend) report of youth substance use was collected as collateral evidence.",
-         "start_char": 10350,
-         "end_char": 10559
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessed substance use for the 30 days prior to the scan.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The Timeline Followback assessed substance use for the 30 days prior to the scan",
-         "start_char": 10350,
-         "end_char": 10430
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "substance use measure",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Substance use measures",
-         "start_char": 9892,
-         "end_char": 9914
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_family_history_assessment",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Family History Assessment Module",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Family History Assessment Module",
-         "start_char": 10827,
-         "end_char": 10859
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Ascertained familial density of alcohol and other drug use disorders by adding 0.5 for each biological parent and 0.25 per biological grandparent endorsed by either youth or parent report as meeting criteria.",
+    "value": "whole_brain",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "family history measure",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_pubertal_development_scale",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Pubertal Development Scale",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Pubertal Development Scale",
-         "start_char": 11317,
-         "end_char": 11343
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Provided a 5-item self-report measure of pubertal maturation, with scores ranging from 1 (prepubertal) to 5 (postpubertal).",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "developmental measure",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_child_behavior_checklist",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Child Behavior Checklist",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Child Behavior Checklist",
-         "start_char": 8535,
-         "end_char": 8559
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Completed by parents for youth under age 18 to obtain levels of adolescent psychopathological syndromes.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "psychopathology measure",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_adult_self_report",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Adult Self Report",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Completed by youth over age 18 to obtain levels of adolescent psychopathological syndromes.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "psychopathology measure",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_beck_depression_inventory",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Beck Depression Inventory-II",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Beck Depression Inventory-II",
-         "start_char": 11882,
-         "end_char": 11910
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessed depressive symptoms.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "mood measure",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_nimh_diagnostic_interview",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "NIMH Diagnostic Interview Schedule for Children version 4.0",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Determined DSM-IV Axis I disorders for exclusion during screening.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "diagnostic interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
+   "device": "dev_cxk4"
   }
  ],
  "devices": [
   {
-   "local_id": "dev_ge_cxk4",
+   "local_id": "dev_cxk4",
    "manufacturer": {
     "extraction_status": "extracted",
     "value": "General Electric",
@@ -931,7 +1944,7 @@
    },
    "model": {
     "extraction_status": "extracted",
-    "value": "CXK4 short-bore Excite-2",
+    "value": "CXK4 short-bore Excite-2 MR system",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -974,26 +1987,6 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Adolescents who remained light to non-drinkers over roughly 3.5 years and had minimal to no lifetime drinking throughout all follow-ups.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups)",
-         "start_char": 9550,
-         "end_char": 9636
-        }
-       ]
-      }
-     ]
-    }
-   },
    "species": {
     "extraction_status": "extracted",
     "value": "human",
@@ -1008,6 +2001,26 @@
          "text": "adolescents",
          "start_char": 607,
          "end_char": 618
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Adolescents who had minimal to no lifetime drinking throughout all follow-ups.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups)",
+         "start_char": 9550,
+         "end_char": 9636
         }
        ]
       }
@@ -1034,10 +2047,64 @@
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "not_reported",
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "minimal to no lifetime drinking throughout all follow-ups"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "had minimal to no lifetime drinking throughout all follow-ups",
+         "start_char": 9574,
+         "end_char": 9635
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "none reported"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants were recruited through flyers sent to households of students attending local middle schools, which included major eligibility criteria, financial compensation, and contact information.",
+         "start_char": 6681,
+         "end_char": 6878
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "approached_count": {
@@ -1067,8 +2134,9 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "minimal to no lifetime drinking throughout all follow-ups",
-     "at least two valid 3T brain scans"
+     "Eligible adolescents aged approximately 12–24 years",
+     "Minimal to no lifetime drinking throughout all follow-ups",
+     "At least two valid 3T MRI scans"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1078,8 +2146,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "all had at least two 3T brain scans acquired over the course of the study",
-         "start_char": 9182,
+         "text": "Participants for this study ( N =134) all had at least two 3T brain scans acquired over the course of the study",
+         "start_char": 9144,
          "end_char": 9255
         }
        ]
@@ -1090,19 +2158,18 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "neurological or DSM-IV Axis I disorder",
-     "history of head trauma or loss of consciousness greater than 2 minutes",
-     "chronic medical illness",
-     "learning disability or mental retardation",
-     "medications potentially affecting the brain",
-     "premature birth before 35 gestational weeks",
-     "prenatal alcohol exposure",
-     "prenatal illicit drug exposure",
-     "MRI contraindication",
-     "inadequate comprehension of English",
-     "non-correctable sensory problems",
-     "clinically abnormal brain anatomy",
-     "inadequate or invalid imaging data"
+     "Neurological or DSM-IV Axis I disorder",
+     "History of head trauma or loss of consciousness greater than 2 minutes",
+     "Chronic medical illness",
+     "Learning disability or mental retardation",
+     "Medications potentially affecting the brain",
+     "Premature birth before 35 gestational weeks",
+     "Prenatal alcohol or illicit drug exposure",
+     "MRI contraindication such as braces",
+     "Inadequate comprehension of English",
+     "Non-correctable sensory problems",
+     "Clinically abnormal brain anatomy",
+     "Insufficient valid 3T scans for longitudinal analysis"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1142,65 +2209,118 @@
     }
    },
    "recruitment_dates": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Study begun in July 2002",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "This longitudinal study was begun in July 2002",
+         "start_char": 8748,
+         "end_char": 8794
+        }
+       ]
+      }
+     ]
     }
    },
    "age_mean": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_standard_deviation": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_minimum": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_maximum": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_median": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_unit": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "between ages 12 to 24",
+         "start_char": 825,
+         "end_char": 846
+        }
+       ]
+      }
+     ]
     }
    },
    "diagnostic_system": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "DSM-IV",
+         "start_char": 7445,
+         "end_char": 7451
+        }
+       ]
+      }
+     ]
     }
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Continuous controls had minimal to no lifetime drinking throughout all follow-ups",
+    "value": "Continuous controls had minimal to no lifetime drinking throughout all follow-ups.",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups)",
+         "start_char": 9550,
+         "end_char": 9636
+        }
+       ]
+      }
+     ]
     }
    },
    "medications": {
@@ -1223,7 +2343,7 @@
    },
    "socioeconomic_status_summary": {
     "extraction_status": "extracted",
-    "value": "Parental educational attainment, occupation, and salary were obtained as socioeconomic background measures; aggregate group summary not reported",
+    "value": "Parental educational attainment, occupation, and salary were obtained as socioeconomic background measures.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1240,7 +2360,36 @@
       }
      ]
     }
-   }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "R01 AA013419",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The sample was obtained from a larger ongoing neuroimaging study of 296 adolescents examining youth at-risk for substance use disorders (R01 AA013419; PI: Susan Tapert).",
+         "start_char": 6511,
+         "end_char": 6680
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_nimh_diagnostic_interview"
+   ]
   },
   {
    "local_id": "grp_heavy_drinkers",
@@ -1258,26 +2407,6 @@
          "text": "heavy drinkers",
          "start_char": 349,
          "end_char": 363
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Adolescents who transitioned into heavy drinking over the follow-up.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "75 heavy drinkers (had initiated heavy drinking over the follow-up)",
-         "start_char": 9641,
-         "end_char": 9708
         }
        ]
       }
@@ -1304,6 +2433,26 @@
      ]
     }
    },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Adolescents who had initiated heavy drinking over the follow-up.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "75 heavy drinkers (had initiated heavy drinking over the follow-up)",
+         "start_char": 9641,
+         "end_char": 9708
+        }
+       ]
+      }
+     ]
+    }
+   },
    "acquired_count": {
     "extraction_status": "extracted",
     "value": 75,
@@ -1324,10 +2473,64 @@
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "not_reported",
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "initiated heavy drinking over the follow-up"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "had initiated heavy drinking over the follow-up",
+         "start_char": 9660,
+         "end_char": 9707
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "heavy drinking"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants were recruited through flyers sent to households of students attending local middle schools, which included major eligibility criteria, financial compensation, and contact information.",
+         "start_char": 6681,
+         "end_char": 6878
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "approached_count": {
@@ -1357,8 +2560,9 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "initiated heavy drinking over the follow-up",
-     "at least two valid 3T brain scans"
+     "Eligible adolescents aged approximately 12–24 years",
+     "Initiated heavy drinking during follow-up",
+     "At least two valid 3T MRI scans"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1368,8 +2572,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "all had at least two 3T brain scans acquired over the course of the study",
-         "start_char": 9182,
+         "text": "Participants for this study ( N =134) all had at least two 3T brain scans acquired over the course of the study",
+         "start_char": 9144,
          "end_char": 9255
         }
        ]
@@ -1380,19 +2584,18 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "neurological or DSM-IV Axis I disorder",
-     "history of head trauma or loss of consciousness greater than 2 minutes",
-     "chronic medical illness",
-     "learning disability or mental retardation",
-     "medications potentially affecting the brain",
-     "premature birth before 35 gestational weeks",
-     "prenatal alcohol exposure",
-     "prenatal illicit drug exposure",
-     "MRI contraindication",
-     "inadequate comprehension of English",
-     "non-correctable sensory problems",
-     "clinically abnormal brain anatomy",
-     "inadequate or invalid imaging data"
+     "Neurological or DSM-IV Axis I disorder",
+     "History of head trauma or loss of consciousness greater than 2 minutes",
+     "Chronic medical illness",
+     "Learning disability or mental retardation",
+     "Medications potentially affecting the brain",
+     "Premature birth before 35 gestational weeks",
+     "Prenatal alcohol or illicit drug exposure",
+     "MRI contraindication such as braces",
+     "Inadequate comprehension of English",
+     "Non-correctable sensory problems",
+     "Clinically abnormal brain anatomy",
+     "Insufficient valid 3T scans for longitudinal analysis"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1432,62 +2635,103 @@
     }
    },
    "recruitment_dates": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Study begun in July 2002",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "This longitudinal study was begun in July 2002",
+         "start_char": 8748,
+         "end_char": 8794
+        }
+       ]
+      }
+     ]
     }
    },
    "age_mean": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_standard_deviation": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_minimum": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_maximum": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_median": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_unit": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "between ages 12 to 24",
+         "start_char": 825,
+         "end_char": 846
+        }
+       ]
+      }
+     ]
     }
    },
    "diagnostic_system": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "DSM-IV",
+         "start_char": 7445,
+         "end_char": 7451
+        }
+       ]
+      }
+     ]
     }
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Heavy drinkers initiated heavy drinking over the follow-up; heavy drinking was classified using previously reported classification schemes",
+    "value": "Heavy drinkers had initiated heavy drinking during follow-up; heavy drinking was classified at annual time points using previously reported classification schemes.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1525,7 +2769,7 @@
    },
    "socioeconomic_status_summary": {
     "extraction_status": "extracted",
-    "value": "Parental educational attainment, occupation, and salary were obtained as socioeconomic background measures; aggregate group summary not reported",
+    "value": "Parental educational attainment, occupation, and salary were obtained as socioeconomic background measures.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1542,12 +2786,44 @@
       }
      ]
     }
-   }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "R01 AA013419",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The sample was obtained from a larger ongoing neuroimaging study of 296 adolescents examining youth at-risk for substance use disorders (R01 AA013419; PI: Susan Tapert).",
+         "start_char": 6511,
+         "end_char": 6680
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_nimh_diagnostic_interview"
+   ]
   }
+ ],
+ "language": [
+  "eng"
  ],
  "measures": [
   {
-   "local_id": "mea_regional_brain_volume",
+   "local_id": "mea_regional_volume",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
@@ -1570,7 +2846,7 @@
    },
    "type": {
     "extraction_status": "extracted",
-    "value": "gray_matter_volume",
+    "value": "structural_morphometry_other",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -1579,9 +2855,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Gray matter regions of interest included the total neocortex and lobar regions",
-         "start_char": 16179,
-         "end_char": 16257
+         "text": "regional brain morphometry",
+         "start_char": 5436,
+         "end_char": 5462
         }
        ]
       }
@@ -1590,7 +2866,7 @@
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "regional brain volume",
+    "value": "regional cortical and white matter volume",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1599,9 +2875,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "regional tissue volumes",
-         "start_char": 15209,
-         "end_char": 15232
+         "text": "regional brain volumes",
+         "start_char": 17439,
+         "end_char": 17461
         }
        ]
       }
@@ -1610,46 +2886,61 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "regional tissue volumes",
+    "value": "regional gray and white matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "unit": {
+    "extraction_status": "extracted",
+    "value": "Z-score",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Finally, the FAST tissue map for each image was combined with the SRI24 parcellation maps to obtain regional tissue volumes for all regions of interest in the parcellation maps.",
-         "start_char": 15109,
-         "end_char": 15286
+         "text": "Z-scores",
+         "start_char": 16851,
+         "end_char": 16859
         }
        ]
       }
      ]
-    }
-   },
-   "unit": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    }
   }
  ],
  "model_estimations": [
   {
-   "local_id": "mod_longitudinal_mixed_effects",
+   "local_id": "mod_group_lme",
    "model_family": {
     "extraction_status": "extracted",
     "value": "mixed_effects",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Linear mixed-effects models",
+         "start_char": 1018,
+         "end_char": 1045
+        }
+       ]
+      }
+     ]
     }
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "longitudinal linear mixed-effects model",
+    "value": "linear mixed-effects model",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1669,8 +2960,8 @@
    },
    "stage": {
     "extraction_status": "extracted",
-    "value": "longitudinal",
-    "value_source": "reported",
+    "value": "group",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1678,9 +2969,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "longitudinal statistical analysis",
-         "start_char": 12007,
-         "end_char": 12040
+         "text": "the effects of age and drinking status were tested first to identify group differences in slopes of regional brain volumes",
+         "start_char": 17339,
+         "end_char": 17461
         }
        ]
       }
@@ -1747,151 +3038,9 @@
      ]
     }
    },
-   "preprocessing": [
-    "prp_longitudinal_atlas_parcellation"
-   ],
    "terms": [
     {
-     "local_id": "trm_alcohol_use",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "alcohol use",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "drinking status",
-           "start_char": 17362,
-           "end_char": 17377
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "group differences in slopes",
-           "start_char": 17408,
-           "end_char": 17435
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "controls",
-             "start_char": 389,
-             "end_char": 397
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_controls"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "59 continuous controls",
-             "start_char": 9550,
-             "end_char": 9572
-            }
-           ]
-          }
-         ]
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "heavy drinkers",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       },
-       "groups": [
-        "grp_heavy_drinkers"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      }
-     ],
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Alcohol-use group status, classified at each annual time point as heavy drinker or control based on previously reported classification schemes; moderate drinkers were excluded.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    },
-    {
-     "local_id": "trm_centered_age",
+     "local_id": "trm_age",
      "name": {
       "extraction_status": "extracted",
       "value": "centered-age",
@@ -1903,9 +3052,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "age",
-           "start_char": 833,
-           "end_char": 836
+           "text": "centered-age",
+           "start_char": 17749,
+           "end_char": 17761
           }
          ]
         }
@@ -1915,14 +3064,6 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "within_subject",
       "value_source": "generated",
       "evidence": {
        "status": "present",
@@ -1931,13 +3072,22 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "participant’s mean age across acquisitions",
-           "start_char": 17875,
-           "end_char": 17917
+           "text": "continuous",
+           "start_char": 9553,
+           "end_char": 9563
           }
          ]
         }
        ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "within_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
       }
      },
      "source_definition": {
@@ -1963,7 +3113,7 @@
      "functional_form": {
       "extraction_status": "extracted",
       "value": "linear",
-      "value_source": "generated",
+      "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
@@ -1971,8 +3121,8 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "slope across the years of observation",
-           "start_char": 17783,
+           "text": "the slope across the years of observation",
+           "start_char": 17779,
            "end_char": 17820
           }
          ]
@@ -2002,10 +3152,188 @@
      }
     },
     {
-     "local_id": "trm_alcohol_age_interaction",
+     "local_id": "trm_alcohol_use",
      "name": {
       "extraction_status": "extracted",
-      "value": "alcohol_use-by-centered-age interaction",
+      "value": "alcohol_use",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "alcohol_use",
+           "start_char": 17962,
+           "end_char": 17973
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "between alcohol users and non-users",
+           "start_char": 18050,
+           "end_char": 18085
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "continuous controls",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "literal_match",
+           "spans": [
+            {
+             "text": "The final sample for this analysis consisted of 59 continuous controls (had minimal to no lifetime drinking throughout all follow-ups) and 75 heavy drinkers (had initiated heavy drinking over the follow-up).",
+             "start_char": 9502,
+             "end_char": 9709
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_controls"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "heavy drinkers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "heavy drinkers",
+             "start_char": 349,
+             "end_char": 363
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_heavy_drinkers"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "2",
+             "start_char": 90,
+             "end_char": 91
+            }
+           ]
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "group (alcohol_use)-by-centered-age interactions",
+           "start_char": 17955,
+           "end_char": 18003
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Alcohol-use group status classified participants as continuous controls or heavy drinkers at each time point; moderate drinkers were excluded.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Each participant was categorized as a control or heavy drinker at each time point ( 17 , 18 ) (see Figure 1 ).",
+           "start_char": 10560,
+           "end_char": 10670
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "local_id": "trm_age_x_alcohol",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "alcohol use-by-centered-age interaction",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -2026,14 +3354,6 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "within_subject",
       "value_source": "generated",
       "evidence": {
        "status": "present",
@@ -2042,9 +3362,29 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "group (alcohol_use)-by-centered-age interactions",
-           "start_char": 17955,
-           "end_char": 18003
+           "text": "continuous",
+           "start_char": 9553,
+           "end_char": 9563
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "between alcohol users and non-users",
+           "start_char": 18050,
+           "end_char": 18085
           }
          ]
         }
@@ -2053,28 +3393,8 @@
      },
      "interaction_with": [
       "trm_alcohol_use",
-      "trm_centered_age"
+      "trm_age"
      ],
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "group (alcohol_use)-by-centered-age interactions, testing whether the slope of volume change differed between alcohol users and non-users",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "did the slope of volume change differ between alcohol users and non-users?",
-           "start_char": 18012,
-           "end_char": 18086
-          }
-         ]
-        }
-       ]
-      }
-     },
      "functional_form": {
       "extraction_status": "extracted",
       "value": "linear",
@@ -2086,9 +3406,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "linear mixed-effects modeling",
-           "start_char": 17167,
-           "end_char": 17196
+           "text": "group (alcohol_use)-by-centered-age interactions",
+           "start_char": 17955,
+           "end_char": 18003
           }
          ]
         }
@@ -2114,19 +3434,326 @@
         }
        ]
       }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Interaction between alcohol-use group status and centered age, testing whether volume trajectory slopes differed between heavy drinkers and non-users.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_drug_use",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "drug_use",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "drug_use",
+           "start_char": 24033,
+           "end_char": 24041
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "dichotomous variable",
+           "start_char": 24337,
+           "end_char": 24357
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "alcohol only",
+        "value_source": "generated",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "literal_match",
+           "spans": [
+            {
+             "text": "Using the 100 drug_days_per_year criterion and the combined group of both sexes, the alcohol+drug group was significantly different from controls (medial frontal t=−2.0302, p=0.043; insula: t=−2.1205, p=0.035) but the alcohol only group was not (medial frontal t=−0.3364, p=0.737; insula: t=0.0904, p=0.928).",
+             "start_char": 25449,
+             "end_char": 25757
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_heavy_drinkers"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "alcohol plus drug use",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "alcohol plus drug using participants",
+             "start_char": 24902,
+             "end_char": 24938
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_heavy_drinkers"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "2",
+             "start_char": 90,
+             "end_char": 91
+            }
+           ]
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "the interaction of centered-age and non-alcohol drug use (drug_use) as a dichotomous variable",
+           "start_char": 24264,
+           "end_char": 24357
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Dichotomous non-alcohol drug-use status based primarily on marijuana-use cut-points of at least 20 or 100 drug-use days per year; illicit drug use was primarily marijuana.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Illicit drug use was limited primarily to marijuana",
+           "start_char": 23397,
+           "end_char": 23448
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "local_id": "trm_age_x_drug_use",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "centered-age x drug_use interaction",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "In only the corpus callosum, using the 100 drug_use_days_per_year criterion, was there a significant centered-age x alcohol_use and a significant centered-age x drug_use interaction (male+female, t=−4.514, p=.00001 for alcohol; t=2.142, p=.033 for drug+alcohol).",
+           "start_char": 24560,
+           "end_char": 24822
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "continuous",
+           "start_char": 9553,
+           "end_char": 9563
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "interaction_with": [
+      "trm_drug_use",
+      "trm_age"
+     ],
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "drug_use by centered-age effect",
+           "start_char": 25363,
+           "end_char": 25394
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "years",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "years",
+           "start_char": 719,
+           "end_char": 724
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Interaction between centered age and dichotomous non-alcohol drug-use status, testing whether drug use altered volume trajectories.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
      }
     }
    ],
-   "inputs_from": [],
    "hrf_model": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "unset",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Linear mixed-effects models using the lmer function in the lme4 R package; nested random effects; regional volumes converted to supratentorial-volume-adjusted standardized Z-scores; age, drinking status, centered-age, mean age, and alcohol-use-by-centered-age interactions modeled.",
+    "value": "Linear mixed-effects models were fitted with the lmer function in the lme4 R package; regional volumes were standardized as supratentorial-volume-adjusted Z-scores, and nested random effects were used. Age and drinking status were modeled, with participant-specific centered-age trajectory slopes and mean age across acquisitions.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "preprocessing": [
+    "prp_longitudinal_atlas"
+   ]
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_longitudinal_atlas",
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Longitudinal atlas-based registration, segmentation, and parcellation of structural MRI images.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2135,34 +3762,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Brain volumes of each region were first transformed into standardized Z-scores, which adjusted regional volumes for differences in supratentorial volume modeled from all subjects at all times, thereby adjusting for sex-related volume differences",
-         "start_char": 16781,
-         "end_char": 17026
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
- ],
- "preprocessings": [
-  {
-   "local_id": "prp_longitudinal_atlas_parcellation",
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Images were intensity corrected, skull stripped, longitudinally registered, normalized to the SRI24 atlas, segmented, and combined with atlas parcellation maps to obtain regional tissue volumes.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Finally, the FAST tissue map for each image was combined with the SRI24 parcellation maps to obtain regional tissue volumes for all regions of interest in the parcellation maps.",
-         "start_char": 15109,
-         "end_char": 15286
+         "text": "Following alignment across time, the brain mask from each baseline image was resliced to each of the follow-up images from the same subject.",
+         "start_char": 13828,
+         "end_char": 13968
         }
        ]
       }
@@ -2173,24 +3775,11 @@
     "extraction_status": "extracted",
     "value": [
      "ROBEX",
-     "FSL’s FAST",
-     "SRI24 atlas"
+     "FSL FAST"
     ],
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Each baseline brain mask was visually inspected and when necessary manually corrected.",
-         "start_char": 12994,
-         "end_char": 13080
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "steps": {
@@ -2200,11 +3789,11 @@
      "skull stripping",
      "linear alignment",
      "nonrigid registration",
-     "atlas normalization",
-     "tissue segmentation",
+     "brain masking",
+     "tissue classification",
      "atlas-based parcellation"
     ],
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2212,9 +3801,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All images were first corrected for intensity bias using a second-order polynomial correction function computed by minimization of image entropy ( 25 ).",
-         "start_char": 12655,
-         "end_char": 12807
+         "text": "Each bias-corrected image was then skull stripped using ROBEX",
+         "start_char": 12808,
+         "end_char": 12869
         }
        ]
       }
@@ -2229,12 +3818,16 @@
    }
   }
  ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, N.I.H., Extramural"
+ ],
  "local_id": "25982660",
  "extraction_metadata": {
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "f00e5938784d4da13ab2d341d34488c0382002abac0a21b8fdfb5b4dd65a80f5",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2526,8 +4119,523 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "study_type": [
-  "Journal Article",
-  "Research Support, N.I.H., Extramural"
+ "assessments": [
+  {
+   "local_id": "asm_nimh_diagnostic_interview",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "NIMH Diagnostic Interview Schedule for Children—version 4.0",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Structured interview used to determine neurological or DSM-IV Axis I disorders during eligibility screening.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "diagnostic interview",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Diagnostic Interview",
+         "start_char": 7499,
+         "end_char": 7519
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_customary_drinking_and",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Customary Drinking and Drug Use Record",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Customary Drinking and Drug Use Record",
+         "start_char": 9920,
+         "end_char": 9958
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Self-reported quantity and frequency of lifetime and past 3-month alcohol, tobacco, and other drug use, withdrawal or hangover symptoms, and substance use disorder criteria.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "substance use assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_timeline_followback",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Timeline Followback",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessed substance use during the 30 days prior to the scan.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "substance use assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_family_history_assessment",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Family History Assessment Module",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Family History Assessment Module",
+         "start_char": 10827,
+         "end_char": 10859
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessed familial density of alcohol and other drug use disorders.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "family history assessment",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Family History Assessment",
+         "start_char": 10827,
+         "end_char": 10852
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_pubertal_development_scale",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Pubertal Development Scale",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Pubertal Development Scale",
+         "start_char": 11317,
+         "end_char": 11343
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Five-item self-report measure of pubertal maturation.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "developmental assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_child_behavior_checklist",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Child Behavior Checklist",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Child Behavior Checklist",
+         "start_char": 8535,
+         "end_char": 8559
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Parent-completed assessment of adolescent psychopathological syndromes for youth under age 18.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "psychopathology assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_adult_self_report",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Adult Self Report",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Youth-completed assessment of adolescent psychopathological syndromes for participants over age 18.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "psychopathology assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_beck_depression_inventory",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Beck Depression Inventory-II",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Beck Depression Inventory-II",
+         "start_char": 11882,
+         "end_char": 11910
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessment of depressive symptoms.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "depression symptom assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ],
+ "regions": [
+  {
+   "local_id": "reg_total_neocortex",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "total neocortex",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "SRI24",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Total neocortical volume region from atlas-based parcellation.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_lateral_frontal_cortex",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "lateral frontal cortex",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "SRI24",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Lateral frontal cortical region from atlas-based parcellation.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_temporal_cortex",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "temporal cortex",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "SRI24",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Temporal cortical region from atlas-based parcellation.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_pons",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "pons",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "SRI24",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Pons white matter volume region from atlas-based parcellation.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_corpus_callosum",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "corpus callosum",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "SRI24",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Corpus callosum white matter volume region from atlas-based parcellation.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
  ]
 }

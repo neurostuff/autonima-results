@@ -1,29 +1,43 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "Voxel-based morphometry study of frontal cortical gray and white matter tissue density in abstinent cocaine abusers compared with non-drug-using individuals, including a regression of tissue density on duration of cocaine use.",
+  "value": "This work tested for structural (i.e., tissue composition) abnormalities that may underlie such performance deficits.",
   "value_source": "reported",
   "evidence": {
-   "status": "not_found"
-  }
- },
- "hypothesis": {
-  "extraction_status": "extracted",
-  "value": [
-   "We hypothesized that cocaine abusers would show differences in tissue composition compared to non-drug-abusing individuals and that these differences would be reflected in lower gray matter tissue density in regions of the frontal cortex, where cocaine abusers demonstrated abnormalities in cerebral blood flow during performance of tasks related to executive function ."
-  ],
-  "value_source": "reported",
-  "evidence": {
-   "status": "not_found"
+   "status": "present",
+   "sets": [
+    {
+     "source": "literal_match",
+     "spans": [
+      {
+       "text": "This work tested for structural (i.e., tissue composition) abnormalities that may underlie such performance deficits.",
+       "start_char": 426,
+       "end_char": 543
+      }
+     ]
+    }
+   ]
   }
  },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Participants were assigned to either a cocaine group or a comparison group and underwent MR imaging after abstinence; the study was observational rather than an intervention.",
-   "value_source": "generated",
+   "value": "They were matched for age and level of education and were assigned to either a cocaine group or a comparison group.",
+   "value_source": "reported",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "literal_match",
+      "spans": [
+       {
+        "text": "They were matched for age and level of education and were assigned to either a cocaine group or a comparison group.",
+        "start_char": 5829,
+        "end_char": 5944
+       }
+      ]
+     }
+    ]
    }
   },
   "allocation": {
@@ -43,60 +57,13 @@
    }
   },
   "blinding": {
-   "extraction_status": "not_reported",
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
    "evidence": {
-    "status": "not_applicable"
+    "status": "not_found"
    }
-  },
-  "arms": [
-   {
-    "local_id": "arm_cocaine",
-    "name": {
-     "extraction_status": "extracted",
-     "value": "cocaine group",
-     "value_source": "reported",
-     "evidence": {
-      "status": "not_found"
-     }
-    },
-    "arm_kind": {
-     "extraction_status": "extracted",
-     "value": "no_intervention",
-     "value_source": "generated",
-     "evidence": {
-      "status": "not_found"
-     }
-    },
-    "agent": {
-     "extraction_status": "extracted",
-     "value": "cocaine",
-     "value_source": "reported",
-     "evidence": {
-      "status": "not_found"
-     }
-    }
-   },
-   {
-    "local_id": "arm_comparison",
-    "name": {
-     "extraction_status": "extracted",
-     "value": "comparison group",
-     "value_source": "reported",
-     "evidence": {
-      "status": "not_found"
-     }
-    },
-    "arm_kind": {
-     "extraction_status": "extracted",
-     "value": "no_intervention",
-     "value_source": "generated",
-     "evidence": {
-      "status": "not_found"
-     }
-    }
-   }
-  ],
-  "timepoints": []
+  }
  },
  "analyses": [
   {
@@ -142,23 +109,17 @@
     }
    },
    "prespecification": {
+    "extraction_status": "extracted",
     "value": "exploratory",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "quotes": [
-        "As a further analysis, we identified which of the 13 small volumes remained statistically significant after Bonferroni correction for the number of comparisons in the comparison>cocaine group contrast"
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "The longer duration of cocaine use was associated with lower white matter tissue density at the maximum or peak voxel in the cluster in the left ( r = −0.738, P = 0.0001) and right subgyral frontal white matter ( r = −0.602, P = 0.005, and r = −0.655, P = 0.002)."
+     "The longer duration of cocaine use was associated with lower white matter tissue density at the maximum or peak voxel in the cluster in the left and right subgyral frontal white matter"
     ],
     "value_source": "reported",
     "evidence": {
@@ -178,30 +139,30 @@
     }
    },
    "spatial_scope": {
+    "extraction_status": "extracted",
     "value": "roi",
     "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "quotes": [
-        "There was a significant cluster in the subgyral white matter of the left frontal cortex ( P = 0.0001 corrected, voxel extent = 651, maxima located at −16, 32, 12) and two clusters in the subgyral white matter of the right frontal cortex ( P = 0.005, voxel extent = 83, maxima located at 24, 28, 14; and P = 0.04, voxel extent = 47, maxima located at 16, 38, −2)."
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "we constructed small volume gray matter templates to constrain the search volume for statistical analysis to our brain regions of interest",
+         "start_char": 10975,
+         "end_char": 11113
+        }
        ]
       }
      ]
     }
    },
    "regions": [
-    "reg_prefrontal_cortex_white",
-    "reg_infragenual_cingulate_gyrus",
-    "reg_perigenual_cingulate_gyrus",
-    "reg_dorsal_midcingulate_region",
-    "reg_medial_orbitofrontal_cortex",
-    "reg_lateral_orbitofrontal_cortex",
-    "reg_lateral_prefrontal_cortex",
-    "reg_prefrontal_cortex_gray"
+    "r_frontal_white_matter"
    ],
-   "measure": "mea_white_matter_tissue_density",
+   "defines_regions": [],
+   "measure": "mea_white_matter_density",
    "groups": [
     {
      "group": "grp_cocaine",
@@ -216,9 +177,32 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The cocaine group consisted of 14 individuals",
-           "start_char": 6996,
-           "end_char": 7041
+           "text": "Cocaine group (n = 14)",
+           "start_char": 26509,
+           "end_char": 26531
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_comparison",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 11,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Comparison group (n = 11)",
+           "start_char": 26534,
+           "end_char": 26559
           }
          ]
         }
@@ -234,9 +218,21 @@
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The duration of cocaine use (in years) was negatively correlated with tissue density in the white matter contained within the small volume template for the frontal cortex.",
+            "start_char": 16210,
+            "end_char": 16381
+           }
+          ]
+         }
+        ]
        }
       },
       "level": {
@@ -256,18 +252,42 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "cross_subject_regression",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Simple linear regressions between duration of cocaine use (in years) and gray matter or white matter tissue density in the cocaine group were also performed.",
+          "start_char": 14514,
+          "end_char": 14671
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
      "family": {
       "extraction_status": "extracted",
       "value": "correlation",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The longer duration of cocaine use was associated with lower white matter tissue density at the maximum or peak voxel in the cluster in the left ( r = −0.738, P = 0.0001) and right subgyral frontal white matter ( r = −0.602, P = 0.005, and r = −0.655, P = 0.002).",
+           "start_char": 16745,
+           "end_char": 17008
+          }
+         ]
+        }
+       ]
       }
      },
      "degrees_of_freedom_numerator": {
@@ -290,11 +310,16 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_correlation_duration_cocaine_use",
+   "model_estimation": "mod_group_correlation",
+   "tasks": [],
+   "tables": [
+    "tbltable1",
+    "tbltable2"
+   ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "prose#1",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
@@ -310,408 +335,28 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The MR images were spatially normalized by linear and nonlinear transformations into the standard stereotaxic coordinate space developed at the Montreal Neurological Institute (i.e., the MNI space).",
-         "start_char": 9946,
-         "end_char": 10144
+         "text": "MNI space",
+         "start_char": 10133,
+         "end_char": 10142
         }
        ]
       }
      ]
     }
    },
+   "assessments": [
+    "asm_drug_use_survey",
+    "asm_addiction_severity_index",
+    "asm_diagnostic_interview_schedul",
+    "asm_diagnostic_and_statistical"
+   ],
    "model_representation_notes": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "inference_settings": "inf_small_volume_corrected",
-   "tables": [
-    "table1",
-    "table2"
-   ],
-   "assessments": [
-    "asm_drug_use_survey_questionnaire",
-    "asm_addiction_severity_index",
-    "asm_diagnostic_interview_schedule"
-   ]
-  }
- ],
- "acquisitions": [
-  {
-   "local_id": "acq_mri",
-   "acquisition_type": "MRI",
-   "modality": {
-    "extraction_status": "extracted",
-    "value": "sMRI",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The MR images were obtained on a General Electric 1.5-T Signa scanner",
-         "start_char": 8269,
-         "end_char": 8338
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "device": "dev_ge_signa",
-   "magnetic_field_strength_tesla": {
-    "extraction_status": "extracted",
-    "value": 1.5,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The MR images were obtained on a General Electric 1.5-T Signa scanner",
-         "start_char": 8269,
-         "end_char": 8338
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "pulse_sequence_type": {
-    "extraction_status": "extracted",
-    "value": "3-D spoiled gradient",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Volumetric T1-weighted MR images were acquired with a 3-D spoiled gradient protocol.",
-         "start_char": 8462,
-         "end_char": 8546
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "mr_acquisition_type": {
-    "extraction_status": "extracted",
-    "value": "3-D",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Volumetric T1-weighted MR images were acquired with a 3-D spoiled gradient protocol.",
-         "start_char": 8462,
-         "end_char": 8546
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "repetition_time_seconds": {
-    "extraction_status": "extracted",
-    "value": 0.035,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The acquisition parameters were TE/TR = 6/35 ms",
-         "start_char": 8547,
-         "end_char": 8594
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "echo_time_seconds": {
-    "extraction_status": "extracted",
-    "value": [
-     0.006
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The acquisition parameters were TE/TR = 6/35 ms",
-         "start_char": 8547,
-         "end_char": 8594
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquisition_voxel_size_mm": {
-    "extraction_status": "extracted",
-    "value": [
-     0.9375,
-     0.9375,
-     1.5
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "number_of_volumes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  }
- ],
- "assessments": [
-  {
-   "local_id": "asm_drug_use_survey_questionnaire",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Drug Use Survey Questionnaire",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Drug use history was obtained using the Drug Use Survey Questionnaire , Addiction Severity Index , and the Diagnostic Interview Schedule .",
-         "start_char": 6028,
-         "end_char": 6166
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Drug use history assessment.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Drug use history was obtained using the Drug Use Survey Questionnaire",
-         "start_char": 6028,
-         "end_char": 6097
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Drug use history was obtained using the Drug Use Survey Questionnaire , Addiction Severity Index , and the Diagnostic Interview Schedule .",
-         "start_char": 6028,
-         "end_char": 6166
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_addiction_severity_index",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Addiction Severity Index",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Drug use history was obtained using the Drug Use Survey Questionnaire , Addiction Severity Index , and the Diagnostic Interview Schedule .",
-         "start_char": 6028,
-         "end_char": 6166
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Drug use history assessment.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Drug use history was obtained using the Drug Use Survey Questionnaire , Addiction Severity Index",
-         "start_char": 6028,
-         "end_char": 6124
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical assessment",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_diagnostic_interview_schedule",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Diagnostic Interview Schedule",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Drug use history was obtained using the Drug Use Survey Questionnaire , Addiction Severity Index , and the Diagnostic Interview Schedule .",
-         "start_char": 6028,
-         "end_char": 6166
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Diagnostic interview used to obtain drug use history.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Drug use history was obtained using the Drug Use Survey Questionnaire , Addiction Severity Index , and the Diagnostic Interview Schedule",
-         "start_char": 6028,
-         "end_char": 6164
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "diagnostic interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Drug use history was obtained using the Drug Use Survey Questionnaire , Addiction Severity Index , and the Diagnostic Interview Schedule .",
-         "start_char": 6028,
-         "end_char": 6166
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
- ],
- "devices": [
-  {
-   "local_id": "dev_ge_signa",
-   "manufacturer": {
-    "extraction_status": "extracted",
-    "value": "General Electric",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The MR images were obtained on a General Electric 1.5-T Signa scanner (GE Medical Systems, Milwaukee, WI, USA) at the MR Research Service Center of Johns Hopkins University School of Medicine.",
-         "start_char": 8269,
-         "end_char": 8461
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model": {
-    "extraction_status": "extracted",
-    "value": "Signa",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The MR images were obtained on a General Electric 1.5-T Signa scanner (GE Medical Systems, Milwaukee, WI, USA) at the MR Research Service Center of Johns Hopkins University School of Medicine.",
-         "start_char": 8269,
-         "end_char": 8461
-        }
-       ]
-      }
-     ]
-    }
-   }
+   "inference_settings": "inf_svc"
   }
  ],
  "groups": [
@@ -737,15 +382,35 @@
      ]
     }
    },
-   "description": {
+   "species": {
     "extraction_status": "extracted",
-    "value": "Individuals who reported cocaine as their primary drug of choice, used cocaine for a minimum of 2 years, and administered cocaine at least four times per month; they were abstinent for approximately 20 days before MR scanning.",
-    "value_source": "reported",
+    "value": "human",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
       {
        "source": "model_quote",
+       "spans": [
+        {
+         "text": "all subjects",
+         "start_char": 6871,
+         "end_char": 6883
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The cocaine group consisted of 14 individuals who reported that cocaine was their primary drug of choice, used cocaine for a minimum of 2 years, and administered cocaine at least four times per month.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
        "spans": [
         {
          "text": "The cocaine group consisted of 14 individuals who reported that cocaine was their primary drug of choice, used cocaine for a minimum of 2 years, and administered cocaine at least four times per month.",
@@ -755,33 +420,6 @@
        ]
       }
      ]
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "arm": "arm_cocaine",
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "acquired_count": {
@@ -804,19 +442,12 @@
      ]
     }
    },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "cocaine was the primary drug of choice",
-     "cocaine use for a minimum of 2 years",
-     "cocaine administered at least four times per month",
-     "positive urine toxicology screens for cocaine metabolites"
+     "cocaine was their primary drug of choice",
+     "used cocaine for a minimum of 2 years",
+     "administered cocaine at least four times per month"
     ],
     "value_source": "reported",
     "evidence": {
@@ -826,8 +457,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "reported that cocaine was their primary drug of choice, used cocaine for a minimum of 2 years, and administered cocaine at least four times per month",
-         "start_char": 7046,
+         "text": "cocaine was their primary drug of choice, used cocaine for a minimum of 2 years, and administered cocaine at least four times per month",
+         "start_char": 7060,
          "end_char": 7195
         }
        ]
@@ -835,14 +466,10 @@
      ]
     }
    },
-   "exclusion_criteria": {
+   "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "past or current psychiatric disorder other than cocaine dependence or nicotine dependence",
-     "past or current neurological problems",
-     "abnormal neurological examination",
-     "pregnancy",
-     "left-handedness"
+     "Cocaine dependence"
     ],
     "value_source": "reported",
     "evidence": {
@@ -850,6 +477,26 @@
      "sets": [
       {
        "source": "model_quote",
+       "spans": [
+        {
+         "text": "other than cocaine dependence for the cocaine group",
+         "start_char": 6461,
+         "end_char": 6512
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "Diagnostic and Statistical Manual of Mental Disorders-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
        "spans": [
         {
          "text": "Volunteers were excluded for a past or current psychiatric disorder (other than cocaine dependence for the cocaine group or nicotine dependence for either group) by the Diagnostic and Statistical Manual of Mental Disorders–IV criteria, a past or current history of neurological problems (e.g., loss of consciousness due to head trauma, seizure disorder, stroke), abnormal findings on the neurological examination, pregnancy, or left-handedness.",
@@ -941,12 +588,6 @@
      ]
     }
    },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_unit": {
     "extraction_status": "extracted",
     "value": "years",
@@ -967,120 +608,9 @@
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "cocaine dependence"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "other than cocaine dependence for the cocaine group",
-         "start_char": 6461,
-         "end_char": 6512
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "Diagnostic and Statistical Manual of Mental Disorders–IV",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Volunteers were excluded for a past or current psychiatric disorder (other than cocaine dependence for the cocaine group or nicotine dependence for either group) by the Diagnostic and Statistical Manual of Mental Disorders–IV criteria, a past or current history of neurological problems (e.g., loss of consciousness due to head trauma, seizure disorder, stroke), abnormal findings on the neurological examination, pregnancy, or left-handedness.",
-         "start_char": 6392,
-         "end_char": 6836
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_diagnostic_interview_schedule"
-   ],
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Cocaine use duration: 8.1 ± 5.0 years; abstinent for 20 days before scanning.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The MR scans were acquired about 20 days after admission to the inpatient unit",
-         "start_char": 7592,
-         "end_char": 7670
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "extracted",
-    "value": "abstinent",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "all subjects were abstinent for a uniform period of time",
-         "start_char": 7431,
-         "end_char": 7487
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "13.1 ± 1.6 years of education",
+    "value": "13.1 ± 1.6 years",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1098,12 +628,398 @@
      ]
     }
    },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "| Gender (male/female) | 11/3 | 7/4 |",
+           "start_char": 26883,
+           "end_char": 26920
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 11,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Gender (male/female) | 11/3",
+           "start_char": 26885,
+           "end_char": 26912
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 78.5714,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 14,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The cocaine group consisted of 14 individuals",
+           "start_char": 6996,
+           "end_char": 7041
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "| Gender (male/female) | 11/3 | 7/4 |",
+           "start_char": 26883,
+           "end_char": 26920
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "| Gender (male/female) | 11/3 | 7/4 |",
+           "start_char": 26883,
+           "end_char": 26920
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 3,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Gender (male/female) | 11/3",
+           "start_char": 26885,
+           "end_char": 26912
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 21.4286,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 14,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The cocaine group consisted of 14 individuals",
+           "start_char": 6996,
+           "end_char": 7041
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "| Gender (male/female) | 11/3 | 7/4 |",
+           "start_char": 26883,
+           "end_char": 26920
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "cocaine use"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The cocaine group consisted of 14 individuals who reported that cocaine was their primary drug of choice",
+         "start_char": 6996,
+         "end_char": 7100
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 14,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The cocaine group consisted of 14 individuals",
+         "start_char": 6996,
+         "end_char": 7041
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "past or current psychiatric disorder other than cocaine dependence or nicotine dependence",
+     "past or current neurological problems",
+     "abnormal neurological examination",
+     "pregnancy",
+     "left-handedness"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Volunteers were excluded for a past or current psychiatric disorder (other than cocaine dependence for the cocaine group or nicotine dependence for either group) by the Diagnostic and Statistical Manual of Mental Disorders–IV criteria, a past or current history of neurological problems (e.g., loss of consciousness due to head trauma, seizure disorder, stroke), abnormal findings on the neurological examination, pregnancy, or left-handedness",
+         "start_char": 6392,
+         "end_char": 6835
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Participants were housed at the NIDA Clinical Inpatient Research Unit and recruited as cocaine abusers who reported cocaine as their primary drug of choice.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Cocaine was the primary drug of choice; participants had used cocaine for at least 2 years and at least four times per month, with mean use duration of 8.1 ± 5.0 years. MRI was acquired after approximately 20 days of verified abstinence.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The cocaine group consisted of 14 individuals who reported that cocaine was their primary drug of choice, used cocaine for a minimum of 2 years, and administered cocaine at least four times per month.",
+         "start_char": 6996,
+         "end_char": 7196
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "extracted",
+    "value": "Not reported",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "socioeconomic_status_summary": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "previously_reported",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "cited_elsewhere",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age (years)",
+         "start_char": 26578,
+         "end_char": 26589
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_diagnostic_interview_schedul"
+   ]
   },
   {
    "local_id": "grp_comparison",
@@ -1127,9 +1043,29 @@
      ]
     }
    },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "all subjects",
+         "start_char": 6871,
+         "end_char": 6883
+        }
+       ]
+      }
+     ]
+    }
+   },
    "description": {
     "extraction_status": "extracted",
-    "value": "Non-drug-using comparison group.",
+    "value": "The comparison group consisted of 11 individuals who had not used cocaine.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1138,24 +1074,15 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "There were no regions that were examined where the cocaine group exhibited a greater density of gray matter than the non-drug-using comparison group.",
-         "start_char": 15271,
-         "end_char": 15420
+         "text": "The comparison group consisted of 11 individuals who had not used cocaine.",
+         "start_char": 7837,
+         "end_char": 7911
         }
        ]
       }
      ]
     }
    },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "arm": "arm_comparison",
    "acquired_count": {
     "extraction_status": "extracted",
     "value": 11,
@@ -1174,6 +1101,14 @@
        ]
       }
      ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "age_mean": {
@@ -1221,7 +1156,8 @@
     "value": 28,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "age_maximum": {
@@ -1229,7 +1165,8 @@
     "value": 42,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "age_unit": {
@@ -1252,34 +1189,187 @@
      ]
     }
    },
-   "is_healthy": {
+   "education_summary": {
     "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
+    "value": "14.5 ± 3.0 years",
+    "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
         {
-         "text": "a non-drug-using comparison group",
-         "start_char": 623,
-         "end_char": 656
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "| Gender (male/female) | 11/3 | 7/4 |",
+           "start_char": 26883,
+           "end_char": 26920
+          }
+         ]
         }
        ]
       }
-     ]
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 7,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 63.6364,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 11,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The comparison group consisted of 11 individuals",
+           "start_char": 7837,
+           "end_char": 7885
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "| Gender (male/female) | 11/3 | 7/4 |",
+           "start_char": 26883,
+           "end_char": 26920
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "| Gender (male/female) | 11/3 | 7/4 |",
+           "start_char": 26883,
+           "end_char": 26920
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 4,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 36.3636,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 11,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The comparison group consisted of 11 individuals",
+           "start_char": 7837,
+           "end_char": 7885
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "| Gender (male/female) | 11/3 | 7/4 |",
+           "start_char": 26883,
+           "end_char": 26920
+          }
+         ]
+        }
+       ]
+      }
+     }
     }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
+   ],
    "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1321,13 +1411,14 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "No cocaine use",
-     "No illicit drug use other than marijuana; marijuana use permitted if fewer than 8 days per month",
-     "No past or current psychiatric disorder",
-     "No past or current neurological problems",
-     "Normal neurological examination",
-     "Not pregnant",
-     "Right-handed"
+     "no cocaine use",
+     "fewer than 10 alcoholic drinks per week",
+     "no illicit drug use other than marijuana used fewer than 8 days per month",
+     "no psychiatric disorder",
+     "no neurological problems",
+     "normal neurological examination",
+     "not pregnant",
+     "right-handed"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1349,14 +1440,12 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Reported cocaine use",
-     "Use of any illicit drug other than marijuana",
-     "Marijuana use on 8 or more days per month",
-     "Past or current psychiatric disorder",
-     "Past or current neurological problems, including loss of consciousness due to head trauma, seizure disorder, or stroke",
-     "Abnormal neurological examination",
-     "Pregnancy",
-     "Left-handedness"
+     "past or current psychiatric disorder",
+     "past or current neurological problems",
+     "abnormal neurological examination",
+     "pregnancy",
+     "left-handedness",
+     "use of cocaine or illicit drugs other than permitted marijuana use"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1376,9 +1465,11 @@
     }
    },
    "recruitment_method": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Participants were recruited from the Johns Hopkins Bayview General Clinical Research Center and served as a non-drug-using comparison group.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "recruitment_dates": {
@@ -1393,15 +1484,12 @@
      "status": "not_applicable"
     }
    },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": "Non-drug-using comparison group; 11 participants; not housed in the NIDA inpatient unit and stayed at the Johns Hopkins Bayview General Clinical Research Center on the nights before PET and MR scans.",
+    "value": [
+     "non-drug-using comparison group",
+     "marijuana use permitted if fewer than 8 days per month"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1410,13 +1498,39 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Subjects in the comparison group were not housed in the NIDA inpatient unit, but at the Johns Hopkins Bayview General Clinical Research Center on the nights before their PET and MR scans.",
-         "start_char": 8054,
-         "end_char": 8241
+         "text": "The comparison group consisted of 11 individuals who had not used cocaine.",
+         "start_char": 7837,
+         "end_char": 7911
         }
        ]
       }
      ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "Diagnostic and Statistical Manual of Mental Disorders-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the Diagnostic and Statistical Manual of Mental Disorders–IV criteria",
+         "start_char": 6557,
+         "end_char": 6626
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "medications": {
@@ -1431,15 +1545,138 @@
      "status": "not_applicable"
     }
    },
-   "education_summary": {
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": "14.5 ± 3.0 years of education",
+    "value": "previously_reported",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
    },
-   "socioeconomic_status_summary": {
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "cited_elsewhere",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age (years)",
+         "start_char": 26578,
+         "end_char": 26589
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_diagnostic_interview_schedul"
+   ]
+  }
+ ],
+ "measures": [
+  {
+   "local_id": "mea_white_matter_density",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel-based morphometry",
+         "start_char": 811,
+         "end_char": 834
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "gray_matter_density",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Gray matter and white matter tissue densities were determined using voxel-based morphometry",
+         "start_char": 743,
+         "end_char": 834
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "white matter tissue density",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "white matter tissue density",
+         "start_char": 14602,
+         "end_char": 14629
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "tissue density",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "unit": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -1447,20 +1684,703 @@
    }
   }
  ],
- "inference_settings": [
+ "regions": [
   {
-   "local_id": "inf_small_volume_corrected",
-   "inference_level": {
+   "local_id": "r_frontal_white_matter",
+   "name": {
     "extraction_status": "extracted",
-    "value": "cluster",
+    "value": "white matter contained within the small volume template for the frontal cortex",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The duration of cocaine use (in years) was negatively correlated with tissue density in the white matter contained within the small volume template for the frontal cortex.",
+         "start_char": 16210,
+         "end_char": 16381
+        }
+       ]
+      }
+     ]
     }
    },
-   "height_threshold_value": {
+   "definition_method": {
     "extraction_status": "extracted",
-    "value": 0.005,
+    "value": "same_study_analysis",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The small volume templates were created using MEDx 3.42.",
+         "start_char": 11785,
+         "end_char": 11841
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "functional_cluster",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "small volume template",
+         "start_char": 10847,
+         "end_char": 10868
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "A small volume template including only white matter in the prefrontal cortex.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Another small volume template was constructed to include only white matter in the prefrontal cortex.",
+         "start_char": 13460,
+         "end_char": 13560
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "devices": [
+  {
+   "local_id": "dev_signa",
+   "manufacturer": {
+    "extraction_status": "extracted",
+    "value": "General Electric",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The MR images were obtained on a General Electric 1.5-T Signa scanner (GE Medical Systems, Milwaukee, WI, USA) at the MR Research Service Center of Johns Hopkins University School of Medicine.",
+         "start_char": 8269,
+         "end_char": 8461
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model": {
+    "extraction_status": "extracted",
+    "value": "Signa",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The MR images were obtained on a General Electric 1.5-T Signa scanner (GE Medical Systems, Milwaukee, WI, USA) at the MR Research Service Center of Johns Hopkins University School of Medicine.",
+         "start_char": 8269,
+         "end_char": 8461
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "acquisitions": [
+  {
+   "local_id": "acq_mri",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "sMRI",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "MR images",
+         "start_char": 8273,
+         "end_char": 8282
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "device": "dev_signa",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "through the entire brain",
+         "start_char": 8720,
+         "end_char": 8744
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 1.5,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The MR images were obtained on a General Electric 1.5-T Signa scanner",
+         "start_char": 8269,
+         "end_char": 8338
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "3-D spoiled gradient",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Volumetric T1-weighted MR images were acquired with a 3-D spoiled gradient protocol.",
+         "start_char": 8462,
+         "end_char": 8546
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "mr_acquisition_type": {
+    "extraction_status": "extracted",
+    "value": "3-D",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Volumetric T1-weighted MR images were acquired with a 3-D spoiled gradient protocol.",
+         "start_char": 8462,
+         "end_char": 8546
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "repetition_time_seconds": {
+    "extraction_status": "extracted",
+    "value": 0.035,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TE/TR = 6/35 ms",
+         "start_char": 8579,
+         "end_char": 8594
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "echo_time_seconds": {
+    "extraction_status": "extracted",
+    "value": [
+     0.006
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TE/TR = 6/35 ms",
+         "start_char": 8579,
+         "end_char": 8594
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_voxel_size_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     0.9375,
+     0.9375,
+     1.5
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "24-cm field of view, matrix = 256 2 , with 124 slices of 1.5 mm thickness",
+         "start_char": 8621,
+         "end_char": 8694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_vbm",
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Several preprocessing steps are required to analyze structural MR images using voxel-based morphometry in SPM99.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Several preprocessing steps are required to analyze structural MR images using voxel-based morphometry in SPM99",
+         "start_char": 9775,
+         "end_char": 9886
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "SPM99",
+     "MEDx 3.42"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "SPM99; http://www.fil.ion.ucl.ac.uk/spm/",
+         "start_char": 9046,
+         "end_char": 9086
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "reformatted to Analyze 7.5 image volume format",
+     "spatial normalization",
+     "resampling",
+     "segmentation",
+     "spatial normalization to MNI gray matter or white matter template images",
+     "smoothing"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The MR images were spatially normalized by linear and nonlinear transformations into the standard stereotaxic coordinate space developed at the Montreal Neurological Institute (i.e., the MNI space).",
+         "start_char": 9946,
+         "end_char": 10144
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     12
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The segmented gray matter and white matter images were finally smoothed with a 12-mm 3 isotropic Gaussian kernel",
+         "start_char": 10625,
+         "end_char": 10737
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "model_estimations": [
+  {
+   "local_id": "mod_group_correlation",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "glm",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Using the general linear model approach implemented in SPM99",
+         "start_char": 13980,
+         "end_char": 14040
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "group-level correlation model",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Simple linear regressions between duration of cocaine use (in years) and gray matter or white matter tissue density in the cocaine group were also performed.",
+         "start_char": 14514,
+         "end_char": 14671
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "in the cocaine group",
+         "start_char": 14630,
+         "end_char": 14650
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel",
+         "start_char": 811,
+         "end_char": 816
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_vbm"
+   ],
+   "terms": [
+    {
+     "local_id": "trm_duration_cocaine_use",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "duration of cocaine use",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "duration of cocaine use (in years)",
+           "start_char": 14548,
+           "end_char": 14582
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "duration of cocaine use (in years)",
+           "start_char": 14548,
+           "end_char": 14582
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "in the cocaine group",
+           "start_char": 14630,
+           "end_char": 14650
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "years",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "duration of cocaine use (in years)",
+           "start_char": 14548,
+           "end_char": 14582
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Simple linear regressions",
+           "start_char": 14514,
+           "end_char": 14539
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Duration of cocaine use, measured in years; the cocaine group had mean duration of 8.1 ± 5.0 years.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The duration of cocaine use (in years)",
+           "start_char": 16210,
+           "end_char": 16248
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Images were proportionally scaled to account for global differences; one-sided contrasts were performed. Voxel-wise threshold P < 0.005, with contiguous clusters considered significant at P < 0.05 corrected for multiple comparisons within the a priori search volume.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All images were proportionally scaled to account for global differences. One-sided contrasts were performed to evaluate greater or lesser tissue density between groups. The voxel-wise threshold was set at P < 0.005, and clusters of contiguous voxels that passed this threshold were considered significant at P < 0.05 corrected for multiple comparisons within the a priori search volume.",
+         "start_char": 14127,
+         "end_char": 14513
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "General linear model",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Using the general linear model approach implemented in SPM99, relative differences in voxel tissue density between the two groups were determined.",
+         "start_char": 13980,
+         "end_char": 14126
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM99 running from MEDx 3.42",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "SPM99; http://www.fil.ion.ucl.ac.uk/spm/",
+         "start_char": 9046,
+         "end_char": 9086
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_svc",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "voxel",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1478,9 +2398,9 @@
      ]
     }
    },
-   "height_threshold_type": {
+   "height_threshold_value": {
     "extraction_status": "extracted",
-    "value": "P",
+    "value": 0.005,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1489,9 +2409,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The voxel-wise threshold was set at P < 0.005",
-         "start_char": 14296,
+         "text": "P < 0.005",
+         "start_char": 14332,
          "end_char": 14341
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "extracted",
+    "value": "p",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "P",
+         "start_char": 139,
+         "end_char": 140
         }
        ]
       }
@@ -1509,9 +2449,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "clusters of contiguous voxels that passed this threshold were considered significant at P < 0.05",
-         "start_char": 14347,
-         "end_char": 14443
+         "text": "P < 0.05 corrected for multiple comparisons within the a priori search volume",
+         "start_char": 14435,
+         "end_char": 14512
         }
        ]
       }
@@ -1585,9 +2525,23 @@
     }
    },
    "search_volume": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "A priori small volume templates for the frontal cortical regions of interest",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the a priori search volume",
+         "start_char": 14486,
+         "end_char": 14512
+        }
+       ]
+      }
+     ]
     }
    },
    "neighborhood_definition": {
@@ -1627,9 +2581,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "which of the 13 small volumes remained statistically significant",
-         "start_char": 15459,
-         "end_char": 15523
+         "text": "13 small volumes",
+         "start_char": 1051,
+         "end_char": 1067
         }
        ]
       }
@@ -1637,443 +2591,21 @@
     }
    },
    "correction_regions": [
-    "reg_infragenual_cingulate_gyrus",
-    "reg_perigenual_cingulate_gyrus",
-    "reg_dorsal_midcingulate_region",
-    "reg_medial_orbitofrontal_cortex",
-    "reg_lateral_orbitofrontal_cortex",
-    "reg_lateral_prefrontal_cortex",
-    "reg_prefrontal_cortex_gray",
-    "reg_prefrontal_cortex_white"
+    "r_frontal_white_matter"
    ]
   }
  ],
- "measures": [
-  {
-   "local_id": "mea_white_matter_tissue_density",
-   "family": {
-    "extraction_status": "extracted",
-    "value": "structural_morphometry",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "type": {
-    "extraction_status": "extracted",
-    "value": "gray_matter_density",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Gray matter and white matter tissue densities were determined using voxel-based morphometry",
-         "start_char": 743,
-         "end_char": 834
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "source_label": {
-    "extraction_status": "extracted",
-    "value": "white matter tissue density",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "white matter tissue density",
-         "start_char": 14602,
-         "end_char": 14629
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "specific_metric": {
-    "extraction_status": "extracted",
-    "value": "white matter tissue density",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "white matter tissue density",
-         "start_char": 14602,
-         "end_char": 14629
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "unit": {
-    "extraction_status": "extracted",
-    "value": "unitless",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
+ "language": [
+  "eng"
  ],
- "model_estimations": [
-  {
-   "local_id": "mod_correlation_duration_cocaine_use",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "glm",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Using the general linear model approach implemented in SPM99",
-         "start_char": 13980,
-         "end_char": 14040
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "simple linear regression between duration of cocaine use and tissue density",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Simple linear regressions between duration of cocaine use (in years) and gray matter or white matter tissue density in the cocaine group were also performed.",
-         "start_char": 14514,
-         "end_char": 14671
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "voxel",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The density or concentration of a particular class of tissue (e.g., gray matter) is evaluated on a voxel-by-voxel basis.",
-         "start_char": 9330,
-         "end_char": 9450
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "preprocessing": [
-    "prp_vbm"
-   ],
-   "terms": [
-    {
-     "local_id": "trm_duration_cocaine_use",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "duration of cocaine use",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "duration of cocaine use",
-           "start_char": 14548,
-           "end_char": 14571
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "duration of cocaine use (in years) and gray matter or white matter tissue density in the cocaine group",
-           "start_char": 14548,
-           "end_char": 14650
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "duration of cocaine use (in years)",
-           "start_char": 14548,
-           "end_char": 14582
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Duration of cocaine use.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "There was no correlation (positive or negative) of gray matter tissue density in the frontal cortex with duration of cocaine use.",
-           "start_char": 17009,
-           "end_char": 17138
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Simple linear regressions between duration of cocaine use (in years) and gray matter or white matter tissue density",
-           "start_char": 14514,
-           "end_char": 14629
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "extracted",
-    "value": "unset",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "General linear model with simple linear regression; one-sided contrasts; voxel-wise threshold P < 0.005 and cluster-level significance corrected for multiple comparisons within the a priori search volume.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "One-sided contrasts were performed to evaluate greater or lesser tissue density between groups. The voxel-wise threshold was set at P < 0.005, and clusters of contiguous voxels that passed this threshold were considered significant at P < 0.05 corrected for multiple comparisons within the a priori search volume.",
-         "start_char": 14200,
-         "end_char": 14513
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "SPM99 running from MEDx 3.42",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "SPM99",
-         "start_char": 9046,
-         "end_char": 9051
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
- ],
- "preprocessings": [
-  {
-   "local_id": "prp_vbm",
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Structural voxel-based morphometry preprocessing including reformatting, spatial normalization, resampling, segmentation with bias correction, template normalization, and smoothing.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Several preprocessing steps are required to analyze structural MR images using voxel-based morphometry in SPM99",
-         "start_char": 9775,
-         "end_char": 9886
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": [
-     "SPM99",
-     "MEDx 3.42"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-based morphometry was performed using statistical parametric mapping software (SPM99; http://www.fil.ion.ucl.ac.uk/spm/ ) running from the MEDx 3.42 image analysis program",
-         "start_char": 8961,
-         "end_char": 9138
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "steps": {
-    "extraction_status": "extracted",
-    "value": [
-     "DICOM to Analyze 7.5 reformatting",
-     "spatial normalization",
-     "resampling",
-     "segmentation with bias correction",
-     "template normalization",
-     "spatial smoothing"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The MR images were received in DICOM format and reformatted to the Analyze 7.5 image volume format.",
-         "start_char": 8861,
-         "end_char": 8960
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "smoothing_fwhm_mm": {
-    "extraction_status": "extracted",
-    "value": [
-     12,
-     12,
-     12
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The segmented gray matter and white matter images were finally smoothed with a 12-mm 3 isotropic Gaussian kernel",
-         "start_char": 10625,
-         "end_char": 10737
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
+ "study_type": [
+  "Clinical Trial",
+  "Journal Article",
+  "Research Support, U.S. Gov't, P.H.S."
  ],
  "tables": [
   {
-   "local_id": "table1",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -2100,7 +2632,7 @@
    }
   },
   {
-   "local_id": "table2",
+   "local_id": "tbltable2",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 2",
@@ -2132,7 +2664,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "c30f005f8be53b3f62299f7891f6192026d5937a838e365733bccccc82514cff",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2296,117 +2828,12 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "regions": [
+ "assessments": [
   {
-   "local_id": "reg_infragenual_cingulate_gyrus",
+   "local_id": "asm_drug_use_survey",
    "name": {
     "extraction_status": "extracted",
-    "value": "infragenual cingulate gyrus",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Infragenual cingulate gyrus, Brodmann areas 25 and 32, defined as a bilateral small volume template.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_perigenual_cingulate_gyrus",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "perigenual cingulate gyrus",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Perigenual cingulate gyrus, Brodmann areas 24, 32, and 33, defined as a bilateral small volume template.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_dorsal_midcingulate_region",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "dorsal midcingulate region",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Dorsal midcingulate region, Brodmann area 24, defined as a bilateral small volume template.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_medial_orbitofrontal_cortex",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "medial orbitofrontal cortex",
+    "value": "Drug Use Survey Questionnaire",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2415,34 +2842,18 @@
        "source": "repair_pass",
        "spans": [
         {
-         "text": "medial orbitofrontal cortex",
-         "start_char": 1176,
-         "end_char": 1203
+         "text": "Drug Use Survey Questionnaire",
+         "start_char": 6068,
+         "end_char": 6097
         }
        ]
       }
      ]
     }
    },
-   "definition_method": {
+   "assessment_type": {
     "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Medial orbitofrontal cortex, Brodmann area 11, including the gyrus rectus and medial orbital gyrus, defined as a bilateral small volume template.",
+    "value": "questionnaire",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2450,10 +2861,10 @@
    }
   },
   {
-   "local_id": "reg_lateral_orbitofrontal_cortex",
+   "local_id": "asm_addiction_severity_index",
    "name": {
     "extraction_status": "extracted",
-    "value": "lateral orbitofrontal cortex",
+    "value": "Addiction Severity Index",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2462,34 +2873,18 @@
        "source": "repair_pass",
        "spans": [
         {
-         "text": "lateral orbitofrontal cortex",
-         "start_char": 1212,
-         "end_char": 1240
+         "text": "Addiction Severity Index",
+         "start_char": 6100,
+         "end_char": 6124
         }
        ]
       }
      ]
     }
    },
-   "definition_method": {
+   "assessment_type": {
     "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Lateral orbitofrontal cortex, Brodmann areas 11 and 47, including the lateral orbital gyrus and part of the inferior frontal gyrus, defined as a bilateral small volume template.",
+    "value": "structured interview",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2497,10 +2892,10 @@
    }
   },
   {
-   "local_id": "reg_lateral_prefrontal_cortex",
+   "local_id": "asm_diagnostic_interview_schedul",
    "name": {
     "extraction_status": "extracted",
-    "value": "lateral prefrontal cortex",
+    "value": "Diagnostic Interview Schedule",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2509,114 +2904,66 @@
        "source": "repair_pass",
        "spans": [
         {
-         "text": "lateral prefrontal cortex",
-         "start_char": 2874,
-         "end_char": 2899
+         "text": "Diagnostic Interview Schedule",
+         "start_char": 6135,
+         "end_char": 6164
         }
        ]
       }
      ]
     }
    },
-   "definition_method": {
+   "assessment_type": {
     "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
+    "value": "diagnostic interview",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Lateral prefrontal cortex, Brodmann areas 9, 10, 44, 45, and 46, including the middle and inferior frontal gyri, defined as a bilateral small volume template.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Diagnostic Interview",
+         "start_char": 6135,
+         "end_char": 6155
+        }
+       ]
+      }
+     ]
     }
    }
   },
   {
-   "local_id": "reg_prefrontal_cortex_gray",
+   "local_id": "asm_diagnostic_and_statistical",
    "name": {
     "extraction_status": "extracted",
-    "value": "prefrontal cortex gray matter",
-    "value_source": "generated",
+    "value": "Diagnostic and Statistical Manual of Mental Disorders-IV",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Diagnostic and Statistical Manual of Mental Disorders–IV",
+         "start_char": 6561,
+         "end_char": 6617
+        }
+       ]
+      }
+     ]
     }
    },
-   "definition_method": {
+   "assessment_type": {
     "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Gray matter of the prefrontal cortex anterior to the genu of the corpus callosum, defined as a small volume template.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_prefrontal_cortex_white",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "prefrontal cortex white matter",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "White matter in the prefrontal cortex, defined as a small volume template.",
+    "value": "diagnostic system",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    }
   }
- ],
- "study_type": [
-  "Clinical Trial",
-  "Journal Article",
-  "Research Support, U.S. Gov't, P.H.S."
  ]
 }

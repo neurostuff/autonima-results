@@ -1,7 +1,7 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study examined whether plasma biomarkers of alcohol intake—gamma-glutamyl transferase, mean corpuscular volume, and carbohydrate-deficient transferrin—were associated with regional gray-matter and white-matter volumes measured with MRI in 55 male drinkers using multiple linear regression.",
+  "value": "The study examined whether alcohol-related biomarkers predict regional brain gray- and white-matter volumes in 55 male drinkers using MRI and multiple linear regression.",
   "value_source": "reported",
   "evidence": {
    "status": "present",
@@ -22,8 +22,8 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "The study was an observational, cross-sectional MRI study of 55 male drinkers recruited from newspaper advertisements; participants were not assigned to intervention arms.",
-   "value_source": "generated",
+   "value": "Observational study of male drinkers recruited through newspaper advertisements; participants were not assigned to intervention arms and were assessed in a single study session.",
+   "value_source": "reported",
    "evidence": {
     "status": "present",
     "sets": [
@@ -31,9 +31,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "From about 800 applications, 55 males of Caucasian descent were selected.",
-        "start_char": 4993,
-        "end_char": 5066
+        "text": "Participants were recruited via newspapers and were paid for their participation.",
+        "start_char": 3870,
+        "end_char": 3951
        }
       ]
      }
@@ -45,41 +45,81 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "In the present study, a wide range of drinkers was included",
+        "start_char": 2589,
+        "end_char": 2648
+       }
+      ]
+     }
+    ]
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "single_group",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "in a sample of 55 male drinkers",
+        "start_char": 3321,
+        "end_char": 3352
+       }
+      ]
+     }
+    ]
    }
   },
   "blinding": {
-   "extraction_status": "not_reported",
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
    "evidence": {
-    "status": "not_applicable"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "All scans were coded to ensure investigator blindness to participant identification and level of drinking.",
+        "start_char": 7688,
+        "end_char": 7794
+       }
+      ]
+     }
+    ]
    }
-  }
+  },
+  "arms": [],
+  "timepoints": []
  },
  "analyses": [
   {
    "local_id": "ana_ggt_total_gm",
    "name": {
     "extraction_status": "extracted",
-    "value": "GGT and total gray-matter volume",
+    "value": "GGT and total gray-matter volume regression",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "After including smoking as co-predictor, the association between GGT and total gray-matter volume became marginally significant (beta = −0.16, t 50 = −1.94, p = 0.058; adjusted R 2 = 0.73).",
-         "start_char": 11432,
-         "end_char": 11621
+         "text": "GGT was significantly associated with a decrease in total gray-matter volume",
+         "start_char": 11219,
+         "end_char": 11295
         }
        ]
       }
@@ -94,12 +134,12 @@
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "GGT was significantly associated with a decrease in total gray-matter volume (beta = −0.22, t 51 = −2.93, p = 0.005; adjusted R 2 = 0.72) but not with total white-matter volume (beta = −0.05, t 51 = −0.46, n.s.).",
+         "text": "GGT was significantly associated with a decrease in total gray-matter volume",
          "start_char": 11219,
-         "end_char": 11431
+         "end_char": 11295
         }
        ]
       }
@@ -114,9 +154,31 @@
      "status": "not_found"
     }
    },
-   "spatial_scope": {
-    "value": "whole_brain",
+   "interpretations": {
     "extraction_status": "extracted",
+    "value": [
+     "GGT was significantly associated with a decrease in total gray-matter volume"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "GGT was significantly associated with a decrease in total gray-matter volume",
+         "start_char": 11219,
+         "end_char": 11295
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "regional brain volumes",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -125,16 +187,16 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We first analyzed the regression of the biomarkers on the dependent variables total white and total gray volumes, respectively.",
-         "start_char": 9643,
-         "end_char": 9770
+         "text": "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)",
+         "start_char": 3189,
+         "end_char": 3287
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_gray_matter_volume",
+   "measure": "mea_total_gm",
    "groups": [
     {
      "group": "grp_male_drinkers",
@@ -149,9 +211,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "We related plasma levels of GGT, MCV, and CDT with regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI) using multiple linear regression in a sample of 55 male drinkers.",
-           "start_char": 3138,
-           "end_char": 3353
+           "text": "sample of 55 male drinkers",
+           "start_char": 3326,
+           "end_char": 3352
           }
          ]
         }
@@ -166,8 +228,8 @@
       "term": "trm_ggt",
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
+       "value": "negative",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -189,7 +251,7 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "cross_subject_regression",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
       "status": "not_found"
      }
@@ -214,9 +276,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "GGT was significantly associated with a decrease in total gray-matter volume (beta = −0.22, t 51 = −2.93, p = 0.005; adjusted R 2 = 0.72) but not with total white-matter volume (beta = −0.05, t 51 = −0.46, n.s.).",
-           "start_char": 11219,
-           "end_char": 11431
+           "text": "t 51 = −2.93",
+           "start_char": 11311,
+           "end_char": 11323
           }
          ]
         }
@@ -234,42 +296,11 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "model_estimation": "mod_regression",
+   "model_estimation": "mod_regression_biomarkers",
    "source_table_analysis": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
-    }
-   },
-   "assessments": [
-    "asm_ggt",
-    "asm_two_week_alcohol",
-    "asm_lifetime_drinking_history"
-   ],
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "GGT was significantly associated with a decrease in total gray-matter volume.",
-     "The association between GGT and total gray-matter volume became marginally significant after including smoking as a co-predictor."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "GGT was significantly associated with a decrease in total gray-matter volume (beta = −0.22, t 51 = −2.93, p = 0.005; adjusted R 2 = 0.72) but not with total white-matter volume (beta = −0.05, t 51 = −0.46, n.s.).",
-         "start_char": 11219,
-         "end_char": 11431
-        }
-       ]
-      }
-     ]
     }
    },
    "coordinate_space": {
@@ -297,13 +328,22 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_t2"
+   ],
+   "assessments": [
+    "asm_edi",
+    "asm_cidi",
+    "asm_dutch_adult_reading"
+   ]
   },
   {
-   "local_id": "ana_ggt_parietal_gm",
+   "local_id": "ana_ggt_total_wm",
    "name": {
     "extraction_status": "extracted",
-    "value": "GGT and parietal gray-matter volume",
+    "value": "GGT and total white-matter volume regression",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -312,9 +352,232 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The subsequent analyses (also with smoking included) per subregion (frontal, temporal, parietal, and occipital) revealed that GGT was primarily associated with a decrease in parietal gray-matter volume (beta = −0.20, t 51 = −2.19, p = 0.03; adjusted R 2 = 0.66).",
-         "start_char": 11622,
-         "end_char": 11884
+         "text": "GGT was significantly associated with a decrease in total gray-matter volume (beta = −0.22, t 51 = −2.93, p = 0.005; adjusted R 2 = 0.72) but not with total white-matter volume",
+         "start_char": 11219,
+         "end_char": 11395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "GGT was not significantly associated with total white-matter volume.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "not with total white-matter volume",
+         "start_char": 11361,
+         "end_char": 11395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "regional brain volumes",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)",
+         "start_char": 3189,
+         "end_char": 3287
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_total_wm",
+   "groups": [
+    {
+     "group": "grp_male_drinkers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 55,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "sample of 55 male drinkers",
+           "start_char": 3326,
+           "end_char": 3352
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_ggt",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "cross_subject_regression",
+     "value_source": "generated",
+     "evidence": {
+      "status": "not_found"
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "extracted",
+      "value": 51,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "t 51 = −0.46",
+           "start_char": 11411,
+           "end_char": 11423
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "model_estimation": "mod_regression_biomarkers",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "GGT was not significantly associated with total white-matter volume."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "Talairach",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Scans were put into a Talairach frame (Talairach and Tournoux, 1993 ) without scaling",
+         "start_char": 7795,
+         "end_char": 7880
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_t2"
+   ],
+   "assessments": [
+    "asm_edi",
+    "asm_cidi",
+    "asm_dutch_adult_reading"
+   ]
+  },
+  {
+   "local_id": "ana_ggt_parietal_gm",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "GGT and parietal gray-matter volume regression",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "GGT was primarily associated with a decrease in parietal gray-matter volume",
+         "start_char": 11748,
+         "end_char": 11823
         }
        ]
       }
@@ -329,12 +592,12 @@
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "The subsequent analyses (also with smoking included) per subregion (frontal, temporal, parietal, and occipital) revealed that GGT was primarily associated with a decrease in parietal gray-matter volume (beta = −0.20, t 51 = −2.19, p = 0.03; adjusted R 2 = 0.66).",
-         "start_char": 11622,
-         "end_char": 11884
+         "text": "GGT was primarily associated with a decrease in parietal gray-matter volume",
+         "start_char": 11748,
+         "end_char": 11823
         }
        ]
       }
@@ -350,8 +613,8 @@
     }
    },
    "spatial_scope": {
-    "value": "roi",
     "extraction_status": "extracted",
+    "value": "regional brain volumes",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -360,20 +623,16 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The subsequent analyses (also with smoking included) per subregion (frontal, temporal, parietal, and occipital) revealed that GGT was primarily associated with a decrease in parietal gray-matter volume (beta = −0.20, t 51 = −2.19, p = 0.03; adjusted R 2 = 0.66).",
-         "start_char": 11622,
-         "end_char": 11884
+         "text": "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)",
+         "start_char": 3189,
+         "end_char": 3287
         }
        ]
       }
      ]
     }
    },
-   "regions": [
-    "reg_parietal",
-    "reg_parietal_region"
-   ],
-   "measure": "mea_gray_matter_volume",
+   "measure": "mea_parietal_gm",
    "groups": [
     {
      "group": "grp_male_drinkers",
@@ -388,9 +647,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "We related plasma levels of GGT, MCV, and CDT with regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI) using multiple linear regression in a sample of 55 male drinkers.",
-           "start_char": 3138,
-           "end_char": 3353
+           "text": "sample of 55 male drinkers",
+           "start_char": 3326,
+           "end_char": 3352
           }
          ]
         }
@@ -405,8 +664,8 @@
       "term": "trm_ggt",
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
+       "value": "negative",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -428,7 +687,7 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "cross_subject_regression",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
       "status": "not_found"
      }
@@ -453,9 +712,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The subsequent analyses (also with smoking included) per subregion (frontal, temporal, parietal, and occipital) revealed that GGT was primarily associated with a decrease in parietal gray-matter volume (beta = −0.20, t 51 = −2.19, p = 0.03; adjusted R 2 = 0.66).",
-           "start_char": 11622,
-           "end_char": 11884
+           "text": "t 51 = −2.19",
+           "start_char": 11839,
+           "end_char": 11851
           }
          ]
         }
@@ -473,13 +732,7 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "model_estimation": "mod_regression",
-   "assessments": [
-    "asm_ggt"
-   ],
+   "model_estimation": "mod_regression_biomarkers",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
@@ -487,19 +740,7 @@
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The subsequent analyses (also with smoking included) per subregion (frontal, temporal, parietal, and occipital) revealed that GGT was primarily associated with a decrease in parietal gray-matter volume (beta = −0.20, t 51 = −2.19, p = 0.03; adjusted R 2 = 0.66).",
-         "start_char": 11622,
-         "end_char": 11884
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "source_table_analysis": {
@@ -533,33 +774,22 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_t2"
+   ],
+   "assessments": [
+    "asm_edi",
+    "asm_cidi",
+    "asm_dutch_adult_reading"
+   ]
   },
   {
    "local_id": "ana_cdt_total_gm",
    "name": {
     "extraction_status": "extracted",
-    "value": "CDT and total gray-matter volume",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "However, after including smoking as co-predictor, the relationship between CDT and total gray-matter volume became insignificant (beta = −0.13, t 46 = −1.59, p = 0.12, adjusted R 2 = 0.73) (Figure 1 ).",
-         "start_char": 12140,
-         "end_char": 12341
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Carbohydrate-deficient transferrin was significantly related to total gray-matter volume",
+    "value": "CDT and total gray-matter volume regression",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -568,9 +798,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Carbohydrate-deficient transferrin was also significantly related to total gray-matter volume (beta = −0.18, t 47 = −2.31, p = 0.03; adjusted R 2 = 0.72) but not with total white-matter volume (beta = −0.04, t 47 = −0.44, p = 0.66, adjusted R 2 = 0.54).",
+         "text": "Carbohydrate-deficient transferrin was also significantly related to total gray-matter volume",
          "start_char": 11886,
-         "end_char": 12139
+         "end_char": 11979
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Carbohydrate-deficient transferrin was significantly related to total gray-matter volume.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Carbohydrate-deficient transferrin was also significantly related to total gray-matter volume",
+         "start_char": 11886,
+         "end_char": 11979
         }
        ]
       }
@@ -586,8 +836,8 @@
     }
    },
    "spatial_scope": {
-    "value": "whole_brain",
     "extraction_status": "extracted",
+    "value": "regional brain volumes",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -596,25 +846,37 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We first analyzed the regression of the biomarkers on the dependent variables total white and total gray volumes, respectively.",
-         "start_char": 9643,
-         "end_char": 9770
+         "text": "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)",
+         "start_char": 3189,
+         "end_char": 3287
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_gray_matter_volume",
+   "measure": "mea_total_gm",
    "groups": [
     {
      "group": "grp_male_drinkers",
      "n": {
       "extraction_status": "extracted",
-      "value": 51,
+      "value": 55,
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "sample of 55 male drinkers",
+           "start_char": 3326,
+           "end_char": 3352
+          }
+         ]
+        }
+       ]
       }
      }
     }
@@ -625,8 +887,8 @@
       "term": "trm_cdt",
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
+       "value": "negative",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -648,7 +910,7 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "cross_subject_regression",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
       "status": "not_found"
      }
@@ -673,9 +935,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Carbohydrate-deficient transferrin was also significantly related to total gray-matter volume (beta = −0.18, t 47 = −2.31, p = 0.03; adjusted R 2 = 0.72) but not with total white-matter volume (beta = −0.04, t 47 = −0.44, p = 0.66, adjusted R 2 = 0.54).",
-           "start_char": 11886,
-           "end_char": 12139
+           "text": "t 47 = −2.31",
+           "start_char": 11995,
+           "end_char": 12007
           }
          ]
         }
@@ -693,19 +955,11 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "model_estimation": "mod_regression",
-   "assessments": [
-    "asm_cdt"
-   ],
+   "model_estimation": "mod_regression_biomarkers",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Carbohydrate-deficient transferrin was significantly related to total gray-matter volume.",
-     "After including smoking as a co-predictor, the relationship between CDT and total gray-matter volume became insignificant.",
-     "No significant relationship between CDT levels and decrease in brain volumes was found."
+     "Carbohydrate-deficient transferrin was significantly related to total gray-matter volume, but after including smoking as a co-predictor, the relationship became insignificant."
     ],
     "value_source": "reported",
     "evidence": {
@@ -715,9 +969,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "However, after including smoking as co-predictor, the relationship between CDT and total gray-matter volume became insignificant (beta = −0.13, t 46 = −1.59, p = 0.12, adjusted R 2 = 0.73) (Figure 1 ).",
+         "text": "However, after including smoking as co-predictor, the relationship between CDT and total gray-matter volume became insignificant",
          "start_char": 12140,
-         "end_char": 12341
+         "end_char": 12268
         }
        ]
       }
@@ -755,16 +1009,260 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_t2"
+   ],
+   "assessments": [
+    "asm_edi",
+    "asm_cidi",
+    "asm_dutch_adult_reading"
+   ]
+  },
+  {
+   "local_id": "ana_cdt_total_wm",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "CDT and total white-matter volume regression",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Carbohydrate-deficient transferrin was also significantly related to total gray-matter volume (beta = −0.18, t 47 = −2.31, p = 0.03; adjusted R 2 = 0.72) but not with total white-matter volume",
+         "start_char": 11886,
+         "end_char": 12078
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Carbohydrate-deficient transferrin was not significantly related to total white-matter volume.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "but not with total white-matter volume",
+         "start_char": 11357,
+         "end_char": 11395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "regional brain volumes",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)",
+         "start_char": 3189,
+         "end_char": 3287
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_total_wm",
+   "groups": [
+    {
+     "group": "grp_male_drinkers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 55,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "sample of 55 male drinkers",
+           "start_char": 3326,
+           "end_char": 3352
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_cdt",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "cross_subject_regression",
+     "value_source": "generated",
+     "evidence": {
+      "status": "not_found"
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "extracted",
+      "value": 47,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "t 47 = −0.44",
+           "start_char": 12094,
+           "end_char": 12106
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "model_estimation": "mod_regression_biomarkers",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Carbohydrate-deficient transferrin was not significantly related to total white-matter volume."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "Talairach",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Scans were put into a Talairach frame (Talairach and Tournoux, 1993 ) without scaling",
+         "start_char": 7795,
+         "end_char": 7880
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_t2"
+   ],
+   "assessments": [
+    "asm_edi",
+    "asm_cidi",
+    "asm_dutch_adult_reading"
+   ]
   },
   {
    "local_id": "ana_mcv_total_gm",
    "name": {
     "extraction_status": "extracted",
-    "value": "MCV and total gray-matter volume",
+    "value": "MCV and total gray-matter volume regression",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Mean corpuscular volume was significantly related to brain gray-matter volume",
+         "start_char": 12454,
+         "end_char": 12531
+        }
+       ]
+      }
+     ]
     }
    },
    "definition": {
@@ -775,12 +1273,12 @@
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Mean corpuscular volume was significantly related to brain gray-matter volume (beta = −0.16, t 50 = −2.18, p = 0.03, adjusted R 2 = 0.71) but not with total white-matter volume (beta −0.15, t 50 = 0.51, adjusted R 2 = 0.52, p = 0.61).",
+         "text": "Mean corpuscular volume was significantly related to brain gray-matter volume",
          "start_char": 12454,
-         "end_char": 12688
+         "end_char": 12531
         }
        ]
       }
@@ -796,8 +1294,8 @@
     }
    },
    "spatial_scope": {
-    "value": "whole_brain",
     "extraction_status": "extracted",
+    "value": "regional brain volumes",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -806,25 +1304,37 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We first analyzed the regression of the biomarkers on the dependent variables total white and total gray volumes, respectively.",
-         "start_char": 9643,
-         "end_char": 9770
+         "text": "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)",
+         "start_char": 3189,
+         "end_char": 3287
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_gray_matter_volume",
+   "measure": "mea_total_gm",
    "groups": [
     {
      "group": "grp_male_drinkers",
      "n": {
       "extraction_status": "extracted",
-      "value": 51,
+      "value": 55,
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "sample of 55 male drinkers",
+           "start_char": 3326,
+           "end_char": 3352
+          }
+         ]
+        }
+       ]
       }
      }
     }
@@ -835,8 +1345,8 @@
       "term": "trm_mcv",
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
+       "value": "negative",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -858,7 +1368,7 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "cross_subject_regression",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
       "status": "not_found"
      }
@@ -883,9 +1393,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Mean corpuscular volume was significantly related to brain gray-matter volume (beta = −0.16, t 50 = −2.18, p = 0.03, adjusted R 2 = 0.71) but not with total white-matter volume (beta −0.15, t 50 = 0.51, adjusted R 2 = 0.52, p = 0.61).",
-           "start_char": 12454,
-           "end_char": 12688
+           "text": "t 50 = −2.18",
+           "start_char": 12547,
+           "end_char": 12559
           }
          ]
         }
@@ -903,34 +1413,15 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "model_estimation": "mod_regression",
-   "assessments": [
-    "asm_mcv"
-   ],
+   "model_estimation": "mod_regression_biomarkers",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Mean corpuscular volume was significantly related to brain gray-matter volume.",
-     "After including smoking as a co-predictor, the relationship between total gray-matter volume and MCV remained significant."
+     "Mean corpuscular volume was significantly related to brain gray-matter volume."
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "After including smoking as co-predictor, the relationship between total gray-matter volume and MCV remained significant (beta = −0.15, t 49 = −2.02, p = 0.049, adjusted R 2 = 0.73).",
-         "start_char": 12689,
-         "end_char": 12870
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "source_table_analysis": {
@@ -964,24 +1455,280 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_t2"
+   ],
+   "assessments": [
+    "asm_edi",
+    "asm_cidi",
+    "asm_dutch_adult_reading"
+   ]
+  },
+  {
+   "local_id": "ana_mcv_total_wm",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "MCV and total white-matter volume regression",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Mean corpuscular volume was significantly related to brain gray-matter volume (beta = −0.16, t 50 = −2.18, p = 0.03, adjusted R 2 = 0.71) but not with total white-matter volume",
+         "start_char": 12454,
+         "end_char": 12630
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Mean corpuscular volume was not significantly related to total white-matter volume.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "but not with total white-matter volume",
+         "start_char": 11357,
+         "end_char": 11395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "regional brain volumes",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)",
+         "start_char": 3189,
+         "end_char": 3287
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_total_wm",
+   "groups": [
+    {
+     "group": "grp_male_drinkers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 55,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "sample of 55 male drinkers",
+           "start_char": 3326,
+           "end_char": 3352
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_mcv",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "cross_subject_regression",
+     "value_source": "generated",
+     "evidence": {
+      "status": "not_found"
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "extracted",
+      "value": 50,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "t 50 = 0.51",
+           "start_char": 12644,
+           "end_char": 12655
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "model_estimation": "mod_regression_biomarkers",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Mean corpuscular volume was not significantly related to total white-matter volume."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "Talairach",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Scans were put into a Talairach frame (Talairach and Tournoux, 1993 ) without scaling",
+         "start_char": 7795,
+         "end_char": 7880
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_t2"
+   ],
+   "assessments": [
+    "asm_edi",
+    "asm_cidi",
+    "asm_dutch_adult_reading"
+   ]
   },
   {
    "local_id": "ana_mcv_parietal_gm",
    "name": {
     "extraction_status": "extracted",
-    "value": "MCV and parietal gray-matter volume",
+    "value": "MCV and parietal gray-matter volume regression",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the relationship with parietal gray-matter volume",
+         "start_char": 12949,
+         "end_char": 12998
+        }
+       ]
+      }
+     ]
     }
    },
    "definition": {
     "extraction_status": "extracted",
     "value": "The relationship between MCV and parietal gray-matter volume was significant.",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the relationship with parietal gray-matter volume",
+         "start_char": 12949,
+         "end_char": 12998
+        }
+       ]
+      }
+     ]
     }
    },
    "prespecification": {
@@ -993,8 +1740,8 @@
     }
    },
    "spatial_scope": {
-    "value": "roi",
     "extraction_status": "extracted",
+    "value": "regional brain volumes",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -1003,29 +1750,37 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Subsequent tests per subregion (smoking included as co-predictor) showed that the relationship with parietal gray-matter volume",
-         "start_char": 12871,
-         "end_char": 12998
+         "text": "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)",
+         "start_char": 3189,
+         "end_char": 3287
         }
        ]
       }
      ]
     }
    },
-   "regions": [
-    "reg_parietal",
-    "reg_parietal_region"
-   ],
-   "measure": "mea_gray_matter_volume",
+   "measure": "mea_parietal_gm",
    "groups": [
     {
      "group": "grp_male_drinkers",
      "n": {
       "extraction_status": "extracted",
-      "value": 50,
+      "value": 55,
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "sample of 55 male drinkers",
+           "start_char": 3326,
+           "end_char": 3352
+          }
+         ]
+        }
+       ]
       }
      }
     }
@@ -1036,8 +1791,8 @@
       "term": "trm_mcv",
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
+       "value": "negative",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -1059,195 +1814,7 @@
     "kind": {
      "extraction_status": "extracted",
      "value": "cross_subject_regression",
-     "value_source": "reported",
-     "evidence": {
-      "status": "not_found"
-     }
-    },
-    "statistic": {
-     "family": {
-      "extraction_status": "extracted",
-      "value": "t",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "degrees_of_freedom_denominator": {
-      "extraction_status": "extracted",
-      "value": 49,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "degrees_of_freedom_numerator": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   },
-   "details": {
-    "details_type": "MassUnivariateDetails"
-   },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "model_estimation": "mod_regression",
-   "assessments": [
-    "asm_mcv"
-   ],
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "The relationship with parietal gray-matter volume was significant."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subsequent tests per subregion (smoking included as co-predictor) showed that the relationship with parietal gray-matter volume (beta = −0.20, t 49 = −2.48, p = 0.01, adjusted R 2 = 0.67) and occipital gray-matter volume (beta = −0.21, t 49 = −2.62, p = 0.01, adjusted R 2 = 0.67) were significant.",
-         "start_char": 12871,
-         "end_char": 13169
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "source_table_analysis": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "coordinate_space": {
-    "extraction_status": "extracted",
-    "value": "Talairach",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Scans were put into a Talairach frame (Talairach and Tournoux, 1993 ) without scaling",
-         "start_char": 7795,
-         "end_char": 7880
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "ana_mcv_occipital_gm",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "MCV and occipital gray-matter volume",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "The relationship between MCV and occipital gray-matter volume was significant.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "prespecification": {
-    "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "spatial_scope": {
-    "value": "roi",
-    "extraction_status": "extracted",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subsequent tests per subregion (smoking included as co-predictor) showed that the relationship with parietal gray-matter volume",
-         "start_char": 12871,
-         "end_char": 12998
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "regions": [
-    "reg_occipital",
-    "reg_occipital_region"
-   ],
-   "measure": "mea_gray_matter_volume",
-   "groups": [
-    {
-     "group": "grp_male_drinkers",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 50,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    }
-   ],
-   "effect": {
-    "cells": [
-     {
-      "term": "trm_mcv",
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "level": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     }
-    ],
-    "kind": {
-     "extraction_status": "extracted",
-     "value": "cross_subject_regression",
-     "value_source": "reported",
+     "value_source": "generated",
      "evidence": {
       "status": "not_found"
      }
@@ -1272,9 +1839,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "and occipital gray-matter volume (beta = −0.21, t 49 = −2.62, p = 0.01, adjusted R 2 = 0.67) were significant.",
-           "start_char": 13059,
-           "end_char": 13169
+           "text": "t 49 = −2.48",
+           "start_char": 13014,
+           "end_char": 13026
           }
          ]
         }
@@ -1292,18 +1859,11 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "model_estimation": "mod_regression",
-   "assessments": [
-    "asm_mcv"
-   ],
+   "model_estimation": "mod_regression_biomarkers",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "The relationship with occipital gray-matter volume was significant.",
-     "The decreases of occipital gray matter related to MCV levels were about 12% for MCV levels two standard deviations above the mean."
+     "The relationship between mean corpuscular volume and parietal gray-matter volume was significant."
     ],
     "value_source": "reported",
     "evidence": {
@@ -1313,9 +1873,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "In the same vein, the decreases of parietal (US regression slope of −0.68, −0.2 standardized) and occipital gray matter (US regression slope of −0.50, −0.21 standardized) related to MCV levels are 5.2 ml (about 6%) and 4.1 ml (about 12%), respectively.",
-         "start_char": 13848,
-         "end_char": 14100
+         "text": "the relationship with parietal gray-matter volume (beta = −0.20, t 49 = −2.48, p = 0.01, adjusted R 2 = 0.67)",
+         "start_char": 12949,
+         "end_char": 13058
         }
        ]
       }
@@ -1352,6 +1912,601 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_t2"
+   ],
+   "assessments": [
+    "asm_edi",
+    "asm_cidi",
+    "asm_dutch_adult_reading"
+   ]
+  },
+  {
+   "local_id": "ana_mcv_occipital_gm",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "MCV and occipital gray-matter volume regression",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "The relationship between MCV and occipital gray-matter volume was significant.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "regional brain volumes",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)",
+         "start_char": 3189,
+         "end_char": 3287
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_occipital_gm",
+   "groups": [
+    {
+     "group": "grp_male_drinkers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 55,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "sample of 55 male drinkers",
+           "start_char": 3326,
+           "end_char": 3352
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_mcv",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "cross_subject_regression",
+     "value_source": "generated",
+     "evidence": {
+      "status": "not_found"
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "extracted",
+      "value": 49,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "t 49 = −2.62",
+           "start_char": 13107,
+           "end_char": 13119
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "model_estimation": "mod_regression_biomarkers",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The relationship between mean corpuscular volume and occipital gray-matter volume was significant."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "occipital gray-matter volume (beta = −0.21, t 49 = −2.62, p = 0.01, adjusted R 2 = 0.67) were significant",
+         "start_char": 13063,
+         "end_char": 13168
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "Talairach",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Scans were put into a Talairach frame (Talairach and Tournoux, 1993 ) without scaling",
+         "start_char": 7795,
+         "end_char": 7880
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_t2"
+   ],
+   "assessments": [
+    "asm_edi",
+    "asm_cidi",
+    "asm_dutch_adult_reading"
+   ]
+  }
+ ],
+ "acquisitions": [
+  {
+   "local_id": "acq_mri",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "sMRI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Brain volumes were assessed with MRI using a 1.5T Philips NT scanner (Philips Medical Systems, Best, the Netherlands).",
+         "start_char": 6876,
+         "end_char": 6994
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "device": "dev_philips_nt",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "with 160–180 1.2-mm contiguous coronal slices, and a T 2 -weighted turbo-spin dual-echo scan",
+         "start_char": 7154,
+         "end_char": 7246
+        },
+        {
+         "text": "with 120 1.6-mm contiguous coronal slices of the whole head were used.",
+         "start_char": 7337,
+         "end_char": 7407
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 1.5,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Brain volumes were assessed with MRI using a 1.5T Philips NT scanner (Philips Medical Systems, Best, the Netherlands).",
+         "start_char": 6876,
+         "end_char": 6994
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "T1-weighted three-dimensional fast-field echo; T2-weighted turbo-spin dual-echo",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "For quantitative measurements, a T 1 -weighted three-dimensional fast-field echo scan",
+         "start_char": 6995,
+         "end_char": 7080
+        },
+        {
+         "text": "and a T 2 -weighted turbo-spin dual-echo scan",
+         "start_char": 7201,
+         "end_char": 7246
+        },
+        {
+         "text": "were used.",
+         "start_char": 7397,
+         "end_char": 7407
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "repetition_time_seconds": {
+    "extraction_status": "extracted",
+    "value": 0.03,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TR = 30 ms",
+         "start_char": 7095,
+         "end_char": 7105
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "echo_time_seconds": {
+    "extraction_status": "extracted",
+    "value": [
+     0.0046,
+     0.014,
+     0.08
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TE = 4.6 ms",
+         "start_char": 7082,
+         "end_char": 7093
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_voxel_size_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     null,
+     null,
+     1.2
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "with 160–180 1.2-mm contiguous coronal slices",
+         "start_char": 7154,
+         "end_char": 7199
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "number_of_volumes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "acq_mri_t2",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "sMRI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The T 2 -weighted turbo-spin dual-echo scan was also used for diagnostic evaluation by independent clinical radiologists.",
+         "start_char": 7408,
+         "end_char": 7529
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "device": "dev_philips_nt",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "120 1.6-mm contiguous coronal slices of the whole head were used.",
+         "start_char": 7342,
+         "end_char": 7407
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 1.5,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Brain volumes were assessed with MRI using a 1.5T Philips NT scanner (Philips Medical Systems, Best, the Netherlands).",
+         "start_char": 6876,
+         "end_char": 6994
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "turbo-spin dual-echo",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a T 2 -weighted turbo-spin dual-echo scan",
+         "start_char": 7205,
+         "end_char": 7246
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "repetition_time_seconds": {
+    "extraction_status": "extracted",
+    "value": 6.35,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TR = 6350 ms",
+         "start_char": 7276,
+         "end_char": 7288
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "echo_time_seconds": {
+    "extraction_status": "extracted",
+    "value": [
+     0.014,
+     0.08
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TE 1 = 14 ms, TE 2 = 80 ms",
+         "start_char": 7248,
+         "end_char": 7274
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_voxel_size_mm": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_volumes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "devices": [
+  {
+   "local_id": "dev_philips_nt",
+   "manufacturer": {
+    "extraction_status": "extracted",
+    "value": "Philips Medical Systems",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Brain volumes were assessed with MRI using a 1.5T Philips NT scanner (Philips Medical Systems, Best, the Netherlands).",
+         "start_char": 6876,
+         "end_char": 6994
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model": {
+    "extraction_status": "extracted",
+    "value": "NT",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Brain volumes were assessed with MRI using a 1.5T Philips NT scanner (Philips Medical Systems, Best, the Netherlands).",
+         "start_char": 6876,
+         "end_char": 6994
+        }
+       ]
+      }
+     ]
     }
    }
   }
@@ -1379,6 +2534,26 @@
      ]
     }
    },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Male drinkers ranging from light to excessive drinkers; four subjects had a diagnosis of alcohol dependence.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "In the present study, a wide range of drinkers was included going from light to excessive drinkers (among which four alcohol-dependent drinkers)",
+         "start_char": 2589,
+         "end_char": 2733
+        }
+       ]
+      }
+     ]
+    }
+   },
    "species": {
     "extraction_status": "extracted",
     "value": "human",
@@ -1390,970 +2565,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "55 males of Caucasian descent",
-         "start_char": 5022,
-         "end_char": 5051
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All participants were screened for chronic somatic diseases or conditions influencing hepatic functioning, neurological disease, head trauma, or other conditions precluding participation using an extensive health questionnaire.",
-         "start_char": 3952,
-         "end_char": 4179
-        }
-       ]
-      }
-     ]
-    },
-    "acquisitions": [
-     {
-      "local_id": "acq_mri",
-      "acquisition_type": "MRI",
-      "modality": {
-       "extraction_status": "extracted",
-       "value": "sMRI",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Brain volumes were assessed with MRI using a 1.5T Philips NT scanner"
-          ]
-         }
-        ]
-       }
-      },
-      "magnetic_field_strength_tesla": {
-       "extraction_status": "extracted",
-       "value": 1.5,
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "a 1.5T Philips NT scanner"
-          ]
-         }
-        ]
-       }
-      },
-      "pulse_sequence_type": {
-       "extraction_status": "extracted",
-       "value": "T1-weighted three-dimensional fast-field echo and T2-weighted turbo-spin dual-echo",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "a T 1 -weighted three-dimensional fast-field echo scan",
-           "T 2 -weighted turbo-spin dual-echo scan"
-          ]
-         }
-        ]
-       }
-      },
-      "repetition_time_seconds": {
-       "extraction_status": "extracted",
-       "value": [
-        30,
-        6350
-       ],
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "TE = 4.6 ms, TR = 30 ms",
-           "TE 1 = 14 ms, TE 2 = 80 ms, TR = 6350 ms"
-          ]
-         }
-        ]
-       }
-      },
-      "echo_time_seconds": {
-       "extraction_status": "extracted",
-       "value": [
-        0.0046,
-        0.014,
-        0.08
-       ],
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "TE = 4.6 ms, TR = 30 ms",
-           "TE 1 = 14 ms, TE 2 = 80 ms, TR = 6350 ms"
-          ]
-         }
-        ]
-       }
-      },
-      "acquisition_voxel_size_mm": {
-       "extraction_status": "extracted",
-       "value": [
-        null,
-        null,
-        1.2
-       ],
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "160–180 1.2-mm contiguous coronal slices"
-          ]
-         }
-        ]
-       }
-      }
-     }
-    ],
-    "devices": [
-     {
-      "local_id": "dev_philips_nt",
-      "manufacturer": {
-       "extraction_status": "extracted",
-       "value": "Philips Medical Systems",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "a 1.5T Philips NT scanner (Philips Medical Systems, Best, the Netherlands)"
-          ]
-         }
-        ]
-       }
-      },
-      "model": {
-       "extraction_status": "extracted",
-       "value": "NT",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "a 1.5T Philips NT scanner"
-          ]
-         }
-        ]
-       }
-      }
-     }
-    ],
-    "assessments": [
-     {
-      "local_id": "asm_ggt",
-      "name": {
-       "extraction_status": "extracted",
-       "value": "gamma-glutamyl transferase",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "GGT was assessed in serum samples"
-          ]
-         }
-        ]
-       }
-      },
-      "assessment_type": {
-       "extraction_status": "extracted",
-       "value": "blood biomarker",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "GGT was assessed in serum samples"
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "local_id": "asm_cdt",
-      "name": {
-       "extraction_status": "extracted",
-       "value": "carbohydrate-deficient transferrin",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Carbohydrate-deficient transferrin was analyzed with the radioimmune assay CDTect™"
-          ]
-         }
-        ]
-       }
-      },
-      "assessment_type": {
-       "extraction_status": "extracted",
-       "value": "blood biomarker",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Carbohydrate-deficient transferrin was analyzed with the radioimmune assay CDTect™"
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "local_id": "asm_mcv",
-      "name": {
-       "extraction_status": "extracted",
-       "value": "mean corpuscular volume",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "MCV was determined in whole blood by routine clinical chemistry methods."
-          ]
-         }
-        ]
-       }
-      },
-      "assessment_type": {
-       "extraction_status": "extracted",
-       "value": "blood biomarker",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "MCV was determined in whole blood by routine clinical chemistry methods."
-          ]
-         }
-        ]
-       }
-      }
-     }
-    ],
-    "regions": [
-     {
-      "local_id": "reg_parietal",
-      "name": {
-       "extraction_status": "extracted",
-       "value": "parietal region",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Segmentation into frontal, parietal, temporal, and occipital regions was performed automatically"
-          ]
-         }
-        ]
-       }
-      },
-      "definition_method": {
-       "extraction_status": "extracted",
-       "value": "same_study_analysis",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Segmentation into frontal, parietal, temporal, and occipital regions was performed automatically"
-          ]
-         }
-        ]
-       }
-      },
-      "region_type": {
-       "extraction_status": "extracted",
-       "value": "anatomical",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Segmentation into frontal, parietal, temporal, and occipital regions was performed automatically"
-          ]
-         }
-        ]
-       }
-      },
-      "description": {
-       "extraction_status": "extracted",
-       "value": "The parietal region was one of the frontal, parietal, temporal, and occipital regions automatically segmented from the MRI scans.",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Segmentation into frontal, parietal, temporal, and occipital regions was performed automatically"
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "local_id": "reg_occipital",
-      "name": {
-       "extraction_status": "extracted",
-       "value": "occipital region",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Segmentation into frontal, parietal, temporal, and occipital regions was performed automatically"
-          ]
-         }
-        ]
-       }
-      },
-      "definition_method": {
-       "extraction_status": "extracted",
-       "value": "same_study_analysis",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Segmentation into frontal, parietal, temporal, and occipital regions was performed automatically"
-          ]
-         }
-        ]
-       }
-      },
-      "region_type": {
-       "extraction_status": "extracted",
-       "value": "anatomical",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Segmentation into frontal, parietal, temporal, and occipital regions was performed automatically"
-          ]
-         }
-        ]
-       }
-      }
-     }
-    ],
-    "measures": [
-     {
-      "local_id": "mea_gray_matter_volume",
-      "family": {
-       "extraction_status": "extracted",
-       "value": "structural_morphometry",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "regional brain gray-matter and white-matter volumes"
-          ]
-         }
-        ]
-       }
-      },
-      "type": {
-       "extraction_status": "extracted",
-       "value": "gray_matter_volume",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "regional brain gray-matter and white-matter volumes"
-          ]
-         }
-        ]
-       }
-      },
-      "source_label": {
-       "extraction_status": "extracted",
-       "value": "gray-matter volume",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "total gray-matter volume",
-           "parietal gray-matter volume"
-          ]
-         }
-        ]
-       }
-      }
-     }
-    ],
-    "preprocessings": [
-     {
-      "local_id": "prp_mri_segmentation",
-      "description": {
-       "extraction_status": "extracted",
-       "value": "MRI scans were placed in a Talairach frame, corrected for magnetic-field inhomogeneities, and segmented into brain tissue and anatomical regions using automated histogram analyses and mathematical morphology operators.",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Scans were put into a Talairach frame (Talairach and Tournoux, 1993 ) without scaling and were corrected for inhomogeneities in the magnetic field",
-           "Quantitative assessment of the volumes ... was performed with histogram analyses ... and a series of mathematical morphology operators"
-          ]
-         }
-        ]
-       }
-      },
-      "software": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      },
-      "steps": {
-       "extraction_status": "extracted",
-       "value": [
-        "Talairach framing without scaling",
-        "magnetic-field inhomogeneity correction",
-        "intracranial-volume masking",
-        "histogram-based tissue segmentation",
-        "mathematical morphology operations",
-        "automatic regional segmentation"
-       ],
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "Scans were put into a Talairach frame (Talairach and Tournoux, 1993 ) without scaling and were corrected for inhomogeneities in the magnetic field",
-           "using the intracranial volume as a mask",
-           "Segmentation into frontal, parietal, temporal, and occipital regions was performed automatically"
-          ]
-         }
-        ]
-       }
-      },
-      "smoothing_fwhm_mm": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     }
-    ],
-    "model_estimations": [
-     {
-      "local_id": "mod_regression",
-      "model_family": {
-       "extraction_status": "extracted",
-       "value": "glm",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "multiple linear regressions analyses were performed"
-          ]
-         }
-        ]
-       }
-      },
-      "model_type": {
-       "extraction_status": "extracted",
-       "value": "multiple linear regression",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "multiple linear regressions analyses were performed with one of the biomarkers (CDT, GGT, or MCV) as predictor"
-          ]
-         }
-        ]
-       }
-      },
-      "stage": {
-       "extraction_status": "extracted",
-       "value": "group",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "in a sample of 55 male drinkers"
-          ]
-         }
-        ]
-       }
-      },
-      "estimator": {
-       "extraction_status": "extracted",
-       "value": "multiple linear regression",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "multiple linear regressions analyses were performed"
-          ]
-         }
-        ]
-       }
-      },
-      "software": {
-       "extraction_status": "extracted",
-       "value": "SPSS for Windows, version 11.0.1",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "All analyses were conducted with SPSS for Windows, version 11.0.1 (SPSS Inc., Chicago, IL)."
-          ]
-         }
-        ]
-       }
-      },
-      "spatial_unit": {
-       "extraction_status": "extracted",
-       "value": "voxel",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI)"
-          ]
-         }
-        ]
-       }
-      },
-      "preprocessing": [
-       "prp_mri_segmentation"
-      ],
-      "terms": [
-       {
-        "local_id": "trm_ggt",
-        "name": {
-         "extraction_status": "extracted",
-         "value": "GGT",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "with one of the biomarkers (CDT, GGT, or MCV) as predictor"
-            ]
-           }
-          ]
-         }
-        },
-        "type": {
-         "extraction_status": "extracted",
-         "value": "continuous",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "with one of the biomarkers (CDT, GGT, or MCV) as predictor"
-            ]
-           }
-          ]
-         }
-        },
-        "assessment": "asm_ggt",
-        "variation_level": {
-         "extraction_status": "extracted",
-         "value": "between_subject",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in a sample of 55 male drinkers"
-            ]
-           }
-          ]
-         }
-        },
-        "functional_form": {
-         "extraction_status": "extracted",
-         "value": "linear",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "multiple linear regressions analyses were performed"
-            ]
-           }
-          ]
-         }
-        }
-       },
-       {
-        "local_id": "trm_cdt",
-        "name": {
-         "extraction_status": "extracted",
-         "value": "CDT",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "with one of the biomarkers (CDT, GGT, or MCV) as predictor"
-            ]
-           }
-          ]
-         }
-        },
-        "type": {
-         "extraction_status": "extracted",
-         "value": "continuous",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "with one of the biomarkers (CDT, GGT, or MCV) as predictor"
-            ]
-           }
-          ]
-         }
-        },
-        "assessment": "asm_cdt",
-        "variation_level": {
-         "extraction_status": "extracted",
-         "value": "between_subject",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in a sample of 55 male drinkers"
-            ]
-           }
-          ]
-         }
-        }
-       },
-       {
-        "local_id": "trm_mcv",
-        "name": {
-         "extraction_status": "extracted",
-         "value": "MCV",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "with one of the biomarkers (CDT, GGT, or MCV) as predictor"
-            ]
-           }
-          ]
-         }
-        },
-        "type": {
-         "extraction_status": "extracted",
-         "value": "continuous",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "with one of the biomarkers (CDT, GGT, or MCV) as predictor"
-            ]
-           }
-          ]
-         }
-        },
-        "assessment": "asm_mcv",
-        "variation_level": {
-         "extraction_status": "extracted",
-         "value": "between_subject",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in a sample of 55 male drinkers"
-            ]
-           }
-          ]
-         }
-        }
-       },
-       {
-        "local_id": "trm_age",
-        "name": {
-         "extraction_status": "extracted",
-         "value": "age",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in addition to age and intracranial volume"
-            ]
-           }
-          ]
-         }
-        },
-        "type": {
-         "extraction_status": "extracted",
-         "value": "continuous",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in addition to age and intracranial volume"
-            ]
-           }
-          ]
-         }
-        },
-        "variation_level": {
-         "extraction_status": "extracted",
-         "value": "between_subject",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in a sample of 55 male drinkers"
-            ]
-           }
-          ]
-         }
-        },
-        "source_definition": {
-         "extraction_status": "extracted",
-         "value": "participant age",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in addition to age and intracranial volume"
-            ]
-           }
-          ]
-         }
-        }
-       },
-       {
-        "local_id": "trm_smoking",
-        "name": {
-         "extraction_status": "extracted",
-         "value": "smoking",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "We therefore also included smoking as a predictor variable"
-            ]
-           }
-          ]
-         }
-        },
-        "type": {
-         "extraction_status": "extracted",
-         "value": "continuous",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "smoking (number of cigarettes smoked per week)"
-            ]
-           }
-          ]
-         }
-        },
-        "variation_level": {
-         "extraction_status": "extracted",
-         "value": "between_subject",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "smoking (number of cigarettes smoked per week)"
-            ]
-           }
-          ]
-         }
-        },
-        "source_definition": {
-         "extraction_status": "extracted",
-         "value": "number of cigarettes smoked per week",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "smoking (number of cigarettes smoked per week)"
-            ]
-           }
-          ]
-         }
-        }
-       },
-       {
-        "local_id": "trm_intracranial_volume",
-        "name": {
-         "extraction_status": "extracted",
-         "value": "intracranial volume",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in addition to age and intracranial volume"
-            ]
-           }
-          ]
-         }
-        },
-        "type": {
-         "extraction_status": "extracted",
-         "value": "continuous",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in addition to age and intracranial volume"
-            ]
-           }
-          ]
-         }
-        },
-        "variation_level": {
-         "extraction_status": "extracted",
-         "value": "between_subject",
-         "value_source": "generated",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in a sample of 55 male drinkers"
-            ]
-           }
-          ]
-         }
-        },
-        "source_definition": {
-         "extraction_status": "extracted",
-         "value": "intracranial volume",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "in addition to age and intracranial volume"
-            ]
-           }
-          ]
-         }
-        }
-       }
-      ]
-     }
-    ],
-    "inference_settings": [],
-    "tasks": [],
-    "external_datasets": []
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Fifty-five right-handed Caucasian male drinkers ranging from light to excessive alcohol consumption, including four with alcohol dependence, recruited for investigation of associations between alcohol-related biomarkers and regional brain volumes measured by MRI.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "In the present study, a wide range of drinkers was included going from light to excessive drinkers (among which four alcohol-dependent drinkers), and both hepatic (GGT) and nonhepatic biomarkers (MCV and CDT) were included.",
-         "start_char": 2589,
-         "end_char": 2812
+         "text": "55 male drinkers",
+         "start_char": 3336,
+         "end_char": 3352
         }
        ]
       }
@@ -2378,12 +2592,6 @@
        ]
       }
      ]
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "enrolled_count": {
@@ -2417,9 +2625,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "From about 800 applications, 55 males of Caucasian descent were selected.",
-         "start_char": 4993,
-         "end_char": 5066
+         "text": "sample of 55 male drinkers",
+         "start_char": 3326,
+         "end_char": 3352
         }
        ]
       }
@@ -2435,18 +2643,9 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Male",
+     "male",
      "Caucasian descent",
-     "Right-handed",
-     "Current alcohol consumption",
-     "Eligible for MRI scanning",
-     "Blood pressure and resting heart rate within normal limits",
-     "No chronic somatic disease or condition influencing hepatic functioning",
-     "No neurological disease or significant head trauma",
-     "No psychiatric disease other than alcohol dependence",
-     "No use of psychoactive medication or drugs besides alcohol",
-     "No total alcohol abstinence",
-     "No first- or second-degree relatives with neurological or psychiatric deficits including alcoholism"
+     "right-handed"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2456,9 +2655,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All participants were right-handed as determined with the Edinburgh Handedness Inventory and had a blood pressure and resting heart rate within normal limits.",
+         "text": "All participants were right-handed as determined with the Edinburgh Handedness Inventory",
          "start_char": 4298,
-         "end_char": 4456
+         "end_char": 4386
         }
        ]
       }
@@ -2468,15 +2667,13 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Psychiatric symptoms or history other than alcohol dependence",
-     "Use of psychoactive medication within the past month",
-     "Chronic somatic or neurological disease",
-     "Drug use more than three times in life",
-     "First- or second-degree relatives with neurological or psychiatric deficits other than alcohol dependence",
-     "Head trauma or loss of consciousness for more than 10 minutes",
-     "Conditions precluding MRI scanning",
-     "Abnormalities on electrocardiogram, hematology, or blood chemistry screening",
-     "Total alcohol abstinence"
+     "psychiatric symptoms other than alcohol dependence",
+     "use of psychoactive medication within the past month",
+     "chronic somatic or neurological disease",
+     "drug use more than three times in life",
+     "first or second-degree relatives with neurological or psychiatric deficits other than alcohol dependence",
+     "head trauma or loss of consciousness for more than 10 min",
+     "conditions that precluded MRI scanning"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2486,18 +2683,21 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Other exclusion criteria were use of psychoactive medication or drugs besides alcohol, total alcohol abstinence, and first-degree or second-degree relatives with neurological or psychiatric deficits including alcoholism.",
-         "start_char": 4771,
-         "end_char": 4991
+         "text": "Reasons for exclusion were (a history of) psychiatric symptoms other than alcohol dependence (21%, mostly major depression at some point in life), use of psychoactive medication within the past month (19%), chronic somatic or neurological disease (13%), drug use more than three times in life (9%), first or second-degree relatives with neurological or psychiatric deficits other than alcohol dependence (7%), head trauma or loss of consciousness for more than 10 min (5%), or conditions that precluded MRI scanning (3%), or (a combination of) other reasons (15%).",
+         "start_char": 5067,
+         "end_char": 5631
         }
        ]
       }
      ]
     }
    },
-   "recruitment_method": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": "Recruitment through newspaper advertisements; participants were paid for participation.",
+    "value": [
+     "drinkers",
+     "Caucasian descent"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2506,70 +2706,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants were recruited via newspapers and were paid for their participation.",
-         "start_char": 3870,
-         "end_char": 3951
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "a male drinker of about 50 years of age",
-         "start_char": 13547,
-         "end_char": 13586
+         "text": "55 males of Caucasian descent",
+         "start_char": 5022,
+         "end_char": 5051
         }
        ]
       }
@@ -2579,7 +2718,7 @@
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "Alcohol dependence in four participants; otherwise nonalcohol-dependent drinkers without chronic somatic, neurological, or psychiatric disease"
+     "alcohol dependence"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2589,8 +2728,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "None of the participants had a (history of) psychiatric disease as assessed with the Composite International Diagnostic Interview (Robins et al. , 1988 ) based on the DSM-IV, although four subjects had a diagnosis of alcohol dependence.",
-         "start_char": 4534,
+         "text": "although four subjects had a diagnosis of alcohol dependence.",
+         "start_char": 4709,
          "end_char": 4770
         }
        ]
@@ -2620,7 +2759,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Participants reported a wide range of alcohol intake, from light to excessive drinking; four participants met criteria for alcohol dependence. Mean current intake was 27 standard drinks per week and mean lifetime intake was 16 drinks per week.",
+    "value": "Mean current alcohol intake was 27 standard drinks per week and mean lifetime alcohol intake was 16 drinks per week.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2638,17 +2777,121 @@
      ]
     }
    },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants were recruited via newspapers and were paid for their participation.",
+         "start_char": 3870,
+         "end_char": 3951
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Recruited via newspapers; participants were paid for participation.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Participants were recruited via newspapers and were paid for their participation.",
+         "start_char": 3870,
+         "end_char": 3951
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a male drinker of about 50 years of age",
+         "start_char": 13547,
+         "end_char": 13586
+        }
+       ]
+      }
+     ]
+    }
+   },
    "medications": {
     "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
+    "value": [
+     "Psychoactive medication use was an exclusion criterion"
+    ],
+    "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "Unmedicated; psychoactive medication and drugs other than alcohol were exclusionary.",
+    "value": "unmedicated",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2677,6 +2920,1542 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_cidi"
+   ]
+  }
+ ],
+ "assessments": [
+  {
+   "local_id": "asm_edi",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Edinburgh Handedness Inventory",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All participants were right-handed as determined with the Edinburgh Handedness Inventory and had a blood pressure and resting heart rate within normal limits.",
+         "start_char": 4298,
+         "end_char": 4456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "handedness inventory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All participants were right-handed as determined with the Edinburgh Handedness Inventory and had a blood pressure and resting heart rate within normal limits.",
+         "start_char": 4298,
+         "end_char": 4456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The Edinburgh Handedness Inventory was used to determine handedness; all participants were right-handed.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All participants were right-handed as determined with the Edinburgh Handedness Inventory",
+         "start_char": 4298,
+         "end_char": 4386
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_cidi",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Composite International Diagnostic Interview",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "None of the participants had a (history of) psychiatric disease as assessed with the Composite International Diagnostic Interview (Robins et al.",
+         "start_char": 4534,
+         "end_char": 4678
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "diagnostic interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "None of the participants had a (history of) psychiatric disease as assessed with the Composite International Diagnostic Interview (Robins et al.",
+         "start_char": 4534,
+         "end_char": 4678
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The Composite International Diagnostic Interview, based on DSM-IV, was used to assess psychiatric disease; none had a history of psychiatric disease, although four subjects had a diagnosis of alcohol dependence.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "None of the participants had a (history of) psychiatric disease as assessed with the Composite International Diagnostic Interview (Robins et al. , 1988 ) based on the DSM-IV, although four subjects had a diagnosis of alcohol dependence.",
+         "start_char": 4534,
+         "end_char": 4770
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_dutch_adult_reading",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Dutch Adult Reading Test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Dutch Adult Reading Test",
+         "start_char": 4483,
+         "end_char": 4507
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "IQ was estimated with the Dutch Adult Reading Test.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "intelligence test",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_lifetime_drinking_history",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Lifetime Drinking History questionnaire",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Lifetime Drinking History questionnaire",
+         "start_char": 5773,
+         "end_char": 5812
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The Lifetime Drinking History questionnaire was used to assess lifetime alcohol intake and duration of drinking history.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "alcohol intake questionnaire",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ],
+ "measures": [
+  {
+   "local_id": "mea_total_gm",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Quantitative assessment of the volumes of the total brain, gray and white matter of the cerebrum",
+         "start_char": 8128,
+         "end_char": 8224
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "gray_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "total gray-matter volume",
+         "start_char": 11271,
+         "end_char": 11295
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "total gray-matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "total gray-matter volume",
+         "start_char": 11271,
+         "end_char": 11295
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "extracted",
+    "value": "ml",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "has 3.61 * (ln(172.7) – ln(60.0)) = −3.8 ml (~4%) less parietal gray matter.",
+         "start_char": 13770,
+         "end_char": 13846
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Total gray-matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "total gray-matter volume",
+         "start_char": 11271,
+         "end_char": 11295
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "mea_total_wm",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Quantitative assessment of the volumes of the total brain, gray and white matter of the cerebrum",
+         "start_char": 8128,
+         "end_char": 8224
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "white_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "total white-matter volume",
+         "start_char": 11370,
+         "end_char": 11395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "total white-matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "total white-matter volume",
+         "start_char": 11370,
+         "end_char": 11395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Total white-matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "total white-matter volume",
+         "start_char": 11370,
+         "end_char": 11395
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "extracted",
+    "value": "ml",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "has 3.61 * (ln(172.7) – ln(60.0)) = −3.8 ml (~4%) less parietal gray matter.",
+         "start_char": 13770,
+         "end_char": 13846
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "mea_parietal_gm",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subsequent tests per subregion (smoking included as co-predictor) showed that the relationship with parietal gray-matter volume",
+         "start_char": 12871,
+         "end_char": 12998
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "gray_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "parietal gray-matter volume",
+         "start_char": 11796,
+         "end_char": 11823
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "parietal gray-matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "parietal gray-matter volume",
+         "start_char": 11796,
+         "end_char": 11823
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "extracted",
+    "value": "ml",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The unstandardized (US) coefficients can be used to further illustrate the implications of the relation between regional gray-matter volume and biomarker levels.",
+         "start_char": 13253,
+         "end_char": 13414
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Parietal gray-matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "parietal gray-matter volume",
+         "start_char": 11796,
+         "end_char": 11823
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "mea_occipital_gm",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "gray_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "occipital gray-matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Subsequent tests per subregion (smoking included as co-predictor) showed that the relationship with parietal gray-matter volume (beta = −0.20, t 49 = −2.48, p = 0.01, adjusted R 2 = 0.67) and occipital gray-matter volume (beta = −0.21, t 49 = −2.62, p = 0.01, adjusted R 2 = 0.67) were significant.",
+         "start_char": 12871,
+         "end_char": 13169
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "extracted",
+    "value": "ml",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Occipital gray-matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Subsequent tests per subregion (smoking included as co-predictor) showed that the relationship with parietal gray-matter volume (beta = −0.20, t 49 = −2.48, p = 0.01, adjusted R 2 = 0.67) and occipital gray-matter volume (beta = −0.21, t 49 = −2.62, p = 0.01, adjusted R 2 = 0.67) were significant.",
+         "start_char": 12871,
+         "end_char": 13169
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "model_estimations": [
+  {
+   "local_id": "mod_regression_biomarkers",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "glm",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "multiple linear regressions analyses were performed",
+         "start_char": 9531,
+         "end_char": 9582
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "multiple linear regression",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "We related plasma levels of GGT, MCV, and CDT with regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI) using multiple linear regression in a sample of 55 male drinkers.",
+         "start_char": 3138,
+         "end_char": 3353
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We first analyzed the regression of the biomarkers on the dependent variables total white and total gray volumes, respectively.",
+         "start_char": 9643,
+         "end_char": 9770
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "multiple linear regression",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "We related plasma levels of GGT, MCV, and CDT with regional brain gray-matter and white-matter volumes measured with magnetic resonance imaging (MRI) using multiple linear regression in a sample of 55 male drinkers.",
+         "start_char": 3138,
+         "end_char": 3353
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPSS for Windows, version 11.0.1",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All analyses were conducted with SPSS for Windows, version 11.0.1 (SPSS Inc., Chicago, IL).",
+         "start_char": 10267,
+         "end_char": 10358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subsequent tests per subregion (smoking included as co-predictor)",
+         "start_char": 12871,
+         "end_char": 12936
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_mri"
+   ],
+   "terms": [
+    {
+     "local_id": "trm_ggt",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "GGT",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "GGT",
+           "start_char": 1802,
+           "end_char": 1805
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "one of the biomarkers (CDT, GGT, or MCV) as predictor",
+           "start_char": 9588,
+           "end_char": 9641
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Both current and lifetime alcohol intake (the latter corrected for body weight) correlated significantly with all three biomarkers",
+           "start_char": 10394,
+           "end_char": 10524
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "gamma-glutamyl transferase",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "gamma-glutamyl transferase (GGT)",
+           "start_char": 1774,
+           "end_char": 1806
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "log",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "First, CDT and GGT values were log-transformed because of positively skewed distributions.",
+           "start_char": 9350,
+           "end_char": 9440
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "U/L",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     }
+    },
+    {
+     "local_id": "trm_cdt",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "CDT",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "CDT",
+           "start_char": 1879,
+           "end_char": 1882
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "one of the biomarkers (CDT, GGT, or MCV) as predictor",
+           "start_char": 9588,
+           "end_char": 9641
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Both current and lifetime alcohol intake (the latter corrected for body weight) correlated significantly with all three biomarkers",
+           "start_char": 10394,
+           "end_char": 10524
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "carbohydrate-deficient transferrin",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "carbohydrate-deficient transferrin (CDT)",
+           "start_char": 1843,
+           "end_char": 1883
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "log",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "First, CDT and GGT values were log-transformed because of positively skewed distributions.",
+           "start_char": 9350,
+           "end_char": 9440
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "local_id": "trm_mcv",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "MCV",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "MCV",
+           "start_char": 1833,
+           "end_char": 1836
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "one of the biomarkers (CDT, GGT, or MCV) as predictor",
+           "start_char": 9588,
+           "end_char": 9641
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Both current and lifetime alcohol intake (the latter corrected for body weight) correlated significantly with all three biomarkers",
+           "start_char": 10394,
+           "end_char": 10524
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "mean corpuscular volume",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "mean corpuscular volume (MCV)",
+           "start_char": 1808,
+           "end_char": 1837
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "multiple linear regressions analyses were performed",
+           "start_char": 9531,
+           "end_char": 9582
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "local_id": "trm_age",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "age",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age",
+           "start_char": 456,
+           "end_char": 459
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "covariate",
+           "start_char": 9283,
+           "end_char": 9292
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "In addition, we determined the correlation between age and GGT level",
+           "start_char": 10832,
+           "end_char": 10900
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "multiple linear regressions analyses were performed",
+           "start_char": 9531,
+           "end_char": 9582
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "years",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "a male drinker of about 50 years of age",
+           "start_char": 13547,
+           "end_char": 13586
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Participant age.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age",
+           "start_char": 456,
+           "end_char": 459
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "local_id": "trm_intracranial_volume",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "intracranial volume",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "intracranial volume",
+           "start_char": 7969,
+           "end_char": 7988
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "covariate",
+           "start_char": 9283,
+           "end_char": 9292
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "We therefore also included smoking as a predictor variable, in addition to age and intracranial volume, in the multiple regression analyses.",
+           "start_char": 10691,
+           "end_char": 10831
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "included smoking as a predictor variable, in addition to age and intracranial volume",
+           "start_char": 10709,
+           "end_char": 10793
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Intracranial volume assessed quantitatively with a fully automated computer program based on histogram analyses of the turbo-spin dual-echo scan and used as a covariate.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The intracranial volumes were assessed quantitatively with use of a fully automated computer program",
+           "start_char": 7965,
+           "end_char": 8065
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "local_id": "trm_smoking",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "smoking",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "smoking",
+           "start_char": 9069,
+           "end_char": 9076
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "predictor variable",
+           "start_char": 10731,
+           "end_char": 10749
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Only smoking showed a significant positive correlation with MCV, CDT, and GGT",
+           "start_char": 10601,
+           "end_char": 10678
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "included smoking as a predictor variable",
+           "start_char": 10709,
+           "end_char": 10749
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "cigarettes per week",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "number of cigarettes smoked per week",
+           "start_char": 9078,
+           "end_char": 9114
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Number of cigarettes smoked per week.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "smoking (number of cigarettes smoked per week)",
+           "start_char": 9069,
+           "end_char": 9115
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Multiple linear regression performed in SPSS for Windows version 11.0.1; alpha=0.05, two-tailed; age and intracranial volume were included as covariates, and smoking was additionally included when correlated significantly with biomarkers.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All analyses were conducted with SPSS for Windows, version 11.0.1 (SPSS Inc., Chicago, IL).",
+         "start_char": 10267,
+         "end_char": 10358
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_mri",
+   "description": {
+    "extraction_status": "extracted",
+    "value": "MRI scans were placed in a Talairach frame, corrected for magnetic-field inhomogeneities, and segmented by automated histogram and mathematical-morphology methods.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Scans were put into a Talairach frame (Talairach and Tournoux, 1993 ) without scaling and were corrected for inhomogeneities in the magnetic field",
+         "start_char": 7795,
+         "end_char": 7941
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "fully automated computer program",
+     "SPSS for Windows, version 11.0.1"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "using the intracranial volume as a mask",
+         "start_char": 8552,
+         "end_char": 8591
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "Talairach transformation",
+     "magnetic-field inhomogeneity correction",
+     "intracranial-volume masking",
+     "automated segmentation",
+     "regional segmentation"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Segmentation into frontal, parietal, temporal, and occipital regions was performed automatically",
+         "start_char": 8642,
+         "end_char": 8738
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
   }
  ],
@@ -2685,7 +4464,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "e33fc89a19de94f4d796c533b39320b82177e0215167727ee692a548f7e6a576",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2817,265 +4596,11 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "assessments": [
-  {
-   "local_id": "asm_composite_international_diag",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Composite International Diagnostic Interview",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Composite International Diagnostic Interview",
-         "start_char": 4619,
-         "end_char": 4663
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of psychiatric disease based on DSM-IV criteria.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "diagnostic interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_edinburgh_handedness_invento",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Edinburgh Handedness Inventory",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Edinburgh Handedness Inventory",
-         "start_char": 4356,
-         "end_char": 4386
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment used to determine handedness.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "handedness assessment",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_dutch_adult_reading",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Dutch Adult Reading Test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Dutch Adult Reading Test",
-         "start_char": 4483,
-         "end_char": 4507
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment used to estimate IQ.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "cognitive assessment",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_lifetime_drinking_history",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Lifetime Drinking History questionnaire",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Lifetime Drinking History questionnaire",
-         "start_char": 5773,
-         "end_char": 5812
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of lifetime alcohol intake and duration of drinking history.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "alcohol history questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_two_week_alcohol",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Two-week alcohol diary",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Self-report assessment of current alcohol intake in standard drinks per week.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "alcohol consumption questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
- "regions": [
-  {
-   "local_id": "reg_parietal_region",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "parietal region",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Automatically segmented parietal cerebral region.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_occipital_region",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "occipital region",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Automatically segmented occipital cerebral region.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
  "study_type": [
   "Journal Article",
   "Research Support, Non-U.S. Gov't"
+ ],
+ "language": [
+  "eng"
  ]
 }

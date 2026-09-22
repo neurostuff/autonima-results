@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study compared chronic prescription opioid users with chronic pain with healthy controls using resting-state functional connectivity and voxel-based morphometry to examine frontostriatal abnormalities and their relationships with affect and opioid misuse.",
-  "value_source": "generated",
+  "value": "The study compared prescription opioid users with chronic pain and healthy controls using resting-state functional connectivity and voxel-based morphometry, examining frontostriatal abnormalities and their associations with affect, opioid misuse, and pain.",
+  "value_source": "reported",
   "evidence": {
    "status": "present",
    "sets": [
@@ -22,8 +22,8 @@
  "hypothesis": {
   "extraction_status": "extracted",
   "value": [
-   "We hypothesized that prescription opioid users with chronic pain, as compared to healthy control subjects, would evidence weaker frontostriatal rsFC coupled with less frontostriatal gray matter volume (GMV).",
-   "Further, that those opioid use-related deficits in frontostriatal circuitry would be associated with the negative affect and drug misuse."
+   "We hypothesized that prescription opioid users with chronic pain, as compared to healthy control subjects, would evidence weaker frontostriatal rsFC and less frontostriatal gray matter volume (GMV).",
+   "those opioid use-related deficits in frontostriatal circuitry would be associated with the negative affect and drug misuse"
   ],
   "value_source": "reported",
   "evidence": {
@@ -45,8 +45,8 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Observational, two-group, cross-sectional study with participants scanned at two sites.",
-   "value_source": "generated",
+   "value": "Observational comparison of opioid users with chronic pain and healthy controls, with participants recruited from the community and clinics and scanned at two sites.",
+   "value_source": "reported",
    "evidence": {
     "status": "present",
     "sets": [
@@ -54,9 +54,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "The current study utilized functional and structural imaging techniques to compare a group of prescription opioid users with chronic pain (OUG) ( N =31) to drug-free healthy controls ( N =30).",
-        "start_char": 6020,
-        "end_char": 6212
+        "text": "Participants ( N = 63) were recruited via community advertisements and referrals from primary care and pain clinics, attended an in-person screening visit to determine eligibility and then an experimental fMRI visit.",
+        "start_char": 6514,
+        "end_char": 6730
        }
       ]
      }
@@ -65,7 +65,7 @@
   },
   "allocation": {
    "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -85,7 +85,7 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -108,27 +108,13 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "Participants gave written informed consent and received financial compensation for study participation.",
-        "start_char": 6731,
-        "end_char": 6834
-       }
-      ]
-     }
-    ]
+    "status": "not_found"
    }
-  },
-  "arms": [],
-  "timepoints": []
+  }
  },
  "analyses": [
   {
-   "local_id": "a_tbl_group_rsfc_1",
+   "local_id": "ana_group_rsfc",
    "name": {
     "extraction_status": "extracted",
     "value": "Main effect of Group on frontostriatal resting-state functional connectivity",
@@ -151,37 +137,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "A main effect of Group ... was observed for the left frontostriatal pathway—between the L.NAc and L.vmPFC",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "A main effect of Group ( F (1,56) = 8.69, p = 0.005, d = .76) was observed for the left frontostriatal pathway—between the L.NAc and L.vmPFC",
-         "start_char": 17366,
-         "end_char": 17506
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "prespecification": {
-    "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "The opioid use group (OUG), relative to controls, evidenced weaker resting-state functional connectivity (rsFC) between the L.Nucleus Accumbens [NAc] (SEED; green sphere) and the L.ventromedial prefrontal cortex [vmPFC] (TARGET; red cluster)."
-    ],
+    "value": "The opioid use group (OUG), relative to controls, exhibited weaker resting-state functional connectivity (rsFC) between the L.Nucleus Accumbens [NAc] (SEED; green sphere) and the L.ventromedial prefrontal cortex [vmPFC] (TARGET; red cluster).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -197,6 +153,12 @@
        ]
       }
      ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -219,13 +181,7 @@
      ]
     }
    },
-   "regions": [
-    "reg_vmPFC_mask",
-    "reg_L_NAc",
-    "reg_L_vmPFC"
-   ],
-   "defines_regions": [],
-   "measure": "mea_rsz",
+   "measure": "mea_rsfc",
    "groups": [
     {
      "group": "grp_oug",
@@ -277,7 +233,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group_rsfc",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "Control",
@@ -289,9 +245,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "significantly weaker rsFC among the OUG (M = .009 ±.03) as compared to the control group (M= .137 ±.03).",
-            "start_char": 17541,
-            "end_char": 17645
+            "text": "Control",
+            "start_char": 12940,
+            "end_char": 12947
            }
           ]
          }
@@ -309,9 +265,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "significantly weaker rsFC among the OUG (M = .009 ±.03) as compared to the control group (M= .137 ±.03).",
-            "start_char": 17541,
-            "end_char": 17645
+            "text": "Control > OUG",
+            "start_char": 15614,
+            "end_char": 15627
            }
           ]
          }
@@ -319,14 +275,28 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Control",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Control",
+            "start_char": 12940,
+            "end_char": 12947
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_group_rsfc",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "OUG",
@@ -338,9 +308,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "significantly weaker rsFC among the OUG (M = .009 ±.03) as compared to the control group (M= .137 ±.03).",
-            "start_char": 17541,
-            "end_char": 17645
+            "text": "OUG",
+            "start_char": 6159,
+            "end_char": 6162
            }
           ]
          }
@@ -358,9 +328,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "significantly weaker rsFC among the OUG (M = .009 ±.03) as compared to the control group (M= .137 ±.03).",
-            "start_char": 17541,
-            "end_char": 17645
+            "text": "Control > OUG",
+            "start_char": 15614,
+            "end_char": 15627
            }
           ]
          }
@@ -368,9 +338,23 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Opioid",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Opioid",
+            "start_char": 2257,
+            "end_char": 2263
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -386,9 +370,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "A main effect of Group ( F (1,56) = 8.69, p = 0.005, d = .76) was observed",
+          "text": "A main effect of Group",
           "start_char": 17366,
-          "end_char": 17440
+          "end_char": 17388
          }
         ]
        }
@@ -399,7 +383,7 @@
      "family": {
       "extraction_status": "extracted",
       "value": "f",
-      "value_source": "generated",
+      "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
@@ -407,9 +391,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "A main effect of Group ( F (1,56) = 8.69, p = 0.005, d = .76) was observed",
-           "start_char": 17366,
-           "end_char": 17440
+           "text": "F",
+           "start_char": 588,
+           "end_char": 589
           }
          ]
         }
@@ -427,9 +411,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "F (1,56)",
+           "text": "F (1,56) = 8.69",
            "start_char": 17391,
-           "end_char": 17399
+           "end_char": 17406
           }
          ]
         }
@@ -447,9 +431,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "F (1,56)",
+           "text": "F (1,56) = 8.69",
            "start_char": 17391,
-           "end_char": 17399
+           "end_char": 17406
           }
          ]
         }
@@ -463,7 +447,7 @@
     "connectivity_method": {
      "extraction_status": "extracted",
      "value": "seed_based",
-     "value_source": "generated",
+     "value_source": "reported",
      "evidence": {
       "status": "present",
       "sets": [
@@ -481,16 +465,10 @@
      }
     },
     "seed_regions": [
-     "reg_L_NAc"
+     "reg_l_nac"
     ],
     "target_regions": [
-     "reg_L_vmPFC"
-    ],
-    "edges": [
-     {
-      "source_region": "reg_L_NAc",
-      "target_region": "reg_L_vmPFC"
-     }
+     "reg_l_vmpfc"
     ],
     "inference_target": {
      "extraction_status": "extracted",
@@ -511,33 +489,22 @@
        }
       ]
      }
-    }
+    },
+    "edges": [
+     {
+      "source_region": "reg_l_nac",
+      "target_region": "reg_l_vmpfc"
+     }
+    ]
    },
-   "model_estimation": "mod_group_rsfc",
-   "inference_settings": "inf_rsfc_fwe",
-   "tables": [
-    "1995"
+   "acquisitions": [
+    "acq_mri"
    ],
-   "source_table_analysis": {
-    "extraction_status": "extracted",
-    "value": "tbl_group_rsfc#1",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Main effect of Group on frontostriatal resting-state functional connectivity",
-         "start_char": 18271,
-         "end_char": 18347
-        }
-       ]
-      }
-     ]
-    }
-   },
+   "tasks": [
+    "tsk_resting_state"
+   ],
+   "model_estimation": "mod_group_rsfc",
+   "inference_settings": "inf_rsfc",
    "coordinate_space": {
     "extraction_status": "extracted",
     "value": "MNI",
@@ -558,52 +525,12 @@
      ]
     }
    },
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "acquisitions": [
-    "acq_fmri",
-    "acq_smri"
-   ],
-   "tasks": [
-    "tsk_eyes_closed_resting"
-   ],
-   "assessments": [
-    "asm_positive_and_negative",
-    "asm_brief_pain_inventory",
-    "asm_current_opioid_misuse",
-    "asm_morphine_milligram_equivalen",
-    "asm_opioid_craving_visual"
-   ]
-  },
-  {
-   "local_id": "ana_mediation_rsfc_affect",
-   "name": {
+   "interpretations": {
     "extraction_status": "extracted",
-    "value": "Frontostriatal mediation of groups differences in negative affect",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Frontostriatal mediation of groups differences in negative affect.",
-         "start_char": 21476,
-         "end_char": 21542
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "strength of frontostriatal rsFC mediates the association between opioid use and heightened negative affect",
+    "value": [
+     "The opioid use group (OUG), relative to the control group, evidenced weaker resting-state functional connectivity (rsFC) between the left nucleus accumbens (NAc) and the left ventromedial prefrontal cortex (vmPFC).",
+     "Prescription opioid use among chronic pain patients is associated with deficits in frontostriatal connectivity; frontostriatal rsFC partially mediated the association between chronic opioid use and negative affect."
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -612,244 +539,33 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "strength of frontostriatal rsFC (L.NAc and L.vmPFC: β = 1.26, SE = .92, CI [.04 – 3.92]) mediated the association between opioid use and heightened negative affect",
-         "start_char": 21172,
-         "end_char": 21335
+         "text": "The opioid use group (OUG), relative to control group, evidenced weaker resting-state functional connectivity (rsFC) between the L.Nucleus Accumbens [NAc] (SEED; green sphere) and the L.ventromedial prefrontal cortex [vmPFC] (TARGET; red cluster).",
+         "start_char": 17877,
+         "end_char": 18124
         }
        ]
       }
      ]
     }
    },
-   "prespecification": {
+   "source_table_analysis": {
     "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "regions": [
-    "reg_L_NAc",
-    "reg_L_vmPFC",
-    "reg_vmPFC_mask"
-   ],
-   "defines_regions": [],
-   "measure": "mea_rsz",
-   "groups": [
-    {
-     "group": "grp_oug",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 31,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "resulting in a final N of 61 (OUG = 31, control = 30).",
-           "start_char": 8492,
-           "end_char": 8546
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "group": "grp_control",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 30,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "resulting in a final N of 61 (OUG = 31, control = 30).",
-           "start_char": 8492,
-           "end_char": 8546
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
-   "effect": {
-    "cells": [
-     {
-      "term": "trm_group_mediation",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "OUG",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "generated",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     },
-     {
-      "term": "trm_group_mediation",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "Control",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     }
-    ],
-    "kind": {
-     "extraction_status": "extracted",
-     "value": "contrast",
-     "value_source": "generated",
-     "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "model_quote",
-        "spans": [
-         {
-          "text": "Path-analysis revealed a partial mediation effect",
-          "start_char": 21114,
-          "end_char": 21163
-         }
-        ]
-       }
-      ]
-     }
-    },
-    "mediation": {
-     "path": {
-      "extraction_status": "extracted",
-      "value": "indirect",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Connectivity explained 19.4% of the group differences in negative affect (ratio of indirect/total effect).",
-           "start_char": 21350,
-           "end_char": 21456
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "mediator": "trm_rsfcm"
-    },
-    "statistic": {
-     "family": {
-      "extraction_status": "extracted",
-      "value": "beta",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Given the use of covariates as described below, t- and F -statistics are presented with degrees of freedom and significant regression findings further include unstandardized beta coefficients.",
-           "start_char": 12316,
-           "end_char": 12508
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "degrees_of_freedom_numerator": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "degrees_of_freedom_denominator": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   },
-   "details": {
-    "details_type": "MassUnivariateDetails"
-   },
-   "model_estimation": "mod_mediation",
-   "inference_settings": "inf_mediation",
-   "tables": [],
-   "coordinate_space": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Path-analysis revealed a partial mediation effect whereby strength of frontostriatal rsFC (L.NAc and L.vmPFC) mediated the association between opioid use and heightened negative affect.",
-     "Connectivity explained 19.4% of the group differences in negative affect."
-    ],
+    "value": "Table 1#1",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "source_table_analysis": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Table 1",
+         "start_char": 14348,
+         "end_char": 14355
+        }
+       ]
+      }
+     ]
     }
    },
    "model_representation_notes": {
@@ -858,18 +574,24 @@
      "status": "not_applicable"
     }
    },
-   "acquisitions": [
-    "acq_fmri",
-    "acq_smri"
+   "regions": [
+    "reg_l_nac",
+    "reg_l_vmpfc"
    ],
-   "tasks": [
-    "tsk_eyes_closed_resting"
+   "tables": [
+    "tbl1"
+   ],
+   "assessments": [
+    "asm_panas",
+    "asm_bpi",
+    "asm_comm",
+    "asm_10_point_visual"
    ]
   }
  ],
  "acquisitions": [
   {
-   "local_id": "acq_fmri",
+   "local_id": "acq_mri",
    "acquisition_type": "MRI",
    "modality": {
     "extraction_status": "extracted",
@@ -882,29 +604,33 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Preprocessed resting-state fMRI data were uploaded into the CONN functional connectivity toolbox",
-         "start_char": 14868,
-         "end_char": 14964
+         "text": "At each site, a high-resolution 3-dimensional, spoiled gradient recalled acquisition structural sequence (3D-MPRAGE) was acquired, followed by an eyes-closed, resting-state scan using an echo-planar gradient-echo pulse fMRI-BOLD sequence ( Supplemental Methods ).",
+         "start_char": 9051,
+         "end_char": 9314
         }
        ]
       }
      ]
     }
    },
-   "device": "dev_siemens_3t",
    "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  },
-  {
-   "local_id": "acq_smri",
-   "acquisition_type": "MRI",
-   "modality": {
+   },
+   "brain_coverage": {
     "extraction_status": "extracted",
-    "value": "sMRI",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "device": "dev_siemens_3t",
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 3,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -913,8 +639,48 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "At each site, a high-resolution 3-dimensional, spoiled gradient recalled acquisition structural sequence (3D-MPRAGE) was acquired",
+         "text": "Individuals meeting criteria for OUG ( n =33) and a healthy control group ( n =30) were scanned on Siemens 3T MRI scanners at the University of Utah (n = 20) and University of South Carolina systems (n=43).",
+         "start_char": 8188,
+         "end_char": 8394
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "echo-planar gradient-echo pulse fMRI-BOLD sequence",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "At each site, a high-resolution 3-dimensional, spoiled gradient recalled acquisition structural sequence (3D-MPRAGE) was acquired, followed by an eyes-closed, resting-state scan using an echo-planar gradient-echo pulse fMRI-BOLD sequence ( Supplemental Methods ).",
          "start_char": 9051,
+         "end_char": 9314
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "mr_acquisition_type": {
+    "extraction_status": "extracted",
+    "value": "3-dimensional for structural sequence",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a high-resolution 3-dimensional, spoiled gradient recalled acquisition structural sequence (3D-MPRAGE) was acquired",
+         "start_char": 9065,
          "end_char": 9180
         }
        ]
@@ -922,11 +688,258 @@
      ]
     }
    },
-   "device": "dev_siemens_3t",
-   "acquisition_duration_seconds": {
+   "repetition_time_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "echo_time_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisition_voxel_size_mm": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_volumes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "assessments": [
+  {
+   "local_id": "asm_panas",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "20-item positive and negative affect schedule (PANAS)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All participants completed the 20-item positive and negative affect schedule (PANAS) [ 32 ].",
+         "start_char": 8576,
+         "end_char": 8668
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "All participants completed the assessment of positive and negative affect.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All participants completed the 20-item positive and negative affect schedule (PANAS) [ 32 ].",
+         "start_char": 8576,
+         "end_char": 8668
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "questionnaire",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All participants completed the 20-item positive and negative affect schedule (PANAS) [ 32 ].",
+         "start_char": 8576,
+         "end_char": 8668
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_bpi",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Brief Pain Inventory (BPI)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Among the OUG, daily Morphine Milligram Equivalence (MME) was calculated via participant report [ 33 ]; pain (over the past 24 hours) was assessed with the Brief Pain Inventory (BPI) [ 34 ]; opioid misuse assessed with the Current Opioid Misuse Measure (COMM) [ 35 ]; and self-reported craving for opioids using a 10-point visual analog scale.",
+         "start_char": 8669,
+         "end_char": 9012
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Pain over the past 24 hours was assessed.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "pain (over the past 24 hours) was assessed with the Brief Pain Inventory (BPI) [ 34 ]",
+         "start_char": 8773,
+         "end_char": 8858
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "pain (over the past 24 hours) was assessed with the Brief Pain Inventory (BPI) [ 34 ]",
+         "start_char": 8773,
+         "end_char": 8858
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_comm",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Current Opioid Misuse Measure (COMM)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Among the OUG, daily Morphine Milligram Equivalence (MME) was calculated via participant report [ 33 ]; pain (over the past 24 hours) was assessed with the Brief Pain Inventory (BPI) [ 34 ]; opioid misuse assessed with the Current Opioid Misuse Measure (COMM) [ 35 ]; and self-reported craving for opioids using a 10-point visual analog scale.",
+         "start_char": 8669,
+         "end_char": 9012
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Opioid misuse was assessed.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "opioid misuse assessed with the Current Opioid Misuse Measure (COMM) [ 35 ]",
+         "start_char": 8860,
+         "end_char": 8935
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "opioid misuse assessed with the Current Opioid Misuse Measure (COMM) [ 35 ]",
+         "start_char": 8860,
+         "end_char": 8935
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_10_point_visual",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "10-point visual analog scale",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "10-point visual analog scale",
+         "start_char": 8983,
+         "end_char": 9011
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Self-reported craving for opioids was assessed using a 10-point visual analog scale among the opioid use group.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "visual analog scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    }
   }
@@ -978,9 +991,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Among the opioid use group (OUG: n = 33)",
-         "start_char": 7027,
-         "end_char": 7067
+         "text": "opioid use group",
+         "start_char": 7037,
+         "end_char": 7053
         }
        ]
       }
@@ -1018,30 +1031,20 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants",
-         "start_char": 6500,
-         "end_char": 6512
+         "text": "Participants ( N = 63) were recruited via community advertisements and referrals from primary care and pain clinics",
+         "start_char": 6514,
+         "end_char": 6629
         }
        ]
       }
      ]
     }
    },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
+   "medical_condition": {
     "extraction_status": "extracted",
-    "value": 33,
+    "value": [
+     "Chronic pain"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1050,49 +1053,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Among the opioid use group (OUG: n = 33)",
-         "start_char": 7027,
-         "end_char": 7067
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 31,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "resulting in a final N of 61 (OUG = 31, control = 30)",
-         "start_char": 8492,
-         "end_char": 8545
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "extracted",
-    "value": 2,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "One subject was excluded due to poor structural image quality and another for in-scanner motion",
-         "start_char": 8395,
-         "end_char": 8490
+         "text": "current use of prescription opioids for >3 consecutive months for treating chronic pain",
+         "start_char": 7069,
+         "end_char": 7156
         }
        ]
       }
@@ -1115,9 +1078,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Inclusion criteria were: being age 18 years or higher and being able to comply with protocol requirements (e.g. fMRI compatibility, indicate having reliable transportation to the laboratory).",
+         "text": "Inclusion criteria were: being age 18 years or higher and being able to comply with protocol requirements (e.g. fMRI compatibility, indicate having reliable transportation to the laboratory). Among the opioid use group (OUG: n = 33), current use of prescription opioids for >3 consecutive months for treating chronic pain and a positive urine drug screen for opioids were also inclusion criteria",
          "start_char": 6835,
-         "end_char": 7026
+         "end_char": 7230
         }
        ]
       }
@@ -1127,12 +1090,12 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "presence of unstable medical illness",
-     "history of major neurological illness or significant head injury with resultant loss of consciousness",
-     "any contraindication to MRI",
+     "unstable medical illness",
+     "major neurological illness or significant head injury with resultant loss of consciousness",
+     "contraindication to MRI",
      "current cancer diagnosis",
      "use of illicit substances within the last month",
-     "a positive urine pregnancy test"
+     "positive urine pregnancy test"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1171,60 +1134,10 @@
      ]
     }
    },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
+   "acquired_count": {
     "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Inclusion criteria were: being age 18 years or higher and being able to comply with protocol requirements (e.g.",
-         "start_char": 6835,
-         "end_char": 6946
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
+    "value": 31,
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1232,20 +1145,41 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The current study utilized functional and structural imaging techniques to compare a group of prescription opioid users with chronic pain (OUG) ( N =31) to drug-free healthy controls ( N =30).",
-         "start_char": 6020,
-         "end_char": 6212
+         "text": "resulting in a final N of 61 (OUG = 31, control = 30)",
+         "start_char": 8492,
+         "end_char": 8545
         }
        ]
       }
      ]
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Chronic pain",
-     "Chronic prescription opioid use"
+     "prescription opioid use for chronic pain"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "prescription opioid users with chronic pain",
+         "start_char": 860,
+         "end_char": 903
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "extracted",
+    "value": [
+     "prescription opioids"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1264,15 +1198,62 @@
      ]
     }
    },
-   "diagnostic_system": {
+   "medication_status": {
+    "extraction_status": "extracted",
+    "value": "maintain their typical use of opioids",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Among the opioid use group (OUG: n = 33), current use of prescription opioids for >3 consecutive months for treating chronic pain and a positive urine drug screen for opioids were also inclusion criteria, and participants were instructed to maintain their typical use of opioids over the course of the study and not abstain from using on the day of the lab visit.",
+         "start_char": 7027,
+         "end_char": 7390
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants ( N = 63) were recruited via community advertisements and referrals from primary care and pain clinics, attended an in-person screening visit to determine eligibility and then an experimental fMRI visit.",
+         "start_char": 6514,
+         "end_char": 6730
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [],
+   "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "clinical_characteristics": {
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
     "extraction_status": "extracted",
-    "value": "current prescription opioid use for more than three consecutive months; participants maintained typical opioid use during the study",
+    "value": 33,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1281,20 +1262,18 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "participants were instructed to maintain their typical use of opioids over the course of the study and not abstain from using on the day of the lab visit",
-         "start_char": 7236,
-         "end_char": 7389
+         "text": "Among the opioid use group (OUG: n = 33)",
+         "start_char": 7027,
+         "end_char": 7067
         }
        ]
       }
      ]
     }
    },
-   "medications": {
+   "excluded_count": {
     "extraction_status": "extracted",
-    "value": [
-     "Prescription opioids"
-    ],
+    "value": 2,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1303,29 +1282,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "current use of prescription opioids",
-         "start_char": 7069,
-         "end_char": 7104
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medication_status": {
-    "extraction_status": "extracted",
-    "value": "actively using; not abstinent on the day of the lab visit",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "not abstain from using on the day of the lab visit",
-         "start_char": 7339,
-         "end_char": 7389
+         "text": "One subject was excluded due to poor structural image quality and another for in-scanner motion",
+         "start_char": 8395,
+         "end_char": 8490
         }
        ]
       }
@@ -1338,16 +1297,163 @@
      "status": "not_applicable"
     }
    },
-   "education_summary": {
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Inclusion criteria were: being age 18 years or higher and being able to comply with protocol requirements (e.g.",
+         "start_char": 6835,
+         "end_char": 6946
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Current prescription opioid use for more than 3 consecutive months for treatment of chronic pain; positive urine drug screen for opioids; participants maintained their typical opioid use and did not abstain on the day of the laboratory visit.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "participants were instructed to maintain their typical use of opioids over the course of the study and not abstain from using on the day of the lab visit.",
+         "start_char": 7236,
+         "end_char": 7390
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "The opioid use group tended to be less educated than the control group; the aggregate education measure was not specified.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Overall, OUG subjects tended to be older, less educated, and exhibited lower total intracranial volume (TIV) than the control group",
+         "start_char": 14169,
+         "end_char": 14300
+        }
+       ]
+      }
+     ]
     }
    },
    "socioeconomic_status_summary": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The opioid user group showed significantly less average GMV (µL / voxel) than the control group",
+         "start_char": 19396,
+         "end_char": 19491
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Inclusion criteria were: being age 18 years or higher and being able to comply with protocol requirements (e.g.",
+         "start_char": 6835,
+         "end_char": 6946
+        }
+       ]
+      }
+     ]
     }
    }
   },
@@ -1364,9 +1470,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a healthy control group",
-         "start_char": 8238,
-         "end_char": 8261
+         "text": "healthy control group",
+         "start_char": 7825,
+         "end_char": 7846
         }
        ]
       }
@@ -1384,9 +1490,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "drug-free healthy controls",
-         "start_char": 1243,
-         "end_char": 1269
+         "text": "a healthy control group",
+         "start_char": 8238,
+         "end_char": 8261
         }
        ]
       }
@@ -1404,18 +1510,21 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants",
-         "start_char": 6500,
-         "end_char": 6512
+         "text": "Participants ( N = 63) were recruited via community advertisements and referrals from primary care and pain clinics",
+         "start_char": 6514,
+         "end_char": 6629
         }
        ]
       }
      ]
     }
    },
-   "enrolled_count": {
+   "inclusion_criteria": {
     "extraction_status": "extracted",
-    "value": 30,
+    "value": [
+     "Age 18 years or higher",
+     "Able to comply with protocol requirements"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1424,9 +1533,54 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a healthy control group ( n =30)",
-         "start_char": 8238,
-         "end_char": 8270
+         "text": "Inclusion criteria were: being age 18 years or higher and being able to comply with protocol requirements (e.g. fMRI compatibility, indicate having reliable transportation to the laboratory).",
+         "start_char": 6835,
+         "end_char": 7026
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "history of chronic opioid use",
+     "current opioid use within the past 3 months",
+     "history of chronic pain",
+     "self-report of pain lasting ≥ 3 months"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Additional exclusion criteria for the healthy control group included: history of chronic opioid use (i.e., self-report history of ≥ 3 months of opioid use) or current use within the past 3 months, history of chronic pain or self-report of pain lasting ≥ 3 months [ 31 ].",
+         "start_char": 7787,
+         "end_char": 8057
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "community advertisements and referrals from primary care and pain clinics",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants ( N = 63) were recruited via community advertisements and referrals from primary care and pain clinics, attended an in-person screening visit to determine eligibility and then an experimental fMRI visit.",
+         "start_char": 6514,
+         "end_char": 6730
         }
        ]
       }
@@ -1453,15 +1607,144 @@
      ]
     }
    },
-   "excluded_count": {
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants ( N = 63) were recruited via community advertisements and referrals from primary care and pain clinics, attended an in-person screening visit to determine eligibility and then an experimental fMRI visit.",
+         "start_char": 6514,
+         "end_char": 6730
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [],
+   "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "is_healthy": {
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
     "extraction_status": "extracted",
-    "value": true,
+    "value": 30,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a healthy control group ( n =30)",
+         "start_char": 8238,
+         "end_char": 8270
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "extracted",
+    "value": 0,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Inclusion criteria were: being age 18 years or higher and being able to comply with protocol requirements (e.g.",
+         "start_char": 6835,
+         "end_char": 6946
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "drug-free",
+     "no history of chronic opioid use",
+     "no current opioid use within the past 3 months",
+     "no history of chronic pain"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1479,11 +1762,15 @@
      ]
     }
    },
-   "medical_condition": {
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": [
-     "none reported; healthy control group"
-    ],
+    "value": "Healthy control group without a history of chronic pain or chronic opioid use.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1492,16 +1779,16 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a healthy control group",
-         "start_char": 8238,
-         "end_char": 8261
+         "text": "Additional exclusion criteria for the healthy control group included: history of chronic opioid use (i.e., self-report history of ≥ 3 months of opioid use) or current use within the past 3 months, history of chronic pain or self-report of pain lasting ≥ 3 months [ 31 ].",
+         "start_char": 7787,
+         "end_char": 8057
         }
        ]
       }
      ]
     }
    },
-   "diagnostic_system": {
+   "medications": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -1527,28 +1814,9 @@
      ]
     }
    },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
+   "education_summary": {
     "extraction_status": "extracted",
-    "value": [
-     "age 18 years or higher",
-     "able to comply with protocol requirements",
-     "no history of chronic opioid use",
-     "no current opioid use within the past 3 months",
-     "no history of chronic pain",
-     "no self-reported pain lasting 3 months or longer"
-    ],
+    "value": "The control group tended to be more educated than the opioid use group; the aggregate education measure was not specified.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1557,28 +1825,36 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Additional exclusion criteria for the healthy control group included: history of chronic opioid use (i.e., self-report history of ≥ 3 months of opioid use) or current use within the past 3 months, history of chronic pain or self-report of pain lasting ≥ 3 months [ 31 ].",
-         "start_char": 7787,
-         "end_char": 8057
+         "text": "Overall, OUG subjects tended to be older, less educated, and exhibited lower total intracranial volume (TIV) than the control group",
+         "start_char": 14169,
+         "end_char": 14300
         }
        ]
       }
      ]
     }
    },
-   "exclusion_criteria": {
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
     "extraction_status": "extracted",
-    "value": [
-     "unstable medical illness",
-     "history of major neurological illness",
-     "significant head injury with resultant loss of consciousness",
-     "contraindication to MRI",
-     "current cancer diagnosis",
-     "use of illicit substances within the last month as evidenced by a positive drug screen",
-     "positive urine pregnancy test among females",
-     "poor structural image quality",
-     "excessive in-scanner motion"
-    ],
+    "value": true,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1587,72 +1863,16 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Additional exclusion criteria for the healthy control group included: history of chronic opioid use (i.e., self-report history of ≥ 3 months of opioid use) or current use within the past 3 months, history of chronic pain or self-report of pain lasting ≥ 3 months [ 31 ].",
-         "start_char": 7787,
-         "end_char": 8057
+         "text": "drug-free healthy controls",
+         "start_char": 1243,
+         "end_char": 1269
         }
        ]
       }
      ]
     }
    },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Community advertisements and referrals from primary care and pain clinics",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Participants ( N = 63) were recruited via community advertisements and referrals from primary care and pain clinics, attended an in-person screening visit to determine eligibility and then an experimental fMRI visit.",
-         "start_char": 6514,
-         "end_char": 6730
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
+   "age_unit_normalized": {
     "extraction_status": "extracted",
     "value": "years",
     "value_source": "reported",
@@ -1671,52 +1891,12 @@
       }
      ]
     }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Drug-free healthy controls without chronic pain or chronic opioid use",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "drug-free healthy controls",
-         "start_char": 1243,
-         "end_char": 1269
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medications": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
    }
   }
  ],
  "inference_settings": [
   {
-   "local_id": "inf_rsfc_fwe",
+   "local_id": "inf_rsfc",
    "inference_level": {
     "extraction_status": "extracted",
     "value": "cluster",
@@ -1728,9 +1908,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Results were thresholded using cluster-level inference",
+         "text": "Results were thresholded using cluster-level inference at p voxel < 0.001, p cluster < 0.05 FWE using a priori directional hypothesis t -test (Control > OUG).",
          "start_char": 15471,
-         "end_char": 15525
+         "end_char": 15629
         }
        ]
       }
@@ -1768,9 +1948,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "p voxel",
+         "text": "p voxel < 0.001",
          "start_char": 15529,
-         "end_char": 15536
+         "end_char": 15544
         }
        ]
       }
@@ -1822,25 +2002,12 @@
     "value": "roi",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The primary rsFC hypotheses of this study were tested within a regions of interest (ROI) mask",
-         "start_char": 11143,
-         "end_char": 11236
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "correction_regions": [
-    "reg_vmPFC_mask",
-    "reg_L_NAc",
-    "reg_L_vmPFC"
+    "reg_l_vmpfc",
+    "reg_l_nac"
    ],
    "alpha_level": {
     "extraction_status": "extracted",
@@ -1881,23 +2048,9 @@
     }
    },
    "tfce_used": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Results were thresholded using cluster-level inference",
-         "start_char": 15471,
-         "end_char": 15525
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "tfce_parameters": {
@@ -1910,149 +2063,6 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
-    }
-   },
-   "number_of_tests": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "inf_mediation",
-   "inference_level": {
-    "extraction_status": "extracted",
-    "value": "mediation",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Mediation analyses were performed to test the post-hoc hypothesis that the strength of frontostriatal rsFC mediates group differences in trait negative affect",
-         "start_char": 16606,
-         "end_char": 16764
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "permutation_count": {
-    "extraction_status": "extracted",
-    "value": 10000,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "using bootstrapping (10,000)",
-         "start_char": 16765,
-         "end_char": 16793
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "height_threshold_value": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "height_threshold_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "cluster_extent_threshold": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clusterwise_threshold_value": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "multiple_comparison_method": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "correction_scope": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "search_volume": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "neighborhood_definition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "tfce_used": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "using bootstrapping (10,000)",
-         "start_char": 16765,
-         "end_char": 16793
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "tfce_parameters": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "alpha_level": {
-    "extraction_status": "extracted",
-    "value": 0.05,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Results were thresholded using cluster-level inference at p voxel < 0.001, p cluster < 0.05 FWE using a priori directional hypothesis t -test (Control > OUG).",
-         "start_char": 15471,
-         "end_char": 15629
-        }
-       ]
-      }
-     ]
     }
    },
    "number_of_tests": {
@@ -2063,9 +2073,12 @@
    }
   }
  ],
+ "language": [
+  "eng"
+ ],
  "measures": [
   {
-   "local_id": "mea_rsz",
+   "local_id": "mea_rsfc",
    "family": {
     "extraction_status": "extracted",
     "value": "functional_bold",
@@ -2077,9 +2090,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "resting-state fMRI",
-         "start_char": 10005,
-         "end_char": 10023
+         "text": "Fisher-transformed correlation coefficients (rZ values) were extracted from the significant target cluster",
+         "start_char": 15630,
+         "end_char": 15736
         }
        ]
       }
@@ -2108,7 +2121,7 @@
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "Fisher-transformed resting-state functional connectivity",
+    "value": "frontostriatal resting-state functional connectivity",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2117,9 +2130,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Fisher-transformed correlation coefficients (rZ values)",
-         "start_char": 15630,
-         "end_char": 15685
+         "text": "Frontostriatal rsFC was assessed using a seed (NAc)-to-voxel (within a vmPFC search mask) approach",
+         "start_char": 15254,
+         "end_char": 15352
         }
        ]
       }
@@ -2128,18 +2141,18 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "Fisher-transformed correlation coefficient (rZ)",
+    "value": "Fisher-transformed correlation coefficients (rZ values)",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "Fisher-transformed correlation coefficients (rZ values) were extracted from the significant target cluster",
+         "text": "Fisher-transformed correlation coefficients (rZ values) were extracted from the significant target cluster and imported into SPSS for further analyses via ANCOVA, regression and exploratory path-analysis.",
          "start_char": 15630,
-         "end_char": 15736
+         "end_char": 15834
         }
        ]
       }
@@ -2150,41 +2163,6 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "mea_gray_matter_volume",
-   "family": {
-    "extraction_status": "extracted",
-    "value": "structural_morphometry",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "type": {
-    "extraction_status": "extracted",
-    "value": "gray_matter_volume",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "source_label": {
-    "extraction_status": "extracted",
-    "value": "average GMV",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "specific_metric": {
-    "extraction_status": "extracted",
-    "value": "gray matter volume",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
     }
    }
   }
@@ -2223,9 +2201,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "the second-level, seed-to-voxel, rsFC model",
+         "text": "the second-level, seed-to-voxel, rsFC model included each subject’s image-quality rating (IQR), derived from CAT12 structural-image processing, as a nuisance covariate.",
          "start_char": 12629,
-         "end_char": 12672
+         "end_char": 12797
         }
        ]
       }
@@ -2234,18 +2212,18 @@
    },
    "stage": {
     "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
+    "value": "second-level",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "the second-level, seed-to-voxel, rsFC model",
-         "start_char": 12629,
-         "end_char": 12672
+         "text": "For the purposes of cluster detection, the second-level, seed-to-voxel, rsFC model included each subject’s image-quality rating (IQR), derived from CAT12 structural-image processing, as a nuisance covariate.",
+         "start_char": 12590,
+         "end_char": 12797
         }
        ]
       }
@@ -2254,7 +2232,27 @@
    },
    "estimator": {
     "extraction_status": "extracted",
-    "value": "nonparametric, HRF-weighted GLM",
+    "value": "nonparametric",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Frontostriatal rsFC was assessed using a seed (NAc)-to-voxel (within a vmPFC search mask) approach separately for the right and left NAc seed ROIs, and then modeled voxel-wise using a nonparametric, HRF-weighted GLM.",
+         "start_char": 15254,
+         "end_char": 15470
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "hrf_model": {
+    "extraction_status": "extracted",
+    "value": "HRF-weighted",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2275,6 +2273,26 @@
    "spatial_unit": {
     "extraction_status": "extracted",
     "value": "voxel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "and then modeled voxel-wise using a nonparametric, HRF-weighted GLM.",
+         "start_char": 15402,
+         "end_char": 15470
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM12",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2283,9 +2301,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "modeled voxel-wise",
-         "start_char": 15411,
-         "end_char": 15429
+         "text": "All functional and structural images were preprocessed using the computational anatomy 12 (CAT12 - www.neuro.uni-jena.de/cat ) and statistical parametric mapping 12 (SPM12 - http://www.fil.ion.ucl.ac.uk/spm/software/spm12/ ) MATLAB 2018a toolboxes",
+         "start_char": 9340,
+         "end_char": 9587
         }
        ]
       }
@@ -2293,14 +2311,14 @@
     }
    },
    "preprocessing": [
-    "prp_standard"
+    "prp_rsfc"
    ],
    "terms": [
     {
-     "local_id": "trm_group_rsfc",
+     "local_id": "trm_group",
      "name": {
       "extraction_status": "extracted",
-      "value": "Group",
+      "value": "group",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -2323,19 +2341,7 @@
       "value": "categorical",
       "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Control > OUG",
-           "start_char": 15614,
-           "end_char": 15627
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "variation_level": {
@@ -2362,51 +2368,6 @@
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "Control",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "Control",
-             "start_char": 12940,
-             "end_char": 12947
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_control"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "Control > OUG",
-             "start_char": 15614,
-             "end_char": 15627
-            }
-           ]
-          }
-         ]
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
         "value": "OUG",
         "value_source": "reported",
         "evidence": {
@@ -2416,9 +2377,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "OUG",
-             "start_char": 6159,
-             "end_char": 6162
+             "text": "The opioid use group (OUG)",
+             "start_char": 17877,
+             "end_char": 17903
             }
            ]
           }
@@ -2429,8 +2390,16 @@
         "grp_oug"
        ],
        "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      },
+      {
+       "level": {
         "extraction_status": "extracted",
-        "value": 2,
+        "value": "Control",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -2439,17 +2408,27 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "Control > OUG",
-             "start_char": 15614,
-             "end_char": 15627
+             "text": "the control group",
+             "start_char": 13688,
+             "end_char": 13705
             }
            ]
           }
          ]
         }
+       },
+       "groups": [
+        "grp_control"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
        }
       }
      ],
+     "assessment": "asm_panas",
      "functional_form": {
       "extraction_status": "not_reported",
       "evidence": {
@@ -2464,7 +2443,7 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Participant group: opioid use group versus healthy control group.",
+      "value": "Group membership: opioid use group (OUG) versus healthy control group.",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -2473,326 +2452,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The current study utilized functional and structural imaging techniques to compare a group of prescription opioid users with chronic pain (OUG) ( N =31) to drug-free healthy controls ( N =30).",
-           "start_char": 6020,
-           "end_char": 6212
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "local_id": "trm_age_rsfc",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "age",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age",
-           "start_char": 3524,
-           "end_char": 3527
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "covariates",
-           "start_char": 12333,
-           "end_char": 12343
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All subsequent between-subjects statistical models included age and education as covariates",
-           "start_char": 14359,
-           "end_char": 14450
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Inclusion criteria were: being age 18 years or higher and being able to comply with protocol requirements (e.g.",
-           "start_char": 6835,
-           "end_char": 6946
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Participant age, included as a covariate.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All subsequent between-subjects statistical models included age and education as covariates",
-           "start_char": 14359,
-           "end_char": 14450
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "local_id": "trm_education_rsfc",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "education",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "education",
-           "start_char": 14427,
-           "end_char": 14436
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "covariates",
-           "start_char": 12333,
-           "end_char": 12343
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All subsequent between-subjects statistical models included age and education as covariates",
-           "start_char": 14359,
-           "end_char": 14450
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Participant education, included as a covariate.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All subsequent between-subjects statistical models included age and education as covariates",
-           "start_char": 14359,
-           "end_char": 14450
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "local_id": "trm_iqr_rsfc",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "image quality rating (IQR)",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "image quality rating (IQR)",
-           "start_char": 18560,
-           "end_char": 18586
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "nuisance covariate",
-           "start_char": 12778,
-           "end_char": 12796
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All subsequent between-subjects statistical models included age and education as covariates; additionally, models including brain findings (i.e., rsFC and VBM) included IQR as a nuisance covariate",
-           "start_char": 14359,
-           "end_char": 14555
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "included as a nuisance covariate",
-           "start_char": 14086,
-           "end_char": 14118
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Image-quality rating derived from CAT12 structural-image processing; aggregate weighted measure of resolution, noise, bias, and preprocessing quality.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "This indicator is an aggregate, weighted measure of image and preprocessing quality, including measures of resolution, noise and bias",
-           "start_char": 12798,
-           "end_char": 12931
+           "text": "The opioid group, relative to controls, exhibited weaker frontostriatal rsFC",
+           "start_char": 1368,
+           "end_char": 1444
           }
          ]
         }
@@ -2801,15 +2463,9 @@
      }
     }
    ],
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Second-level seed-to-voxel nonparametric HRF-weighted GLM; age, education, and image-quality rating included as covariates; directional Control > OUG contrast.",
+    "value": "Seed-to-voxel resting-state functional connectivity was modeled voxel-wise using a nonparametric, HRF-weighted general linear model in the CONN functional connectivity toolbox. The second-level model included image-quality rating as a nuisance covariate; results used cluster-level inference with p voxel < 0.001 and p cluster < 0.05 FWE.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2818,469 +2474,23 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Results were thresholded using cluster-level inference at p voxel < 0.001, p cluster < 0.05 FWE using a priori directional hypothesis t -test (Control > OUG).",
-         "start_char": 15471,
-         "end_char": 15629
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "CONN functional connectivity toolbox with SPM12 in MATLAB 2018a",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Preprocessed resting-state fMRI data were uploaded into the CONN functional connectivity toolbox",
-         "start_char": 14868,
-         "end_char": 14964
+         "text": "Frontostriatal rsFC was assessed using a seed (NAc)-to-voxel (within a vmPFC search mask) approach separately for the right and left NAc seed ROIs, and then modeled voxel-wise using a nonparametric, HRF-weighted GLM.",
+         "start_char": 15254,
+         "end_char": 15470
         }
        ]
       }
      ]
     }
    }
-  },
-  {
-   "local_id": "mod_mediation",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "robust_regression",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Mediation analyses were performed to test the post-hoc hypothesis",
-         "start_char": 16606,
-         "end_char": 16671
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "mediation regression model",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Mediation analyses were performed to test the post-hoc hypothesis that the strength of frontostriatal rsFC mediates group differences in trait negative affect",
-         "start_char": 16606,
-         "end_char": 16764
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "post-hoc hypothesis",
-         "start_char": 16652,
-         "end_char": 16671
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "extracted",
-    "value": "10,000 bootstrap mediation inference",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "using bootstrapping (10,000)",
-         "start_char": 16765,
-         "end_char": 16793
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "terms": [
-    {
-     "local_id": "trm_group_mediation",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "opioid use group",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "opioid use",
-           "start_char": 756,
-           "end_char": 766
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "group differences",
-           "start_char": 1539,
-           "end_char": 1556
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The opioid-user group (OUG) reported greater negative affect than the healthy control group",
-           "start_char": 21544,
-           "end_char": 21635
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "OUG",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "OUG",
-             "start_char": 6159,
-             "end_char": 6162
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_oug"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The opioid-user group (OUG) reported greater negative affect than the healthy control group",
-             "start_char": 21544,
-             "end_char": 21635
-            }
-           ]
-          }
-         ]
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "Control",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "Control",
-             "start_char": 12940,
-             "end_char": 12947
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_control"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The opioid-user group (OUG) reported greater negative affect than the healthy control group",
-             "start_char": 21544,
-             "end_char": 21635
-            }
-           ]
-          }
-         ]
-        }
-       }
-      }
-     ],
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Opioid use group versus healthy control group.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "the association between opioid use and heightened negative affect",
-           "start_char": 21270,
-           "end_char": 21335
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "local_id": "trm_rsfcm",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "frontostriatal rsFC",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "frontostriatal rsFC",
-           "start_char": 768,
-           "end_char": 787
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "strength",
-           "start_char": 16681,
-           "end_char": 16689
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "the strength of frontostriatal connectivity",
-           "start_char": 25238,
-           "end_char": 25281
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "strength of frontostriatal rsFC between the L.NAc and L.vmPFC",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "mediated the association",
-           "start_char": 21261,
-           "end_char": 21285
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "Post-hoc path analysis/mediation testing whether frontostriatal rsFC mediated the association between opioid use group and negative affect; 10,000 bootstrap samples with bias-corrected and accelerated 95% confidence intervals.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Path-analysis revealed a partial mediation effect whereby strength of frontostriatal rsFC (L.NAc and L.vmPFC: β = 1.26, SE = .92, CI [.04 – 3.92]) mediated the association between opioid use and heightened negative affect",
-         "start_char": 21114,
-         "end_char": 21335
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "PROCESS v2.16.3",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Planned a priori and additional unplanned post-hoc brain-behavior relationships were explored in SPSS v25 and PROCESS v2.16.3 ( processmacro.org/ ) via ANCOVA, correlation, regression, and path analysis.",
-         "start_char": 16349,
-         "end_char": 16552
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "preprocessing": [
-    "prp_standard"
-   ]
   }
  ],
  "preprocessings": [
   {
-   "local_id": "prp_standard",
+   "local_id": "prp_rsfc",
    "description": {
     "extraction_status": "extracted",
-    "value": "Standard preprocessing of functional and structural images using CAT12 and SPM12.",
+    "value": "Resting-state fMRI preprocessing using CAT12 and SPM12, including slice-time correction, realignment, motion outlier correction, coregistration, normalization, resampling, and smoothing.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3289,9 +2499,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All functional and structural images were preprocessed using the computational anatomy 12 (CAT12 - www.neuro.uni-jena.de/cat ) and statistical parametric mapping 12 (SPM12 - http://www.fil.ion.ucl.ac.uk/spm/software/spm12/ ) MATLAB 2018a toolboxes according to a standard pipeline employing default settings",
-         "start_char": 9340,
-         "end_char": 9647
+         "text": "Pre-processing of resting-state fMRI images included: slice-time correction (for non-multiband data) and realignment; motion outlier detection (framewise displacement > 1mm) www.nitrc.org/projects/artifact_detect ) and correction (via nearest-neighbor interpolation); coregistration of functional images to structural image; warping to MNI space using forward deformations and resampling to (1.5mm) 3 voxel size (i.e., 3.375µL).",
+         "start_char": 9987,
+         "end_char": 10415
         }
        ]
       }
@@ -3307,9 +2517,21 @@
      "Art toolbox",
      "ArtRepair toolbox"
     ],
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All functional and structural images were preprocessed using the computational anatomy 12 (CAT12 - www.neuro.uni-jena.de/cat ) and statistical parametric mapping 12 (SPM12 - http://www.fil.ion.ucl.ac.uk/spm/software/spm12/ ) MATLAB 2018a toolboxes",
+         "start_char": 9340,
+         "end_char": 9587
+        }
+       ]
+      }
+     ]
     }
    },
    "steps": {
@@ -3322,7 +2544,7 @@
      "coregistration",
      "warping to MNI space",
      "resampling",
-     "spatial smoothing"
+     "smoothing"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3354,9 +2576,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All preprocessed fMRI images and segmented tissue maps were smoothed with a (10mm) 3 FWHM Gaussian filter prior to modeling",
+         "text": "All preprocessed fMRI images and segmented tissue maps were smoothed with a (10mm) 3 FWHM Gaussian filter prior to modeling ( Supplemental Methods ).",
          "start_char": 10851,
-         "end_char": 10974
+         "end_char": 11000
         }
        ]
       }
@@ -3367,7 +2589,7 @@
  ],
  "regions": [
   {
-   "local_id": "reg_L_NAc",
+   "local_id": "reg_l_nac",
    "name": {
     "extraction_status": "extracted",
     "value": "L.NAc",
@@ -3379,9 +2601,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "bilateral nucleus accumbens (NAc) spheres",
-         "start_char": 15151,
-         "end_char": 15192
+         "text": "along with 3mm-radius sphere around the nucleus accumbens (±12, 8, −8)",
+         "start_char": 11521,
+         "end_char": 11591
         }
        ]
       }
@@ -3391,7 +2613,7 @@
    "definition_method": {
     "extraction_status": "extracted",
     "value": "atlas",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3399,9 +2621,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "derived from Wake Forest University (WFU) PickAtlas",
-         "start_char": 11237,
-         "end_char": 11288
+         "text": "This included bilateral ROIs for anterior and middle cingulate cortices, rectus and olfactory gyri, medial-superior prefrontal cortices (PFC), and mid-frontal orbital PFC",
+         "start_char": 11349,
+         "end_char": 11519
         }
        ]
       }
@@ -3411,26 +2633,6 @@
    "region_type": {
     "extraction_status": "extracted",
     "value": "coordinate_sphere",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "3mm-radius sphere around the nucleus accumbens (±12, 8, −8)",
-         "start_char": 11532,
-         "end_char": 11591
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "3mm-radius sphere around the left nucleus accumbens at the reported coordinates.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3439,8 +2641,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "3mm-radius sphere around the nucleus accumbens (±12, 8, −8)",
-         "start_char": 11532,
+         "text": "along with 3mm-radius sphere around the nucleus accumbens (±12, 8, −8)",
+         "start_char": 11521,
          "end_char": 11591
         }
        ]
@@ -3450,7 +2652,27 @@
    },
    "atlas": {
     "extraction_status": "extracted",
-    "value": "WFU PickAtlas",
+    "value": "Wake Forest University (WFU) PickAtlas",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The primary rsFC hypotheses of this study were tested within a regions of interest (ROI) mask derived from Wake Forest University (WFU) PickAtlas ( http://fmri.wfubmc.edu/software/PickAtlas ) ( Figure 1 ).",
+         "start_char": 11143,
+         "end_char": 11348
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "A 3 mm-radius sphere around the left nucleus accumbens.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3459,9 +2681,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Wake Forest University (WFU) PickAtlas",
-         "start_char": 11250,
-         "end_char": 11288
+         "text": "along with 3mm-radius sphere around the nucleus accumbens (±12, 8, −8)",
+         "start_char": 11521,
+         "end_char": 11591
         }
        ]
       }
@@ -3470,7 +2692,7 @@
    }
   },
   {
-   "local_id": "reg_L_vmPFC",
+   "local_id": "reg_l_vmpfc",
    "name": {
     "extraction_status": "extracted",
     "value": "L.vmPFC",
@@ -3494,7 +2716,7 @@
    "definition_method": {
     "extraction_status": "extracted",
     "value": "atlas",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3502,9 +2724,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "significant target cluster from the rsFC analyses",
-         "start_char": 15893,
-         "end_char": 15942
+         "text": "The primary rsFC hypotheses of this study were tested within a regions of interest (ROI) mask derived from Wake Forest University (WFU) PickAtlas",
+         "start_char": 11143,
+         "end_char": 11288
         }
        ]
       }
@@ -3514,7 +2736,7 @@
    "region_type": {
     "extraction_status": "extracted",
     "value": "functional_cluster",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3542,8 +2764,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Wake Forest University (WFU) PickAtlas",
-         "start_char": 11250,
+         "text": "The primary rsFC hypotheses of this study were tested within a regions of interest (ROI) mask derived from Wake Forest University (WFU) PickAtlas",
+         "start_char": 11143,
          "end_char": 11288
         }
        ]
@@ -3553,7 +2775,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Left ventromedial prefrontal cortex target cluster identified within the vmPFC search mask; peak/result coordinate MNI [-12, 32, -12], cluster size 870.75 mm3.",
+    "value": "Left ventromedial prefrontal cortex target cluster.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3562,100 +2784,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "between the L.NAc and L.vmPFC",
-         "start_char": 17477,
-         "end_char": 17506
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "reg_vmPFC_mask",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "vmPFC search mask",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Frontostriatal rsFC was assessed using a seed (NAc)-to-voxel (within a vmPFC search mask) approach separately for the right and left NAc seed ROIs, and then modeled voxel-wise using a nonparametric, HRF-weighted GLM.",
-         "start_char": 15254,
-         "end_char": 15470
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "derived from Wake Forest University (WFU) PickAtlas",
-         "start_char": 11237,
-         "end_char": 11288
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Wake Forest University (WFU) PickAtlas",
-         "start_char": 11250,
-         "end_char": 11288
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "vmPFC search mask comprising bilateral medial-superior prefrontal cortices and mid-frontal orbital prefrontal cortex regions from the WFU PickAtlas.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "This included bilateral ROIs for anterior and middle cingulate cortices, rectus and olfactory gyri, medial-superior prefrontal cortices (PFC), and mid-frontal orbital PFC",
-         "start_char": 11349,
-         "end_char": 11519
+         "text": "significant target cluster from the rsFC analyses",
+         "start_char": 15893,
+         "end_char": 15942
         }
        ]
       }
@@ -3664,9 +2795,114 @@
    }
   }
  ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, N.I.H., Extramural"
+ ],
+ "tasks": [
+  {
+   "local_id": "tsk_resting_state",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "eyes-closed resting-state scan",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Participants underwent an eyes-closed resting-state functional scan.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "conditions": [],
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "design_type": {
+    "extraction_status": "extracted",
+    "value": "continuous",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "stimulus_modality": {
+    "extraction_status": "extracted",
+    "value": [
+     "none"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "response_modality": {
+    "extraction_status": "extracted",
+    "value": [
+     "none"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "presentation_software": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "instructions": {
+    "extraction_status": "extracted",
+    "value": "Keep the eyes closed during the resting-state scan.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "participants were instructed to maintain their typical use of opioids over the course of the study and not abstain from using on the day of the lab visit.",
+         "start_char": 7236,
+         "end_char": 7390
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "references": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "stimuli": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "performance_measures": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
  "tables": [
   {
-   "local_id": "1995",
+   "local_id": "tbl1",
    "table_number": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -3675,40 +2911,30 @@
    },
    "caption": {
     "extraction_status": "extracted",
-    "value": "Main effect of Group on frontostriatal resting-state functional connectivity; Nucleus Accumbens; Ventromedial Prefrontal Cortex; group mean (SE) cluster rZ value; covariates included: age, education, image quality rating (IQR); cohen’s d calculated based on Control and Opioid group marginal means; footer=Note. Standard error reported in parentheses next to mean where applicable.",
-    "value_source": "generated",
+    "value": "Main effect of Group on frontostriatal resting-state functional connectivity",
+    "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
    },
    "footer": {
     "extraction_status": "extracted",
-    "value": "Note. Standard error reported in parentheses next to mean where applicable.\n\n1Nucleus Accumbens\n\n\n2Ventromedial Prefrontal Cortex\n\n\n3group mean (SE) cluster rZ value\n\n\n4covariates included: age, education, image quality rating (IQR)\n\n\n5cohen’s d calculated based on Control and Opioid group marginal means",
+    "value": "Note. Standard error reported in parentheses next to mean where applicable.\n\n1Nucleus Accumbens\n\n2Ventromedial Prefrontal Cortex\n\n3group mean (SE) cluster rZ value\n\n4covariates included: age, education, image quality rating (IQR)\n\n5cohen’s d calculated based on Control and Opioid group marginal means",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "column_headings": {
-    "extraction_status": "extracted",
-    "value": [
-     "Nucleus Accumbens",
-     "Ventromedial Prefrontal Cortex",
-     "group mean (SE) cluster rZ value",
-     "covariates included: age, education, image quality rating (IQR)",
-     "cohen’s d calculated based on Control and Opioid group marginal means"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Main effect of Group on frontostriatal resting-state functional connectivity.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Note. Standard error reported in parentheses next to mean where applicable.\n\n1Nucleus Accumbens\n\n\n2Ventromedial Prefrontal Cortex\n\n\n3group mean (SE) cluster rZ value\n\n\n4covariates included: age, education, image quality rating (IQR)\n\n\n5cohen’s d calculated based on Control and Opioid group marginal means",
+         "start_char": 56922,
+         "end_char": 57227
+        }
+       ]
+      }
+     ]
     }
    }
   }
@@ -3718,7 +2944,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "0e7636e371920c650fbb7cba7a4ffdeed6c90c105b86cc52b8fd7a93fb5e4c62",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -4105,236 +3331,5 @@
    }
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
- },
- "assessments": [
-  {
-   "local_id": "asm_positive_and_negative",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Positive and Negative Affect Schedule",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Positive and Negative Affect Schedule",
-         "start_char": 14745,
-         "end_char": 14782
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "20-item measure of positive and negative affect completed by all participants.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "self-report questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_brief_pain_inventory",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Brief Pain Inventory",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Brief Pain Inventory",
-         "start_char": 8825,
-         "end_char": 8845
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of pain over the past 24 hours among opioid use group participants.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "self-report questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_current_opioid_misuse",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Current Opioid Misuse Measure",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Current Opioid Misuse Measure",
-         "start_char": 8892,
-         "end_char": 8921
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of opioid misuse among opioid use group participants.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "self-report questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_morphine_milligram_equivalen",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Morphine Milligram Equivalence",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Morphine Milligram Equivalence",
-         "start_char": 8690,
-         "end_char": 8720
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Participant-reported daily morphine milligram equivalence among opioid use group participants.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "self-report measure",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_opioid_craving_visual",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Opioid craving visual analog scale",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "10-point visual analog scale assessing self-reported opioid craving among opioid use group participants.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "visual analog scale",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
- "tasks": [
-  {
-   "local_id": "tsk_eyes_closed_resting",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "eyes-closed resting-state scan",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Eyes-closed resting-state fMRI acquisition.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "design_type": {
-    "extraction_status": "extracted",
-    "value": "resting-state",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "response_mode": {
-    "extraction_status": "extracted",
-    "value": [
-     "none"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "acquisitions": [
-    "acq_fmri"
-   ]
-  }
- ],
- "study_type": [
-  "Journal Article",
-  "Research Support, N.I.H., Extramural"
- ]
+ }
 }

@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study investigated the association between MAOA rs1137070, heroin addiction, and gray matter volume, including their interactive effects in brain regions associated with cognition and the salience network.",
-  "value_source": "generated",
+  "value": "The study investigated interactive effects of MAOA rs1137070 genotype and heroin addiction on gray matter volume in heroin abusers and healthy controls.",
+  "value_source": "reported",
   "evidence": {
    "status": "present",
    "sets": [
@@ -22,8 +22,8 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Cross-sectional study of heroin abusers and healthy controls, with MRI and neurocognitive assessment in a male imaging subset.",
-   "value_source": "generated",
+   "value": "Cross-sectional observational comparison of heroin abusers and healthy controls, with genetic, structural MRI, diffusion, and neurocognitive assessments.",
+   "value_source": "reported",
    "evidence": {
     "status": "present",
     "sets": [
@@ -42,7 +42,7 @@
   },
   "allocation": {
    "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -62,16 +62,42 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "We recruited 1,035 heroin abusers",
+        "start_char": 11467,
+        "end_char": 11500
+       }
+      ]
+     }
+    ]
    }
   },
   "blinding": {
-   "extraction_status": "not_reported",
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
    "evidence": {
-    "status": "not_applicable"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "The present study was limited by its cross-sectional design",
+        "start_char": 10327,
+        "end_char": 10386
+       }
+      ]
+     }
+    ]
    }
   },
   "arms": [],
@@ -121,18 +147,15 @@
     }
    },
    "prespecification": {
-    "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Heroin abusers with the C allele had lower measures of GMV than healthy controls with the same allele, whereas those with the T allele displayed a different trend.",
-     "The C allele was associated with increased susceptibility to heroin addiction and GM loss in heroin abusers."
+     "Heroin abusers with the C allele had lower measures of GMV than healthy controls with the same allele, whereas those with the T allele displayed a different trend."
     ],
     "value_source": "reported",
     "evidence": {
@@ -153,23 +176,31 @@
    },
    "spatial_scope": {
     "extraction_status": "extracted",
-    "value": "whole_brain",
+    "value": "roi",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A structural connectivity analysis was performed among given ROIs that were defined as brain regions whose GMVs were interactively altered by heroin addiction and   MAOA   rs1137070.",
+         "start_char": 16553,
+         "end_char": 16735
+        }
+       ]
+      }
+     ]
     }
    },
    "regions": [
-    "reg_bilateral_orbital_frontal",
-    "reg_bilateral_temporal_pole",
-    "reg_bilateral_anterior_cingulate",
-    "reg_right_insula"
+    "reg_gmv_mask"
    ],
-   "defines_regions": [],
    "measure": "mea_gmv",
    "groups": [
     {
-     "group": "grp_heroin_abusers",
+     "group": "grp_heroin",
      "n": {
       "extraction_status": "extracted",
       "value": 78,
@@ -192,7 +223,7 @@
      }
     },
     {
-     "group": "grp_healthy_controls",
+     "group": "grp_controls",
      "n": {
       "extraction_status": "extracted",
       "value": 79,
@@ -218,7 +249,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_rs1137070",
+      "term": "trm_genotype",
       "level": {
        "extraction_status": "extracted",
        "value": "C allele",
@@ -230,9 +261,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "The C allele and T allele differentially affected these regions in heroin abusers and healthy controls.",
-            "start_char": 5458,
-            "end_char": 5561
+            "text": "Heroin abusers with the C allele had lower measures of GMV than healthy controls with the same allele",
+            "start_char": 5562,
+            "end_char": 5663
            }
           ]
          }
@@ -267,7 +298,7 @@
       }
      },
      {
-      "term": "trm_rs1137070",
+      "term": "trm_genotype",
       "level": {
        "extraction_status": "extracted",
        "value": "T allele",
@@ -279,9 +310,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "The C allele and T allele differentially affected these regions in heroin abusers and healthy controls.",
-            "start_char": 5458,
-            "end_char": 5561
+            "text": "those with the T allele displayed a different trend",
+            "start_char": 990,
+            "end_char": 1041
            }
           ]
          }
@@ -299,9 +330,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "those with the T allele displayed a different trend.",
+            "text": "those with the T allele displayed a different trend",
             "start_char": 990,
-            "end_char": 1042
+            "end_char": 1041
            }
           ]
          }
@@ -316,7 +347,7 @@
       }
      },
      {
-      "term": "trm_addiction_status",
+      "term": "trm_addiction",
       "level": {
        "extraction_status": "extracted",
        "value": "heroin abusers",
@@ -365,7 +396,7 @@
       }
      },
      {
-      "term": "trm_addiction_status",
+      "term": "trm_addiction",
       "level": {
        "extraction_status": "extracted",
        "value": "healthy controls",
@@ -397,9 +428,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Heroin abusers with the C allele had lower measures of GMV than healthy controls with the same allele, whereas those with the T allele displayed a different trend.",
-            "start_char": 5562,
-            "end_char": 5725
+            "text": "whereas those with the T allele displayed a different trend",
+            "start_char": 982,
+            "end_char": 1041
            }
           ]
          }
@@ -425,9 +456,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "The rs1137070 variant interacted with heroin addiction to affect GMV in the bilateral orbital frontal cortex (OFC), bilateral temporal pole (TPO), bilateral anterior cingulate cortex (ACC), and right insula (INS.R;  Fig. 1 ,  Table 2 ).",
+          "text": "The rs1137070 variant interacted with heroin addiction to affect GMV",
           "start_char": 5221,
-          "end_char": 5457
+          "end_char": 5289
          }
         ]
        }
@@ -437,10 +468,22 @@
     "statistic": {
      "family": {
       "extraction_status": "extracted",
-      "value": "z",
+      "value": "f",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "A voxelwise two-way analysis of variance (ANOVA) model was used to explore the interactive effects of genetic variants and addiction status on brain regions",
+           "start_char": 17746,
+           "end_char": 17902
+          }
+         ]
+        }
+       ]
       }
      },
      "degrees_of_freedom_numerator": {
@@ -466,8 +509,8 @@
    "model_estimation": "mod_voxelwise_anova",
    "inference_settings": "inf_alphasim",
    "tables": [
-    "t2",
-    "t1"
+    "tbltable2",
+    "tbltable1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -483,33 +526,17 @@
      "status": "not_applicable"
     }
    },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "assessments": [
     "asm_moca",
     "asm_bis11",
-    "asm_igt",
-    "asm_diagnostic_and_statistical"
-   ],
-   "tasks": [],
-   "model_representation_notes": {
-    "extraction_status": "extracted",
-    "value": "Age and cigarette use were included as regressors (covariates).",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "A voxelwise two-way analysis of variance (ANOVA) model was used to explore the interactive effects of genetic variants and addiction status on brain regions in which differences in GMV were found between heroin abusers and healthy controls, with age and cigarette use as regressors.",
-         "start_char": 17746,
-         "end_char": 18028
-        }
-       ]
-      }
-     ]
-    }
-   }
+    "asm_igt"
+   ]
   }
  ],
  "acquisitions": [
@@ -518,8 +545,8 @@
    "acquisition_type": "MRI",
    "modality": {
     "extraction_status": "extracted",
-    "value": "MRI",
-    "value_source": "generated",
+    "value": "sMRI",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -527,9 +554,36 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Magnetic resonance imaging scans and neurocognitive performance were examined in a subset of the initial sample",
-         "start_char": 12635,
-         "end_char": 12746
+         "text": "T1-weighted, sagittal three-dimensional images were acquired with a spoiled gradient recalled echo sequence",
+         "start_char": 14532,
+         "end_char": 14639
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "device": "dev_ge_signa_twin_speed",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "that covered the entire brain",
+         "start_char": 14640,
+         "end_char": 14669
         }
        ]
       }
@@ -558,7 +612,7 @@
    },
    "pulse_sequence_type": {
     "extraction_status": "extracted",
-    "value": "spoiled gradient recalled echo sequence",
+    "value": "spoiled gradient recalled echo",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -570,6 +624,26 @@
          "text": "T1-weighted, sagittal three-dimensional images were acquired with a spoiled gradient recalled echo sequence that covered the entire brain (slice thickness = 1 mm, repetition time = 7.816 ms, echo time = 2.984 ms, inversion time = 450 ms, flip angle = 13°, acquisition matrix = 256 × 256, field of view = 256 × 256 mm , number of averages = 2).",
          "start_char": 14532,
          "end_char": 14875
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "mr_acquisition_type": {
+    "extraction_status": "extracted",
+    "value": "3D",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "sagittal three-dimensional images",
+         "start_char": 14545,
+         "end_char": 14578
         }
        ]
       }
@@ -599,8 +673,7 @@
    "echo_time_seconds": {
     "extraction_status": "extracted",
     "value": [
-     0.002984,
-     0.085
+     0.002984
     ],
     "value_source": "reported",
     "evidence": {
@@ -620,19 +693,30 @@
     }
    },
    "acquisition_voxel_size_mm": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": [
+     1,
+     1,
+     1
+    ],
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "slice thickness = 1 mm",
+         "start_char": 14671,
+         "end_char": 14693
+        }
+       ]
+      }
+     ]
     }
    },
    "number_of_volumes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "device": "dev_ge_signa",
-   "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -645,7 +729,27 @@
    "local_id": "asm_moca",
    "name": {
     "extraction_status": "extracted",
-    "value": "MoCA",
+    "value": "Montreal Cognitive Assessment (MoCA)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Heroin abusers had significantly higher impulsiveness scores on the Barratt Impulsiveness Scale (BIS-11) and worse performance on the Montreal Cognitive Assessment (MoCA) and Iowa Gambling Task (IGT;  Table S2 ).",
+         "start_char": 4315,
+         "end_char": 4527
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Neurocognitive performance was assessed using the MoCA.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -663,40 +767,20 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Neurocognitive assessment of cognitive ability.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MoCA (higher scores indicated greater cognitive ability)",
-         "start_char": 17099,
-         "end_char": 17155
-        }
-       ]
-      }
-     ]
-    }
-   },
    "assessment_type": {
     "extraction_status": "extracted",
-    "value": "neurocognitive assessment",
+    "value": "cognitive assessment",
     "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "Neurocognitive performance was assessed using the MoCA",
-         "start_char": 17049,
-         "end_char": 17103
+         "text": "Heroin abusers had significantly higher impulsiveness scores on the Barratt Impulsiveness Scale (BIS-11) and worse performance on the Montreal Cognitive Assessment (MoCA) and Iowa Gambling Task (IGT;  Table S2 ).",
+         "start_char": 4315,
+         "end_char": 4527
         }
        ]
       }
@@ -708,18 +792,18 @@
    "local_id": "asm_bis11",
    "name": {
     "extraction_status": "extracted",
-    "value": "BIS-11",
+    "value": "Barratt Impulsiveness Scale (BIS-11)",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "BIS-11",
-         "start_char": 4412,
-         "end_char": 4418
+         "text": "Heroin abusers had significantly higher impulsiveness scores on the Barratt Impulsiveness Scale (BIS-11) and worse performance on the Montreal Cognitive Assessment (MoCA) and Iowa Gambling Task (IGT;  Table S2 ).",
+         "start_char": 4315,
+         "end_char": 4527
         }
        ]
       }
@@ -728,38 +812,26 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Neurocognitive assessment of impulsiveness.",
+    "value": "Neurocognitive performance was assessed using the BIS-11; higher scores indicated greater impulsiveness.",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "BIS-11 (higher scores indicated greater impulsiveness)",
-         "start_char": 17157,
-         "end_char": 17211
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "assessment_type": {
     "extraction_status": "extracted",
-    "value": "neurocognitive assessment",
+    "value": "impulsiveness scale",
     "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "Neurocognitive performance was assessed using the MoCA (higher scores indicated greater cognitive ability), BIS-11 (higher scores indicated greater impulsiveness), and IGT (higher scores indicated better decision-making ability).",
-         "start_char": 17049,
-         "end_char": 17278
+         "text": "Heroin abusers had significantly higher impulsiveness scores on the Barratt Impulsiveness Scale (BIS-11) and worse performance on the Montreal Cognitive Assessment (MoCA) and Iowa Gambling Task (IGT;  Table S2 ).",
+         "start_char": 4315,
+         "end_char": 4527
         }
        ]
       }
@@ -771,48 +843,17 @@
    "local_id": "asm_igt",
    "name": {
     "extraction_status": "extracted",
-    "value": "IGT",
+    "value": "Iowa Gambling Task (IGT)",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "IGT",
-         "start_char": 4510,
-         "end_char": 4513
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Neurocognitive assessment of decision-making ability.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "IGT (higher scores indicated better decision-making ability)",
-         "start_char": 17217,
-         "end_char": 17277
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "neurocognitive assessment",
-    "value_source": "generated",
+    "value": "Neurocognitive performance was assessed using the IGT.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -828,68 +869,10 @@
       }
      ]
     }
-   }
-  },
-  {
-   "local_id": "asm_diagnostic_and_statistical",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Diagnostic and Statistical Manual of Mental Disorders, 4th edition",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Diagnostic instrument used to establish opiate dependence in heroin abusers.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
    },
    "assessment_type": {
     "extraction_status": "extracted",
-    "value": "psychiatric diagnostic assessment",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_michigan_alcoholism_screenin",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Michigan Alcoholism Screening Test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Michigan Alcoholism Screening Test",
-         "start_char": 12585,
-         "end_char": 12619
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Screening instrument used to exclude alcohol abusers; participants with scores greater than 4 were excluded.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "psychiatric screening assessment",
+    "value": "cognitive task",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -899,7 +882,7 @@
  ],
  "devices": [
   {
-   "local_id": "dev_ge_signa",
+   "local_id": "dev_ge_signa_twin_speed",
    "manufacturer": {
     "extraction_status": "extracted",
     "value": "GE",
@@ -944,7 +927,7 @@
  ],
  "groups": [
   {
-   "local_id": "grp_heroin_abusers",
+   "local_id": "grp_heroin",
    "name": {
     "extraction_status": "extracted",
     "value": "heroin abusers",
@@ -956,9 +939,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We recruited 1,035 heroin abusers",
-         "start_char": 11467,
-         "end_char": 11500
+         "text": "heroin abusers",
+         "start_char": 368,
+         "end_char": 382
         }
        ]
       }
@@ -967,8 +950,8 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Male heroin abusers included in the imaging subset.",
-    "value_source": "generated",
+    "value": "Heroin abusers meeting DSM-IV criteria for opiate dependence; the imaging subset consisted of 78 male heroin abusers.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1025,10 +1008,57 @@
      ]
     }
    },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "met the Diagnostic and Statistical Manual of Mental Disorders, 4th edition, criteria for opiate dependence",
+     "had no history of poly-substance abuse"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "met the   Diagnostic and Statistical Manual of Mental Disorders  , 4th edition, criteria for opiate dependence and had no history of poly-substance abuse",
+         "start_char": 11842,
+         "end_char": 11995
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "left-handedness",
+     "contraindications for the MRI environment"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Additional exclusion criteria that were applied for subjects who participated in the imaging study included left-handedness and contraindications for the MRI environment",
+         "start_char": 12994,
+         "end_char": 13163
+        }
+       ]
+      }
+     ]
+    }
+   },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "opiate dependence"
+     "opiate dependence",
+     "heroin addiction"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1067,9 +1097,9 @@
      ]
     }
    },
-   "medication_status": {
+   "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "abstinent from heroin for less than 2 years",
+    "value": "Subjects had been abstinent from heroin for less than 2 years at the time of the study.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1087,9 +1117,46 @@
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_diagnostic_and_statistical"
-   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "We recruited 1,035 heroin abusers (725 males, 307 females) from multiple drug addiction treatment centers in China’s Guangdong and Hubei provinces and 2,553 healthy controls (1,113 males, 1,440 female) from local communities.",
+         "start_char": 11467,
+         "end_char": 11692
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "heroin abusers",
+         "start_char": 368,
+         "end_char": 382
+        }
+       ]
+      }
+     ]
+    }
+   },
    "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1126,51 +1193,6 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Han Chinese",
-     "parents native to southern China",
-     "met DSM-IV criteria for opiate dependence",
-     "no history of polysubstance abuse except nicotine dependence",
-     "abstinent from heroin for less than 2 years at study time",
-     "no past or current major medical conditions",
-     "no major psychiatric disorders other than substance addiction",
-     "no family history of major medical or psychiatric disorders",
-     "Michigan Alcoholism Screening Test score ≤4"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "continuous use of other opioid drugs for more than 1 month",
-     "use of other addictive drugs more than three times",
-     "major medical conditions",
-     "major psychiatric disorders other than substance addiction",
-     "family history of major medical or psychiatric disorders",
-     "Michigan Alcoholism Screening Test score >4"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Inclusion criteria for the heroin group were the following: met the   Diagnostic and Statistical Manual of Mental Disorders  , 4th edition, criteria for opiate dependence and had no history of poly-substance abuse (continuous use of other opioid drugs for no more than 1 month, use of other kinds of addictive drugs no more than three times), with the exception of nicotine dependence.",
-         "start_char": 11782,
-         "end_char": 12167
-        }
-       ]
-      }
-     ]
     }
    },
    "recruitment_method": {
@@ -1254,9 +1276,11 @@
      ]
     }
    },
-   "is_healthy": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": false,
+    "value": [
+     "nicotine dependence"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1265,29 +1289,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "heroin abusers",
-         "start_char": 368,
-         "end_char": 382
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Subjects had been abstinent from heroin for less than 2 years at the time of the study.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The subjects had been abstinent from heroin for less than 2 years at the time of the study.",
-         "start_char": 12168,
-         "end_char": 12259
+         "text": "with the exception of nicotine dependence",
+         "start_char": 12125,
+         "end_char": 12166
         }
        ]
       }
@@ -1300,24 +1304,30 @@
      "status": "not_applicable"
     }
    },
-   "education_summary": {
+   "medication_status": {
     "extraction_status": "extracted",
-    "value": "For the imaging subset, education higher than primary school and ability to understand Mandarin were required.",
+    "value": "abstinent from heroin for less than 2 years at the time of the study",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "who had an ability to understand Mandarin and a level of education that was higher than primary school",
-         "start_char": 12890,
-         "end_char": 12992
+         "text": "The subjects had been abstinent from heroin for less than 2 years at the time of the study.",
+         "start_char": 12168,
+         "end_char": 12259
         }
        ]
       }
      ]
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "socioeconomic_status_summary": {
@@ -1325,10 +1335,22 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
   },
   {
-   "local_id": "grp_healthy_controls",
+   "local_id": "grp_controls",
    "name": {
     "extraction_status": "extracted",
     "value": "healthy controls",
@@ -1340,8 +1362,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "2,553 healthy controls",
-         "start_char": 387,
+         "text": "healthy controls",
+         "start_char": 393,
          "end_char": 409
         }
        ]
@@ -1351,22 +1373,11 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Male healthy controls included in the imaging subset.",
-    "value_source": "generated",
+    "value": "Healthy controls recruited from local communities; the imaging subset consisted of 79 male healthy controls.",
+    "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Magnetic resonance imaging scans and neurocognitive performance were examined in a subset of the initial sample that consisted of 78 male heroin abusers and 79 male healthy controls",
-         "start_char": 12635,
-         "end_char": 12816
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "species": {
@@ -1409,10 +1420,59 @@
      ]
     }
    },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Only Han Chinese whose parents were native to southern China",
+     "Imaging participants were male, able to understand Mandarin, and had more than primary-school education"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Only Han Chinese whose parents were native to southern China were included in the study.",
+         "start_char": 11693,
+         "end_char": 11781
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "any history of substance abuse or dependence other than nicotine",
+     "past or current major medical conditions",
+     "major psychiatric disorders",
+     "family history of these",
+     "alcohol abuse"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Healthy subjects were excluded if they had any history of substance abuse or dependence other than nicotine.",
+         "start_char": 12260,
+         "end_char": 12368
+        }
+       ]
+      }
+     ]
+    }
+   },
    "is_healthy": {
     "extraction_status": "extracted",
     "value": true,
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1429,7 +1489,26 @@
      ]
     }
    },
-   "diagnostic_instrument": [],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "We recruited 1,035 heroin abusers (725 males, 307 females) from multiple drug addiction treatment centers in China’s Guangdong and Hubei provinces and 2,553 healthy controls (1,113 males, 1,440 female) from local communities.",
+         "start_char": 11467,
+         "end_char": 11692
+        }
+       ]
+      }
+     ]
+    }
+   },
    "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1468,63 +1547,9 @@
      "status": "not_applicable"
     }
    },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Han Chinese",
-     "parents native to southern China",
-     "no history of substance abuse or dependence other than nicotine",
-     "no past or current major medical conditions",
-     "no major psychiatric disorders",
-     "no family history of major medical or psychiatric disorders",
-     "Michigan Alcoholism Screening Test score ≤4"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Healthy subjects were excluded if they had any history of substance abuse or dependence other than nicotine.",
-         "start_char": 12260,
-         "end_char": 12368
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "history of substance abuse or dependence other than nicotine",
-     "major medical conditions",
-     "major psychiatric disorders",
-     "family history of major medical or psychiatric disorders",
-     "Michigan Alcoholism Screening Test score >4"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Healthy subjects were excluded if they had any history of substance abuse or dependence other than nicotine.",
-         "start_char": 12260,
-         "end_char": 12368
-        }
-       ]
-      }
-     ]
-    }
-   },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Recruited from local communities in Guangdong and Hubei provinces, China.",
+    "value": "Recruited from local communities in southern China.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1533,9 +1558,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "2,553 healthy controls (1,113 males, 1,440 female) from local communities.",
+         "text": "2,553 healthy controls (1,113 males, 1,440 female) from local communities",
          "start_char": 11618,
-         "end_char": 11692
+         "end_char": 11691
         }
        ]
       }
@@ -1603,10 +1628,10 @@
      ]
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Healthy controls"
+     "no history of substance abuse or dependence other than nicotine"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1616,9 +1641,31 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All of the subjects had no past or current major medical conditions",
-         "start_char": 12369,
-         "end_char": 12436
+         "text": "any history of substance abuse or dependence other than nicotine",
+         "start_char": 12303,
+         "end_char": 12367
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "healthy controls"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "healthy controls",
+         "start_char": 393,
+         "end_char": 409
         }
        ]
       }
@@ -1633,10 +1680,22 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Healthy subjects had no history of substance abuse or dependence other than nicotine and no major medical or psychiatric disorders.",
-    "value_source": "generated",
+    "value": "No past or current major medical conditions or major psychiatric disorders; no history of substance abuse or dependence other than nicotine.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All of the subjects had no past or current major medical conditions and no major psychiatric disorders other than substance addiction (and no family history of these).",
+         "start_char": 12369,
+         "end_char": 12536
+        }
+       ]
+      }
+     ]
     }
    },
    "medications": {
@@ -1646,34 +1705,30 @@
     }
    },
    "medication_status": {
-    "extraction_status": "extracted",
-    "value": "Nicotine dependence was permitted.",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "education_summary": {
-    "extraction_status": "extracted",
-    "value": "For the imaging subset, education higher than primary school and ability to understand Mandarin were required.",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "who had an ability to understand Mandarin and a level of education that was higher than primary school",
-         "start_char": 12890,
-         "end_char": 12992
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -1687,7 +1742,7 @@
    "inference_level": {
     "extraction_status": "extracted",
     "value": "voxel",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1727,7 +1782,7 @@
    "height_threshold_type": {
     "extraction_status": "extracted",
     "value": "p",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1738,26 +1793,6 @@
          "text": "voxelwise threshold of   p   < 0.025",
          "start_char": 18178,
          "end_char": 18214
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "cluster_extent_threshold": {
-    "extraction_status": "extracted",
-    "value": 117,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "AlphaSim (AFNI software,   http://afni.nimh.nih.gov/pub/dist/doc/manual/AlphaSim.pdf  ; accessed February 1, 2017) with a corrected   p   < 0.05 and voxelwise threshold of   p   < 0.025 was used to correct for multiple comparisons, resulting in a cluster size >117 mm.",
-         "start_char": 18029,
-         "end_char": 18297
         }
        ]
       }
@@ -1775,9 +1810,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "resulting in a cluster size >117 mm",
-         "start_char": 18261,
-         "end_char": 18296
+         "text": "with a corrected   p   < 0.05",
+         "start_char": 18144,
+         "end_char": 18173
         }
        ]
       }
@@ -1806,26 +1841,26 @@
    },
    "correction_scope": {
     "extraction_status": "extracted",
-    "value": "whole_brain",
+    "value": "roi",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    },
-   "alpha_level": {
+   "cluster_extent_threshold": {
     "extraction_status": "extracted",
-    "value": 0.05,
+    "value": 117,
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "with a corrected   p   < 0.05",
-         "start_char": 18144,
-         "end_char": 18173
+         "text": "AlphaSim (AFNI software,   http://afni.nimh.nih.gov/pub/dist/doc/manual/AlphaSim.pdf  ; accessed February 1, 2017) with a corrected   p   < 0.05 and voxelwise threshold of   p   < 0.025 was used to correct for multiple comparisons, resulting in a cluster size >117 mm.",
+         "start_char": 18029,
+         "end_char": 18297
         }
        ]
       }
@@ -1849,7 +1884,19 @@
     "value": false,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "AlphaSim (AFNI software",
+         "start_char": 18029,
+         "end_char": 18052
+        }
+       ]
+      }
+     ]
     }
    },
    "tfce_parameters": {
@@ -1864,6 +1911,26 @@
      "status": "not_applicable"
     }
    },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "with a corrected   p   < 0.05",
+         "start_char": 18144,
+         "end_char": 18173
+        }
+       ]
+      }
+     ]
+    }
+   },
    "number_of_tests": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1871,12 +1938,12 @@
     }
    },
    "correction_regions": [
-    "reg_bilateral_orbital_frontal",
-    "reg_bilateral_temporal_pole",
-    "reg_bilateral_anterior_cingulate",
-    "reg_right_insula"
+    "reg_gmv_mask"
    ]
   }
+ ],
+ "language": [
+  "eng"
  ],
  "measures": [
   {
@@ -1942,9 +2009,23 @@
     }
    },
    "specific_metric": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "gray matter volume",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "gray matter volume",
+         "start_char": 56,
+         "end_char": 74
+        }
+       ]
+      }
+     ]
     }
    },
    "unit": {
@@ -1961,7 +2042,7 @@
    "model_family": {
     "extraction_status": "extracted",
     "value": "anova",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1969,9 +2050,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "analysis of variance (ANOVA)",
-         "start_char": 17766,
-         "end_char": 17794
+         "text": "A voxelwise two-way analysis of variance (ANOVA) model",
+         "start_char": 17746,
+         "end_char": 17800
         }
        ]
       }
@@ -2009,9 +2090,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxelwise two-way analysis of variance (ANOVA) model was used to explore the interactive effects of genetic variants and addiction status",
+         "text": "A voxelwise two-way analysis of variance (ANOVA) model was used to explore the interactive effects",
          "start_char": 17746,
-         "end_char": 17885
+         "end_char": 17844
         }
        ]
       }
@@ -2021,7 +2102,7 @@
    "spatial_unit": {
     "extraction_status": "extracted",
     "value": "voxel",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2029,9 +2110,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxelwise two-way analysis of variance (ANOVA) model",
-         "start_char": 17746,
-         "end_char": 17800
+         "text": "voxelwise",
+         "start_char": 17748,
+         "end_char": 17757
         }
        ]
       }
@@ -2040,21 +2121,21 @@
    },
    "terms": [
     {
-     "local_id": "trm_rs1137070",
+     "local_id": "trm_genotype",
      "name": {
       "extraction_status": "extracted",
-      "value": "MAOA rs1137070 allele",
+      "value": "rs1137070 allele",
       "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
         {
-         "source": "model_quote",
+         "source": "literal_match",
          "spans": [
           {
-           "text": "The rs1137070 variant interacted with heroin addiction to affect GMV",
-           "start_char": 5221,
-           "end_char": 5289
+           "text": "### Distribution of rs1137070 allele frequencies",
+           "start_char": 4640,
+           "end_char": 4688
           }
          ]
         }
@@ -2064,9 +2145,21 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The C allele and T allele differentially affected these regions",
+           "start_char": 5458,
+           "end_char": 5521
+          }
+         ]
+        }
+       ]
       }
      },
      "variation_level": {
@@ -2102,8 +2195,8 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "The C allele",
-             "start_char": 565,
+             "text": "C allele",
+             "start_char": 569,
              "end_char": 577
             }
            ]
@@ -2116,7 +2209,19 @@
         "value": 1,
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The C allele and T allele differentially affected these regions",
+             "start_char": 5458,
+             "end_char": 5521
+            }
+           ]
+          }
+         ]
         }
        }
       },
@@ -2146,7 +2251,19 @@
         "value": 2,
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The C allele and T allele differentially affected these regions",
+             "start_char": 5458,
+             "end_char": 5521
+            }
+           ]
+          }
+         ]
         }
        }
       }
@@ -2168,26 +2285,38 @@
       "value": "MAOA rs1137070 allele, with C and T allele levels.",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The rs1137070 variant",
+           "start_char": 5221,
+           "end_char": 5242
+          }
+         ]
+        }
+       ]
       }
      }
     },
     {
-     "local_id": "trm_addiction_status",
+     "local_id": "trm_addiction",
      "name": {
       "extraction_status": "extracted",
-      "value": "addiction status",
-      "value_source": "generated",
+      "value": "heroin addiction status",
+      "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
         {
-         "source": "literal_match",
+         "source": "model_quote",
          "spans": [
           {
-           "text": "A voxelwise two-way analysis of variance (ANOVA) model was used to explore the interactive effects of genetic variants and addiction status on brain regions in which differences in GMV were found between heroin abusers and healthy controls, with age and cigarette use as regressors.",
-           "start_char": 17746,
-           "end_char": 18028
+           "text": "addiction status",
+           "start_char": 17869,
+           "end_char": 17885
           }
          ]
         }
@@ -2197,9 +2326,21 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "heroin abusers and healthy controls",
+           "start_char": 4172,
+           "end_char": 4207
+          }
+         ]
+        }
+       ]
       }
      },
      "variation_level": {
@@ -2213,9 +2354,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The C allele and T allele differentially affected these regions in heroin abusers and healthy controls.",
-           "start_char": 5458,
-           "end_char": 5561
+           "text": "heroin abusers and healthy controls",
+           "start_char": 4172,
+           "end_char": 4207
           }
          ]
         }
@@ -2245,14 +2386,26 @@
         }
        },
        "groups": [
-        "grp_heroin_abusers"
+        "grp_heroin"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 1,
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "heroin abusers and healthy controls",
+             "start_char": 4172,
+             "end_char": 4207
+            }
+           ]
+          }
+         ]
         }
        }
       },
@@ -2278,14 +2431,26 @@
         }
        },
        "groups": [
-        "grp_healthy_controls"
+        "grp_controls"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 2,
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "heroin abusers and healthy controls",
+             "start_char": 4172,
+             "end_char": 4207
+            }
+           ]
+          }
+         ]
         }
        }
       }
@@ -2304,10 +2469,22 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Addiction status contrasting heroin abusers with healthy controls.",
+      "value": "Heroin addiction status, comparing heroin abusers with healthy controls.",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "heroin addiction",
+           "start_char": 19,
+           "end_char": 35
+          }
+         ]
+        }
+       ]
       }
      }
     }
@@ -2346,7 +2523,7 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Voxelwise two-way ANOVA with genetic variant and addiction status as factors; age and cigarette use were included as regressors. Multiple comparisons were corrected with AlphaSim using corrected p<0.05 and voxelwise p<0.025, yielding cluster size >117 mm³. Post hoc analyses used SAS 9.0.",
+    "value": "Voxelwise two-way ANOVA with rs1137070 genotype and addiction status as factors; age and cigarette use as regressors; multiple comparisons corrected using AlphaSim with corrected p<0.05 and voxelwise p<0.025, cluster size >117 mm³; implemented using AFNI AlphaSim.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2363,12 +2540,208 @@
       }
      ]
     }
+   },
+   "preprocessing": [
+    "prp_structural_mri"
+   ]
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_structural_mri",
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Structural MRI data were segmented, spatially normalized to a group template, modulated, corrected by total intracranial volume, and smoothed.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Structural MRI data were preprocessed using SPM8",
+         "start_char": 15426,
+         "end_char": 15474
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "SPM8",
+     "New Segment toolbox",
+     "DARTEL image registration algorithm"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "SPM8",
+         "start_char": 15470,
+         "end_char": 15474
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "segmentation",
+     "spatial normalization",
+     "modulation",
+     "intracranial-volume correction",
+     "spatial smoothing"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All T1 scans were segmented into GM, white matter, and cerebrospinal fluid",
+         "start_char": 15542,
+         "end_char": 15616
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     6
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "smoothed with a 6-mm full-width at half-maximum isotropic Gaussian kernel",
+         "start_char": 15926,
+         "end_char": 15999
+        }
+       ]
+      }
+     ]
+    }
    }
   }
  ],
+ "regions": [
+  {
+   "local_id": "reg_gmv_mask",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "brain regions in which differences in GMV were found",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "A voxelwise two-way analysis of variance (ANOVA) model was used to explore the interactive effects of genetic variants and addiction status on brain regions in which differences in GMV were found between heroin abusers and healthy controls, with age and cigarette use as regressors.",
+         "start_char": 17746,
+         "end_char": 18028
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "same_study_analysis",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Brain regions with statistically significant morphometric alterations that were derived from the ANOVA were used as ROIs",
+         "start_char": 18298,
+         "end_char": 18418
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "functional_cluster",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "brain regions",
+         "start_char": 1055,
+         "end_char": 1068
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Regions with statistically significant GMV alterations derived from the ANOVA, including bilateral OFC, bilateral TPO, bilateral ACC, and right insula.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The rs1137070 variant interacted with heroin addiction to affect GMV in the bilateral orbital frontal cortex (OFC), bilateral temporal pole (TPO), bilateral anterior cingulate cortex (ACC), and right insula (INS.R;  Fig. 1 ,  Table 2 ).",
+         "start_char": 5221,
+         "end_char": 5457
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, N.I.H., Extramural",
+  "Research Support, Non-U.S. Gov't"
+ ],
  "tables": [
   {
-   "local_id": "t1",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -2395,7 +2768,7 @@
    }
   },
   {
-   "local_id": "t2",
+   "local_id": "tbltable2",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 2",
@@ -2433,7 +2806,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "fbcd0697e351d6c252d95d94241c9d3c87904103615cbfb0c994c56205dc07bf",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2543,188 +2916,5 @@
    }
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
- },
- "regions": [
-  {
-   "local_id": "reg_bilateral_orbital_frontal",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "bilateral orbital frontal cortex",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "bilateral orbital frontal cortex",
-         "start_char": 5297,
-         "end_char": 5329
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "same_study_analysis",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "functional_cluster",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Brain region showing an interactive effect of MAOA rs1137070 and heroin addiction on gray matter volume.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_bilateral_temporal_pole",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "bilateral temporal pole",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "bilateral temporal pole",
-         "start_char": 5337,
-         "end_char": 5360
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "same_study_analysis",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "functional_cluster",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Brain region showing an interactive effect of MAOA rs1137070 and heroin addiction on gray matter volume.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_bilateral_anterior_cingulate",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "bilateral anterior cingulate cortex",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "bilateral anterior cingulate cortex",
-         "start_char": 5368,
-         "end_char": 5403
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "same_study_analysis",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "functional_cluster",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Brain region showing an interactive effect of MAOA rs1137070 and heroin addiction on gray matter volume.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_right_insula",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "right insula",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "same_study_analysis",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "functional_cluster",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Brain region showing an interactive effect of MAOA rs1137070 and heroin addiction on gray matter volume.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
- "study_type": [
-  "Journal Article",
-  "Research Support, N.I.H., Extramural",
-  "Research Support, Non-U.S. Gov't"
- ]
+ }
 }

@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "A cross-sectional structural MRI study examined cortical surface morphology, gyrification, cortical thickness, and regional gray matter volumes in cannabis users and non-users.",
-  "value_source": "generated",
+  "value": "A cross-sectional structural MRI study examining associations between adolescent and early-adult cannabis use and cortical surface morphology, gyrification, cortical thickness, and regional gray matter volumes.",
+  "value_source": "reported",
   "evidence": {
    "status": "present",
    "sets": [
@@ -19,33 +19,11 @@
    ]
   }
  },
- "hypothesis": {
-  "extraction_status": "extracted",
-  "value": [
-   "cannabis use in adolescence and early-adulthood might involve a premature alteration in cortical gyrification similar to what is normally observed at a later age"
-  ],
-  "value_source": "reported",
-  "evidence": {
-   "status": "present",
-   "sets": [
-    {
-     "source": "model_quote",
-     "spans": [
-      {
-       "text": "These findings give rise to speculation that cannabis use in adolescence or early adulthood might involve a premature alteration in cortical gyrification similar to what is normally observed at a later age",
-       "start_char": 13593,
-       "end_char": 13798
-      }
-     ]
-    }
-   ]
-  }
- },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Cross-sectional study of cannabis users and non-using healthy volunteers recruited from the general community.",
-   "value_source": "generated",
+   "value": "Cross-sectional study of cannabis users and non-using controls recruited from the general community.",
+   "value_source": "reported",
    "evidence": {
     "status": "present",
     "sets": [
@@ -53,9 +31,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "we set up a cross-sectional study using structural magnetic resonance imaging in a sample of general population subjects.",
+        "text": "we set up a cross-sectional study using structural magnetic resonance imaging in a sample of general population subjects",
         "start_char": 535,
-        "end_char": 656
+        "end_char": 655
        }
       ]
      }
@@ -72,7 +50,7 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -81,9 +59,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years ( N = 30) and non-using healthy volunteers ( N = 44) were recruited from the general community",
-        "start_char": 16448,
-        "end_char": 16637
+        "text": "cannabis users and non-users",
+        "start_char": 4390,
+        "end_char": 4418
        }
       ]
      }
@@ -101,9 +79,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "participants from both groups were not tested in order to check their abstinence or recent use",
-        "start_char": 15042,
-        "end_char": 15136
+        "text": "All subjects gave written informed consent before their inclusion in the study, which was approved by the local ethics committee.",
+        "start_char": 17720,
+        "end_char": 17849
        }
       ]
      }
@@ -115,7 +93,7 @@
  },
  "analyses": [
   {
-   "local_id": "ana_group_sulcal_curvature",
+   "local_id": "ana_cannabis_group_surface",
    "name": {
     "extraction_status": "extracted",
     "value": "group differences in sulcal curvature index",
@@ -127,9 +105,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Analysis of covariance with age, gender, and alcohol and tobacco use as covariates demonstrated significant differences in the measure of sulcal curvature index both in the left ( p = 0.01, Cohen's d = 0.66) and right ( p = 0.02, Cohen's d = 0.54) hemisphere",
+         "text": "Analysis of covariance with age, gender, and alcohol and tobacco use as covariates demonstrated significant differences in the measure of sulcal curvature index",
          "start_char": 7078,
-         "end_char": 7336
+         "end_char": 7238
         }
        ]
       }
@@ -138,18 +116,18 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Analysis of covariance with age, gender, and alcohol and tobacco use as covariates demonstrated significant differences in the measure of sulcal curvature index.",
+    "value": "Cannabis users had less concave (flatter) sulci than non-users.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Analysis of covariance with age, gender, and alcohol and tobacco use as covariates demonstrated significant differences in the measure of sulcal curvature index both in the left ( p = 0.01, Cohen's d = 0.66) and right ( p = 0.02, Cohen's d = 0.54) hemisphere, as well as a trend for differences in cortical thickness of the right hemisphere sulci ( p = 0.05, Cohen's d = 0.42).",
-         "start_char": 7078,
-         "end_char": 7455
+         "text": "Cannabis users had less concave (flatter) and thinner sulci.",
+         "start_char": 7456,
+         "end_char": 7516
         }
        ]
       }
@@ -172,16 +150,19 @@
      "status": "not_found"
     }
    },
-   "measure": "mea_sulcal_curvature",
+   "regions": [],
+   "defines_regions": [],
+   "measure": "mea_sulcal_curvature_index",
    "groups": [
     {
-     "group": "grp_non_users",
+     "group": "grp_nonusers",
      "n": {
       "extraction_status": "extracted",
       "value": 44,
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "not_found",
+       "unlocated_quotes": 1
       }
      }
     },
@@ -192,7 +173,8 @@
       "value": 30,
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "not_found",
+       "unlocated_quotes": 1
       }
      }
     }
@@ -203,7 +185,7 @@
       "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
-       "value": "Cannabis users",
+       "value": "cannabis users",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -223,18 +205,18 @@
       },
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
+       "value": "negative",
        "value_source": "generated",
        "evidence": {
         "status": "present",
         "sets": [
          {
-          "source": "model_quote",
+          "source": "literal_match",
           "spans": [
            {
-            "text": "Cannabis users had less concave (flatter) and thinner sulci.",
-            "start_char": 7456,
-            "end_char": 7516
+            "text": "Convex values (i.e., positive) represent gyri and concave values (i.e., negative) represent sulci.",
+            "start_char": 22212,
+            "end_char": 22310
            }
           ]
          }
@@ -266,42 +248,18 @@
       "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
-       "value": "Non-users",
+       "value": "non-users",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Non-users",
-            "start_char": 24422,
-            "end_char": 24431
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "direction": {
        "extraction_status": "extracted",
-       "value": "negative",
+       "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Convex values (i.e., positive) represent gyri and concave values (i.e., negative) represent sulci.",
-            "start_char": 22212,
-            "end_char": 22310
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -315,9 +273,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Non-users",
-            "start_char": 24422,
-            "end_char": 24431
+            "text": "non-users",
+            "start_char": 1017,
+            "end_char": 1026
            }
           ]
          }
@@ -337,9 +295,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "Group differences were performed using general linear model (GLM) analysis of covariance (ANCOVA) with group (users vs non-users) as the between-subjects factor",
-          "start_char": 23516,
-          "end_char": 23676
+          "text": "significant differences in the measure of sulcal curvature index",
+          "start_char": 7174,
+          "end_char": 7238
          }
         ]
        }
@@ -358,29 +316,25 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Analysis of covariance with age, gender, and alcohol and tobacco use as covariates demonstrated significant differences in the measure of sulcal curvature index both in the left ( p = 0.01, Cohen's d = 0.66) and right ( p = 0.02, Cohen's d = 0.54) hemisphere",
-           "start_char": 7078,
-           "end_char": 7336
+           "text": "p = 0.01, Cohen's d = 0.66",
+           "start_char": 7258,
+           "end_char": 7284
           }
          ]
         }
        ]
       }
      },
-     "degrees_of_freedom_denominator": {
-      "extraction_status": "extracted",
-      "value": 69,
-      "value_source": "reported",
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "not_found"
+       "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_numerator": {
-      "extraction_status": "extracted",
-      "value": 1,
-      "value_source": "reported",
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "not_found"
+       "status": "not_applicable"
       }
      }
     }
@@ -388,15 +342,22 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_pd_t2"
+   ],
+   "tasks": [],
    "model_estimation": "mod_ancova",
+   "inference_settings": "inf_p05",
    "tables": [
-    "tbl2",
-    "tbl3"
+    "tbltable1",
+    "tbltable2",
+    "tbltable3"
    ],
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Cannabis users had bilaterally decreased concavity (more flattening) of the sulci compared with non-users; this pattern may reflect a premature alteration in cortical gyrification."
+     "Cannabis users had less concave (flatter) and thinner sulci."
     ],
     "value_source": "reported",
     "evidence": {
@@ -406,9 +367,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "These findings give rise to speculation that cannabis use in adolescence or early adulthood might involve a premature alteration in cortical gyrification similar to what is normally observed at a later age, probably through disruption of normal neurodevelopment.",
-         "start_char": 13593,
-         "end_char": 13855
+         "text": "Cannabis users had less concave (flatter) and thinner sulci.",
+         "start_char": 7456,
+         "end_char": 7516
         }
        ]
       }
@@ -416,43 +377,15 @@
     }
    },
    "source_table_analysis": {
-    "extraction_status": "extracted",
-    "value": "Table 2#2",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "### Table 2\n\nMeasures of surface morphology.",
-         "start_char": 25535,
-         "end_char": 25579
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "coordinate_space": {
-    "extraction_status": "extracted",
-    "value": "Talairach",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "A Talairach Atlas was warped to fit the image ( ).",
-         "start_char": 19613,
-         "end_char": 19663
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "model_representation_notes": {
@@ -461,43 +394,39 @@
      "status": "not_applicable"
     }
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "inference_settings": "inf_p05",
    "assessments": [
-    "asm_cash",
-    "asm_wais"
+    "asm_comprehensive_assessment_of"
    ]
   },
   {
-   "local_id": "ana_age_nonusers_cortical_thickness",
+   "local_id": "ana_age_nonusers_surface",
    "name": {
     "extraction_status": "extracted",
-    "value": "age correlation with cortical thickness among cannabis non-users",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Among cannabis non-users, older age was significantly correlated with decreased cortical thickness.",
+    "value": "age correlation with surface measures among cannabis non-users",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Correlation analyses controlling for the effect of gender, alcohol and tobacco use, showed that among cannabis non-users, older age was significantly correlated with decreased cortical thickness ( r = − 0.42, p = 0.004), less concavity ( r = 0.54, p < 0.001) and decreased thickness ( r = − 0.54, p < 0.001) of the sulci, and greater convexity ( r = 0.37, p = 0.01) and decreased thickness ( r = − 0.36, p = 0.02) of the gyri.",
-         "start_char": 6362,
-         "end_char": 6788
+         "text": "age was significantly correlated with surface measures",
+         "start_char": 6261,
+         "end_char": 6315
         }
        ]
       }
      ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Among cannabis non-users, age was correlated with decreased gyrification and cortical thickness.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "prespecification": {
@@ -516,16 +445,19 @@
      "status": "not_found"
     }
    },
-   "measure": "mea_cortical_thickness",
+   "regions": [],
+   "defines_regions": [],
+   "measure": "mea_surface_morphology",
    "groups": [
     {
-     "group": "grp_non_users",
+     "group": "grp_nonusers",
      "n": {
       "extraction_status": "extracted",
       "value": 44,
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "not_found",
+       "unlocated_quotes": 1
       }
      }
     }
@@ -533,7 +465,7 @@
    "effect": {
     "cells": [
      {
-      "term": "mod_age_correlations.trm_age",
+      "term": "trm_age",
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
@@ -554,16 +486,24 @@
         ]
        }
       },
-      "level": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "age",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "age",
+            "start_char": 694,
+            "end_char": 697
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -579,9 +519,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "Correlation analyses controlling for the effect of gender, alcohol and tobacco use, showed that among cannabis non-users, older age was significantly correlated with decreased cortical thickness ( r = − 0.42, p = 0.004)",
+          "text": "Correlation analyses",
           "start_char": 6362,
-          "end_char": 6581
+          "end_char": 6382
          }
         ]
        }
@@ -600,9 +540,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Correlation analyses controlling for the effect of gender, alcohol and tobacco use, showed that among cannabis non-users, older age was significantly correlated with decreased cortical thickness ( r = − 0.42, p = 0.004)",
+           "text": "Correlation analyses",
            "start_char": 6362,
-           "end_char": 6581
+           "end_char": 6382
           }
          ]
         }
@@ -626,15 +566,22 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_age_correlations",
+   "acquisitions": [
+    "acq_mri",
+    "acq_mri_pd_t2"
+   ],
+   "tasks": [],
+   "model_estimation": "mod_age_correlation",
+   "inference_settings": "inf_p05",
    "tables": [
-    "tbl2",
-    "tbl3"
+    "tbltable1",
+    "tbltable2",
+    "tbltable3"
    ],
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Among cannabis non-users, older age was significantly correlated with decreased cortical thickness (r = −0.42, p = 0.004), supporting age-related cortical thinning."
+     "Among cannabis non-users, older age was significantly correlated with decreased cortical thickness, less concavity and decreased thickness of the sulci, and greater convexity and decreased thickness of the gyri, supporting the notion of age-related gyrification changes."
     ],
     "value_source": "reported",
     "evidence": {
@@ -644,9 +591,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Correlation analyses controlling for the effect of gender, alcohol and tobacco use, showed that among cannabis non-users, older age was significantly correlated with decreased cortical thickness ( r = − 0.42, p = 0.004), less concavity ( r = 0.54, p < 0.001) and decreased thickness ( r = − 0.54, p < 0.001) of the sulci, and greater convexity ( r = 0.37, p = 0.01) and decreased thickness ( r = − 0.36, p = 0.02) of the gyri.",
-         "start_char": 6362,
-         "end_char": 6788
+         "text": "Among non-users, age was significantly correlated with decreased gyrification and cortical thickness loss, supporting the notion of age-related gyrification changes.",
+         "start_char": 13017,
+         "end_char": 13182
         }
        ]
       }
@@ -660,11 +607,9 @@
     }
    },
    "coordinate_space": {
-    "extraction_status": "extracted",
-    "value": "Talairach",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "model_representation_notes": {
@@ -673,13 +618,8 @@
      "status": "not_applicable"
     }
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "inference_settings": "inf_p05",
    "assessments": [
-    "asm_cash",
-    "asm_wais"
+    "asm_comprehensive_assessment_of"
    ]
   }
  ],
@@ -698,9 +638,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "using structural magnetic resonance imaging",
-         "start_char": 569,
-         "end_char": 612
+         "text": "Magnetic resonance images of the whole brain were obtained at the University Hospital Marques de Valdecilla, Santander, Spain, using a 1.5 T General Electric SIGNA System (GE Medical Systems, Milwaukee, WI).",
+         "start_char": 17893,
+         "end_char": 18100
         }
        ]
       }
@@ -710,7 +650,7 @@
    "acquisition_duration_seconds": {
     "extraction_status": "extracted",
     "value": 888,
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -728,6 +668,26 @@
     }
    },
    "device": "dev_ge_signa",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Magnetic resonance images of the whole brain were obtained",
+         "start_char": 17893,
+         "end_char": 17951
+        }
+       ]
+      }
+     ]
+    }
+   },
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 1.5,
@@ -750,7 +710,7 @@
    },
    "pulse_sequence_type": {
     "extraction_status": "extracted",
-    "value": "spoiled grass (SPGR)",
+    "value": "SPGR",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -770,7 +730,7 @@
    },
    "mr_acquisition_type": {
     "extraction_status": "extracted",
-    "value": "3-dimensional",
+    "value": "3D",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -790,7 +750,7 @@
    },
    "repetition_time_seconds": {
     "extraction_status": "extracted",
-    "value": 24,
+    "value": 0.024,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -813,7 +773,7 @@
     "value": [
      0.005
     ],
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -853,105 +813,35 @@
       }
      ]
     }
-   },
-   "number_of_volumes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  }
- ],
- "assessments": [
-  {
-   "local_id": "asm_cash",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Comprehensive Assessment of Symptoms and History (CASH)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "All individuals were of Caucasian ethnicity, had no current or past history of psychiatric illness (excluding cannabis abuse), neurological or general medical disorders, or illicit substance use (excluding cannabis), as determined by using an abbreviated version of the Comprehensive Assessment of Symptoms and History (CASH).",
-         "start_char": 17067,
-         "end_char": 17393
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of psychiatric, neurological, general medical, and substance-use history.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All individuals were of Caucasian ethnicity, had no current or past history of psychiatric illness (excluding cannabis abuse), neurological or general medical disorders, or illicit substance use (excluding cannabis), as determined by using an abbreviated version of the Comprehensive Assessment of Symptoms and History (CASH).",
-         "start_char": 17067,
-         "end_char": 17393
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The absence of psychosis in first-degree relatives was assessed by clinical records and personal interview.",
-         "start_char": 17612,
-         "end_char": 17719
-        }
-       ]
-      }
-     ]
-    }
    }
   },
   {
-   "local_id": "asm_wais",
-   "name": {
+   "local_id": "acq_mri_pd_t2",
+   "acquisition_type": "MRI",
+   "modality": {
     "extraction_status": "extracted",
-    "value": "WAIS III Vocabulary subtest",
+    "value": "MRI",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Following previous reports (i.e., ), premorbid IQ was assessed by means of the WAIS III Vocabulary subtest.",
-         "start_char": 17394,
-         "end_char": 17501
+         "text": "Magnetic resonance images of the whole brain were obtained",
+         "start_char": 17893,
+         "end_char": 17951
         }
        ]
       }
      ]
     }
    },
-   "description": {
+   "acquisition_duration_seconds": {
     "extraction_status": "extracted",
-    "value": "Assessment of premorbid IQ.",
-    "value_source": "generated",
+    "value": 1224,
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -959,19 +849,20 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "premorbid IQ was assessed by means of the WAIS III Vocabulary subtest.",
-         "start_char": 17431,
-         "end_char": 17501
+         "text": "20 min and 24 s for PD/T2 sequence",
+         "start_char": 18767,
+         "end_char": 18801
         }
        ]
       }
      ]
     }
    },
-   "assessment_type": {
+   "device": "dev_ge_signa",
+   "brain_coverage": {
     "extraction_status": "extracted",
-    "value": "cognitive test",
-    "value_source": "generated",
+    "value": "whole_brain",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -979,9 +870,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "premorbid IQ was assessed by means of the WAIS III Vocabulary subtest.",
-         "start_char": 17431,
-         "end_char": 17501
+         "text": "Magnetic resonance images of the whole brain were obtained",
+         "start_char": 17893,
+         "end_char": 17951
         }
        ]
       }
@@ -995,7 +886,7 @@
    "local_id": "dev_ge_signa",
    "manufacturer": {
     "extraction_status": "extracted",
-    "value": "General Electric",
+    "value": "GE Medical Systems",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1037,7 +928,7 @@
  ],
  "groups": [
   {
-   "local_id": "grp_non_users",
+   "local_id": "grp_nonusers",
    "name": {
     "extraction_status": "extracted",
     "value": "non-users",
@@ -1058,26 +949,6 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Healthy volunteers who had never used cannabis or other illicit drugs.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "healthy subjects who had never used cannabis or other illicit drugs",
-         "start_char": 9691,
-         "end_char": 9758
-        }
-       ]
-      }
-     ]
-    }
-   },
    "species": {
     "extraction_status": "extracted",
     "value": "human",
@@ -1089,9 +960,105 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects gave written informed consent before their inclusion in the study",
-         "start_char": 17720,
-         "end_char": 17798
+         "text": "All individuals were of Caucasian ethnicity",
+         "start_char": 17067,
+         "end_char": 17110
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Non-using healthy volunteers recruited from the general community.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 44,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "non-using healthy volunteers ( N = 44)",
+         "start_char": 16557,
+         "end_char": 16595
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years ( N = 30) and non-using healthy volunteers ( N = 44) were recruited from the general community via a variety of advertisements, which did not explicitly mention that history of drug use was going to be considered in the study.",
+         "start_char": 16448,
+         "end_char": 16769
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "healthy volunteers",
+     "Caucasian ethnicity"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All individuals were of Caucasian ethnicity",
+         "start_char": 17067,
+         "end_char": 17110
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "no current or past history of psychiatric illness",
+     "no neurological or general medical disorders",
+     "no illicit substance use"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All individuals were of Caucasian ethnicity, had no current or past history of psychiatric illness (excluding cannabis abuse), neurological or general medical disorders, or illicit substance use (excluding cannabis)",
+         "start_char": 17067,
+         "end_char": 17282
         }
        ]
       }
@@ -1130,13 +1097,84 @@
      ]
     }
    },
-   "acquired_count": {
+   "excluded_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "excluded_count": {
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "healthy volunteers",
+     "no current or past psychiatric illness",
+     "no neurological or general medical disorders",
+     "no illicit substance use",
+     "no psychosis in first-degree relatives"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years ( N = 30) and non-using healthy volunteers ( N = 44) were recruited from the general community",
+         "start_char": 16448,
+         "end_char": 16637
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "current or past psychiatric illness",
+     "neurological or general medical disorders",
+     "illicit substance use",
+     "psychosis in first-degree relatives"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "had no current or past history of psychiatric illness (excluding cannabis abuse), neurological or general medical disorders, or illicit substance use (excluding cannabis)",
+         "start_char": 17112,
+         "end_char": 17282
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Recruited from the general community via a variety of advertisements.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "were recruited from the general community via a variety of advertisements",
+         "start_char": 16596,
+         "end_char": 16669
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -1182,6 +1220,24 @@
      ]
     }
    },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "age_unit": {
     "extraction_status": "extracted",
     "value": "years",
@@ -1202,413 +1258,15 @@
      ]
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "Males",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Males, N (%)",
-           "start_char": 24498,
-           "end_char": 24510
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 25,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Males, N (%) | 25 (56.8)",
-           "start_char": 24498,
-           "end_char": 24522
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 56.8,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "| Males, N (%) | 25 (56.8) | 23 (76.7) | X=3.08, p=0.08 |",
-           "start_char": 24496,
-           "end_char": 24553
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 44,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Males, N (%) | 25 (56.8)",
-           "start_char": 24498,
-           "end_char": 24522
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    },
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "female",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Males, N (%)",
-           "start_char": 24498,
-           "end_char": 24510
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 19,
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Three-dimensional T1-weighted images, using a spoiled grass (SPGR) sequence, were acquired in the coronal plane with the following parameters: echo time (TE) = 5 ms, repetition time (TR) = 24 ms, numbers of excitations (NEX) = 2, rotation angle = 45°, field of view (FOV) = 26 × 19.5 cm, slice thickness = 1.5 mm and a matrix of 256 × 192.",
-           "start_char": 18101,
-           "end_char": 18440
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 43.2,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Males, N (%) | 25 (56.8)",
-           "start_char": 24498,
-           "end_char": 24522
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 44,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Males, N (%) | 25 (56.8)",
-           "start_char": 24498,
-           "end_char": 24522
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "handedness_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "Right-handed",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "| Right-handed, N (%) | 40 (90.9) | 27 (90.0) | X=0.02, p=0.90 |",
-           "start_char": 24623,
-           "end_char": 24687
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 40,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Right-handed, N (%) | 40 (90.9)",
-           "start_char": 24625,
-           "end_char": 24656
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 90.9,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "| Right-handed, N (%) | 40 (90.9) | 27 (90.0) | X=0.02, p=0.90 |",
-           "start_char": 24623,
-           "end_char": 24687
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 44,
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Right-handed, N (%) | 40 (90.9)",
-           "start_char": 24625,
-           "end_char": 24656
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "race_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "Caucasian",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "All individuals were of Caucasian ethnicity, had no current or past history of psychiatric illness (excluding cannabis abuse), neurological or general medical disorders, or illicit substance use (excluding cannabis), as determined by using an abbreviated version of the Comprehensive Assessment of Symptoms and History (CASH).",
-           "start_char": 17067,
-           "end_char": 17393
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 44,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All individuals were of Caucasian ethnicity",
-           "start_char": 17067,
-           "end_char": 17110
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 100.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All individuals were of Caucasian ethnicity",
-           "start_char": 17067,
-           "end_char": 17110
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 44,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "non-using healthy volunteers",
-         "start_char": 16557,
-         "end_char": 16585
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "none reported"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "had no current or past history of psychiatric illness (excluding cannabis abuse), neurological or general medical disorders, or illicit substance use (excluding cannabis)",
-         "start_char": 17112,
-         "end_char": 17282
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_cash"
-   ],
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "No current or past history of psychiatric illness, neurological or general medical disorders, or illicit substance use; all individuals were Caucasian.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "No current or past history of psychiatric illness",
-     "No neurological or general medical disorders",
-     "No illicit substance use",
-     "Healthy volunteer"
-    ],
+    "value": "Healthy volunteers with no current or past psychiatric illness, neurological or general medical disorders, or illicit substance use; absence of psychosis in first-degree relatives was assessed.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1626,81 +1284,6 @@
      ]
     }
    },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Current or past psychiatric illness",
-     "Neurological or general medical disorders",
-     "Illicit substance use",
-     "Psychosis in first-degree relatives"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The absence of psychosis in first-degree relatives was assessed by clinical records and personal interview.",
-         "start_char": 17612,
-         "end_char": 17719
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Recruited from the general community via a variety of advertisements",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years ( N = 30) and non-using healthy volunteers ( N = 44) were recruited from the general community via a variety of advertisements, which did not explicitly mention that history of drug use was going to be considered in the study.",
-         "start_char": 16448,
-         "end_char": 16769
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "medications": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1715,7 +1298,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Academic level, categorized as low academic level",
+    "value": "Academic level was assessed; 14 participants (31.8%) had a low academic level.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1724,9 +1307,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Low academic level, N (%)",
+         "text": "Low academic level, N (%) | 14 (31.8)",
          "start_char": 24866,
-         "end_char": 24891
+         "end_char": 24903
         }
        ]
       }
@@ -1735,7 +1318,7 @@
    },
    "socioeconomic_status_summary": {
     "extraction_status": "extracted",
-    "value": "Parental socioeconomic status, mean 3.5 (SD 0.7)",
+    "value": "Parental socioeconomic status, mean 3.5 (SD 0.7).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1752,7 +1335,30 @@
       }
      ]
     }
-   }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_comprehensive_assessment_of"
+   ]
   },
   {
    "local_id": "grp_cannabis_users",
@@ -1776,26 +1382,6 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Subjects with regular cannabis use, at least once a week during the last three years, without polydrug use or neurological or mental disorder.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years ( N = 30)",
-         "start_char": 16448,
-         "end_char": 16552
-        }
-       ]
-      }
-     ]
-    }
-   },
    "species": {
     "extraction_status": "extracted",
     "value": "human",
@@ -1807,16 +1393,36 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects gave written informed consent before their inclusion in the study",
-         "start_char": 17720,
-         "end_char": 17798
+         "text": "All individuals were of Caucasian ethnicity",
+         "start_char": 17067,
+         "end_char": 17110
         }
        ]
       }
      ]
     }
    },
-   "enrolled_count": {
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Subjects with a pattern of regular cannabis use, at least once a week during the last three years.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years",
+         "start_char": 16448,
+         "end_char": 16542
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
     "extraction_status": "extracted",
     "value": 30,
     "value_source": "reported",
@@ -1836,44 +1442,13 @@
      ]
     }
    },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_mean": {
     "extraction_status": "extracted",
     "value": 25.7,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "extracted",
-    "value": 5,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "age_unit": {
@@ -1896,198 +1471,47 @@
      ]
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "Males",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Males, N (%)",
-           "start_char": 24498,
-           "end_char": 24510
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 23,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 76.7,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 30,
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "handedness_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "Right-handed",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "| Right-handed, N (%) | 40 (90.9) | 27 (90.0) | X=0.02, p=0.90 |",
-           "start_char": 24623,
-           "end_char": 24687
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 27,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 90,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 30,
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "race_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "Caucasian",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "All individuals were of Caucasian ethnicity, had no current or past history of psychiatric illness (excluding cannabis abuse), neurological or general medical disorders, or illicit substance use (excluding cannabis), as determined by using an abbreviated version of the Comprehensive Assessment of Symptoms and History (CASH).",
-           "start_char": 17067,
-           "end_char": 17393
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 30,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All individuals were of Caucasian ethnicity",
-           "start_char": 17067,
-           "end_char": 17110
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 100.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All individuals were of Caucasian ethnicity",
-           "start_char": 17067,
-           "end_char": 17110
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 30,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "is_healthy": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": false,
+    "value": "recruited",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years ( N = 30) and non-using healthy volunteers ( N = 44) were recruited from the general community via a variety of advertisements, which did not explicitly mention that history of drug use was going to be considered in the study.",
+         "start_char": 16448,
+         "end_char": 16769
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "regular cannabis use",
+     "Caucasian ethnicity"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All individuals were of Caucasian ethnicity",
+         "start_char": 17067,
+         "end_char": 17110
+        }
+       ]
+      }
+     ]
     }
    },
    "medical_condition": {
@@ -2103,33 +1527,61 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "excluding cannabis abuse",
-         "start_char": 17167,
-         "end_char": 17191
+         "text": "had no current or past history of psychiatric illness (excluding cannabis abuse)",
+         "start_char": 17112,
+         "end_char": 17192
         }
        ]
       }
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_cash"
-   ],
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Mean duration of regular use was 8.4 years; current use was 26.6 cones/week and cumulative exposure was 11618.9 cones.",
-    "value_source": "generated",
+   "approached_count": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 30,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years ( N = 30)",
+         "start_char": 16448,
+         "end_char": 16552
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Regular cannabis use at least once a week during the last three years",
-     "No current or past history of psychiatric illness other than cannabis abuse",
-     "No neurological or general medical disorders",
-     "No illicit substance use other than cannabis"
+     "regular cannabis use at least once a week during the last three years",
+     "no current or past psychiatric illness other than cannabis abuse",
+     "no neurological or general medical disorders",
+     "no illicit substance use other than cannabis",
+     "no psychosis in first-degree relatives"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2151,9 +1603,10 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Neurological or general medical disorders",
-     "Illicit substance use other than cannabis",
-     "Psychosis in first-degree relatives"
+     "current or past psychiatric illness other than cannabis abuse",
+     "neurological or general medical disorders",
+     "illicit substance use other than cannabis",
+     "psychosis in first-degree relatives"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2163,9 +1616,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All individuals were of Caucasian ethnicity, had no current or past history of psychiatric illness (excluding cannabis abuse), neurological or general medical disorders, or illicit substance use (excluding cannabis), as determined by using an abbreviated version of the Comprehensive Assessment of Symptoms and History (CASH).",
-         "start_char": 17067,
-         "end_char": 17393
+         "text": "neurological or general medical disorders, or illicit substance use (excluding cannabis)",
+         "start_char": 17194,
+         "end_char": 17282
         }
        ]
       }
@@ -2174,18 +1627,18 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Recruited from the general community via a variety of advertisements",
+    "value": "Recruited from the general community via a variety of advertisements.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years ( N = 30) and non-using healthy volunteers ( N = 44) were recruited from the general community via a variety of advertisements, which did not explicitly mention that history of drug use was going to be considered in the study.",
-         "start_char": 16448,
-         "end_char": 16769
+         "text": "were recruited from the general community via a variety of advertisements",
+         "start_char": 16596,
+         "end_char": 16669
         }
        ]
       }
@@ -2196,6 +1649,26 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "extracted",
+    "value": 5.0,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "| Age, mean (SD), years | 25.8 (5.8) | 25.7 (5.0) | t=0.07; p=0.95 |",
+         "start_char": 24554,
+         "end_char": 24622
+        }
+       ]
+      }
+     ]
     }
    },
    "age_minimum": {
@@ -2222,6 +1695,26 @@
      "status": "not_applicable"
     }
    },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Regular cannabis use at least once a week during the last three years; mean duration of regular use 8.4 years (range 3–21), mean age at regular-use initiation 17.3 years (range 13–25), current use 26.6 cones/week, and cumulative exposure 11618.9 cones.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Cannabis users with a pattern of regular use, at least once a week during the last three years ( N = 30)",
+         "start_char": 16448,
+         "end_char": 16552
+        }
+       ]
+      }
+     ]
+    }
+   },
    "medications": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -2236,7 +1729,53 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Academic level, categorized as low academic level",
+    "value": "Academic level was assessed; 14 participants (46.7%) had a low academic level.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "extracted",
+    "value": "Parental socioeconomic status, mean 3.6 (SD 0.8).",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_comprehensive_assessment_of"
+   ]
+  }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_p05",
+   "height_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 0.05,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2245,46 +1784,67 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Low academic level, N (%)",
-         "start_char": 24866,
-         "end_char": 24891
+         "text": "a two-tailed p < 0.05 value was used for statistical testing",
+         "start_char": 24157,
+         "end_char": 24217
         }
        ]
       }
      ]
     }
    },
-   "socioeconomic_status_summary": {
+   "height_threshold_type": {
     "extraction_status": "extracted",
-    "value": "Parental socioeconomic status, mean 3.6 (SD 0.8)",
+    "value": "p",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a two-tailed p < 0.05 value was used for statistical testing",
+         "start_char": 24157,
+         "end_char": 24217
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.05,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a two-tailed p < 0.05 value was used for statistical testing",
+         "start_char": 24157,
+         "end_char": 24217
+        }
+       ]
+      }
+     ]
     }
-   }
-  }
- ],
- "inference_settings": [
-  {
-   "local_id": "inf_p05",
+   },
    "inference_level": {
     "extraction_status": "extracted",
-    "value": "voxel",
+    "value": "uncorrected",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
-    }
-   },
-   "height_threshold_value": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "height_threshold_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "cluster_extent_threshold": {
@@ -2299,22 +1859,20 @@
      "status": "not_applicable"
     }
    },
-   "multiple_comparison_method": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "correction_scope": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "search_volume": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "whole brain",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "neighborhood_definition": {
@@ -2324,9 +1882,11 @@
     }
    },
    "tfce_used": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "tfce_parameters": {
@@ -2341,14 +1901,6 @@
      "status": "not_applicable"
     }
    },
-   "alpha_level": {
-    "extraction_status": "extracted",
-    "value": 0.05,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "number_of_tests": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -2357,15 +1909,30 @@
    }
   }
  ],
+ "language": [
+  "eng"
+ ],
  "measures": [
   {
-   "local_id": "mea_sulcal_curvature",
+   "local_id": "mea_sulcal_curvature_index",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The sulcal curvature index and thickness were evaluated",
+         "start_char": 7660,
+         "end_char": 7715
+        }
+       ]
+      }
+     ]
     }
    },
    "type": {
@@ -2373,7 +1940,19 @@
     "value": "structural_morphometry_other",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The sulcal curvature index and thickness were evaluated",
+         "start_char": 7660,
+         "end_char": 7715
+        }
+       ]
+      }
+     ]
     }
    },
    "source_label": {
@@ -2398,7 +1977,7 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "average sulcal curvature index",
+    "value": "Average sulcal curvature index",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2424,7 +2003,7 @@
    }
   },
   {
-   "local_id": "mea_cortical_thickness",
+   "local_id": "mea_surface_morphology",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
@@ -2435,15 +2014,27 @@
    },
    "type": {
     "extraction_status": "extracted",
-    "value": "cortical_thickness",
+    "value": "structural_morphometry_other",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "surface morphology measures",
+         "start_char": 4173,
+         "end_char": 4200
+        }
+       ]
+      }
+     ]
     }
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "cortical thickness",
+    "value": "surface morphology measures",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2452,9 +2043,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "cortical thickness",
-         "start_char": 1152,
-         "end_char": 1170
+         "text": "surface morphology measures",
+         "start_char": 4173,
+         "end_char": 4200
         }
        ]
       }
@@ -2468,23 +2059,9 @@
     }
    },
    "unit": {
-    "extraction_status": "extracted",
-    "value": "mm",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Cortical thickness (mm)",
-         "start_char": 26116,
-         "end_char": 26139
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    }
   }
@@ -2503,9 +2080,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Analysis of covariance with age, gender, and alcohol and tobacco use as covariates",
-         "start_char": 7078,
-         "end_char": 7160
+         "text": "general linear model (GLM) analysis of covariance (ANCOVA)",
+         "start_char": 23555,
+         "end_char": 23613
         }
        ]
       }
@@ -2532,32 +2109,6 @@
      ]
     }
    },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "Group differences were tested with age, gender, alcohol and tobacco use, and ICV as covariates for volumetry.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Group differences were performed using general linear model (GLM) analysis of covariance (ANCOVA) with group (users vs non-users) as the between-subjects factor, and age, gender, alcohol and tobacco use, and ICV (only for volumetry) as covariates.",
-         "start_char": 23516,
-         "end_char": 23763
-        }
-       ]
-      }
-     ]
-    }
-   },
    "stage": {
     "extraction_status": "extracted",
     "value": "group",
@@ -2569,49 +2120,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Group differences were performed using general linear model (GLM) analysis of covariance (ANCOVA)",
+         "text": "Group differences were performed",
          "start_char": 23516,
-         "end_char": 23613
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "extracted",
-    "value": "general linear model",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Group differences were performed using general linear model (GLM) analysis of covariance (ANCOVA) with group (users vs non-users) as the between-subjects factor, and age, gender, alcohol and tobacco use, and ICV (only for volumetry) as covariates.",
-         "start_char": 23516,
-         "end_char": 23763
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "SPSS",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "All statistical analyses were performed with the Statistical Package for the Social Sciences (SPSS).",
-         "start_char": 24219,
-         "end_char": 24319
+         "end_char": 23548
         }
        ]
       }
@@ -2619,9 +2130,11 @@
     }
    },
    "spatial_unit": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "vertex",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "terms": [
@@ -2650,16 +2163,36 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "with group (users vs non-users) as the between-subjects factor",
+           "start_char": 23614,
+           "end_char": 23676
+          }
+         ]
+        }
+       ]
       }
      },
      "levels": [
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "Cannabis users",
+        "value": "cannabis users",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -2668,9 +2201,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "group (users vs non-users)",
-             "start_char": 23619,
-             "end_char": 23645
+             "text": "users",
+             "start_char": 908,
+             "end_char": 913
             }
            ]
           }
@@ -2683,6 +2216,16 @@
        "order": {
         "extraction_status": "extracted",
         "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "non-users",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -2691,46 +2234,28 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "group (users vs non-users)",
-             "start_char": 23619,
-             "end_char": 23645
+             "text": "non-users",
+             "start_char": 1017,
+             "end_char": 1026
             }
            ]
           }
          ]
         }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "Non-users",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
        },
        "groups": [
-        "grp_non_users"
+        "grp_nonusers"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
        }
       }
      ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
      "functional_form": {
       "extraction_status": "not_reported",
       "evidence": {
@@ -2745,18 +2270,7 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Study group: cannabis users versus non-users",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    },
-    {
-     "local_id": "mod_ancova.trm_age",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "age",
+      "value": "Between-subjects factor indicating cannabis users versus non-users.",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -2765,102 +2279,17 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "age, gender, alcohol and tobacco use, and ICV (only for volumetry) as covariates",
-           "start_char": 23682,
-           "end_char": 23762
+           "text": "with group (users vs non-users) as the between-subjects factor",
+           "start_char": 23614,
+           "end_char": 23676
           }
          ]
         }
        ]
       }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Participant age in years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
      }
     }
    ],
-   "inputs_from": []
-  },
-  {
-   "local_id": "mod_age_correlations",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "robust_regression",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "correlation analyses",
-         "start_char": 23773,
-         "end_char": 23793
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "correlation analyses",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Correlation analyses",
-         "start_char": 6362,
-         "end_char": 6382
-        }
-       ]
-      }
-     ]
-    }
-   },
    "hrf_model": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -2869,47 +2298,7 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Correlations controlled for gender, age, alcohol and tobacco use.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "correlation analyses controlling for gender, age, and alcohol and tobacco use",
-         "start_char": 23773,
-         "end_char": 23850
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "These analyses were separately carried out in the group of users and non-users",
-         "start_char": 8573,
-         "end_char": 8651
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "extracted",
-    "value": "correlation",
+    "value": "General linear model analysis of covariance with group as the between-subjects factor; age, gender, alcohol and tobacco use as covariates, and ICV additionally for volumetry; two-tailed p < 0.05; Cohen's d reported for effect size.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2918,9 +2307,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Correlation analyses",
-         "start_char": 6362,
-         "end_char": 6382
+         "text": "Group differences were performed using general linear model (GLM) analysis of covariance (ANCOVA) with group (users vs non-users) as the between-subjects factor, and age, gender, alcohol and tobacco use, and ICV (only for volumetry) as covariates.",
+         "start_char": 23516,
+         "end_char": 23763
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "ANCOVA",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ANCOVA",
+         "start_char": 5029,
+         "end_char": 5035
         }
        ]
       }
@@ -2946,16 +2355,69 @@
       }
      ]
     }
+   }
+  },
+  {
+   "local_id": "mod_age_correlation",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "robust_regression",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "correlation analyses",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "correlation analyses",
+         "start_char": 23773,
+         "end_char": 23793
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Finally, correlation analyses controlling for gender, age, and alcohol and tobacco use were carried out",
+         "start_char": 23764,
+         "end_char": 23867
+        }
+       ]
+      }
+     ]
+    }
    },
    "spatial_unit": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "vertex",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "terms": [
     {
-     "local_id": "mod_age_correlations.trm_age",
+     "local_id": "trm_age",
      "name": {
       "extraction_status": "extracted",
       "value": "age",
@@ -2967,9 +2429,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "age",
-           "start_char": 694,
-           "end_char": 697
+           "text": "age was significantly correlated with surface measures",
+           "start_char": 6261,
+           "end_char": 6315
           }
          ]
         }
@@ -2979,18 +2441,35 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
       }
      },
-     "levels": [],
      "variation_level": {
       "extraction_status": "extracted",
       "value": "between_subject",
       "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Correlation analyses controlling for the effect of gender, alcohol and tobacco use",
+           "start_char": 6362,
+           "end_char": 6444
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
       }
      },
      "functional_form": {
@@ -3004,9 +2483,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "age was significantly correlated with surface measures",
-           "start_char": 6261,
-           "end_char": 6315
+           "text": "Correlation analyses",
+           "start_char": 6362,
+           "end_char": 6382
           }
          ]
         }
@@ -3024,29 +2503,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "older age",
-           "start_char": 5255,
-           "end_char": 5264
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Participant age in years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age was significantly correlated with surface measures",
-           "start_char": 6261,
-           "end_char": 6315
+           "text": "age",
+           "start_char": 694,
+           "end_char": 697
           }
          ]
         }
@@ -3055,37 +2514,15 @@
      }
     }
    ],
-   "inputs_from": []
-  }
- ],
- "preprocessings": [
-  {
-   "local_id": "prp_brains2",
-   "description": {
-    "extraction_status": "extracted",
-    "value": "T1, T2, and PD images were aligned, resampled, transformed to Talairach space, and tissue-classified using BRAINS2.",
-    "value_source": "generated",
+   "hrf_model": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The T2 and PD data sets were aligned to the resampled T1 image.",
-         "start_char": 19387,
-         "end_char": 19450
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
-   "software": {
+   "model_settings": {
     "extraction_status": "extracted",
-    "value": [
-     "BRAINS2"
-    ],
+    "value": "Correlation analyses controlling for gender, alcohol and tobacco use; analyses were conducted separately among cannabis users and non-users; two-tailed p < 0.05.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3094,52 +2531,53 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Processing of the images after acquisition was done by using a family of software programs called BRAINS2",
-         "start_char": 18803,
-         "end_char": 18908
+         "text": "Finally, correlation analyses controlling for gender, age, and alcohol and tobacco use were carried out between curvature indices and cortical thickness measures.",
+         "start_char": 23764,
+         "end_char": 23926
         }
        ]
       }
      ]
     }
    },
-   "steps": {
+   "estimator": {
     "extraction_status": "extracted",
-    "value": [
-     "resampling",
-     "Talairach transformation",
-     "image alignment",
-     "tissue classification",
-     "surface reconstruction"
-    ],
-    "value_source": "generated",
+    "value": "Correlation analysis",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPSS",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "resample to 1.0 mm 3",
-         "start_char": 18941,
-         "end_char": 18961
+         "text": "All statistical analyses were performed with the Statistical Package for the Social Sciences (SPSS).",
+         "start_char": 24219,
+         "end_char": 24319
         }
        ]
       }
      ]
     }
-   },
-   "smoothing_fwhm_mm": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
    }
   }
  ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, Non-U.S. Gov't"
+ ],
  "tables": [
   {
-   "local_id": "tbl1",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -3166,7 +2604,7 @@
    }
   },
   {
-   "local_id": "tbl2",
+   "local_id": "tbltable2",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 2",
@@ -3193,7 +2631,7 @@
    }
   },
   {
-   "local_id": "tbl3",
+   "local_id": "tbltable3",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 3",
@@ -3225,7 +2663,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "e042d0a51049aa59ed9475629d9144745247bd49caa40f461b44205d1cb32e6e",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -3389,8 +2827,45 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "study_type": [
-  "Journal Article",
-  "Research Support, Non-U.S. Gov't"
+ "assessments": [
+  {
+   "local_id": "asm_comprehensive_assessment_of",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Comprehensive Assessment of Symptoms and History (CASH)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Comprehensive Assessment of Symptoms and History (CASH)",
+         "start_char": 17337,
+         "end_char": 17392
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Abbreviated version used to determine current or past psychiatric illness, neurological or general medical disorders, and illicit substance use.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
  ]
 }

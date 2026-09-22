@@ -1,43 +1,19 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study investigated functional activation during an n-back working-memory task and local grey matter volumes in detoxified alcohol-dependent patients and matched healthy controls, including associations with prospective relapse risk.",
+  "value": "The study examined working-memory neural activation and grey matter volume in detoxified alcohol-dependent patients and matched healthy controls, including prospective relapse outcomes.",
   "value_source": "generated",
   "evidence": {
-   "status": "present",
-   "sets": [
-    {
-     "source": "model_quote",
-     "spans": [
-      {
-       "text": "We combined analyses of neural activation during an n-back task and local grey matter volumes using Biological Parametric Mapping in 40 detoxified alcohol-dependent patients and 40 matched healthy controls (HC), and assessed prospective relapse risk during a 7-month follow-up period.",
-       "start_char": 792,
-       "end_char": 1076
-      }
-     ]
-    }
-   ]
+   "status": "not_found"
   }
  },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Observational case-control study with prospective follow-up of alcohol-dependent patients after detoxification.",
+   "value": "Observational comparison of recently detoxified alcohol-dependent patients and matched healthy controls, with prospective relapse follow-up.",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "For the first time, we investigated whether dysfunctional activation during WM performance predicts relapse in ADP when adequately correcting for individual GM loss in the respective regions.",
-        "start_char": 6060,
-        "end_char": 6251
-       }
-      ]
-     }
-    ]
+    "status": "not_found"
    }
   },
   "allocation": {
@@ -50,28 +26,18 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "Forty recently detoxified ADP and 40 HC matched by age, sex and education participated in the study (Table 1 ), which was approved by the local Ethics Committee.",
-        "start_char": 6301,
-        "end_char": 6462
-       }
-      ]
-     }
-    ]
+    "status": "not_found"
    }
   },
   "blinding": {
-   "extraction_status": "not_reported",
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
    "evidence": {
-    "status": "not_applicable"
+    "status": "not_found"
    }
   },
   "arms": [],
@@ -122,7 +88,7 @@
    },
    "prespecification": {
     "extraction_status": "extracted",
-    "value": "preregistered",
+    "value": "exploratory",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -130,8 +96,8 @@
    },
    "spatial_scope": {
     "extraction_status": "extracted",
-    "value": "whole_brain",
-    "value_source": "generated",
+    "value": "roi",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -139,16 +105,23 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The ANCOVA revealed a significant main effect for the factor group with broad effects throughout the whole brain.",
-         "start_char": 27237,
-         "end_char": 27350
+         "text": "We found severe GM atrophy in a priori defined ROI in ADP compared to HC: in left/right dlPFC-ROI (BA46 and 9), left vlPFC-ROI (BA45 and 47), left/right lateral/medial premotor cortex-ROI (BA6 and 8), and in left/right lateral/medial posterior parietal cortex-ROI (BA7 and 40)",
+         "start_char": 27351,
+         "end_char": 27627
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_grey_matter",
+   "regions": [
+    "reg_rostral_prefrontal_cortex",
+    "reg_dorsolateral_prefrontal_cort",
+    "reg_ventrolateral_prefrontal_cor",
+    "reg_lateral_medial_premotor",
+    "reg_lateral_medial_posterior"
+   ],
+   "measure": "mea_gm_volume",
    "groups": [
     {
      "group": "grp_hc",
@@ -226,19 +199,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "HC>ADP",
-            "start_char": 42156,
-            "end_char": 42162
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -261,9 +222,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "ADP>HC",
-            "start_char": 42751,
-            "end_char": 42757
+            "text": "HC>ADP",
+            "start_char": 42156,
+            "end_char": 42162
            }
           ]
          }
@@ -275,19 +236,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "ADP>HC",
-            "start_char": 42751,
-            "end_char": 42757
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -330,9 +279,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "To compare the groups, T -contrasts were computed on the resulting parameter estimates.",
-           "start_char": 18677,
-           "end_char": 18764
+           "text": "T -contrasts were computed",
+           "start_char": 18700,
+           "end_char": 18726
           }
          ]
         }
@@ -356,9 +305,9 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_vbm_ancova",
+   "model_estimation": "mod_group_ancova",
    "tables": [
-    "1967"
+    "tbl1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -371,7 +320,7 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "ADP showed severe grey matter atrophy in several a priori defined regions of interest compared with HC, including bilateral dlPFC, left vlPFC, bilateral lateral/medial premotor cortex, and bilateral lateral/medial posterior parietal cortex."
+     "The ANCOVA revealed severe grey matter atrophy in alcohol-dependent patients compared to healthy controls in the left/right dorsolateral prefrontal cortex, left ventrolateral prefrontal cortex, bilateral lateral/medial premotor cortex, and bilateral lateral/medial posterior parietal cortex."
     ],
     "value_source": "reported",
     "evidence": {
@@ -381,9 +330,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We found severe GM atrophy in a priori defined ROI in ADP compared to HC: in left/right dlPFC-ROI (BA46 and 9), left vlPFC-ROI (BA45 and 47), left/right lateral/medial premotor cortex-ROI (BA6 and 8), and in left/right lateral/medial posterior parietal cortex-ROI (BA7 and 40) (Table 4 ).",
+         "text": "We found severe GM atrophy in a priori defined ROI in ADP compared to HC: in left/right dlPFC-ROI (BA46 and 9), left vlPFC-ROI (BA45 and 47), left/right lateral/medial premotor cortex-ROI (BA6 and 8), and in left/right lateral/medial posterior parietal cortex-ROI (BA7 and 40)",
          "start_char": 27351,
-         "end_char": 27639
+         "end_char": 27627
         }
        ]
       }
@@ -401,9 +350,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MNI",
-         "start_char": 26892,
-         "end_char": 26895
+         "text": "x (MNI)",
+         "start_char": 42080,
+         "end_char": 42087
         }
        ]
       }
@@ -416,21 +365,17 @@
      "status": "not_applicable"
     }
    },
-   "regions": [
-    "reg_rostral_prefrontal_cortex",
-    "reg_dorsolateral_prefrontal_cort",
-    "reg_ventrolateral_prefrontal_cor",
-    "reg_lateral_medial_premotor",
-    "reg_lateral_medial_posterior"
+   "acquisitions": [
+    "acq_fmri",
+    "acq_smri"
    ],
+   "tasks": [
+    "tsk_nback"
+   ],
+   "inference_settings": "inf_roi_fwe",
    "assessments": [
-    "asm_structured_clinical_intervie",
-    "asm_alcohol_use_disorders",
-    "asm_obsessive_compulsive_drinkin",
-    "asm_lifetime_drinking_history",
-    "asm_spielberger_trait_anxiety",
-    "asm_beck_depression_inventory",
-    "asm_barratt_impulsiveness_scale"
+    "asm_scid",
+    "asm_oсds"
    ]
   },
   {
@@ -477,7 +422,7 @@
    },
    "prespecification": {
     "extraction_status": "extracted",
-    "value": "preregistered",
+    "value": "exploratory",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -485,8 +430,8 @@
    },
    "spatial_scope": {
     "extraction_status": "extracted",
-    "value": "whole_brain",
-    "value_source": "generated",
+    "value": "roi",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -494,19 +439,26 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The ANCOVA revealed a significant main effect for the factor group with broad effects throughout the whole brain.",
-         "start_char": 27237,
-         "end_char": 27350
+         "text": "We found severe GM atrophy in a priori defined ROI in ADP compared to HC: in left/right dlPFC-ROI (BA46 and 9), left vlPFC-ROI (BA45 and 47), left/right lateral/medial premotor cortex-ROI (BA6 and 8), and in left/right lateral/medial posterior parietal cortex-ROI (BA7 and 40)",
+         "start_char": 27351,
+         "end_char": 27627
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_grey_matter",
+   "regions": [
+    "reg_rostral_prefrontal_cortex",
+    "reg_dorsolateral_prefrontal_cort",
+    "reg_ventrolateral_prefrontal_cor",
+    "reg_lateral_medial_premotor",
+    "reg_lateral_medial_posterior"
+   ],
+   "measure": "mea_gm_volume",
    "groups": [
     {
-     "group": "grp_adp",
+     "group": "grp_hc",
      "n": {
       "extraction_status": "extracted",
       "value": 40,
@@ -529,7 +481,7 @@
      }
     },
     {
-     "group": "grp_hc",
+     "group": "grp_adp",
      "n": {
       "extraction_status": "extracted",
       "value": 40,
@@ -581,19 +533,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "ADP>HC",
-            "start_char": 42751,
-            "end_char": 42757
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -616,9 +556,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "HC>ADP",
-            "start_char": 42156,
-            "end_char": 42162
+            "text": "ADP>HC",
+            "start_char": 42751,
+            "end_char": 42757
            }
           ]
          }
@@ -630,19 +570,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "HC>ADP",
-            "start_char": 42156,
-            "end_char": 42162
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -685,9 +613,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "To compare the groups, T -contrasts were computed on the resulting parameter estimates.",
-           "start_char": 18677,
-           "end_char": 18764
+           "text": "T -contrasts were computed",
+           "start_char": 18700,
+           "end_char": 18726
           }
          ]
         }
@@ -711,9 +639,9 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_vbm_ancova",
+   "model_estimation": "mod_group_ancova",
    "tables": [
-    "1967"
+    "tbl1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -726,7 +654,7 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "No a priori region of interest showed increased grey matter in ADP compared with HC; exploratory analysis outside the predefined regions found increased grey matter only in the left cuneus (BA17)."
+     "No ROI showed increased grey matter in alcohol-dependent patients compared to healthy controls."
     ],
     "value_source": "reported",
     "evidence": {
@@ -736,9 +664,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "In contrast, we only found increased GM in ADP compared to HC in left cuneus (BA17; Supporting Information Table S1 ).",
-         "start_char": 28155,
-         "end_char": 28273
+         "text": "In contrast, no ROI showed increased GM in ADP compared to HC (Table 4 ).",
+         "start_char": 27640,
+         "end_char": 27713
         }
        ]
       }
@@ -756,9 +684,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MNI",
-         "start_char": 26892,
-         "end_char": 26895
+         "text": "x (MNI)",
+         "start_char": 42080,
+         "end_char": 42087
         }
        ]
       }
@@ -771,30 +699,27 @@
      "status": "not_applicable"
     }
    },
-   "regions": [
-    "reg_rostral_prefrontal_cortex",
-    "reg_dorsolateral_prefrontal_cort",
-    "reg_ventrolateral_prefrontal_cor",
-    "reg_lateral_medial_premotor",
-    "reg_lateral_medial_posterior"
+   "acquisitions": [
+    "acq_fmri",
+    "acq_smri"
    ],
+   "tasks": [
+    "tsk_nback"
+   ],
+   "inference_settings": "inf_roi_fwe",
    "assessments": [
-    "asm_structured_clinical_intervie",
-    "asm_alcohol_use_disorders",
-    "asm_obsessive_compulsive_drinkin",
-    "asm_lifetime_drinking_history",
-    "asm_spielberger_trait_anxiety",
-    "asm_beck_depression_inventory",
-    "asm_barratt_impulsiveness_scale"
+    "asm_scid",
+    "asm_oсds"
    ]
   }
  ],
- "groups": [
+ "acquisitions": [
   {
-   "local_id": "grp_adp",
-   "name": {
+   "local_id": "acq_fmri",
+   "acquisition_type": "MRI",
+   "modality": {
     "extraction_status": "extracted",
-    "value": "ADP",
+    "value": "fMRI",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -803,9 +728,364 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Forty recently detoxified ADP and 40 HC matched by age, sex and education participated in the study (Table 1 ), which was approved by the local Ethics Committee.",
-         "start_char": 6301,
-         "end_char": 6462
+         "text": "For the acquisition of functional images covering the whole brain",
+         "start_char": 15879,
+         "end_char": 15944
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "extracted",
+    "value": 270,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The task (with a total duration of 4:30 minutes)",
+         "start_char": 12240,
+         "end_char": 12288
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "device": "dev_verio",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "functional images covering the whole brain",
+         "start_char": 15902,
+         "end_char": 15944
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 3,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Scanning was conducted with a MAGNETOM Verio, 3T whole-body tomograph",
+         "start_char": 15779,
+         "end_char": 15848
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "gradient-echo, echo-planar imaging (EPI)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "For the acquisition of functional images covering the whole brain, gradient-echo, echo-planar imaging (EPI) of 138 volumes with the following parameters was used: repetition time (TR) = 2 seconds, echo time (TE) = 30 milliseconds, flip angle = 80°, 28 contiguous anterior commissura–posterior commissura aligned axial slices, slice thickness = 4 mm, voxel size = 3 × 3 × 4 mm, field of view (FoV) = 192, matrix = 64 × 64.",
+         "start_char": 15879,
+         "end_char": 16300
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "repetition_time_seconds": {
+    "extraction_status": "extracted",
+    "value": 2,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "repetition time (TR) = 2 seconds",
+         "start_char": 16042,
+         "end_char": 16074
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "echo_time_seconds": {
+    "extraction_status": "extracted",
+    "value": [
+     0.03
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "echo time (TE) = 30 milliseconds",
+         "start_char": 16076,
+         "end_char": 16108
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_voxel_size_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     3,
+     3,
+     4
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel size = 3 × 3 × 4 mm",
+         "start_char": 16229,
+         "end_char": 16254
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "number_of_volumes": {
+    "extraction_status": "extracted",
+    "value": 138,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "For the acquisition of functional images covering the whole brain, gradient-echo, echo-planar imaging (EPI) of 138 volumes with the following parameters was used: repetition time (TR) = 2 seconds, echo time (TE) = 30 milliseconds, flip angle = 80°, 28 contiguous anterior commissura–posterior commissura aligned axial slices, slice thickness = 4 mm, voxel size = 3 × 3 × 4 mm, field of view (FoV) = 192, matrix = 64 × 64.",
+         "start_char": 15879,
+         "end_char": 16300
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "acq_smri",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "sMRI",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "For structural analysis, a high-resolution T1-weighted anatomical image was acquired",
+         "start_char": 16302,
+         "end_char": 16386
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "device": "dev_verio",
+   "brain_coverage": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 3,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Scanning was conducted with a MAGNETOM Verio, 3T whole-body tomograph",
+         "start_char": 15779,
+         "end_char": 15848
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "three-dimensional magnetization prepared rapid gradient-echo",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "For structural analysis, a high-resolution T1-weighted anatomical image was acquired with a three-dimensional magnetization prepared rapid gradient-echo sequence: TR = 2.3 seconds, TE = 3.03 milliseconds, flip angle = 9°, slice thickness = 1 mm, voxel size = 1 × 1 × 1 mm, FoV = 256, matrix = 256 × 256.",
+         "start_char": 16302,
+         "end_char": 16605
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "repetition_time_seconds": {
+    "extraction_status": "extracted",
+    "value": 2.3,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "For structural analysis, a high-resolution T1-weighted anatomical image was acquired with a three-dimensional magnetization prepared rapid gradient-echo sequence: TR = 2.3 seconds, TE = 3.03 milliseconds, flip angle = 9°, slice thickness = 1 mm, voxel size = 1 × 1 × 1 mm, FoV = 256, matrix = 256 × 256.",
+         "start_char": 16302,
+         "end_char": 16605
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "echo_time_seconds": {
+    "extraction_status": "extracted",
+    "value": [
+     0.00303
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TE = 3.03 milliseconds",
+         "start_char": 16483,
+         "end_char": 16505
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_voxel_size_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     1,
+     1,
+     1
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel size = 1 × 1 × 1 mm",
+         "start_char": 16548,
+         "end_char": 16573
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "assessments": [
+  {
+   "local_id": "asm_scid",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Structured Clinical Interview for DSM-IV Axis I Disorders (SCID-I)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "ADP inclusion criteria were diagnosis of alcohol dependence [Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV), Structured Clinical Interview for DSM-IV Axis I Disorders (SCID-I); First et al .",
+         "start_char": 8397,
+         "end_char": 8619
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "diagnostic interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Structured Clinical Interview for DSM-IV Axis I Disorders",
+         "start_char": 8538,
+         "end_char": 8595
         }
        ]
       }
@@ -814,59 +1094,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Recently detoxified alcohol-dependent patients recruited during inpatient alcohol withdrawal treatment.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ADP were recruited during inpatient alcohol withdrawal treatment at the Charité—Universitätsmedizin Berlin, Germany",
-         "start_char": 6611,
-         "end_char": 6726
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
-         "start_char": 6463,
-         "end_char": 6610
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 40,
+    "value": "Structured Clinical Interview for DSM-IV Axis I Disorders used to establish alcohol dependence in alcohol-dependent patients and to screen healthy controls and patients for Axis-I psychiatric disorders and comorbidities.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -875,322 +1103,348 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Forty recently detoxified ADP and 40 HC matched by age, sex and education participated in the study (Table 1 ), which was approved by the local Ethics Committee.",
-         "start_char": 6301,
-         "end_char": 6462
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 40,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Forty recently detoxified ADP and 40 HC matched by age, sex and education participated in the study (Table 1 ), which was approved by the local Ethics Committee.",
-         "start_char": 6301,
-         "end_char": 6462
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "diagnosis of alcohol dependence",
-     "completion of medically supervised detoxification"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ADP inclusion criteria were diagnosis of alcohol dependence [Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV), Structured Clinical Interview for DSM-IV Axis I Disorders (SCID-I); First et al . 2001 ] and completion of medically supervised detoxification.",
+         "text": "ADP inclusion criteria were diagnosis of alcohol dependence [Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV), Structured Clinical Interview for DSM-IV Axis I Disorders (SCID-I); First et al . 2001 ]",
          "start_char": 8397,
-         "end_char": 8681
+         "end_char": 8626
         }
        ]
       }
      ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Axis-I disorders according to DSM-IV except for alcohol and nicotine abuse/dependence",
-     "positive urine screening for opiates, cannabinoids, benzodiazepines, barbiturates, cocaine or amphetamines",
-     "current use of psychotropic/anticonvulsive medication",
-     "claustrophobia",
-     "epilepsy",
-     "other neurological or severe medical illnesses",
-     "pregnancy"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Exclusion criteria for all participants were Axis-I disorders according to DSM-IV (SCID; First et al . 2001 ) (in ADP except for alcohol and nicotine abuse/dependence, in HC except for nicotine abuse/dependence), positive urine screening for opiates, cannabinoids, benzodiazepines, barbiturates, cocaine or amphetamines, current use of psychotropic/anticonvulsive medication in ADP, claustrophobia, epilepsy, other neurological or severe medical illnesses, and pregnancy.",
-         "start_char": 9304,
-         "end_char": 9775
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Inpatient alcohol withdrawal treatment",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "ADP were recruited during inpatient alcohol withdrawal treatment at the Charité—Universitätsmedizin Berlin, Germany, as part of the National Genome Research Network (NGFN-Plus; Spanagel et al .",
-         "start_char": 6611,
-         "end_char": 6804
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "extracted",
-    "value": 18,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
-         "start_char": 6463,
-         "end_char": 6610
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "extracted",
-    "value": 65,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
-         "start_char": 6463,
-         "end_char": 6610
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
-         "start_char": 6463,
-         "end_char": 6610
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Forty recently detoxified ADP and 40 HC matched by age, sex and education participated in the study (Table 1 ), which was approved by the local Ethics Committee.",
-         "start_char": 6301,
-         "end_char": 6462
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "alcohol dependence",
-     "nicotine abuse/dependence"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ADP inclusion criteria were diagnosis of alcohol dependence [Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV), Structured Clinical Interview for DSM-IV Axis I Disorders (SCID-I); First et al . 2001 ] and completion of medically supervised detoxification.",
-         "start_char": 8397,
-         "end_char": 8681
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "DSM-IV",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ADP inclusion criteria were diagnosis of alcohol dependence [Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV), Structured Clinical Interview for DSM-IV Axis I Disorders (SCID-I); First et al . 2001 ] and completion of medically supervised detoxification.",
-         "start_char": 8397,
-         "end_char": 8681
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_scid_i",
-    "asm_structured_clinical_intervie"
-   ],
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Recently detoxified; detoxified for 4 to 25 days before MRI.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ADP were detoxified for 4 to 25 days before MRI.",
-         "start_char": 8682,
-         "end_char": 8730
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "extracted",
-    "value": "Current use of psychotropic/anticonvulsive medication was an exclusion criterion.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Exclusion criteria for all participants were Axis-I disorders according to DSM-IV (SCID; First et al . 2001 ) (in ADP except for alcohol and nicotine abuse/dependence, in HC except for nicotine abuse/dependence), positive urine screening for opiates, cannabinoids, benzodiazepines, barbiturates, cocaine or amphetamines, current use of psychotropic/anticonvulsive medication in ADP, claustrophobia, epilepsy, other neurological or severe medical illnesses, and pregnancy.",
-         "start_char": 9304,
-         "end_char": 9775
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    }
   },
+  {
+   "local_id": "asm_oсds",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Obsessive Compulsive Drinking Scale",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Obsessive Compulsive Drinking Scale",
+         "start_char": 8156,
+         "end_char": 8191
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Severity of alcohol craving was assessed using the Obsessive Compulsive Drinking Scale",
+         "start_char": 8731,
+         "end_char": 8817
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Obsessive Compulsive Drinking Scale used to assess the severity of alcohol craving in alcohol-dependent patients.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Severity of alcohol craving was assessed using the Obsessive Compulsive Drinking Scale",
+         "start_char": 8731,
+         "end_char": 8817
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_lifetime_drinking_history",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Lifetime Drinking History",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Lifetime Drinking History",
+         "start_char": 7422,
+         "end_char": 7447
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessment of lifetime alcohol intake.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_alcohol_use_disorders",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Alcohol Use Disorders Identification Test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Alcohol Use Disorders Identification Test",
+         "start_char": 7307,
+         "end_char": 7348
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessment used to assure that healthy controls did not suffer from alcohol abuse or dependence during the past 12 months.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_spielberger_trait_anxiety",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Spielberger Trait Anxiety Inventory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessment of trait anxiety severity.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_beck_depression_inventory",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Beck Depression Inventory",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Beck Depression Inventory",
+         "start_char": 7356,
+         "end_char": 7381
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessment of depression severity.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_barratt_impulsiveness_scale",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Barratt Impulsiveness Scale",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Barratt Impulsiveness Scale",
+         "start_char": 9978,
+         "end_char": 10005
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessment of trait impulsivity.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_alcohol_timeline_follow",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Alcohol Timeline Follow-back",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Alcohol Timeline Follow-back",
+         "start_char": 11170,
+         "end_char": 11198
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessment of days of abstinence, heavy drinking days, and cumulative alcohol intake during the approximately 7-month follow-up period.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ],
+ "devices": [
+  {
+   "local_id": "dev_verio",
+   "manufacturer": {
+    "extraction_status": "extracted",
+    "value": "Siemens",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Scanning was conducted with a MAGNETOM Verio, 3T whole-body tomograph (Siemens, Erlangen, Germany).",
+         "start_char": 15779,
+         "end_char": 15878
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model": {
+    "extraction_status": "extracted",
+    "value": "MAGNETOM Verio",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Scanning was conducted with a MAGNETOM Verio, 3T whole-body tomograph (Siemens, Erlangen, Germany).",
+         "start_char": 15779,
+         "end_char": 15878
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "groups": [
   {
    "local_id": "grp_hc",
    "name": {
@@ -1213,26 +1467,6 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Matched healthy controls with no history of psychiatric disorders and no alcohol abuse or dependence in the past 12 months.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "HC had no history of psychiatric disorders (SCID; First et al . 2001 ).",
-         "start_char": 9068,
-         "end_char": 9139
-        }
-       ]
-      }
-     ]
-    }
-   },
    "species": {
     "extraction_status": "extracted",
     "value": "human",
@@ -1244,9 +1478,185 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
+         "text": "All subjects were aged between 18 and 65 years",
          "start_char": 6463,
-         "end_char": 6610
+         "end_char": 6509
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Healthy controls matched by age, sex and education.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Forty recently detoxified ADP and 40 HC matched by age, sex and education participated in the study",
+         "start_char": 6301,
+         "end_char": 6400
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 40,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "40 HC",
+         "start_char": 6335,
+         "end_char": 6340
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "no history of psychiatric disorders"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "HC had no history of psychiatric disorders",
+         "start_char": 9068,
+         "end_char": 9110
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_scid",
+    "asm_alcohol_use_disorders"
+   ],
+   "handedness_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "right-handed",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
+           "start_char": 6463,
+           "end_char": 6610
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory",
+           "start_char": 6463,
+           "end_char": 6575
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 40,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "40 HC",
+           "start_char": 6335,
+           "end_char": 6340
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "extracted",
+      "value": "Edinburgh Handedness Inventory",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
+           "start_char": 6463,
+           "end_char": 6610
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "ADP were recruited during inpatient alcohol withdrawal treatment at the Charité—Universitätsmedizin Berlin, Germany, as part of the National Genome Research Network (NGFN-Plus; Spanagel et al .",
+         "start_char": 6611,
+         "end_char": 6804
         }
        ]
       }
@@ -1276,29 +1686,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Forty recently detoxified ADP and 40 HC matched by age, sex and education participated in the study (Table 1 ), which was approved by the local Ethics Committee.",
-         "start_char": 6301,
-         "end_char": 6462
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 40,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Forty recently detoxified ADP and 40 HC matched by age, sex and education participated in the study (Table 1 ), which was approved by the local Ethics Committee.",
-         "start_char": 6301,
-         "end_char": 6462
+         "text": "40 HC",
+         "start_char": 6335,
+         "end_char": 6340
         }
        ]
       }
@@ -1314,25 +1704,10 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "No history of psychiatric disorders",
-     "No alcohol abuse or dependence in the past 12 months"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "history of psychiatric disorders",
-     "alcohol abuse/dependence in the past 12 months",
-     "Axis-I disorders according to DSM-IV except for nicotine abuse/dependence",
-     "positive urine screening for opiates, cannabinoids, benzodiazepines, barbiturates, cocaine or amphetamines",
-     "claustrophobia",
-     "epilepsy",
-     "other neurological or severe medical illnesses",
-     "pregnancy"
+     "No history of psychiatric disorders according to SCID",
+     "No alcohol abuse or dependence in the past 12 months according to AUDIT",
+     "Age 18–65 years",
+     "Right-handed according to the Edinburgh Handedness Inventory"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1342,9 +1717,36 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "HC had no history of psychiatric disorders (SCID; First et al . 2001 ). The Alcohol Use Disorders Identification Test assured that HC did not suffer from alcohol abuse/dependence in the past 12 months (Babor et al . 2001 ) (Table 1 ).",
+         "text": "HC had no history of psychiatric disorders (SCID; First et al . 2001 ). The Alcohol Use Disorders Identification Test assured that HC did not suffer from alcohol abuse/dependence in the past 12 months",
          "start_char": 9068,
-         "end_char": 9302
+         "end_char": 9268
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Axis-I disorders according to DSM-IV/SCID",
+     "Positive urine screening for opiates, cannabinoids, benzodiazepines, barbiturates, cocaine or amphetamines",
+     "Claustrophobia",
+     "Epilepsy",
+     "Other neurological or severe medical illnesses",
+     "Pregnancy"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusion criteria for all participants were Axis-I disorders according to DSM-IV (SCID; First et al . 2001 )",
+         "start_char": 9304,
+         "end_char": 9413
         }
        ]
       }
@@ -1357,14 +1759,22 @@
      "status": "not_applicable"
     }
    },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "age_mean": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_standard_deviation": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -1380,9 +1790,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
+         "text": "All subjects were aged between 18 and 65 years",
          "start_char": 6463,
-         "end_char": 6610
+         "end_char": 6509
         }
        ]
       }
@@ -1411,6 +1821,7 @@
    },
    "age_median": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -1426,40 +1837,19 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
-         "start_char": 6463,
-         "end_char": 6610
+         "text": "years",
+         "start_char": 4604,
+         "end_char": 4609
         }
        ]
       }
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Forty recently detoxified ADP and 40 HC matched by age, sex and education participated in the study (Table 1 ), which was approved by the local Ethics Committee.",
-         "start_char": 6301,
-         "end_char": 6462
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "no psychiatric disorders",
-     "no alcohol abuse/dependence in the past 12 months"
+     "Some participants smoked; 15 of 40 healthy controls smoked"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1469,9 +1859,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "HC had no history of psychiatric disorders (SCID; First et al . 2001 ). The Alcohol Use Disorders Identification Test assured that HC did not suffer from alcohol abuse/dependence in the past 12 months (Babor et al . 2001 ) (Table 1 ).",
-         "start_char": 9068,
-         "end_char": 9302
+         "text": "significantly more ADP versus HC smoked (smoking status: 32 of 40 ADP, 15 of 40 HC",
+         "start_char": 10426,
+         "end_char": 10508
         }
        ]
       }
@@ -1481,21 +1871,41 @@
    "diagnostic_system": {
     "extraction_status": "extracted",
     "value": "DSM-IV",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Axis-I disorders according to DSM-IV",
+         "start_char": 9349,
+         "end_char": 9385
+        }
+       ]
+      }
+     ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_scid_i",
-    "asm_audit",
-    "asm_structured_clinical_intervie",
-    "asm_alcohol_use_disorders"
-   ],
    "clinical_characteristics": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "No history of psychiatric disorders; no alcohol abuse or dependence in the past 12 months",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "HC had no history of psychiatric disorders",
+         "start_char": 9068,
+         "end_char": 9110
+        }
+       ]
+      }
+     ]
     }
    },
    "medications": {
@@ -1510,16 +1920,24 @@
      "status": "not_applicable"
     }
    },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "education_summary": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Groups were matched by education; aggregate education level was not reported",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "40 HC matched by age, sex and education",
+         "start_char": 6335,
+         "end_char": 6374
+        }
+       ]
+      }
+     ]
     }
    },
    "socioeconomic_status_summary": {
@@ -1527,12 +1945,896 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "healthy controls",
+         "start_char": 981,
+         "end_char": 997
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "grp_adp",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "ADP",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ADP",
+         "start_char": 3028,
+         "end_char": 3031
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were aged between 18 and 65 years",
+         "start_char": 6463,
+         "end_char": 6509
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Recently detoxified alcohol-dependent patients.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Forty recently detoxified ADP",
+         "start_char": 6301,
+         "end_char": 6330
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 40,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Alcohol dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "diagnosis of alcohol dependence",
+         "start_char": 8425,
+         "end_char": 8456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "ADP inclusion criteria were diagnosis of alcohol dependence [Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV), Structured Clinical Interview for DSM-IV Axis I Disorders (SCID-I); First et al .",
+         "start_char": 8397,
+         "end_char": 8619
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_scid"
+   ],
+   "handedness_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "right-handed",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
+           "start_char": 6463,
+           "end_char": 6610
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory",
+           "start_char": 6463,
+           "end_char": 6575
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 40,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "extracted",
+      "value": "Edinburgh Handedness Inventory",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
+           "start_char": 6463,
+           "end_char": 6610
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "ADP were recruited during inpatient alcohol withdrawal treatment at the Charité—Universitätsmedizin Berlin, Germany, as part of the National Genome Research Network (NGFN-Plus; Spanagel et al .",
+         "start_char": 6611,
+         "end_char": 6804
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 40,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Diagnosis of alcohol dependence according to DSM-IV and SCID-I",
+     "Completion of medically supervised detoxification",
+     "Age 18–65 years",
+     "Right-handed according to the Edinburgh Handedness Inventory"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ADP inclusion criteria were diagnosis of alcohol dependence",
+         "start_char": 8397,
+         "end_char": 8456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Axis-I disorders other than alcohol and nicotine abuse/dependence according to DSM-IV/SCID",
+     "Positive urine screening for opiates, cannabinoids, benzodiazepines, barbiturates, cocaine or amphetamines",
+     "Current use of psychotropic or anticonvulsive medication",
+     "Claustrophobia",
+     "Epilepsy",
+     "Other neurological or severe medical illnesses",
+     "Pregnancy"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "in ADP except for alcohol and nicotine abuse/dependence",
+         "start_char": 9415,
+         "end_char": 9470
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Recruited during inpatient alcohol withdrawal treatment at the Charité—Universitätsmedizin Berlin, Germany.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "ADP were recruited during inpatient alcohol withdrawal treatment at the Charité—Universitätsmedizin Berlin, Germany, as part of the National Genome Research Network (NGFN-Plus; Spanagel et al .",
+         "start_char": 6611,
+         "end_char": 6804
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "extracted",
+    "value": 18,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were aged between 18 and 65 years",
+         "start_char": 6463,
+         "end_char": 6509
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "extracted",
+    "value": 65,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All subjects were aged between 18 and 65 years and were right-handed according to Edinburgh Handedness Inventory (Oldfield 1971 ; Tables 1 and 2 ).",
+         "start_char": 6463,
+         "end_char": 6610
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "years",
+         "start_char": 4604,
+         "end_char": 4609
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Recently detoxified alcohol-dependent patients",
+     "32 of 40 smoked"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "significantly more ADP versus HC smoked (smoking status: 32 of 40 ADP",
+         "start_char": 10426,
+         "end_char": 10495
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Alcohol dependence; detoxified for 4 to 25 days before MRI; 21 subsequently abstained and 19 relapsed during approximately 7 months of follow-up",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ADP were detoxified for 4 to 25 days before MRI",
+         "start_char": 8682,
+         "end_char": 8729
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "extracted",
+    "value": "No current use of psychotropic or anticonvulsive medication",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "current use of psychotropic/anticonvulsive medication in ADP",
+         "start_char": 9625,
+         "end_char": 9685
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "Groups were matched by education; aggregate education level was not reported",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "40 HC matched by age, sex and education",
+         "start_char": 6335,
+         "end_char": 6374
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "National Genome Research Network (NGFN-Plus; Spanagel et al. 2010)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "as part of the National Genome Research Network (NGFN-Plus; Spanagel et al . 2010 )",
+         "start_char": 6728,
+         "end_char": 6811
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "alcohol-dependent patients",
+         "start_char": 357,
+         "end_char": 383
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "grp_abs",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "ABS",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Prospective total abstainers within the alcohol-dependent patient group who did not consume alcohol after initial detoxification.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 21,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 21,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Alcohol dependence"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "grp_rel",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "REL",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Prospective relapsers within the alcohol-dependent patient group who consumed alcohol during the follow-up period.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 19,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 19,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Alcohol dependence"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
    }
   }
  ],
+ "inference_settings": [
+  {
+   "local_id": "inf_roi_fwe",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "ROI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "P < 0.05",
+         "start_char": 7173,
+         "end_char": 7181
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "extracted",
+    "value": "P",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "P < 0.05",
+         "start_char": 7173,
+         "end_char": 7181
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "family wise-error corrected",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "To test for group differences in these a priori defined regions and to correct for multiple comparisons, a small-volume correction with a significance level set at P < 0.05 (family wise-error corrected) was used for all analyses (Tables 4 and 5 ).",
+         "start_char": 23402,
+         "end_char": 23649
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "for a priori regions of interest",
+         "start_char": 21221,
+         "end_char": 21253
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a significance level set at P < 0.05",
+         "start_char": 23538,
+         "end_char": 23574
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "search_volume": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "extracted",
+    "value": 5,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Five a priori ROI",
+         "start_char": 22986,
+         "end_char": 23003
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "correction_regions": [
+    "reg_rostral_prefrontal_cortex",
+    "reg_dorsolateral_prefrontal_cort",
+    "reg_ventrolateral_prefrontal_cor",
+    "reg_lateral_medial_premotor",
+    "reg_lateral_medial_posterior"
+   ]
+  }
+ ],
+ "language": [
+  "eng"
+ ],
  "measures": [
   {
-   "local_id": "mea_grey_matter",
+   "local_id": "mea_gm_volume",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
@@ -1544,9 +2846,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Because we focused on volumetric differences instead of tissue concentration, images were modulated, i.e. scaled by the degree of distortion applied in the spatial normalization in order to retain the total amount of GM (Ashburner & Friston 2000 ).",
-         "start_char": 17774,
-         "end_char": 18022
+         "text": "Structural data from VBM",
+         "start_char": 27211,
+         "end_char": 27235
         }
        ]
       }
@@ -1564,9 +2866,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Because we focused on volumetric differences instead of tissue concentration, images were modulated, i.e. scaled by the degree of distortion applied in the spatial normalization in order to retain the total amount of GM (Ashburner & Friston 2000 ).",
-         "start_char": 17774,
-         "end_char": 18022
+         "text": "grey matter volumes",
+         "start_char": 866,
+         "end_char": 885
         }
        ]
       }
@@ -1575,7 +2877,27 @@
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "GM",
+    "value": "grey matter volumes",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "We combined analyses of neural activation during an n-back task and local grey matter volumes using Biological Parametric Mapping in 40 detoxified alcohol-dependent patients and 40 matched healthy controls (HC), and assessed prospective relapse risk during a 7-month follow-up period.",
+         "start_char": 792,
+         "end_char": 1076
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Gray-matter volume",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1584,19 +2906,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We found severe GM atrophy in a priori defined ROI in ADP compared to HC",
-         "start_char": 27351,
-         "end_char": 27423
+         "text": "absolute amount of grey matter tissue",
+         "start_char": 18237,
+         "end_char": 18274
         }
        ]
       }
      ]
-    }
-   },
-   "specific_metric": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "unit": {
@@ -1609,11 +2925,11 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_vbm_ancova",
+   "local_id": "mod_group_ancova",
    "model_family": {
     "extraction_status": "extracted",
     "value": "ancova",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1621,9 +2937,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For testing whether ADP differ from HC in structural GM, a one-way ANCOVA was conducted for the smoothed GM segments with the between-subject factor group (ADP, HC).",
-         "start_char": 18511,
-         "end_char": 18676
+         "text": "ANCOVA",
+         "start_char": 14335,
+         "end_char": 14341
         }
        ]
       }
@@ -1632,7 +2948,7 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "one-way ANCOVA for smoothed GM segments",
+    "value": "one-way ANCOVA",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1641,35 +2957,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For testing whether ADP differ from HC in structural GM, a one-way ANCOVA was conducted for the smoothed GM segments with the between-subject factor group (ADP, HC).",
-         "start_char": 18511,
-         "end_char": 18676
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "Covaried for individual age, pack years, BIS sum score, BDI sum score and STAI-T sum score.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "To account for differences in smoking behavior and other clinical variables (impulsivity, depressive symptoms and anxiety; see Table 1 ) between ADP and HC, we included the individual pack years as an indicator for nicotine consumption, which could influence functional and structural data (Gallinat et al . 2006 ; Durazzo, Gazdzinski & Meyerhoff 2007 ), as well as the individual age, BIS sum score, BDI sum score and STAI-T sum score in all imaging analyses (VBM, SPM and BPM).",
-         "start_char": 22014,
-         "end_char": 22493
+         "text": "a one-way ANCOVA",
+         "start_char": 18568,
+         "end_char": 18584
         }
        ]
       }
@@ -1687,35 +2977,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For testing whether ADP differ from HC in structural GM, a one-way ANCOVA was conducted for the smoothed GM segments with the between-subject factor group (ADP, HC).",
-         "start_char": 18511,
-         "end_char": 18676
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "SPM8; MatlabR2007a",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Structural data preprocessing and analyses were performed with Statistical Parametric Mapping (SPM8; Wellcome Department of Cognitive Neurology, London, UK) using MatlabR2007a (MathWorks, Natick, MA, USA).",
-         "start_char": 16880,
-         "end_char": 17085
+         "text": "To compare the groups",
+         "start_char": 18677,
+         "end_char": 18698
         }
        ]
       }
@@ -1733,17 +2997,15 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For testing whether ADP differ from HC in structural GM, a one-way ANCOVA was conducted for the smoothed GM segments with the between-subject factor group (ADP, HC).",
-         "start_char": 18511,
-         "end_char": 18676
+         "text": "voxel-wise covariate",
+         "start_char": 20884,
+         "end_char": 20904
         }
        ]
       }
      ]
     }
    },
-   "preprocessing": [],
-   "inputs_from": [],
    "terms": [
     {
      "local_id": "trm_group",
@@ -1758,9 +3020,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "with the between-subject factor group (ADP, HC)",
-           "start_char": 18628,
-           "end_char": 18675
+           "text": "factor group",
+           "start_char": 14495,
+           "end_char": 14507
           }
          ]
         }
@@ -1770,9 +3032,29 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "between-subject factor group",
+           "start_char": 14881,
+           "end_char": 14909
+          }
+         ]
+        }
+       ]
       }
      },
      "levels": [
@@ -1788,9 +3070,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "with the between-subject factor group (ADP, HC)",
-             "start_char": 18628,
-             "end_char": 18675
+             "text": "ADP",
+             "start_char": 3028,
+             "end_char": 3031
             }
            ]
           }
@@ -1811,9 +3093,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "with the between-subject factor group (ADP, HC)",
-             "start_char": 18628,
-             "end_char": 18675
+             "text": "ADP, HC",
+             "start_char": 18667,
+             "end_char": 18674
             }
            ]
           }
@@ -1827,7 +3109,19 @@
         "value": "HC",
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "HC",
+             "start_char": 999,
+             "end_char": 1001
+            }
+           ]
+          }
+         ]
         }
        },
        "groups": [
@@ -1844,9 +3138,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "with the between-subject factor group (ADP, HC)",
-             "start_char": 18628,
-             "end_char": 18675
+             "text": "ADP, HC",
+             "start_char": 18667,
+             "end_char": 18674
             }
            ]
           }
@@ -1855,10 +3149,36 @@
        }
       }
      ],
-     "variation_level": {
+     "functional_form": {
       "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "one-way ANCOVA",
+           "start_char": 18570,
+           "end_char": 18584
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Between-subject factor group, comprising alcohol-dependent patients and healthy controls.",
+      "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
@@ -1874,37 +3194,535 @@
         }
        ]
       }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "One-way ANCOVA with group as the between-subject factor; analyses were covaried for age, pack years, BIS, BDI and STAI-T scores.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a one-way ANCOVA was conducted for the smoothed GM segments with the between-subject factor group (ADP, HC)",
+         "start_char": 18568,
+         "end_char": 18675
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM8; Matlab R2007a",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Statistical Parametric Mapping (SPM8; Wellcome Department of Cognitive Neurology, London, UK) using MatlabR2007a",
+         "start_char": 16943,
+         "end_char": 17055
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_vbm"
+   ]
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_vbm",
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "SPM8",
+     "Matlab R2007a",
+     "VBM8 toolbox"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "segmentation",
+     "bias correction",
+     "spatial normalization (DARTEL)",
+     "smoothing"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "data segmentation, bias correction, spatial normalization (DARTEL) and smoothing",
+         "start_char": 17563,
+         "end_char": 17643
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     8
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "smoothing with an 8 mm full width at half maximum (FWHM) Gaussian kernel",
+         "start_char": 17634,
+         "end_char": 17706
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "T1-weighted anatomical images were visually checked, reoriented to the anterior-posterior commissure line, segmented with the VBM8 toolbox, bias-corrected, spatially normalized using DARTEL, modulated to preserve total gray-matter amount, and smoothed with an 8 mm FWHM Gaussian kernel for voxel-based morphometry.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We followed the recommendations of Gaser's research group (Kurth, Luders & Gaser 2010 ) for data segmentation, bias correction, spatial normalization (DARTEL) and smoothing with an 8 mm full width at half maximum (FWHM) Gaussian kernel",
+         "start_char": 17471,
+         "end_char": 17706
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, Non-U.S. Gov't"
+ ],
+ "tasks": [
+  {
+   "local_id": "tsk_nback",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "n-back",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "n-back",
+         "start_char": 844,
+         "end_char": 850
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Block-designed visuospatial working-memory paradigm with 0-back and 2-back conditions.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects underwent the block-designed fMRI ‘ n-back ’ paradigm",
+         "start_char": 12070,
+         "end_char": 12132
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "conditions": [
+    {
+     "local_id": "cond_0back",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "0-back",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "0-back",
+           "start_char": 1200,
+           "end_char": 1206
+          }
+         ]
+        }
+       ]
       }
      },
-     "interaction_with": [],
-     "unit": {
-      "extraction_status": "not_reported",
+     "condition_kind": {
+      "extraction_status": "extracted",
+      "value": "control_state",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "0-back control condition",
+           "start_char": 12658,
+           "end_char": 12682
+          }
+         ]
+        }
+       ]
       }
      },
-     "source_definition": {
-      "extraction_status": "not_reported",
+     "stimulus_content": {
+      "extraction_status": "extracted",
+      "value": [
+       "Numbers 1–4"
+      ],
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The stimuli consist of numbers (1–4)",
+           "start_char": 12418,
+           "end_char": 12454
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "description": {
+      "extraction_status": "extracted",
+      "value": "Low-load control condition in which participants continuously pressed the button corresponding to the number currently displayed.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     }
+    },
+    {
+     "local_id": "cond_2back",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "2-back",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "2-back",
+           "start_char": 1193,
+           "end_char": 1199
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "condition_kind": {
+      "extraction_status": "extracted",
+      "value": "task_state",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "high cognitive load condition",
+           "start_char": 12198,
+           "end_char": 12227
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "stimulus_content": {
+      "extraction_status": "extracted",
+      "value": [
+       "Numbers 1–4"
+      ],
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The stimuli consist of numbers (1–4)",
+           "start_char": 12418,
+           "end_char": 12454
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "description": {
+      "extraction_status": "extracted",
+      "value": "High cognitive working-memory-load condition in which participants encoded the currently displayed numbers and continuously pressed the button corresponding to the number seen two stimuli previously.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "the 2-back condition required the recollection of a stimulus seen two stimuli before while continuing to encode additional incoming stimuli",
+           "start_char": 12878,
+           "end_char": 13017
+          }
+         ]
+        }
+       ]
       }
      }
     }
-   ]
+   ],
+   "design_type": {
+    "extraction_status": "extracted",
+    "value": "block",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "block-designed",
+         "start_char": 12093,
+         "end_char": 12107
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisitions": [
+    "acq_fmri"
+   ],
+   "presentation_software": {
+    "extraction_status": "extracted",
+    "value": "Presentation software (Neurobehavioral Systems, Inc.)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Task presentation was performed using Presentation software",
+         "start_char": 16607,
+         "end_char": 16666
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stimuli": {
+    "extraction_status": "extracted",
+    "value": [
+     "numbers (1–4)"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The stimuli consist of numbers (1–4)",
+         "start_char": 12418,
+         "end_char": 12454
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stimulus_modality": {
+    "extraction_status": "extracted",
+    "value": [
+     "visual"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "visuospatial WM task",
+         "start_char": 4559,
+         "end_char": 4579
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "response_modality": {
+    "extraction_status": "extracted",
+    "value": [
+     "button_press"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "press the corresponding button",
+         "start_char": 12700,
+         "end_char": 12730
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "instructions": {
+    "extraction_status": "extracted",
+    "value": "In the 0-back condition, press the button corresponding to the currently displayed stimulus. In the 2-back condition, press the button corresponding to the stimulus seen two stimuli previously while continuing to encode incoming stimuli.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "references": {
+    "extraction_status": "extracted",
+    "value": [
+     "Callicott et al. (1999)"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Callicott et al . 1999",
+         "start_char": 3634,
+         "end_char": 3656
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "performance_measures": {
+    "extraction_status": "extracted",
+    "value": [
+     "Hit rates",
+     "Incorrect rates",
+     "Miss rates",
+     "Mean response times of hits",
+     "Performance decrement from 0-back to 2-back"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "hit rates, incorrect rates, miss rates and mean response times of hits",
+         "start_char": 14060,
+         "end_char": 14130
+        }
+       ]
+      }
+     ]
+    }
+   }
   }
  ],
  "tables": [
   {
-   "local_id": "1967",
+   "local_id": "tbl1",
    "table_number": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "1",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "caption": {
@@ -1934,7 +3752,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "0c546853411cc6da5a64426d2690b29701598128d24b7efceda9652932238c8c",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2154,368 +3972,12 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "assessments": [
-  {
-   "local_id": "asm_structured_clinical_intervie",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Structured Clinical Interview for DSM-IV Axis I Disorders",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Structured Clinical Interview for DSM-IV Axis I Disorders",
-         "start_char": 8538,
-         "end_char": 8595
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Structured Clinical Interview for DSM-IV Axis I Disorders used to establish alcohol dependence in ADP and assess psychiatric disorders in HC and exclusionary Axis-I disorders.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "diagnostic interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_alcohol_use_disorders",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Alcohol Use Disorders Identification Test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Alcohol Use Disorders Identification Test",
-         "start_char": 7307,
-         "end_char": 7348
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment used to ensure that healthy controls did not suffer from alcohol abuse or dependence in the past 12 months.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "alcohol use screening",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_obsessive_compulsive_drinkin",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Obsessive Compulsive Drinking Scale",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Obsessive Compulsive Drinking Scale",
-         "start_char": 8156,
-         "end_char": 8191
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of alcohol craving severity.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_lifetime_drinking_history",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Lifetime Drinking History",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Lifetime Drinking History",
-         "start_char": 7422,
-         "end_char": 7447
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of lifetime alcohol intake.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "alcohol use assessment",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_spielberger_trait_anxiety",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Spielberger Trait Anxiety Inventory",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of trait anxiety.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_beck_depression_inventory",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Beck Depression Inventory",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Beck Depression Inventory",
-         "start_char": 7356,
-         "end_char": 7381
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of depressive symptoms.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_barratt_impulsiveness_scale",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Barratt Impulsiveness Scale",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Barratt Impulsiveness Scale",
-         "start_char": 9978,
-         "end_char": 10005
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of trait impulsivity.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
- "tasks": [
-  {
-   "local_id": "tsk_n_back_working",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "n-back working memory paradigm",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "n-back working memory paradigm",
-         "start_char": 13330,
-         "end_char": 13360
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Block-designed fMRI n-back paradigm testing working memory under low-load 0-back and high-load 2-back conditions.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "design_type": {
-    "extraction_status": "extracted",
-    "value": "block design",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "presentation_software": {
-    "extraction_status": "extracted",
-    "value": "Presentation software",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Presentation software",
-         "start_char": 16645,
-         "end_char": 16666
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stimuli": {
-    "extraction_status": "extracted",
-    "value": "Numbers 1–4 presented in a random sequence at positions in a diamond-shaped box.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "response_mode": {
-    "extraction_status": "extracted",
-    "value": [
-     "button_press"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "performance_measures": {
-    "extraction_status": "extracted",
-    "value": [
-     "Hit rates",
-     "Incorrect rates",
-     "Miss rates",
-     "Mean response times",
-     "Performance decrement"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
  "regions": [
   {
    "local_id": "reg_rostral_prefrontal_cortex",
    "name": {
     "extraction_status": "extracted",
-    "value": "rostral prefrontal cortex",
+    "value": "Rostral prefrontal cortex",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2535,7 +3997,10 @@
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "prior_literature",
+    "value": [
+     "anatomical_a_priori",
+     "atlas"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2543,7 +4008,10 @@
    },
    "region_type": {
     "extraction_status": "extracted",
-    "value": "anatomical",
+    "value": [
+     "anatomical",
+     "atlas_parcel"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2559,7 +4027,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Brodmann area 10, bilateral.",
+    "value": "A priori bilateral rostral prefrontal cortex region of interest, Brodmann area 10.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2570,7 +4038,7 @@
    "local_id": "reg_dorsolateral_prefrontal_cort",
    "name": {
     "extraction_status": "extracted",
-    "value": "dorsolateral prefrontal cortex",
+    "value": "Dorsolateral prefrontal cortex",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2590,7 +4058,10 @@
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "prior_literature",
+    "value": [
+     "anatomical_a_priori",
+     "atlas"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2598,7 +4069,10 @@
    },
    "region_type": {
     "extraction_status": "extracted",
-    "value": "anatomical",
+    "value": [
+     "anatomical",
+     "atlas_parcel"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2614,7 +4088,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Brodmann areas 46 and 9, bilateral.",
+    "value": "A priori bilateral dorsolateral prefrontal cortex region of interest, Brodmann areas 46 and 9.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2625,7 +4099,7 @@
    "local_id": "reg_ventrolateral_prefrontal_cor",
    "name": {
     "extraction_status": "extracted",
-    "value": "ventrolateral prefrontal cortex",
+    "value": "Ventrolateral prefrontal cortex",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2645,7 +4119,10 @@
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "prior_literature",
+    "value": [
+     "anatomical_a_priori",
+     "atlas"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2653,7 +4130,10 @@
    },
    "region_type": {
     "extraction_status": "extracted",
-    "value": "anatomical",
+    "value": [
+     "anatomical",
+     "atlas_parcel"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2669,7 +4149,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Brodmann areas 45 and 47, bilateral.",
+    "value": "A priori bilateral ventrolateral prefrontal cortex region of interest, Brodmann areas 45 and 47.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2680,7 +4160,7 @@
    "local_id": "reg_lateral_medial_premotor",
    "name": {
     "extraction_status": "extracted",
-    "value": "lateral/medial premotor cortex",
+    "value": "Lateral/medial premotor cortex",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2689,9 +4169,9 @@
        "source": "repair_pass",
        "spans": [
         {
-         "text": "lateral/medial premotor cortex",
-         "start_char": 1381,
-         "end_char": 1411
+         "text": "Lateral/medial premotor cortex",
+         "start_char": 42468,
+         "end_char": 42498
         }
        ]
       }
@@ -2700,7 +4180,10 @@
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "prior_literature",
+    "value": [
+     "anatomical_a_priori",
+     "atlas"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2708,7 +4191,10 @@
    },
    "region_type": {
     "extraction_status": "extracted",
-    "value": "anatomical",
+    "value": [
+     "anatomical",
+     "atlas_parcel"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2724,7 +4210,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Brodmann areas 6 and 8, bilateral.",
+    "value": "A priori bilateral lateral/medial premotor cortex region of interest, Brodmann areas 6 and 8.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2735,7 +4221,7 @@
    "local_id": "reg_lateral_medial_posterior",
    "name": {
     "extraction_status": "extracted",
-    "value": "lateral/medial posterior parietal cortex",
+    "value": "Lateral/medial posterior parietal cortex",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2744,9 +4230,9 @@
        "source": "repair_pass",
        "spans": [
         {
-         "text": "lateral/medial posterior parietal cortex",
-         "start_char": 23312,
-         "end_char": 23352
+         "text": "Lateral/medial posterior parietal cortex",
+         "start_char": 42603,
+         "end_char": 42643
         }
        ]
       }
@@ -2755,7 +4241,10 @@
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "prior_literature",
+    "value": [
+     "anatomical_a_priori",
+     "atlas"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2763,7 +4252,10 @@
    },
    "region_type": {
     "extraction_status": "extracted",
-    "value": "anatomical",
+    "value": [
+     "anatomical",
+     "atlas_parcel"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2779,16 +4271,12 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Brodmann areas 7 and 40, bilateral.",
+    "value": "A priori bilateral lateral/medial posterior parietal cortex region of interest, Brodmann areas 7 and 40.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    }
   }
- ],
- "study_type": [
-  "Journal Article",
-  "Research Support, Non-U.S. Gov't"
  ]
 }

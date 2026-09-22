@@ -1,16 +1,28 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "A comparative voxel-based morphometry study examined gray- and white-matter volume alterations associated with tobacco consumption and nicotine dependence in young adult male smokers and healthy non-smokers.",
+  "value": "The study examined gray and white matter volume alterations related to lifetime tobacco consumption and nicotine dependence in young adult male smokers using voxel-based morphometry.",
   "value_source": "reported",
   "evidence": {
-   "status": "not_found"
+   "status": "present",
+   "sets": [
+    {
+     "source": "model_quote",
+     "spans": [
+      {
+       "text": "The main purpose of this study is to examine the lifetime tobacco consumption and the degree of nicotine dependence related gray matter (GM) and white matter (WM) volume alterations in young adult-male smokers.",
+       "start_char": 207,
+       "end_char": 417
+      }
+     ]
+    }
+   ]
   }
  },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Observational cross-sectional comparative study of young adult male smokers and age-matched healthy non-smokers.",
+   "value": "Observational comparative study of young adult male smokers and healthy non-smokers, with smokers subdivided by pack-years and nicotine dependence.",
    "value_source": "reported",
    "evidence": {
     "status": "present",
@@ -30,27 +42,16 @@
   },
   "allocation": {
    "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "only young adult male smokers were enrolled in the study",
-        "start_char": 6497,
-        "end_char": 6553
-       }
-      ]
-     }
-    ]
+    "status": "not_found",
+    "unlocated_quotes": 1
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -59,9 +60,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "smokers were respectively categorized into light and heavy tobacco consumption subgroups by pack-years and into moderate and severe nicotine dependence subgroups using the Fagerström Test for Nicotine Dependence (FTND)",
-        "start_char": 533,
-        "end_char": 751
+        "text": "the between-group brain volume abnormalities",
+        "start_char": 890,
+        "end_char": 934
        }
       ]
      }
@@ -73,19 +74,8 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "All participants provided their written informed consents to participate in this study.",
-        "start_char": 7008,
-        "end_char": 7095
-       }
-      ]
-     }
-    ]
+    "status": "not_found",
+    "unlocated_quotes": 1
    }
   },
   "arms": [],
@@ -116,7 +106,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Regions with smaller gray matter volume in 23 mild/moderate nicotine dependence smokers compared to 53 non-smokers",
+    "value": "smaller gray matter volume in 23 mild/moderate nicotine dependence smokers compared to 53 non-smokers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -135,9 +125,11 @@
     }
    },
    "prespecification": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "spatial_scope": {
@@ -145,25 +137,13 @@
     "value": "whole_brain",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "To elucidate the question in this study, the whole-brain GM/WM volume alterations induced by nicotine dependence were compared in the same population of smokers in our previous study.",
-         "start_char": 5827,
-         "end_char": 6010
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
-   "measure": "mea_gm_volume",
+   "measure": "mea_gray_matter_volume",
    "groups": [
     {
-     "group": "grp_moderate",
+     "group": "grp_mild_moderate_dependence",
      "n": {
       "extraction_status": "extracted",
       "value": 23,
@@ -175,9 +155,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
-           "start_char": 17317,
-           "end_char": 17444
+           "text": "There were a total of 23 smokers with moderate dependence (FTND score ranging from 1 to 5)",
+           "start_char": 12344,
+           "end_char": 12434
           }
          ]
         }
@@ -186,7 +166,7 @@
      }
     },
     {
-     "group": "grp_nonsmokers",
+     "group": "grp_non_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 53,
@@ -198,9 +178,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
-           "start_char": 17317,
-           "end_char": 17444
+           "text": "53 non-smokers",
+           "start_char": 17429,
+           "end_char": 17443
           }
          ]
         }
@@ -212,13 +192,25 @@
    "effect": {
     "cells": [
      {
-      "term": "mod_moderate_gm.trm_dependence",
+      "term": "trm_dependence_group",
       "level": {
        "extraction_status": "extracted",
        "value": "mild/moderate nicotine dependence smokers",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "literal_match",
+          "spans": [
+           {
+            "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
+            "start_char": 17317,
+            "end_char": 17444
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
@@ -226,19 +218,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "In addition, the right inferior frontal gyrus and middle frontal gyrus have been reported to play roles in attentive control and reorientation ( Hampshire et al., 2010 ;  Japee et al., 2015 ), which may be directly associated with smoking behavior and their volumes were found negative correlations with the pack-years.",
-            "start_char": 31583,
-            "end_char": 31902
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -250,57 +230,6 @@
         "sets": [
          {
           "source": "literal_match",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 17317,
-            "end_char": 17444
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "mod_moderate_gm.trm_dependence",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "non-smokers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 17317,
-            "end_char": 17444
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "non-smokers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
           "spans": [
            {
             "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
@@ -316,22 +245,10 @@
     ],
     "kind": {
      "extraction_status": "extracted",
-     "value": "contrast",
+     "value": "simple_effect",
      "value_source": "generated",
      "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "literal_match",
-        "spans": [
-         {
-          "text": "In this study, the effects of nicotine dependence and tobacco consumption on brain structural changes are compared, and nicotine dependence was found with distinct atrophy patterns on the brain volume in contrast to the findings of tobacco consumption.",
-          "start_char": 32685,
-          "end_char": 32937
-         }
-        ]
-       }
-      ]
+      "status": "not_found"
      }
     },
     "statistic": {
@@ -346,9 +263,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The threshold of significance was set at p < 0.05 (AlphaSim-corrected).",
-           "start_char": 18281,
-           "end_char": 18352
+           "text": "Z-score",
+           "start_char": 17537,
+           "end_char": 17544
           }
          ]
         }
@@ -375,10 +292,10 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_moderate_gm",
+   "model_estimation": "mod_ancova",
    "inference_settings": "inf_alphasim",
    "tables": [
-    "T2"
+    "tbltable2"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -423,7 +340,7 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Regions of smaller gray matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers were observed, particularly in the middle occipital gyrus, posterior cingulate cortex, cerebellum anterior lobe, precuneus, caudate body, and insula."
+     "Smokers with moderate nicotine dependence demonstrated greater gray matter volume losses than smokers with severe nicotine dependence, with primary atrophy in the middle occipital gyrus, posterior cingulate cortex, cerebellum anterior lobe, precuneus, and caudate body."
     ],
     "value_source": "reported",
     "evidence": {
@@ -433,9 +350,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The primary atrophic GM areas (  Figure  1  ) in the smokers with moderate nicotine dependence were the middle occipital gyrus (MOG), posterior cingulate (PC) cortex, cerebellum anterior lobe (CAL), precuneus, and caudate body (CB), although only some of these GM areas were found with significant atrophy in smokers with severe nicotine dependence (  Figure  1  ).",
+         "text": "The primary atrophic GM areas (  Figure  1  ) in the smokers with moderate nicotine dependence were the middle occipital gyrus (MOG), posterior cingulate (PC) cortex, cerebellum anterior lobe (CAL), precuneus, and caudate body (CB)",
          "start_char": 16644,
-         "end_char": 17009
+         "end_char": 16875
         }
        ]
       }
@@ -449,8 +366,7 @@
     }
    },
    "assessments": [
-    "asm_ftnd",
-    "asm_gats"
+    "asm_ftnd"
    ]
   },
   {
@@ -477,7 +393,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Regions with smaller white matter volume in 23 mild/moderate nicotine dependence smokers compared to 53 non-smokers",
+    "value": "smaller white matter volume in 23 mild/moderate nicotine dependence smokers compared to 53 non-smokers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -496,9 +412,11 @@
     }
    },
    "prespecification": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "spatial_scope": {
@@ -506,25 +424,13 @@
     "value": "whole_brain",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "To elucidate the question in this study, the whole-brain GM/WM volume alterations induced by nicotine dependence were compared in the same population of smokers in our previous study.",
-         "start_char": 5827,
-         "end_char": 6010
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
-   "measure": "mea_wm_volume",
+   "measure": "mea_white_matter_volume",
    "groups": [
     {
-     "group": "grp_moderate",
+     "group": "grp_mild_moderate_dependence",
      "n": {
       "extraction_status": "extracted",
       "value": 23,
@@ -536,9 +442,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
-           "start_char": 17317,
-           "end_char": 17444
+           "text": "There were a total of 23 smokers with moderate dependence (FTND score ranging from 1 to 5)",
+           "start_char": 12344,
+           "end_char": 12434
           }
          ]
         }
@@ -547,7 +453,7 @@
      }
     },
     {
-     "group": "grp_nonsmokers",
+     "group": "grp_non_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 53,
@@ -559,9 +465,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
-           "start_char": 17317,
-           "end_char": 17444
+           "text": "53 non-smokers",
+           "start_char": 17429,
+           "end_char": 17443
           }
          ]
         }
@@ -573,13 +479,25 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_dependence",
+      "term": "trm_dependence_group",
       "level": {
        "extraction_status": "extracted",
        "value": "mild/moderate nicotine dependence smokers",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "literal_match",
+          "spans": [
+           {
+            "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
+            "start_char": 17317,
+            "end_char": 17444
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
@@ -587,19 +505,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "In addition, the right inferior frontal gyrus and middle frontal gyrus have been reported to play roles in attentive control and reorientation ( Hampshire et al., 2010 ;  Japee et al., 2015 ), which may be directly associated with smoking behavior and their volumes were found negative correlations with the pack-years.",
-            "start_char": 31583,
-            "end_char": 31902
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -611,57 +517,6 @@
         "sets": [
          {
           "source": "literal_match",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 17317,
-            "end_char": 17444
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_dependence",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "non-smokers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 17317,
-            "end_char": 17444
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "non-smokers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
           "spans": [
            {
             "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
@@ -677,22 +532,10 @@
     ],
     "kind": {
      "extraction_status": "extracted",
-     "value": "contrast",
+     "value": "simple_effect",
      "value_source": "generated",
      "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "literal_match",
-        "spans": [
-         {
-          "text": "In this study, the effects of nicotine dependence and tobacco consumption on brain structural changes are compared, and nicotine dependence was found with distinct atrophy patterns on the brain volume in contrast to the findings of tobacco consumption.",
-          "start_char": 32685,
-          "end_char": 32937
-         }
-        ]
-       }
-      ]
+      "status": "not_found"
      }
     },
     "statistic": {
@@ -707,9 +550,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The threshold of significance was set at p < 0.05 (AlphaSim-corrected).",
-           "start_char": 18281,
-           "end_char": 18352
+           "text": "Z-score",
+           "start_char": 17537,
+           "end_char": 17544
           }
          ]
         }
@@ -736,10 +579,10 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_moderate_wm",
+   "model_estimation": "mod_ancova",
    "inference_settings": "inf_alphasim",
    "tables": [
-    "T2"
+    "tbltable2"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -784,7 +627,7 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "The atrophic white matter areas in moderate nicotine dependence smokers were mainly located in the posterior cingulate, cerebellum anterior lobe, midbrain, and thalamus, with smaller white matter volumes than in non-smokers."
+     "Smokers with moderate nicotine dependence demonstrated greater white matter volume losses than smokers with severe nicotine dependence, particularly in the posterior cingulate, cerebellum anterior lobe, and midbrain."
     ],
     "value_source": "reported",
     "evidence": {
@@ -794,9 +637,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The atrophic WM areas were mainly located at PC, CAL and midbrain in the two nicotine dependence subgroups; however, the extent of brain tissue loss in most of these WM areas was also larger in the smokers with moderate nicotine dependence than in those with severe nicotine dependence (  Figure  2  ).",
+         "text": "The atrophic WM areas were mainly located at PC, CAL and midbrain in the two nicotine dependence subgroups; however, the extent of brain tissue loss in most of these WM areas was also larger in the smokers with moderate nicotine dependence than in those with severe nicotine dependence",
          "start_char": 17010,
-         "end_char": 17312
+         "end_char": 17295
         }
        ]
       }
@@ -810,8 +653,7 @@
     }
    },
    "assessments": [
-    "asm_ftnd",
-    "asm_gats"
+    "asm_ftnd"
    ]
   },
   {
@@ -838,7 +680,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Regions showing smaller gray matter volume in 30 severe nicotine dependence smokers than in 53 non-smokers",
+    "value": "smaller gray matter volume in 30 severe nicotine dependence smokers than in 53 non-smokers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -857,9 +699,11 @@
     }
    },
    "prespecification": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "spatial_scope": {
@@ -867,25 +711,13 @@
     "value": "whole_brain",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "To elucidate the question in this study, the whole-brain GM/WM volume alterations induced by nicotine dependence were compared in the same population of smokers in our previous study.",
-         "start_char": 5827,
-         "end_char": 6010
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
-   "measure": "mea_gm_volume",
+   "measure": "mea_gray_matter_volume",
    "groups": [
     {
-     "group": "grp_severe",
+     "group": "grp_severe_dependence",
      "n": {
       "extraction_status": "extracted",
       "value": 30,
@@ -897,9 +729,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-           "start_char": 18472,
-           "end_char": 18592
+           "text": "there were 30 smokers with severe dependence (FTND score ranging from 7 to 10).",
+           "start_char": 12442,
+           "end_char": 12521
           }
          ]
         }
@@ -908,7 +740,7 @@
      }
     },
     {
-     "group": "grp_nonsmokers",
+     "group": "grp_non_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 53,
@@ -920,9 +752,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-           "start_char": 18472,
-           "end_char": 18592
+           "text": "53 non-smokers",
+           "start_char": 17429,
+           "end_char": 17443
           }
          ]
         }
@@ -934,7 +766,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_dependence",
+      "term": "trm_dependence_group",
       "level": {
        "extraction_status": "extracted",
        "value": "severe nicotine dependence smokers",
@@ -948,19 +780,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "In addition, the right inferior frontal gyrus and middle frontal gyrus have been reported to play roles in attentive control and reorientation ( Hampshire et al., 2010 ;  Japee et al., 2015 ), which may be directly associated with smoking behavior and their volumes were found negative correlations with the pack-years.",
-            "start_char": 31583,
-            "end_char": 31902
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -968,92 +788,17 @@
        "value": "severe nicotine dependence smokers",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 18472,
-            "end_char": 18592
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_dependence",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "non-smokers",
-       "value_source": "reported",
-       "evidence": {
         "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 18472,
-            "end_char": 18592
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "non-smokers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 18472,
-            "end_char": 18592
-           }
-          ]
-         }
-        ]
        }
       }
      }
     ],
     "kind": {
      "extraction_status": "extracted",
-     "value": "contrast",
+     "value": "simple_effect",
      "value_source": "generated",
      "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "literal_match",
-        "spans": [
-         {
-          "text": "In this study, the effects of nicotine dependence and tobacco consumption on brain structural changes are compared, and nicotine dependence was found with distinct atrophy patterns on the brain volume in contrast to the findings of tobacco consumption.",
-          "start_char": 32685,
-          "end_char": 32937
-         }
-        ]
-       }
-      ]
+      "status": "not_found"
      }
     },
     "statistic": {
@@ -1068,9 +813,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The threshold of significance was set at p < 0.05 (AlphaSim-corrected).",
-           "start_char": 18281,
-           "end_char": 18352
+           "text": "Z-score",
+           "start_char": 17537,
+           "end_char": 17544
           }
          ]
         }
@@ -1097,10 +842,10 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_severe_gm",
+   "model_estimation": "mod_ancova",
    "inference_settings": "inf_alphasim",
    "tables": [
-    "T3"
+    "tbltable3"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -1145,7 +890,7 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Regions of smaller gray matter volumes were found in 30 severe nicotine dependence smokers than in 53 non-smokers, including the middle occipital gyrus, posterior cingulate, superior temporal gyrus, and insula."
+     "Severe nicotine dependence smokers had smaller gray matter volumes than non-smokers, particularly in the middle occipital gyrus, posterior cingulate, superior temporal gyrus, and insula."
     ],
     "value_source": "reported",
     "evidence": {
@@ -1155,9 +900,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-         "start_char": 18472,
-         "end_char": 18592
+         "text": "although only some of these GM areas were found with significant atrophy in smokers with severe nicotine dependence",
+         "start_char": 16877,
+         "end_char": 16992
         }
        ]
       }
@@ -1171,8 +916,7 @@
     }
    },
    "assessments": [
-    "asm_ftnd",
-    "asm_gats"
+    "asm_ftnd"
    ]
   },
   {
@@ -1199,7 +943,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Regions showing smaller white matter volume in 30 severe nicotine dependence smokers than in 53 non-smokers",
+    "value": "smaller white matter volume in 30 severe nicotine dependence smokers than in 53 non-smokers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1218,9 +962,11 @@
     }
    },
    "prespecification": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "spatial_scope": {
@@ -1228,25 +974,13 @@
     "value": "whole_brain",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "To elucidate the question in this study, the whole-brain GM/WM volume alterations induced by nicotine dependence were compared in the same population of smokers in our previous study.",
-         "start_char": 5827,
-         "end_char": 6010
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
-   "measure": "mea_wm_volume",
+   "measure": "mea_white_matter_volume",
    "groups": [
     {
-     "group": "grp_severe",
+     "group": "grp_severe_dependence",
      "n": {
       "extraction_status": "extracted",
       "value": 30,
@@ -1258,9 +992,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-           "start_char": 18472,
-           "end_char": 18592
+           "text": "there were 30 smokers with severe dependence (FTND score ranging from 7 to 10).",
+           "start_char": 12442,
+           "end_char": 12521
           }
          ]
         }
@@ -1269,7 +1003,7 @@
      }
     },
     {
-     "group": "grp_nonsmokers",
+     "group": "grp_non_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 53,
@@ -1281,9 +1015,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-           "start_char": 18472,
-           "end_char": 18592
+           "text": "53 non-smokers",
+           "start_char": 17429,
+           "end_char": 17443
           }
          ]
         }
@@ -1295,7 +1029,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_dependence",
+      "term": "trm_dependence_group",
       "level": {
        "extraction_status": "extracted",
        "value": "severe nicotine dependence smokers",
@@ -1309,19 +1043,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "In addition, the right inferior frontal gyrus and middle frontal gyrus have been reported to play roles in attentive control and reorientation ( Hampshire et al., 2010 ;  Japee et al., 2015 ), which may be directly associated with smoking behavior and their volumes were found negative correlations with the pack-years.",
-            "start_char": 31583,
-            "end_char": 31902
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -1329,92 +1051,17 @@
        "value": "severe nicotine dependence smokers",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 18472,
-            "end_char": 18592
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_dependence",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "non-smokers",
-       "value_source": "reported",
-       "evidence": {
         "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 18472,
-            "end_char": 18592
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "non-smokers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Regions of smaller Gray matter and White matter volumes in 30 severe nicotine dependence smokers than in 53 non-smokers.",
-            "start_char": 18472,
-            "end_char": 18592
-           }
-          ]
-         }
-        ]
        }
       }
      }
     ],
     "kind": {
      "extraction_status": "extracted",
-     "value": "contrast",
+     "value": "simple_effect",
      "value_source": "generated",
      "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "literal_match",
-        "spans": [
-         {
-          "text": "In this study, the effects of nicotine dependence and tobacco consumption on brain structural changes are compared, and nicotine dependence was found with distinct atrophy patterns on the brain volume in contrast to the findings of tobacco consumption.",
-          "start_char": 32685,
-          "end_char": 32937
-         }
-        ]
-       }
-      ]
+      "status": "not_found"
      }
     },
     "statistic": {
@@ -1429,9 +1076,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The threshold of significance was set at p < 0.05 (AlphaSim-corrected).",
-           "start_char": 18281,
-           "end_char": 18352
+           "text": "Z-score",
+           "start_char": 17537,
+           "end_char": 17544
           }
          ]
         }
@@ -1458,10 +1105,10 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_severe_wm",
+   "model_estimation": "mod_ancova",
    "inference_settings": "inf_alphasim",
    "tables": [
-    "T3"
+    "tbltable3"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -1506,7 +1153,7 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Regions of smaller white matter volumes were found in severe nicotine dependence smokers than in non-smokers, mainly in the posterior cingulate, thalamus, cerebellum anterior lobe, and midbrain."
+     "Severe nicotine dependence smokers had smaller white matter volumes than non-smokers, mainly in the posterior cingulate, thalamus, cerebellum anterior lobe, and midbrain."
     ],
     "value_source": "reported",
     "evidence": {
@@ -1516,9 +1163,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The atrophic WM areas were mainly located at PC, CAL and midbrain in the two nicotine dependence subgroups; however, the extent of brain tissue loss in most of these WM areas was also larger in the smokers with moderate nicotine dependence than in those with severe nicotine dependence (  Figure  2  ).",
+         "text": "The atrophic WM areas were mainly located at PC, CAL and midbrain in the two nicotine dependence subgroups",
          "start_char": 17010,
-         "end_char": 17312
+         "end_char": 17116
         }
        ]
       }
@@ -1532,8 +1179,7 @@
     }
    },
    "assessments": [
-    "asm_ftnd",
-    "asm_gats"
+    "asm_ftnd"
    ]
   },
   {
@@ -1549,9 +1195,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-         "start_char": 22805,
-         "end_char": 23109
+         "text": "Gray matter and White matter differences between light and heavy smoking amount groups.",
+         "start_char": 23592,
+         "end_char": 23679
         }
        ]
       }
@@ -1560,33 +1206,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Heavy smokers compared to light smokers",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-         "start_char": 22805,
-         "end_char": 23109
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "prespecification": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
+    "value": "heavy smokers compared to light smokers in gray matter",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -1595,19 +1215,35 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "To date, only a few studies have explored the effects of tobacco on GM and WM separately ( Ikram et al., 2008 ;  Duriez et al., 2014 ;  Wang et al., 2015 ).",
-         "start_char": 4359,
-         "end_char": 4515
+         "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers",
+         "start_char": 22805,
+         "end_char": 22950
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_gm_volume",
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "measure": "mea_gray_matter_volume",
    "groups": [
     {
-     "group": "grp_light",
+     "group": "grp_light_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 26,
@@ -1619,9 +1255,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The light smokers group consisted of 26 subjects (pack-years ranging from 2.5 to 19.5), and the heavy smokers group included 27 smokers (pack-years ranging from 21 to 48).",
+           "text": "The light smokers group consisted of 26 subjects",
            "start_char": 12090,
-           "end_char": 12261
+           "end_char": 12138
           }
          ]
         }
@@ -1630,7 +1266,7 @@
      }
     },
     {
-     "group": "grp_heavy",
+     "group": "grp_heavy_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 27,
@@ -1642,9 +1278,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The light smokers group consisted of 26 subjects (pack-years ranging from 2.5 to 19.5), and the heavy smokers group included 27 smokers (pack-years ranging from 21 to 48).",
-           "start_char": 12090,
-           "end_char": 12261
+           "text": "the heavy smokers group included 27 smokers",
+           "start_char": 12182,
+           "end_char": 12225
           }
          ]
         }
@@ -1656,61 +1292,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_packyears",
+      "term": "trm_smoking_amount_group",
       "level": {
-       "extraction_status": "extracted",
-       "value": "heavy smoking amount",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "In addition, the right inferior frontal gyrus and middle frontal gyrus have been reported to play roles in attentive control and reorientation ( Hampshire et al., 2010 ;  Japee et al., 2015 ), which may be directly associated with smoking behavior and their volumes were found negative correlations with the pack-years.",
-            "start_char": 31583,
-            "end_char": 31902
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
        "extraction_status": "extracted",
        "value": "heavy smokers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-            "start_char": 22805,
-            "end_char": 23109
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_packyears",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "light smoking amount",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -1721,19 +1306,34 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-            "start_char": 22805,
-            "end_char": 23109
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "heavy smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     },
+     {
+      "term": "trm_smoking_amount_group",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "light smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
        }
       },
       "label": {
@@ -1741,19 +1341,7 @@
        "value": "light smokers",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-            "start_char": 22805,
-            "end_char": 23109
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       }
      }
@@ -1790,9 +1378,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The threshold of significance was set at p < 0.05 (AlphaSim-corrected).",
-           "start_char": 18281,
-           "end_char": 18352
+           "text": "Z-score",
+           "start_char": 17537,
+           "end_char": 17544
           }
          ]
         }
@@ -1819,10 +1407,10 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_packyears",
+   "model_estimation": "mod_ancova",
    "inference_settings": "inf_alphasim",
    "tables": [
-    "T4"
+    "tbltable4"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -1867,7 +1455,7 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Heavy smokers showed significant brain region atrophy compared with light smokers, mainly in gray matter areas of the precuneus, inferior frontal gyrus, insula, superior temporal gyrus, middle frontal gyrus, and cerebellum anterior lobe, and in white matter of the cerebellum anterior lobe."
+     "Heavy smokers demonstrated significant gray matter atrophy compared to light smokers, mainly in the precuneus, inferior frontal gyrus, insula, superior temporal gyrus, and cerebellum anterior lobe; white matter differences were found in the cerebellum anterior lobe."
     ],
     "value_source": "reported",
     "evidence": {
@@ -1877,9 +1465,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-         "start_char": 22805,
-         "end_char": 23109
+         "text": "mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob",
+         "start_char": 22952,
+         "end_char": 23048
         }
        ]
       }
@@ -1893,8 +1481,7 @@
     }
    },
    "assessments": [
-    "asm_ftnd",
-    "asm_gats"
+    "asm_ftnd"
    ]
   },
   {
@@ -1921,33 +1508,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Heavy smokers compared to light smokers",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-         "start_char": 22805,
-         "end_char": 23109
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "prespecification": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
+    "value": "heavy smokers compared to light smokers in white matter",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -1956,19 +1517,35 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "To date, only a few studies have explored the effects of tobacco on GM and WM separately ( Ikram et al., 2008 ;  Duriez et al., 2014 ;  Wang et al., 2015 ).",
-         "start_char": 4359,
-         "end_char": 4515
+         "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers",
+         "start_char": 22805,
+         "end_char": 22950
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_wm_volume",
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "measure": "mea_white_matter_volume",
    "groups": [
     {
-     "group": "grp_light",
+     "group": "grp_light_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 26,
@@ -1980,9 +1557,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The light smokers group consisted of 26 subjects (pack-years ranging from 2.5 to 19.5), and the heavy smokers group included 27 smokers (pack-years ranging from 21 to 48).",
+           "text": "The light smokers group consisted of 26 subjects",
            "start_char": 12090,
-           "end_char": 12261
+           "end_char": 12138
           }
          ]
         }
@@ -1991,7 +1568,7 @@
      }
     },
     {
-     "group": "grp_heavy",
+     "group": "grp_heavy_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 27,
@@ -2003,9 +1580,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The light smokers group consisted of 26 subjects (pack-years ranging from 2.5 to 19.5), and the heavy smokers group included 27 smokers (pack-years ranging from 21 to 48).",
-           "start_char": 12090,
-           "end_char": 12261
+           "text": "the heavy smokers group included 27 smokers",
+           "start_char": 12182,
+           "end_char": 12225
           }
          ]
         }
@@ -2017,61 +1594,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_packyears",
+      "term": "trm_smoking_amount_group",
       "level": {
-       "extraction_status": "extracted",
-       "value": "heavy smoking amount",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "In addition, the right inferior frontal gyrus and middle frontal gyrus have been reported to play roles in attentive control and reorientation ( Hampshire et al., 2010 ;  Japee et al., 2015 ), which may be directly associated with smoking behavior and their volumes were found negative correlations with the pack-years.",
-            "start_char": 31583,
-            "end_char": 31902
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
        "extraction_status": "extracted",
        "value": "heavy smokers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-            "start_char": 22805,
-            "end_char": 23109
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_packyears",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "light smoking amount",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -2082,19 +1608,34 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-            "start_char": 22805,
-            "end_char": 23109
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "heavy smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     },
+     {
+      "term": "trm_smoking_amount_group",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "light smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
        }
       },
       "label": {
@@ -2102,19 +1643,7 @@
        "value": "light smokers",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "For between-group comparisons in smokers, we observed significant brain region atrophy in the subgroup of heavy smokers compared to light smokers, mainly in GM areas of precuneus, inferior frontal gyrus, insula, STG and cerebellum anterior lob, and in WM areas of cerebellum anterior lobe (  Table  4  ).",
-            "start_char": 22805,
-            "end_char": 23109
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       }
      }
@@ -2151,9 +1680,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The threshold of significance was set at p < 0.05 (AlphaSim-corrected).",
-           "start_char": 18281,
-           "end_char": 18352
+           "text": "Z-score",
+           "start_char": 17537,
+           "end_char": 17544
           }
          ]
         }
@@ -2180,10 +1709,10 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_packyears",
+   "model_estimation": "mod_ancova",
    "inference_settings": "inf_alphasim",
    "tables": [
-    "T4"
+    "tbltable4"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -2228,7 +1757,7 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Heavy smokers showed significant brain region atrophy compared with light smokers, mainly in gray matter areas of the precuneus, inferior frontal gyrus, insula, superior temporal gyrus, middle frontal gyrus, and cerebellum anterior lobe, and in white matter of the cerebellum anterior lobe."
+     "Heavy smokers demonstrated significant gray matter atrophy compared to light smokers, mainly in the precuneus, inferior frontal gyrus, insula, superior temporal gyrus, and cerebellum anterior lobe; white matter differences were found in the cerebellum anterior lobe."
     ],
     "value_source": "reported",
     "evidence": {
@@ -2238,9 +1767,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The atrophic WM areas in the heavy smokers were also larger and more than observed in those within the light smokers group, especially in the PC, thalamus, and midbrain (  Figure  4  ).",
-         "start_char": 21283,
-         "end_char": 21468
+         "text": "in WM areas of cerebellum anterior lobe",
+         "start_char": 1281,
+         "end_char": 1320
         }
        ]
       }
@@ -2254,8 +1783,7 @@
     }
    },
    "assessments": [
-    "asm_ftnd",
-    "asm_gats"
+    "asm_ftnd"
    ]
   },
   {
@@ -2282,34 +1810,8 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence",
+    "value": "moderate nicotine dependence smokers compared to severe nicotine dependence smokers in gray matter",
     "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "But an opposite trend was detected in the structural abnormalities caused by the severity of nicotine dependence, and smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence, especially in GM areas of precuneus, superior and MTG, middle occipital gyrus, posterior cingulate and insula, and in WM areas of precuneus, posterior cingulate, cerebellum anterior lobe and midbrain (  Table  5  ).",
-         "start_char": 23110,
-         "end_char": 23587
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "prespecification": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
-    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2317,19 +1819,35 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "To elucidate the question in this study, the whole-brain GM/WM volume alterations induced by nicotine dependence were compared in the same population of smokers in our previous study.",
-         "start_char": 5827,
-         "end_char": 6010
+         "text": "smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence",
+         "start_char": 23228,
+         "end_char": 23370
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_gm_volume",
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "measure": "mea_gray_matter_volume",
    "groups": [
     {
-     "group": "grp_moderate",
+     "group": "grp_mild_moderate_dependence",
      "n": {
       "extraction_status": "extracted",
       "value": 23,
@@ -2341,9 +1859,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "There were a total of 23 smokers with moderate dependence (FTND score ranging from 1 to 5), while there were 30 smokers with severe dependence (FTND score ranging from 7 to 10).",
+           "text": "There were a total of 23 smokers with moderate dependence (FTND score ranging from 1 to 5)",
            "start_char": 12344,
-           "end_char": 12521
+           "end_char": 12434
           }
          ]
         }
@@ -2352,7 +1870,7 @@
      }
     },
     {
-     "group": "grp_severe",
+     "group": "grp_severe_dependence",
      "n": {
       "extraction_status": "extracted",
       "value": 30,
@@ -2364,8 +1882,8 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "There were a total of 23 smokers with moderate dependence (FTND score ranging from 1 to 5), while there were 30 smokers with severe dependence (FTND score ranging from 7 to 10).",
-           "start_char": 12344,
+           "text": "there were 30 smokers with severe dependence (FTND score ranging from 7 to 10).",
+           "start_char": 12442,
            "end_char": 12521
           }
          ]
@@ -2378,19 +1896,11 @@
    "effect": {
     "cells": [
      {
-      "term": "mod_dependence_between.trm_dependence",
+      "term": "trm_dependence_group",
       "level": {
        "extraction_status": "extracted",
        "value": "mild/moderate nicotine dependence smokers",
        "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
        "evidence": {
         "status": "present",
         "sets": [
@@ -2398,18 +1908,26 @@
           "source": "literal_match",
           "spans": [
            {
-            "text": "In addition, the right inferior frontal gyrus and middle frontal gyrus have been reported to play roles in attentive control and reorientation ( Hampshire et al., 2010 ;  Japee et al., 2015 ), which may be directly associated with smoking behavior and their volumes were found negative correlations with the pack-years.",
-            "start_char": 31583,
-            "end_char": 31902
+            "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
+            "start_char": 17317,
+            "end_char": 17444
            }
           ]
          }
         ]
        }
       },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
       "label": {
        "extraction_status": "extracted",
-       "value": "mild/moderate nicotine dependence",
+       "value": "mild/moderate nicotine dependence smokers",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -2429,7 +1947,7 @@
       }
      },
      {
-      "term": "mod_dependence_between.trm_dependence",
+      "term": "trm_dependence_group",
       "level": {
        "extraction_status": "extracted",
        "value": "severe nicotine dependence smokers",
@@ -2440,22 +1958,10 @@
       },
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
+       "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "But an opposite trend was detected in the structural abnormalities caused by the severity of nicotine dependence, and smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence, especially in GM areas of precuneus, superior and MTG, middle occipital gyrus, posterior cingulate and insula, and in WM areas of precuneus, posterior cingulate, cerebellum anterior lobe and midbrain (  Table  5  ).",
-            "start_char": 23110,
-            "end_char": 23587
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -2463,19 +1969,7 @@
        "value": "severe nicotine dependence smokers",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "But an opposite trend was detected in the structural abnormalities caused by the severity of nicotine dependence, and smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence, especially in GM areas of precuneus, superior and MTG, middle occipital gyrus, posterior cingulate and insula, and in WM areas of precuneus, posterior cingulate, cerebellum anterior lobe and midbrain (  Table  5  ).",
-            "start_char": 23110,
-            "end_char": 23587
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       }
      }
@@ -2512,9 +2006,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The threshold of significance was set at p < 0.05 (AlphaSim-corrected).",
-           "start_char": 18281,
-           "end_char": 18352
+           "text": "Z-score",
+           "start_char": 17537,
+           "end_char": 17544
           }
          ]
         }
@@ -2541,10 +2035,10 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_dependence_between",
+   "model_estimation": "mod_ancova",
    "inference_settings": "inf_alphasim",
    "tables": [
-    "T5"
+    "tbltable5"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -2589,7 +2083,7 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Smokers with moderate nicotine dependence were found to have more severe gray matter atrophy than smokers with severe nicotine dependence, especially in the precuneus, superior and middle temporal gyri, middle occipital gyrus, posterior cingulate, insula, midbrain, and cerebellum anterior lobe."
+     "Smokers with moderate nicotine dependence had greater gray matter atrophy than smokers with severe nicotine dependence, especially in the precuneus, superior and middle temporal gyri, middle occipital gyrus, posterior cingulate, and insula."
     ],
     "value_source": "reported",
     "evidence": {
@@ -2599,8 +2093,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence, especially in GM areas of precuneus, superior and MTG, middle occipital gyrus, posterior cingulate and insula",
-         "start_char": 23228,
+         "text": "especially in GM areas of precuneus, superior and MTG, middle occipital gyrus, posterior cingulate and insula",
+         "start_char": 23372,
          "end_char": 23481
         }
        ]
@@ -2615,8 +2109,7 @@
     }
    },
    "assessments": [
-    "asm_ftnd",
-    "asm_gats"
+    "asm_ftnd"
    ]
   },
   {
@@ -2643,34 +2136,8 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence",
+    "value": "moderate nicotine dependence smokers compared to severe nicotine dependence smokers in white matter",
     "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "But an opposite trend was detected in the structural abnormalities caused by the severity of nicotine dependence, and smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence, especially in GM areas of precuneus, superior and MTG, middle occipital gyrus, posterior cingulate and insula, and in WM areas of precuneus, posterior cingulate, cerebellum anterior lobe and midbrain (  Table  5  ).",
-         "start_char": 23110,
-         "end_char": 23587
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "prespecification": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
-    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2678,19 +2145,35 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "To elucidate the question in this study, the whole-brain GM/WM volume alterations induced by nicotine dependence were compared in the same population of smokers in our previous study.",
-         "start_char": 5827,
-         "end_char": 6010
+         "text": "smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence",
+         "start_char": 23228,
+         "end_char": 23370
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_wm_volume",
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "measure": "mea_white_matter_volume",
    "groups": [
     {
-     "group": "grp_moderate",
+     "group": "grp_mild_moderate_dependence",
      "n": {
       "extraction_status": "extracted",
       "value": 23,
@@ -2702,9 +2185,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "There were a total of 23 smokers with moderate dependence (FTND score ranging from 1 to 5), while there were 30 smokers with severe dependence (FTND score ranging from 7 to 10).",
+           "text": "There were a total of 23 smokers with moderate dependence (FTND score ranging from 1 to 5)",
            "start_char": 12344,
-           "end_char": 12521
+           "end_char": 12434
           }
          ]
         }
@@ -2713,7 +2196,7 @@
      }
     },
     {
-     "group": "grp_severe",
+     "group": "grp_severe_dependence",
      "n": {
       "extraction_status": "extracted",
       "value": 30,
@@ -2725,8 +2208,8 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "There were a total of 23 smokers with moderate dependence (FTND score ranging from 1 to 5), while there were 30 smokers with severe dependence (FTND score ranging from 7 to 10).",
-           "start_char": 12344,
+           "text": "there were 30 smokers with severe dependence (FTND score ranging from 7 to 10).",
+           "start_char": 12442,
            "end_char": 12521
           }
          ]
@@ -2739,19 +2222,11 @@
    "effect": {
     "cells": [
      {
-      "term": "mod_dependence_between.trm_dependence",
+      "term": "trm_dependence_group",
       "level": {
        "extraction_status": "extracted",
        "value": "mild/moderate nicotine dependence smokers",
        "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
        "evidence": {
         "status": "present",
         "sets": [
@@ -2759,18 +2234,26 @@
           "source": "literal_match",
           "spans": [
            {
-            "text": "In addition, the right inferior frontal gyrus and middle frontal gyrus have been reported to play roles in attentive control and reorientation ( Hampshire et al., 2010 ;  Japee et al., 2015 ), which may be directly associated with smoking behavior and their volumes were found negative correlations with the pack-years.",
-            "start_char": 31583,
-            "end_char": 31902
+            "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
+            "start_char": 17317,
+            "end_char": 17444
            }
           ]
          }
         ]
        }
       },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
       "label": {
        "extraction_status": "extracted",
-       "value": "mild/moderate nicotine dependence",
+       "value": "mild/moderate nicotine dependence smokers",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -2790,7 +2273,7 @@
       }
      },
      {
-      "term": "mod_dependence_between.trm_dependence",
+      "term": "trm_dependence_group",
       "level": {
        "extraction_status": "extracted",
        "value": "severe nicotine dependence smokers",
@@ -2801,22 +2284,10 @@
       },
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
+       "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "But an opposite trend was detected in the structural abnormalities caused by the severity of nicotine dependence, and smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence, especially in GM areas of precuneus, superior and MTG, middle occipital gyrus, posterior cingulate and insula, and in WM areas of precuneus, posterior cingulate, cerebellum anterior lobe and midbrain (  Table  5  ).",
-            "start_char": 23110,
-            "end_char": 23587
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -2824,19 +2295,7 @@
        "value": "severe nicotine dependence smokers",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "But an opposite trend was detected in the structural abnormalities caused by the severity of nicotine dependence, and smokers with moderate nicotine dependence were found with severe brain region atrophy in comparison to smokers with severe nicotine dependence, especially in GM areas of precuneus, superior and MTG, middle occipital gyrus, posterior cingulate and insula, and in WM areas of precuneus, posterior cingulate, cerebellum anterior lobe and midbrain (  Table  5  ).",
-            "start_char": 23110,
-            "end_char": 23587
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       }
      }
@@ -2873,9 +2332,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The threshold of significance was set at p < 0.05 (AlphaSim-corrected).",
-           "start_char": 18281,
-           "end_char": 18352
+           "text": "Z-score",
+           "start_char": 17537,
+           "end_char": 17544
           }
          ]
         }
@@ -2902,17 +2361,29 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_dependence_between",
+   "model_estimation": "mod_ancova",
    "inference_settings": "inf_alphasim",
    "tables": [
-    "T5"
+    "tbltable5"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "T5#2",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Gray matter and White matter differences between mild/moderate and severe nicotine dependence groups.",
+         "start_char": 24507,
+         "end_char": 24608
+        }
+       ]
+      }
+     ]
     }
    },
    "coordinate_space": {
@@ -2938,11 +2409,23 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Smokers with moderate nicotine dependence were found to have more severe white matter atrophy than smokers with severe nicotine dependence, especially in the precuneus, posterior cingulate, cerebellum anterior lobe, and midbrain."
+     "Smokers with moderate nicotine dependence had greater white matter atrophy than smokers with severe nicotine dependence, especially in the precuneus, posterior cingulate, cerebellum anterior lobe, and midbrain."
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "in WM areas of precuneus, posterior cingulate, cerebellum anterior lobe and midbrain",
+         "start_char": 1692,
+         "end_char": 1776
+        }
+       ]
+      }
+     ]
     }
    },
    "model_representation_notes": {
@@ -2952,8 +2435,7 @@
     }
    },
    "assessments": [
-    "asm_ftnd",
-    "asm_gats"
+    "asm_ftnd"
    ]
   }
  ],
@@ -3002,6 +2484,26 @@
     }
    },
    "device": "dev_magnetom_trio",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Three-dimensional whole-brain high-resolution T1-weighted images",
+         "start_char": 10875,
+         "end_char": 10939
+        }
+       ]
+      }
+     ]
+    }
+   },
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3.0,
@@ -3013,9 +2515,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All MRI data were obtained using a 3.0T scanner (MAGNETOM  Trio Tim System; Siemens Medical Solutions, Erlangen, Germany) with a standard 8-channel head coil receiver at the magnetic resonance center of Beijing Chaoyang Hospital.",
-         "start_char": 10499,
-         "end_char": 10728
+         "text": "3.0T scanner",
+         "start_char": 10534,
+         "end_char": 10546
         }
        ]
       }
@@ -3024,7 +2526,27 @@
    },
    "pulse_sequence_type": {
     "extraction_status": "extracted",
-    "value": "T1WI-3D MPRAGE",
+    "value": "MPRAGE",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Three-dimensional whole-brain high-resolution T1-weighted images (T1WI-3D MPRAGE) were acquired using the following parameters: repetition time = 1900 ms; echo time = 2.52 ms; total slices = 176; slice thickness = 1 mm; matrix = 256 × 256; flip angle = 9°; in-plane voxel size = 1 mm × 1 mm × 1 mm; total acquisition time = 340 s.",
+         "start_char": 10875,
+         "end_char": 11205
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "mr_acquisition_type": {
+    "extraction_status": "extracted",
+    "value": "3D",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3130,9 +2652,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The Fagerström Test for Nicotine Dependence (FTND)",
+         "text": "The Fagerström Test for Nicotine Dependence (FTND) was also administered",
          "start_char": 8200,
-         "end_char": 8250
+         "end_char": 8272
         }
        ]
       }
@@ -3141,28 +2663,8 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "The FTND was administered to evaluate the severity of nicotine dependence for each smoker.",
+    "value": "Administered to evaluate the severity of nicotine dependence for each smoker.",
     "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The Fagerström Test for Nicotine Dependence (FTND) was also administered to evaluate the severity of nicotine dependence for each smoker.",
-         "start_char": 8200,
-         "end_char": 8337
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "questionnaire",
-    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3170,52 +2672,9 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "We administered the same questionnaire designed for the use in the 2010 Global Adult Tobacco Survey (GATS) by the World Health Organization (WHO), which included the age at which one began smoking, the number of cigarettes smoked per day, the years of smoking, duration of smoking cessation, and so forth.",
-         "start_char": 7894,
-         "end_char": 8199
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_gats",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Global Adult Tobacco Survey questionnaire",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "the 2010 Global Adult Tobacco Survey (GATS)",
-         "start_char": 7957,
-         "end_char": 8000
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Questionnaire collecting smoking history and tobacco-use information.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "which included the age at which one began smoking, the number of cigarettes smoked per day, the years of smoking, duration of smoking cessation, and so forth.",
-         "start_char": 8041,
-         "end_char": 8199
+         "text": "The Fagerström Test for Nicotine Dependence (FTND) was also administered to evaluate the severity of nicotine dependence for each smoker.",
+         "start_char": 8200,
+         "end_char": 8337
         }
        ]
       }
@@ -3291,7 +2750,7 @@
  ],
  "groups": [
   {
-   "local_id": "grp_moderate",
+   "local_id": "grp_mild_moderate_dependence",
    "name": {
     "extraction_status": "extracted",
     "value": "mild/moderate nicotine dependence smokers",
@@ -3323,18 +2782,20 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects were Han Chinese male persons aged from 23 to 40 years",
+         "text": "All subjects were Han Chinese male persons",
          "start_char": 7096,
-         "end_char": 7163
+         "end_char": 7138
         }
        ]
       }
      ]
     }
    },
-   "acquired_count": {
+   "medical_condition": {
     "extraction_status": "extracted",
-    "value": 23,
+    "value": [
+     "Nicotine dependence"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3343,15 +2804,38 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "There were a total of 23 smokers with moderate dependence",
-         "start_char": 12344,
-         "end_char": 12401
+         "text": "nicotine dependence",
+         "start_char": 164,
+         "end_char": 183
         }
        ]
       }
      ]
     }
    },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "ICD-10",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
+         "start_char": 7754,
+         "end_char": 7850
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_ftnd"
+   ],
    "age_mean": {
     "extraction_status": "extracted",
     "value": 32.74,
@@ -3412,119 +2896,9 @@
      ]
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All subjects were Han Chinese male persons",
-           "start_char": 7096,
-           "end_char": 7138
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 23,
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "There were a total of 23 smokers with moderate dependence",
-           "start_char": 12344,
-           "end_char": 12401
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 100.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 23,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Male participants",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    }
-   ],
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "nicotine dependence"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7754,
-         "end_char": 7850
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "ICD-10",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7754,
-         "end_char": 7850
-        }
-       ]
-      }
-     ]
-    }
-   },
    "description": {
     "extraction_status": "extracted",
-    "value": "Young adult male smokers with moderate nicotine dependence, defined by FTND score ≤6; 23 participants were analyzed in comparison with severe-dependence smokers and non-smokers.",
+    "value": "Young adult male smokers with moderate nicotine dependence, defined by FTND score ≤6; n=23, compared with severe-dependence smokers and non-smokers in ANCOVA/VBM analyses.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3574,6 +2948,26 @@
      ]
     }
    },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 23,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "There were a total of 23 smokers with moderate dependence",
+         "start_char": 12344,
+         "end_char": 12401
+        }
+       ]
+      }
+     ]
+    }
+   },
    "excluded_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -3587,37 +2981,26 @@
      "Undergraduate education or higher",
      "Smoked at least 5 cigarettes per day during the previous year",
      "Smoked for more than 5 years and had not abstained for longer than 3 months in the past year",
-     "Satisfied ICD-10 criteria for nicotine dependence",
+     "Met ICD-10 criteria for nicotine dependence",
      "FTND score ≤6"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The inclusion criteria for smokers were: (1) smoked 5 or more cigarettes per day during the previous year; (2) smoked more than 5 years and had not abstained from smoking for longer than 3 months in the past year; and (3) satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7532,
-         "end_char": 7850
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
      "Multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease, or other central nervous system disease",
-     "Alcohol or drug abuse/dependence",
+     "Current or past alcohol or drug abuse/dependence",
      "History of head injury, skull fracture, brain tumor, or brain surgery",
      "Current or previous psychiatric disorder",
      "Use of psychotropic medication",
      "Family history of psychotic disorders",
-     "MRI contraindications",
-     "Obvious structural brain abnormality on MRI"
+     "MRI contraindication",
+     "Obvious structural brain abnormality"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3627,9 +3010,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The exclusion criteria for all groups were: (1) age of less than 18 years; (2) any current or past diagnosis of multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease or any other diseases of the central nervous system that may influence outcomes in cognitive performances or brain structure; (3) any current or past diagnosis of alcohol or drug abuse/dependence; (4) any history of head injury, such as skull fracture, brain tumor, or brain surgery; (5) any current or previous psychiatric disorders or usages of any psychotropic medications; (6) a family history of psychotic disorders; and (7) any other contraindications for MRI.",
+         "text": "The exclusion criteria for all groups were: (1) age of less than 18 years; (2) any current or past diagnosis of multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease or any other diseases of the central nervous system that may influence outcomes in cognitive performances or brain structure; (3) any current or past diagnosis of alcohol or drug abuse/dependence; (4) any history of head injury, such as skull fracture, brain tumor, or brain surgery; (5) any current or previous psychiatric disorders or usages of any psychotropic medications",
          "start_char": 9812,
-         "end_char": 10466
+         "end_char": 10375
         }
        ]
       }
@@ -3638,7 +3021,7 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Recruited young adult male smokers through the Beijing Chaoyang Hospital study setting; smoking, medical, psychiatric, medication, and substance-use information was collected by semi-structured telephone interview.",
+    "value": "Recruited through semi-structured telephone interviews at Beijing Chaoyang Hospital; specific recruitment setting beyond the study site was not reported.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3647,9 +3030,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We recruited 53 young male smokers and 53 age-matched healthy non-smokers as controls.",
-         "start_char": 6921,
-         "end_char": 7007
+         "text": "We performed semi-structured telephone interviews to collect and assess the participants’ smoking, medical, psychiatric, medication, and substance usage information.",
+         "start_char": 7366,
+         "end_char": 7531
         }
        ]
       }
@@ -3680,9 +3063,14 @@
      "status": "not_applicable"
     }
    },
-   "is_healthy": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": false,
+    "value": [
+     "Young adult male Han Chinese smokers",
+     "Moderate nicotine dependence",
+     "Mean age 32.74 ± 4.34 years",
+     "Mean FTND score 3.43 ± 1.65"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3691,9 +3079,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "There were a total of 23 smokers with moderate dependence",
-         "start_char": 12344,
-         "end_char": 12401
+         "text": "Mild/moderate addiction (n = 23)\t32.74 ± 4.34",
+         "start_char": 15788,
+         "end_char": 15833
         }
        ]
       }
@@ -3702,7 +3090,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Moderate nicotine dependence; FTND score range 1–5, mean 3.43 ± 1.65; mean age 32.74 ± 4.34 years; mean pack-years 15.93 ± 10.57.",
+    "value": "Nicotine dependence meeting ICD-10 criteria; moderate dependence defined as FTND score ≤6.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3711,9 +3099,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Mild/moderate addiction (n = 23)",
-         "start_char": 15788,
-         "end_char": 15820
+         "text": "A FTND score of ≤6 represents moderate dependence",
+         "start_char": 8338,
+         "end_char": 8387
         }
        ]
       }
@@ -3721,16 +3109,14 @@
     }
    },
    "medications": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "No current or previous psychotropic medication use; other medication status not reported.",
+    "value": "No current or previous psychotropic medication use.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3750,22 +3136,11 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Undergraduate education or higher; mean 19.17 ± 1.80 years of education.",
+    "value": "Undergraduate education or higher; mean 19.17 ± 1.80 years.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were Han Chinese male persons aged from 23 to 40 years with an undergraduate education or higher.",
-         "start_char": 7096,
-         "end_char": 7206
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "socioeconomic_status_summary": {
@@ -3774,12 +3149,39 @@
      "status": "not_applicable"
     }
    },
-   "diagnostic_instrument": [
-    "asm_ftnd"
-   ]
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "previously_reported",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Peng et al., 2015",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
   },
   {
-   "local_id": "grp_severe",
+   "local_id": "grp_severe_dependence",
    "name": {
     "extraction_status": "extracted",
     "value": "severe nicotine dependence smokers",
@@ -3820,20 +3222,69 @@
      ]
     }
    },
-   "acquired_count": {
+   "medical_condition": {
     "extraction_status": "extracted",
-    "value": 30,
+    "value": [
+     "Nicotine dependence"
+    ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "nicotine dependence",
+         "start_char": 164,
+         "end_char": 183
+        }
+       ]
+      }
+     ]
     }
    },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "ICD-10",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
+         "start_char": 7754,
+         "end_char": 7850
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_ftnd"
+   ],
    "age_mean": {
     "extraction_status": "extracted",
     "value": 30.7,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "30.70 ± 4.86",
+         "start_char": 15925,
+         "end_char": 15937
+        }
+       ]
+      }
+     ]
     }
    },
    "age_standard_deviation": {
@@ -3876,110 +3327,24 @@
      ]
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All subjects were Han Chinese male persons",
-           "start_char": 7096,
-           "end_char": 7138
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 30,
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 100.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 30,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Male participants",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    }
-   ],
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "nicotine dependence"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7754,
-         "end_char": 7850
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "ICD-10",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7754,
-         "end_char": 7850
-        }
-       ]
-      }
-     ]
-    }
-   },
    "description": {
     "extraction_status": "extracted",
-    "value": "Young adult male smokers with severe nicotine dependence, defined by FTND score >6; 30 participants were analyzed in comparison with moderate-dependence smokers and non-smokers.",
+    "value": "Young adult male smokers with severe nicotine dependence, defined by FTND score >6; n=30, compared with moderate-dependence smokers and non-smokers in ANCOVA/VBM analyses.",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "there were 30 smokers with severe dependence (FTND score ranging from 7 to 10)",
+         "start_char": 12442,
+         "end_char": 12520
+        }
+       ]
+      }
+     ]
     }
    },
    "approached_count": {
@@ -3999,7 +3364,39 @@
     "value": 30,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "there were 30 smokers with severe dependence",
+         "start_char": 12442,
+         "end_char": 12486
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 30,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "there were 30 smokers with severe dependence",
+         "start_char": 12442,
+         "end_char": 12486
+        }
+       ]
+      }
+     ]
     }
    },
    "excluded_count": {
@@ -4015,8 +3412,26 @@
      "Undergraduate education or higher",
      "Smoked at least 5 cigarettes per day during the previous year",
      "Smoked for more than 5 years and had not abstained for longer than 3 months in the past year",
-     "Satisfied ICD-10 criteria for nicotine dependence",
+     "Met ICD-10 criteria for nicotine dependence",
      "FTND score >6"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease, or other central nervous system disease",
+     "Current or past alcohol or drug abuse/dependence",
+     "History of head injury, skull fracture, brain tumor, or brain surgery",
+     "Current or previous psychiatric disorder",
+     "Use of psychotropic medication",
+     "Family history of psychotic disorders",
+     "MRI contraindication",
+     "Obvious structural brain abnormality"
     ],
     "value_source": "reported",
     "evidence": {
@@ -4026,9 +3441,363 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The inclusion criteria for smokers were: (1) smoked 5 or more cigarettes per day during the previous year; (2) smoked more than 5 years and had not abstained from smoking for longer than 3 months in the past year; and (3) satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7532,
-         "end_char": 7850
+         "text": "The exclusion criteria for all groups were: (1) age of less than 18 years; (2) any current or past diagnosis of multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease or any other diseases of the central nervous system that may influence outcomes in cognitive performances or brain structure; (3) any current or past diagnosis of alcohol or drug abuse/dependence; (4) any history of head injury, such as skull fracture, brain tumor, or brain surgery; (5) any current or previous psychiatric disorders or usages of any psychotropic medications",
+         "start_char": 9812,
+         "end_char": 10375
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Recruited through semi-structured telephone interviews at Beijing Chaoyang Hospital; specific recruitment setting beyond the study site was not reported.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We performed semi-structured telephone interviews to collect and assess the participants’ smoking, medical, psychiatric, medication, and substance usage information.",
+         "start_char": 7366,
+         "end_char": 7531
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Young adult male Han Chinese smokers",
+     "Severe nicotine dependence",
+     "Mean age 30.70 ± 4.86 years",
+     "Mean FTND score 8.00 ± 1.02"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Severe addiction (n = 30)\t30.70 ± 4.86",
+         "start_char": 15899,
+         "end_char": 15937
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Nicotine dependence meeting ICD-10 criteria; severe dependence defined as FTND score >6.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a FTND score of >6 indicates severe dependence",
+         "start_char": 8393,
+         "end_char": 8439
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "extracted",
+    "value": "No current or previous psychotropic medication use.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "any current or previous psychiatric disorders or usages of any psychotropic medications",
+         "start_char": 10288,
+         "end_char": 10375
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "Undergraduate education or higher; mean 19.26 ± 1.63 years.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "previously_reported",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Peng et al., 2015",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "grp_non_smokers",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "non-smokers",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "non-smokers",
+         "start_char": 486,
+         "end_char": 497
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "extracted",
+    "value": 30.83,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "30.83 ± 5.18",
+         "start_char": 14456,
+         "end_char": 14468
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "extracted",
+    "value": 5.18,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "30.83 ± 5.18",
+         "start_char": 14456,
+         "end_char": 14468
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "aged from 23 to 40 years",
+         "start_char": 7139,
+         "end_char": 7163
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Age-matched healthy male non-smokers who had never smoked any cigarette; n=53, serving as the control group.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Non-smokers were defined as individuals who had never smoked any cigarette prior to this study.",
+         "start_char": 9714,
+         "end_char": 9809
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 53,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "53 age-matched healthy non-smokers",
+         "start_char": 6960,
+         "end_char": 6994
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 53,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "53 age-matched healthy non-smokers",
+         "start_char": 6960,
+         "end_char": 6994
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Male Han Chinese participant aged 23–40 years",
+     "Undergraduate education or higher",
+     "Had never smoked any cigarette prior to the study",
+     "No obvious structural brain abnormality on routine MRI"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Non-smokers were defined as individuals who had never smoked any cigarette prior to this study.",
+         "start_char": 9714,
+         "end_char": 9809
         }
        ]
       }
@@ -4039,13 +3808,12 @@
     "extraction_status": "extracted",
     "value": [
      "Multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease, or other central nervous system disease",
-     "Alcohol or drug abuse/dependence",
+     "Current or past alcohol or drug abuse/dependence",
      "History of head injury, skull fracture, brain tumor, or brain surgery",
      "Current or previous psychiatric disorder",
      "Use of psychotropic medication",
      "Family history of psychotic disorders",
-     "MRI contraindications",
-     "Obvious structural brain abnormality on MRI"
+     "MRI contraindication"
     ],
     "value_source": "reported",
     "evidence": {
@@ -4055,9 +3823,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The exclusion criteria for all groups were: (1) age of less than 18 years; (2) any current or past diagnosis of multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease or any other diseases of the central nervous system that may influence outcomes in cognitive performances or brain structure; (3) any current or past diagnosis of alcohol or drug abuse/dependence; (4) any history of head injury, such as skull fracture, brain tumor, or brain surgery; (5) any current or previous psychiatric disorders or usages of any psychotropic medications; (6) a family history of psychotic disorders; and (7) any other contraindications for MRI.",
+         "text": "The exclusion criteria for all groups were: (1) age of less than 18 years; (2) any current or past diagnosis of multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease or any other diseases of the central nervous system that may influence outcomes in cognitive performances or brain structure; (3) any current or past diagnosis of alcohol or drug abuse/dependence; (4) any history of head injury, such as skull fracture, brain tumor, or brain surgery; (5) any current or previous psychiatric disorders or usages of any psychotropic medications",
          "start_char": 9812,
-         "end_char": 10466
+         "end_char": 10375
         }
        ]
       }
@@ -4066,7 +3834,7 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Recruited young adult male smokers through the Beijing Chaoyang Hospital study setting; smoking, medical, psychiatric, medication, and substance-use information was collected by semi-structured telephone interview.",
+    "value": "Recruited as age-matched healthy controls at Beijing Chaoyang Hospital; specific recruitment setting was not reported.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4108,17 +3876,14 @@
      "status": "not_applicable"
     }
    },
-   "is_healthy": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Severe nicotine dependence; FTND score range 7–10, mean 8.00 ± 1.02; mean age 30.70 ± 4.86 years; mean pack-years 23.34 ± 13.33.",
+    "value": [
+     "Young adult male Han Chinese non-smokers",
+     "Never-smokers",
+     "Age-matched healthy controls",
+     "Mean age 30.83 ± 5.18 years"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4127,9 +3892,61 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Severe addiction (n = 30)",
-         "start_char": 15899,
-         "end_char": 15924
+         "text": "53 age-matched healthy non-smokers",
+         "start_char": 6960,
+         "end_char": 6994
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "No current or past central nervous system disease",
+     "No current or previous psychiatric disorder",
+     "No current or past alcohol or drug abuse/dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "any current or past diagnosis of alcohol or drug abuse/dependence",
+         "start_char": 10130,
+         "end_char": 10195
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "ICD-10 for nicotine dependence screening; other exclusion diagnoses were not assigned under a specified system.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Healthy control group with no reported neurological, psychiatric, alcohol, or drug-use disorder.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Non-smokers were defined as individuals who had never smoked any cigarette prior to this study.",
+         "start_char": 9714,
+         "end_char": 9809
         }
        ]
       }
@@ -4137,16 +3954,14 @@
     }
    },
    "medications": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "No current or previous psychotropic medication use; other medication status not reported.",
+    "value": "No psychotropic medication use.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4166,22 +3981,11 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Undergraduate education or higher; mean 19.26 ± 1.63 years of education.",
+    "value": "Undergraduate education or higher; mean 19.33 ± 1.29 years.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were Han Chinese male persons aged from 23 to 40 years with an undergraduate education or higher.",
-         "start_char": 7096,
-         "end_char": 7206
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "socioeconomic_status_summary": {
@@ -4190,12 +3994,39 @@
      "status": "not_applicable"
     }
    },
-   "diagnostic_instrument": [
-    "asm_ftnd"
-   ]
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "previously_reported",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Peng et al., 2015",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
   },
   {
-   "local_id": "grp_light",
+   "local_id": "grp_light_smokers",
    "name": {
     "extraction_status": "extracted",
     "value": "light smokers",
@@ -4221,24 +4052,14 @@
     "value": "human",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were Han Chinese male persons",
-         "start_char": 7096,
-         "end_char": 7138
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
-   "acquired_count": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": 26,
+    "value": [
+     "smokers"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4247,9 +4068,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The light smokers group consisted of 26 subjects",
-         "start_char": 12090,
-         "end_char": 12138
+         "text": "Light smokers (n = 26)",
+         "start_char": 15490,
+         "end_char": 15512
         }
        ]
       }
@@ -4318,7 +4139,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Young adult male smokers with light tobacco consumption, defined by pack-years below the sample median of 21; 26 participants.",
+    "value": "Young adult male smokers with light lifetime tobacco consumption, defined by pack-years below the sample median of 21; n=26.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4368,6 +4189,26 @@
      ]
     }
    },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 26,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The light smokers group consisted of 26 subjects",
+         "start_char": 12090,
+         "end_char": 12138
+        }
+       ]
+      }
+     ]
+    }
+   },
    "excluded_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -4381,73 +4222,38 @@
      "Undergraduate education or higher",
      "Smoked at least 5 cigarettes per day during the previous year",
      "Smoked for more than 5 years and had not abstained for longer than 3 months in the past year",
-     "Satisfied ICD-10 criteria for nicotine dependence",
-     "Pack-years below the median value of 21"
+     "Met ICD-10 criteria for nicotine dependence",
+     "Pack-years 2.5–19.5, below the sample median of 21"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The inclusion criteria for smokers were: (1) smoked 5 or more cigarettes per day during the previous year; (2) smoked more than 5 years and had not abstained from smoking for longer than 3 months in the past year; and (3) satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7532,
-         "end_char": 7850
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
      "Multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease, or other central nervous system disease",
-     "Alcohol or drug abuse/dependence",
+     "Current or past alcohol or drug abuse/dependence",
      "History of head injury, skull fracture, brain tumor, or brain surgery",
      "Current or previous psychiatric disorder",
      "Use of psychotropic medication",
      "Family history of psychotic disorders",
-     "MRI contraindications",
-     "Obvious structural brain abnormality on MRI"
+     "MRI contraindication",
+     "Obvious structural brain abnormality"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The exclusion criteria for all groups were: (1) age of less than 18 years; (2) any current or past diagnosis of multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease or any other diseases of the central nervous system that may influence outcomes in cognitive performances or brain structure; (3) any current or past diagnosis of alcohol or drug abuse/dependence; (4) any history of head injury, such as skull fracture, brain tumor, or brain surgery; (5) any current or previous psychiatric disorders or usages of any psychotropic medications; (6) a family history of psychotic disorders; and (7) any other contraindications for MRI.",
-         "start_char": 9812,
-         "end_char": 10466
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Recruited young adult male smokers through the Beijing Chaoyang Hospital study setting; smoking, medical, psychiatric, medication, and substance-use information was collected by semi-structured telephone interview.",
+    "value": "Recruited through semi-structured telephone interviews at Beijing Chaoyang Hospital; specific recruitment setting beyond the study site was not reported.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "We recruited 53 young male smokers and 53 age-matched healthy non-smokers as controls.",
-         "start_char": 6921,
-         "end_char": 7007
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "recruitment_dates": {
@@ -4474,18 +4280,10 @@
      "status": "not_applicable"
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "Nicotine dependence"
+     "Nicotine dependence meeting ICD-10 criteria"
     ],
     "value_source": "reported",
     "evidence": {
@@ -4515,9 +4313,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7754,
-         "end_char": 7850
+         "text": "International Classification of Diseases (ICD)-10",
+         "start_char": 7768,
+         "end_char": 7817
         }
        ]
       }
@@ -4526,35 +4324,22 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Light tobacco consumption; pack-years range 2.5–19.5, mean 8.77 ± 3.57; FTND mean 5.15 ± 2.82.",
+    "value": "Long-term smokers; light tobacco consumption defined by pack-years below 21.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Light smokers (n = 26)",
-         "start_char": 15490,
-         "end_char": 15512
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "medications": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "No current or previous psychotropic medication use; other medication status not reported.",
+    "value": "No current or previous psychotropic medication use.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4574,7 +4359,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Undergraduate education or higher; mean 19.12 ± 1.48 years of education.",
+    "value": "Undergraduate education or higher; mean 19.12 ± 1.48 years.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4583,9 +4368,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects were Han Chinese male persons aged from 23 to 40 years with an undergraduate education or higher.",
-         "start_char": 7096,
-         "end_char": 7206
+         "text": "with an undergraduate education or higher",
+         "start_char": 7164,
+         "end_char": 7205
         }
        ]
       }
@@ -4597,10 +4382,43 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "previously_reported",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Peng et al., 2015",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_ftnd"
+   ]
   },
   {
-   "local_id": "grp_heavy",
+   "local_id": "grp_heavy_smokers",
    "name": {
     "extraction_status": "extracted",
     "value": "heavy smokers",
@@ -4626,24 +4444,14 @@
     "value": "human",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were Han Chinese male persons",
-         "start_char": 7096,
-         "end_char": 7138
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
-   "acquired_count": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": 27,
+    "value": [
+     "smokers"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4652,9 +4460,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "the heavy smokers group included 27 smokers",
-         "start_char": 12182,
-         "end_char": 12225
+         "text": "Heavy smokers (n = 27)",
+         "start_char": 15589,
+         "end_char": 15611
         }
        ]
       }
@@ -4723,7 +4531,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Young adult male smokers with heavy tobacco consumption, defined by pack-years at or above the sample median of 21; 27 participants.",
+    "value": "Young adult male smokers with heavy lifetime tobacco consumption, defined by pack-years at or above the sample median of 21; n=27.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4773,6 +4581,26 @@
      ]
     }
    },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 27,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the heavy smokers group included 27 smokers",
+         "start_char": 12182,
+         "end_char": 12225
+        }
+       ]
+      }
+     ]
+    }
+   },
    "excluded_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -4786,73 +4614,38 @@
      "Undergraduate education or higher",
      "Smoked at least 5 cigarettes per day during the previous year",
      "Smoked for more than 5 years and had not abstained for longer than 3 months in the past year",
-     "Satisfied ICD-10 criteria for nicotine dependence",
-     "Pack-years at or above the median value of 21"
+     "Met ICD-10 criteria for nicotine dependence",
+     "Pack-years 21–48, at or above the sample median of 21"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The inclusion criteria for smokers were: (1) smoked 5 or more cigarettes per day during the previous year; (2) smoked more than 5 years and had not abstained from smoking for longer than 3 months in the past year; and (3) satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7532,
-         "end_char": 7850
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
      "Multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease, or other central nervous system disease",
-     "Alcohol or drug abuse/dependence",
+     "Current or past alcohol or drug abuse/dependence",
      "History of head injury, skull fracture, brain tumor, or brain surgery",
      "Current or previous psychiatric disorder",
      "Use of psychotropic medication",
      "Family history of psychotic disorders",
-     "MRI contraindications",
-     "Obvious structural brain abnormality on MRI"
+     "MRI contraindication",
+     "Obvious structural brain abnormality"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The exclusion criteria for all groups were: (1) age of less than 18 years; (2) any current or past diagnosis of multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease or any other diseases of the central nervous system that may influence outcomes in cognitive performances or brain structure; (3) any current or past diagnosis of alcohol or drug abuse/dependence; (4) any history of head injury, such as skull fracture, brain tumor, or brain surgery; (5) any current or previous psychiatric disorders or usages of any psychotropic medications; (6) a family history of psychotic disorders; and (7) any other contraindications for MRI.",
-         "start_char": 9812,
-         "end_char": 10466
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Recruited young adult male smokers through the Beijing Chaoyang Hospital study setting; smoking, medical, psychiatric, medication, and substance-use information was collected by semi-structured telephone interview.",
+    "value": "Recruited through semi-structured telephone interviews at Beijing Chaoyang Hospital; specific recruitment setting beyond the study site was not reported.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "We recruited 53 young male smokers and 53 age-matched healthy non-smokers as controls.",
-         "start_char": 6921,
-         "end_char": 7007
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "recruitment_dates": {
@@ -4879,18 +4672,10 @@
      "status": "not_applicable"
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "Nicotine dependence"
+     "Nicotine dependence meeting ICD-10 criteria"
     ],
     "value_source": "reported",
     "evidence": {
@@ -4920,9 +4705,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "satisfied the International Classification of Diseases (ICD)-10 criteria for nicotine dependence",
-         "start_char": 7754,
-         "end_char": 7850
+         "text": "International Classification of Diseases (ICD)-10",
+         "start_char": 7768,
+         "end_char": 7817
         }
        ]
       }
@@ -4931,35 +4716,22 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Heavy tobacco consumption; pack-years range 21–48, mean 31.06 ± 7.40; FTND mean 6.85 ± 2.18.",
+    "value": "Long-term smokers; heavy tobacco consumption defined by pack-years at or above 21.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Heavy smokers (n = 27)",
-         "start_char": 15589,
-         "end_char": 15611
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "medications": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "No current or previous psychotropic medication use; other medication status not reported.",
+    "value": "No current or previous psychotropic medication use.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4979,7 +4751,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Undergraduate education or higher; mean 19.30 ± 1.32 years of education.",
+    "value": "Undergraduate education or higher; mean 19.30 ± 1.32 years.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4988,9 +4760,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects were Han Chinese male persons aged from 23 to 40 years with an undergraduate education or higher.",
-         "start_char": 7096,
-         "end_char": 7206
+         "text": "with an undergraduate education or higher",
+         "start_char": 7164,
+         "end_char": 7205
         }
        ]
       }
@@ -5002,425 +4774,40 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  },
-  {
-   "local_id": "grp_nonsmokers",
-   "name": {
+   },
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": "non-smokers",
+    "value": "previously_reported",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "non-smokers",
-         "start_char": 486,
-         "end_char": 497
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
-   "species": {
+   "sample_source_reference": {
     "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
+    "value": "Peng et al., 2015",
+    "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were Han Chinese male persons",
-         "start_char": 7096,
-         "end_char": 7138
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "is_healthy": {
     "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "53 age-matched healthy non-smokers",
-         "start_char": 6960,
-         "end_char": 6994
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 53,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "53 age-matched healthy non-smokers",
-         "start_char": 6960,
-         "end_char": 6994
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All subjects were Han Chinese male persons",
-           "start_char": 7096,
-           "end_char": 7138
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 53,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "53 age-matched healthy non-smokers",
-           "start_char": 6960,
-           "end_char": 6994
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 100.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 53,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Male participants",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    }
-   ],
-   "age_mean": {
-    "extraction_status": "extracted",
-    "value": 30.83,
+    "value": false,
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
    },
-   "age_standard_deviation": {
-    "extraction_status": "extracted",
-    "value": 5.18,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "aged from 23 to 40 years",
-         "start_char": 7139,
-         "end_char": 7163
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Age-matched healthy male non-smokers who had never smoked any cigarette, serving as the control group; 53 participants.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Non-smokers were defined as individuals who had never smoked any cigarette prior to this study.",
-         "start_char": 9714,
-         "end_char": 9809
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 53,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "53 age-matched healthy non-smokers",
-         "start_char": 6960,
-         "end_char": 6994
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Male Han Chinese participant aged 23–40 years",
-     "Undergraduate education or higher",
-     "Had never smoked any cigarette prior to the study"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Non-smokers were defined as individuals who had never smoked any cigarette prior to this study.",
-         "start_char": 9714,
-         "end_char": 9809
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease, or other central nervous system disease",
-     "Alcohol or drug abuse/dependence",
-     "History of head injury, skull fracture, brain tumor, or brain surgery",
-     "Current or previous psychiatric disorder",
-     "Use of psychotropic medication",
-     "Family history of psychotic disorders",
-     "MRI contraindications",
-     "Obvious structural brain abnormality on MRI"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The exclusion criteria for all groups were: (1) age of less than 18 years; (2) any current or past diagnosis of multiple sclerosis, schizophrenia, Parkinson’s disease, Alzheimer’s disease or any other diseases of the central nervous system that may influence outcomes in cognitive performances or brain structure; (3) any current or past diagnosis of alcohol or drug abuse/dependence; (4) any history of head injury, such as skull fracture, brain tumor, or brain surgery; (5) any current or previous psychiatric disorders or usages of any psychotropic medications; (6) a family history of psychotic disorders; and (7) any other contraindications for MRI.",
-         "start_char": 9812,
-         "end_char": 10466
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Recruited age-matched healthy male non-smokers through the Beijing Chaoyang Hospital study setting.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "We recruited 53 young male smokers and 53 age-matched healthy non-smokers as controls.",
-         "start_char": 6921,
-         "end_char": 7007
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Healthy non-smokers; mean age 30.83 ± 5.18 years.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "53 age-matched healthy non-smokers",
-         "start_char": 6960,
-         "end_char": 6994
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medications": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "extracted",
-    "value": "No psychotropic medication use reported; other medication status not reported.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "extracted",
-    "value": "19.32 ± 1.29 years of education; years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were Han Chinese male persons aged from 23 to 40 years with an undergraduate education or higher.",
-         "start_char": 7096,
-         "end_char": 7206
-        }
-       ]
-      }
-     ]
-    }
-   }
+   "diagnostic_instrument": [
+    "asm_ftnd"
+   ]
   }
  ],
  "inference_settings": [
@@ -5429,9 +4816,21 @@
    "inference_level": {
     "extraction_status": "extracted",
     "value": "voxel",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel",
+         "start_char": 140,
+         "end_char": 145
+        }
+       ]
+      }
+     ]
     }
    },
    "height_threshold_value": {
@@ -5516,7 +4915,7 @@
    },
    "multiple_comparison_method": {
     "extraction_status": "extracted",
-    "value": "AlphaSim correction",
+    "value": "AlphaSim",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -5542,26 +4941,6 @@
      "status": "not_found"
     }
    },
-   "alpha_level": {
-    "extraction_status": "extracted",
-    "value": 0.05,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "a   p   < 0.05 AlphaSim correction",
-         "start_char": 13704,
-         "end_char": 13738
-        }
-       ]
-      }
-     ]
-    }
-   },
    "search_volume": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -5579,7 +4958,19 @@
     "value": false,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Alphasim correction but not FWE/FDR corrections was adopted in the study",
+         "start_char": 13539,
+         "end_char": 13611
+        }
+       ]
+      }
+     ]
     }
    },
    "tfce_parameters": {
@@ -5594,6 +4985,26 @@
      "status": "not_applicable"
     }
    },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "p < 0.05",
+         "start_char": 18322,
+         "end_char": 18330
+        }
+       ]
+      }
+     ]
+    }
+   },
    "number_of_tests": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -5604,7 +5015,7 @@
  ],
  "measures": [
   {
-   "local_id": "mea_gm_volume",
+   "local_id": "mea_gray_matter_volume",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
@@ -5616,9 +5027,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Voxel-based morphometry (VBM)",
-         "start_char": 3099,
-         "end_char": 3128
+         "text": "VBM analysis",
+         "start_char": 11457,
+         "end_char": 11469
         }
        ]
       }
@@ -5630,7 +5041,19 @@
     "value": "gray_matter_volume",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "GM",
+         "start_char": 344,
+         "end_char": 346
+        }
+       ]
+      }
+     ]
     }
    },
    "source_label": {
@@ -5638,12 +5061,13 @@
     "value": "GM volume",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "voxel-based morphometry of normalized modulated gray-matter volume",
+    "value": "Voxel-based morphometry gray-matter volume",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -5652,9 +5076,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The images were processed with the following steps: bias correction, tissue segmentation, and data registration using linear (12-parameter affine) and non-linear transformations (warping). Analyses were subsequently performed on the GM and WM segments.",
-         "start_char": 11537,
-         "end_char": 11789
+         "text": "whole-brain GM",
+         "start_char": 3737,
+         "end_char": 3751
         }
        ]
       }
@@ -5669,7 +5093,7 @@
    }
   },
   {
-   "local_id": "mea_wm_volume",
+   "local_id": "mea_white_matter_volume",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
@@ -5681,9 +5105,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Voxel-based morphometry (VBM)",
-         "start_char": 3099,
-         "end_char": 3128
+         "text": "VBM analysis",
+         "start_char": 11457,
+         "end_char": 11469
         }
        ]
       }
@@ -5701,9 +5125,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "WM volume",
-         "start_char": 1039,
-         "end_char": 1048
+         "text": "WM",
+         "start_char": 366,
+         "end_char": 368
         }
        ]
       }
@@ -5732,22 +5156,11 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "voxel-based morphometry of normalized modulated white-matter volume",
+    "value": "Voxel-based morphometry white-matter volume",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The images were processed with the following steps: bias correction, tissue segmentation, and data registration using linear (12-parameter affine) and non-linear transformations (warping). Analyses were subsequently performed on the GM and WM segments.",
-         "start_char": 11537,
-         "end_char": 11789
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "unit": {
@@ -5760,7 +5173,7 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_moderate_gm",
+   "local_id": "mod_ancova",
    "model_family": {
     "extraction_status": "extracted",
     "value": "ancova",
@@ -5783,7 +5196,7 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "ANCOVA and post hoc test",
+    "value": "ANCOVA and post hoc group comparison model",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -5792,9 +5205,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "we separately did the ANCOVA analysis",
-         "start_char": 12534,
-         "end_char": 12571
+         "text": "ANCOVA analysis combined with subsequent   post hoc   test",
+         "start_char": 810,
+         "end_char": 868
         }
        ]
       }
@@ -5812,9 +5225,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "After the ANCOVA analysis, the between-group differences were subsequently obtained using the   post hoc   test.",
+         "text": "After the ANCOVA analysis",
          "start_char": 12915,
-         "end_char": 13027
+         "end_char": 12940
         }
        ]
       }
@@ -5832,50 +5245,45 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Voxel-based morphometry analysis",
-         "start_char": 753,
-         "end_char": 785
+         "text": "voxel",
+         "start_char": 140,
+         "end_char": 145
         }
        ]
       }
      ]
     }
    },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "DPABI V2.3",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The statistical analysis was conducted with the DPABI software (V2.3) .",
-         "start_char": 13770,
-         "end_char": 13841
-        }
-       ]
-      }
-     ]
-    }
-   },
+   "preprocessing": [
+    "prp_vbm"
+   ],
    "terms": [
     {
-     "local_id": "mod_moderate_gm.trm_dependence",
+     "local_id": "trm_dependence_group",
      "name": {
       "extraction_status": "extracted",
       "value": "nicotine dependence group",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "nicotine dependence smokers",
+           "start_char": 1441,
+           "end_char": 1468
+          }
+         ]
+        }
+       ]
       }
      },
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
       }
@@ -5891,9 +5299,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "among different nicotine dependence smokers",
-           "start_char": 12729,
-           "end_char": 12772
+           "text": "among smokers with different degrees of dependence",
+           "start_char": 14640,
+           "end_char": 14690
           }
          ]
         }
@@ -5923,12 +5331,12 @@
         }
        },
        "groups": [
-        "grp_moderate"
+        "grp_mild_moderate_dependence"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 1,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -5956,12 +5364,12 @@
         }
        },
        "groups": [
-        "grp_severe"
+        "grp_severe_dependence"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -5989,26 +5397,14 @@
         }
        },
        "groups": [
-        "grp_nonsmokers"
+        "grp_non_smokers"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 3,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "non-smokers",
-             "start_char": 486,
-             "end_char": 497
-            }
-           ]
-          }
-         ]
+         "status": "not_found"
         }
        }
       }
@@ -6027,425 +5423,27 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Nicotine dependence group defined by FTND score: mild/moderate dependence ≤6, severe dependence >6, with non-smokers as controls.",
+      "value": "Categorical nicotine-dependence grouping based on FTND score: mild/moderate dependence ≤6 and severe dependence >6.",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Then, we regrouped smokers as moderate or severe dependence using the FTND score.",
+           "start_char": 12262,
+           "end_char": 12343
+          }
+         ]
+        }
+       ]
       }
      }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "extracted",
-    "value": "not applicable; voxel-based morphometry measure with no modeled time series",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA with age, intracranial volume, and pack-years as covariates; post hoc between-group tests; AlphaSim correction with voxelwise p < 0.005 and cluster size >42 corresponding to corrected p < 0.05.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "among different nicotine dependence smokers (i.e., severe dependence smokers, moderate dependence smokers, non-smokers) by setting age, intracranial volume and pack-years as covariates.",
-         "start_char": 12729,
-         "end_char": 12914
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "preprocessing": [
-    "prp_vbm"
-   ]
-  },
-  {
-   "local_id": "mod_moderate_wm",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ANCOVA analysis",
-         "start_char": 810,
-         "end_char": 825
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA and post hoc test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "we separately did the ANCOVA analysis",
-         "start_char": 12534,
-         "end_char": 12571
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "After the ANCOVA analysis, the between-group differences were subsequently obtained using the   post hoc   test.",
-         "start_char": 12915,
-         "end_char": 13027
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "voxel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-based morphometry analysis",
-         "start_char": 753,
-         "end_char": 785
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "terms": [],
-   "hrf_model": {
-    "extraction_status": "extracted",
-    "value": "not applicable; voxel-based morphometry measure with no modeled time series",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA with age, intracranial volume, and pack-years as covariates; post hoc between-group tests; AlphaSim correction with voxelwise p < 0.005 and cluster size >42 corresponding to corrected p < 0.05.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "among different nicotine dependence smokers (i.e., severe dependence smokers, moderate dependence smokers, non-smokers) by setting age, intracranial volume and pack-years as covariates.",
-         "start_char": 12729,
-         "end_char": 12914
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "DPABI v2.3; preprocessing and VBM used SPM8 with the DARTEL toolbox.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The statistical analysis was conducted with the DPABI software (V2.3) .",
-         "start_char": 13770,
-         "end_char": 13841
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "preprocessing": [
-    "prp_vbm"
-   ],
-   "inputs_from": [
-    "mod_moderate_gm"
-   ]
-  },
-  {
-   "local_id": "mod_severe_gm",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA and post hoc test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "voxel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "terms": [],
-   "hrf_model": {
-    "extraction_status": "extracted",
-    "value": "not applicable; voxel-based morphometry measure with no modeled time series",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA with age, intracranial volume, and pack-years as covariates; post hoc between-group tests; AlphaSim correction with voxelwise p < 0.005 and cluster size >42 corresponding to corrected p < 0.05.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "DPABI v2.3; preprocessing and VBM used SPM8 with the DARTEL toolbox.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "preprocessing": [
-    "prp_vbm"
-   ],
-   "inputs_from": [
-    "mod_moderate_gm"
-   ]
-  },
-  {
-   "local_id": "mod_severe_wm",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA and post hoc test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "voxel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "terms": [],
-   "hrf_model": {
-    "extraction_status": "extracted",
-    "value": "not applicable; voxel-based morphometry measure with no modeled time series",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA with age, intracranial volume, and pack-years as covariates; post hoc between-group tests; AlphaSim correction with voxelwise p < 0.005 and cluster size >42 corresponding to corrected p < 0.05.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "DPABI v2.3; preprocessing and VBM used SPM8 with the DARTEL toolbox.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "preprocessing": [
-    "prp_vbm"
-   ],
-   "inputs_from": [
-    "mod_moderate_gm"
-   ]
-  },
-  {
-   "local_id": "mod_packyears",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ANCOVA analysis",
-         "start_char": 810,
-         "end_char": 825
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA and post hoc test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "we separately did the ANCOVA analysis",
-         "start_char": 12534,
-         "end_char": 12571
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "After the ANCOVA analysis, the between-group differences were subsequently obtained using the   post hoc   test.",
-         "start_char": 12915,
-         "end_char": 13027
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "voxel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-based morphometry analysis",
-         "start_char": 753,
-         "end_char": 785
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "terms": [
+    },
     {
-     "local_id": "trm_packyears",
+     "local_id": "trm_smoking_amount_group",
      "name": {
       "extraction_status": "extracted",
       "value": "smoking amount group",
@@ -6457,8 +5455,8 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "smokers with different smoking accounts",
-           "start_char": 12578,
+           "text": "smoking accounts",
+           "start_char": 12601,
            "end_char": 12617
           }
          ]
@@ -6469,7 +5467,7 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
       }
@@ -6498,8 +5496,8 @@
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "light smoking amount",
-        "value_source": "generated",
+        "value": "light smokers",
+        "value_source": "reported",
         "evidence": {
          "status": "present",
          "sets": [
@@ -6517,12 +5515,12 @@
         }
        },
        "groups": [
-        "grp_light"
+        "grp_light_smokers"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 1,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -6531,13 +5529,13 @@
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "heavy smoking amount",
-        "value_source": "generated",
+        "value": "heavy smokers",
+        "value_source": "reported",
         "evidence": {
          "status": "present",
          "sets": [
           {
-           "source": "literal_match",
+           "source": "model_quote",
            "spans": [
             {
              "text": "heavy smokers",
@@ -6550,12 +5548,45 @@
         }
        },
        "groups": [
-        "grp_heavy"
+        "grp_heavy_smokers"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 2,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "non-smokers",
         "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "non-smokers",
+             "start_char": 486,
+             "end_char": 497
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_non_smokers"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 3,
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -6569,58 +5600,31 @@
       }
      },
      "unit": {
-      "extraction_status": "extracted",
-      "value": "pack-years",
-      "value_source": "reported",
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "pack-years",
-           "start_char": 184,
-           "end_char": 194
-          }
-         ]
-        }
-       ]
+       "status": "not_applicable"
       }
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Pack-years calculated as packs smoked per day multiplied by years as a smoker, or cigarettes smoked per day multiplied by years as a smoker divided by 20.",
+      "value": "Categorical smoking-amount grouping based on pack-years: light smokers below the sample median of 21 pack-years and heavy smokers at or above 21 pack-years.",
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The number of pack-years is calculated as follows: (packs smoked per day) × (years as a smoker) or (number of cigarettes smoked per day) × (years as a smoker)/20",
-           "start_char": 8671,
-           "end_char": 8832
-          }
-         ]
-        }
-       ]
+       "status": "not_found",
+       "unlocated_quotes": 1
       }
      }
     }
    ],
    "hrf_model": {
-    "extraction_status": "extracted",
-    "value": "not applicable; voxel-based morphometry measure with no modeled time series",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "ANCOVA with age, intracranial volume, and FTND score as covariates; post hoc between-group tests; AlphaSim correction with voxelwise p < 0.005 and cluster size >42 corresponding to corrected p < 0.05.",
+    "value": "ANCOVA with age and intracranial volume covariates; FTND was additionally included for smoking-amount comparisons and pack-years for nicotine-dependence comparisons; post hoc between-group tests; AlphaSim correction with voxelwise p<0.005 and cluster size >42.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -6629,8 +5633,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "among smokers with different smoking accounts (i.e., heavy smokers, light smokers, non-smokers) by setting age, intracranial volume, FTND as covariates",
-         "start_char": 12572,
+         "text": "setting age, intracranial volume, FTND as covariates",
+         "start_char": 12671,
          "end_char": 12723
         }
        ]
@@ -6646,215 +5650,24 @@
    },
    "software": {
     "extraction_status": "extracted",
-    "value": "DPABI v2.3; preprocessing and VBM used SPM8 with the DARTEL toolbox.",
+    "value": "DPABI v2.3; VBM preprocessing performed using SPM8 with the DARTEL toolbox.",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "preprocessing": [
-    "prp_vbm"
-   ],
-   "inputs_from": [
-    "mod_moderate_gm"
-   ]
-  },
-  {
-   "local_id": "mod_dependence_between",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA and post hoc test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "voxel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "terms": [
-    {
-     "local_id": "mod_dependence_between.trm_dependence",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "nicotine dependence group",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [
+     "status": "present",
+     "sets": [
       {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "mild/moderate nicotine dependence smokers",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "literal_match",
-           "spans": [
-            {
-             "text": "Regions of smaller Gray matter and White matter volumes in 23 mild/moderate nicotine dependence smokers than in 53 non-smokers.",
-             "start_char": 17317,
-             "end_char": 17444
-            }
-           ]
-          }
-         ]
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The statistical analysis was conducted with the DPABI software (V2.3)",
+         "start_char": 13770,
+         "end_char": 13839
         }
-       },
-       "groups": [
-        "grp_moderate"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "severe nicotine dependence smokers",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       },
-       "groups": [
-        "grp_severe"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "non-smokers",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       },
-       "groups": [
-        "grp_nonsmokers"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 3,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
+       ]
       }
-     ],
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Nicotine dependence group defined by FTND score: mild/moderate dependence ≤6, severe dependence >6, with non-smokers as controls.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
+     ]
     }
-   ],
-   "hrf_model": {
-    "extraction_status": "extracted",
-    "value": "not applicable; voxel-based morphometry measure with no modeled time series",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "ANCOVA among moderate-dependence smokers, severe-dependence smokers, and non-smokers, with age, intracranial volume, and pack-years as covariates; post hoc between-group tests; AlphaSim correction with voxelwise p < 0.005 and cluster size >42 corresponding to corrected p < 0.05.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "DPABI v2.3; preprocessing and VBM used SPM8 with the DARTEL toolbox.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "preprocessing": [
-    "prp_vbm"
-   ],
-   "inputs_from": [
-    "mod_moderate_gm"
-   ]
+   }
   }
  ],
  "preprocessings": [
@@ -6862,7 +5675,7 @@
    "local_id": "prp_vbm",
    "description": {
     "extraction_status": "extracted",
-    "value": "VBM preprocessing using SPM8 and DARTEL, including bias correction, tissue segmentation, linear and nonlinear registration, modulation, normalization, and smoothing.",
+    "value": "VBM preprocessing using SPM8 and DARTEL, including bias correction, tissue segmentation, registration, normalization and smoothing.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -6883,9 +5696,9 @@
    "software": {
     "extraction_status": "extracted",
     "value": [
-     "SPM8",
-     "DARTEL",
-     "DPABI V2.3"
+     "Statistical Parametric Mapping software (SPM8)",
+     "DARTEL Tool",
+     "DPABI software (V2.3)"
     ],
     "value_source": "reported",
     "evidence": {
@@ -6907,18 +5720,27 @@
    "steps": {
     "extraction_status": "extracted",
     "value": [
-     "Bias correction",
-     "Tissue segmentation",
-     "12-parameter affine registration",
-     "Nonlinear warping",
-     "DARTEL registration",
-     "Normalization",
-     "Modulation",
-     "Smoothing with a 6 mm FWHM Gaussian kernel"
+     "bias correction",
+     "tissue segmentation",
+     "linear and non-linear registration",
+     "normalization",
+     "smoothing"
     ],
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "bias correction, tissue segmentation, and data registration",
+         "start_char": 11589,
+         "end_char": 11648
+        }
+       ]
+      }
+     ]
     }
    },
    "smoothing_fwhm_mm": {
@@ -6947,7 +5769,7 @@
  ],
  "tables": [
   {
-   "local_id": "T1",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -6974,7 +5796,7 @@
    }
   },
   {
-   "local_id": "T2",
+   "local_id": "tbltable2",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 2",
@@ -7006,18 +5828,10 @@
     "evidence": {
      "status": "not_found"
     }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Reported effects",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
    }
   },
   {
-   "local_id": "T3",
+   "local_id": "tbltable3",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 3",
@@ -7049,18 +5863,10 @@
     "evidence": {
      "status": "not_found"
     }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Reported effects",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
    }
   },
   {
-   "local_id": "T4",
+   "local_id": "tbltable4",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 4",
@@ -7092,18 +5898,10 @@
     "evidence": {
      "status": "not_found"
     }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Reported effects",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
    }
   },
   {
-   "local_id": "T5",
+   "local_id": "tbltable5",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 5",
@@ -7135,18 +5933,10 @@
     "evidence": {
      "status": "not_found"
     }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Reported effects",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
    }
   },
   {
-   "local_id": "T6",
+   "local_id": "tbltable6",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 6",
@@ -7178,7 +5968,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "694cda0aea361e36a2091e285f93e07fb6fe5ac23e51c896fc0b3461d78210a1",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -7288,5 +6078,8 @@
  },
  "study_type": [
   "Journal Article"
+ ],
+ "language": [
+  "eng"
  ]
 }

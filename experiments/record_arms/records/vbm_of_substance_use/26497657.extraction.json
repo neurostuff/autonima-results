@@ -1,7 +1,7 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study used structural MRI gray matter volumes and multivariate SVM-RFE classification to discriminate smokers from nonsmokers, followed by exploratory regressions relating gray matter volume to smoking measures.",
+  "value": "The study used structural MRI gray matter volumes and multivariate machine learning to classify smokers and nonsmokers, followed by exploratory regression analyses relating gray matter volume to smoking measures.",
   "value_source": "generated",
   "evidence": {
    "status": "present",
@@ -19,17 +19,11 @@
    ]
   }
  },
- "hypothesis": {
-  "extraction_status": "not_reported",
-  "evidence": {
-   "status": "not_applicable"
-  }
- },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Cross-sectional observational study of smokers and nonsmoking healthy controls.",
-   "value_source": "generated",
+   "value": "cross-sectional",
+   "value_source": "reported",
    "evidence": {
     "status": "present",
     "sets": [
@@ -37,9 +31,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "Eighty‐eight cigarette smokers and 88 nonsmoking healthy control participants (see Table 1 for demographics) were enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program (NIDA‐IRP).",
-        "start_char": 7173,
-        "end_char": 7442
+        "text": "cross‐sectional nature of this design",
+        "start_char": 29251,
+        "end_char": 29288
        }
       ]
      }
@@ -48,27 +42,15 @@
   },
   "allocation": {
    "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "The entire procedure was repeated 100 times to avoid biased selection of the independent testing set.",
-        "start_char": 10329,
-        "end_char": 10430
-       }
-      ]
-     }
-    ]
+    "status": "not_found"
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -77,9 +59,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "Before classification, the entire dataset was randomly divided into a cross‐validation set (60 smokers and 60 nonsmokers) and an independent testing set (28 smokers and 28 nonsmokers).",
-        "start_char": 9389,
-        "end_char": 9573
+        "text": "smokers and nonsmokers",
+        "start_char": 33,
+        "end_char": 55
        }
       ]
      }
@@ -87,9 +69,23 @@
    }
   },
   "blinding": {
-   "extraction_status": "not_reported",
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
    "evidence": {
-    "status": "not_applicable"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "the independent testing set",
+        "start_char": 10134,
+        "end_char": 10161
+       }
+      ]
+     }
+    ]
    }
   },
   "arms": [],
@@ -120,18 +116,18 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity, while controlling for age and gender.",
+    "value": "GMVs in the PFC, ACC, lingual gyrus, and the thalamus were inversely related to FTND scores.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
-         "start_char": 17780,
-         "end_char": 18020
+         "text": "GMVs in the putamen, hippocampus, and the calcarine gyrus were inversely related to lifetime smoking history, while GMVs in the PFC, ACC, lingual gyrus, and the thalamus were inversely related to FTND scores.",
+         "start_char": 19988,
+         "end_char": 20196
         }
        ]
       }
@@ -169,23 +165,40 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+         "text": "Mean GMVs in significant ROIs",
          "start_char": 17780,
-         "end_char": 18020
+         "end_char": 17809
         }
        ]
       }
      ]
     }
    },
+   "regions": [
+    "r_consistent_rois"
+   ],
    "measure": "mea_gmv",
    "groups": [
     {
      "group": "grp_smokers",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 88,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Eighty‐eight cigarette smokers and 88 nonsmoking healthy control participants (see Table 1 for demographics) were enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program (NIDA‐IRP).",
+           "start_char": 7173,
+           "end_char": 7442
+          }
+         ]
+        }
+       ]
       }
      }
     },
@@ -223,16 +236,24 @@
         ]
        }
       },
-      "level": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "FTND scores",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "FTND scores",
+            "start_char": 20184,
+            "end_char": 20195
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -248,9 +269,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "We performed regression analyses between the mean GMVs in the 150 consistent ROIs and smoking measures (FTND and lifetime usage), controlling for both age and gender.",
-          "start_char": 19725,
-          "end_char": 19891
+          "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+          "start_char": 17780,
+          "end_char": 18020
          }
         ]
        }
@@ -278,13 +299,13 @@
        ]
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -295,12 +316,12 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_ftnd",
    "acquisitions": [
-    "acq_mri"
+    "acq_structural_mri"
    ],
+   "model_estimation": "mod_ftnd_regression",
    "tables": [
-    "226"
+    "tbl1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -334,23 +355,35 @@
     "extraction_status": "extracted",
     "value": [
      "GMVs in the PFC, ACC, lingual gyrus, and the thalamus were inversely related to FTND scores.",
-     "GMVs in the middle cingulate cortex, superior medial gyrus, pre-/postcentral gyrus, precuneus, caudate, and the parahippocampal gyrus were inversely related to both lifetime usage and FTND scores.",
-     "Greater nicotine addiction/duration of use is associated with smaller GMVs in multiple brain regions."
+     "Finally, GMVs in the middle cingulate cortex, superior medial gyrus, pre-/postcentral gyrus, precuneus, caudate, and the parahippocampal gyrus were inversely related to both lifetime usage and FTND scores.",
+     "These results did not withstand rigorous multiple comparisons corrections and should be considered exploratory."
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "GMVs in the PFC, ACC, lingual gyrus, and the thalamus were inversely related to FTND scores. Finally, GMVs in the middle cingulate cortex, superior medial gyrus, pre‐/postcentral gyrus, precuneus, caudate, and the parahippocampal gyrus were inversely related to both lifetime usage and FTND scores.",
+         "start_char": 20104,
+         "end_char": 20402
+        }
+       ]
+      }
+     ]
     }
    },
    "model_representation_notes": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Mean GMVs in significant ROIs were regressed against FTND while controlling for age and gender; the analyses were exploratory and used uncorrected P < 0.05 across many regions.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
-   "regions": [
-    "reg_1024_cerebral_cortical"
-   ],
    "assessments": [
     "asm_ftnd"
    ]
@@ -362,39 +395,17 @@
     "value": "Lifetime usage (inverse correlations)",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "GMVs in the putamen, hippocampus, and the calcarine gyrus were inversely related to lifetime smoking history",
-         "start_char": 19988,
-         "end_char": 20096
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Mean GMVs in significant ROIs were separately regressed against lifetime usage scores while controlling for age and gender.",
+    "value": "GMVs in the putamen, hippocampus, and the calcarine gyrus were inversely related to lifetime smoking history.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
-         "start_char": 17780,
-         "end_char": 18020
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "prespecification": {
@@ -428,23 +439,40 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+         "text": "Mean GMVs in significant ROIs",
          "start_char": 17780,
-         "end_char": 18020
+         "end_char": 17809
         }
        ]
       }
      ]
     }
    },
+   "regions": [
+    "r_consistent_rois"
+   ],
    "measure": "mea_gmv",
    "groups": [
     {
      "group": "grp_smokers",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 88,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Eighty‐eight cigarette smokers and 88 nonsmoking healthy control participants (see Table 1 for demographics) were enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program (NIDA‐IRP).",
+           "start_char": 7173,
+           "end_char": 7442
+          }
+         ]
+        }
+       ]
       }
      }
     },
@@ -482,16 +510,24 @@
         ]
        }
       },
-      "level": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "lifetime smoking history",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "literal_match",
+          "spans": [
+           {
+            "text": "GMVs in the putamen, hippocampus, and the calcarine gyrus were inversely related to lifetime smoking history, while GMVs in the PFC, ACC, lingual gyrus, and the thalamus were inversely related to FTND scores.",
+            "start_char": 19988,
+            "end_char": 20196
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -507,9 +543,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "We performed regression analyses between the mean GMVs in the 150 consistent ROIs and smoking measures (FTND and lifetime usage), controlling for both age and gender.",
-          "start_char": 19725,
-          "end_char": 19891
+          "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+          "start_char": 17780,
+          "end_char": 18020
          }
         ]
        }
@@ -537,13 +573,13 @@
        ]
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -554,12 +590,12 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_lifetime_usage",
    "acquisitions": [
-    "acq_mri"
+    "acq_structural_mri"
    ],
+   "model_estimation": "mod_lifetime_usage_regression",
    "tables": [
-    "226"
+    "tbl1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -593,28 +629,40 @@
     "extraction_status": "extracted",
     "value": [
      "GMVs in the putamen, hippocampus, and the calcarine gyrus were inversely related to lifetime smoking history.",
-     "GMVs in the middle cingulate cortex, superior medial gyrus, pre-/postcentral gyrus, precuneus, caudate, and the parahippocampal gyrus were inversely related to both lifetime usage and FTND scores.",
-     "Greater nicotine addiction/duration of use is associated with smaller GMVs in multiple brain regions."
+     "Finally, GMVs in the middle cingulate cortex, superior medial gyrus, pre-/postcentral gyrus, precuneus, caudate, and the parahippocampal gyrus were inversely related to both lifetime usage and FTND scores.",
+     "These results did not withstand rigorous multiple comparisons corrections and should be considered exploratory."
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "GMVs in the putamen, hippocampus, and the calcarine gyrus were inversely related to lifetime smoking history, while GMVs in the PFC, ACC, lingual gyrus, and the thalamus were inversely related to FTND scores. Finally, GMVs in the middle cingulate cortex, superior medial gyrus, pre‐/postcentral gyrus, precuneus, caudate, and the parahippocampal gyrus were inversely related to both lifetime usage and FTND scores.",
+         "start_char": 19988,
+         "end_char": 20402
+        }
+       ]
+      }
+     ]
     }
    },
    "model_representation_notes": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Mean GMVs in significant ROIs were regressed against lifetime usage while controlling for age and gender; the analyses were exploratory and used uncorrected P < 0.05 across many regions.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
-   },
-   "regions": [
-    "reg_1024_cerebral_cortical"
-   ]
+   }
   }
  ],
  "acquisitions": [
   {
-   "local_id": "acq_mri",
+   "local_id": "acq_structural_mri",
    "acquisition_type": "MRI",
    "modality": {
     "extraction_status": "extracted",
@@ -627,22 +675,15 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Structural MRI data were collected at the NIDA‐IRP on a 3 T Siemens Allegra MRI scanner",
+         "text": "Structural MRI data",
          "start_char": 8489,
-         "end_char": 8576
+         "end_char": 8508
         }
        ]
       }
      ]
     }
    },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "device": "dev_siemens_allegra",
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3,
@@ -654,9 +695,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a 3 T Siemens Allegra MRI scanner",
-         "start_char": 8543,
-         "end_char": 8576
+         "text": "3 T",
+         "start_char": 8545,
+         "end_char": 8548
         }
        ]
       }
@@ -769,12 +810,21 @@
      ]
     }
    },
-   "number_of_volumes": {
+   "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "device": "dev_siemens_allegra"
   }
  ],
  "assessments": [
@@ -791,9 +841,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Fagerström Test for Nicotine Dependence (FTND)",
-         "start_char": 17848,
-         "end_char": 17894
+         "text": "Fagerström Test for Nicotine Dependence",
+         "start_char": 8235,
+         "end_char": 8274
         }
        ]
       }
@@ -825,19 +875,7 @@
     "value": "clinical scale",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "a measure of dependence severity",
-         "start_char": 17896,
-         "end_char": 17928
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    }
   }
@@ -901,29 +939,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "cigarette smokers",
-         "start_char": 7186,
-         "end_char": 7203
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "cigarette smokers; none were currently trying to quit or seeking smoking cessation treatment",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "None of the smokers were currently trying to quit or seeking smoking cessation treatment.",
-         "start_char": 7554,
-         "end_char": 7643
+         "text": "smokers",
+         "start_char": 33,
+         "end_char": 40
         }
        ]
       }
@@ -941,9 +959,81 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All participants provided written informed consent and received monetary compensation for their participation.",
-         "start_char": 7443,
-         "end_char": 7553
+         "text": "participants",
+         "start_char": 7238,
+         "end_char": 7250
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "cigarette smokers"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Eighty‐eight cigarette smokers",
+         "start_char": 7173,
+         "end_char": 7203
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "nicotine dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "were enrolled under several protocols",
+         "start_char": 7282,
+         "end_char": 7319
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Cigarette smokers; participants whose structural MRI gray-matter volumes were used to classify smokers versus nonsmokers.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Eighty‐eight cigarette smokers and 88 nonsmoking healthy control participants",
+         "start_char": 7173,
+         "end_char": 7250
         }
        ]
       }
@@ -957,23 +1047,9 @@
     }
    },
    "consented_count": {
-    "extraction_status": "extracted",
-    "value": 88,
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Eighty‐eight cigarette smokers and 88 nonsmoking healthy control participants (see Table 1 for demographics) were enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program (NIDA‐IRP).",
-         "start_char": 7173,
-         "end_char": 7442
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "enrolled_count": {
@@ -1023,17 +1099,36 @@
     }
    },
    "inclusion_criteria": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": [
+     "Cigarette smoker",
+     "Not currently trying to quit",
+     "Not seeking smoking cessation treatment"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "None of the smokers were currently trying to quit or seeking smoking cessation treatment.",
+         "start_char": 7554,
+         "end_char": 7643
+        }
+       ]
+      }
+     ]
     }
    },
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "major medical illness",
-     "history of neurological or psychiatric disorders",
-     "current or past dependence on any drug other than nicotine"
+     "Major medical illness",
+     "History of neurological disorder",
+     "History of psychiatric disorder",
+     "Current or past dependence on any drug other than nicotine"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1054,18 +1149,18 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program",
+    "value": "Enrolled under several protocols at the National Institute on Drug Abuse Intramural Research Program.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Eighty‐eight cigarette smokers and 88 nonsmoking healthy control participants (see Table 1 for demographics) were enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program (NIDA‐IRP).",
-         "start_char": 7173,
-         "end_char": 7442
+         "text": "enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program (NIDA‐IRP)",
+         "start_char": 7287,
+         "end_char": 7441
         }
        ]
       }
@@ -1114,42 +1209,30 @@
      "status": "not_applicable"
     }
    },
-   "sex_distribution": [],
-   "gender_distribution": [],
-   "handedness_distribution": [],
-   "race_distribution": [],
-   "ethnicity_distribution": [],
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "nicotine dependence"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "diagnostic_system": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "diagnostic_instrument": [
-    "asm_ftnd"
-   ],
    "clinical_characteristics": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Smoking dependence and behavior were characterized using the Fagerström Test for Nicotine Dependence, cigarettes per day, smoking years, and lifetime usage.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+         "start_char": 17780,
+         "end_char": 18020
+        }
+       ]
+      }
+     ]
     }
    },
    "medications": {
@@ -1174,6 +1257,46 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "healthy control participants",
+         "start_char": 7222,
+         "end_char": 7250
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "UNKNOWN",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
    }
   },
@@ -1199,9 +1322,31 @@
      ]
     }
    },
-   "description": {
+   "species": {
     "extraction_status": "extracted",
-    "value": "nonsmoking healthy control participants; fewer than 25 cigarettes in their lifetime and none in the past year",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "participants",
+         "start_char": 7238,
+         "end_char": 7250
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "had smoked fewer than 25 cigarettes in their lifetime and none in the past year"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1219,9 +1364,9 @@
      ]
     }
    },
-   "species": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": "human",
+    "value": "recruited",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -1230,9 +1375,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All participants provided written informed consent and received monetary compensation for their participation.",
-         "start_char": 7443,
-         "end_char": 7553
+         "text": "were enrolled under several protocols",
+         "start_char": 7282,
+         "end_char": 7319
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Nonsmoking healthy control participants used as the comparison group for classification against cigarette smokers.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "88 nonsmoking healthy control participants",
+         "start_char": 7208,
+         "end_char": 7250
         }
        ]
       }
@@ -1246,23 +1411,9 @@
     }
    },
    "consented_count": {
-    "extraction_status": "extracted",
-    "value": 88,
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Eighty‐eight cigarette smokers and 88 nonsmoking healthy control participants (see Table 1 for demographics) were enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program (NIDA‐IRP).",
-         "start_char": 7173,
-         "end_char": 7442
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "enrolled_count": {
@@ -1311,11 +1462,15 @@
      "status": "not_applicable"
     }
    },
-   "inclusion_criteria": {
+   "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "fewer than 25 cigarettes in their lifetime",
-     "none in the past year"
+     "Smoked 25 or more cigarettes in their lifetime",
+     "Smoked during the past year",
+     "Major medical illness",
+     "History of neurological disorder",
+     "History of psychiatric disorder",
+     "Current or past dependence on any drug other than nicotine"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1334,13 +1489,9 @@
      ]
     }
    },
-   "exclusion_criteria": {
+   "recruitment_method": {
     "extraction_status": "extracted",
-    "value": [
-     "major medical illness",
-     "history of neurological or psychiatric disorders",
-     "current or past dependence on any drug other than nicotine"
-    ],
+    "value": "Enrolled as nonsmoking healthy controls under several protocols at the National Institute on Drug Abuse Intramural Research Program.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1349,29 +1500,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants were excluded if they had any major medical illness, history of neurological or psychiatric disorders, or current or past dependence on any drug other than nicotine.",
-         "start_char": 7998,
-         "end_char": 8176
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Eighty‐eight cigarette smokers and 88 nonsmoking healthy control participants (see Table 1 for demographics) were enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program (NIDA‐IRP).",
-         "start_char": 7173,
-         "end_char": 7442
+         "text": "were enrolled under several protocols approved by the Institutional Review Board of the National Institute on Drug Abuse Intramural Research Program (NIDA‐IRP)",
+         "start_char": 7282,
+         "end_char": 7441
         }
        ]
       }
@@ -1420,14 +1551,12 @@
      "status": "not_applicable"
     }
    },
-   "sex_distribution": [],
-   "gender_distribution": [],
-   "handedness_distribution": [],
-   "race_distribution": [],
-   "ethnicity_distribution": [],
-   "is_healthy": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": true,
+    "value": [
+     "Smoked fewer than 25 cigarettes in their lifetime",
+     "No smoking in the past year"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1436,9 +1565,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "nonsmoking healthy control participants",
-         "start_char": 7211,
-         "end_char": 7250
+         "text": "smoked fewer than 25 cigarettes in their lifetime and none in the past year",
+         "start_char": 7679,
+         "end_char": 7754
         }
        ]
       }
@@ -1446,9 +1575,25 @@
     }
    },
    "medical_condition": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": [
+     "Healthy controls"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "healthy control participants",
+         "start_char": 7222,
+         "end_char": 7250
+        }
+       ]
+      }
+     ]
     }
    },
    "diagnostic_system": {
@@ -1486,6 +1631,46 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "healthy control participants",
+         "start_char": 7222,
+         "end_char": 7250
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "UNKNOWN",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
    }
   }
  ],
@@ -1503,9 +1688,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "VBM analysis was applied to the structural images to calculate the GMV",
-         "start_char": 9015,
-         "end_char": 9085
+         "text": "Voxel‐based morphometry (VBM)",
+         "start_char": 111,
+         "end_char": 140
         }
        ]
       }
@@ -1553,9 +1738,23 @@
     }
    },
    "specific_metric": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Gray matter volume",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Mean gray matter volumes",
+         "start_char": 681,
+         "end_char": 705
+        }
+       ]
+      }
+     ]
     }
    },
    "unit": {
@@ -1568,42 +1767,18 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_ftnd",
+   "local_id": "mod_ftnd_regression",
    "model_family": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "robust_regression",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "regression of GMV on FTND",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity",
-         "start_char": 17780,
-         "end_char": 17928
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "controlling for age and gender",
+    "value": "regression analysis",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1612,9 +1787,9 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
-         "start_char": 17780,
-         "end_char": 18020
+         "text": "For linear kernel SVM, a crucial advantage is that the importance of each original feature is directly related to its weight coefficient, which allows us to simply identify the most discriminative features in original space and perform the post hoc regression analysis described below.",
+         "start_char": 14911,
+         "end_char": 15196
         }
        ]
       }
@@ -1632,31 +1807,19 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We then investigated the relationship between GMVs within these consistent ROIs and smoking measures.",
-         "start_char": 17678,
-         "end_char": 17779
+         "text": "Following classification",
+         "start_char": 1259,
+         "end_char": 1283
         }
        ]
       }
      ]
     }
    },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "spatial_unit": {
     "extraction_status": "extracted",
     "value": "roi",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1664,19 +1827,15 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity",
-         "start_char": 17780,
-         "end_char": 17928
+         "text": "ROIs",
+         "start_char": 9134,
+         "end_char": 9138
         }
        ]
       }
      ]
     }
    },
-   "preprocessing": [
-    "prp_vbm"
-   ],
-   "inputs_from": [],
    "terms": [
     {
      "local_id": "trm_ftnd",
@@ -1691,8 +1850,69 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Fagerström Test for Nicotine Dependence (FTND)",
-           "start_char": 17848,
+           "text": "FTND",
+           "start_char": 8229,
+           "end_char": 8233
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+           "start_char": 17780,
+           "end_char": 18020
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+           "start_char": 17780,
+           "end_char": 18020
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "assessment": "asm_ftnd",
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "regressed against the Fagerström Test for Nicotine Dependence (FTND)",
+           "start_char": 17826,
            "end_char": 17894
           }
          ]
@@ -1700,20 +1920,16 @@
        ]
       }
      },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
+     "unit": {
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "not_found"
+       "status": "not_applicable"
       }
      },
-     "levels": [],
-     "assessment": "asm_ftnd",
-     "variation_level": {
+     "source_definition": {
       "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
+      "value": "Fagerström Test for Nicotine Dependence, a measure of nicotine dependence severity.",
+      "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
@@ -1721,265 +1937,17 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity",
-           "start_char": 17780,
+           "text": "a measure of dependence severity",
+           "start_char": 17896,
            "end_char": 17928
           }
          ]
         }
        ]
       }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity",
-           "start_char": 17780,
-           "end_char": 17928
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    },
-    {
-     "local_id": "trm_age_ftnd",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "age",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age",
-           "start_char": 90,
-           "end_char": 93
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "while controlling for age and gender",
-           "start_char": 17983,
-           "end_char": 18019
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "while controlling for age and gender",
-           "start_char": 17983,
-           "end_char": 18019
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    },
-    {
-     "local_id": "trm_gender_ftnd",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "gender",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "gender",
-           "start_char": 9877,
-           "end_char": 9883
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "male",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "literal_match",
-           "spans": [
-            {
-             "text": "FTND: Fagerström Test for Nicotine Dependence; CPD: cigarettes per day; Lifetime usage: measured in pack‐years (=CPD × smoking years/20); M/F: male/female.",
-             "start_char": 8229,
-             "end_char": 8384
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "order": {
-        "extraction_status": "not_reported",
-        "evidence": {
-         "status": "not_applicable"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "female",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       },
-       "order": {
-        "extraction_status": "not_reported",
-        "evidence": {
-         "status": "not_applicable"
-        }
-       }
-      }
-     ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "while controlling for age and gender",
-           "start_char": 17983,
-           "end_char": 18019
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
      }
     }
-   ]
-  },
-  {
-   "local_id": "mod_lifetime_usage",
-   "model_family": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "regression of GMV on lifetime usage",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
+   ],
    "hrf_model": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1988,28 +1956,8 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "controlling for age and gender",
+    "value": "Mean GMV in significant ROIs was regressed against FTND while controlling for age and gender; results were exploratory and evaluated at uncorrected P < 0.05.",
     "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
-         "start_char": 17780,
-         "end_char": 18020
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2017,9 +1965,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We then investigated the relationship between GMVs within these consistent ROIs and smoking measures.",
-         "start_char": 17678,
-         "end_char": 17779
+         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+         "start_char": 17780,
+         "end_char": 18020
         }
        ]
       }
@@ -2037,19 +1985,78 @@
     "evidence": {
      "status": "not_applicable"
     }
+   }
+  },
+  {
+   "local_id": "mod_lifetime_usage_regression",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "robust_regression",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "regression analysis",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "For linear kernel SVM, a crucial advantage is that the importance of each original feature is directly related to its weight coefficient, which allows us to simply identify the most discriminative features in original space and perform the post hoc regression analysis described below.",
+         "start_char": 14911,
+         "end_char": 15196
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Following classification",
+         "start_char": 1259,
+         "end_char": 1283
+        }
+       ]
+      }
+     ]
+    }
    },
    "spatial_unit": {
     "extraction_status": "extracted",
     "value": "roi",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ROIs",
+         "start_char": 9134,
+         "end_char": 9138
+        }
+       ]
+      }
+     ]
     }
    },
-   "preprocessing": [
-    "prp_vbm"
-   ],
-   "inputs_from": [],
    "terms": [
     {
      "local_id": "trm_lifetime_usage",
@@ -2064,9 +2071,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "lifetime usage scores",
-           "start_char": 17961,
-           "end_char": 17982
+           "text": "lifetime usage",
+           "start_char": 8420,
+           "end_char": 8434
           }
          ]
         }
@@ -2076,26 +2083,61 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+           "start_char": 17780,
+           "end_char": 18020
+          }
+         ]
+        }
+       ]
       }
      },
-     "levels": [],
      "variation_level": {
       "extraction_status": "extracted",
       "value": "between_subject",
       "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+           "start_char": 17780,
+           "end_char": 18020
+          }
+         ]
+        }
+       ]
       }
      },
      "functional_form": {
       "extraction_status": "extracted",
       "value": "linear",
-      "value_source": "generated",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "regressed against the Fagerström Test for Nicotine Dependence (FTND)",
+           "start_char": 17826,
+           "end_char": 17894
+          }
+         ]
+        }
+       ]
       }
      },
      "unit": {
@@ -2120,7 +2162,7 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "measured in pack-years (=CPD × smoking years/20)",
+      "value": "Lifetime usage measured in pack-years, calculated as CPD × smoking years / 20.",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -2138,215 +2180,17 @@
        ]
       }
      }
-    },
-    {
-     "local_id": "trm_age_lifetime",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "age",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age",
-           "start_char": 90,
-           "end_char": 93
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "while controlling for age and gender",
-           "start_char": 17983,
-           "end_char": 18019
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "while controlling for age and gender",
-           "start_char": 17983,
-           "end_char": 18019
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    },
-    {
-     "local_id": "trm_gender_lifetime",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "gender",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "gender",
-           "start_char": 9877,
-           "end_char": 9883
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "male",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "literal_match",
-           "spans": [
-            {
-             "text": "FTND: Fagerström Test for Nicotine Dependence; CPD: cigarettes per day; Lifetime usage: measured in pack‐years (=CPD × smoking years/20); M/F: male/female.",
-             "start_char": 8229,
-             "end_char": 8384
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "order": {
-        "extraction_status": "not_reported",
-        "evidence": {
-         "status": "not_applicable"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "female",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       },
-       "order": {
-        "extraction_status": "not_reported",
-        "evidence": {
-         "status": "not_applicable"
-        }
-       }
-      }
-     ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "while controlling for age and gender",
-           "start_char": 17983,
-           "end_char": 18019
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
     }
-   ]
-  }
- ],
- "preprocessings": [
-  {
-   "local_id": "prp_vbm",
-   "description": {
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
     "extraction_status": "extracted",
-    "value": "VBM preprocessing of structural images including skull stripping, spatial normalization, segmentation, nonlinear modulation, smoothing, and resampling",
+    "value": "Mean GMV in significant ROIs was regressed against lifetime usage while controlling for age and gender; results were exploratory and evaluated at uncorrected P < 0.05.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2355,49 +2199,59 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The VBM8 toolbox in SPM8 extends the unified segmentation model",
-         "start_char": 10899,
-         "end_char": 10962
+         "text": "Mean GMVs in significant ROIs were separately regressed against the Fagerström Test for Nicotine Dependence (FTND), a measure of dependence severity [Heatherton et al., 1991 ], and lifetime usage scores while controlling for age and gender.",
+         "start_char": 17780,
+         "end_char": 18020
         }
        ]
       }
      ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "software": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inputs_from": [
+    "mod_ftnd_regression"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "local_id": "r_consistent_rois",
+   "name": {
     "extraction_status": "extracted",
-    "value": [
-     "SPM8",
-     "VBM8 toolbox"
-    ],
+    "value": "150 consistent ROIs",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "GMV calculation was conducted using SPM8 software",
-         "start_char": 10653,
-         "end_char": 10702
+         "text": "We performed regression analyses between the mean GMVs in the 150 consistent ROIs and smoking measures (FTND and lifetime usage), controlling for both age and gender.",
+         "start_char": 19725,
+         "end_char": 19891
         }
        ]
       }
      ]
     }
    },
-   "steps": {
+   "definition_method": {
     "extraction_status": "extracted",
-    "value": [
-     "skull stripping",
-     "spatial normalization to MNI space",
-     "segmentation into gray matter, white matter, and cerebrospinal fluid",
-     "nonlinear modulation",
-     "spatial smoothing",
-     "resampling"
-    ],
-    "value_source": "reported",
+    "value": "same_study_analysis",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2405,20 +2259,38 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Structural images were skull stripped and spatially normalized to MNI (Montreal Neurological Institute) space",
-         "start_char": 11172,
-         "end_char": 11281
+         "text": "Using the permutation method described above",
+         "start_char": 18669,
+         "end_char": 18713
         }
        ]
       }
      ]
     }
    },
-   "smoothing_fwhm_mm": {
+   "region_type": {
     "extraction_status": "extracted",
-    "value": [
-     8
-    ],
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ROIs",
+         "start_char": 9134,
+         "end_char": 9138
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "subparcellated Automated Anatomical Labeling (AAL) template",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2427,9 +2299,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "an 8 mm FWHM isotropic Gaussian kernel",
-         "start_char": 11937,
-         "end_char": 11975
+         "text": "a sub‐parcellated version of the Automated Anatomical Labeling (AAL) template",
+         "start_char": 9154,
+         "end_char": 9231
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "A set of 150 consistent gray-matter ROIs among 1,024 randomly subdivided cortical AAL regions. An ROI was considered consistent when selected more than 304 times across 100 rounds of 10-fold cross-validation; the ROIs were mainly located in the prefrontal and cingulate cortices, insula, caudate, putamen, cuneus, precuneus, thalamus, hippocampus, parahippocampal, temporal, lingual, and pre-/postcentral gyri.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Among the 1,024 ROIs, 150 ROIs surpassed that threshold and were considered to be consistent features.",
+         "start_char": 18992,
+         "end_char": 19094
         }
        ]
       }
@@ -2440,7 +2332,7 @@
  ],
  "tables": [
   {
-   "local_id": "226",
+   "local_id": "tbl1",
    "table_number": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -2478,7 +2370,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "5e7d5ca4f381edba391ea3f1cbfe9e2746574adacb09cf4def27a6cf08ab0df8",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2722,78 +2614,12 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "regions": [
-  {
-   "local_id": "reg_1024_cerebral_cortical",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "1024 cerebral cortical regions of interest",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "sub-parcellated Automated Anatomical Labeling (AAL) template",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "1,024 cerebral cortical regions of interest used for VBM-derived mean gray matter volume values",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
- "tasks": [
-  {
-   "local_id": "tsk_svm_rfe_classification",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "SVM-RFE classification",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Classification of cigarette smokers and nonsmoking healthy controls using VBM-derived mean gray matter volumes from 1,024 cerebral cortical regions of interest, with recursive feature elimination embedded in balanced 10-fold cross-validation and independent testing.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "acquisitions": [
-    "acq_mri"
-   ]
-  }
- ],
  "study_type": [
   "Journal Article",
   "Research Support, N.I.H., Intramural",
   "Research Support, U.S. Gov't, P.H.S."
+ ],
+ "language": [
+  "eng"
  ]
 }

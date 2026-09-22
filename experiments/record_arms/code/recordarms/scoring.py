@@ -102,6 +102,22 @@ def _pair(man_path: Path, auto_path: Path) -> dict | None:
             "n_brain": int(brain.sum())}
 
 
+def selected(run_out: Path, auto_key: str) -> tuple[int, int]:
+    """(analyses, studies) the run's annotation included under one key.
+
+    A map built from two experiments is not a meta-analysis, and on a near-empty map the
+    masked correlations stop meaning anything: substance use's cannabis query arm reads
+    dice 0.000 and r2_nonzero 0.756, the second computed over the few voxels either map
+    left nonzero. The count is carried beside the numbers so a figure can say so.
+    """
+    ann = run_out / "nimads_annotation.json"
+    if not ann.is_file():
+        return 0, 0
+    notes = json.loads(ann.read_text()).get("notes") or []
+    ids = [n["analysis"] for n in notes if (n.get("note") or {}).get(auto_key)]
+    return len(ids), len({str(i).split("_")[0] for i in ids})
+
+
 def maps(spec: Spec) -> list[dict]:
     out = []
     for manual_key, auto_key in spec.mapping.items():
@@ -109,13 +125,19 @@ def maps(spec: Spec) -> list[dict]:
         for label, run in spec.arms.items():
             m = _pair(man, paths.auto_map(spec.project, run, auto_key))
             if m:
+                n_an, n_st = selected(paths.outputs(spec.project, run), auto_key)
                 out.append({"project": spec.project, "arm": label, "run": run,
-                            "manual_analysis": manual_key, "auto_analysis": auto_key, **m})
+                            "manual_analysis": manual_key, "auto_analysis": auto_key,
+                            "n_analyses": n_an, "n_studies": n_st, **m})
         b = _pair(man, paths.baseline_map(spec.project, manual_key))
         if b:
+            n_an, n_st = selected(
+                paths.REPO / "projects" / spec.project / "baselines" / manual_key / "outputs",
+                "all_analyses")
             out.append({"project": spec.project, "arm": "baseline",
                         "run": f"baselines/{manual_key}", "manual_analysis": manual_key,
-                        "auto_analysis": "all_analyses", **b})
+                        "auto_analysis": "all_analyses",
+                        "n_analyses": n_an, "n_studies": n_st, **b})
     return out
 
 

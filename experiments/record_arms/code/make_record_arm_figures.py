@@ -53,17 +53,32 @@ from recordarms import checks, results, spec as spec_mod  # noqa: E402
 
 PROJECTS = results.projects()
 ARMS = results.ARM_ORDER
-RUNS = {p: tuple(results.arms_for(p)[a] for a in ARMS) for p in PROJECTS}
+#: Arm label -> run, per project, and not every project has every arm: emotion regulation
+#: has no query runs, and indexing a fixed arm list into it raised rather than skipping.
+RUNS = {p: results.arms_for(p) for p in PROJECTS}
 #: Shape as well as colour, so the arms stay separable in greyscale at 3pt.
 STYLE = {"full text": ("o", "-", INK),
          "record + evidence": ("s", "-", "#0072B2"),
-         "record, no evidence": ("^", "--", "#D55E00")}
+         "record, no evidence": ("^", "--", "#D55E00"),
+         #: The query is not a model arm and is drawn as one that is not: diamonds, dotted,
+         #: in a colour the three model arms do not use.
+         "query, strict": ("D", ":", "#009E73"),
+         "query, permissive": ("v", ":", "#CC79A7")}
+#: Only the model arms have a search, an abstract screen and a retrieval stage, so the
+#: funnel is drawn over them. The query starts from the extracted corpus.
+FUNNEL_ARMS = results.AUTONIMA_ARMS
 #: Single words: at three panels across, the two-line labels collided with their neighbours.
 #: The caption carries the full stage names.
 STAGE_LABELS = ["Search", "Abstract", "Retrieval", "Full text"]
+#: Drawn hollow so a marker sitting on another is still two markers.
+HOLLOW = {"record, no evidence", "query, permissive"}
 
 
 def arm_of(run: str) -> str | None:
+    if run == "query-strict":
+        return "query, strict"
+    if run == "query-permissive":
+        return "query, permissive"
     if run.endswith("record-with-evidence"):
         return "record + evidence"
     if run.endswith("record-no-evidence"):
@@ -89,7 +104,7 @@ def gather_survival(projects_root: Path) -> tuple[dict, dict]:
         if not g:
             print(f"  {project}: no gold set", file=sys.stderr)
             continue
-        for run, arm in zip(RUNS[project], ARMS):
+        for arm, run in RUNS[project].items():
             outputs = projects_root / project / run / "outputs"
             if not outputs.is_dir():
                 print(f"  {project}/{run}: no outputs", file=sys.stderr)
@@ -115,7 +130,7 @@ def figure2_arms(out_dir: Path, projects_root: Path) -> None:
         (axes[1], precision, "Precision vs gold standard", False),
     ):
         for project in PROJECTS:
-            for arm in ARMS:
+            for arm in FUNNEL_ARMS:
                 ys = [data.get(project, {}).get(arm, {}).get(s) for s in STAGES]
                 if any(v is None for v in ys):
                     continue
@@ -217,9 +232,12 @@ def figure7_arms(out_dir: Path, metric: str = results.DEFAULT_MAP_METRIC) -> Non
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, DOUBLE_COL * 0.34))
     #: Coincident markers hide each other -- the white-filled arm would erase the two beneath
     #: it. A fixed offset per arm, the same in both panels, keeps every arm visible.
-    offset = {"full text": -0.13, "record + evidence": 0.0, "record, no evidence": 0.13}
+    offset = {"full text": -0.26, "record + evidence": -0.13, "record, no evidence": 0.0,
+              "query, strict": 0.13, "query, permissive": 0.26}
     for ax, data, ylabel, title, projects, ylim in (
-        (axes[0], f1, "Screening F1 (end-to-end)", "Paper-level screening", PROJECTS, (0.4, 0.8)),
+        # The limits used to be fixed at (0.4, 0.8), which was fine for three model arms
+        # and clips the query: its strict cue F1 is 0.386 and sat on the spine.
+        (axes[0], f1, "Screening F1 (end-to-end)", "Paper-level screening", PROJECTS, None),
         (axes[1], r2, "Map $R^2$ vs manual", "Meta-analytic map", shown, None),
     ):
         xs = range(len(projects))
@@ -228,7 +246,7 @@ def figure7_arms(out_dir: Path, metric: str = results.DEFAULT_MAP_METRIC) -> Non
             ax.plot([x + offset[arm] for x in xs],
                     [data.get(p, {}).get(arm) for p in projects], marker=marker,
                     color=colour, linestyle="none", markersize=4, markeredgewidth=0.7,
-                    markerfacecolor=colour if arm != "record, no evidence" else "white")
+                    markerfacecolor=colour if arm not in HOLLOW else "white")
         for x in xs:
             ax.axvline(x, color=RULE, linewidth=0.4, zorder=0)
         ax.set_xticks(list(xs))
@@ -251,9 +269,10 @@ def figure7_arms(out_dir: Path, metric: str = results.DEFAULT_MAP_METRIC) -> Non
 
     handles = [Line2D([], [], marker=STYLE[a][0], color=STYLE[a][2], linestyle="none",
                       markersize=4, markeredgewidth=0.7,
-                      markerfacecolor=STYLE[a][2] if a != "record, no evidence" else "white",
+                      markerfacecolor=STYLE[a][2] if a not in HOLLOW else "white",
                       label=a) for a in ARMS]
-    axes[1].legend(handles=handles, loc="lower right", handletextpad=0.4, borderpad=0.2)
+    axes[1].legend(handles=handles, loc="upper left", handletextpad=0.4, borderpad=0.2,
+                   fontsize=5, framealpha=0.85)
     # Hard-wrapped rather than left to the renderer: fig.text does not wrap, and at this
     # width the unwrapped caption ran off both edges of the canvas.
     fig.text(0.5, -0.34,
@@ -270,7 +289,12 @@ def figure7_arms(out_dir: Path, metric: str = results.DEFAULT_MAP_METRIC) -> Non
              "of the five projects annotate from each arm's own document; VBM substance\nuse "
              "annotates from title and abstract only, because its full-text arm's articles are "
              "not on this host.\nRe-running one project's annotation unchanged moved its arms "
-             "by 0.034 $R^2$, which exceeds every between-arm gap shown in b.",
+             "by 0.034 $R^2$, which exceeds every between-arm gap shown in b.\nThe two query "
+             "arms are not a model: the review's own inclusion criteria run as predicates over "
+             "the extraction record, then its own contrast over that paper's analyses.\nStrict "
+             "drops what a record cannot answer and permissive keeps it. Emotion regulation has "
+             f"no query arm, and maps built from fewer than {results.MIN_ANALYSES} analyses are "
+             "not scored.",
              ha="center", va="top", fontsize=5, color=MUTED, linespacing=1.6)
     save(fig, out_dir, "figure7_record_arms")
 

@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study characterized brain alterations associated with chronic marijuana use using structural MRI, resting-state functional connectivity MRI, and diffusion tensor imaging in marijuana users and nonusing controls.",
-  "value_source": "reported",
+  "value": "The study characterized brain morphometry, functional connectivity, and structural connectivity associated with chronic marijuana use by comparing marijuana users with age- and sex-matched nonusing controls using three MRI techniques.",
+  "value_source": "generated",
   "evidence": {
    "status": "present",
    "sets": [
@@ -10,31 +10,9 @@
      "source": "model_quote",
      "spans": [
       {
-       "text": "In this comprehensive study that aimed to characterize brain alterations associated with chronic marijuana use, we measured gray matter (GM) volume via structural MRI across the whole brain by using voxel-based morphology, synchrony among abnormal GM regions during resting state via functional connectivity MRI, and white matter integrity (i.e., structural connectivity) between the abnormal GM regions via diffusion tensor imaging in 48 marijuana users and 62 age- and sex-matched nonusing controls.",
-       "start_char": 997,
-       "end_char": 1498
-      }
-     ]
-    }
-   ]
-  }
- },
- "hypothesis": {
-  "extraction_status": "extracted",
-  "value": [
-   "we expected gray matter reductions in THC-enriched areas in chronic marijuana users that will be associated with changes in brain connectivity and marijuana-related behavior."
-  ],
-  "value_source": "reported",
-  "evidence": {
-   "status": "present",
-   "sets": [
-    {
-     "source": "model_quote",
-     "spans": [
-      {
-       "text": "Given the existing literature on morphometric reductions associated with long-term marijuana use, we expected gray matter reductions in THC-enriched areas in chronic marijuana users that will be associated with changes in brain connectivity and marijuana-related behavior.",
-       "start_char": 6377,
-       "end_char": 6649
+       "text": "The goal of this study was to characterize alterations in brain morphometry and determine potential downstream effects in connectivity as a result of chronic marijuana use.",
+       "start_char": 5546,
+       "end_char": 5718
       }
      ]
     }
@@ -44,15 +22,7 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Cross-sectional comparison of chronic marijuana users with age- and sex-matched nonusing controls.",
-   "value_source": "reported",
-   "evidence": {
-    "status": "not_found"
-   }
-  },
-  "allocation": {
-   "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "Cross-sectional observational comparison of chronic marijuana users and nonusing controls.",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -61,18 +31,26 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited",
-        "start_char": 6686,
-        "end_char": 6786
+        "text": "a large cohort of well-characterized chronic cannabis users with a wide age range",
+        "start_char": 5887,
+        "end_char": 5968
        }
       ]
      }
     ]
    }
   },
+  "allocation": {
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
+   "evidence": {
+    "status": "not_found"
+   }
+  },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -81,9 +59,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-        "start_char": 15936,
-        "end_char": 16025
+        "text": "compared them to age- and sex-matched nonusing controls",
+        "start_char": 6050,
+        "end_char": 6105
        }
       ]
      }
@@ -101,33 +79,34 @@
  },
  "analyses": [
   {
-   "local_id": "ana_gm_group",
+   "local_id": "ana_vbm_group",
    "name": {
     "extraction_status": "extracted",
-    "value": "Voxelwise comparison of the high-resolution T1 images",
+    "value": "Group comparison of gray matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "marijuana users compared with controls",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Voxelwise comparison of the high-resolution T1 images showed a significant lower gray matter volume in marijuana users in the right middle orbitofrontal (MNI coordinates: [+26 +54 –8]; t score = 3.37) and left superior orbitofrontal gyri (MNI coordinates: [−16 +58 –10]; t score = 3.19) [ P < 0.01 (FWE corrected) and cluster ≥ 15,936 mm 3 ] per anatomical automatic labeling (AAL), shown in Fig.",
+         "text": "Voxelwise comparison of the high-resolution T1 images showed a significant lower gray matter volume in marijuana users in the right middle orbitofrontal (MNI coordinates: [+26 +54 –8]; t score = 3.37) and left superior orbitofrontal gyri (MNI coordinates: [−16 +58 –10]; t score = 3.19)",
          "start_char": 17321,
-         "end_char": 17717
+         "end_char": 17607
         }
        ]
       }
      ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Lower gray matter volume in marijuana users compared with controls",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "prespecification": {
@@ -161,10 +140,10 @@
    "measure": "mea_gm_volume",
    "groups": [
     {
-     "group": "grp_controls",
+     "group": "grp_marijuana",
      "n": {
       "extraction_status": "extracted",
-      "value": 62,
+      "value": 48,
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -184,10 +163,10 @@
      }
     },
     {
-     "group": "grp_marijuana_users",
+     "group": "grp_control",
      "n": {
       "extraction_status": "extracted",
-      "value": 48,
+      "value": 62,
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -210,26 +189,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group_gm",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "marijuana users",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "cannabis group",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -238,9 +201,37 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "The components of this network consist of bilateral orbitofrontal and bilateral temporal gyri ( 28 ). Fig. 2 A shows the average functional connectivity maps in the orbitofrontal network for the control and cannabis groups.",
-            "start_char": 18265,
-            "end_char": 18488
+            "text": "marijuana users",
+            "start_char": 1436,
+            "end_char": 1451
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "marijuana users",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "marijuana users",
+            "start_char": 1436,
+            "end_char": 1451
            }
           ]
          }
@@ -249,26 +240,10 @@
       }
      },
      {
-      "term": "trm_group_gm",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "controls",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "control group",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -277,9 +252,37 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "The components of this network consist of bilateral orbitofrontal and bilateral temporal gyri ( 28 ). Fig. 2 A shows the average functional connectivity maps in the orbitofrontal network for the control and cannabis groups.",
-            "start_char": 18265,
-            "end_char": 18488
+            "text": "controls",
+            "start_char": 1489,
+            "end_char": 1497
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "controls",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "controls",
+            "start_char": 1489,
+            "end_char": 1497
            }
           ]
          }
@@ -320,22 +323,22 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Next, we conducted a two-sample t test with intelligence quotient (IQ) as a covariate.",
-           "start_char": 11076,
-           "end_char": 11162
+           "text": "t score = 3.37",
+           "start_char": 17506,
+           "end_char": 17520
           }
          ]
         }
        ]
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -347,14 +350,17 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_t1"
+    "acq_t1",
+    "acq_fmri",
+    "acq_dti"
    ],
-   "model_estimation": "mod_group_gm",
+   "model_estimation": "mod_group",
+   "inference_settings": "inf_vbm",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Marijuana users had significantly lower gray matter volume in the bilateral orbitofrontal gyri than controls.",
-     "These findings provide evidence that heavy, chronic marijuana users have lower OFC gray matter volumes compared with nonusing controls."
+     "Marijuana users had significantly lower gray matter volume in the right middle orbitofrontal and left superior orbitofrontal gyri compared with controls.",
+     "These findings provide evidence that heavy, chronic marijuana users have lower OFC gray matter volumes compared with nonusing controls; the cross-sectional nature of the study cannot determine whether the reductions are a cause or consequence of marijuana use."
     ],
     "value_source": "reported",
     "evidence": {
@@ -364,9 +370,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Voxelwise comparison of the high-resolution T1 images showed a significant lower gray matter volume in marijuana users in the right middle orbitofrontal (MNI coordinates: [+26 +54 –8]; t score = 3.37) and left superior orbitofrontal gyri (MNI coordinates: [−16 +58 –10]; t score = 3.19) [ P < 0.01 (FWE corrected) and cluster ≥ 15,936 mm 3 ] per anatomical automatic labeling (AAL), shown in Fig. 1 .",
+         "text": "Voxelwise comparison of the high-resolution T1 images showed a significant lower gray matter volume in marijuana users in the right middle orbitofrontal (MNI coordinates: [+26 +54 –8]; t score = 3.37) and left superior orbitofrontal gyri (MNI coordinates: [−16 +58 –10]; t score = 3.19)",
          "start_char": 17321,
-         "end_char": 17721
+         "end_char": 17607
         }
        ]
       }
@@ -390,9 +396,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Functional connectivity was measured by using a seed-based approach by choosing bilateral orbitofrontal gyri cluster peaks from VBM analysis, [+26 +54 –8] and [−16 +58 –10] in MNI template.",
-         "start_char": 12316,
-         "end_char": 12505
+         "text": "MNI coordinates: [+26 +54 –8]",
+         "start_char": 17475,
+         "end_char": 17504
         }
        ]
       }
@@ -405,17 +411,19 @@
      "status": "not_applicable"
     }
    },
-   "inference_settings": "inf_whole_brain_fwe",
+   "tasks": [
+    "tsk_rest"
+   ],
    "assessments": [
-    "asm_iq"
+    "asm_scid"
    ]
   },
   {
    "local_id": "ana_fc_group",
    "name": {
     "extraction_status": "extracted",
-    "value": "orbitofrontal network functional connectivity group comparison",
-    "value_source": "generated",
+    "value": "Group comparison of orbitofrontal functional connectivity",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -443,9 +451,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Fig. 2 B shows that, quantitatively, marijuana users had significantly higher connectivity in all four nodes (i.e., bilateral OFC and bilateral temporal lobe) compared to the control group.",
-         "start_char": 18645,
-         "end_char": 18834
+         "text": "These maps show qualitative differences between the groups such that the cannabis group had higher functional connectivity compared with the control group.",
+         "start_char": 18489,
+         "end_char": 18644
         }
        ]
       }
@@ -471,9 +479,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Next, a region of interest (ROI) analysis was performed.",
-         "start_char": 12756,
-         "end_char": 12812
+         "text": "Each region’s anatomical region was defined based on automated anatomical labeling (AAL) database.",
+         "start_char": 12813,
+         "end_char": 12911
         }
        ]
       }
@@ -481,17 +489,28 @@
     }
    },
    "regions": [
-    "reg_orbitofrontal_cortex",
-    "reg_temporal_lobe"
+    "reg_bilateral_ofc",
+    "reg_bilateral_temporal"
    ],
-   "measure": "mea_fc_z_score",
+   "measure": "mea_fc_z",
    "groups": [
     {
-     "group": "grp_controls",
+     "group": "grp_marijuana",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 45,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "group": "grp_control",
      "n": {
       "extraction_status": "extracted",
       "value": 59,
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "present",
        "sets": [
@@ -508,54 +527,15 @@
        ]
       }
      }
-    },
-    {
-     "group": "grp_marijuana_users",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 48,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited through fliers and media advertisement in the Albuquerque, NM, metro area.",
-           "start_char": 6686,
-           "end_char": 6861
-          }
-         ]
-        }
-       ]
-      }
-     }
     }
    ],
    "effect": {
     "cells": [
      {
-      "term": "trm_group_fc",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "marijuana users",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "cannabis group",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -564,9 +544,37 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Fig. 2 A shows the average functional connectivity maps in the orbitofrontal network for the control and cannabis groups.",
-            "start_char": 18367,
-            "end_char": 18488
+            "text": "marijuana users",
+            "start_char": 1436,
+            "end_char": 1451
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "marijuana users",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "marijuana users",
+            "start_char": 1436,
+            "end_char": 1451
            }
           ]
          }
@@ -575,19 +583,31 @@
       }
      },
      {
-      "term": "trm_group_fc",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "controls",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "controls",
+            "start_char": 1489,
+            "end_char": 1497
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -603,9 +623,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Fig. 2 A shows the average functional connectivity maps in the orbitofrontal network for the control and cannabis groups.",
-            "start_char": 18367,
-            "end_char": 18488
+            "text": "control group",
+            "start_char": 7503,
+            "end_char": 7516
            }
           ]
          }
@@ -660,7 +680,7 @@
     "connectivity_method": {
      "extraction_status": "extracted",
      "value": "seed_based",
-     "value_source": "generated",
+     "value_source": "reported",
      "evidence": {
       "status": "present",
       "sets": [
@@ -678,36 +698,41 @@
      }
     },
     "seed_regions": [
-     "reg_orbitofrontal_cortex"
+     "reg_bilateral_ofc"
     ],
-    "target_regions": [
-     "reg_temporal_lobe"
-    ],
-    "inference_target": {
-     "extraction_status": "extracted",
-     "value": "connectivity_parameter",
-     "value_source": "generated",
-     "evidence": {
-      "status": "not_found"
-     }
-    }
+    "target_regions": []
    },
    "acquisitions": [
-    "acq_resting_fmri"
+    "acq_fmri",
+    "acq_t1",
+    "acq_dti"
    ],
    "tasks": [
-    "tsk_resting_state"
+    "tsk_rest"
    ],
-   "model_estimation": "mod_group_fc",
+   "model_estimation": "mod_group",
+   "inference_settings": "inf_fc",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Marijuana users had significantly higher connectivity in all four nodes of the orbitofrontal network—bilateral orbitofrontal and bilateral temporal gyri—compared with the control group.",
-     "This increased functional connectivity in users may suggest a compensatory mechanism whereby greater network recruitment is engaged to compensate for OFC liability."
+     "Marijuana users had significantly higher functional connectivity in all four nodes of the orbitofrontal network—bilateral orbitofrontal and bilateral temporal gyri—compared with the control group.",
+     "This increased functional connectivity may suggest a compensatory mechanism whereby greater network recruitment is engaged to compensate for orbitofrontal cortex liability."
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Fig. 2 B shows that, quantitatively, marijuana users had significantly higher connectivity in all four nodes (i.e., bilateral OFC and bilateral temporal lobe) compared to the control group.",
+         "start_char": 18645,
+         "end_char": 18834
+        }
+       ]
+      }
+     ]
     }
    },
    "source_table_analysis": {
@@ -727,9 +752,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Functional connectivity was measured by using a seed-based approach by choosing bilateral orbitofrontal gyri cluster peaks from VBM analysis, [+26 +54 –8] and [−16 +58 –10] in MNI template.",
-         "start_char": 12316,
-         "end_char": 12505
+         "text": "in MNI template",
+         "start_char": 12489,
+         "end_char": 12504
         }
        ]
       }
@@ -743,22 +768,34 @@
     }
    },
    "assessments": [
-    "asm_iq"
+    "asm_scid"
    ]
   },
   {
-   "local_id": "ana_dti_group",
+   "local_id": "ana_fa_group",
    "name": {
     "extraction_status": "extracted",
-    "value": "forceps minor fractional anisotropy group comparison",
+    "value": "Forceps minor fractional anisotropy group comparison",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We also measured the structural connectivity of the forceps minor tract, which connects the orbitofrontal regions, both manually and automatically (shown in Fig. 3 ).",
+         "start_char": 19439,
+         "end_char": 19605
+        }
+       ]
+      }
+     ]
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "higher fractional anisotropy of the forceps minor tract in the cannabis group than the control group",
+    "value": "forceps minor FA was higher in the cannabis group than the control group",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -795,9 +832,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Because the orbitofrontal cortex is innervated by the forceps minor, and, therefore, plays a role in decision-making processes, the forceps minor tract was delineated via two techniques—manual and automatic tractography—whereas the forceps major tract was delineated only manually as a control.",
-         "start_char": 13946,
-         "end_char": 14240
+         "text": "the forceps minor tract",
+         "start_char": 1988,
+         "end_char": 2011
         }
        ]
       }
@@ -807,13 +844,13 @@
    "regions": [
     "reg_forceps_minor"
    ],
-   "measure": "mea_forceps_minor_fa",
+   "measure": "mea_fa",
    "groups": [
     {
-     "group": "grp_controls",
+     "group": "grp_marijuana",
      "n": {
       "extraction_status": "extracted",
-      "value": 62,
+      "value": 46,
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -822,9 +859,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited through fliers and media advertisement in the Albuquerque, NM, metro area.",
-           "start_char": 6686,
-           "end_char": 6861
+           "text": "Nine participants (seven in the control group; two in the cannabis group) did not produce the forceps minor tract via the automated technique.",
+           "start_char": 16861,
+           "end_char": 17003
           }
          ]
         }
@@ -833,10 +870,10 @@
      }
     },
     {
-     "group": "grp_marijuana_users",
+     "group": "grp_control",
      "n": {
       "extraction_status": "extracted",
-      "value": 48,
+      "value": 55,
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -845,9 +882,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited through fliers and media advertisement in the Albuquerque, NM, metro area.",
-           "start_char": 6686,
-           "end_char": 6861
+           "text": "Nine participants (seven in the control group; two in the cannabis group) did not produce the forceps minor tract via the automated technique.",
+           "start_char": 16861,
+           "end_char": 17003
           }
          ]
         }
@@ -859,19 +896,31 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group_dti",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "marijuana users",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "cannabis group",
+            "start_char": 7316,
+            "end_char": 7330
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "positive",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -887,9 +936,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "We found that the forceps minor’s FA of the cannabis group was significantly higher than the control group in both automatic and manual methods, P = 0.003 and P < 0.001, respectively.",
-            "start_char": 19606,
-            "end_char": 19789
+            "text": "cannabis group",
+            "start_char": 7316,
+            "end_char": 7330
            }
           ]
          }
@@ -898,19 +947,31 @@
       }
      },
      {
-      "term": "trm_group_dti",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "controls",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "control group",
+            "start_char": 7503,
+            "end_char": 7516
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -926,9 +987,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "We found that the forceps minor’s FA of the cannabis group was significantly higher than the control group in both automatic and manual methods, P = 0.003 and P < 0.001, respectively.",
-            "start_char": 19606,
-            "end_char": 19789
+            "text": "control group",
+            "start_char": 7503,
+            "end_char": 7516
            }
           ]
          }
@@ -982,14 +1043,17 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_dti"
+    "acq_dti",
+    "acq_t1",
+    "acq_fmri"
    ],
-   "model_estimation": "mod_group_dti",
+   "model_estimation": "mod_group",
+   "inference_settings": "inf_dti",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "The forceps minor’s FA of the cannabis group was significantly higher than the control group in both automatic and manual methods.",
-     "Greater FA has been suggested to reflect better myelination and/or intact axons; the FA difference between the groups appeared to be driven by lower radial diffusivity, suggesting greater myelination in the marijuana users."
+     "The forceps minor's fractional anisotropy was significantly higher in the cannabis group than in the control group in both automatic and manual tractography.",
+     "Greater fractional anisotropy has been suggested to reflect better myelination and/or intact axons; the group difference appeared to be driven by lower radial diffusivity, suggesting greater myelination in marijuana users."
     ],
     "value_source": "reported",
     "evidence": {
@@ -1009,15 +1073,20 @@
     }
    },
    "source_table_analysis": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Table 2#1",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "coordinate_space": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "MNI",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "model_representation_notes": {
@@ -1026,8 +1095,11 @@
      "status": "not_applicable"
     }
    },
+   "tasks": [
+    "tsk_rest"
+   ],
    "assessments": [
-    "asm_iq"
+    "asm_scid"
    ]
   }
  ],
@@ -1038,6 +1110,27 @@
    "modality": {
     "extraction_status": "extracted",
     "value": "sMRI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Whole brain high-resolution T1-weighted anatomical images",
+         "start_char": 8692,
+         "end_char": 8749
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "device": "dev_siemens_trio",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1170,11 +1263,10 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "device": "dev_siemens_trio"
+   }
   },
   {
-   "local_id": "acq_resting_fmri",
+   "local_id": "acq_fmri",
    "acquisition_type": "MRI",
    "modality": {
     "extraction_status": "extracted",
@@ -1187,59 +1279,22 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a resting state functional MRI scan was collected to assess functional connectivity of the brain",
+         "text": "a resting state functional MRI scan",
          "start_char": 8346,
-         "end_char": 8442
+         "end_char": 8381
         }
        ]
       }
      ]
     }
    },
-   "acquisition_duration_seconds": {
+   "device": "dev_siemens_trio",
+   "brain_coverage": {
     "extraction_status": "extracted",
-    "value": 330,
-    "value_source": "reported",
+    "value": "whole_brain",
+    "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "scan duration = 5.5 min",
-         "start_char": 9369,
-         "end_char": 9392
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "magnetic_field_strength_tesla": {
-    "extraction_status": "extracted",
-    "value": 3,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MRI scans were performed on a Siemens 3 Tesla Trio scanner",
-         "start_char": 8045,
-         "end_char": 8103
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "pulse_sequence_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "repetition_time_seconds": {
@@ -1328,7 +1383,26 @@
      ]
     }
    },
-   "device": "dev_siemens_trio"
+   "acquisition_duration_seconds": {
+    "extraction_status": "extracted",
+    "value": 330,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "scan duration = 5.5 min",
+         "start_char": 9369,
+         "end_char": 9392
+        }
+       ]
+      }
+     ]
+    }
+   }
   },
   {
    "local_id": "acq_dti",
@@ -1344,33 +1418,22 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a diffusion tensor imaging scan was collected to provide an assessment of structural connectivity between brain regions via white matter tracts",
+         "text": "a diffusion tensor imaging scan",
          "start_char": 8456,
-         "end_char": 8599
+         "end_char": 8487
         }
        ]
       }
      ]
     }
    },
-   "magnetic_field_strength_tesla": {
+   "device": "dev_siemens_trio",
+   "brain_coverage": {
     "extraction_status": "extracted",
-    "value": 3,
-    "value_source": "reported",
+    "value": "whole_brain",
+    "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MRI scans were performed on a Siemens 3 Tesla Trio scanner",
-         "start_char": 8045,
-         "end_char": 8103
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "pulse_sequence_type": {
@@ -1464,8 +1527,72 @@
     "evidence": {
      "status": "not_applicable"
     }
+   }
+  }
+ ],
+ "assessments": [
+  {
+   "local_id": "asm_scid",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Structured Clinical Interview for DSM IV Disorders",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Marijuana dependence was assessed via Structured Clinical Interview for DSM IV Disorders (55).",
+         "start_char": 7925,
+         "end_char": 8019
+        }
+       ]
+      }
+     ]
+    }
    },
-   "device": "dev_siemens_trio"
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "diagnostic interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Marijuana dependence was assessed via Structured Clinical Interview for DSM IV Disorders (55).",
+         "start_char": 7925,
+         "end_char": 8019
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The Structured Clinical Interview for DSM-IV Disorders was used to assess marijuana dependence.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Marijuana dependence was assessed via Structured Clinical Interview for DSM IV Disorders (55).",
+         "start_char": 7925,
+         "end_char": 8019
+        }
+       ]
+      }
+     ]
+    }
+   }
   }
  ],
  "devices": [
@@ -1515,10 +1642,387 @@
  ],
  "groups": [
   {
-   "local_id": "grp_controls",
+   "local_id": "grp_marijuana",
    "name": {
     "extraction_status": "extracted",
-    "value": "controls",
+    "value": "marijuana users",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "48 marijuana users",
+         "start_char": 1433,
+         "end_char": 1451
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A total of 110 participants",
+         "start_char": 6686,
+         "end_char": 6713
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 48,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "48 marijuana users",
+         "start_char": 1433,
+         "end_char": 1451
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "marijuana dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Marijuana dependence was assessed via Structured Clinical Interview for DSM IV Disorders (55).",
+         "start_char": 7925,
+         "end_char": 8019
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_scid"
+   ],
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "currently use marijuana regularly (at least four times per week) over the last 6 mo"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Marijuana users (cannabis group) were included if they currently use marijuana regularly (at least four times per week) over the last 6 mo",
+         "start_char": 7299,
+         "end_char": 7437
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited through fliers and media advertisement in the Albuquerque, NM, metro area.",
+         "start_char": 6686,
+         "end_char": 6861
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Chronic marijuana users who currently used marijuana regularly (at least four times per week) over the preceding 6 months, confirmed by positive THC-COOH urinalysis; compared with nonusing controls.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Marijuana users (cannabis group) were included if they currently use marijuana regularly (at least four times per week) over the last 6 mo (confirmed via positive THC-COOH urinalysis).",
+         "start_char": 7299,
+         "end_char": 7483
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 48,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "48 marijuana users",
+         "start_char": 1433,
+         "end_char": 1451
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "English as the primary language",
+     "No current or past psychosis",
+     "No traumatic brain injury",
+     "No neurological disorder",
+     "Current regular marijuana use at least four times per week over the last 6 months",
+     "Positive THC-COOH urinalysis"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The inclusion criteria for all of the participants were as follows: ( i ) English as the primary language; and ( ii ) no current or history of psychosis, traumatic brain injury, or neurological disorder.",
+         "start_char": 7095,
+         "end_char": 7298
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Current or past psychosis",
+     "Traumatic brain injury",
+     "Neurological disorder",
+     "Failure to meet regular marijuana-use criterion",
+     "Negative THC-COOH urinalysis"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "no current or history of psychosis, traumatic brain injury, or neurological disorder",
+         "start_char": 7213,
+         "end_char": 7297
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Fliers and media advertisement in the Albuquerque, New Mexico, metropolitan area.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited through fliers and media advertisement in the Albuquerque, NM, metro area.",
+         "start_char": 6686,
+         "end_char": 6861
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Current regular marijuana use at least four times per week for the preceding 6 months; marijuana dependence was assessed with the Structured Clinical Interview for DSM-IV Disorders.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Marijuana dependence was assessed via Structured Clinical Interview for DSM IV Disorders (55).",
+         "start_char": 7925,
+         "end_char": 8019
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Schacht et al. (2012); Filbey et al. (2009, 2010)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "grp_control",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "nonusing controls",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1547,21 +2051,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited",
+         "text": "A total of 110 participants",
          "start_char": 6686,
-         "end_char": 6786
+         "end_char": 6713
         }
        ]
       }
      ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "acquired_count": {
@@ -1584,25 +2080,20 @@
      ]
     }
    },
-   "inclusion_criteria": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": [
-     "English as the primary language",
-     "no current or history of psychosis, traumatic brain injury, or neurological disorder",
-     "no self-reported regular use of marijuana",
-     "negative urine drug screen at baseline"
-    ],
-    "value_source": "reported",
+    "value": "recruited",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "The inclusion criteria for all of the participants were as follows: ( i ) English as the primary language; and ( ii ) no current or history of psychosis, traumatic brain injury, or neurological disorder.",
-         "start_char": 7095,
-         "end_char": 7298
+         "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited through fliers and media advertisement in the Albuquerque, NM, metro area.",
+         "start_char": 6686,
+         "end_char": 6861
         }
        ]
       }
@@ -1611,7 +2102,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Age- and sex-matched nonusing control participants with no self-reported regular marijuana use and a negative urine drug screen at baseline.",
+    "value": "Nonusing controls with no self-reported regular marijuana use and a negative urine drug screen at baseline; age- and sex-matched to marijuana users.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1667,259 +2158,15 @@
      "status": "not_applicable"
     }
    },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "No current or history of psychosis, traumatic brain injury, or neurological disorder; English was required as the primary language; no self-reported regular marijuana use and negative baseline urine drug screen."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "no current or history of psychosis, traumatic brain injury, or neurological disorder",
-         "start_char": 7213,
-         "end_char": 7297
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Fliers and media advertisements in the Albuquerque, New Mexico metropolitan area.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "recruited through fliers and media advertisement in the Albuquerque, NM, metro area",
-         "start_char": 6777,
-         "end_char": 6860
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "There was no significant difference in age or sex between the groups.",
-         "start_char": 17075,
-         "end_char": 17144
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "No current or history of psychosis, traumatic brain injury, or neurological disorder; nonusing control group."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "no current or history of psychosis, traumatic brain injury, or neurological disorder",
-         "start_char": 7213,
-         "end_char": 7297
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Nonusing controls; no self-reported regular marijuana use.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Nonusing controls (control group) had no self-reported regular use of marijuana",
-         "start_char": 7484,
-         "end_char": 7563
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "grp_marijuana_users",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "marijuana users",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "48 marijuana users",
-         "start_char": 1433,
-         "end_char": 1451
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited",
-         "start_char": 6686,
-         "end_char": 6786
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 48,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "48 marijuana users",
-         "start_char": 1433,
-         "end_char": 1451
-        }
-       ]
-      }
-     ]
-    }
-   },
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
      "English as the primary language",
-     "no current or history of psychosis, traumatic brain injury, or neurological disorder",
-     "currently use marijuana regularly (at least four times per week) over the last 6 mo",
-     "positive THC-COOH urinalysis"
+     "No current or past psychosis",
+     "No traumatic brain injury",
+     "No neurological disorder",
+     "No self-reported regular marijuana use",
+     "Negative urine drug screen at baseline"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1929,83 +2176,23 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Marijuana users (cannabis group) were included if they currently use marijuana regularly (at least four times per week) over the last 6 mo (confirmed via positive THC-COOH urinalysis).",
-         "start_char": 7299,
-         "end_char": 7483
+         "text": "Nonusing controls (control group) had no self-reported regular use of marijuana and had a negative urine drug screen at baseline.",
+         "start_char": 7484,
+         "end_char": 7613
         }
        ]
       }
      ]
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Chronic marijuana users who currently used marijuana regularly, defined as at least four times per week during the preceding 6 months, with use confirmed by positive THC-COOH urinalysis.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Marijuana users (cannabis group) were included if they currently use marijuana regularly (at least four times per week) over the last 6 mo (confirmed via positive THC-COOH urinalysis).",
-         "start_char": 7299,
-         "end_char": 7483
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 48,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "48 marijuana users",
-         "start_char": 1433,
-         "end_char": 1451
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "No current or history of psychosis, traumatic brain injury, or neurological disorder; English was required as the primary language; regular marijuana use of at least four times per week for the preceding 6 months and positive THC-COOH urinalysis were required."
+     "Current or past psychosis",
+     "Traumatic brain injury",
+     "Neurological disorder",
+     "Regular marijuana use",
+     "Positive urine drug screen at baseline"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2026,7 +2213,7 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Fliers and media advertisements in the Albuquerque, New Mexico metropolitan area.",
+    "value": "Fliers and media advertisement in the Albuquerque, New Mexico, metropolitan area.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2035,9 +2222,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "recruited through fliers and media advertisement in the Albuquerque, NM, metro area",
-         "start_char": 6777,
-         "end_char": 6860
+         "text": "A total of 110 participants consisting of 62 nonusing controls and 48 marijuana users were recruited through fliers and media advertisement in the Albuquerque, NM, metro area.",
+         "start_char": 6686,
+         "end_char": 6861
         }
        ]
       }
@@ -2052,63 +2239,45 @@
    },
    "age_mean": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_standard_deviation": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_minimum": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_maximum": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_median": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "There was no significant difference in age or sex between the groups.",
-         "start_char": 17075,
-         "end_char": 17144
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Chronic marijuana use; no current or history of psychosis, traumatic brain injury, or neurological disorder."
+     "No self-reported regular marijuana use",
+     "Negative urine drug screen at baseline"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2118,56 +2287,46 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "no current or history of psychosis, traumatic brain injury, or neurological disorder",
-         "start_char": 7213,
-         "end_char": 7297
+         "text": "no self-reported regular use of marijuana and had a negative urine drug screen at baseline",
+         "start_char": 7522,
+         "end_char": 7612
         }
        ]
       }
      ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "No current or past psychosis",
+     "No traumatic brain injury",
+     "No neurological disorder"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "DSM-IV",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "User's Guide for the Structured Clinical Interview for DSM-IV Axis I Disorders (SCID) (American Psychiatric Press, Washington, DC)",
-         "start_char": 46627,
-         "end_char": 46757
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Regular marijuana use at least four times per week for the last 6 months; marijuana dependence was assessed using the Structured Clinical Interview for DSM-IV Disorders.",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Marijuana dependence was assessed via Structured Clinical Interview for DSM IV Disorders (55).",
-         "start_char": 7925,
-         "end_char": 8019
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -2183,16 +2342,38 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Schacht et al. (2012); Filbey et al. (2009, 2010)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
    }
   }
  ],
  "tasks": [
   {
-   "local_id": "tsk_resting_state",
+   "local_id": "tsk_rest",
    "name": {
     "extraction_status": "extracted",
-    "value": "resting state",
+    "value": "resting state protocol",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2201,9 +2382,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "resting state",
-         "start_char": 788,
-         "end_char": 801
+         "text": "resting state functional MRI",
+         "start_char": 8348,
+         "end_char": 8376
         }
        ]
       }
@@ -2212,7 +2393,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Resting-state functional MRI used to assess functional connectivity.",
+    "value": "Resting state functional MRI was used to assess functional connectivity of the brain.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2224,26 +2405,6 @@
          "text": "a resting state functional MRI scan was collected to assess functional connectivity of the brain",
          "start_char": 8346,
          "end_char": 8442
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "design_type": {
-    "extraction_status": "extracted",
-    "value": "continuous with no modelled events",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The sequence parameters for functional MRI (fcMRI) were: FOV = 240 × 240, matrix = 64 × 64, slice thickness = 4.55 mm, no gap between slices, voxel size = 3.75 × 3.75 × 4.55 mm 2 , 32 axial slices, TR/TE = 2,000/29 ms, flip angle = 60°, 158 image volumes, and scan duration = 5.5 min.",
-         "start_char": 9109,
-         "end_char": 9393
         }
        ]
       }
@@ -2251,14 +2412,13 @@
     }
    },
    "acquisitions": [
-    "acq_resting_fmri"
+    "acq_fmri",
+    "acq_t1",
+    "acq_dti"
    ],
-   "conditions": [],
-   "response_mode": {
+   "design_type": {
     "extraction_status": "extracted",
-    "value": [
-     "none"
-    ],
+    "value": "continuous",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -2267,13 +2427,33 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a resting state functional MRI scan was collected to assess functional connectivity of the brain",
-         "start_char": 8346,
-         "end_char": 8442
+         "text": "resting state functional MRI",
+         "start_char": 8348,
+         "end_char": 8376
         }
        ]
       }
      ]
+    }
+   },
+   "stimulus_modality": {
+    "extraction_status": "extracted",
+    "value": [
+     "none"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "response_modality": {
+    "extraction_status": "extracted",
+    "value": [
+     "none"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "presentation_software": {
@@ -2283,6 +2463,12 @@
     }
    },
    "instructions": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "references": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -2302,179 +2488,12 @@
    }
   }
  ],
- "assessments": [
-  {
-   "local_id": "asm_iq",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Wechsler Abbreviated Scale of Intelligence",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Wechsler Abbreviated Scale of Intelligence",
-         "start_char": 7875,
-         "end_char": 7917
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of intelligence quotient.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "IQ was assessed by using the Wechsler Abbreviated Scale of Intelligence (54).",
-         "start_char": 7846,
-         "end_char": 7923
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "cognitive test",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Wechsler Abbreviated Scale of Intelligence",
-         "start_char": 7875,
-         "end_char": 7917
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_marijuana_dependence",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Structured Clinical Interview for DSM IV Disorders",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Marijuana dependence was assessed via Structured Clinical Interview for DSM IV Disorders (55).",
-         "start_char": 7925,
-         "end_char": 8019
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of marijuana dependence.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Marijuana dependence was assessed via Structured Clinical Interview for DSM IV Disorders (55).",
-         "start_char": 7925,
-         "end_char": 8019
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "diagnostic interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Structured Clinical Interview for DSM IV Disorders",
-         "start_char": 7963,
-         "end_char": 8013
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_marijuana_problem_survey",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Marijuana Problem Survey",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Marijuana Problem Survey",
-         "start_char": 15145,
-         "end_char": 15169
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "A 19-item measure assessing negative psychological, social, occupational, and legal consequences of marijuana use in the last 90 days.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "behavioral questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
  "regions": [
   {
-   "local_id": "reg_orbitofrontal_cortex",
+   "local_id": "reg_bilateral_ofc",
    "name": {
     "extraction_status": "extracted",
-    "value": "orbitofrontal cortex",
+    "value": "bilateral orbitofrontal gyri",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2483,9 +2502,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "orbitofrontal cortex",
-         "start_char": 741,
-         "end_char": 761
+         "text": "bilateral orbitofrontal gyri",
+         "start_char": 1586,
+         "end_char": 1614
         }
        ]
       }
@@ -2503,9 +2522,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Functional connectivity was measured by using a seed-based approach by choosing bilateral orbitofrontal gyri cluster peaks from VBM analysis, [+26 +54 –8] and [−16 +58 –10] in MNI template.",
+         "text": "Functional connectivity was measured by using a seed-based approach by choosing bilateral orbitofrontal gyri cluster peaks from VBM analysis",
          "start_char": 12316,
-         "end_char": 12505
+         "end_char": 12456
         }
        ]
       }
@@ -2523,29 +2542,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "bilateral orbitofrontal gyri cluster peaks",
+         "text": "bilateral orbitofrontal gyri cluster peaks from VBM analysis",
          "start_char": 12396,
-         "end_char": 12438
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Bilateral orbitofrontal gyri cluster peaks at [+26 +54 –8] and [−16 +58 –10].",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "bilateral orbitofrontal gyri cluster peaks from VBM analysis, [+26 +54 –8] and [−16 +58 –10] in MNI template",
-         "start_char": 12396,
-         "end_char": 12504
+         "end_char": 12456
         }
        ]
       }
@@ -2554,7 +2553,7 @@
    },
    "atlas": {
     "extraction_status": "extracted",
-    "value": "Automated Anatomical Labeling (AAL) atlas",
+    "value": "AAL",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2571,13 +2570,10 @@
       }
      ]
     }
-   }
-  },
-  {
-   "local_id": "reg_temporal_lobe",
-   "name": {
+   },
+   "description": {
     "extraction_status": "extracted",
-    "value": "temporal lobe",
+    "value": "Bilateral orbitofrontal gyri defined from the VBM clusters, with seed peaks at [+26 +54 −8] in the right middle orbitofrontal gyrus and [−16 +58 −10] in the left superior orbitofrontal gyrus in MNI space.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2586,9 +2582,32 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "temporal lobe",
-         "start_char": 18789,
-         "end_char": 18802
+         "text": "Functional connectivity was measured by using a seed-based approach by choosing bilateral orbitofrontal gyri cluster peaks from VBM analysis, [+26 +54 –8] and [−16 +58 –10] in MNI template.",
+         "start_char": 12316,
+         "end_char": 12505
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "reg_bilateral_temporal",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "bilateral temporal gyri",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The components of this network consist of bilateral orbitofrontal and bilateral temporal gyri ( 28 ).",
+         "start_char": 18265,
+         "end_char": 18366
         }
        ]
       }
@@ -2598,7 +2617,7 @@
    "definition_method": {
     "extraction_status": "extracted",
     "value": "atlas",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2637,13 +2656,13 @@
    },
    "atlas": {
     "extraction_status": "extracted",
-    "value": "automated anatomical labeling (AAL) database",
+    "value": "AAL",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
          "text": "Each region’s anatomical region was defined based on automated anatomical labeling (AAL) database.",
@@ -2657,7 +2676,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Bilateral temporal gyri forming part of the orbitofrontal network; temporal functional masks were defined as the top 200 voxels according to their functional-connectivity z scores.",
+    "value": "Bilateral temporal gyri, defined as components of the orbitofrontal network and represented by the top 200 voxels according to their functional-connectivity z scores.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2666,9 +2685,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The components of this network consist of bilateral orbitofrontal and bilateral temporal gyri ( 28 ).",
-         "start_char": 18265,
-         "end_char": 18366
+         "text": "Then, the orbitofrontal and temporal functional masks were defined as the top 200 voxels according to their z score in their functional connectivity maps",
+         "start_char": 12912,
+         "end_char": 13065
         }
        ]
       }
@@ -2680,7 +2699,7 @@
    "local_id": "reg_forceps_minor",
    "name": {
     "extraction_status": "extracted",
-    "value": "forceps minor",
+    "value": "forceps minor tract",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2689,9 +2708,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "forceps minor",
-         "start_char": 1766,
-         "end_char": 1779
+         "text": "forceps minor tract",
+         "start_char": 1992,
+         "end_char": 2011
         }
        ]
       }
@@ -2700,7 +2719,7 @@
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "same_study_analysis",
+    "value": "anatomical_a_priori",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -2729,9 +2748,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "white matter tract",
-         "start_char": 8580,
-         "end_char": 8598
+         "text": "the forceps minor tract",
+         "start_char": 1988,
+         "end_char": 2011
         }
        ]
       }
@@ -2740,14 +2759,13 @@
    },
    "atlas": {
     "extraction_status": "not_reported",
-    "unreported_reason": "cited_elsewhere",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "White-matter tract innervating and connecting the orbitofrontal regions, delineated using manual and automatic tractography; automatic tractography used the right middle orbitofrontal and left superior orbitofrontal gray-matter clusters as dilated seed regions.",
+    "value": "The forceps minor tract connecting the orbitofrontal regions, delineated manually and automatically; automatic tractography used dilated VBM clusters coregistered to native DTI space and an AND operation between the two clusters.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2775,7 +2793,19 @@
     "value": "structural_morphometry",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "gray matter volume",
+         "start_char": 8319,
+         "end_char": 8337
+        }
+       ]
+      }
+     ]
     }
    },
    "type": {
@@ -2820,22 +2850,11 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "Voxel-based morphometry gray matter volume",
+    "value": "Voxel-based gray matter volume",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "We used the voxel-based morphology (VBM) technique to investigate whole brain structural abnormalities.",
-         "start_char": 10016,
-         "end_char": 10119
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "unit": {
@@ -2846,13 +2865,25 @@
    }
   },
   {
-   "local_id": "mea_fc_z_score",
+   "local_id": "mea_fc_z",
    "family": {
     "extraction_status": "extracted",
     "value": "functional_bold",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "functional connectivity",
+         "start_char": 763,
+         "end_char": 786
+        }
+       ]
+      }
+     ]
     }
    },
    "type": {
@@ -2866,9 +2897,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "functional connectivity",
-         "start_char": 763,
-         "end_char": 786
+         "text": "Functional connectivity",
+         "start_char": 12316,
+         "end_char": 12339
         }
        ]
       }
@@ -2897,7 +2928,7 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "Fisher z-transformed correlation coefficient",
+    "value": "Fisher z-transformed resting-state functional connectivity",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2906,9 +2937,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Then, the correlation maps were transformed to a z -score map by using Fisher’s inverse hyperbolic tangent transformation.",
-         "start_char": 12633,
-         "end_char": 12755
+         "text": "The cross-correlation coefficient between these seed voxels and all other voxels was calculated to generate a correlation map.",
+         "start_char": 12506,
+         "end_char": 12632
         }
        ]
       }
@@ -2923,7 +2954,7 @@
    }
   },
   {
-   "local_id": "mea_forceps_minor_fa",
+   "local_id": "mea_fa",
    "family": {
     "extraction_status": "extracted",
     "value": "diffusion",
@@ -2935,9 +2966,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "diffusion",
-         "start_char": 808,
-         "end_char": 817
+         "text": "white matter integrity",
+         "start_char": 1314,
+         "end_char": 1336
         }
        ]
       }
@@ -2955,9 +2986,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "fractional anisotropy",
+         "text": "fractional anisotropy (FA)",
          "start_char": 1796,
-         "end_char": 1817
+         "end_char": 1822
         }
        ]
       }
@@ -2966,7 +2997,7 @@
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "fractional anisotropy of the forceps minor",
+    "value": "fractional anisotropy",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2975,9 +3006,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "forceps minor’s FA",
-         "start_char": 19624,
-         "end_char": 19642
+         "text": "fractional anisotropy (FA)",
+         "start_char": 1796,
+         "end_char": 1822
         }
        ]
       }
@@ -2986,7 +3017,7 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "fractional anisotropy",
+    "value": "Fractional anisotropy",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3014,65 +3045,28 @@
  ],
  "preprocessings": [
   {
-   "local_id": "prp_mri",
-   "description": {
-    "extraction_status": "extracted",
-    "value": "MRI preprocessing included segmentation, registration, normalization, modulation, motion correction, slice timing correction, detrending, filtering, nuisance regression, and smoothing.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MRI Data Processing",
-         "start_char": 9994,
-         "end_char": 10013
-        }
-       ]
-      }
-     ]
-    }
-   },
+   "local_id": "prp_vbm",
    "steps": {
     "extraction_status": "extracted",
     "value": [
      "segmentation",
-     "DARTEL registration",
-     "spatial normalization",
+     "creation of customized GM templates",
+     "affine registration",
+     "nonlinear warping",
      "modulation",
-     "motion correction",
-     "slice timing correction",
-     "linear detrending",
-     "band-pass filtering",
-     "white matter and cerebrospinal fluid signal regression"
+     "spatial normalization",
+     "smoothing"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MR images were segmented into gray matter (GM), white matter (WM), and cerebrospinal fluid",
-         "start_char": 10459,
-         "end_char": 10549
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "software": {
     "extraction_status": "extracted",
     "value": [
-     "SPM 8",
      "DARTEL",
-     "AFNI",
-     "in-house MATLAB scripts",
-     "FSL release 4.0"
+     "SPM 8"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3082,9 +3076,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "High-resolution T1 images were processed by using the Diffeomorphic Anatomical Registration Through Exponentiated Lie Algebra (DARTEL), an improved VBM method that can achieve intersubject brain images registration more accurately in SPM 8",
-         "start_char": 10120,
-         "end_char": 10359
+         "text": "DARTEL",
+         "start_char": 10247,
+         "end_char": 10253
         }
        ]
       }
@@ -3094,8 +3088,7 @@
    "smoothing_fwhm_mm": {
     "extraction_status": "extracted",
     "value": [
-     6,
-     10
+     6
     ],
     "value_source": "reported",
     "evidence": {
@@ -3113,12 +3106,199 @@
       }
      ]
     }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "High-resolution T1 images were segmented into gray matter, white matter, and cerebrospinal fluid; customized gray-matter templates were created using DARTEL, images were affine and nonlinearly registered to MNI space with modulation to preserve relative volumes, and modulated normalized gray-matter images were smoothed with a 6-mm FWHM kernel for whole-brain VBM analysis.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "MR images were segmented into gray matter (GM), white matter (WM), and cerebrospinal fluid",
+         "start_char": 10459,
+         "end_char": 10549
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "prp_fmri",
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "motion correction",
+     "slice timing correction",
+     "removal of the linear trend",
+     "transformation to standard MNI space",
+     "smoothing",
+     "band-pass filtering",
+     "regression of white matter and cerebrospinal fluid signals"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "AFNI",
+     "in-house MATLAB scripts"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "AFNI",
+         "start_char": 11270,
+         "end_char": 11274
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     10
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "smoothing by a Gaussian filter with a full width half maximum (FWHM) of 10 mm",
+         "start_char": 11930,
+         "end_char": 12007
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Resting-state fMRI data were motion-corrected, slice-time corrected, detrended, transformed to MNI space at 3-mm resolution, smoothed with a 10-mm FWHM Gaussian filter, band-pass filtered from 0.01 to 0.1 Hz, and nuisance-regressed for white-matter and cerebrospinal-fluid signals.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The dataset was preprocessed with motion correction (realignment), slice timing correction, removal of the linear trend, transformation to standard MNI space",
+         "start_char": 11713,
+         "end_char": 11870
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "prp_dti",
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "head movement correction",
+     "eddy current distortion correction",
+     "brain masking",
+     "diffusion tensor fitting",
+     "tractography"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "FMRIB Software Library release 4.0",
+     "Eddycorrect",
+     "DTIfit"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the University of Oxford’s Center for Functional Magnetic Resonance Imaging of the Brain Software Library release 4.0",
+         "start_char": 13161,
+         "end_char": 13278
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Diffusion data were corrected for head movement and eddy-current distortions with Eddycorrect, diffusion tensors were fit voxelwise with DTIfit within a brain mask, and fractional anisotropy, axial diffusivity, radial diffusivity, and mean diffusivity maps were generated; tractography used minimum FA 0.20 and maximum turning angle 50°.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "First, the data were corrected for head movement and eddy current distortions by using Eddycorrect",
+         "start_char": 13307,
+         "end_char": 13405
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     0
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "white matter tracts were constructed with minimum FA of 0.20 and maximum turning angle of 50°",
+         "start_char": 13851,
+         "end_char": 13944
+        }
+       ]
+      }
+     ]
+    }
    }
   }
  ],
  "model_estimations": [
   {
-   "local_id": "mod_group_gm",
+   "local_id": "mod_group",
    "model_family": {
     "extraction_status": "extracted",
     "value": "glm",
@@ -3162,7 +3342,7 @@
    "stage": {
     "extraction_status": "extracted",
     "value": "group",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3170,9 +3350,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A general statistical linear model was applied to assess the contribution of chronic marijuana use on cognition, gray matter volume, functional connectivity, and structural connectivity measures.",
-         "start_char": 15740,
-         "end_char": 15935
+         "text": "The model included two groups",
+         "start_char": 15936,
+         "end_char": 15965
         }
        ]
       }
@@ -3190,9 +3370,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxel level threshold of P < 0.01 (FWE-corrected) and cluster size ≥ 15,936 mm 3 was determined",
-         "start_char": 11163,
-         "end_char": 11260
+         "text": "voxel level threshold",
+         "start_char": 11165,
+         "end_char": 11186
         }
        ]
       }
@@ -3200,11 +3380,13 @@
     }
    },
    "preprocessing": [
-    "prp_mri"
+    "prp_vbm",
+    "prp_fmri",
+    "prp_dti"
    ],
    "terms": [
     {
-     "local_id": "trm_group_gm",
+     "local_id": "trm_group",
      "name": {
       "extraction_status": "extracted",
       "value": "group",
@@ -3216,9 +3398,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
+           "text": "The model included two groups",
            "start_char": 15936,
-           "end_char": 16025
+           "end_char": 15965
           }
          ]
         }
@@ -3236,9 +3418,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
+           "text": "The model included two groups",
            "start_char": 15936,
-           "end_char": 16025
+           "end_char": 15965
           }
          ]
         }
@@ -3250,7 +3432,19 @@
       "value": "between_subject",
       "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The model included two groups",
+           "start_char": 15936,
+           "end_char": 15965
+          }
+         ]
+        }
+       ]
       }
      },
      "levels": [
@@ -3266,9 +3460,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "marijuana users",
-             "start_char": 1436,
-             "end_char": 1451
+             "text": "marijuana users and controls",
+             "start_char": 15973,
+             "end_char": 16001
             }
            ]
           }
@@ -3276,26 +3470,14 @@
         }
        },
        "groups": [
-        "grp_marijuana_users"
+        "grp_marijuana"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 1,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-             "start_char": 15936,
-             "end_char": 16025
-            }
-           ]
-          }
-         ]
+         "status": "not_found"
         }
        }
       },
@@ -3311,9 +3493,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "controls",
-             "start_char": 1489,
-             "end_char": 1497
+             "text": "marijuana users and controls",
+             "start_char": 15973,
+             "end_char": 16001
             }
            ]
           }
@@ -3321,26 +3503,14 @@
         }
        },
        "groups": [
-        "grp_controls"
+        "grp_control"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-             "start_char": 15936,
-             "end_char": 16025
-            }
-           ]
-          }
-         ]
+         "status": "not_found"
         }
        }
       }
@@ -3358,9 +3528,11 @@
       }
      },
      "source_definition": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "Study group: marijuana users versus nonusing controls.",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     }
@@ -3373,7 +3545,7 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Two-group general linear model with IQ as a covariate; voxel-level threshold P < 0.01, FWE-corrected, with cluster size >= 15,936 mm3.",
+    "value": "General statistical linear model with two groups and IQ as a covariate; two-sample t tests assessed group differences, and AIC compared linear and quadratic regression fits for brain-behavior relationships.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3392,641 +3564,38 @@
     }
    },
    "estimator": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Ordinary least-squares general linear model and two-sample t tests",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Two sample t tests were performed",
+         "start_char": 16026,
+         "end_char": 16059
+        }
+       ]
+      }
+     ]
     }
    },
    "software": {
     "extraction_status": "extracted",
-    "value": "SPM8 with DARTEL; AFNI 3dClustSim for cluster threshold determination.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "High-resolution T1 images were processed by using the Diffeomorphic Anatomical Registration Through Exponentiated Lie Algebra (DARTEL), an improved VBM method that can achieve intersubject brain images registration more accurately in SPM 8",
-         "start_char": 10120,
-         "end_char": 10359
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "mod_group_fc",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "glm",
+    "value": "SPM8",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "A general statistical linear model was applied",
-         "start_char": 15740,
-         "end_char": 15786
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "general statistical linear model",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "A general statistical linear model was applied to assess the contribution of chronic marijuana use on cognition, gray matter volume, functional connectivity, and structural connectivity measures.",
-         "start_char": 15740,
-         "end_char": 15935
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "A general statistical linear model was applied to assess the contribution of chronic marijuana use on cognition, gray matter volume, functional connectivity, and structural connectivity measures.",
-         "start_char": 15740,
-         "end_char": 15935
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Next, a region of interest (ROI) analysis was performed.",
-         "start_char": 12756,
-         "end_char": 12812
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "preprocessing": [
-    "prp_mri"
-   ],
-   "terms": [
-    {
-     "local_id": "trm_group_fc",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "group",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-           "start_char": 15936,
-           "end_char": 16025
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-           "start_char": 15936,
-           "end_char": 16025
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "marijuana users",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "marijuana users",
-             "start_char": 1436,
-             "end_char": 1451
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_marijuana_users"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-             "start_char": 15936,
-             "end_char": 16025
-            }
-           ]
-          }
-         ]
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "controls",
-             "start_char": 1489,
-             "end_char": 1497
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_controls"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-             "start_char": 15936,
-             "end_char": 16025
-            }
-           ]
-          }
-         ]
-        }
-       }
-      }
-     ],
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "Two-group general linear model with IQ as a covariate; resting-state functional connectivity was measured using seed-based cross-correlations transformed with Fisher's inverse hyperbolic tangent and ROI analysis.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Functional connectivity was measured by using a seed-based approach",
-         "start_char": 12316,
-         "end_char": 12383
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "AFNI and in-house MATLAB scripts.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Resting state fMRI (rsfMRI) images were analyzed by using AFNI (NIMH Scientific and Statistical Computing Core) and in-house MATLAB scripts.",
-         "start_char": 11572,
-         "end_char": 11712
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "inputs_from": [
-    "mod_group_gm"
-   ]
-  },
-  {
-   "local_id": "mod_group_dti",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "anova",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "To that end, we also carried out one-way ANOVA comparisons of mean diffusivity (MD), radial diffusivity (RD), and axial diffusivity (AD) between the groups.",
-         "start_char": 20020,
-         "end_char": 20176
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "one-way ANOVA",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "To that end, we also carried out one-way ANOVA comparisons of mean diffusivity (MD), radial diffusivity (RD), and axial diffusivity (AD) between the groups.",
-         "start_char": 20020,
-         "end_char": 20176
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "A general statistical linear model was applied to assess the contribution of chronic marijuana use on cognition, gray matter volume, functional connectivity, and structural connectivity measures.",
-         "start_char": 15740,
-         "end_char": 15935
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "manual ROI",
-         "start_char": 14335,
-         "end_char": 14345
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "preprocessing": [
-    "prp_mri"
-   ],
-   "terms": [
-    {
-     "local_id": "trm_group_dti",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "group",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-           "start_char": 15936,
-           "end_char": 16025
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-           "start_char": 15936,
-           "end_char": 16025
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "marijuana users",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "marijuana users",
-             "start_char": 1436,
-             "end_char": 1451
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_marijuana_users"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-             "start_char": 15936,
-             "end_char": 16025
-            }
-           ]
-          }
-         ]
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "controls",
-             "start_char": 1489,
-             "end_char": 1497
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_controls"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The model included two groups (i.e., marijuana users and controls) and IQ as a covariate.",
-             "start_char": 15936,
-             "end_char": 16025
-            }
-           ]
-          }
-         ]
-        }
-       }
-      }
-     ],
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "One-way ANOVA comparisons of diffusion measures between marijuana users and controls; tractography used minimum FA of 0.20 and maximum turning angle of 50 degrees.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "To that end, we also carried out one-way ANOVA comparisons of mean diffusivity (MD), radial diffusivity (RD), and axial diffusivity (AD) between the groups.",
-         "start_char": 20020,
-         "end_char": 20176
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "FSL release 4.0, including Eddycorrect and DTIfit.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Diffusion-weighted data were processed by using the University of Oxford’s Center for Functional Magnetic Resonance Imaging of the Brain Software Library release 4.0",
-         "start_char": 13113,
-         "end_char": 13278
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    }
   }
  ],
  "inference_settings": [
   {
-   "local_id": "inf_whole_brain_fwe",
+   "local_id": "inf_vbm",
    "inference_level": {
     "extraction_status": "extracted",
     "value": "voxel",
@@ -4038,9 +3607,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxel level threshold of P < 0.01 (FWE-corrected) and cluster size ≥ 15,936 mm 3 was determined",
+         "text": "A voxel level threshold of P < 0.01 (FWE-corrected)",
          "start_char": 11163,
-         "end_char": 11260
+         "end_char": 11214
         }
        ]
       }
@@ -4058,9 +3627,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxel level threshold of P < 0.01 (FWE-corrected) and cluster size ≥ 15,936 mm 3 was determined",
-         "start_char": 11163,
-         "end_char": 11260
+         "text": "P < 0.01",
+         "start_char": 11190,
+         "end_char": 11198
         }
        ]
       }
@@ -4078,9 +3647,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxel level threshold of P < 0.01 (FWE-corrected) and cluster size ≥ 15,936 mm 3 was determined",
-         "start_char": 11163,
-         "end_char": 11260
+         "text": "P",
+         "start_char": 6671,
+         "end_char": 6672
         }
        ]
       }
@@ -4098,9 +3667,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxel level threshold of P < 0.01 (FWE-corrected) and cluster size ≥ 15,936 mm 3 was determined",
-         "start_char": 11163,
-         "end_char": 11260
+         "text": "cluster size ≥ 15,936 mm 3",
+         "start_char": 11219,
+         "end_char": 11245
         }
        ]
       }
@@ -4118,9 +3687,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxel level threshold of P < 0.01 (FWE-corrected) and cluster size ≥ 15,936 mm 3 was determined",
-         "start_char": 11163,
-         "end_char": 11260
+         "text": "FWE-corrected",
+         "start_char": 11200,
+         "end_char": 11213
         }
        ]
       }
@@ -4138,9 +3707,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxel level threshold of P < 0.01 (FWE-corrected) and cluster size ≥ 15,936 mm 3 was determined",
-         "start_char": 11163,
-         "end_char": 11260
+         "text": "cluster size ≥ 15,936 mm 3",
+         "start_char": 11219,
+         "end_char": 11245
         }
        ]
       }
@@ -4158,9 +3727,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxel level threshold of P < 0.01 (FWE-corrected) and cluster size ≥ 15,936 mm 3 was determined",
-         "start_char": 11163,
-         "end_char": 11260
+         "text": "whole brain",
+         "start_char": 1175,
+         "end_char": 1186
         }
        ]
       }
@@ -4210,13 +3779,294 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A voxel level threshold of P < 0.01 (FWE-corrected) and cluster size ≥ 15,936 mm 3 was determined",
-         "start_char": 11163,
-         "end_char": 11260
+         "text": "P < 0.01",
+         "start_char": 11190,
+         "end_char": 11198
         }
        ]
       }
      ]
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "inf_fc",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "z -score maps",
+         "start_char": 19073,
+         "end_char": 19086
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 2,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "z score ≥ 2",
+         "start_char": 19118,
+         "end_char": 19129
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "extracted",
+    "value": "z",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "z score",
+         "start_char": 13020,
+         "end_char": 13027
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "extracted",
+    "value": 50,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "k ≥ 50",
+         "start_char": 19131,
+         "end_char": 19137
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 50,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "k ≥ 50",
+         "start_char": 19131,
+         "end_char": 19137
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "orbitofrontal network",
+         "start_char": 18242,
+         "end_char": 18263
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "search_volume": {
+    "extraction_status": "extracted",
+    "value": "Top 200 voxels in each functional mask",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the top 200 voxels according to their z score",
+         "start_char": 12982,
+         "end_char": 13027
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_regions": [
+    "reg_bilateral_ofc",
+    "reg_bilateral_temporal",
+    "reg_forceps_minor"
+   ]
+  },
+  {
+   "local_id": "inf_dti",
+   "inference_level": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "search_volume": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "number_of_tests": {
@@ -4232,7 +4082,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "f104560d3dde2e82fe863065384229db610e24f16e9195c9ce3947bd6fdf1b1d",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -4471,5 +4321,8 @@
  "study_type": [
   "Journal Article",
   "Research Support, N.I.H., Extramural"
+ ],
+ "language": [
+  "eng"
  ]
 }

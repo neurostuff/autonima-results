@@ -1,7 +1,7 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study examined whether male and female first-time DWI offenders show cortical thickness abnormalities differing from those in respective controls, including moderation by sex and alcohol use.",
+  "value": "The study examined cortical thickness differences between male and female first-time DWI offenders and their respective controls, including sex-by-group moderation and alcohol-related moderation.",
   "value_source": "generated",
   "evidence": {
    "status": "present",
@@ -10,9 +10,9 @@
      "source": "model_quote",
      "spans": [
       {
-       "text": "We examined whether male DWI offenders show cortical thickness anomalies that differ from those in female DWI offenders, when compared to their respective controls.",
-       "start_char": 579,
-       "end_char": 743
+       "text": "The present study examined whether neuroimaging can provide new insight into DWI behaviour among male and female drivers and novel directions for intervention development.",
+       "start_char": 3549,
+       "end_char": 3720
       }
      ]
     }
@@ -22,8 +22,8 @@
  "hypothesis": {
   "extraction_status": "extracted",
   "value": [
-   "We hypothesized that male offenders would have cortical thickness abnormalities consistent with weakness in executive control compared to females.",
-   "If confirmed, additional analyses would be carried out to test the hypothesis that alcohol use and sex moderate the association between cortical thickness and DWI status."
+   "male offenders would have cortical thickness abnormalities consistent with weakness in executive control compared to females",
+   "alcohol use and sex moderate the association between cortical thickness and DWI status"
   ],
   "value_source": "reported",
   "evidence": {
@@ -45,7 +45,7 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Cross-sectional study of first-time DWI offenders and non-DWI drivers, with participants completing an anatomical MRI scan.",
+   "value": "Cross-sectional observational study of male and female first-time DWI offenders and non-DWI drivers; participants completed an anatomical brain scan at baseline.",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -54,9 +54,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "The cross-sectional study design cannot clarify the origins of potential brain abnormalities in DWI offenders.",
-        "start_char": 18576,
-        "end_char": 18686
+        "text": "Those eligible for and consenting to the MRI session completed an anatomical brain scan on a separate day.",
+        "start_char": 5358,
+        "end_char": 5464
        }
       ]
      }
@@ -65,27 +65,15 @@
   },
   "allocation": {
    "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "Planned comparisons within a sex by group (i.e., CTRL, DWI) analysis of variance (ANOVA) framework",
-        "start_char": 8602,
-        "end_char": 8700
-       }
-      ]
-     }
-    ]
+    "status": "not_found"
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -112,34 +100,58 @@
    }
   },
   "arms": [],
-  "timepoints": []
+  "timepoints": [
+   {
+    "local_id": "tp_baseline",
+    "name": {
+     "extraction_status": "extracted",
+     "value": "baseline laboratory session",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "At the baseline laboratory session, eligible, consenting participants underwent: i) a Breathalyzer ® and drug urinalysis; ii) examination for medical inclusion/exclusion; and iii) assessments of personality characteristics, executive function, sociodemographic information, and alcohol and drug use.",
+          "start_char": 5058,
+          "end_char": 5357
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "relation_to_intervention": {
+     "extraction_status": "extracted",
+     "value": "single_occasion",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "At the baseline laboratory session",
+          "start_char": 5058,
+          "end_char": 5092
+         }
+        ]
+       }
+      ]
+     }
+    }
+   }
+  ]
  },
  "analyses": [
   {
    "local_id": "a_prose_1",
    "name": {
     "extraction_status": "extracted",
-    "value": "sex × group interaction",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
-         "start_char": 9524,
-         "end_char": 9609
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "The main contrast of interest was (MCTRL-MDWI) > (FCTRL-FDWI) to establish whether the effect of having DWI-offender status among males is different from the effect of having this status among females.",
+    "value": "sex × group interaction contrast",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -148,9 +160,29 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "The main contrast of interest was (MCTRL-MDWI) > (FCTRL-FDWI) to establish whether the effect of having DWI-offender status among males is different from the effect of having this status among females.",
+         "text": "Whole-brain analyses of the specific sex × group interaction contrast revealed a significant 60-vertex cluster in the right dorsal posterior cingulate cortex (PCC) with the peak voxel located at the MNI coordinates, X = 3, Y = −12, Z = 32, with t = 3.59, while controlling for age and handedness ( A).",
+         "start_char": 11759,
+         "end_char": 12060
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "the (MCTRL-MDWI) > (FCTRL-FDWI) sex × group interaction contrast",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The main contrast of interest was (MCTRL-MDWI) > (FCTRL-FDWI)",
          "start_char": 9610,
-         "end_char": 9811
+         "end_char": 9671
         }
        ]
       }
@@ -168,12 +200,23 @@
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Only male DWI offenders compared to their controls showed detectable brain anomalies − lower cortical thickness in the right dorsal PCC.",
-     "Thus, for these male DWI drivers, interventions that could impact PCC could be most advantageous."
+     "Only male DWI offenders compared to their controls showed detectable brain anomalies − lower cortical thickness in the right dorsal PCC."
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Only male DWI offenders compared to their controls showed detectable brain anomalies − lower cortical thickness in the right dorsal PCC.",
+         "start_char": 13960,
+         "end_char": 14096
+        }
+       ]
+      }
+     ]
     }
    },
    "spatial_scope": {
@@ -187,9 +230,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Whole-brain analyses of the specific sex × group interaction contrast revealed a significant 60-vertex cluster in the right dorsal posterior cingulate cortex (PCC)",
+         "text": "Whole-brain analyses",
          "start_char": 11759,
-         "end_char": 11922
+         "end_char": 11779
         }
        ]
       }
@@ -201,36 +244,44 @@
     {
      "group": "grp_mdwi",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 25,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     },
     {
      "group": "grp_fdwi",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 31,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     },
     {
      "group": "grp_mctrl",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 25,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     },
     {
      "group": "grp_fctrl",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 28,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     }
@@ -238,7 +289,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_sex",
+      "term": "t_sex",
       "level": {
        "extraction_status": "extracted",
        "value": "male",
@@ -250,9 +301,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "The model included age at the time of the MRI and handedness as covariates of no interest, sex and group as the between-group factors, and sex × group interaction term.",
-            "start_char": 9355,
-            "end_char": 9523
+            "text": "male",
+            "start_char": 34,
+            "end_char": 38
            }
           ]
          }
@@ -280,14 +331,28 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "male",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "male",
+            "start_char": 34,
+            "end_char": 38
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_sex",
+      "term": "t_sex",
       "level": {
        "extraction_status": "extracted",
        "value": "female",
@@ -299,9 +364,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "The model included age at the time of the MRI and handedness as covariates of no interest, sex and group as the between-group factors, and sex × group interaction term.",
-            "start_char": 9355,
-            "end_char": 9523
+            "text": "female",
+            "start_char": 43,
+            "end_char": 49
            }
           ]
          }
@@ -329,17 +394,8 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     },
-     {
-      "term": "trm_group",
-      "level": {
        "extraction_status": "extracted",
-       "value": "MCTRL",
+       "value": "female",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -348,9 +404,95 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-            "start_char": 5927,
-            "end_char": 6097
+            "text": "female",
+            "start_char": 43,
+            "end_char": 49
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "term": "t_group",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "DWI",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "DWI",
+            "start_char": 50,
+            "end_char": 53
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "literal_match",
+          "spans": [
+           {
+            "text": "Notably, the strongest negative association between PCC cortical thickness and odds of having a DWI status was actually observed among males reporting minimal alcohol usage in the last 12 months; this association steadily flattened to non-significance with each increase in alcohol misuse.",
+            "start_char": 15936,
+            "end_char": 16225
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "DWI",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "DWI",
+            "start_char": 50,
+            "end_char": 53
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "term": "t_group",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "non-DWI",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "non-DWI",
+            "start_char": 6017,
+            "end_char": 6024
            }
           ]
          }
@@ -379,7 +521,7 @@
       },
       "label": {
        "extraction_status": "extracted",
-       "value": "male non-DWI drivers",
+       "value": "non-DWI",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -388,198 +530,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-            "start_char": 5927,
-            "end_char": 6097
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_group",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "MDWI",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-            "start_char": 5927,
-            "end_char": 6097
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Notably, the strongest negative association between PCC cortical thickness and odds of having a DWI status was actually observed among males reporting minimal alcohol usage in the last 12 months; this association steadily flattened to non-significance with each increase in alcohol misuse.",
-            "start_char": 15936,
-            "end_char": 16225
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "male DWI offenders",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-            "start_char": 5927,
-            "end_char": 6097
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_group",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "FCTRL",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-            "start_char": 5927,
-            "end_char": 6097
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Notably, the strongest negative association between PCC cortical thickness and odds of having a DWI status was actually observed among males reporting minimal alcohol usage in the last 12 months; this association steadily flattened to non-significance with each increase in alcohol misuse.",
-            "start_char": 15936,
-            "end_char": 16225
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "female non-DWI drivers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-            "start_char": 5927,
-            "end_char": 6097
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_group",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "FDWI",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-            "start_char": 5927,
-            "end_char": 6097
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "For example, client change talk, a targeted strategy of Motivational Interviewing, may in males have a selectively positive impact on emotional learning/memory circuits, which encompass the PCC .",
-            "start_char": 17623,
-            "end_char": 17818
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "female DWI offenders",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-            "start_char": 5927,
-            "end_char": 6097
+            "text": "non-DWI",
+            "start_char": 6017,
+            "end_char": 6024
            }
           ]
          }
@@ -599,9 +552,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
-          "start_char": 9524,
-          "end_char": 9609
+          "text": "sex × group interaction contrast",
+          "start_char": 11796,
+          "end_char": 11828
          }
         ]
        }
@@ -620,22 +573,22 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Whole-brain analyses of the specific sex × group interaction contrast revealed a significant 60-vertex cluster in the right dorsal posterior cingulate cortex (PCC) with the peak voxel located at the MNI coordinates, X = 3, Y = −12, Z = 32, with t = 3.59, while controlling for age and handedness ( A).",
-           "start_char": 11759,
-           "end_char": 12060
+           "text": "t = 3.59",
+           "start_char": 12004,
+           "end_char": 12012
           }
          ]
         }
        ]
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -646,10 +599,7 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "model_estimation": "mod_cortical_thickness",
+   "model_estimation": "m_group",
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "prose#1",
@@ -669,8 +619,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "with the peak voxel located at the MNI coordinates",
-         "start_char": 11923,
+         "text": "MNI coordinates",
+         "start_char": 11958,
          "end_char": 11973
         }
        ]
@@ -684,44 +634,25 @@
      "status": "not_applicable"
     }
    },
+   "inference_settings": "inf_rft_p05",
    "tables": [
-    "tbl0005"
+    "tbltable1"
+   ],
+   "acquisitions": [
+    "acq_mri"
    ],
    "assessments": [
-    "asm_audit",
-    "asm_cidi",
+    "asm_composite_international_diag",
+    "asm_alcohol_use_disorder",
     "asm_drug_abuse_screening",
-    "asm_timeline_followback_tlfb",
-    "asm_barratt_impulsivity_scale",
-    "asm_sensation_seeking_scale",
-    "asm_d_kefs_color"
+    "asm_timeline_followback"
    ]
   },
   {
    "local_id": "a_prose_2",
    "name": {
     "extraction_status": "extracted",
-    "value": "MDWI versus MCTRL",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Comparison of MDWI and MCTRL groups",
-         "start_char": 12236,
-         "end_char": 12271
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Comparison of MDWI and MCTRL groups.",
+    "value": "Comparison of MDWI and MCTRL groups",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -733,6 +664,26 @@
          "text": "Comparison of MDWI and MCTRL groups revealed a significant cluster of 132 voxels in the right dorsal PCC (peak at X = 4, Y = −7, Z = 31, t = 3.78) showing that male DWI offenders have reduced cortical thickness compared to their controls ( B).",
          "start_char": 12236,
          "end_char": 12479
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "MDWI compared with MCTRL",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Comparison of MDWI and MCTRL groups",
+         "start_char": 12236,
+         "end_char": 12271
         }
        ]
       }
@@ -758,9 +709,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Whole-brain analyses of the specific sex × group interaction contrast revealed a significant 60-vertex cluster in the right dorsal posterior cingulate cortex (PCC)",
+         "text": "Whole-brain analyses",
          "start_char": 11759,
-         "end_char": 11922
+         "end_char": 11779
         }
        ]
       }
@@ -772,18 +723,22 @@
     {
      "group": "grp_mdwi",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 25,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     },
     {
      "group": "grp_mctrl",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 25,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     }
@@ -791,10 +746,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "t_group",
       "level": {
        "extraction_status": "extracted",
-       "value": "MDWI",
+       "value": "DWI",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -803,9 +758,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Comparison of MDWI and MCTRL groups revealed a significant cluster of 132 voxels in the right dorsal PCC",
-            "start_char": 12236,
-            "end_char": 12340
+            "text": "MDWI",
+            "start_char": 5960,
+            "end_char": 5964
            }
           ]
          }
@@ -815,7 +770,7 @@
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "generated",
+       "value_source": "reported",
        "evidence": {
         "status": "present",
         "sets": [
@@ -834,7 +789,7 @@
       },
       "label": {
        "extraction_status": "extracted",
-       "value": "male DWI offenders",
+       "value": "DWI",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -843,9 +798,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "male DWI offenders",
-            "start_char": 45,
-            "end_char": 63
+            "text": "MDWI",
+            "start_char": 5960,
+            "end_char": 5964
            }
           ]
          }
@@ -854,10 +809,10 @@
       }
      },
      {
-      "term": "trm_group",
+      "term": "t_group",
       "level": {
        "extraction_status": "extracted",
-       "value": "MCTRL",
+       "value": "non-DWI",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -866,9 +821,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Comparison of MDWI and MCTRL groups revealed a significant cluster of 132 voxels in the right dorsal PCC",
-            "start_char": 12236,
-            "end_char": 12340
+            "text": "MCTRL",
+            "start_char": 6026,
+            "end_char": 6031
            }
           ]
          }
@@ -897,18 +852,7 @@
       },
       "label": {
        "extraction_status": "extracted",
-       "value": "male non-DWI drivers",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      }
-     },
-     {
-      "term": "trm_sex",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "male",
+       "value": "non-DWI",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -917,49 +861,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Comparison of MDWI and MCTRL groups revealed a significant cluster of 132 voxels in the right dorsal PCC",
-            "start_char": 12236,
-            "end_char": 12340
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "held",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Comparison of MDWI and MCTRL groups revealed a significant cluster of 132 voxels in the right dorsal PCC",
-            "start_char": 12236,
-            "end_char": 12340
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "males",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "male DWI offenders",
-            "start_char": 45,
-            "end_char": 63
+            "text": "MCTRL",
+            "start_char": 6026,
+            "end_char": 6031
            }
           ]
          }
@@ -979,9 +883,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "Comparison of MDWI and MCTRL groups revealed a significant cluster of 132 voxels in the right dorsal PCC",
-          "start_char": 12236,
-          "end_char": 12340
+          "text": "contrast",
+          "start_char": 9619,
+          "end_char": 9627
          }
         ]
        }
@@ -1000,8 +904,8 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "peak at X = 4, Y = −7, Z = 31, t = 3.78",
-           "start_char": 12342,
+           "text": "t = 3.78",
+           "start_char": 12373,
            "end_char": 12381
           }
          ]
@@ -1009,13 +913,13 @@
        ]
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -1026,16 +930,24 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "model_estimation": "mod_cortical_thickness",
+   "model_estimation": "m_group",
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "prose#2",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Comparison of MDWI and MCTRL groups revealed a significant cluster in the right dorsal PCC showing that male DWI offenders have reduced cortical thickness compared to their controls."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "coordinate_space": {
@@ -1049,23 +961,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "peak at X = 4, Y = −7, Z = 31",
-         "start_char": 12342,
-         "end_char": 12371
+         "text": "MNI coordinates",
+         "start_char": 11958,
+         "end_char": 11973
         }
        ]
       }
      ]
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Comparison of MDWI and MCTRL groups revealed a significant cluster in the right dorsal PCC showing that male DWI offenders have reduced cortical thickness compared to their controls."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "model_representation_notes": {
@@ -1074,44 +976,25 @@
      "status": "not_applicable"
     }
    },
+   "inference_settings": "inf_rft_p05",
    "tables": [
-    "tbl0005"
+    "tbltable1"
+   ],
+   "acquisitions": [
+    "acq_mri"
    ],
    "assessments": [
-    "asm_audit",
-    "asm_cidi",
+    "asm_composite_international_diag",
+    "asm_alcohol_use_disorder",
     "asm_drug_abuse_screening",
-    "asm_timeline_followback_tlfb",
-    "asm_barratt_impulsivity_scale",
-    "asm_sensation_seeking_scale",
-    "asm_d_kefs_color"
+    "asm_timeline_followback"
    ]
   },
   {
    "local_id": "a_prose_3",
    "name": {
     "extraction_status": "extracted",
-    "value": "male and female DWI offenders",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Comparing male and female DWI offenders",
-         "start_char": 12545,
-         "end_char": 12584
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Comparing male and female DWI offenders.",
+    "value": "Comparing male and female DWI offenders",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1123,6 +1006,26 @@
          "text": "Comparing male and female DWI offenders did not reveal any significant differences within the PCC, but we did observe a significant cluster in the left fusiform gyrus (329 vertices, peak at X = −13, Y = −40, Z = 2, t = 3.65).",
          "start_char": 12545,
          "end_char": 12770
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "male DWI offenders compared with female DWI offenders",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Comparing male and female DWI offenders",
+         "start_char": 12545,
+         "end_char": 12584
         }
        ]
       }
@@ -1148,9 +1051,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Comparing male and female DWI offenders did not reveal any significant differences within the PCC, but we did observe a significant cluster in the left fusiform gyrus (329 vertices, peak at X = −13, Y = −40, Z = 2, t = 3.65).",
-         "start_char": 12545,
-         "end_char": 12770
+         "text": "Whole-brain analyses",
+         "start_char": 11759,
+         "end_char": 11779
         }
        ]
       }
@@ -1162,18 +1065,22 @@
     {
      "group": "grp_mdwi",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 25,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     },
     {
      "group": "grp_fdwi",
      "n": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 31,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     }
@@ -1181,7 +1088,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_sex",
+      "term": "t_sex",
       "level": {
        "extraction_status": "extracted",
        "value": "male",
@@ -1193,9 +1100,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Comparing male and female DWI offenders",
-            "start_char": 12545,
-            "end_char": 12584
+            "text": "male",
+            "start_char": 34,
+            "end_char": 38
            }
           ]
          }
@@ -1244,7 +1151,7 @@
       }
      },
      {
-      "term": "trm_sex",
+      "term": "t_sex",
       "level": {
        "extraction_status": "extracted",
        "value": "female",
@@ -1256,9 +1163,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Comparing male and female DWI offenders",
-            "start_char": 12545,
-            "end_char": 12584
+            "text": "female",
+            "start_char": 43,
+            "end_char": 49
            }
           ]
          }
@@ -1305,69 +1212,6 @@
         ]
        }
       }
-     },
-     {
-      "term": "trm_group",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "DWI",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Comparing male and female DWI offenders",
-            "start_char": 12545,
-            "end_char": 12584
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "held",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Comparing male and female DWI offenders",
-            "start_char": 12545,
-            "end_char": 12584
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "DWI offenders",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "DWI offenders",
-            "start_char": 50,
-            "end_char": 63
-           }
-          ]
-         }
-        ]
-       }
-      }
      }
     ],
     "kind": {
@@ -1381,9 +1225,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "Comparing male and female DWI offenders",
-          "start_char": 12545,
-          "end_char": 12584
+          "text": "comparisons",
+          "start_char": 8610,
+          "end_char": 8621
          }
         ]
        }
@@ -1411,13 +1255,13 @@
        ]
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -1428,16 +1272,35 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "model_estimation": "mod_cortical_thickness",
+   "model_estimation": "m_group",
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "prose#3",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Comparing male and female DWI offenders did not reveal any significant differences within the PCC, but a significant cluster was observed in the left fusiform gyrus."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Comparing male and female DWI offenders did not reveal any significant differences within the PCC, but we did observe a significant cluster in the left fusiform gyrus",
+         "start_char": 12545,
+         "end_char": 12711
+        }
+       ]
+      }
+     ]
     }
    },
    "coordinate_space": {
@@ -1451,23 +1314,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "peak at X = −13, Y = −40, Z = 2",
-         "start_char": 12727,
-         "end_char": 12758
+         "text": "MNI coordinates",
+         "start_char": 11958,
+         "end_char": 11973
         }
        ]
       }
      ]
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Comparing male and female DWI offenders did not reveal any significant differences within the PCC, but we did observe a significant cluster in the left fusiform gyrus."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "model_representation_notes": {
@@ -1476,17 +1329,18 @@
      "status": "not_applicable"
     }
    },
+   "inference_settings": "inf_rft_p05",
    "tables": [
-    "tbl0005"
+    "tbltable1"
+   ],
+   "acquisitions": [
+    "acq_mri"
    ],
    "assessments": [
-    "asm_audit",
-    "asm_cidi",
+    "asm_composite_international_diag",
+    "asm_alcohol_use_disorder",
     "asm_drug_abuse_screening",
-    "asm_timeline_followback_tlfb",
-    "asm_barratt_impulsivity_scale",
-    "asm_sensation_seeking_scale",
-    "asm_d_kefs_color"
+    "asm_timeline_followback"
    ]
   }
  ],
@@ -1536,7 +1390,7 @@
    },
    "pulse_sequence_type": {
     "extraction_status": "extracted",
-    "value": "three-dimensional magnetization-prepared Flair sequence",
+    "value": "high-resolution T1 three-dimensional magnetization-prepared Flair sequence",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1620,112 +1474,16 @@
      ]
     }
    },
-   "device": "dev_siemens_sonatavisio",
+   "device": "dev_siemens_sonatआvision",
    "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  }
- ],
- "assessments": [
-  {
-   "local_id": "asm_audit",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Alcohol Use Disorder Identification Test (AUDIT)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The Alcohol Use Disorder Identification Test (AUDIT) and the Drug Abuse Screening Test (DAST) screened for alcohol and drug problems in the previous 12 months respectively.",
-         "start_char": 7153,
-         "end_char": 7325
-        }
-       ]
-      }
-     ]
-    }
    },
-   "description": {
+   "brain_coverage": {
     "extraction_status": "extracted",
-    "value": "Screened for alcohol problems in the previous 12 months.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The Alcohol Use Disorder Identification Test (AUDIT) and the Drug Abuse Screening Test (DAST) screened for alcohol and drug problems in the previous 12 months respectively.",
-         "start_char": 7153,
-         "end_char": 7325
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical scale",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_cidi",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Composite International Diagnostic Interview (CIDI)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The Composite International Diagnostic Interview (CIDI) provided diagnostic DSM-IV classification of lifetime alcohol and drug abuse and dependence .",
-         "start_char": 7513,
-         "end_char": 7662
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "diagnostic interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The Composite International Diagnostic Interview (CIDI) provided diagnostic DSM-IV classification of lifetime alcohol and drug abuse and dependence .",
-         "start_char": 7513,
-         "end_char": 7662
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Composite International Diagnostic Interview (CIDI) used to establish lifetime DSM-IV classifications of alcohol and drug abuse and dependence.",
+    "value": "whole_brain",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1734,239 +1492,20 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The Composite International Diagnostic Interview (CIDI) provided diagnostic DSM-IV classification of lifetime alcohol and drug abuse and dependence .",
-         "start_char": 7513,
-         "end_char": 7662
+         "text": "For comparisons of cortical thickness at every vertex of the whole brain",
+         "start_char": 9187,
+         "end_char": 9259
         }
        ]
       }
      ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_drug_abuse_screening",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Drug Abuse Screening Test (DAST)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Drug Abuse Screening Test (DAST)",
-         "start_char": 7214,
-         "end_char": 7246
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Screened for drug problems in the previous 12 months.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical scale",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_timeline_followback_tlfb",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Timeline Followback (TLFB)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Timeline Followback (TLFB)",
-         "start_char": 7330,
-         "end_char": 7356
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Measured the frequency of risky drinking days during the previous 90 days.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "behavioral assessment",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_barratt_impulsivity_scale",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Barratt Impulsivity Scale version 11 (BIS)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Barratt Impulsivity Scale version 11 (BIS)",
-         "start_char": 6301,
-         "end_char": 6343
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Measured cognitive, behavioural and planning impulsivity domains.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "personality assessment",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "personality assessment",
-         "start_char": 2820,
-         "end_char": 2842
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_sensation_seeking_scale",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Sensation Seeking Scale V (SSS-V)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Sensation Seeking Scale V (SSS-V)",
-         "start_char": 6415,
-         "end_char": 6448
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Measured experience seeking, thrill and adventure seeking, disinhibition, and boredom susceptibility.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "personality assessment",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "personality assessment",
-         "start_char": 2820,
-         "end_char": 2842
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_d_kefs_color",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "D-KEFS Color-Word Interference Test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "D-KEFS Color-Word Interference Test",
-         "start_char": 6555,
-         "end_char": 6590
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Measured executive function, including inhibition and set-shifting.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "neuropsychological test",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
     }
    }
   }
  ],
  "devices": [
   {
-   "local_id": "dev_siemens_sonatavisio",
+   "local_id": "dev_siemens_sonatआvision",
    "manufacturer": {
     "extraction_status": "extracted",
     "value": "Siemens",
@@ -2014,7 +1553,7 @@
    "local_id": "grp_mdwi",
    "name": {
     "extraction_status": "extracted",
-    "value": "MDWI",
+    "value": "male DWI offenders",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2023,9 +1562,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
+         "text": "Twenty-nine male first time DWI (MDWI) offenders",
          "start_char": 5927,
-         "end_char": 6097
+         "end_char": 5975
         }
        ]
       }
@@ -2043,7 +1582,7 @@
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "first DWI offence"
+     "first-time DWI offender"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2060,14 +1599,6 @@
        ]
       }
      ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "acquired_count": {
@@ -2090,9 +1621,167 @@
      ]
     }
    },
+   "age_minimum": {
+    "extraction_status": "extracted",
+    "value": 18,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
+         "start_char": 4457,
+         "end_char": 4628
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "extracted",
+    "value": 44,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "being 18–44 years of age",
+         "start_char": 4493,
+         "end_char": 4517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "being 18–44 years of age",
+         "start_char": 4493,
+         "end_char": 4517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Twenty-nine male first time DWI (MDWI) offenders",
+           "start_char": 5927,
+           "end_char": 5975
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 29,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Twenty-nine male first time DWI (MDWI) offenders",
+           "start_char": 5927,
+           "end_char": 5975
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 29,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Twenty-nine male first time DWI (MDWI) offenders",
+           "start_char": 5927,
+           "end_char": 5975
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Subjects were recruited from a sample of participants taking part in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
+         "start_char": 4275,
+         "end_char": 4456
+        }
+       ]
+      }
+     ]
+    }
+   },
    "description": {
     "extraction_status": "extracted",
-    "value": "Male first-time driving-while-impaired (DWI) offenders with a criminal conviction within the previous 24 months; MRI study group.",
+    "value": "Male first-time driving-while-impaired (DWI) offenders with a criminal conviction within the previous 24 months, compared with male non-DWI drivers and female groups in cortical-thickness analyses.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2133,9 +1822,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
+         "text": "Twenty-nine male first time DWI (MDWI) offenders",
          "start_char": 5927,
-         "end_char": 6097
+         "end_char": 5975
         }
        ]
       }
@@ -2179,9 +1868,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data. For DWI offenders, the inclusion criterion was having a criminal conviction for a first DWI offence within the previous 24 months.",
+         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
          "start_char": 4457,
-         "end_char": 4759
+         "end_char": 4628
         }
        ]
       }
@@ -2194,7 +1883,943 @@
      "Reading skills below sixth-grade level",
      "Medical contraindication to study participation",
      "Under the influence of alcohol and/or drugs during study participation",
-     "Compromised MRI data due to a high number of surface-surface intersections between white and gray matter surfaces"
+     "Compromised MRI data due to a high number of surface-surface intersections between white- and gray-matter surfaces"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusion criteria were: i) reading skills of less than 6th grade level; ii) any medical contraindication to study participation; and iii) being under the influence of alcohol and/or drugs during study participation.",
+         "start_char": 4824,
+         "end_char": 5040
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Recruited from participants in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects were recruited from a sample of participants taking part in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
+         "start_char": 4275,
+         "end_char": 4456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "extracted",
+    "value": 29.7,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "| Age | 30.3 | 8.5 | 29.7 | 6.9 | 31.3 | 7.9 | 33 | 8.2 |",
+         "start_char": 20033,
+         "end_char": 20090
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "extracted",
+    "value": 6.9,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "First-time DWI offenders",
+     "Male drivers"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Twenty-nine male first time DWI (MDWI) offenders",
+         "start_char": 5927,
+         "end_char": 5975
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "Mean 11.9 years of education (SD 5.7).",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "grp_fdwi",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "female DWI offenders",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "32 female DWI (FDWI) offenders",
+         "start_char": 5977,
+         "end_char": 6007
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "first-time DWI offender"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "For DWI offenders, the inclusion criterion was having a criminal conviction for a first DWI offence within the previous 24 months.",
+         "start_char": 4629,
+         "end_char": 4759
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 32,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "32 female DWI (FDWI) offenders",
+         "start_char": 5977,
+         "end_char": 6007
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "extracted",
+    "value": 18,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
+         "start_char": 4457,
+         "end_char": 4628
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "extracted",
+    "value": 44,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "being 18–44 years of age",
+         "start_char": 4493,
+         "end_char": 4517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "being 18–44 years of age",
+         "start_char": 4493,
+         "end_char": 4517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "32 female DWI (FDWI) offenders",
+           "start_char": 5977,
+           "end_char": 6007
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 32,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "32 female DWI (FDWI) offenders",
+           "start_char": 5977,
+           "end_char": 6007
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 32,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Subjects were recruited from a sample of participants taking part in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
+         "start_char": 4275,
+         "end_char": 4456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Female first-time DWI offenders with a criminal conviction within the previous 24 months, compared with female non-DWI drivers and male groups in cortical-thickness analyses.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 32,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "32 female DWI (FDWI) offenders",
+         "start_char": 5977,
+         "end_char": 6007
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "extracted",
+    "value": 1,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Data from 10 participants (4 MCTRL; 3 MDWI; 2 FCTRL; 1 FDWI) were identified by quality control analysis as compromised due to high number of surface-surface intersections between white and gray matter surfaces, and were excluded from analyses.",
+         "start_char": 11514,
+         "end_char": 11758
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Female",
+     "18–44 years of age",
+     "Valid driver’s license",
+     "Consent to access official Quebec driving data",
+     "Criminal conviction for a first DWI offence within the previous 24 months"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
+         "start_char": 4457,
+         "end_char": 4628
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Reading skills below sixth-grade level",
+     "Medical contraindication to study participation",
+     "Under the influence of alcohol and/or drugs during study participation",
+     "Compromised MRI data due to a high number of surface-surface intersections between white- and gray-matter surfaces"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusion criteria were: i) reading skills of less than 6th grade level; ii) any medical contraindication to study participation; and iii) being under the influence of alcohol and/or drugs during study participation.",
+         "start_char": 4824,
+         "end_char": 5040
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Recruited from participants in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects were recruited from a sample of participants taking part in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
+         "start_char": 4275,
+         "end_char": 4456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "extracted",
+    "value": 33.0,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "extracted",
+    "value": 8.2,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "| Age | 30.3 | 8.5 | 29.7 | 6.9 | 31.3 | 7.9 | 33 | 8.2 |",
+         "start_char": 20033,
+         "end_char": 20090
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "First-time DWI offenders",
+     "Female drivers"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "32 female DWI (FDWI) offenders",
+         "start_char": 5977,
+         "end_char": 6007
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "Mean 9.7 years of education (SD 7.7).",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "grp_mctrl",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "male non-DWI drivers",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "29 male non-DWI (MCTRL)",
+         "start_char": 6009,
+         "end_char": 6032
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 29,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "29 male non-DWI (MCTRL)",
+         "start_char": 6009,
+         "end_char": 6032
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "extracted",
+    "value": 18,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
+         "start_char": 4457,
+         "end_char": 4628
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "extracted",
+    "value": 44,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "being 18–44 years of age",
+         "start_char": 4493,
+         "end_char": 4517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "being 18–44 years of age",
+         "start_char": 4493,
+         "end_char": 4517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "29 male non-DWI (MCTRL)",
+           "start_char": 6009,
+           "end_char": 6032
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 29,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "29 male non-DWI (MCTRL)",
+           "start_char": 6009,
+           "end_char": 6032
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 29,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Subjects were recruited from a sample of participants taking part in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
+         "start_char": 4275,
+         "end_char": 4456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Male non-DWI drivers with a lifetime DWI-free driving record, serving as male controls.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Non-DWI drivers had to have a lifetime DWI-free driving record.",
+         "start_char": 4760,
+         "end_char": 4823
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 29,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "29 male non-DWI (MCTRL)",
+         "start_char": 6009,
+         "end_char": 6032
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "extracted",
+    "value": 4,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Data from 10 participants (4 MCTRL; 3 MDWI; 2 FCTRL; 1 FDWI) were identified by quality control analysis as compromised due to high number of surface-surface intersections between white and gray matter surfaces, and were excluded from analyses.",
+         "start_char": 11514,
+         "end_char": 11758
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Male",
+     "18–44 years of age",
+     "Valid driver’s license",
+     "Consent to access official Quebec driving data",
+     "Lifetime DWI-free driving record"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Non-DWI drivers had to have a lifetime DWI-free driving record.",
+         "start_char": 4760,
+         "end_char": 4823
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Reading skills below sixth-grade level",
+     "Medical contraindication to study participation",
+     "Under the influence of alcohol and/or drugs during study participation",
+     "Compromised MRI data due to a high number of surface-surface intersections between white- and gray-matter surfaces"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2270,25 +2895,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Age | 30.3 | 8.5 | 29.7 | 6.9 | 31.3 | 7.9 | 33 | 8.2",
+         "text": "Age | 30.3 | 8.5",
          "start_char": 20035,
-         "end_char": 20088
+         "end_char": 20051
         }
        ]
       }
      ]
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "age_median": {
@@ -2297,601 +2910,10 @@
      "status": "not_applicable"
     }
    },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
-         "start_char": 4457,
-         "end_char": 4628
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "First-time DWI offenders; greater incidence of alcohol abuse than male controls.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Finally, MDWI compared to MCTL showed greater incidence of alcohol abuse (χ 2 (1) = 11.90, p = 0.001).",
-         "start_char": 11365,
-         "end_char": 11467
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "extracted",
-    "value": "Mean 11.9 years of education (SD 5.7).",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Education (years) | 12.8 | 5.8 | 11.9 | 5.7 | 9.6 | 6.8 | 9.7 | 7.7",
-         "start_char": 20093,
-         "end_char": 20160
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "grp_fdwi",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "FDWI",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "first DWI offence"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "For DWI offenders, the inclusion criterion was having a criminal conviction for a first DWI offence within the previous 24 months.",
-         "start_char": 4629,
-         "end_char": 4759
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 32,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Female first-time driving-while-impaired (DWI) offenders with a criminal conviction within the previous 24 months; MRI study group.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 32,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "extracted",
-    "value": 1,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Data from 10 participants (4 MCTRL; 3 MDWI; 2 FCTRL; 1 FDWI) were identified by quality control analysis as compromised due to high number of surface-surface intersections between white and gray matter surfaces, and were excluded from analyses.",
-         "start_char": 11514,
-         "end_char": 11758
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Female",
-     "18–44 years of age",
-     "Valid driver’s license",
-     "Consent to access official Quebec driving data",
-     "Criminal conviction for a first DWI offence within the previous 24 months"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data. For DWI offenders, the inclusion criterion was having a criminal conviction for a first DWI offence within the previous 24 months.",
-         "start_char": 4457,
-         "end_char": 4759
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Reading skills below sixth-grade level",
-     "Medical contraindication to study participation",
-     "Under the influence of alcohol and/or drugs during study participation",
-     "Compromised MRI data due to a high number of surface-surface intersections between white and gray matter surfaces"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Exclusion criteria were: i) reading skills of less than 6th grade level; ii) any medical contraindication to study participation; and iii) being under the influence of alcohol and/or drugs during study participation.",
-         "start_char": 4824,
-         "end_char": 5040
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Recruited from participants in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects were recruited from a sample of participants taking part in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
-         "start_char": 4275,
-         "end_char": 4456
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "extracted",
-    "value": 33.0,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Age | 30.3 | 8.5 | 29.7 | 6.9 | 31.3 | 7.9 | 33 | 8.2",
-         "start_char": 20035,
-         "end_char": 20088
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "extracted",
-    "value": 8.2,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "| Age | 30.3 | 8.5 | 29.7 | 6.9 | 31.3 | 7.9 | 33 | 8.2 |",
-         "start_char": 20033,
-         "end_char": 20090
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
-         "start_char": 4457,
-         "end_char": 4628
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "First-time DWI offenders; greater alcohol-related problems, risky drinking days, lifetime alcohol dependence and abuse, and drug problem severity than female controls.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Compared to FCTL, FDWI reported greater alcohol-related problems in the last 12 months via the AUDIT (U = 210, p < 0.001) and endorsed more risky drinking days on TLFB (U = 260.5, p = 0.003).",
-         "start_char": 10836,
-         "end_char": 11027
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "extracted",
-    "value": "Mean 9.7 years of education (SD 7.7).",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Education (years) | 12.8 | 5.8 | 11.9 | 5.7 | 9.6 | 6.8 | 9.7 | 7.7",
-         "start_char": 20093,
-         "end_char": 20160
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "grp_mctrl",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "MCTRL",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 29,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Male non-DWI drivers with a lifetime DWI-free driving record; male control group.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Non-DWI drivers had to have a lifetime DWI-free driving record.",
-         "start_char": 4760,
-         "end_char": 4823
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 29,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "extracted",
-    "value": 4,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Data from 10 participants (4 MCTRL; 3 MDWI; 2 FCTRL; 1 FDWI) were identified by quality control analysis as compromised due to high number of surface-surface intersections between white and gray matter surfaces, and were excluded from analyses.",
-         "start_char": 11514,
-         "end_char": 11758
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Male",
-     "18–44 years of age",
-     "Valid driver’s license",
-     "Consent to access official Quebec driving data",
-     "Lifetime DWI-free driving record"
+     "Male drivers with a lifetime DWI-free driving record"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2904,135 +2926,6 @@
          "text": "Non-DWI drivers had to have a lifetime DWI-free driving record.",
          "start_char": 4760,
          "end_char": 4823
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Reading skills below sixth-grade level",
-     "Medical contraindication to study participation",
-     "Under the influence of alcohol and/or drugs during study participation",
-     "Compromised MRI data due to a high number of surface-surface intersections between white and gray matter surfaces"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Exclusion criteria were: i) reading skills of less than 6th grade level; ii) any medical contraindication to study participation; and iii) being under the influence of alcohol and/or drugs during study participation.",
-         "start_char": 4824,
-         "end_char": 5040
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Recruited from participants in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects were recruited from a sample of participants taking part in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
-         "start_char": 4275,
-         "end_char": 4456
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "extracted",
-    "value": 30.3,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "| Age | 30.3 | 8.5 | 29.7 | 6.9 | 31.3 | 7.9 | 33 | 8.2 |",
-         "start_char": 20033,
-         "end_char": 20090
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "extracted",
-    "value": 8.5,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "| Age | 30.3 | 8.5 | 29.7 | 6.9 | 31.3 | 7.9 | 33 | 8.2 |",
-         "start_char": 20033,
-         "end_char": 20090
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
-         "start_char": 4457,
-         "end_char": 4628
         }
        ]
       }
@@ -3080,9 +2973,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Education (years) | 12.8 | 5.8 | 11.9 | 5.7 | 9.6 | 6.8 | 9.7 | 7.7",
+         "text": "Education (years) | 12.8 | 5.8",
          "start_char": 20093,
-         "end_char": 20160
+         "end_char": 20123
         }
        ]
       }
@@ -3094,13 +2987,33 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
    }
   },
   {
    "local_id": "grp_fctrl",
    "name": {
     "extraction_status": "extracted",
-    "value": "FCTRL",
+    "value": "female non-DWI drivers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3109,9 +3022,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
+         "text": "29 female non-DWI (FCTRL)",
+         "start_char": 6037,
+         "end_char": 6062
         }
        ]
       }
@@ -3121,14 +3034,6 @@
    "species": {
     "extraction_status": "extracted",
     "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -3145,18 +3050,38 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
+         "text": "29 female non-DWI (FCTRL)",
+         "start_char": 6037,
+         "end_char": 6062
         }
        ]
       }
      ]
     }
    },
-   "description": {
+   "age_minimum": {
     "extraction_status": "extracted",
-    "value": "Female non-DWI drivers with a lifetime DWI-free driving record; female control group.",
+    "value": 18,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
+         "start_char": 4457,
+         "end_char": 4628
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "extracted",
+    "value": 44,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3165,13 +3090,127 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Non-DWI drivers had to have a lifetime DWI-free driving record.",
-         "start_char": 4760,
-         "end_char": 4823
+         "text": "being 18–44 years of age",
+         "start_char": 4493,
+         "end_char": 4517
         }
        ]
       }
      ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "being 18–44 years of age",
+         "start_char": 4493,
+         "end_char": 4517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "29 female non-DWI (FCTRL)",
+           "start_char": 6037,
+           "end_char": 6062
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 29,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "29 female non-DWI (FCTRL)",
+           "start_char": 6037,
+           "end_char": 6062
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 29,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Subjects were recruited from a sample of participants taking part in a large longitudinal study examining neurobiological markers of DWI recidivism risk in first-time DWI offenders.",
+         "start_char": 4275,
+         "end_char": 4456
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Female non-DWI drivers with a lifetime DWI-free driving record, serving as female controls.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "approached_count": {
@@ -3197,9 +3236,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty-nine male first time DWI (MDWI) offenders, 32 female DWI (FDWI) offenders, 29 male non-DWI (MCTRL) and 29 female non-DWI (FCTRL) drivers completed the MRI session.",
-         "start_char": 5927,
-         "end_char": 6097
+         "text": "29 female non-DWI (FCTRL)",
+         "start_char": 6037,
+         "end_char": 6062
         }
        ]
       }
@@ -3258,7 +3297,7 @@
      "Reading skills below sixth-grade level",
      "Medical contraindication to study participation",
      "Under the influence of alcohol and/or drugs during study participation",
-     "Compromised MRI data due to a high number of surface-surface intersections between white and gray matter surfaces"
+     "Compromised MRI data due to a high number of surface-surface intersections between white- and gray-matter surfaces"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3343,27 +3382,17 @@
      ]
     }
    },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_median": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "age_unit": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": "years",
+    "value": [
+     "Female drivers with a lifetime DWI-free driving record"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3372,9 +3401,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "General inclusion criteria were: i) being 18–44 years of age; ii) possessing a valid driver’s license, and iii) consenting to access to their official Quebec driving data.",
-         "start_char": 4457,
-         "end_char": 4628
+         "text": "Non-DWI drivers had to have a lifetime DWI-free driving record.",
+         "start_char": 4760,
+         "end_char": 4823
         }
        ]
       }
@@ -3416,19 +3445,8 @@
     "value": "Mean 9.6 years of education (SD 6.8).",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Education (years) | 12.8 | 5.8 | 11.9 | 5.7 | 9.6 | 6.8 | 9.7 | 7.7",
-         "start_char": 20093,
-         "end_char": 20160
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "socioeconomic_status_summary": {
@@ -3436,8 +3454,192 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
    }
   }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_rft_p05",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "cluster",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Correction for multiple comparisons was conducted via random field theory for clusters at a level of p < 0.05, corrected.",
+         "start_char": 9812,
+         "end_char": 9933
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Correction for multiple comparisons was conducted via random field theory for clusters at a level of p < 0.05, corrected.",
+         "start_char": 9812,
+         "end_char": 9933
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "random field theory",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Correction for multiple comparisons was conducted via random field theory for clusters at a level of p < 0.05, corrected.",
+         "start_char": 9812,
+         "end_char": 9933
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "For comparisons of cortical thickness at every vertex of the whole brain",
+         "start_char": 9187,
+         "end_char": 9259
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Alpha for all inferences was p < 0.05, corrected for multiple comparisons.",
+         "start_char": 9086,
+         "end_char": 9160
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "search_volume": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "language": [
+  "eng"
  ],
  "measures": [
   {
@@ -3447,7 +3649,19 @@
     "value": "structural_morphometry",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Cortical thickness analyses",
+         "start_char": 8277,
+         "end_char": 8304
+        }
+       ]
+      }
+     ]
     }
    },
    "type": {
@@ -3461,9 +3675,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Cortical thickness analyses were completed using the automated analysis pipeline CIVET 1.1.12 available via the CBRAIN interface .",
-         "start_char": 8277,
-         "end_char": 8407
+         "text": "cortical thickness",
+         "start_char": 12,
+         "end_char": 30
         }
        ]
       }
@@ -3481,9 +3695,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Cortical thickness analyses were completed using the automated analysis pipeline CIVET 1.1.12 available via the CBRAIN interface .",
-         "start_char": 8277,
-         "end_char": 8407
+         "text": "cortical thickness",
+         "start_char": 12,
+         "end_char": 30
         }
        ]
       }
@@ -3492,7 +3706,7 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "Cortical thickness estimated using the CIVET 1.1.12 automated cortical-surface analysis pipeline.",
+    "value": "Cortical thickness",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3501,9 +3715,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Cortical thickness analyses were completed using the automated analysis pipeline CIVET 1.1.12 available via the CBRAIN interface .",
-         "start_char": 8277,
-         "end_char": 8407
+         "text": "cortical thickness",
+         "start_char": 12,
+         "end_char": 30
         }
        ]
       }
@@ -3511,30 +3725,16 @@
     }
    },
    "unit": {
-    "extraction_status": "extracted",
-    "value": "mm",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "MRIs were acquired on a 1.5-T Siemens SonataVision (Siemens, Malvern, Pennsylvania), with a high-resolution T1 three-dimensional magnetization-prepared Flair sequence (slice thickness = 1 mm isotropic; repetition time = 22 ms; echo time = 9.2 ms; flip angle = 30°).",
-         "start_char": 8011,
-         "end_char": 8276
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    }
   }
  ],
  "model_estimations": [
   {
-   "local_id": "mod_cortical_thickness",
+   "local_id": "m_group",
    "model_family": {
     "extraction_status": "extracted",
     "value": "glm",
@@ -3557,18 +3757,18 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "general linear model for cortical thickness",
+    "value": "general linear model",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "the general linear model was used via Surfstat",
-         "start_char": 9261,
-         "end_char": 9307
+         "text": "For comparisons of cortical thickness at every vertex of the whole brain, the general linear model was used via Surfstat ( http://www.math.mcgill.ca/keith/surfstat/ ).",
+         "start_char": 9187,
+         "end_char": 9354
         }
        ]
       }
@@ -3586,9 +3786,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For comparisons of cortical thickness at every vertex of the whole brain",
-         "start_char": 9187,
-         "end_char": 9259
+         "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
+         "start_char": 9524,
+         "end_char": 9609
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "Surfstat",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the general linear model was used via Surfstat",
+         "start_char": 9261,
+         "end_char": 9307
         }
        ]
       }
@@ -3617,7 +3837,7 @@
    },
    "terms": [
     {
-     "local_id": "trm_sex",
+     "local_id": "t_sex",
      "name": {
       "extraction_status": "extracted",
       "value": "sex",
@@ -3629,9 +3849,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "sex and group as the between-group factors",
-           "start_char": 9446,
-           "end_char": 9488
+           "text": "The model included age at the time of the MRI and handedness as covariates of no interest, sex and group as the between-group factors, and sex × group interaction term.",
+           "start_char": 9355,
+           "end_char": 9523
           }
          ]
         }
@@ -3643,19 +3863,7 @@
       "value": "categorical",
       "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "When data deviated from assumptions for ANOVA or were categorical, group comparisons used Mann-Whitney U statistics and tests of independence (i.e., χ 2 statistic or Fisher’s exact test).",
-           "start_char": 8898,
-           "end_char": 9085
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "variation_level": {
@@ -3691,9 +3899,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "male and female DWI offenders",
-             "start_char": 34,
-             "end_char": 63
+             "text": "sex and group as the between-group factors",
+             "start_char": 9446,
+             "end_char": 9488
             }
            ]
           }
@@ -3705,9 +3913,23 @@
         "grp_mctrl"
        ],
        "order": {
-        "extraction_status": "not_reported",
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "reported",
         "evidence": {
-         "status": "not_applicable"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
+             "start_char": 9524,
+             "end_char": 9609
+            }
+           ]
+          }
+         ]
         }
        }
       },
@@ -3723,9 +3945,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "male and female DWI offenders",
-             "start_char": 34,
-             "end_char": 63
+             "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
+             "start_char": 9524,
+             "end_char": 9609
             }
            ]
           }
@@ -3737,17 +3959,45 @@
         "grp_fctrl"
        ],
        "order": {
-        "extraction_status": "not_reported",
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
         "evidence": {
-         "status": "not_applicable"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
+             "start_char": 9524,
+             "end_char": 9609
+            }
+           ]
+          }
+         ]
         }
        }
       }
      ],
      "functional_form": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "For comparisons of cortical thickness at every vertex of the whole brain, the general linear model was used via Surfstat ( http://www.math.mcgill.ca/keith/surfstat/ ).",
+           "start_char": 9187,
+           "end_char": 9354
+          }
+         ]
+        }
+       ]
       }
      },
      "unit": {
@@ -3758,7 +4008,7 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Participant sex, modeled as a between-group factor with male and female levels.",
+      "value": "Participant sex, with male and female factor levels.",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -3767,9 +4017,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "sex and group as the between-group factors",
-           "start_char": 9446,
-           "end_char": 9488
+           "text": "The model included age at the time of the MRI and handedness as covariates of no interest, sex and group as the between-group factors, and sex × group interaction term.",
+           "start_char": 9355,
+           "end_char": 9523
           }
          ]
         }
@@ -3778,7 +4028,7 @@
      }
     },
     {
-     "local_id": "trm_group",
+     "local_id": "t_group",
      "name": {
       "extraction_status": "extracted",
       "value": "group",
@@ -3804,19 +4054,7 @@
       "value": "categorical",
       "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "When data deviated from assumptions for ANOVA or were categorical, group comparisons used Mann-Whitney U statistics and tests of independence (i.e., χ 2 statistic or Fisher’s exact test).",
-           "start_char": 8898,
-           "end_char": 9085
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "variation_level": {
@@ -3843,7 +4081,7 @@
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "MDWI",
+        "value": "DWI",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -3852,9 +4090,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
-             "start_char": 9524,
-             "end_char": 9609
+             "text": "The main contrast of interest was (MCTRL-MDWI) > (FCTRL-FDWI)",
+             "start_char": 9610,
+             "end_char": 9671
             }
            ]
           }
@@ -3862,81 +4100,12 @@
         }
        },
        "groups": [
-        "grp_mdwi"
-       ],
-       "order": {
-        "extraction_status": "not_reported",
-        "evidence": {
-         "status": "not_applicable"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "MCTRL",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
-             "start_char": 9524,
-             "end_char": 9609
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_mctrl"
-       ],
-       "order": {
-        "extraction_status": "not_reported",
-        "evidence": {
-         "status": "not_applicable"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "FDWI",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
-             "start_char": 9524,
-             "end_char": 9609
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
+        "grp_mdwi",
         "grp_fdwi"
        ],
        "order": {
-        "extraction_status": "not_reported",
-        "evidence": {
-         "status": "not_applicable"
-        }
-       }
-      },
-      {
-       "level": {
         "extraction_status": "extracted",
-        "value": "FCTRL",
+        "value": 1,
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -3945,9 +4114,31 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
-             "start_char": 9524,
-             "end_char": 9609
+             "text": "The main contrast of interest was (MCTRL-MDWI) > (FCTRL-FDWI)",
+             "start_char": 9610,
+             "end_char": 9671
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "non-DWI",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The main contrast of interest was (MCTRL-MDWI) > (FCTRL-FDWI)",
+             "start_char": 9610,
+             "end_char": 9671
             }
            ]
           }
@@ -3955,20 +4146,49 @@
         }
        },
        "groups": [
+        "grp_mctrl",
         "grp_fctrl"
        ],
        "order": {
-        "extraction_status": "not_reported",
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
         "evidence": {
-         "status": "not_applicable"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The main contrast of interest was (MCTRL-MDWI) > (FCTRL-FDWI)",
+             "start_char": 9610,
+             "end_char": 9671
+            }
+           ]
+          }
+         ]
         }
        }
       }
      ],
      "functional_form": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "For comparisons of cortical thickness at every vertex of the whole brain, the general linear model was used via Surfstat ( http://www.math.mcgill.ca/keith/surfstat/ ).",
+           "start_char": 9187,
+           "end_char": 9354
+          }
+         ]
+        }
+       ]
       }
      },
      "unit": {
@@ -3979,7 +4199,7 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "DWI status/group, modeled as a between-group factor with MDWI, MCTRL, FDWI, and FCTRL levels.",
+      "value": "DWI-offender status, with DWI and non-DWI factor levels.",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -3988,177 +4208,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The sex × group interaction term resulted in four columns (FDWI, FCTRL, MDWI, MCTRL).",
-           "start_char": 9524,
-           "end_char": 9609
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "local_id": "trm_age",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "age",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The model included age at the time of the MRI and handedness as covariates of no interest",
-           "start_char": 9355,
-           "end_char": 9444
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "sex and group as the between-group factors",
-           "start_char": 9446,
-           "end_char": 9488
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Age at the time of MRI, included as a covariate of no interest.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The model included age at the time of the MRI and handedness as covariates of no interest",
-           "start_char": 9355,
-           "end_char": 9444
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "local_id": "trm_handedness",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "handedness",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The model included age at the time of the MRI and handedness as covariates of no interest",
-           "start_char": 9355,
-           "end_char": 9444
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "sex and group as the between-group factors",
-           "start_char": 9446,
-           "end_char": 9488
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Participant handedness, included as a covariate of no interest.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The model included age at the time of the MRI and handedness as covariates of no interest",
-           "start_char": 9355,
-           "end_char": 9444
+           "text": "The main contrast of interest was (MCTRL-MDWI) > (FCTRL-FDWI)",
+           "start_char": 9610,
+           "end_char": 9671
           }
          ]
         }
@@ -4175,7 +4227,7 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Whole-brain vertex-wise general linear model including age and handedness as covariates, sex and group as between-group factors, and a sex-by-group interaction; random-field-theory correction for multiple comparisons at p < 0.05.",
+    "value": "General linear model implemented in Surfstat; age at MRI and handedness were covariates; sex, group, and sex × group interaction were included as between-group factors.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4199,12 +4251,60 @@
      "status": "not_applicable"
     }
    },
-   "software": {
+   "preprocessing": [
+    "prp_civet"
+   ]
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_civet",
+   "description": {
     "extraction_status": "extracted",
-    "value": "Surfstat; cortical thickness processed with CIVET 1.1.12 via the CBRAIN interface.",
+    "value": "automated cortical thickness analysis pipeline",
     "value_source": "reported",
     "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "CIVET 1.1.12",
+     "CBRAIN"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "CIVET 1.1.12 available via the CBRAIN interface",
+         "start_char": 8358,
+         "end_char": 8405
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "Processed according to CIVET guidelines"
+    ],
+    "value_source": "generated",
+    "evidence": {
      "status": "not_found"
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    }
   }
@@ -4223,9 +4323,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Whole-brain analyses of the specific sex × group interaction contrast revealed a significant 60-vertex cluster in the right dorsal posterior cingulate cortex (PCC)",
-         "start_char": 11759,
-         "end_char": 11922
+         "text": "right dorsal posterior cingulate cortex (PCC)",
+         "start_char": 1050,
+         "end_char": 1095
         }
        ]
       }
@@ -4263,9 +4363,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Whole-brain analyses of the specific sex × group interaction contrast revealed a significant 60-vertex cluster in the right dorsal posterior cingulate cortex (PCC)",
-         "start_char": 11759,
-         "end_char": 11922
+         "text": "significant 60-vertex cluster",
+         "start_char": 11840,
+         "end_char": 11869
         }
        ]
       }
@@ -4274,8 +4374,8 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "A significant 60-vertex cluster with peak coordinates X = 3, Y = −12, Z = 32.",
-    "value_source": "generated",
+    "value": "significant 60-vertex cluster in the right dorsal posterior cingulate cortex; peak MNI coordinates X = 3, Y = −12, Z = 32",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -4283,9 +4383,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "with the peak voxel located at the MNI coordinates, X = 3, Y = −12, Z = 32, with t = 3.59",
-         "start_char": 11923,
-         "end_char": 12012
+         "text": "Whole-brain analyses of the specific sex × group interaction contrast revealed a significant 60-vertex cluster in the right dorsal posterior cingulate cortex (PCC) with the peak voxel located at the MNI coordinates, X = 3, Y = −12, Z = 32",
+         "start_char": 11759,
+         "end_char": 11997
         }
        ]
       }
@@ -4327,7 +4427,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "A significant 329-vertex cluster with peak coordinates X = −13, Y = −40, Z = 2.",
+    "value": "significant 329-vertex cluster in the left fusiform gyrus; peak MNI coordinates X = −13, Y = −40, Z = 2",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -4335,9 +4435,13 @@
    }
   }
  ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, Non-U.S. Gov't"
+ ],
  "tables": [
   {
-   "local_id": "tbl0005",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -4369,7 +4473,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "c703410e07286e500d993153e246a41c6d4987239fe659e53830b6421183b2b9",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -4605,8 +4709,162 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "study_type": [
-  "Journal Article",
-  "Research Support, Non-U.S. Gov't"
+ "assessments": [
+  {
+   "local_id": "asm_composite_international_diag",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Composite International Diagnostic Interview",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Composite International Diagnostic Interview",
+         "start_char": 7517,
+         "end_char": 7561
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Provided diagnostic DSM-IV classification of lifetime alcohol and drug abuse and dependence.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "diagnostic interview",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Diagnostic Interview",
+         "start_char": 7541,
+         "end_char": 7561
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_alcohol_use_disorder",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Alcohol Use Disorder Identification Test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Alcohol Use Disorder Identification Test",
+         "start_char": 7157,
+         "end_char": 7197
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Screened for alcohol problems in the previous 12 months.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "screening instrument",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_drug_abuse_screening",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Drug Abuse Screening Test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Drug Abuse Screening Test",
+         "start_char": 7214,
+         "end_char": 7239
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Screened for drug problems in the previous 12 months.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "screening instrument",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_timeline_followback",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Timeline Followback",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Measured the frequency of risky drinking days during the previous 90 days.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "behavioral assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
  ]
 }

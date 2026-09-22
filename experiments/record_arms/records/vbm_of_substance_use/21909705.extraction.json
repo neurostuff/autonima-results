@@ -1,7 +1,7 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "A voxel-based morphometry study examined cerebellar grey matter volume differences associated with smoking in heavy smokers and never-smokers.",
+  "value": "A voxel-based morphometry study of cerebellar grey matter volume differences between heavy smokers and never-smokers.",
   "value_source": "generated",
   "evidence": {
    "status": "present",
@@ -22,7 +22,7 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Observational case-control study comparing heavy smokers with never-smokers.",
+   "value": "Observational comparison of heavy smokers and never-smokers; participants were selected from a population-based study and scanned on one occasion.",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -31,9 +31,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "We acquired high-resolution MRI scans from 33 heavy smokers and 22 never-smokers",
-        "start_char": 472,
-        "end_char": 552
+        "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated as part of a pharmaimaging study on the effects of nicotine in the brain (Warbrick et al. 2011 ).",
+        "start_char": 4941,
+        "end_char": 5200
        }
       ]
      }
@@ -45,15 +45,39 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "The present study is the first to focus on structural alteration of the human cerebellum associated with tobacco smoking employing a methodology specifically designed for this purpose.",
+        "start_char": 11509,
+        "end_char": 11693
+       }
+      ]
+     }
+    ]
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "smokers and never-smokers",
+        "start_char": 2146,
+        "end_char": 2171
+       }
+      ]
+     }
+    ]
    }
   },
   "blinding": {
@@ -65,7 +89,51 @@
    }
   },
   "arms": [],
-  "timepoints": []
+  "timepoints": [
+   {
+    "local_id": "tp_single_scan",
+    "name": {
+     "extraction_status": "extracted",
+     "value": "single occasion",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Structural MRI was performed",
+          "start_char": 6833,
+          "end_char": 6861
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "relation_to_intervention": {
+     "extraction_status": "extracted",
+     "value": "single_occasion",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Structural MRI was performed at the Helmholtz Research Centre Jülich, Germany on a 3T TIM-Trio scanner (Siemens, Erlangen).",
+          "start_char": 6833,
+          "end_char": 6956
+         }
+        ]
+       }
+      ]
+     }
+    }
+   }
+  ]
  },
  "analyses": [
   {
@@ -73,7 +141,7 @@
    "name": {
     "extraction_status": "extracted",
     "value": "smokers compared to never-smokers",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -95,19 +163,8 @@
     "value": "Smokers were found to have lower grey matter volume than never-smokers in right cerebellum Crus I.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Smokers were found to have lower grey matter volume than never-smokers in right cerebellum Crus I (−32, −71, −32, cluster size 220 voxels, multiple comparison corrected, Fig.",
-         "start_char": 10495,
-         "end_char": 10669
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "prespecification": {
@@ -126,7 +183,7 @@
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
          "text": "We found a difference in grey matter volume between smokers and never-smokers in the right cerebellum Crus I.",
@@ -140,8 +197,8 @@
    },
    "spatial_scope": {
     "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
+    "value": "cerebellum",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -149,22 +206,15 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "in right cerebellum Crus I",
-         "start_char": 10566,
-         "end_char": 10592
+         "text": "right cerebellum Crus I",
+         "start_char": 895,
+         "end_char": 918
         }
        ]
       }
      ]
     }
    },
-   "regions": [
-    "r_cerebellum",
-    "r_crus_i"
-   ],
-   "defines_regions": [
-    "r_crus_i"
-   ],
    "measure": "mea_grey_matter_volume",
    "groups": [
     {
@@ -180,9 +230,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Fifty-five subjects, 33 heavy smokers",
-           "start_char": 4941,
-           "end_char": 4978
+           "text": "33 heavy smokers",
+           "start_char": 515,
+           "end_char": 531
           }
          ]
         }
@@ -298,8 +348,8 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Smokers were found to have lower grey matter volume than never-smokers",
-            "start_char": 10495,
+            "text": "lower grey matter volume than never-smokers",
+            "start_char": 10522,
             "end_char": 10565
            }
           ]
@@ -362,12 +412,11 @@
    "acquisitions": [
     "acq_structural_mri"
    ],
-   "model_estimation": "m_grey_matter_group",
-   "inference_settings": "inf_vbm_corrected",
+   "model_estimation": "mod_vbm_group",
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "prose#1",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
@@ -398,12 +447,16 @@
      "status": "not_applicable"
     }
    },
+   "regions": [
+    "reg_cerebellum",
+    "reg_right_cerebellum_crus_i"
+   ],
+   "inference_settings": "inf_cluster_corrected",
    "assessments": [
-    "asm_ftnd",
+    "asm_fagerstrom",
     "asm_structured_clinical_intervie",
     "asm_wender_utah_rating",
-    "asm_alcohol_use_disorders",
-    "asm_edinburgh_handedness_invento"
+    "asm_alcohol_use_disorders"
    ]
   }
  ],
@@ -422,22 +475,15 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Structural MRI was performed at the Helmholtz Research Centre Jülich, Germany on a 3T TIM-Trio scanner (Siemens, Erlangen).",
+         "text": "Structural MRI",
          "start_char": 6833,
-         "end_char": 6956
+         "end_char": 6847
         }
        ]
       }
      ]
     }
    },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "device": "dev_siemens_tim_trio",
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3,
@@ -449,9 +495,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Structural MRI was performed at the Helmholtz Research Centre Jülich, Germany on a 3T TIM-Trio scanner (Siemens, Erlangen).",
-         "start_char": 6833,
-         "end_char": 6956
+         "text": "3T",
+         "start_char": 6916,
+         "end_char": 6918
         }
        ]
       }
@@ -460,7 +506,7 @@
    },
    "pulse_sequence_type": {
     "extraction_status": "extracted",
-    "value": "3D T1-weighted magnetization prepared gradient-echo sequence (MPRAGE)",
+    "value": "MPRAGE",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -509,9 +555,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "High-resolution anatomical magnetic resonance images were obtained utilizing a 3D T1-weighted magnetization prepared gradient-echo sequence (MPRAGE) (TR = 2,250 ms; echo time = 3.03 ms; flip angle = 9°; 176 sagittal slices, FOV 200 × 200 mm, 64 × 64 matrix, voxel size 1 × 1 × 1 mm).",
-         "start_char": 6957,
-         "end_char": 7240
+         "text": "TR = 2,250 ms",
+         "start_char": 7107,
+         "end_char": 7120
         }
        ]
       }
@@ -531,9 +577,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "High-resolution anatomical magnetic resonance images were obtained utilizing a 3D T1-weighted magnetization prepared gradient-echo sequence (MPRAGE) (TR = 2,250 ms; echo time = 3.03 ms; flip angle = 9°; 176 sagittal slices, FOV 200 × 200 mm, 64 × 64 matrix, voxel size 1 × 1 × 1 mm).",
-         "start_char": 6957,
-         "end_char": 7240
+         "text": "echo time = 3.03 ms",
+         "start_char": 7122,
+         "end_char": 7141
         }
        ]
       }
@@ -555,9 +601,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "High-resolution anatomical magnetic resonance images were obtained utilizing a 3D T1-weighted magnetization prepared gradient-echo sequence (MPRAGE) (TR = 2,250 ms; echo time = 3.03 ms; flip angle = 9°; 176 sagittal slices, FOV 200 × 200 mm, 64 × 64 matrix, voxel size 1 × 1 × 1 mm).",
-         "start_char": 6957,
-         "end_char": 7240
+         "text": "voxel size 1 × 1 × 1 mm",
+         "start_char": 7215,
+         "end_char": 7238
         }
        ]
       }
@@ -569,12 +615,27 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "device": "dev_tim_trio"
   }
  ],
  "assessments": [
   {
-   "local_id": "asm_ftnd",
+   "local_id": "asm_fagerstrom",
    "name": {
     "extraction_status": "extracted",
     "value": "Fagerström test for nicotine dependence",
@@ -586,9 +647,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "As part of the behavioural assessment within the study smokers were asked to fill in the Fagerström nicotine dependence scale (Heatherton et al. 1991 ).",
-         "start_char": 7259,
-         "end_char": 7411
+         "text": "Fagerström test for nicotine dependence",
+         "start_char": 4980,
+         "end_char": 5019
         }
        ]
       }
@@ -597,28 +658,8 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Assessment of nicotine dependence severity.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Of note, the volume deficit within Crus I in smokers was found to be related to the amount of nicotine dependence as assessed by means of the Fagerström scale, a measure of the severity of dependence.",
-         "start_char": 15760,
-         "end_char": 15960
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical scale",
-    "value_source": "generated",
+    "value": "The Fagerström scale assessed nicotine dependence.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -633,6 +674,14 @@
        ]
       }
      ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    }
   },
@@ -660,7 +709,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Personal interview assessing medical, neurological, psychiatric, drug, and alcohol use disorders.",
+    "value": "The SCID assessed medical, neurological, psychiatric, drug, and alcohol dependence or abuse disorders.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -668,10 +717,22 @@
    },
    "assessment_type": {
     "extraction_status": "extracted",
-    "value": "diagnostic interview",
-    "value_source": "generated",
+    "value": "structured clinical interview",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Structured Clinical Interview",
+         "start_char": 5931,
+         "end_char": 5960
+        }
+       ]
+      }
+     ]
     }
    }
   },
@@ -699,7 +760,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Assessment of retrospective diagnosis of childhood attention deficit hyperactivity disorder.",
+    "value": "The Wender Utah Rating Scale assessed retrospective diagnosis of childhood attention deficit hyperactivity disorder.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -738,7 +799,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Assessment of alcohol addiction.",
+    "value": "The AUDIT assessed alcohol addiction.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -746,46 +807,7 @@
    },
    "assessment_type": {
     "extraction_status": "extracted",
-    "value": "clinical scale",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_edinburgh_handedness_invento",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Edinburgh Handedness Inventory",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Edinburgh Handedness Inventory",
-         "start_char": 6740,
-         "end_char": 6770
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment of handedness.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "behavioral inventory",
+    "value": "clinical screening instrument",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -795,7 +817,7 @@
  ],
  "devices": [
   {
-   "local_id": "dev_siemens_tim_trio",
+   "local_id": "dev_tim_trio",
    "manufacturer": {
     "extraction_status": "extracted",
     "value": "Siemens",
@@ -852,9 +874,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated as part of a pharmaimaging study on the effects of nicotine in the brain (Warbrick et al. 2011 ).",
-         "start_char": 4941,
-         "end_char": 5200
+         "text": "heavy smokers",
+         "start_char": 518,
+         "end_char": 531
         }
        ]
       }
@@ -863,8 +885,8 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Participants meeting the heavy-smoker criterion and FTND score threshold.",
-    "value_source": "generated",
+    "value": "Heavy smokers with an FTND score of at least 4.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -892,29 +914,111 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated as part of a pharmaimaging study on the effects of nicotine in the brain (Warbrick et al. 2011 ).",
-         "start_char": 4941,
-         "end_char": 5200
+         "text": "All subjects were free of medical, neurological, and psychiatric disorders",
+         "start_char": 5739,
+         "end_char": 5813
         }
        ]
       }
      ]
     }
    },
-   "arm": null,
-   "approached_count": {
-    "extraction_status": "not_reported",
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "tobacco smoking"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "tobacco smoking",
+         "start_char": 1523,
+         "end_char": 1538
+        }
+       ]
+      }
+     ]
     }
    },
-   "consented_count": {
-    "extraction_status": "not_reported",
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "heavy smoking"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "33 heavy smokers",
+         "start_char": 515,
+         "end_char": 531
+        }
+       ]
+      }
+     ]
     }
    },
-   "enrolled_count": {
+   "diagnostic_instrument": [
+    "asm_fagerstrom"
+   ],
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were free of medical, neurological, and psychiatric disorders including drug or alcohol dependence or significant abuse within the last 6 months",
+         "start_char": 5739,
+         "end_char": 5896
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "public_dataset",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Lindenberg et al. 2011",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All participants were selected and recruited from a large population-based study on nicotine dependence (Lindenberg et al. 2011 ).",
+         "start_char": 5201,
+         "end_char": 5331
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
     "extraction_status": "extracted",
     "value": 33,
     "value_source": "reported",
@@ -925,156 +1029,31 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated as part of a pharmaimaging study on the effects of nicotine in the brain (Warbrick et al. 2011 ).",
-         "start_char": 4941,
-         "end_char": 5200
+         "text": "33 heavy smokers",
+         "start_char": 515,
+         "end_char": 531
         }
        ]
       }
      ]
     }
    },
-   "acquired_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "FTND score ≥ 4"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "FTND, Heatherton et al. 1991 ) score ≥ 4",
-         "start_char": 5021,
-         "end_char": 5061
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "medical, neurological, and psychiatric disorders",
-     "drug or alcohol dependence or significant abuse within the last 6 months",
-     "first degree family history of DSM-IV axis I disorder",
-     "abnormalities in the MRI",
-     "general medical disorders",
-     "any clinically relevant abnormality"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were free of medical, neurological, and psychiatric disorders including drug or alcohol dependence or significant abuse within the last 6 months—according to personal interviews (Structured Clinical Interview for DSM-IV (SCID, First et al. 2002 ).",
-         "start_char": 5739,
-         "end_char": 5999
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Selected and recruited from a large population-based study on nicotine dependence.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "All participants were selected and recruited from a large population-based study on nicotine dependence (Lindenberg et al.",
-         "start_char": 5201,
-         "end_char": 5323
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "sex_distribution": [],
-   "gender_distribution": [],
    "handedness_distribution": [
     {
      "category": {
       "extraction_status": "extracted",
-      "value": "right handed",
+      "value": "right-handed",
       "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
         {
-         "source": "literal_match",
+         "source": "model_quote",
          "spans": [
           {
-           "text": "All subjects were right handed, as assessed by Edinburgh Handedness Inventory (Oldfield 1971 ).",
+           "text": "All subjects were right handed",
            "start_char": 6693,
-           "end_char": 6788
+           "end_char": 6723
           }
          ]
         }
@@ -1088,15 +1067,43 @@
       }
      },
      "percentage": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right handed, as assessed by Edinburgh Handedness Inventory (Oldfield 1971 ).",
+           "start_char": 6693,
+           "end_char": 6788
+          }
+         ]
+        }
+       ]
       }
      },
      "denominator": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": 33,
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated",
+           "start_char": 4941,
+           "end_char": 5102
+          }
+         ]
+        }
+       ]
       }
      },
      "reporting_framework": {
@@ -1121,292 +1128,7 @@
      }
     }
    ],
-   "race_distribution": [],
-   "ethnicity_distribution": [],
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "nicotine dependence"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_ftnd",
-    "asm_structured_clinical_intervie"
-   ],
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "FTND score ≥ 4",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4",
-         "start_char": 4980,
-         "end_char": 5061
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "grp_never_smokers",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "never-smokers",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated as part of a pharmaimaging study on the effects of nicotine in the brain (Warbrick et al. 2011 ).",
-         "start_char": 4941,
-         "end_char": 5200
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Participants naive with respect to tobacco consumption.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Never-smokers were naive with respect to tobacco consumption",
-         "start_char": 5332,
-         "end_char": 5392
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated as part of a pharmaimaging study on the effects of nicotine in the brain (Warbrick et al. 2011 ).",
-         "start_char": 4941,
-         "end_char": 5200
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 22,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated as part of a pharmaimaging study on the effects of nicotine in the brain (Warbrick et al. 2011 ).",
-         "start_char": 4941,
-         "end_char": 5200
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Less than 20 cigarettes during lifetime"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Never-smokers were naive with respect to tobacco consumption (criterion: less than 20 cigarettes during lifetime).",
-         "start_char": 5332,
-         "end_char": 5446
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "medical, neurological, and psychiatric disorders",
-     "drug or alcohol dependence or significant abuse within the last 6 months",
-     "first degree family history of DSM-IV axis I disorder",
-     "abnormalities in the MRI",
-     "general medical disorders",
-     "any clinically relevant abnormality"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were free of medical, neurological, and psychiatric disorders including drug or alcohol dependence or significant abuse within the last 6 months—according to personal interviews (Structured Clinical Interview for DSM-IV (SCID, First et al. 2002 ).",
-         "start_char": 5739,
-         "end_char": 5999
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "sex_distribution": [],
-   "gender_distribution": [],
-   "handedness_distribution": [],
-   "race_distribution": [],
-   "ethnicity_distribution": [],
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were free of medical, neurological, and psychiatric disorders including drug or alcohol dependence or significant abuse within the last 6 months—according to personal interviews (Structured Clinical Interview for DSM-IV (SCID, First et al. 2002 ).",
-         "start_char": 5739,
-         "end_char": 5999
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_structured_clinical_intervie"
-   ],
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "naive with respect to tobacco consumption; less than 20 cigarettes during lifetime",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Never-smokers were naive with respect to tobacco consumption (criterion: less than 20 cigarettes during lifetime).",
-         "start_char": 5332,
-         "end_char": 5446
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
+   "arm": null,
    "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1419,9 +1141,9 @@
      "status": "not_applicable"
     }
    },
-   "acquired_count": {
+   "enrolled_count": {
     "extraction_status": "extracted",
-    "value": 22,
+    "value": 33,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1430,9 +1152,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated as part of a pharmaimaging study on the effects of nicotine in the brain (Warbrick et al. 2011 ).",
-         "start_char": 4941,
-         "end_char": 5200
+         "text": "33 heavy smokers",
+         "start_char": 515,
+         "end_char": 531
         }
        ]
       }
@@ -1445,9 +1167,12 @@
      "status": "not_applicable"
     }
    },
-   "recruitment_method": {
+   "inclusion_criteria": {
     "extraction_status": "extracted",
-    "value": "Selected and recruited from a large population-based study on nicotine dependence.",
+    "value": [
+     "heavy smokers",
+     "Fagerström test for nicotine dependence score ≥4"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1456,9 +1181,55 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All participants were selected and recruited from a large population-based study on nicotine dependence (Lindenberg et al. 2011 ).",
+         "text": "33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4]",
+         "start_char": 4962,
+         "end_char": 5062
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "medical, neurological, or psychiatric disorders",
+     "drug or alcohol dependence or significant abuse within the last 6 months",
+     "first-degree family history of DSM-IV axis I disorder",
+     "MRI abnormalities",
+     "general medical disorders or clinically relevant abnormalities"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were free of medical, neurological, and psychiatric disorders including drug or alcohol dependence or significant abuse within the last 6 months—according to personal interviews (Structured Clinical Interview for DSM-IV (SCID, First et al. 2002 ). Furthermore, a medical examination was carried out by a board certified psychiatrist and urine drug screening was performed. Subjects with a family history (first degree) of DSM-IV axis I disorder were excluded from participation. In addition, exclusion criteria for all subjects were abnormalities in the MRI, general medical disorders, or any clinically relevant abnormality.",
+         "start_char": 5739,
+         "end_char": 6377
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Selected and recruited from a large population-based study on nicotine dependence",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All participants were selected and recruited from a large population-based study on nicotine dependence (Lindenberg et al.",
          "start_char": 5201,
-         "end_char": 5331
+         "end_char": 5323
         }
        ]
       }
@@ -1524,23 +1295,97 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Structured Clinical Interview for DSM-IV (SCID, First et al. 2002 )",
+         "text": "Structured Clinical Interview for DSM-IV",
          "start_char": 5931,
-         "end_char": 5998
+         "end_char": 5971
         }
        ]
       }
      ]
     }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
-  }
- ],
- "inference_settings": [
+  },
   {
-   "local_id": "inf_vbm_corrected",
-   "inference_level": {
+   "local_id": "grp_never_smokers",
+   "name": {
     "extraction_status": "extracted",
-    "value": "cluster",
+    "value": "never-smokers",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "never-smokers",
+         "start_char": 539,
+         "end_char": 552
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Never-smokers naive with respect to tobacco consumption.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Never-smokers were naive with respect to tobacco consumption (criterion: less than 20 cigarettes during lifetime).",
+         "start_char": 5332,
+         "end_char": 5446
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -1549,9 +1394,451 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "the statistical extent threshold was corrected for multiple comparisons combined with a nonstationary smoothness correction with a cluster extent threshold of p < 0.05 (Hayasaka and Nichols 2004 ).",
+         "text": "All subjects were free of medical, neurological, and psychiatric disorders",
+         "start_char": 5739,
+         "end_char": 5813
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "never-smoker status"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "never-smokers",
+         "start_char": 539,
+         "end_char": 552
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were free of medical, neurological, and psychiatric disorders including drug or alcohol dependence or significant abuse within the last 6 months",
+         "start_char": 5739,
+         "end_char": 5896
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "public_dataset",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Lindenberg et al. 2011",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All participants were selected and recruited from a large population-based study on nicotine dependence (Lindenberg et al. 2011 ).",
+         "start_char": 5201,
+         "end_char": 5331
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 22,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "22 never-smokers",
+         "start_char": 536,
+         "end_char": 552
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "handedness_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "right-handed",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right handed",
+           "start_char": 6693,
+           "end_char": 6723
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right handed, as assessed by Edinburgh Handedness Inventory (Oldfield 1971 ).",
+           "start_char": 6693,
+           "end_char": 6788
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 22,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Fifty-five subjects, 33 heavy smokers [Fagerström test for nicotine dependence (FTND, Heatherton et al. 1991 ) score ≥ 4] and 22 never-smokers, were investigated",
+           "start_char": 4941,
+           "end_char": 5102
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "extracted",
+      "value": "Edinburgh Handedness Inventory",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "All subjects were right handed, as assessed by Edinburgh Handedness Inventory (Oldfield 1971 ).",
+           "start_char": 6693,
+           "end_char": 6788
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "arm": null,
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 22,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "22 never-smokers",
+         "start_char": 536,
+         "end_char": 552
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "never-smokers",
+     "less than 20 cigarettes during lifetime"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Never-smokers were naive with respect to tobacco consumption (criterion: less than 20 cigarettes during lifetime).",
+         "start_char": 5332,
+         "end_char": 5446
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "medical, neurological, or psychiatric disorders",
+     "drug or alcohol dependence or significant abuse within the last 6 months",
+     "first-degree family history of DSM-IV axis I disorder",
+     "MRI abnormalities",
+     "general medical disorders or clinically relevant abnormalities"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were free of medical, neurological, and psychiatric disorders including drug or alcohol dependence or significant abuse within the last 6 months—according to personal interviews (Structured Clinical Interview for DSM-IV (SCID, First et al. 2002 ). Furthermore, a medical examination was carried out by a board certified psychiatrist and urine drug screening was performed. Subjects with a family history (first degree) of DSM-IV axis I disorder were excluded from participation. In addition, exclusion criteria for all subjects were abnormalities in the MRI, general medical disorders, or any clinically relevant abnormality.",
+         "start_char": 5739,
+         "end_char": 6377
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Selected and recruited from a large population-based study on nicotine dependence",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All participants were selected and recruited from a large population-based study on nicotine dependence (Lindenberg et al.",
+         "start_char": 5201,
+         "end_char": 5323
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "never-smokers; naive with respect to tobacco consumption"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Never-smokers were naive with respect to tobacco consumption",
+         "start_char": 5332,
+         "end_char": 5392
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Structured Clinical Interview for DSM-IV",
+         "start_char": 5931,
+         "end_char": 5971
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_structured_clinical_intervie"
+   ]
+  }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_cluster_corrected",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "cluster",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the statistical extent threshold was corrected for multiple comparisons combined with a nonstationary smoothness correction with a cluster extent threshold of p < 0.05",
          "start_char": 9984,
-         "end_char": 10181
+         "end_char": 10151
         }
        ]
       }
@@ -1598,14 +1885,6 @@
      ]
     }
    },
-   "cluster_extent_threshold": {
-    "extraction_status": "extracted",
-    "value": 220,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "clusterwise_threshold_value": {
     "extraction_status": "extracted",
     "value": 0.05,
@@ -1617,8 +1896,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "cluster extent threshold of p < 0.05",
-         "start_char": 10115,
+         "text": "a cluster extent threshold of p < 0.05",
+         "start_char": 10113,
          "end_char": 10151
         }
        ]
@@ -1628,7 +1907,7 @@
    },
    "multiple_comparison_method": {
     "extraction_status": "extracted",
-    "value": "multiple comparisons correction combined with a nonstationary smoothness correction",
+    "value": "multiple comparison correction combined with a nonstationary smoothness correction",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1637,8 +1916,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "the statistical extent threshold was corrected for multiple comparisons combined with a nonstationary smoothness correction",
-         "start_char": 9984,
+         "text": "corrected for multiple comparisons combined with a nonstationary smoothness correction",
+         "start_char": 10021,
          "end_char": 10107
         }
        ]
@@ -1654,10 +1933,12 @@
      "status": "not_found"
     }
    },
-   "correction_regions": [
-    "r_cerebellum",
-    "r_crus_i"
-   ],
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "search_volume": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1671,9 +1952,23 @@
     }
    },
    "tfce_used": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The resulting maps were thresholded at p < 0.005 and the statistical extent threshold was corrected for multiple comparisons combined with a nonstationary smoothness correction",
+         "start_char": 9931,
+         "end_char": 10107
+        }
+       ]
+      }
+     ]
     }
    },
    "tfce_parameters": {
@@ -1689,9 +1984,23 @@
     }
    },
    "alpha_level": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a cluster extent threshold of p < 0.05",
+         "start_char": 10113,
+         "end_char": 10151
+        }
+       ]
+      }
+     ]
     }
    },
    "number_of_tests": {
@@ -1699,8 +2008,14 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "correction_regions": [
+    "reg_cerebellum"
+   ]
   }
+ ],
+ "language": [
+  "eng"
  ],
  "measures": [
   {
@@ -1716,9 +2031,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "grey matter volume maps",
-         "start_char": 10454,
-         "end_char": 10477
+         "text": "grey matter volume",
+         "start_char": 869,
+         "end_char": 887
         }
        ]
       }
@@ -1781,7 +2096,7 @@
  ],
  "model_estimations": [
   {
-   "local_id": "m_grey_matter_group",
+   "local_id": "mod_vbm_group",
    "model_family": {
     "extraction_status": "extracted",
     "value": "glm",
@@ -1793,9 +2108,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "used a voxel-based morphometry (VBM) approach",
-         "start_char": 557,
-         "end_char": 602
+         "text": "We computed statistical analysis with the regressor of interest (smoking status) and nuisance variables (age, sex, brain volume).",
+         "start_char": 9802,
+         "end_char": 9931
         }
        ]
       }
@@ -1813,35 +2128,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "used a voxel-based morphometry (VBM) approach",
-         "start_char": 557,
-         "end_char": 602
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "regressor of interest: smoking status; nuisance variables: age, sex, brain volume",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "We computed statistical analysis with the regressor of interest (smoking status) and nuisance variables (age, sex, brain volume).",
-         "start_char": 9802,
-         "end_char": 9931
+         "text": "voxel-based morphometry (VBM)",
+         "start_char": 564,
+         "end_char": 593
         }
        ]
       }
@@ -1859,9 +2148,208 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Smokers were found to have lower grey matter volume than never-smokers in right cerebellum Crus I",
-         "start_char": 10495,
-         "end_char": 10592
+         "text": "To explore the structural difference between smokers and never-smokers in the cerebellum the grey matter volume maps were contrasted.",
+         "start_char": 10361,
+         "end_char": 10494
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "in each voxel",
+         "start_char": 9357,
+         "end_char": 9370
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_smoking_status",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "smoking status",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "We computed statistical analysis with the regressor of interest (smoking status) and nuisance variables (age, sex, brain volume).The resulting maps were thresholded at p < 0.005 and the statistical extent threshold was corrected for multiple comparisons combined with a nonstationary smoothness correction with a cluster extent threshold of p < 0.05 (Hayasaka and Nichols 2004 ).",
+           "start_char": 9802,
+           "end_char": 10181
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Smokers were found to have lower grey matter volume than never-smokers in right cerebellum Crus I",
+           "start_char": 10495,
+           "end_char": 10592
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "smokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "smokers",
+             "start_char": 32,
+             "end_char": 39
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_smokers"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "never-smokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "never-smokers",
+             "start_char": 539,
+             "end_char": 552
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_never_smokers"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Smoking status, contrasting heavy smokers with never-smokers",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "the regressor of interest (smoking status)",
+           "start_char": 9840,
+           "end_char": 9882
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "inputs_from": [],
+   "preprocessing": [
+    "prp_vbm"
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Voxel-based morphometry with study-specific templates, SUIT infratentorial normalization, modulation by Jacobian determinants, 4-mm FWHM smoothing, and age, sex, and brain volume as nuisance variables; statistical maps thresholded at p<0.005 with cluster extent corrected for multiple comparisons using nonstationary smoothness correction",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The segmented grey matter (GM) and white matter (WM) images were then normalized to the SUIT template. A modulation of the segmented GM/WM probability map was undertaken to compensate for volume changes during the spatial normalization by multiplying the intensity value in each voxel with the Jacobian determinants. Finally, all of the resulting GM/WM probability images were smoothed with a 4-mm full-width half-maximum (FWHM) smooth kernel in SPM5 to satisfy the Gaussian distribution assumption for statistical analysis to test regional differences.",
+         "start_char": 9086,
+         "end_char": 9639
         }
        ]
       }
@@ -1893,208 +2381,7 @@
       }
      ]
     }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "voxel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "in each voxel",
-         "start_char": 9357,
-         "end_char": 9370
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "preprocessing": [
-    "prp_vbm"
-   ],
-   "terms": [
-    {
-     "local_id": "trm_smoking_status",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "smoking status",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "We computed statistical analysis with the regressor of interest (smoking status) and nuisance variables (age, sex, brain volume).The resulting maps were thresholded at p < 0.005 and the statistical extent threshold was corrected for multiple comparisons combined with a nonstationary smoothness correction with a cluster extent threshold of p < 0.05 (Hayasaka and Nichols 2004 ).",
-           "start_char": 9802,
-           "end_char": 10181
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "smokers",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "smokers",
-             "start_char": 32,
-             "end_char": 39
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_smokers"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "33 heavy smokers",
-             "start_char": 515,
-             "end_char": 531
-            }
-           ]
-          }
-         ]
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "never-smokers",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "never-smokers",
-             "start_char": 539,
-             "end_char": 552
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_never_smokers"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "22 never-smokers",
-             "start_char": 536,
-             "end_char": 552
-            }
-           ]
-          }
-         ]
-        }
-       }
-      }
-     ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "comparing smokers and never-smokers",
-           "start_char": 2136,
-           "end_char": 2171
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "unreported_reason": "ambiguous",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Smoking status, defined as heavy smoker versus never-smoker.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "smoking status",
-           "start_char": 9867,
-           "end_char": 9881
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ]
+   }
   }
  ],
  "preprocessings": [
@@ -2102,7 +2389,55 @@
    "local_id": "prp_vbm",
    "description": {
     "extraction_status": "extracted",
-    "value": "VBM preprocessing with SUIT isolation and normalization, segmentation, modulation, and spatial smoothing.",
+    "value": "VBM preprocessing using the SUIT toolbox, segmentation, normalization, modulation, and 4-mm smoothing.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "SUIT",
+     "SPM5"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     4
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a 4-mm full-width half-maximum (FWHM) smooth kernel",
+         "start_char": 9477,
+         "end_char": 9528
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "isolation of infratentorial structures",
+     "segmentation",
+     "normalization to the SUIT template",
+     "modulation with Jacobian determinants",
+     "spatial smoothing"
+    ],
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -2119,148 +2454,12 @@
       }
      ]
     }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": [
-     "Spatially Unbiased Infratentorial (SUIT) toolbox",
-     "SPM5"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Using the isolate function within the Spatially Unbiased Infratentorial (SUIT) toolbox",
-         "start_char": 8035,
-         "end_char": 8121
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "steps": {
-    "extraction_status": "extracted",
-    "value": [
-     "isolation of infratentorial structures",
-     "segmentation",
-     "normalization to the SUIT template",
-     "modulation using Jacobian determinants",
-     "spatial smoothing"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "infra-tentorial structures, namely cerebellum and brainstem, were isolated from the surrounding tissue",
-         "start_char": 8216,
-         "end_char": 8318
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "smoothing_fwhm_mm": {
-    "extraction_status": "extracted",
-    "value": [
-     4
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "smoothed with a 4-mm full-width half-maximum (FWHM) smooth kernel in SPM5",
-         "start_char": 9463,
-         "end_char": 9536
-        }
-       ]
-      }
-     ]
-    }
    }
   }
  ],
  "regions": [
   {
-   "local_id": "r_cerebellum",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "cerebellum",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "cerebellum",
-         "start_char": 54,
-         "end_char": 64
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "probabilistic MRI atlas of the human cerebellum",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "cerebellar lobules) were determined by the probabilistic MRI atlas of the human cerebellum developed by Diedrichsen et al.",
-         "start_char": 10213,
-         "end_char": 10335
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "r_crus_i",
+   "local_id": "reg_right_cerebellum_crus_i",
    "name": {
     "extraction_status": "extracted",
     "value": "right cerebellum Crus I",
@@ -2284,17 +2483,41 @@
    "definition_method": {
     "extraction_status": "extracted",
     "value": "atlas",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Anatomical localizations (i.e. cerebellar lobules) were determined by the probabilistic MRI atlas of the human cerebellum developed by Diedrichsen et al. ( 2009 ).",
+         "start_char": 10182,
+         "end_char": 10345
+        }
+       ]
+      }
+     ]
     }
    },
    "region_type": {
     "extraction_status": "extracted",
-    "value": "atlas_parcel",
+    "value": "anatomical",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "cerebellar lobules",
+         "start_char": 10213,
+         "end_char": 10231
+        }
+       ]
+      }
+     ]
     }
    },
    "atlas": {
@@ -2319,7 +2542,43 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Right cerebellum Crus I; peak coordinate −32, −71, −32.",
+    "value": "Right cerebellum Crus I at −32, −71, −32.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   }
+  },
+  {
+   "local_id": "reg_cerebellum",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "cerebellum",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "anatomical_a_priori",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "anatomical",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Infratentorial cerebellar structures isolated for the VBM analysis.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2327,12 +2586,17 @@
    }
   }
  ],
+ "study_type": [
+  "Comparative Study",
+  "Journal Article",
+  "Research Support, Non-U.S. Gov't"
+ ],
  "local_id": "21909705",
  "extraction_metadata": {
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "88e9df35f45048beabe0fac8f934978e3e45fd5c2d9878fac8470543efbbbeea",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2487,10 +2751,5 @@
    }
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
- },
- "study_type": [
-  "Comparative Study",
-  "Journal Article",
-  "Research Support, Non-U.S. Gov't"
- ]
+ }
 }

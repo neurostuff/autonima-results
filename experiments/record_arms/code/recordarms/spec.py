@@ -10,6 +10,9 @@ import yaml
 
 from . import paths
 
+#: The query arms, and the directory each is written to under `projects/<project>/`.
+QUERY_ARMS = {"query, strict": "query-strict", "query, permissive": "query-permissive"}
+
 #: Fixed across projects so records are comparable between them, not just within one.
 EXTRACT = {
     "model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
@@ -55,8 +58,8 @@ class Spec:
         return sorted(self.mapping)
 
     @property
-    def arms(self) -> dict[str, str]:
-        """Arm label -> run name. Derived, never spelled out in the descriptor."""
+    def autonima_arms(self) -> dict[str, str]:
+        """Arm label -> run name, for the arms this package builds by running autonima."""
         return {
             "full text": self.fulltext_run,
             "record + evidence": f"{self.baseline_run}-record-with-evidence",
@@ -64,8 +67,31 @@ class Spec:
         }
 
     @property
+    def query_arms(self) -> dict[str, str]:
+        """The deterministic query's arms, where pondie's `query_studysets.py` wrote them.
+
+        Not built here and not derived from the baseline: the query reads the record
+        rather than calling a model, so it has a studyset and a screening decision and
+        none of the stages before them. Listed only where the run directory exists, so a
+        project that has not been queried scores exactly as it did before.
+        """
+        return {
+            label: run for label, run in QUERY_ARMS.items()
+            if (paths.REPO / "projects" / self.project / run
+                / "outputs/nimads_studyset.json").is_file()
+        }
+
+    @property
+    def arms(self) -> dict[str, str]:
+        """Arm label -> run name, for every arm that can be scored."""
+        return {**self.autonima_arms, **self.query_arms}
+
+    @property
     def record_arms(self) -> dict[str, str]:
-        return {k: v for k, v in self.arms.items() if k != "full text"}
+        """The arms built from a rendered record. The steps that run autonima iterate this,
+        so the query arms are deliberately absent: there is no config to write and no model
+        to call."""
+        return {k: v for k, v in self.autonima_arms.items() if k != "full text"}
 
     def mirror_name(self, arm_label: str) -> str:
         """Project-prefixed: `--arm` names a directory under one shared root, so an

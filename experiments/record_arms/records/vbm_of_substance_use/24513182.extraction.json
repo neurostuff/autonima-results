@@ -1,7 +1,7 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "A structural MRI study examined whether early substance-use risk and externalizing behavior were associated with frontal cortical volumes in emerging adults.",
+  "value": "A structural MRI study comparing frontal and other regional brain volumes between emerging adults with early substance-use risk and controls, and examining associations between volume, substance risk, and externalizing behavior.",
   "value_source": "generated",
   "evidence": {
    "status": "present",
@@ -22,8 +22,8 @@
  "hypothesis": {
   "extraction_status": "extracted",
   "value": [
-   "We hypothesized that frontal regions would be smaller in young adults with early substance use and related problems (early-risk, ER), compared with a control group without early use/problems (C).",
-   "We further hypothesized that the volumes of these regions would be negatively associated with externalizing behavior scores, linking anatomy to a known risk marker ( )."
+   "frontal regions would be smaller in young adults with early substance use and related problems (early-risk, ER), compared with a control group without early use/problems (C)",
+   "these volumes would be associated with more externalizing behaviors"
   ],
   "value_source": "reported",
   "evidence": {
@@ -45,22 +45,11 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Observational, cross-sectional study of emerging adults categorized into control and early-risk groups; all participants underwent one structural MRI scan.",
+   "value": "Observational study of emerging adults recruited from the Michigan Longitudinal Study; participants were categorized into control and early-risk groups and underwent one anatomical MRI scan.",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "We sought to build on this work, using a narrow age range to minimize variability in brain maturation.",
-        "start_char": 4896,
-        "end_char": 4998
-       }
-      ]
-     }
-    ]
+    "status": "not_found",
+    "unlocated_quotes": 1
    }
   },
   "allocation": {
@@ -68,39 +57,17 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
-        "start_char": 8409,
-        "end_char": 8535
-       }
-      ]
-     }
-    ]
+    "status": "not_found",
+    "unlocated_quotes": 1
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
-        "start_char": 8409,
-        "end_char": 8535
-       }
-      ]
-     }
-    ]
+    "status": "not_found",
+    "unlocated_quotes": 1
    }
   },
   "blinding": {
@@ -110,15 +77,48 @@
    }
   },
   "arms": [],
-  "timepoints": []
+  "timepoints": [
+   {
+    "local_id": "tp_scan",
+    "name": {
+     "extraction_status": "extracted",
+     "value": "MRI scan",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "Scores were based on cumulative data up until benchmark ages; all participants had sufficient annual assessments between benchmark ages and the MRI scan to allow calculation of this variable despite missing data.",
+          "start_char": 8536,
+          "end_char": 8748
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "relation_to_intervention": {
+     "extraction_status": "extracted",
+     "value": "single_occasion",
+     "value_source": "generated",
+     "evidence": {
+      "status": "not_found",
+      "unlocated_quotes": 1
+     }
+    }
+   }
+  ]
  },
  "analyses": [
   {
-   "local_id": "ana_er_vs_control_left_superior_frontal",
+   "local_id": "ana_er_control_left_superior_frontal",
    "name": {
     "extraction_status": "extracted",
-    "value": "Left superior frontal cortex volume by risk group",
-    "value_source": "generated",
+    "value": "left superior frontal cortex volume difference between groups",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -137,7 +137,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Smaller volume in the ER than the C group.",
+    "value": "smaller volume in the ER than the C group",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -157,10 +157,34 @@
    },
    "prespecification": {
     "extraction_status": "extracted",
-    "value": "preregistered",
+    "value": "exploratory",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Finally, in a separate exploratory analysis, all ROIs were tested for group differences based on FH with no differences by FH for GM, frontal or cingulate cortical volumes (all t 's < 1.84, all p 's > 0.068) with the exception of the right frontal pole (FH+ < FH−: 1267 < 1384 mm 3 ; t = 2.07, p = 0.041) and a trend for the left superior frontal cortex ( t = 1.71, p = 0.056) neither which survive FDR correction.",
+         "start_char": 17403,
+         "end_char": 17817
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "ER subjects exhibited more externalizing behaviors than their control counterparts.",
+     "Total left frontal cortex and left superior frontal cortex volumes were significantly smaller in the ER group"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "spatial_scope": {
@@ -198,9 +222,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
-           "start_char": 8409,
-           "end_char": 8535
+           "text": "C ( n = 64)",
+           "start_char": 1186,
+           "end_char": 1197
           }
          ]
         }
@@ -221,9 +245,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
-           "start_char": 8409,
-           "end_char": 8535
+           "text": "ER (substance risk = 2–5, n = 42)",
+           "start_char": 8494,
+           "end_char": 8527
           }
          ]
         }
@@ -235,10 +259,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_risk_group",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
-       "value": "ER",
+       "value": "Control",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -247,72 +271,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Total GM did not differ between groups, however the left and right frontal cortices and right cingulate cortex were significantly smaller in the ER versus C group, as were several of their subregions ( ); GLMs were then used to investigate the impact of critical covariates on these findings.",
-            "start_char": 15922,
-            "end_char": 16214
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Total GM did not differ between groups, however the left and right frontal cortices and right cingulate cortex were significantly smaller in the ER versus C group, as were several of their subregions ( ); GLMs were then used to investigate the impact of critical covariates on these findings.",
-            "start_char": 15922,
-            "end_char": 16214
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "ER",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Total GM did not differ between groups, however the left and right frontal cortices and right cingulate cortex were significantly smaller in the ER versus C group, as were several of their subregions ( ); GLMs were then used to investigate the impact of critical covariates on these findings.",
-            "start_char": 15922,
-            "end_char": 16214
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_risk_group",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "C",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Total GM did not differ between groups, however the left and right frontal cortices and right cingulate cortex were significantly smaller in the ER versus C group, as were several of their subregions ( ); GLMs were then used to investigate the impact of critical covariates on these findings.",
-            "start_char": 15922,
-            "end_char": 16214
+            "text": "Control",
+            "start_char": 27236,
+            "end_char": 27243
            }
           ]
          }
@@ -324,24 +285,21 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "FDR controls the proportion of false-positive results expected from all tests declared significant, here, accounting for tests of 30 ROIs ( ).",
-            "start_char": 13929,
-            "end_char": 14071
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "trm_group",
+      "level": {
        "extraction_status": "extracted",
-       "value": "C",
+       "value": "Early risk",
        "value_source": "reported",
        "evidence": {
         "status": "present",
@@ -350,13 +308,27 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Total GM did not differ between groups, however the left and right frontal cortices and right cingulate cortex were significantly smaller in the ER versus C group, as were several of their subregions ( ); GLMs were then used to investigate the impact of critical covariates on these findings.",
-            "start_char": 15922,
-            "end_char": 16214
+            "text": "Early risk",
+            "start_char": 27246,
+            "end_char": 27256
            }
           ]
          }
         ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
        }
       }
      }
@@ -387,7 +359,8 @@
       "value": "t",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "not_found",
+       "unlocated_quotes": 1
       }
      },
      "degrees_of_freedom_denominator": {
@@ -407,16 +380,110 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_group_ttest_roi",
-   "inference_settings": "inf_fdr_roi",
    "acquisitions": [
     "acq_structural_mri"
    ],
+   "model_estimation": "mod_group_volume",
+   "inference_settings": "inf_fdr",
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "regions": [
+    "reg_left_superior_frontal"
+   ],
+   "tables": [
+    "tbltable1",
+    "tbltable2",
+    "tbltable3",
+    "tbltable4"
+   ],
+   "assessments": [
+    "asm_ddhx",
+    "asm_ysr",
+    "asm_urine_drug_screen"
+   ]
+  },
+  {
+   "local_id": "ana_substance_risk_left_superior_frontal",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "substance risk score effect on left superior frontal volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "left superior frontal volume",
+         "start_char": 18764,
+         "end_char": 18792
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "substance risk score was associated with left superior frontal cortex volume, with a smaller volume in the ER than the C group",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "After controlling for substance use, family liability and GM volume, substance risk score had a significant effect on the left superior frontal cortex, with a smaller volume in the ER than the C group (see ).",
+         "start_char": 16884,
+         "end_char": 17092
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Finally, in a separate exploratory analysis, all ROIs were tested for group differences based on FH with no differences by FH for GM, frontal or cingulate cortical volumes (all t 's < 1.84, all p 's > 0.068) with the exception of the right frontal pole (FH+ < FH−: 1267 < 1384 mm 3 ; t = 2.07, p = 0.041) and a trend for the left superior frontal cortex ( t = 1.71, p = 0.056) neither which survive FDR correction.",
+         "start_char": 17403,
+         "end_char": 17817
+        }
+       ]
+      }
+     ]
+    }
+   },
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "The left superior frontal cortex was significantly smaller in the ER group than in the control group.",
-     "Our findings suggest that frontal anatomical differences, particularly in the left superior frontal cortex, may contribute to vulnerability in emerging adults."
+     "substance risk had a significant effect on the left superior frontal cortex, with a smaller volume in the ER than the C group"
     ],
     "value_source": "reported",
     "evidence": {
@@ -435,76 +502,6 @@
      ]
     }
    },
-   "source_table_analysis": {
-    "extraction_status": "extracted",
-    "value": "table_2#6",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "coordinate_space": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "regions": [
-    "reg_left_superior_frontal_cortex"
-   ],
-   "tables": [
-    "tbl0005",
-    "tbl0010"
-   ],
-   "assessments": [
-    "asm_ddhx",
-    "asm_ysr"
-   ]
-  },
-  {
-   "local_id": "ana_substance_risk_left_superior_frontal",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Substance risk score and left superior frontal cortex volume",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Substance risk score had a significant effect on the left superior frontal cortex, with a smaller volume in the ER than the C group.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "After controlling for substance use, family liability and GM volume, substance risk score had a significant effect on the left superior frontal cortex, with a smaller volume in the ER than the C group (see ).",
-         "start_char": 16884,
-         "end_char": 17092
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "prespecification": {
-    "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "roi",
@@ -516,9 +513,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Volumetric data were analyzed for total GM, frontal cortex, right and left frontal cortices, as well as for 26 a priori ROIs (13/hemisphere) listed in .",
-         "start_char": 13528,
-         "end_char": 13680
+         "text": "For ROIs found significant in the GLM analyses, partial correlations were used to test for associations with externalizing behavior scores controlling for total GM volume.",
+         "start_char": 15041,
+         "end_char": 15212
         }
        ]
       }
@@ -540,9 +537,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
-           "start_char": 8409,
-           "end_char": 8535
+           "text": "C ( n = 64)",
+           "start_char": 1186,
+           "end_char": 1197
           }
          ]
         }
@@ -563,9 +560,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
-           "start_char": 8409,
-           "end_char": 8535
+           "text": "ER (substance risk = 2–5, n = 42)",
+           "start_char": 8494,
+           "end_char": 8527
           }
          ]
         }
@@ -577,25 +574,13 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_substance_risk_score",
+      "term": "trm_substance_risk",
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "After controlling for substance use, family liability and GM volume, substance risk score had a significant effect on the left superior frontal cortex, with a smaller volume in the ER than the C group (see ).",
-            "start_char": 16884,
-            "end_char": 17092
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "level": {
@@ -623,9 +608,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "After controlling for substance use, family liability and GM volume, substance risk score had a significant effect on the left superior frontal cortex, with a smaller volume in the ER than the C group (see ).",
-          "start_char": 16884,
-          "end_char": 17092
+          "text": "The GLMs exploring the left frontal volume found a significant effect of both substance risk score and total GM volume but no significant effect of CDV, PY, FH or FHD (see ).",
+          "start_char": 16244,
+          "end_char": 16418
          }
         ]
        }
@@ -644,13 +629,19 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "After controlling for substance use, family liability and GM volume, substance risk score had a significant effect on the left superior frontal cortex, with a smaller volume in the ER than the C group (see ).",
-           "start_char": 16884,
-           "end_char": 17092
+           "text": "The GLMs exploring the left frontal volume found a significant effect of both substance risk score and total GM volume but no significant effect of CDV, PY, FH or FHD (see ).",
+           "start_char": 16244,
+           "end_char": 16418
           }
          ]
         }
        ]
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
       }
      },
      "degrees_of_freedom_denominator": {
@@ -658,53 +649,21 @@
       "evidence": {
        "status": "not_applicable"
       }
-     },
-     "degrees_of_freedom_numerator": {
-      "extraction_status": "extracted",
-      "value": 1.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
      }
     }
    },
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_roi_glm_risk",
    "acquisitions": [
     "acq_structural_mri"
    ],
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "After controlling for substance use, family liability and GM volume, substance risk score had a significant effect on the left superior frontal cortex, with a smaller volume in the ER than the C group.",
-     "The finding that the effect remains when controlling for amount of lifetime alcohol and cigarette use supports the tentative conclusion that this represents a pre-existing vulnerability factor."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "After controlling for substance use, family liability and GM volume, substance risk score had a significant effect on the left superior frontal cortex, with a smaller volume in the ER than the C group (see ).",
-         "start_char": 16884,
-         "end_char": 17092
-        }
-       ]
-      }
-     ]
-    }
-   },
+   "model_estimation": "mod_glm_volume",
+   "inference_settings": "inf_fdr",
    "source_table_analysis": {
-    "extraction_status": "extracted",
-    "value": "table_3#3",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "coordinate_space": {
@@ -720,29 +679,25 @@
     }
    },
    "regions": [
-    "reg_left_superior_frontal_cortex"
+    "reg_left_superior_frontal"
    ],
    "tables": [
-    "tbl0015"
+    "tbltable1",
+    "tbltable2",
+    "tbltable3",
+    "tbltable4"
    ],
    "assessments": [
-    "asm_ddhx"
-   ],
-   "inference_settings": "inf_fdr_roi"
+    "asm_ddhx",
+    "asm_ysr",
+    "asm_urine_drug_screen"
+   ]
   },
   {
    "local_id": "ana_externalizing_left_superior_frontal",
    "name": {
     "extraction_status": "extracted",
-    "value": "Externalizing behaviors and left superior frontal cortical volume",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "significant negative correlations between EXT, at both assessments (age 13 and 16), were found for the left superior frontal cortical volume, when controlling for total GM volume",
+    "value": "externalizing behavior and left superior frontal cortical volume",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -751,9 +706,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Across the entire sample, significant negative correlations between EXT, at both assessments (age 13 and 16), were found for the left superior frontal cortical volume (EXT-13: R = −0.349, p < 0.000; EXT-16: R = −0.263, p = 0.009) and the total left frontal cortical volume (EXT-13: R = −0.313, p = 0.002; EXT-16: R = −0.249, p = 0.013), when controlling for total GM volume.",
+         "text": "left superior frontal cortical volume",
+         "start_char": 19057,
+         "end_char": 19094
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "externalizing behavior score was negatively correlated with left superior frontal cortical volume, controlling for total GM volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Across the entire sample, significant negative correlations between EXT, at both assessments (age 13 and 16), were found for the left superior frontal cortical volume",
          "start_char": 18928,
-         "end_char": 19302
+         "end_char": 19094
         }
        ]
       }
@@ -763,7 +738,7 @@
    "prespecification": {
     "extraction_status": "extracted",
     "value": "exploratory",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -774,6 +749,28 @@
          "text": "Finally, in a separate exploratory analysis, all ROIs were tested for group differences based on FH with no differences by FH for GM, frontal or cingulate cortical volumes (all t 's < 1.84, all p 's > 0.068) with the exception of the right frontal pole (FH+ < FH−: 1267 < 1384 mm 3 ; t = 2.07, p = 0.041) and a trend for the left superior frontal cortex ( t = 1.71, p = 0.056) neither which survive FDR correction.",
          "start_char": 17403,
          "end_char": 17817
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "both risk groups showed decreasing volumes of left superior frontal cortex and left frontal cortex as EXT increased"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "While the ER group had consistently lower volumes across the entire range of EXT scores, both risk groups showed decreasing volumes of left superior frontal cortex and left frontal cortex as EXT increased ( ).",
+         "start_char": 19303,
+         "end_char": 19512
         }
        ]
       }
@@ -791,9 +788,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Volumetric data were analyzed for total GM, frontal cortex, right and left frontal cortices, as well as for 26 a priori ROIs (13/hemisphere) listed in .",
-         "start_char": 13528,
-         "end_char": 13680
+         "text": "For ROIs found significant in the GLM analyses, partial correlations were used to test for associations with externalizing behavior scores controlling for total GM volume.",
+         "start_char": 15041,
+         "end_char": 15212
         }
        ]
       }
@@ -803,7 +800,7 @@
    "measure": "mea_left_superior_frontal_volume",
    "groups": [
     {
-     "group": "grp_all_participants",
+     "group": "grp_all_subjects",
      "n": {
       "extraction_status": "extracted",
       "value": 106,
@@ -815,9 +812,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years (mean 20.5 ± 1.4).",
-           "start_char": 6297,
-           "end_char": 6406
+           "text": "Across the entire sample",
+           "start_char": 18928,
+           "end_char": 18952
           }
          ]
         }
@@ -829,25 +826,13 @@
    "effect": {
     "cells": [
      {
-      "term": "mod_partial_correlation_externalizing.trm_externalizing_behavior",
+      "term": "trm_externalizing_behavior",
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Across the entire sample, significant negative correlations between EXT, at both assessments (age 13 and 16), were found for the left superior frontal cortical volume",
-            "start_char": 18928,
-            "end_char": 19094
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "level": {
@@ -875,9 +860,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "Across the entire sample, significant negative correlations between EXT, at both assessments (age 13 and 16), were found for the left superior frontal cortical volume",
-          "start_char": 18928,
-          "end_char": 19094
+          "text": "partial correlations",
+          "start_char": 15089,
+          "end_char": 15109
          }
         ]
        }
@@ -922,21 +907,11 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_partial_correlation_externalizing",
    "acquisitions": [
     "acq_structural_mri"
    ],
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Across the entire sample, significant negative correlations between EXT, at both assessments (age 13 and 16), were found for the left superior frontal cortical volume when controlling for total GM volume.",
-     "The negative associations between these early adolescent behavior scores and the subjects’ current frontal cortical volumes suggest that the left superior frontal cortical volume may be a potential neurobiological factor underlying this risk."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
+   "model_estimation": "mod_partial_correlation_volume",
+   "inference_settings": "inf_fdr",
    "source_table_analysis": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -956,10 +931,18 @@
     }
    },
    "regions": [
-    "reg_left_superior_frontal_cortex"
+    "reg_left_superior_frontal"
+   ],
+   "tables": [
+    "tbltable1",
+    "tbltable2",
+    "tbltable3",
+    "tbltable4"
    ],
    "assessments": [
-    "asm_ysr"
+    "asm_ddhx",
+    "asm_ysr",
+    "asm_urine_drug_screen"
    ]
   }
  ],
@@ -978,22 +961,15 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "High-resolution anatomical T1 scans were acquired",
+         "text": "High-resolution anatomical T1 scans were acquired on a 3.0 Tesla GE Excite2 scanner (Milwaukee, WI).",
          "start_char": 11170,
-         "end_char": 11219
+         "end_char": 11270
         }
        ]
       }
      ]
     }
    },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "device": "dev_ge_excite2",
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3.0,
@@ -1049,7 +1025,20 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "brain_coverage": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "device": "dev_ge_excite2"
   }
  ],
  "assessments": [
@@ -1077,7 +1066,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Assessed onset of use, content–quantity, frequency, and variability of alcohol consumption; frequency of other drug use; and consequences/problems related to use.",
+    "value": "assessed onset of use, content–quantity, frequency, and variability of alcohol consumption; frequency of other drug use; and consequences/problems related to use",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1140,7 +1129,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Provided standardized scores of a respondent's social and emotional functioning; the broadband scale of externalizing behavior was used.",
+    "value": "provides standardized scores of a respondent's social and emotional functioning; the broadband scale of externalizing behavior was used",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1163,7 +1152,19 @@
     "value": "questionnaire",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "questionnaire",
+         "start_char": 9937,
+         "end_char": 9950
+        }
+       ]
+      }
+     ]
     }
    }
   },
@@ -1171,7 +1172,7 @@
    "local_id": "asm_urine_drug_screen",
    "name": {
     "extraction_status": "extracted",
-    "value": "urine drug screen",
+    "value": "Urine drug screen",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -1179,7 +1180,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Tested for current or recent marijuana use prior to scanning.",
+    "value": "tested for current/recent marijuana use prior to scanning",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -1263,26 +1264,6 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Control group without early use/problems; 64 participants.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64)",
-         "start_char": 8409,
-         "end_char": 8490
-        }
-       ]
-      }
-     ]
-    }
-   },
    "species": {
     "extraction_status": "extracted",
     "value": "human",
@@ -1303,24 +1284,24 @@
      ]
     }
    },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "enrolled_count": {
     "extraction_status": "extracted",
     "value": 64,
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
+         "start_char": 8409,
+         "end_char": 8535
+        }
+       ]
+      }
+     ]
     }
    },
    "acquired_count": {
@@ -1334,76 +1315,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "C: 72.9 ± 17.0%; ER: 71.5 ± 15.9%",
-         "start_char": 8864,
-         "end_char": 8897
+         "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
+         "start_char": 8409,
+         "end_char": 8535
         }
        ]
       }
      ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "any neurological, acute, uncorrected, or chronic illness",
-     "any current or recent (within six months) treatment with centrally active medications including sedative hypnotics",
-     "history of psychosis or schizophrenia in first-degree relatives",
-     "The presence of most Axis I psychiatric or developmental disorders"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Exclusionary criteria were: any neurological, acute, uncorrected, or chronic illness; any current or recent (within six months) treatment with centrally active medications including sedative hypnotics; and history of psychosis or schizophrenia in first-degree relatives.",
-         "start_char": 6671,
-         "end_char": 6941
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "MLS, an ongoing study of families with parental alcoholism and contrast nonalcoholic families",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects were recruited from the MLS, an ongoing study of families with parental alcoholism (FH+, 2/3 of sample) and contrast nonalcoholic families (FH−, 1/3 of sample; ).",
-         "start_char": 6407,
-         "end_char": 6578
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "age_mean": {
@@ -1446,24 +1364,6 @@
      ]
     }
    },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_unit": {
     "extraction_status": "extracted",
     "value": "years",
@@ -1475,9 +1375,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "years",
-         "start_char": 2212,
-         "end_char": 2217
+         "text": "aged 18.0–22.8 years",
+         "start_char": 6367,
+         "end_char": 6387
         }
        ]
       }
@@ -1517,9 +1417,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "64 males",
-           "start_char": 6345,
-           "end_char": 6353
+           "text": "Participants were 106 right-handed adolescents (64 males, 42 females)",
+           "start_char": 6297,
+           "end_char": 6366
           }
          ]
         }
@@ -1531,45 +1431,41 @@
       "value": 62.5,
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Males:females | 40:24",
-           "start_char": 27319,
-           "end_char": 27340
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "denominator": {
       "extraction_status": "extracted",
       "value": 64,
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "N | 64",
-           "start_char": 27297,
-           "end_char": 27303
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "reporting_framework": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Previous research into volumetric differences associated with substance use identified smaller prefrontal lobes in older (22–41 years) male polysubstance abusers ( ) as well as in youth (13–21 years) with early onset of alcohol dependence ( ).",
+           "start_char": 20833,
+           "end_char": 21076
+          }
+         ]
+        }
+       ]
       }
      }
     },
@@ -1605,9 +1501,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "42 females",
-           "start_char": 6355,
-           "end_char": 6365
+           "text": "Participants were 106 right-handed adolescents (64 males, 42 females)",
+           "start_char": 6297,
+           "end_char": 6366
           }
          ]
         }
@@ -1619,39 +1515,15 @@
       "value": 37.5,
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Males:females | 40:24",
-           "start_char": 27319,
-           "end_char": 27340
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "denominator": {
       "extraction_status": "extracted",
       "value": 64,
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "N | 64",
-           "start_char": 27297,
-           "end_char": 27303
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "reporting_framework": {
@@ -1659,40 +1531,203 @@
       "evidence": {
        "status": "not_applicable"
       }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
      }
     }
    ],
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
+   "medical_condition": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
-   "medical_condition": {
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Subjects were recruited from the MLS, an ongoing study of families with parental alcoholism (FH+, 2/3 of sample) and contrast nonalcoholic families (FH−, 1/3 of sample; ).",
+         "start_char": 6407,
+         "end_char": 6578
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Control group (C; n=64) with a substance risk score of 0–1, representing emerging adults without early substance use/problems according to the composite risk measure.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
+         "start_char": 8409,
+         "end_char": 8535
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "none reported as defining the control group"
+     "Age 18.0–22.8 years",
+     "Right-handed",
+     "Substance risk score 0–1",
+     "Eligible for MRI scanning"
     ],
-    "value_source": "generated",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years",
+         "start_char": 6297,
+         "end_char": 6387
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Neurological, acute, uncorrected, or chronic illness",
+     "Current or recent treatment with centrally active medications including sedative hypnotics",
+     "History of psychosis or schizophrenia in a first-degree relative",
+     "Most Axis I psychiatric or developmental disorders",
+     "MRI segmentation or quality-control failure"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusionary criteria were: any neurological, acute, uncorrected, or chronic illness; any current or recent (within six months) treatment with centrally active medications including sedative hypnotics; and history of psychosis or schizophrenia in first-degree relatives.",
+         "start_char": 6671,
+         "end_char": 6941
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Recruited from the Michigan Longitudinal Study (MLS), an ongoing study of families with parental alcoholism and contrast nonalcoholic families.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Emerging adults aged 18–23",
+     "64 participants; 40 males and 24 females",
+     "Included participants from families with and without parental alcoholism"
+    ],
+    "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
    },
    "diagnostic_system": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Substance use, including abuse or dependence, was assessed using DSM-IV criteria from responses obtained from each subject's Drinking and Drug History (DDHx) Questionnaire ( ) assessing onset of use, content–quantity, frequency, and variability of alcohol consumption; frequency of other drug use; and consequences/problems related to use.",
+         "start_char": 7561,
+         "end_char": 7900
+        }
+       ]
+      }
+     ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_ddhx"
-   ],
    "clinical_characteristics": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "No alcohol, marijuana, or other substance abuse diagnoses in the control group; no alcohol or marijuana dependence diagnoses reported.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "medications": {
@@ -1702,9 +1737,23 @@
     }
    },
    "medication_status": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Participants taking centrally active medications, including sedative hypnotics, currently or within the preceding six months were excluded.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "any current or recent (within six months) treatment with centrally active medications including sedative hypnotics",
+         "start_char": 6757,
+         "end_char": 6871
+        }
+       ]
+      }
+     ]
     }
    },
    "education_summary": {
@@ -1718,43 +1767,57 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Michigan Longitudinal Study (MLS)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_ddhx"
+   ]
   },
   {
    "local_id": "grp_early_risk",
    "name": {
     "extraction_status": "extracted",
-    "value": "ER",
+    "value": "early-risk/endorsement (ER)",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "ER",
-         "start_char": 813,
-         "end_char": 815
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Early-risk/endorsement group with early indicators of risky substance involvement; 42 participants.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "early indicators of risky substance involvement, including early initiation and problems associated with use ( ), which we refer to as early-risk/endorsement (ER).",
-         "start_char": 5368,
+         "text": "Therefore, we examined early indicators of risky substance involvement, including early initiation and problems associated with use ( ), which we refer to as early-risk/endorsement (ER).",
+         "start_char": 5345,
          "end_char": 5531
         }
        ]
@@ -1776,6 +1839,26 @@
          "text": "Participants were 106 right-handed adolescents",
          "start_char": 6297,
          "end_char": 6343
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 42,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
+         "start_char": 8409,
+         "end_char": 8535
         }
        ]
       }
@@ -1807,7 +1890,19 @@
     "value": 20.5,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "aged 18.0–22.8 years (mean 20.5 ± 1.4)",
+         "start_char": 6367,
+         "end_char": 6405
+        }
+       ]
+      }
+     ]
     }
    },
    "age_standard_deviation": {
@@ -1841,29 +1936,185 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "years",
-         "start_char": 2212,
-         "end_char": 2217
+         "text": "aged 18.0–22.8 years",
+         "start_char": 6367,
+         "end_char": 6387
         }
        ]
       }
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "males",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "64 males",
+           "start_char": 6345,
+           "end_char": 6353
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 24,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Participants were 106 right-handed adolescents (64 males, 42 females)",
+           "start_char": 6297,
+           "end_char": 6366
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 57.142857,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 42,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Previous research into volumetric differences associated with substance use identified smaller prefrontal lobes in older (22–41 years) male polysubstance abusers ( ) as well as in youth (13–21 years) with early onset of alcohol dependence ( ).",
+           "start_char": 20833,
+           "end_char": 21076
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "females",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "42 females",
+           "start_char": 6355,
+           "end_char": 6365
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 18,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Participants were 106 right-handed adolescents (64 males, 42 females)",
+           "start_char": 6297,
+           "end_char": 6366
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 42.857143,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 42,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "female",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    }
+   ],
+   "medical_condition": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "early indicators of risky substance involvement"
+     "early initiation and problems associated with substance use"
     ],
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1871,13 +2122,155 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "early indicators of risky substance involvement",
-         "start_char": 5368,
-         "end_char": 5415
+         "text": "early initiation and problems associated with use",
+         "start_char": 5427,
+         "end_char": 5476
         }
        ]
       }
      ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Subjects were recruited from the MLS, an ongoing study of families with parental alcoholism (FH+, 2/3 of sample) and contrast nonalcoholic families (FH−, 1/3 of sample; ).",
+         "start_char": 6407,
+         "end_char": 6578
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Early-risk/endorsement group (ER; n=42) with a substance risk score of 2–5, indicating early initiation of alcohol or drug use and/or early problems associated with use.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
+         "start_char": 8409,
+         "end_char": 8535
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Age 18.0–22.8 years",
+     "Right-handed",
+     "Substance risk score 2–5",
+     "Eligible for MRI scanning"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years",
+         "start_char": 6297,
+         "end_char": 6387
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Neurological, acute, uncorrected, or chronic illness",
+     "Current or recent treatment with centrally active medications including sedative hypnotics",
+     "History of psychosis or schizophrenia in a first-degree relative",
+     "Most Axis I psychiatric or developmental disorders",
+     "MRI segmentation or quality-control failure"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusionary criteria were: any neurological, acute, uncorrected, or chronic illness; any current or recent (within six months) treatment with centrally active medications including sedative hypnotics; and history of psychosis or schizophrenia in first-degree relatives.",
+         "start_char": 6671,
+         "end_char": 6941
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Recruited from the Michigan Longitudinal Study (MLS), an ongoing study of families with parental alcoholism and contrast nonalcoholic families.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "diagnostic_system": {
@@ -1900,186 +2293,12 @@
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_ddhx"
-   ],
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Substance risk score 2–5; higher lifetime drink volume; more externalizing behaviors.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ER group had higher lifetime drink volume and more parents with AUD diagnosis",
-         "start_char": 15547,
-         "end_char": 15628
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 42,
+    "value": "Higher lifetime drink volume, more externalizing behaviors, and more substance use diagnoses than controls; eight ER participants had a lifetime substance abuse/dependence diagnosis.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects were categorized in either the control (C, substance risk = 0–1, n = 64) or ER (substance risk = 2–5, n = 42) groups.",
-         "start_char": 8409,
-         "end_char": 8535
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Age 18.0–22.8 years",
-     "Right-handed",
-     "Early-risk substance score of 2–5"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years",
-         "start_char": 6297,
-         "end_char": 6387
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Any neurological, acute, uncorrected, or chronic illness",
-     "Current or recent treatment within six months with centrally active medications including sedative hypnotics",
-     "History of psychosis or schizophrenia in first-degree relatives",
-     "Most Axis I psychiatric or developmental disorders"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Exclusionary criteria were: any neurological, acute, uncorrected, or chronic illness; any current or recent (within six months) treatment with centrally active medications including sedative hypnotics; and history of psychosis or schizophrenia in first-degree relatives.",
-         "start_char": 6671,
-         "end_char": 6941
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Recruited from the ongoing Michigan Longitudinal Study of families with parental alcoholism and contrast nonalcoholic families",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects were recruited from the MLS, an ongoing study of families with parental alcoholism (FH+, 2/3 of sample) and contrast nonalcoholic families (FH−, 1/3 of sample; ).",
-         "start_char": 6407,
-         "end_char": 6578
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "extracted",
-    "value": 18.0,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years (mean 20.5 ± 1.4).",
-         "start_char": 6297,
-         "end_char": 6406
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "extracted",
-    "value": 22.8,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years (mean 20.5 ± 1.4).",
-         "start_char": 6297,
-         "end_char": 6406
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "medications": {
@@ -2090,7 +2309,7 @@
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "No current or recent treatment with centrally active medications, including sedative hypnotics",
+    "value": "Participants taking centrally active medications, including sedative hypnotics, currently or within the preceding six months were excluded.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2119,33 +2338,47 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  },
-  {
-   "local_id": "grp_all_participants",
-   "name": {
+   },
+   "sample_source_reference": {
     "extraction_status": "extracted",
-    "value": "all participants",
+    "value": "Michigan Longitudinal Study (MLS)",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Scores were based on cumulative data up until benchmark ages; all participants had sufficient annual assessments between benchmark ages and the MRI scan to allow calculation of this variable despite missing data.",
-         "start_char": 8536,
-         "end_char": 8748
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
-   "description": {
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
     "extraction_status": "extracted",
-    "value": "The first 106 neuroimaging participants within the age range of interest.",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_ddhx"
+   ]
+  },
+  {
+   "local_id": "grp_all_subjects",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "all subjects",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2154,9 +2387,9 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "This sample represents the first 106 neuroimaging participants within the age range of interest.",
-         "start_char": 7256,
-         "end_char": 7352
+         "text": "All regions, for all subjects, analyzed for this study received a PASS grade.",
+         "start_char": 13057,
+         "end_char": 13134
         }
        ]
       }
@@ -2183,58 +2416,6 @@
      ]
     }
    },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 106,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Participants were 106 right-handed adolescents",
-         "start_char": 6297,
-         "end_char": 6343
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "years",
-         "start_char": 2212,
-         "end_char": 2217
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "enrolled_count": {
     "extraction_status": "extracted",
     "value": 106,
@@ -2246,28 +2427,18 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants were 106 right-handed adolescents",
-         "start_char": 6297,
-         "end_char": 6343
+         "text": "This sample represents the first 106 neuroimaging participants within the age range of interest.",
+         "start_char": 7256,
+         "end_char": 7352
         }
        ]
       }
      ]
     }
    },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
+   "acquired_count": {
     "extraction_status": "extracted",
-    "value": [
-     "Age 18.0–22.8 years",
-     "Right-handed",
-     "Sufficient annual assessments between benchmark ages and MRI scan to calculate the substance risk variable"
-    ],
+    "value": 106,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2276,64 +2447,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "all participants had sufficient annual assessments between benchmark ages and the MRI scan to allow calculation of this variable despite missing data.",
-         "start_char": 8598,
-         "end_char": 8748
+         "text": "One hundred and six subjects, ages 18–23, underwent high-resolution anatomical magnetic resonance image scanning.",
+         "start_char": 1040,
+         "end_char": 1153
         }
        ]
       }
      ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Any neurological, acute, uncorrected, or chronic illness",
-     "Current or recent treatment within six months with centrally active medications including sedative hypnotics",
-     "History of psychosis or schizophrenia in first-degree relatives",
-     "Most Axis I psychiatric or developmental disorders"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Exclusionary criteria were: any neurological, acute, uncorrected, or chronic illness; any current or recent (within six months) treatment with centrally active medications including sedative hypnotics; and history of psychosis or schizophrenia in first-degree relatives.",
-         "start_char": 6671,
-         "end_char": 6941
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Recruited from the ongoing Michigan Longitudinal Study of families with parental alcoholism and contrast nonalcoholic families",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects were recruited from the MLS, an ongoing study of families with parental alcoholism (FH+, 2/3 of sample) and contrast nonalcoholic families (FH−, 1/3 of sample; ).",
-         "start_char": 6407,
-         "end_char": 6578
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "age_mean": {
@@ -2347,9 +2467,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years (mean 20.5 ± 1.4).",
-         "start_char": 6297,
-         "end_char": 6406
+         "text": "aged 18.0–22.8 years (mean 20.5 ± 1.4)",
+         "start_char": 6367,
+         "end_char": 6405
         }
        ]
       }
@@ -2367,9 +2487,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years (mean 20.5 ± 1.4).",
-         "start_char": 6297,
-         "end_char": 6406
+         "text": "aged 18.0–22.8 years (mean 20.5 ± 1.4)",
+         "start_char": 6367,
+         "end_char": 6405
         }
        ]
       }
@@ -2416,23 +2536,258 @@
      ]
     }
    },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "aged 18.0–22.8 years",
+         "start_char": 6367,
+         "end_char": 6387
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "handedness_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "right-handed",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years (mean 20.5 ± 1.4).",
+           "start_char": 6297,
+           "end_char": 6406
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 106,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Participants were 106 right-handed adolescents",
+           "start_char": 6297,
+           "end_char": 6343
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 106,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "right-handed",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Participants were 106 right-handed adolescents (64 males, 42 females) aged 18.0–22.8 years (mean 20.5 ± 1.4).",
+           "start_char": 6297,
+           "end_char": 6406
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "medical_condition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Subjects were recruited from the MLS, an ongoing study of families with parental alcoholism (FH+, 2/3 of sample) and contrast nonalcoholic families (FH−, 1/3 of sample; ).",
+         "start_char": 6407,
+         "end_char": 6578
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The full sample comprised 106 right-handed emerging adults aged 18.0–22.8 years who underwent high-resolution anatomical MRI; 64 were controls and 42 were in the early-risk group.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "One hundred and six subjects, ages 18–23, underwent high-resolution anatomical magnetic resonance image scanning.",
+         "start_char": 1040,
+         "end_char": 1153
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Age 18.0–22.8 years",
+     "Right-handed",
+     "Completion of high-resolution anatomical MRI",
+     "Sufficient annual assessments to calculate the substance risk variable"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "One hundred and six subjects, ages 18–23, underwent high-resolution anatomical magnetic resonance image scanning.",
+         "start_char": 1040,
+         "end_char": 1153
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Neurological, acute, uncorrected, or chronic illness",
+     "Current or recent treatment with centrally active medications including sedative hypnotics",
+     "History of psychosis or schizophrenia in a first-degree relative",
+     "Most Axis I psychiatric or developmental disorders",
+     "MRI segmentation or quality-control failure"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Exclusionary criteria were: any neurological, acute, uncorrected, or chronic illness; any current or recent (within six months) treatment with centrally active medications including sedative hypnotics; and history of psychosis or schizophrenia in first-degree relatives.",
+         "start_char": 6671,
+         "end_char": 6941
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Participants were recruited from the Michigan Longitudinal Study (MLS), including families with parental alcoholism and contrast nonalcoholic families.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "age_median": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "is_healthy": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "ambiguous",
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Emerging adults aged 18.0–22.8 years",
+     "106 right-handed participants, 64 males and 42 females",
+     "Approximately two-thirds from families with parental alcoholism and one-third from contrast nonalcoholic families"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "diagnostic_system": {
@@ -2457,7 +2812,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Participants included individuals with externalizing disorders, including conduct disorder, attention deficit/hyperactivity disorder, or substance use disorder; these were not exclusionary.",
+    "value": "Externalizing disorders, including conduct disorder, ADHD, and substance use disorder, were not exclusionary.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2483,7 +2838,7 @@
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "No current or recent treatment with centrally active medications, including sedative hypnotics",
+    "value": "Participants taking centrally active medications, including sedative hypnotics, currently or within the preceding six months were excluded.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2512,12 +2867,45 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Michigan Longitudinal Study (MLS)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_ddhx"
+   ]
   }
  ],
  "inference_settings": [
   {
-   "local_id": "inf_fdr_roi",
+   "local_id": "inf_fdr",
    "inference_level": {
     "extraction_status": "extracted",
     "value": "ROI",
@@ -2529,8 +2917,48 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "30 ROIs",
-         "start_char": 14059,
+         "text": "All ROI volumes passed normality tests using the Kolmogorov–Smirnov Z -test",
+         "start_char": 13681,
+         "end_char": 13756
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "FDR",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "significance thresholds determined using the False Discovery Rate (FDR)",
+         "start_char": 13856,
+         "end_char": 13927
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "extracted",
+    "value": 30,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "here, accounting for tests of 30 ROIs",
+         "start_char": 14029,
          "end_char": 14066
         }
        ]
@@ -2562,9 +2990,9 @@
      "status": "not_applicable"
     }
    },
-   "multiple_comparison_method": {
+   "correction_scope": {
     "extraction_status": "extracted",
-    "value": "FDR",
+    "value": "roi",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2573,28 +3001,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "False Discovery Rate (FDR)",
-         "start_char": 13901,
-         "end_char": 13927
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "correction_scope": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "FDR controls the proportion of false-positive results expected from all tests declared significant, here, accounting for tests of 30 ROIs",
-         "start_char": 13929,
+         "text": "accounting for tests of 30 ROIs",
+         "start_char": 14035,
          "end_char": 14066
         }
        ]
@@ -2602,9 +3010,6 @@
      ]
     }
    },
-   "correction_regions": [
-    "reg_left_superior_frontal_cortex"
-   ],
    "search_volume": {
     "extraction_status": "extracted",
     "value": "30 ROIs",
@@ -2632,9 +3037,11 @@
     }
    },
    "tfce_used": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "tfce_parameters": {
@@ -2669,27 +3076,13 @@
      ]
     }
    },
-   "number_of_tests": {
-    "extraction_status": "extracted",
-    "value": 30,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "accounting for tests of 30 ROIs",
-         "start_char": 14035,
-         "end_char": 14066
-        }
-       ]
-      }
-     ]
-    }
-   }
+   "correction_regions": [
+    "reg_left_superior_frontal"
+   ]
   }
+ ],
+ "language": [
+  "eng"
  ],
  "measures": [
   {
@@ -2705,9 +3098,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Volumetric data were analyzed for total GM",
+         "text": "Volumetric data were analyzed for total GM, frontal cortex, right and left frontal cortices, as well as for 26 a priori ROIs (13/hemisphere)",
          "start_char": 13528,
-         "end_char": 13570
+         "end_char": 13668
         }
        ]
       }
@@ -2725,9 +3118,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "gray matter",
-         "start_char": 74,
-         "end_char": 85
+         "text": "Total gray matter volumes",
+         "start_char": 1769,
+         "end_char": 1794
         }
        ]
       }
@@ -2754,26 +3147,6 @@
      ]
     }
    },
-   "specific_metric": {
-    "extraction_status": "extracted",
-    "value": "cortical volume",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Volume",
-         "start_char": 13528,
-         "end_char": 13534
-        }
-       ]
-      }
-     ]
-    }
-   },
    "unit": {
     "extraction_status": "extracted",
     "value": "mm3",
@@ -2785,9 +3158,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "mm3",
-         "start_char": 29539,
-         "end_char": 29542
+         "text": "Volume (mm3)",
+         "start_char": 29531,
+         "end_char": 29543
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Cortical volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "cortical volume",
+         "start_char": 1961,
+         "end_char": 1976
         }
        ]
       }
@@ -2798,38 +3191,10 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_group_ttest_roi",
+   "local_id": "mod_group_volume",
    "model_family": {
     "extraction_status": "extracted",
     "value": "anova",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "independent-samples t-tests for structure volumes",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -2838,41 +3203,42 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "group",
-         "start_char": 842,
-         "end_char": 847
+         "text": "Independent-samples t -tests were used to test for group differences",
+         "start_char": 13782,
+         "end_char": 13850
         }
        ]
       }
      ]
     }
    },
-   "estimator": {
+   "model_type": {
     "extraction_status": "extracted",
-    "value": "independent-samples t-test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "SPSS-19",
+    "value": "independent-samples t-tests of structure volumes",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Independent-samples t - and χ 2 -tests were used to test for group differences in subject characteristics using the Statistical Package of Social Sciences-19 (SPSS-19).",
-         "start_char": 13199,
-         "end_char": 13367
+         "text": "Independent-samples t -tests were used to test for group differences",
+         "start_char": 13782,
+         "end_char": 13850
         }
        ]
       }
      ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "spatial_unit": {
@@ -2886,25 +3252,21 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "ROIs",
-         "start_char": 13648,
-         "end_char": 13652
+         "text": "26 a priori ROIs (13/hemisphere)",
+         "start_char": 13636,
+         "end_char": 13668
         }
        ]
       }
      ]
     }
    },
-   "preprocessing": [
-    "prp_freesurfer"
-   ],
-   "inputs_from": [],
    "terms": [
     {
-     "local_id": "trm_risk_group",
+     "local_id": "trm_group",
      "name": {
       "extraction_status": "extracted",
-      "value": "risk group",
+      "value": "group",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -2925,16 +3287,37 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Independent-samples t -tests were used to test for group differences",
+           "start_char": 13782,
+           "end_char": 13850
+          }
+         ]
+        }
+       ]
       }
      },
      "levels": [
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "C",
+        "value": "Control",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -2943,9 +3326,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "C",
-             "start_char": 876,
-             "end_char": 877
+             "text": "control (C)",
+             "start_char": 5748,
+             "end_char": 5759
             }
            ]
           }
@@ -2958,7 +3341,7 @@
        "order": {
         "extraction_status": "extracted",
         "value": 1,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -2967,7 +3350,7 @@
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "ER",
+        "value": "Early risk",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -2991,21 +3374,13 @@
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
        }
       }
      ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
      "functional_form": {
       "extraction_status": "not_reported",
       "evidence": {
@@ -3020,7 +3395,7 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Control (C) participants had substance risk scores of 0–1; early-risk (ER) participants had scores of 2–5.",
+      "value": "Group factor comparing Control (C) and Early risk (ER) participants.",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -3039,21 +3414,54 @@
       }
      }
     }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPSS-19",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Independent-samples t - and χ 2 -tests were used to test for group differences in subject characteristics using the Statistical Package of Social Sciences-19 (SPSS-19).",
+         "start_char": 13199,
+         "end_char": 13367
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_freesurfer"
    ]
   },
   {
-   "local_id": "mod_roi_glm_risk",
+   "local_id": "mod_glm_volume",
    "model_family": {
     "extraction_status": "extracted",
     "value": "glm",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "general linear models",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3071,16 +3479,10 @@
      ]
     }
    },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
+   "model_type": {
     "extraction_status": "extracted",
-    "value": "Volume was the dependent variable; total GM volume, CDV, PY, and FH/FHD were covariates.",
-    "value_source": "generated",
+    "value": "general linear models of ROI volume",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3088,9 +3490,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Volume was the dependent variable, the continuous substance risk score (0–5) was the independent variable, and four covariates were included: individual total GM volume, CDV, PY, and the binary FH variable.",
-         "start_char": 14246,
-         "end_char": 14452
+         "text": "The GLMs exploring the left frontal volume",
+         "start_char": 16244,
+         "end_char": 16286
         }
        ]
       }
@@ -3108,25 +3510,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "group",
-         "start_char": 842,
-         "end_char": 847
+         "text": "ROIs with significantly different volumes by group were entered into general linear models (GLMs)",
+         "start_char": 14073,
+         "end_char": 14170
         }
        ]
       }
      ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "spatial_unit": {
@@ -3140,22 +3530,18 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "ROIs",
-         "start_char": 13648,
-         "end_char": 13652
+         "text": "ROI",
+         "start_char": 13500,
+         "end_char": 13503
         }
        ]
       }
      ]
     }
    },
-   "preprocessing": [
-    "prp_freesurfer"
-   ],
-   "inputs_from": [],
    "terms": [
     {
-     "local_id": "trm_substance_risk_score",
+     "local_id": "trm_substance_risk",
      "name": {
       "extraction_status": "extracted",
       "value": "substance risk score",
@@ -3179,75 +3565,7 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "assessment": "asm_ddhx",
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
       "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Composite of five binary measures of early alcohol/drug use and problems; score ranged from 0 to 5.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "A substance risk variable was created from five binary (yes/no) measures ascertained from DDHx responses",
-           "start_char": 8024,
-           "end_char": 8128
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "score points",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The resultant variable ranged from 0 to 5.",
-           "start_char": 8366,
-           "end_char": 8408
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "local_id": "mod_roi_glm_risk.trm_externalizing_behavior",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "externalizing behavior score",
-      "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
@@ -3255,24 +3573,15 @@
          "source": "literal_match",
          "spans": [
           {
-           "text": "Further, externalizing behavior score was negatively correlated with both left superior cortical and left total cortical volumes.",
-           "start_char": 1849,
-           "end_char": 1978
+           "text": "Volume was the dependent variable, the continuous substance risk score (0–5) was the independent variable, and four covariates were included: individual total GM volume, CDV, PY, and the binary FH variable.",
+           "start_char": 14246,
+           "end_char": 14452
           }
          ]
         }
        ]
       }
      },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "assessment": "asm_ysr",
      "variation_level": {
       "extraction_status": "extracted",
       "value": "between_subject",
@@ -3284,9 +3593,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "externalizing behavior scores",
-           "start_char": 6074,
-           "end_char": 6103
+           "text": "Volume was the dependent variable, the continuous substance risk score (0–5) was the independent variable",
+           "start_char": 14246,
+           "end_char": 14351
           }
          ]
         }
@@ -3296,30 +3605,123 @@
      "functional_form": {
       "extraction_status": "extracted",
       "value": "linear",
-      "value_source": "generated",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_found"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "the continuous substance risk score (0–5)",
+           "start_char": 14281,
+           "end_char": 14322
+          }
+         ]
+        }
+       ]
       }
      },
      "unit": {
       "extraction_status": "extracted",
-      "value": "standardized Youth Self Report score",
+      "value": "score points, range 0–5",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "substance risk score (0–5)",
+           "start_char": 14296,
+           "end_char": 14322
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Substance risk score created from five binary measures: drinking by age 14, drunkenness by age 15, marijuana use by age 14, other drug use by age 16, and more than four alcohol-related problems by age 17.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "A substance risk variable was created from five binary (yes/no) measures",
+           "start_char": 8024,
+           "end_char": 8096
+          }
+         ]
+        }
+       ]
       }
      }
     }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "General linear models included total gray matter volume, cumulative drink volume, pack years, and either family history or family history density as covariates.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "four covariates were included: individual total GM volume, CDV, PY, and the binary FH variable.",
+         "start_char": 14357,
+         "end_char": 14452
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPSS-19",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Independent-samples t - and χ 2 -tests were used to test for group differences in subject characteristics using the Statistical Package of Social Sciences-19 (SPSS-19).",
+         "start_char": 13199,
+         "end_char": 13367
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_freesurfer"
    ]
   },
   {
-   "local_id": "mod_partial_correlation_externalizing",
+   "local_id": "mod_partial_correlation_volume",
    "model_family": {
     "extraction_status": "extracted",
     "value": "robust_regression",
@@ -3342,33 +3744,7 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "partial correlations",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "For ROIs found significant in the GLM analyses, partial correlations were used to test for associations with externalizing behavior scores controlling for total GM volume.",
-         "start_char": 15041,
-         "end_char": 15212
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "Controlling for total GM volume.",
+    "value": "partial correlations of externalizing behavior and ROI volume",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3377,9 +3753,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "controlling for total GM volume",
-         "start_char": 15180,
-         "end_char": 15211
+         "text": "partial correlations were used to test for associations with externalizing behavior scores",
+         "start_char": 15089,
+         "end_char": 15179
         }
        ]
       }
@@ -3397,39 +3773,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "group",
-         "start_char": 842,
-         "end_char": 847
+         "text": "For ROIs found significant in the GLM analyses",
+         "start_char": 15041,
+         "end_char": 15087
         }
        ]
       }
      ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "extracted",
-    "value": "Pearson's correlation",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The association between GM volume and externalizing behavior was tested using a Pearson's correlation.",
-         "start_char": 15213,
-         "end_char": 15315
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "spatial_unit": {
@@ -3452,13 +3802,9 @@
      ]
     }
    },
-   "preprocessing": [
-    "prp_freesurfer"
-   ],
-   "inputs_from": [],
    "terms": [
     {
-     "local_id": "mod_partial_correlation_externalizing.trm_externalizing_behavior",
+     "local_id": "trm_externalizing_behavior",
      "name": {
       "extraction_status": "extracted",
       "value": "externalizing behavior score",
@@ -3482,12 +3828,23 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Volume was the dependent variable, the continuous substance risk score (0–5) was the independent variable, and four covariates were included: individual total GM volume, CDV, PY, and the binary FH variable.",
+           "start_char": 14246,
+           "end_char": 14452
+          }
+         ]
+        }
+       ]
       }
      },
-     "assessment": "asm_ysr",
      "variation_level": {
       "extraction_status": "extracted",
       "value": "between_subject",
@@ -3499,9 +3856,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "externalizing behavior scores",
-           "start_char": 6074,
-           "end_char": 6103
+           "text": "Across the entire sample",
+           "start_char": 18928,
+           "end_char": 18952
           }
          ]
         }
@@ -3511,26 +3868,119 @@
      "functional_form": {
       "extraction_status": "extracted",
       "value": "linear",
-      "value_source": "generated",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "decreasing volumes of left superior frontal cortex and left frontal cortex as EXT increased",
+           "start_char": 19416,
+           "end_char": 19507
+          }
+         ]
+        }
+       ]
       }
      },
-     "source_definition": {
+     "unit": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "unit": {
+     "source_definition": {
       "extraction_status": "extracted",
-      "value": "standardized Youth Self Report score",
+      "value": "Youth Self Report broadband externalizing behavior score assessed at approximately ages 13 and 16.",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The YSR provides standardized scores of a respondent's social and emotional functioning",
+           "start_char": 10079,
+           "end_char": 10166
+          }
+         ]
+        }
+       ]
       }
      }
     }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Partial correlations controlled for total gray matter volume.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "controlling for total GM volume",
+         "start_char": 15180,
+         "end_char": 15211
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "Partial Pearson correlation",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a Pearson's correlation",
+         "start_char": 15291,
+         "end_char": 15314
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPSS-19",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Independent-samples t - and χ 2 -tests were used to test for group differences in subject characteristics using the Statistical Package of Social Sciences-19 (SPSS-19).",
+         "start_char": 13199,
+         "end_char": 13367
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_freesurfer"
    ]
   }
  ],
@@ -3539,8 +3989,8 @@
    "local_id": "prp_freesurfer",
    "description": {
     "extraction_status": "extracted",
-    "value": "FreeSurfer processing with manual quality-control corrections and PASS/FAIL inspection.",
-    "value_source": "generated",
+    "value": "FreeSurfer processing and quality-control correction of anatomical images for volumetric statistical analysis",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3548,9 +3998,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "quality control procedures were established to verify the segmentation and volume-related statistics.",
-         "start_char": 12053,
-         "end_char": 12154
+         "text": "FreeSurfer processing includes motion correction",
+         "start_char": 11549,
+         "end_char": 11597
         }
        ]
       }
@@ -3560,8 +4010,7 @@
    "software": {
     "extraction_status": "extracted",
     "value": [
-     "FreeSurfer Version 5.1",
-     "SPSS-19"
+     "FreeSurfer Version 5.1"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3591,9 +4040,9 @@
      "tessellation of the gray/white-matter boundary",
      "automated topology correction",
      "surface deformation using intensity gradients",
-     "manual spatial manipulation of Talairach registration",
-     "manual corrections of segmentation defects",
-     "quality control inspection"
+     "manual correction of Talairach registration",
+     "manual correction of segmentation and skull-strip defects",
+     "quality-control inspection and PASS/FAIL grading"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3603,8 +4052,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "FreeSurfer processing includes motion correction ( ), removal of non-brain tissue using a hybrid watershed/surface deformation procedure ( ), automated Talairach transformation, segmentation of cortical and subcortical volumetric structures ( ), intensity normalization ( ), tessellation of the gray/white-matter boundary, automated topology correction ( ), and surface deformation using intensity gradients ( ).",
-         "start_char": 11549,
+         "text": "motion correction ( ), removal of non-brain tissue using a hybrid watershed/surface deformation procedure ( ), automated Talairach transformation, segmentation of cortical and subcortical volumetric structures ( ), intensity normalization ( ), tessellation of the gray/white-matter boundary, automated topology correction ( ), and surface deformation using intensity gradients ( ).",
+         "start_char": 11580,
          "end_char": 11961
         }
        ]
@@ -3613,81 +4062,26 @@
     }
    },
    "smoothing_fwhm_mm": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": [
+     0
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    }
   }
  ],
- "regions": [
-  {
-   "local_id": "reg_left_superior_frontal_cortex",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "left superior frontal cortex",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "left superior frontal cortex",
-         "start_char": 1616,
-         "end_char": 1644
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ROIs",
-         "start_char": 13648,
-         "end_char": 13652
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  }
+ "study_type": [
+  "Journal Article",
+  "Research Support, N.I.H., Extramural",
+  "Research Support, Non-U.S. Gov't"
  ],
  "tables": [
   {
-   "local_id": "tbl0005",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -3714,7 +4108,7 @@
    }
   },
   {
-   "local_id": "tbl0010",
+   "local_id": "tbltable2",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 2",
@@ -3741,7 +4135,7 @@
    }
   },
   {
-   "local_id": "tbl0015",
+   "local_id": "tbltable3",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 3",
@@ -3768,7 +4162,7 @@
    }
   },
   {
-   "local_id": "tbl0020",
+   "local_id": "tbltable4",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 4",
@@ -3800,7 +4194,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "bf25f6705b77a7871b9f53c1edd7f05f92c0abc84d9311e454265d3902269d10",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -4075,9 +4469,53 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "study_type": [
-  "Journal Article",
-  "Research Support, N.I.H., Extramural",
-  "Research Support, Non-U.S. Gov't"
+ "regions": [
+  {
+   "local_id": "reg_left_superior_frontal",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "left superior frontal cortex",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "left superior frontal cortex",
+         "start_char": 1616,
+         "end_char": 1644
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "anatomical_a_priori",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "anatomical",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "A priori left superior frontal cortical region of interest.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
  ]
 }

@@ -1,13 +1,13 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "We report on detailed three-dimensional quantitative maps of brain surface and gray matter density asymmetry patterns during normal adolescent development and show how these anatomical features of the brain are disrupted as a result of prenatal exposure to large quantities of alcohol.",
-  "value_source": "reported",
+  "value": "The study maps cortical surface and gray matter density asymmetry during adolescent development and examines disruption associated with heavy prenatal alcohol exposure.",
+  "value_source": "generated",
   "evidence": {
    "status": "present",
    "sets": [
     {
-     "source": "literal_match",
+     "source": "model_quote",
      "spans": [
       {
        "text": "Here we report on detailed three-dimensional quantitative maps of brain surface and gray matter density asymmetry patterns during normal adolescent development and show how these anatomical features of the brain are disrupted as a result of prenatal exposure to large quantities of alcohol.",
@@ -22,13 +22,13 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "We studied two independent samples of normally developing children, adolescents, and young adults, totaling 83 subjects from two different research groups, and compared them to 21 individuals with heavy prenatal alcohol exposure.",
-   "value_source": "reported",
+   "value": "Two independent samples of normally developing participants were compared with individuals with heavy prenatal alcohol exposure.",
+   "value_source": "generated",
    "evidence": {
     "status": "present",
     "sets": [
      {
-      "source": "literal_match",
+      "source": "model_quote",
       "spans": [
        {
         "text": "We studied two independent samples of normally developing children, adolescents, and young adults, totaling 83 subjects from two different research groups, and compared them to 21 individuals with heavy prenatal alcohol exposure.",
@@ -50,35 +50,27 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "not_found"
    }
   },
   "blinding": {
-   "extraction_status": "extracted",
-   "value": "not_applicable",
-   "value_source": "generated",
+   "extraction_status": "not_reported",
    "evidence": {
-    "status": "not_found"
+    "status": "not_applicable"
    }
-  }
+  },
+  "arms": [],
+  "timepoints": []
  },
  "analyses": [
   {
-   "local_id": "ana_surface_asymmetry_group_difference",
+   "local_id": "ana_gray_matter_asymmetry",
    "name": {
     "extraction_status": "extracted",
-    "value": "cortical surface gray matter asymmetry group difference",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Alcohol-exposed individuals show a significant reduction in this asymmetry.",
+    "value": "cortical surface gray matter asymmetry",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -87,9 +79,29 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "Alcohol-exposed individuals show a significant reduction in this asymmetry, whether studied with surface-based or more traditional volumetric region of interest analyses.",
-         "start_char": 1400,
-         "end_char": 1570
+         "text": "Cortical surface gray matter asymmetry, mapped here in adolescent populations, is most prominent in the posterior inferior temporal lobes (right greater than left), and this effect does not differ between groups of normally developing children, adolescents, or young adults.",
+         "start_char": 1125,
+         "end_char": 1399
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Cortical surface gray matter asymmetry was assessed, with greater gray matter in the right than the left posterior inferior temporal lobes.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Cortical surface gray matter asymmetry, mapped here in adolescent populations, is most prominent in the posterior inferior temporal lobes (right greater than left)",
+         "start_char": 1125,
+         "end_char": 1288
         }
        ]
       }
@@ -104,16 +116,27 @@
    },
    "spatial_scope": {
     "extraction_status": "extracted",
-    "value": "whole_brain",
-    "value_source": "generated",
+    "value": "surface-based image analysis",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Surface-based image analysis techniques allowed us to match cortical anatomy across subjects and between hemispheres based on manually delineated sulcal landmarks.",
+         "start_char": 689,
+         "end_char": 852
+        }
+       ]
+      }
+     ]
     }
    },
-   "measure": "mea_gray_matter_asymmetry_surface",
    "groups": [
     {
-     "group": "grp_normal_development",
+     "group": "grp_normal",
      "n": {
       "extraction_status": "extracted",
       "value": 83,
@@ -136,7 +159,7 @@
      }
     },
     {
-     "group": "grp_heavy_prenatal_alcohol_exposure",
+     "group": "grp_alcohol_exposed",
      "n": {
       "extraction_status": "extracted",
       "value": 21,
@@ -148,9 +171,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "We studied two independent samples of normally developing children, adolescents, and young adults, totaling 83 subjects from two different research groups, and compared them to 21 individuals with heavy prenatal alcohol exposure.",
-           "start_char": 459,
-           "end_char": 688
+           "text": "compared them to 21 individuals with heavy prenatal alcohol exposure",
+           "start_char": 619,
+           "end_char": 687
           }
          ]
         }
@@ -162,126 +185,98 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_hemisphere_surface",
+      "term": "trm_hemisphere",
       "level": {
        "extraction_status": "extracted",
-       "value": "right hemisphere",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     },
-     {
-      "term": "trm_hemisphere_surface",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "left hemisphere",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     },
-     {
-      "term": "trm_exposure_group_surface",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "normally developing",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     },
-     {
-      "term": "trm_exposure_group_surface",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "heavy prenatal alcohol exposure",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "alcohol-exposed individuals",
+       "value": "right",
        "value_source": "reported",
        "evidence": {
         "status": "present",
         "sets": [
          {
-          "source": "literal_match",
+          "source": "model_quote",
           "spans": [
            {
-            "text": "Alcohol-exposed individuals show a significant reduction in this asymmetry, whether studied with surface-based or more traditional volumetric region of interest analyses.",
-            "start_char": 1400,
-            "end_char": 1570
+            "text": "right",
+            "start_char": 1063,
+            "end_char": 1068
            }
           ]
          }
         ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "trm_hemisphere",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "left",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "left",
+            "start_char": 1042,
+            "end_char": 1046
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
        }
       }
      }
     ],
     "kind": {
      "extraction_status": "extracted",
-     "value": "interaction",
+     "value": "contrast",
      "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Cortical surface gray matter asymmetry, mapped here in adolescent populations, is most prominent in the posterior inferior temporal lobes (right greater than left)",
+          "start_char": 1125,
+          "end_char": 1288
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
@@ -308,13 +303,12 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_surface_group_hemisphere",
-   "acquisitions": [],
-   "tasks": [],
+   "measure": "mea_gray_matter_density",
+   "model_estimation": "mod_gray_matter_asymmetry",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Alcohol-exposed individuals show a significant reduction in this asymmetry, whether studied with surface-based or more traditional volumetric region of interest analyses."
+     "Cortical surface gray matter asymmetry is most prominent in the posterior inferior temporal lobes, with the right greater than the left."
     ],
     "value_source": "reported",
     "evidence": {
@@ -324,9 +318,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Alcohol-exposed individuals show a significant reduction in this asymmetry, whether studied with surface-based or more traditional volumetric region of interest analyses.",
-         "start_char": 1400,
-         "end_char": 1570
+         "text": "Cortical surface gray matter asymmetry, mapped here in adolescent populations, is most prominent in the posterior inferior temporal lobes (right greater than left)",
+         "start_char": 1125,
+         "end_char": 1288
         }
        ]
       }
@@ -350,27 +344,48 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "regions": [
-    "reg_posterior_inferior_temporal_lobes"
-   ]
+   }
   },
   {
-   "local_id": "ana_volumetric_asymmetry_group_difference",
+   "local_id": "ana_group_difference_asymmetry",
    "name": {
     "extraction_status": "extracted",
-    "value": "volumetric gray matter asymmetry group difference",
-    "value_source": "generated",
+    "value": "reduction in gray matter asymmetry in alcohol-exposed individuals",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Alcohol-exposed individuals show a significant reduction in this asymmetry",
+         "start_char": 1400,
+         "end_char": 1474
+        }
+       ]
+      }
+     ]
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Alcohol-exposed individuals show a significant reduction in this asymmetry in traditional volumetric region of interest analyses.",
+    "value": "Gray matter asymmetry was compared between normally developing participants and individuals with heavy prenatal alcohol exposure.",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Alcohol-exposed individuals show a significant reduction in this asymmetry",
+         "start_char": 1400,
+         "end_char": 1474
+        }
+       ]
+      }
+     ]
     }
    },
    "prespecification": {
@@ -381,8 +396,8 @@
    },
    "spatial_scope": {
     "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
+    "value": "surface-based and traditional volumetric region of interest analyses",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -390,22 +405,18 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Alcohol-exposed individuals show a significant reduction in this asymmetry, whether studied with surface-based or more traditional volumetric region of interest analyses.",
-         "start_char": 1400,
-         "end_char": 1570
+         "text": "whether studied with surface-based or more traditional volumetric region of interest analyses",
+         "start_char": 1476,
+         "end_char": 1569
         }
        ]
       }
      ]
     }
    },
-   "regions": [
-    "reg_posterior_inferior_temporal_lobes"
-   ],
-   "measure": "mea_gray_matter_asymmetry_volumetric",
    "groups": [
     {
-     "group": "grp_normal_development",
+     "group": "grp_normal",
      "n": {
       "extraction_status": "extracted",
       "value": 83,
@@ -428,7 +439,7 @@
      }
     },
     {
-     "group": "grp_heavy_prenatal_alcohol_exposure",
+     "group": "grp_alcohol_exposed",
      "n": {
       "extraction_status": "extracted",
       "value": 21,
@@ -440,9 +451,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "We studied two independent samples of normally developing children, adolescents, and young adults, totaling 83 subjects from two different research groups, and compared them to 21 individuals with heavy prenatal alcohol exposure.",
-           "start_char": 459,
-           "end_char": 688
+           "text": "compared them to 21 individuals with heavy prenatal alcohol exposure",
+           "start_char": 619,
+           "end_char": 687
           }
          ]
         }
@@ -454,94 +465,82 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_hemisphere_volumetric",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "right hemisphere",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     },
-     {
-      "term": "trm_hemisphere_volumetric",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "left hemisphere",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     },
-     {
-      "term": "trm_exposure_group_volumetric",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "normally developing",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "normally developing children, adolescents, and young adults",
+            "start_char": 497,
+            "end_char": 556
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "positive",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "normally developing",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "normally developing",
+            "start_char": 497,
+            "end_char": 516
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_exposure_group_volumetric",
+      "term": "trm_group",
       "level": {
        "extraction_status": "extracted",
        "value": "heavy prenatal alcohol exposure",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "heavy prenatal alcohol exposure",
+            "start_char": 656,
+            "end_char": 687
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
         "status": "not_found"
        }
@@ -566,6 +565,80 @@
         ]
        }
       }
+     },
+     {
+      "term": "trm_hemisphere",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "right",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "right",
+            "start_char": 1063,
+            "end_char": 1068
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "trm_hemisphere",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "left",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "left",
+            "start_char": 1042,
+            "end_char": 1046
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
      }
     ],
     "kind": {
@@ -573,7 +646,19 @@
      "value": "interaction",
      "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Alcohol-exposed individuals show a significant reduction in this asymmetry",
+          "start_char": 1400,
+          "end_char": 1474
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
@@ -600,13 +685,12 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_volumetric_group_hemisphere",
-   "acquisitions": [],
-   "tasks": [],
+   "measure": "mea_gray_matter_density",
+   "model_estimation": "mod_gray_matter_asymmetry",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Alcohol-exposed individuals show a significant reduction in this asymmetry, whether studied with surface-based or more traditional volumetric region of interest analyses."
+     "Alcohol-exposed individuals show a significant reduction in this asymmetry."
     ],
     "value_source": "reported",
     "evidence": {
@@ -616,9 +700,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Alcohol-exposed individuals show a significant reduction in this asymmetry, whether studied with surface-based or more traditional volumetric region of interest analyses.",
+         "text": "Alcohol-exposed individuals show a significant reduction in this asymmetry",
          "start_char": 1400,
-         "end_char": 1570
+         "end_char": 1474
         }
        ]
       }
@@ -647,7 +731,7 @@
  ],
  "groups": [
   {
-   "local_id": "grp_normal_development",
+   "local_id": "grp_normal",
    "name": {
     "extraction_status": "extracted",
     "value": "normally developing children, adolescents, and young adults",
@@ -673,59 +757,7 @@
     "value": "human",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "normally developing children, adolescents, and young adults",
-         "start_char": 497,
-         "end_char": 556
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 83,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "We studied two independent samples of normally developing children, adolescents, and young adults, totaling 83 subjects from two different research groups, and compared them to 21 individuals with heavy prenatal alcohol exposure.",
-         "start_char": 459,
-         "end_char": 688
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "normally developing",
-         "start_char": 497,
-         "end_char": 516
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "description": {
@@ -739,9 +771,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "two independent samples of normally developing children, adolescents, and young adults",
-         "start_char": 470,
-         "end_char": 556
+         "text": "We studied two independent samples of normally developing children, adolescents, and young adults, totaling 83 subjects from two different research groups, and compared them to 21 individuals with heavy prenatal alcohol exposure.",
+         "start_char": 459,
+         "end_char": 688
         }
        ]
       }
@@ -761,6 +793,12 @@
     }
    },
    "enrolled_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquired_count": {
     "extraction_status": "extracted",
     "value": 83,
     "value_source": "reported",
@@ -846,26 +884,20 @@
      "status": "not_applicable"
     }
    },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "Normally developing"
+     "Normally developing children, adolescents, and young adults"
     ],
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "normally developing",
-         "start_char": 497,
-         "end_char": 516
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "diagnostic_system": {
@@ -903,10 +935,44 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
   },
   {
-   "local_id": "grp_heavy_prenatal_alcohol_exposure",
+   "local_id": "grp_alcohol_exposed",
    "name": {
     "extraction_status": "extracted",
     "value": "individuals with heavy prenatal alcohol exposure",
@@ -932,59 +998,7 @@
     "value": "human",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "21 individuals",
-         "start_char": 636,
-         "end_char": 650
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 21,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "21 individuals with heavy prenatal alcohol exposure",
-         "start_char": 636,
-         "end_char": 687
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "individuals with heavy prenatal alcohol exposure",
-         "start_char": 639,
-         "end_char": 687
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "medical_condition": {
@@ -1011,7 +1025,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Individuals with heavy prenatal alcohol exposure, compared with normally developing participants to assess disruptions in cortical surface and gray matter asymmetry.",
+    "value": "Individuals with heavy prenatal alcohol exposure, compared with normally developing participants to assess disruption of cortical surface and gray matter density asymmetry.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1020,8 +1034,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "compared them to 21 individuals with heavy prenatal alcohol exposure",
-         "start_char": 619,
+         "text": "21 individuals with heavy prenatal alcohol exposure",
+         "start_char": 636,
          "end_char": 687
         }
        ]
@@ -1042,6 +1056,12 @@
     }
    },
    "enrolled_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquired_count": {
     "extraction_status": "extracted",
     "value": 21,
     "value_source": "reported",
@@ -1052,9 +1072,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "21 individuals with heavy prenatal alcohol exposure",
+         "text": "21",
          "start_char": 636,
-         "end_char": 687
+         "end_char": 638
         }
        ]
       }
@@ -1127,15 +1147,11 @@
      "status": "not_applicable"
     }
    },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": "Heavy prenatal alcohol exposure",
+    "value": [
+     "Heavy prenatal alcohol exposure"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1151,6 +1167,18 @@
        ]
       }
      ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "medications": {
@@ -1176,65 +1204,36 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  }
- ],
- "regions": [
-  {
-   "local_id": "reg_posterior_inferior_temporal_lobes",
-   "name": {
+   },
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": "posterior inferior temporal lobes",
-    "value_source": "reported",
+    "value": "recruited",
+    "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Cortical surface gray matter asymmetry, mapped here in adolescent populations, is most prominent in the posterior inferior temporal lobes (right greater than left), and this effect does not differ between groups of normally developing children, adolescents, or young adults.",
-         "start_char": 1125,
-         "end_char": 1399
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
-   "definition_method": {
+   "sample_source_reference": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "region_type": {
+   "sample_overlap_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "description": {
+   "is_healthy": {
     "extraction_status": "extracted",
-    "value": "This region of cortex, near the junction of Brodmann's areas 21, 22, and 37, primarily subserves language functions that are known to be impaired on average in the alcohol-exposed subjects.",
+    "value": false,
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "This region of cortex, near the junction of Brodmann's areas 21, 22, and 37, primarily subserves language functions that are known to be impaired on average in the alcohol-exposed subjects.",
-         "start_char": 1571,
-         "end_char": 1760
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
-   "atlas": {
+   "age_unit_normalized": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -1244,30 +1243,18 @@
  ],
  "measures": [
   {
-   "local_id": "mea_gray_matter_asymmetry_surface",
+   "local_id": "mea_gray_matter_density",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "three-dimensional quantitative maps of brain surface and gray matter density asymmetry patterns",
-         "start_char": 195,
-         "end_char": 290
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "type": {
     "extraction_status": "extracted",
-    "value": "structural_morphometry_other",
+    "value": "gray_matter_density",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -1276,9 +1263,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "brain surface and gray matter density asymmetry patterns",
-         "start_char": 234,
-         "end_char": 290
+         "text": "gray matter density",
+         "start_char": 252,
+         "end_char": 271
         }
        ]
       }
@@ -1287,27 +1274,7 @@
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "cortical surface gray matter asymmetry",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Cortical surface gray matter asymmetry, mapped here in adolescent populations, is most prominent in the posterior inferior temporal lobes (right greater than left), and this effect does not differ between groups of normally developing children, adolescents, or young adults.",
-         "start_char": 1125,
-         "end_char": 1399
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "specific_metric": {
-    "extraction_status": "extracted",
-    "value": "Gray matter density",
+    "value": "gray matter density",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1325,93 +1292,10 @@
      ]
     }
    },
-   "unit": {
+   "specific_metric": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "mea_gray_matter_asymmetry_volumetric",
-   "family": {
-    "extraction_status": "extracted",
-    "value": "structural_morphometry",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Cortical surface gray matter asymmetry",
-         "start_char": 1125,
-         "end_char": 1163
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "type": {
-    "extraction_status": "extracted",
-    "value": "structural_morphometry_other",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Cortical surface gray matter asymmetry",
-         "start_char": 1125,
-         "end_char": 1163
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "source_label": {
-    "extraction_status": "extracted",
-    "value": "gray matter density asymmetry",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Here we report on detailed three-dimensional quantitative maps of brain surface and gray matter density asymmetry patterns during normal adolescent development and show how these anatomical features of the brain are disrupted as a result of prenatal exposure to large quantities of alcohol.",
-         "start_char": 168,
-         "end_char": 458
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "specific_metric": {
-    "extraction_status": "extracted",
-    "value": "Gray matter density",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Here we report on detailed three-dimensional quantitative maps of brain surface and gray matter density asymmetry patterns during normal adolescent development and show how these anatomical features of the brain are disrupted as a result of prenatal exposure to large quantities of alcohol.",
-         "start_char": 168,
-         "end_char": 458
-        }
-       ]
-      }
-     ]
     }
    },
    "unit": {
@@ -1424,31 +1308,21 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_surface_group_hemisphere",
+   "local_id": "mod_gray_matter_asymmetry",
    "model_family": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "other",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "surface-based image analysis",
+    "value": "surface-based gray matter asymmetry model",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Surface-based image analysis techniques allowed us to match cortical anatomy across subjects and between hemispheres based on manually delineated sulcal landmarks.",
-         "start_char": 689,
-         "end_char": 852
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "stage": {
@@ -1457,334 +1331,6 @@
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
-    }
-   },
-   "terms": [
-    {
-     "local_id": "trm_hemisphere_surface",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "hemisphere",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Quantitative maps of brain surface asymmetry reveal prominent peri-Sylvian hemispheric differences in which the superior temporal and inferior parietal cortices are shifted backward in the left relative to the right hemisphere in both normal and alcohol-exposed subjects.",
-           "start_char": 853,
-           "end_char": 1124
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "within_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "between hemispheres",
-           "start_char": 786,
-           "end_char": 805
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "right hemisphere",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "literal_match",
-           "spans": [
-            {
-             "text": "Quantitative maps of brain surface asymmetry reveal prominent peri-Sylvian hemispheric differences in which the superior temporal and inferior parietal cortices are shifted backward in the left relative to the right hemisphere in both normal and alcohol-exposed subjects.",
-             "start_char": 853,
-             "end_char": 1124
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "regions": [
-        "reg_posterior_inferior_temporal_lobes"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "left hemisphere",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "left relative to the right hemisphere",
-             "start_char": 1042,
-             "end_char": 1079
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "regions": [
-        "reg_posterior_inferior_temporal_lobes"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      }
-     ],
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Hemisphere, with right and left hemisphere levels",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "between hemispheres",
-           "start_char": 786,
-           "end_char": 805
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "local_id": "trm_exposure_group_surface",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "exposure group",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "groups",
-           "start_char": 607,
-           "end_char": 613
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "between groups",
-           "start_char": 1322,
-           "end_char": 1336
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "normally developing",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "normally developing children, adolescents, or young adults",
-             "start_char": 1340,
-             "end_char": 1398
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_normal_development"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "heavy prenatal alcohol exposure",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "alcohol-exposed subjects",
-             "start_char": 1099,
-             "end_char": 1123
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_heavy_prenatal_alcohol_exposure"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      }
-     ],
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Exposure group, contrasting normally developing participants with individuals with heavy prenatal alcohol exposure",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "between groups of normally developing children, adolescents, or young adults",
-           "start_char": 1322,
-           "end_char": 1398
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "spatial_unit": {
@@ -1794,47 +1340,10 @@
     "evidence": {
      "status": "not_found"
     }
-   }
-  },
-  {
-   "local_id": "mod_volumetric_group_hemisphere",
-   "model_family": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "volumetric region of interest analysis",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "more traditional volumetric region of interest analyses",
-         "start_char": 1514,
-         "end_char": 1569
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
    },
    "terms": [
     {
-     "local_id": "trm_hemisphere_volumetric",
+     "local_id": "trm_hemisphere",
      "name": {
       "extraction_status": "extracted",
       "value": "hemisphere",
@@ -1874,9 +1383,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "between hemispheres",
-           "start_char": 786,
-           "end_char": 805
+           "text": "Cortical surface gray matter asymmetry, mapped here in adolescent populations, is most prominent in the posterior inferior temporal lobes (right greater than left)",
+           "start_char": 1125,
+           "end_char": 1288
           }
          ]
         }
@@ -1887,40 +1396,7 @@
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "right hemisphere",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "literal_match",
-           "spans": [
-            {
-             "text": "Quantitative maps of brain surface asymmetry reveal prominent peri-Sylvian hemispheric differences in which the superior temporal and inferior parietal cortices are shifted backward in the left relative to the right hemisphere in both normal and alcohol-exposed subjects.",
-             "start_char": 853,
-             "end_char": 1124
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "regions": [
-        "reg_posterior_inferior_temporal_lobes"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "left hemisphere",
+        "value": "right",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -1929,22 +1405,49 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "left relative to the right hemisphere",
-             "start_char": 1042,
-             "end_char": 1079
+             "text": "right",
+             "start_char": 1063,
+             "end_char": 1068
             }
            ]
           }
          ]
         }
        },
-       "regions": [
-        "reg_posterior_inferior_temporal_lobes"
-       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "left",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "left",
+             "start_char": 1042,
+             "end_char": 1046
+            }
+           ]
+          }
+         ]
+        }
+       },
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -1964,31 +1467,17 @@
       }
      },
      "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Hemisphere, with right and left hemisphere levels",
-      "value_source": "reported",
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "between hemispheres",
-           "start_char": 786,
-           "end_char": 805
-          }
-         ]
-        }
-       ]
+       "status": "not_applicable"
       }
      }
     },
     {
-     "local_id": "trm_exposure_group_volumetric",
+     "local_id": "trm_group",
      "name": {
       "extraction_status": "extracted",
-      "value": "exposure group",
+      "value": "developmental and alcohol-exposure group",
       "value_source": "generated",
       "evidence": {
        "status": "present",
@@ -1997,9 +1486,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "groups",
-           "start_char": 607,
-           "end_char": 613
+           "text": "groups of normally developing children, adolescents, or young adults",
+           "start_char": 1330,
+           "end_char": 1398
           }
          ]
         }
@@ -2025,9 +1514,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "between groups",
-           "start_char": 1322,
-           "end_char": 1336
+           "text": "this effect does not differ between groups of normally developing children, adolescents, or young adults",
+           "start_char": 1294,
+           "end_char": 1398
           }
          ]
         }
@@ -2047,9 +1536,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "normally developing children, adolescents, or young adults",
-             "start_char": 1340,
-             "end_char": 1398
+             "text": "normally developing",
+             "start_char": 497,
+             "end_char": 516
             }
            ]
           }
@@ -2057,12 +1546,12 @@
         }
        },
        "groups": [
-        "grp_normal_development"
+        "grp_normal"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 1,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -2080,9 +1569,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "alcohol-exposed subjects",
-             "start_char": 1099,
-             "end_char": 1123
+             "text": "Alcohol-exposed individuals",
+             "start_char": 1400,
+             "end_char": 1427
             }
            ]
           }
@@ -2090,12 +1579,12 @@
         }
        },
        "groups": [
-        "grp_heavy_prenatal_alcohol_exposure"
+        "grp_alcohol_exposed"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -2115,23 +1604,9 @@
       }
      },
      "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Exposure group, contrasting normally developing participants with individuals with heavy prenatal alcohol exposure",
-      "value_source": "reported",
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "between groups of normally developing children, adolescents, or young adults",
-           "start_char": 1322,
-           "end_char": 1398
-          }
-         ]
-        }
-       ]
+       "status": "not_applicable"
       }
      }
     }
@@ -2159,26 +1634,6 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "region of interest",
-         "start_char": 1542,
-         "end_char": 1560
-        }
-       ]
-      }
-     ]
-    }
    }
   }
  ],
@@ -2187,7 +1642,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "2983710302692b009dae6e65e4e2ffbc3da199e4129cd3e52cac346389d01113",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2210,5 +1665,8 @@
  "study_type": [
   "Journal Article",
   "Research Support, U.S. Gov't, P.H.S."
+ ],
+ "language": [
+  "eng"
  ]
 }

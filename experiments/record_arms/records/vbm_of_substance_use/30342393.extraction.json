@@ -1,47 +1,65 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "This study examined the effects of HIV infection, methamphetamine dependence and their interaction on cortical thickness, area and volume in a cross-sectional sample, including interactions with age.",
-  "value_source": "reported",
+  "value": "Cross-sectional study examining the effects of HIV infection, methamphetamine dependence and age on cortical thickness, area and volume using T1-weighted structural MRI and regional cortical morphometry.",
+  "value_source": "generated",
   "evidence": {
    "status": "not_found"
-  }
- },
- "hypothesis": {
-  "extraction_status": "not_reported",
-  "evidence": {
-   "status": "not_applicable"
   }
  },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "A cross-sectional 2 × 2 design of HIV seropositive versus seronegative and methamphetamine-dependent versus non-dependent participants.",
-   "value_source": "reported",
+   "value": "Cross-sectional 2 × 2 design comparing HIV seropositive versus seronegative participants and methamphetamine-dependent versus non-dependent participants; participants were recruited from treatment centers, outreach programs and community sources.",
+   "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "a 2 (HIV seropositive vs. seronegative) by 2 (METH dependent vs. non-dependent) design",
+        "start_char": 11601,
+        "end_char": 11687
+       }
+      ]
+     }
+    ]
    }
   },
   "allocation": {
-   "extraction_status": "extracted",
-   "value": "non_randomized",
-   "value_source": "generated",
+   "extraction_status": "not_reported",
    "evidence": {
-    "status": "not_found"
+    "status": "not_applicable"
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "a 2 (HIV seropositive vs. seronegative) by 2 (METH dependent vs. non-dependent) design",
+        "start_char": 11601,
+        "end_char": 11687
+       }
+      ]
+     }
+    ]
    }
   },
   "blinding": {
-   "extraction_status": "not_reported",
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
    "evidence": {
-    "status": "not_applicable"
+    "status": "not_found"
    }
   },
   "arms": [],
@@ -49,7 +67,269 @@
  },
  "analyses": [
   {
-   "local_id": "ana_hiv_volume",
+   "local_id": "ana_hiv_age_thickness_interaction",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "HIV by Age interaction effects on cortical thickness",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Standardized beta maps of Freesurfer regions with significant HIV by Age interaction effects on cortical thickness (multiple statistical test correction).",
+         "start_char": 30638,
+         "end_char": 30792
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "We investigated the interactions of HIV diagnosis or methamphetamine dependence with age.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "To examine possible aging effects in our sample, we investigated the interactions of HIV diagnosis or methamphetamine dependence with age.",
+         "start_char": 11141,
+         "end_char": 11279
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "age is associated with a more gradual slope among HIV seropositive individuals than among HIV seronegative individuals",
+     "individuals with HIV infection who are in their early 20s have, on the average, global cortical thickness values similar to typical seronegative individuals in their early 40s"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "For each ROI, we performed a 2 × 2 analysis of covariance (ANCOVA) to investigate the association between HIV status (seropositive/seronegative), methamphetamine dependence (dependent/not) and their interaction with cortical area, volume and thickness.",
+         "start_char": 18500,
+         "end_char": 18752
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "regions": [],
+   "defines_regions": [],
+   "measure": "mea_cortical_thickness",
+   "groups": [
+    {
+     "group": "grp_hiv_seropositive",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 69,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Sixty-nine HIV seropositive participants were recruited from HIV treatment centers and community organizations in San Diego County.",
+           "start_char": 11791,
+           "end_char": 11922
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_hiv_seronegative",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_hiv_age_interaction",
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "level": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "interaction",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "with HIV status significantly interacting with age",
+          "start_char": 31143,
+          "end_char": 31193
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "f",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "this linear regression model was also significant,   F  (3,133) = 18.705,   p   < .001",
+           "start_char": 31055,
+           "end_char": 31141
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "extracted",
+      "value": 3,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "this linear regression model was also significant,   F  (3,133) = 18.705,   p   < .001",
+           "start_char": 31055,
+           "end_char": 31141
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "extracted",
+      "value": 133,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Not surprisingly, this linear regression model was also significant,   F  (3,133) = 18.705,   p   < .001, with HIV status significantly interacting with age:   β   = 0.281,   p   < 001 ( Fig.",
+           "start_char": 31037,
+           "end_char": 31228
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_t1_mri"
+   ],
+   "tasks": [],
+   "model_estimation": "mod_hiv_age_ancova",
+   "tables": [
+    "tbltable1",
+    "tbltable2"
+   ],
+   "assessments": [
+    "asm_hiv_test",
+    "asm_meth_dependence"
+   ],
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inference_settings": "inf_fdr_q10"
+  },
+  {
+   "local_id": "ana_hiv_volume_group_difference",
    "name": {
     "extraction_status": "extracted",
     "value": "Main effect of HIV Diagnosis",
@@ -61,8 +341,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Main effect of HIV Diagnosis",
-         "start_char": 24692,
+         "text": "### Main effect of HIV Diagnosis",
+         "start_char": 24688,
          "end_char": 24720
         }
        ]
@@ -72,18 +352,18 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "HIV diagnosis was associated with smaller mean cortical volumes in rostral middle frontal gyrus and in the inferior and superior parietal lobes.",
+    "value": "Cortical volumes remained significant following correction for multiple statistical tests in the rostral middle frontal gyrus and in the inferior and superior parietal lobes.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "HIV diagnosis, nevertheless, was associated with smaller mean cortical volumes in rostral middle frontal gyrus and in the inferior and superior parietal lobes.",
-         "start_char": 961,
-         "end_char": 1120
+         "text": "The differences in cortical volumes remained significant following correction for multiple statistical tests in the rostral middle frontal gyrus and in the inferior and superior parietal lobes.",
+         "start_char": 25616,
+         "end_char": 25809
         }
        ]
       }
@@ -91,17 +371,15 @@
     }
    },
    "prespecification": {
-    "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Mean cortical volume was significantly smaller among individuals living with HIV infection in the rostral middle frontal gyrus and in the inferior and superior parietal lobes."
+     "HIV was associated with smaller cortical volumes in frontal and parietal regions."
     ],
     "value_source": "reported",
     "evidence": {
@@ -111,9 +389,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Mean cortical volume was significantly smaller among individuals living with HIV infection in the rostral middle frontal gyrus and in the inferior and superior parietal lobes.",
-         "start_char": 45394,
-         "end_char": 45569
+         "text": "The differences in cortical volumes remained significant following correction for multiple statistical tests in the rostral middle frontal gyrus and in the inferior and superior parietal lobes.",
+         "start_char": 25616,
+         "end_char": 25809
         }
        ]
       }
@@ -140,15 +418,12 @@
      ]
     }
    },
-   "regions": [
-    "reg_rostral_middle_frontal",
-    "reg_inferior_parietal_lobe",
-    "reg_superior_parietal_lobe"
-   ],
+   "regions": [],
+   "defines_regions": [],
    "measure": "mea_cortical_volume",
    "groups": [
     {
-     "group": "grp_hiv_positive",
+     "group": "grp_hiv_seropositive",
      "n": {
       "extraction_status": "extracted",
       "value": 69,
@@ -171,7 +446,7 @@
      }
     },
     {
-     "group": "grp_hiv_negative",
+     "group": "grp_hiv_seronegative",
      "n": {
       "extraction_status": "not_reported",
       "evidence": {
@@ -183,13 +458,25 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_hiv",
+      "term": "trm_hiv_status",
       "level": {
        "extraction_status": "extracted",
        "value": "HIV seropositive",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "the HIV seropositive group",
+            "start_char": 1475,
+            "end_char": 1501
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
@@ -197,50 +484,36 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "cortical volumes remained significant following correction for multiple statistical tests in the rostral middle frontal gyrus and in the inferior and superior parietal lobes",
-            "start_char": 25635,
-            "end_char": 25808
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
-       "extraction_status": "extracted",
-       "value": "HIV seropositive group",
-       "value_source": "reported",
+       "extraction_status": "not_reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "HIV seropositive group",
-            "start_char": 1479,
-            "end_char": 1501
-           }
-          ]
-         }
-        ]
+        "status": "not_applicable"
        }
       }
      },
      {
-      "term": "trm_hiv",
+      "term": "trm_hiv_status",
       "level": {
        "extraction_status": "extracted",
        "value": "HIV seronegative",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "the seronegative group",
+            "start_char": 24824,
+            "end_char": 24846
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
@@ -252,23 +525,9 @@
        }
       },
       "label": {
-       "extraction_status": "extracted",
-       "value": "HIV seronegative group",
-       "value_source": "reported",
+       "extraction_status": "not_reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Moreover, the Y-intercept for the HIV seropositive group was less than in the HIV seronegative group with no overlap in the 95%.",
-            "start_char": 31656,
-            "end_char": 31784
-           }
-          ]
-         }
-        ]
+        "status": "not_applicable"
        }
       }
      }
@@ -284,9 +543,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "cortical area was trending smaller in the HIV seropositive group than in the seronegative group",
-          "start_char": 24751,
-          "end_char": 24846
+          "text": "The differences in cortical volumes remained significant following correction for multiple statistical tests in the rostral middle frontal gyrus and in the inferior and superior parietal lobes.",
+          "start_char": 25616,
+          "end_char": 25809
          }
         ]
        }
@@ -295,26 +554,6 @@
     },
     "statistic": {
      "family": {
-      "extraction_status": "extracted",
-      "value": "eta squared",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "η   = 0.06",
-           "start_char": 25055,
-           "end_char": 25065
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -325,13 +564,31 @@
       "evidence": {
        "status": "not_applicable"
       }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
      }
     }
    },
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_ancova",
+   "acquisitions": [
+    "acq_t1_mri"
+   ],
+   "tasks": [],
+   "model_estimation": "mod_group_ancova",
+   "tables": [
+    "tbltable1",
+    "tbltable2"
+   ],
+   "assessments": [
+    "asm_hiv_test",
+    "asm_meth_dependence"
+   ],
    "source_table_analysis": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -350,21 +607,279 @@
      "status": "not_applicable"
     }
    },
-   "acquisitions": [
-    "acq_smri"
+   "inference_settings": "inf_fdr_q10"
+  },
+  {
+   "local_id": "ana_meth_thickness_group_difference",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Main effect of Methamphetamine Dependence",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "### Main effect of Methamphetamine Dependence",
+         "start_char": 26340,
+         "end_char": 26385
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Cortical thickness trended smaller in the methamphetamine-dependent group in posterior cingulate.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Cortical thickness trended smaller in the methamphetamine-dependent group in posterior cingulate (  η   = 0.07), middle temporal (  η   = 0.05), and inferior parietal lobe (  η   = 0.05), precuneus (  η   = 0.05), and caudal middle frontal (  η   = 0.03) and superior parietal cortex (  η   = 0.03).",
+         "start_char": 26745,
+         "end_char": 27044
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Methamphetamine-dependent subjects had thinner cortex in posterior cingulate."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "However, only the finding in the posterior cingulate gyrus remained significant after adjustment for multiple statistical tests.",
+         "start_char": 27045,
+         "end_char": 27173
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Cortical thickness trended smaller in the methamphetamine-dependent group in posterior cingulate",
+         "start_char": 26745,
+         "end_char": 26841
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "regions": [],
+   "defines_regions": [],
+   "measure": "mea_cortical_thickness",
+   "groups": [
+    {
+     "group": "grp_methamphetamine_dependent",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "group": "grp_methamphetamine_nondependent",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
    ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_methamphetamine_dependence",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "dependent",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "the methamphetamine-dependent group",
+            "start_char": 26783,
+            "end_char": 26818
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     },
+     {
+      "term": "trm_methamphetamine_dependence",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "not dependent",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "non-dependent groups",
+            "start_char": 27357,
+            "end_char": 27377
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "contrast",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Cortical thickness trended smaller in the methamphetamine-dependent group in posterior cingulate",
+          "start_char": 26745,
+          "end_char": 26841
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_t1_mri"
+   ],
+   "tasks": [],
+   "model_estimation": "mod_group_ancova",
    "tables": [
-    "t0005",
-    "t0010"
+    "tbltable1",
+    "tbltable2"
    ],
    "assessments": [
-    "asm_hiv_test"
-   ]
+    "asm_hiv_test",
+    "asm_meth_dependence"
+   ],
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inference_settings": "inf_fdr_q10"
   }
  ],
  "acquisitions": [
   {
-   "local_id": "acq_smri",
+   "local_id": "acq_t1_mri",
    "acquisition_type": "MRI",
    "modality": {
     "extraction_status": "extracted",
@@ -377,22 +892,24 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "T1-weighted structural images were obtained",
+         "text": "T1-weighted structural images",
          "start_char": 477,
-         "end_char": 520
+         "end_char": 506
         }
        ]
       }
      ]
     }
    },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
+   "device": "dev_ge_mr750",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
-   "device": "dev_mr750",
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3.0,
@@ -404,9 +921,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "on a 3.0 T General Electric MR750 scanner",
-         "start_char": 15777,
-         "end_char": 15818
+         "text": "3.0 T",
+         "start_char": 15782,
+         "end_char": 15787
         }
        ]
       }
@@ -415,7 +932,7 @@
    },
    "pulse_sequence_type": {
     "extraction_status": "extracted",
-    "value": "Inversion Recovery-Spoiled Gradient Recalled (IR-SPGR) echo sequence",
+    "value": "IR-SPGR",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -441,18 +958,18 @@
    },
    "repetition_time_seconds": {
     "extraction_status": "extracted",
-    "value": 8.2,
+    "value": 0.0082,
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Image acquisition used an Array Spatial Sensitivity Encoding Technique (ASSET) for parallel and accelerated imaging with an 8-channel head coil and acquired as an Inversion Recovery-Spoiled Gradient Recalled (IR-SPGR) echo sequence (TE = 3.2 ms, TR = 8.2 ms, TI = 450 ms, flip angle = 12°, NEX = 1, matrix = 256 × 256, FOV = 24 cm, in-plane resolution = 0.9375 mm × 0.9375 mm, slice thickness = 1.2 mm, 172 slices).",
-         "start_char": 15842,
-         "end_char": 16257
+         "text": "TR = 8.2 ms",
+         "start_char": 16088,
+         "end_char": 16099
         }
        ]
       }
@@ -462,7 +979,7 @@
    "echo_time_seconds": {
     "extraction_status": "extracted",
     "value": [
-     3.2
+     0.0032
     ],
     "value_source": "reported",
     "evidence": {
@@ -506,6 +1023,12 @@
     }
    },
    "number_of_volumes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -558,13 +1081,13 @@
    },
    "assessment_type": {
     "extraction_status": "extracted",
-    "value": "rapid HIV antibody test",
-    "value_source": "reported",
+    "value": "diagnostic test",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
          "text": "HIV status was determined by the Med Mira Rapid HIV antibody test.",
@@ -576,11 +1099,74 @@
      ]
     }
    }
+  },
+  {
+   "local_id": "asm_meth_dependence",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition interview",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition   (DSM-IV",
+         "start_char": 15135,
+         "end_char": 15214
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Interview used to determine whether participants met criteria for methamphetamine dependence.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We interviewed potential participants for substance use in order to determine whether they met the criteria for methamphetamine dependence",
+         "start_char": 14976,
+         "end_char": 15114
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We interviewed potential participants for substance use",
+         "start_char": 14976,
+         "end_char": 15031
+        }
+       ]
+      }
+     ]
+    }
+   }
   }
  ],
  "devices": [
   {
-   "local_id": "dev_mr750",
+   "local_id": "dev_ge_mr750",
    "manufacturer": {
     "extraction_status": "extracted",
     "value": "General Electric",
@@ -625,7 +1211,7 @@
  ],
  "groups": [
   {
-   "local_id": "grp_hiv_positive",
+   "local_id": "grp_hiv_seropositive",
    "name": {
     "extraction_status": "extracted",
     "value": "HIV seropositive participants",
@@ -648,7 +1234,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Participants living with HIV, including HIV+/METH- and HIV+/METH+ participants.",
+    "value": "Participants seropositive for HIV, including participants with and without methamphetamine dependence.",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -677,13 +1263,123 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "One hundred and thirty-seven individuals were recruited",
-         "start_char": 11540,
+         "text": "individuals",
+         "start_char": 1629,
+         "end_char": 1640
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "at least 18 years old",
+     "had the capacity to provide informed consent",
+     "spoke and understood English sufficiently to take validly a battery of neuropsychological tests and to complete self-report scales"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "at least 18 years old, had the capacity to provide informed consent, and spoke and understood English sufficiently to take validly a battery of neuropsychological tests and to complete self-report scales",
+         "start_char": 12978,
+         "end_char": 13181
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "seizure disorders",
+     "closed head injuries with loss of consciousness >30 min",
+     "central nervous system neoplasms",
+     "opportunistic infections",
+     "Hepatitis C",
+     "schizophrenia",
+     "alcohol dependence in the past year",
+     "drug abuse in the past year",
+     "drug dependence in the past five years",
+     "WRAT Reading Scale Score < 80",
+     "history of learning disability",
+     "ineligible for magnetic resonance scans"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These exclusionary conditions included seizure disorders, closed head injuries with loss of consciousness >30 min, central nervous system neoplasms, opportunistic infections, Hepatitis C and schizophrenia.",
+         "start_char": 13356,
+         "end_char": 13561
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "HIV infection"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "HIV seropositive",
+         "start_char": 1479,
+         "end_char": 1495
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_hiv_test"
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "recruited",
+         "start_char": 11586,
          "end_char": 11595
         }
        ]
       }
      ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "approached_count": {
@@ -699,79 +1395,49 @@
     }
    },
    "enrolled_count": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": 69,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Sixty-nine HIV seropositive participants",
+         "start_char": 11791,
+         "end_char": 11831
+        }
+       ]
+      }
+     ]
     }
    },
    "acquired_count": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": 69,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Sixty-nine HIV seropositive participants",
+         "start_char": 11791,
+         "end_char": 11831
+        }
+       ]
+      }
+     ]
     }
    },
    "excluded_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "at least 18 years old",
-     "capacity to provide informed consent",
-     "spoke and understood English sufficiently to take validly a battery of neuropsychological tests and to complete self-report scales"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Potential participants met general inclusion criteria if they were at least 18 years old, had the capacity to provide informed consent, and spoke and understood English sufficiently to take validly a battery of neuropsychological tests and to complete self-report scales.",
-         "start_char": 12911,
-         "end_char": 13182
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "histories of medical, neurological or severe psychiatric conditions unrelated to HIV disease or to methamphetamine use",
-     "seizure disorders",
-     "closed head injuries with loss of consciousness >30 min",
-     "central nervous system neoplasms",
-     "opportunistic infections",
-     "Hepatitis C",
-     "schizophrenia",
-     "alcohol dependence in the past year",
-     "drug abuse in the past year",
-     "drug dependence in the past five years",
-     "WRAT Reading Scale Score < 80",
-     "history of learning disability",
-     "ineligible for magnetic resonance scans"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Individuals were excluded from the study if they had histories of medical, neurological or severe psychiatric conditions unrelated to HIV disease or to methamphetamine use.",
-         "start_char": 13183,
-         "end_char": 13355
-        }
-       ]
-      }
-     ]
     }
    },
    "recruitment_method": {
@@ -831,54 +1497,15 @@
     }
    },
    "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "participants were classified as less than or equal to 50 years of age or greater when recruited",
-         "start_char": 12812,
-         "end_char": 12907
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
-   "sex_distribution": [],
-   "gender_distribution": [],
-   "handedness_distribution": [],
-   "race_distribution": [],
-   "ethnicity_distribution": [],
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Individuals were excluded from the study if they had histories of medical, neurological or severe psychiatric conditions unrelated to HIV disease or to methamphetamine use.",
-         "start_char": 13183,
-         "end_char": 13355
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "HIV infection"
+     "HIV seropositive"
     ],
     "value_source": "reported",
     "evidence": {
@@ -888,9 +1515,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "HIV seropositive participants",
-         "start_char": 11802,
-         "end_char": 11831
+         "text": "HIV seropositive",
+         "start_char": 1479,
+         "end_char": 1495
         }
        ]
       }
@@ -903,31 +1530,62 @@
      "status": "not_applicable"
     }
    },
-   "diagnostic_instrument": [
-    "asm_hiv_test"
-   ],
    "clinical_characteristics": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Among HIV-positive participants, mean current CD4 count was 539.8, mean CD4 nadir was 269.8, and 88.3% were receiving combination antiretroviral therapy; 45.9% met criteria for HAND, 44.9% had AIDS, and 59.6% had undetectable plasma HIV RNA.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "medications": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": [
+     "combination antiretroviral therapy"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Combination ART",
+         "start_char": 23511,
+         "end_char": 23526
+        }
+       ]
+      }
+     ]
     }
    },
    "medication_status": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Most participants were receiving combination antiretroviral therapy during the study.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "88.3% of individuals with HIV infection were on cART",
+         "start_char": 33995,
+         "end_char": 34047
+        }
+       ]
+      }
+     ]
     }
    },
    "education_summary": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Mean education was 14.21 years overall among HIV-seropositive participants; methamphetamine-dependent participants had significantly less education than nondependent participants.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "socioeconomic_status_summary": {
@@ -935,10 +1593,28 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
   },
   {
-   "local_id": "grp_hiv_negative",
+   "local_id": "grp_hiv_seronegative",
    "name": {
     "extraction_status": "extracted",
     "value": "HIV seronegative participants",
@@ -950,9 +1626,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "HIV seronegative",
-         "start_char": 9599,
-         "end_char": 9615
+         "text": "HIV seronegative participants",
+         "start_char": 21832,
+         "end_char": 21861
         }
        ]
       }
@@ -961,7 +1637,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Participants without HIV infection, including HIV-/METH+ and HIV-/METH- participants.",
+    "value": "Participants seronegative for HIV, including participants with and without methamphetamine dependence.",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -970,9 +1646,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "HIV seronegative with no methamphetamine dependence (HIV-/METH-)",
-         "start_char": 9665,
-         "end_char": 9729
+         "text": "Forty individuals seronegative for HIV who were also not methamphetamine dependent were recruited from community advertisements and word-of-mouth from the same communities as the patient groups (HIV-/METH-).",
+         "start_char": 12205,
+         "end_char": 12412
         }
        ]
       }
@@ -990,13 +1666,63 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "One hundred and thirty-seven individuals were recruited",
-         "start_char": 11540,
+         "text": "individuals",
+         "start_char": 1629,
+         "end_char": 1640
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "No HIV infection"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "seronegative for HIV",
+         "start_char": 12223,
+         "end_char": 12243
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "recruited",
+         "start_char": 11586,
          "end_char": 11595
         }
        ]
       }
      ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "approached_count": {
@@ -1012,15 +1738,43 @@
     }
    },
    "enrolled_count": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": 68,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Global measures for each of these three morphometric values were computed by averaging over all 68 ROIs across the two hemispheres.",
+         "start_char": 16888,
+         "end_char": 17019
+        }
+       ]
+      }
+     ]
     }
    },
    "acquired_count": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": 68,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Global measures for each of these three morphometric values were computed by averaging over all 68 ROIs across the two hemispheres.",
+         "start_char": 16888,
+         "end_char": 17019
+        }
+       ]
+      }
+     ]
     }
    },
    "excluded_count": {
@@ -1030,21 +1784,725 @@
     }
    },
    "inclusion_criteria": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": [
+     "At least 18 years old",
+     "Capacity to provide informed consent",
+     "Sufficient English proficiency to complete neuropsychological tests and self-report scales",
+     "HIV seronegative"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "exclusion_criteria": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": [
+     "Medical, neurological, or severe psychiatric conditions unrelated to HIV disease or methamphetamine use",
+     "Seizure disorder",
+     "Closed head injury with loss of consciousness longer than 30 minutes",
+     "Central nervous system neoplasm",
+     "Opportunistic infection",
+     "Hepatitis C",
+     "Schizophrenia",
+     "Alcohol dependence in the past year",
+     "Drug abuse, including cocaine, in the past year",
+     "Drug dependence in the past five years",
+     "WRAT Reading Scale score below 80",
+     "History of learning disability",
+     "MRI contraindication, including metal contraindication or claustrophobia"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Substance abuse outreach and rehabilitation programs, community advertisements, and word-of-mouth from communities in San Diego County",
+    "value": "Community advertisements and word-of-mouth from the same San Diego County communities as the patient groups",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "community advertisements and word-of-mouth from the same communities as the patient groups",
+         "start_char": 12308,
+         "end_char": 12398
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "HIV seronegative"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "HIV seronegative",
+         "start_char": 9599,
+         "end_char": 9615
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "HIV seronegative; participants were either methamphetamine-dependent or nondependent.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "Mean education was 13.57 years overall among HIV-seronegative participants; methamphetamine-dependent participants had significantly less education than nondependent participants.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_hiv_test"
+   ]
+  },
+  {
+   "local_id": "grp_methamphetamine_dependent",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "methamphetamine-dependent participants",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "methamphetamine-dependent participants",
+         "start_char": 9480,
+         "end_char": 9518
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Participants meeting criteria for methamphetamine dependence.",
     "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Thirty-one of the seropositive participants were also methamphetamine dependent (HIV+/METH+).",
+         "start_char": 11923,
+         "end_char": 12016
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "individuals",
+         "start_char": 1629,
+         "end_char": 1640
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "methamphetamine dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "methamphetamine dependent",
+         "start_char": 11977,
+         "end_char": 12002
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_meth_dependence"
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "recruited",
+         "start_char": 11586,
+         "end_char": 11595
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 59,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Twenty-eight individuals who were methamphetamine dependent but HIV seronegative",
+         "start_char": 12017,
+         "end_char": 12097
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 59,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Twenty-eight individuals who were methamphetamine dependent but HIV seronegative",
+         "start_char": 12017,
+         "end_char": 12097
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "At least 18 years old",
+     "Capacity to provide informed consent",
+     "Sufficient English proficiency to complete neuropsychological tests and self-report scales",
+     "Methamphetamine dependence meeting DSM-IV criteria"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "met the criteria for methamphetamine dependence as defined in the   Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition   (DSM-IV",
+         "start_char": 15067,
+         "end_char": 15214
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Medical, neurological, or severe psychiatric conditions unrelated to HIV disease or methamphetamine use",
+     "Seizure disorder",
+     "Closed head injury with loss of consciousness longer than 30 minutes",
+     "Central nervous system neoplasm",
+     "Opportunistic infection",
+     "Hepatitis C",
+     "Schizophrenia",
+     "Alcohol dependence in the past year",
+     "Drug abuse, including cocaine, in the past year",
+     "Drug dependence in the past five years other than methamphetamine dependence",
+     "WRAT Reading Scale score below 80",
+     "History of learning disability",
+     "MRI contraindication, including metal contraindication or claustrophobia"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Substance abuse outreach and rehabilitation programs in San Diego County; HIV-positive participants were recruited from HIV treatment centers and community organizations",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "substance abuse outreach and rehabilitation programs in San Diego County",
+         "start_char": 12131,
+         "end_char": 12203
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Methamphetamine dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "methamphetamine dependent",
+         "start_char": 11977,
+         "end_char": 12002
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "We interviewed potential participants for substance use in order to determine whether they met the criteria for methamphetamine dependence as defined in the   Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition   (DSM-IV;  American Psychiatric Association, 1994 ).",
+         "start_char": 14976,
+         "end_char": 15258
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Methamphetamine dependence was diagnosed according to DSM-IV criteria. Participants were not intoxicated at scanning and had not tested positive for methamphetamine or other drugs on the scan day.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "Mean education was 13.11 years; methamphetamine-dependent participants had significantly less education than nondependent participants.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "grp_methamphetamine_nondependent",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "non-dependent participants",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Although there was no significant main effect of HIV diagnosis or the interaction of HIV diagnosis with METH dependence on education, methamphetamine-dependent participants (HIV-/METH+ and HIV+/METH+) had significantly less education than non-dependent participants,   F  (1, 129) = 10.575,   p   = .001,   η   = 0.08.",
+         "start_char": 21172,
+         "end_char": 21490
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Participants without methamphetamine dependence.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "individuals",
+         "start_char": 1629,
+         "end_char": 1640
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "No methamphetamine dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "recruited",
+         "start_char": 11586,
+         "end_char": 11595
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 78,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 78,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "At least 18 years old",
+     "Capacity to provide informed consent",
+     "Sufficient English proficiency to complete neuropsychological tests and self-report scales",
+     "No methamphetamine dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Medical, neurological, or severe psychiatric conditions unrelated to HIV disease or methamphetamine use",
+     "Seizure disorder",
+     "Closed head injury with loss of consciousness longer than 30 minutes",
+     "Central nervous system neoplasm",
+     "Opportunistic infection",
+     "Hepatitis C",
+     "Schizophrenia",
+     "Alcohol dependence in the past year",
+     "Drug abuse, including cocaine, in the past year",
+     "Drug dependence in the past five years",
+     "WRAT Reading Scale score below 80",
+     "History of learning disability",
+     "MRI contraindication, including metal contraindication or claustrophobia"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Community advertisements and word-of-mouth from the same San Diego County communities as the patient groups",
+    "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
@@ -1091,21 +2549,10 @@
      "status": "not_applicable"
     }
    },
-   "sex_distribution": [],
-   "gender_distribution": [],
-   "handedness_distribution": [],
-   "race_distribution": [],
-   "ethnicity_distribution": [],
-   "is_healthy": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medical_condition": {
+   "population_characteristics": {
     "extraction_status": "extracted",
     "value": [
-     "HIV seronegative status"
+     "No methamphetamine dependence"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1115,9 +2562,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "HIV seronegative",
-         "start_char": 9599,
-         "end_char": 9615
+         "text": "not methamphetamine dependent",
+         "start_char": 12258,
+         "end_char": 12287
         }
        ]
       }
@@ -1125,15 +2572,19 @@
     }
    },
    "diagnostic_system": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "clinical_characteristics": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "No methamphetamine dependence; participants were either HIV seropositive or HIV seronegative.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "medications": {
@@ -1149,9 +2600,11 @@
     }
    },
    "education_summary": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Mean education was 14.37 years; nondependent participants had significantly more education than methamphetamine-dependent participants.",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
     }
    },
    "socioeconomic_status_summary": {
@@ -1160,12 +2613,295 @@
      "status": "not_applicable"
     }
    },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "diagnostic_instrument": [
-    "asm_hiv_test"
+    "asm_meth_dependence"
    ]
   }
  ],
+ "inference_settings": [
+  {
+   "local_id": "inf_fdr_q10",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "ROI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ROI",
+         "start_char": 860,
+         "end_char": 863
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "False Discovery Rate",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "For these analyses, we used the False Discovery Rate to adjust for multiple statistical tests across ROIs ( Benjamini and Hochberg, 1995 ) with q = 0.10.",
+         "start_char": 19252,
+         "end_char": 19405
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "across ROIs",
+         "start_char": 19346,
+         "end_char": 19357
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "search_volume": {
+    "extraction_status": "extracted",
+    "value": "34 ROIs",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Given 34 ROIs and our total sample size, for any member of a set of trending   p  -values (single test   p   < .05) to be considered significant after correction for multiple statistical tests, at least one member of the set needed to have an η  > 0.065, a medium effect size.",
+         "start_char": 19406,
+         "end_char": 19682
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.1,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "q = 0.10",
+         "start_char": 19396,
+         "end_char": 19404
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "extracted",
+    "value": 34,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Given 34 ROIs",
+         "start_char": 19406,
+         "end_char": 19419
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "language": [
+  "eng"
+ ],
  "measures": [
+  {
+   "local_id": "mea_cortical_thickness",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "cortical thickness, area and volume measures",
+         "start_char": 600,
+         "end_char": 644
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "cortical_thickness",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "cortical thickness",
+         "start_char": 64,
+         "end_char": 82
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "cortical thickness",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "cortical thickness",
+         "start_char": 64,
+         "end_char": 82
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "extracted",
+    "value": "mm",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "mm",
+         "start_char": 11880,
+         "end_char": 11882
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
   {
    "local_id": "mea_cortical_volume",
    "family": {
@@ -1179,9 +2915,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "cortical morphometry",
-         "start_char": 402,
-         "end_char": 422
+         "text": "cortical thickness, area and volume measures",
+         "start_char": 600,
+         "end_char": 644
         }
        ]
       }
@@ -1190,8 +2926,8 @@
    },
    "type": {
     "extraction_status": "extracted",
-    "value": "cortical volume",
-    "value_source": "reported",
+    "value": "gray_matter_volume",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1244,21 +2980,21 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_ancova",
+   "local_id": "mod_hiv_age_ancova",
    "model_family": {
     "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "reported",
+    "value": "glm",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "For each ROI, we performed a 2 × 2 analysis of covariance (ANCOVA) to investigate the association between HIV status (seropositive/seronegative), methamphetamine dependence (dependent/not) and their interaction with cortical area, volume and thickness.",
-         "start_char": 18500,
-         "end_char": 18752
+         "text": "Linear regression",
+         "start_char": 17740,
+         "end_char": 17757
         }
        ]
       }
@@ -1267,7 +3003,7 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "2 × 2 ANCOVA",
+    "value": "linear regression model with HIV status, age and their multiplicative interaction",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1276,27 +3012,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For each ROI, we performed a 2 × 2 analysis of covariance (ANCOVA)",
-         "start_char": 18500,
-         "end_char": 18566
+         "text": "we regressed cortical thickness onto HIV status (effects coded), age (mean centered), and their multiplicative interaction.",
+         "start_char": 19050,
+         "end_char": 19173
         }
        ]
       }
      ]
-    }
-   },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "HIV status, methamphetamine dependence, and their interaction were tested for each ROI, with age as a covariate; intracranial volume was additionally included as a covariate for cortical area and volume.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "stage": {
@@ -1310,9 +3032,154 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For each ROI, we performed a 2 × 2 analysis of covariance (ANCOVA) to investigate the association between HIV status (seropositive/seronegative), methamphetamine dependence (dependent/not) and their interaction with cortical area, volume and thickness.",
-         "start_char": 18500,
-         "end_char": 18752
+         "text": "age interactions",
+         "start_char": 19016,
+         "end_char": 19032
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_hiv_age_interaction",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "HIV status by age interaction",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "HIV status significantly interacting with age",
+           "start_char": 31148,
+           "end_char": 31193
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "HIV status significantly interacting with age",
+           "start_char": 31148,
+           "end_char": 31193
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "interaction_with": [
+      "trm_hiv_status"
+     ],
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "multiplicative interaction of HIV status and age",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "their multiplicative interaction",
+           "start_char": 19140,
+           "end_char": 19172
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "linear regression model",
+           "start_char": 31060,
+           "end_char": 31083
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "years",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age",
+           "start_char": 57,
+           "end_char": 60
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "inputs_from": [],
+   "hrf_model": {
+    "extraction_status": "extracted",
+    "value": "not applicable; morphometric measures do not model timeseries",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Age was mean-centered; HIV status was effect-coded; false discovery rate correction across ROIs used q=0.10.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "age (mean centered)",
+         "start_char": 19115,
+         "end_char": 19134
         }
        ]
       }
@@ -1334,7 +3201,7 @@
    "spatial_unit": {
     "extraction_status": "extracted",
     "value": "roi",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1342,9 +3209,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For each ROI",
-         "start_char": 18500,
-         "end_char": 18512
+         "text": "ROI",
+         "start_char": 860,
+         "end_char": 863
         }
        ]
       }
@@ -1353,11 +3220,73 @@
    },
    "preprocessing": [
     "prp_freesurfer"
-   ],
-   "inputs_from": [],
+   ]
+  },
+  {
+   "local_id": "mod_group_ancova",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "ancova",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "For each ROI, we performed a 2 × 2 analysis of covariance (ANCOVA) to investigate the association between HIV status (seropositive/seronegative), methamphetamine dependence (dependent/not) and their interaction with cortical area, volume and thickness.",
+         "start_char": 18500,
+         "end_char": 18752
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "2 × 2 analysis of covariance",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "For each ROI, we performed a 2 × 2 analysis of covariance (ANCOVA) to investigate the association between HIV status (seropositive/seronegative), methamphetamine dependence (dependent/not) and their interaction with cortical area, volume and thickness.",
+         "start_char": 18500,
+         "end_char": 18752
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "group",
+         "start_char": 1496,
+         "end_char": 1501
+        }
+       ]
+      }
+     ]
+    }
+   },
    "terms": [
     {
-     "local_id": "trm_hiv",
+     "local_id": "trm_hiv_status",
      "name": {
       "extraction_status": "extracted",
       "value": "HIV status",
@@ -1369,9 +3298,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "HIV status (seropositive/seronegative)",
-           "start_char": 18606,
-           "end_char": 18644
+           "text": "HIV status",
+           "start_char": 9293,
+           "end_char": 9303
           }
          ]
         }
@@ -1381,9 +3310,29 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "HIV status",
+           "start_char": 9293,
+           "end_char": 9303
+          }
+         ]
+        }
+       ]
       }
      },
      "levels": [
@@ -1399,8 +3348,8 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "seropositive",
-             "start_char": 1483,
+             "text": "HIV seropositive",
+             "start_char": 1479,
              "end_char": 1495
             }
            ]
@@ -1409,7 +3358,7 @@
         }
        },
        "groups": [
-        "grp_hiv_positive"
+        "grp_hiv_seropositive"
        ],
        "order": {
         "extraction_status": "extracted",
@@ -1422,9 +3371,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "HIV status (seropositive/seronegative)",
-             "start_char": 18606,
-             "end_char": 18644
+             "text": "HIV seropositive individuals",
+             "start_char": 1674,
+             "end_char": 1702
             }
            ]
           }
@@ -1438,46 +3387,75 @@
         "value": "HIV seronegative",
         "value_source": "reported",
         "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "seronegative",
-             "start_char": 9603,
-             "end_char": 9615
-            }
-           ]
-          }
-         ]
+         "status": "not_found"
         }
        },
        "groups": [
-        "grp_hiv_negative"
+        "grp_hiv_seronegative"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "methamphetamine dependence (dependent/not)",
-             "start_char": 18646,
-             "end_char": 18688
-            }
-           ]
-          }
-         ]
+         "status": "not_found"
         }
        }
       }
      ],
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "HIV diagnosis coded as seropositive versus seronegative.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_methamphetamine_dependence",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "methamphetamine dependence",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "methamphetamine dependence",
+           "start_char": 26,
+           "end_char": 52
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
      "variation_level": {
       "extraction_status": "extracted",
       "value": "between_subject",
@@ -1489,19 +3467,89 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "HIV status (seropositive/seronegative), methamphetamine dependence (dependent/not) and their interaction",
-           "start_char": 18606,
-           "end_char": 18710
+           "text": "methamphetamine-dependent and nondependent groups",
+           "start_char": 26431,
+           "end_char": 26480
           }
          ]
         }
        ]
       }
      },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "dependent",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "methamphetamine-dependent",
+             "start_char": 9480,
+             "end_char": 9505
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_methamphetamine_dependent"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "not dependent",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "non-dependent",
+             "start_char": 11666,
+             "end_char": 11679
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_methamphetamine_nondependent"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      }
+     ],
      "functional_form": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      },
      "unit": {
@@ -1511,12 +3559,79 @@
       }
      },
      "source_definition": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "Methamphetamine dependence coded as dependent versus not dependent according to DSM-IV criteria.",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      }
     }
+   ],
+   "inputs_from": [],
+   "hrf_model": {
+    "extraction_status": "extracted",
+    "value": "not applicable; morphometric measures do not model timeseries",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "2 × 2 ANCOVA with age as covariate for thickness and age plus intracranial volume as covariates for area and volume; false discovery rate correction across ROIs used q=0.10.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "age was used as a covariate in the ANCOVAs involving area, volume or thickness",
+         "start_char": 18300,
+         "end_char": 18378
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ROI",
+         "start_char": 860,
+         "end_char": 863
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_freesurfer"
    ]
   }
  ],
@@ -1525,10 +3640,22 @@
    "local_id": "prp_freesurfer",
    "description": {
     "extraction_status": "extracted",
-    "value": "Freesurfer processing for cortical reconstruction and regional morphometry.",
+    "value": "Freesurfer processing to derive cortical thickness, area and volume measures.",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Using Freesurfer v5.3.0, we removed extracranial signal; segregated gray matter, white matter, and cerebrospinal fluid compartments; corrected the B1 field bias; and reconstructed the cortical surface",
+         "start_char": 16258,
+         "end_char": 16458
+        }
+       ]
+      }
+     ]
     }
    },
    "software": {
@@ -1560,6 +3687,7 @@
      "segregated gray matter, white matter, and cerebrospinal fluid compartments",
      "corrected the B1 field bias",
      "reconstructed the cortical surface",
+     "visually inspected and manually edited as needed",
      "label each gyral region of interest (ROI) on the cortex using the Desikan-Killiany atlas"
     ],
     "value_source": "reported",
@@ -1570,8 +3698,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "we removed extracranial signal; segregated gray matter, white matter, and cerebrospinal fluid compartments; corrected the B1 field bias; and reconstructed the cortical surface",
-         "start_char": 16283,
+         "text": "removed extracranial signal; segregated gray matter, white matter, and cerebrospinal fluid compartments; corrected the B1 field bias; and reconstructed the cortical surface",
+         "start_char": 16286,
          "end_char": 16458
         }
        ]
@@ -1587,9 +3715,14 @@
    }
   }
  ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, N.I.H., Extramural",
+  "Research Support, Non-U.S. Gov't"
+ ],
  "tables": [
   {
-   "local_id": "t0005",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -1616,7 +3749,7 @@
    }
   },
   {
-   "local_id": "t0010",
+   "local_id": "tbltable2",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 2",
@@ -1648,7 +3781,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "21c344861afb9ccdee9bf70b491b24a09a91bc23a28955dca72aeab1af2d32a3",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -1874,189 +4007,5 @@
    }
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
- },
- "regions": [
-  {
-   "local_id": "reg_rostral_middle_frontal",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "rostral middle frontal gyrus",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "rostral middle frontal gyrus",
-         "start_char": 1043,
-         "end_char": 1071
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "Desikan-Killiany atlas",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Desikan-Killiany atlas",
-         "start_char": 677,
-         "end_char": 699
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "reg_inferior_parietal_lobe",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "inferior parietal lobe",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "inferior parietal lobe",
-         "start_char": 24963,
-         "end_char": 24985
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "Desikan-Killiany atlas",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Desikan-Killiany atlas",
-         "start_char": 677,
-         "end_char": 699
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "reg_superior_parietal_lobe",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "superior parietal lobe",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "superior parietal lobe",
-         "start_char": 1096,
-         "end_char": 1118
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "Desikan-Killiany atlas",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Desikan-Killiany atlas",
-         "start_char": 677,
-         "end_char": 699
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
- ],
- "study_type": [
-  "Journal Article",
-  "Research Support, N.I.H., Extramural",
-  "Research Support, Non-U.S. Gov't"
- ]
+ }
 }

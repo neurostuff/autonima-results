@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study examined associations between cigarette smoking measures and striatal nuclei volumes in a community-based sample of healthy older adults.",
-  "value_source": "generated",
+  "value": "This study explored the relationship between cigarette use and striatal nuclei volumes in a community-based sample of healthy individuals aged between 64 and 70 years.",
+  "value_source": "reported",
   "evidence": {
    "status": "present",
    "sets": [
@@ -10,9 +10,9 @@
      "source": "model_quote",
      "spans": [
       {
-       "text": "This study detected significant associations between brain volumes and measures of cigarette smoking.",
-       "start_char": 17322,
-       "end_char": 17423
+       "text": "In this study we explore the relationship between cigarette use and striatal nuclei volumes in a community-based sample of healthy individuals aged between 64 and 70 years.",
+       "start_char": 5455,
+       "end_char": 5627
       }
      ]
     }
@@ -22,7 +22,7 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "A community-based observational study using a randomly selected older cohort and a subsample undergoing MRI.",
+   "value": "A community-based, longitudinal cohort study using the older PATH Through Life cohort at the second wave of data collection.",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -31,9 +31,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "The study sample was drawn from the PATH Through Life Project designed to investigate the risk and protective factors for normal ageing, dementia and other neuropsychiatric disorder",
-        "start_char": 5868,
-        "end_char": 6049
+        "text": "A randomly selected subsample of 622 participants was offered a magnetic resonance imaging (MRI) scan",
+        "start_char": 7028,
+        "end_char": 7129
        }
       ]
      }
@@ -41,16 +41,14 @@
    }
   },
   "allocation": {
-   "extraction_status": "extracted",
-   "value": "not_applicable",
-   "value_source": "generated",
+   "extraction_status": "not_reported",
    "evidence": {
-    "status": "not_found"
+    "status": "not_applicable"
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "single_group",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -59,9 +57,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "a community-based sample",
-        "start_char": 5550,
-        "end_char": 5574
+        "text": "Participants were recruited randomly from the electoral roll",
+        "start_char": 6306,
+        "end_char": 6366
        }
       ]
      }
@@ -73,7 +71,19 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "The study was approved by the ethics committees of The Australian National University and The University of New South Wales.",
+        "start_char": 6507,
+        "end_char": 6631
+       }
+      ]
+     }
+    ]
    }
   },
   "arms": [],
@@ -84,18 +94,42 @@
    "local_id": "ana_packyears_nac",
    "name": {
     "extraction_status": "extracted",
-    "value": "Association between pack-years and left NAc volume",
-    "value_source": "generated",
+    "value": "lifetime use and left nucleus accumbens volume",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Among the striatal nuclei, significant associations with smoking measures were observed only for left hemisphere with smaller NAc and larger Put volumes associated with greater lifetime cigarette use.",
+         "start_char": 17644,
+         "end_char": 17844
+        }
+       ]
+      }
+     ]
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "The association between lifetime use of cigarettes and left NAc volume",
+    "value": "heavier cigarette consumption correlated with smaller NAc volume",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The association between lifetime use and NAc volume was negative, indicating that heavier cigarette consumption correlated with smaller NAc volume.",
+         "start_char": 15451,
+         "end_char": 15598
+        }
+       ]
+      }
+     ]
     }
    },
    "prespecification": {
@@ -106,18 +140,56 @@
      "status": "not_found"
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "smaller NAc and larger Put volumes associated with greater lifetime cigarette use"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Among the striatal nuclei, significant associations with smoking measures were observed only for left hemisphere with smaller NAc and larger Put volumes associated with greater lifetime cigarette use.",
+         "start_char": 17644,
+         "end_char": 17844
+        }
+       ]
+      }
+     ]
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "roi",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Results of regression analyses with smoking measures as dependent variables and Cau, Put, NAc volumes as predictors are presented separately for the left and right hemispheres ( Table 4 ).",
+         "start_char": 14874,
+         "end_char": 15062
+        }
+       ]
+      }
+     ]
     }
    },
+   "regions": [
+    "reg_left_nucleus_accumbens"
+   ],
+   "defines_regions": [],
    "measure": "mea_nac_volume",
    "groups": [
     {
-     "group": "grp_mri_sample",
+     "group": "grp_older_cohort",
      "n": {
       "extraction_status": "extracted",
       "value": 315,
@@ -147,9 +219,21 @@
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The association between lifetime use and NAc volume was negative, indicating that heavier cigarette consumption correlated with smaller NAc volume.",
+            "start_char": 15451,
+            "end_char": 15598
+           }
+          ]
+         }
+        ]
        }
       },
       "level": {
@@ -171,14 +255,28 @@
      "value": "cross_subject_regression",
      "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "We assessed associations between the cigarette use and whole-brain (TBV and TVV) or striatal nuclei volumetric measures by multiple regression while controlling for covariates (see Methods ).",
+          "start_char": 14130,
+          "end_char": 14321
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
      "family": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "beta",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      },
      "degrees_of_freedom_numerator": {
@@ -198,20 +296,29 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_regression_smoking_volume",
-   "inference_settings": "inf_p05_uncorrected",
    "acquisitions": [
-    "acq_structural_mri"
+    "acq_mri"
    ],
-   "interpretations": {
+   "model_estimation": "mod_regression",
+   "tables": [],
+   "model_representation_notes": {
     "extraction_status": "extracted",
-    "value": [
-     "After controlling for covariates, left NAc volume was significantly associated with lifetime use of cigarettes; the association was negative, indicating that heavier cigarette consumption correlated with smaller NAc volume.",
-     "Left hemispheric NAc volume was negatively associated with lifetime use of cigarettes."
-    ],
+    "value": "Regression models included age, sex, education, physical and mental health measures, intracranial volume and total brain volume as covariates.",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a Controlled for age, sex, education, physical and mental health measures, intracranial volume and total brain volume;",
+         "start_char": 15878,
+         "end_char": 15996
+        }
+       ]
+      }
+     ]
     }
    },
    "source_table_analysis": {
@@ -227,32 +334,50 @@
      "status": "not_applicable"
     }
    },
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "regions": [
-    "reg_left_nucleus_accumbens"
+   "assessments": [
+    "asm_smoking_history_interview"
    ]
   },
   {
    "local_id": "ana_packyears_put",
    "name": {
     "extraction_status": "extracted",
-    "value": "Association between pack-years and left Put volume",
-    "value_source": "generated",
+    "value": "lifetime use and left putamen volume",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Among the striatal nuclei, significant associations with smoking measures were observed only for left hemisphere with smaller NAc and larger Put volumes associated with greater lifetime cigarette use.",
+         "start_char": 17644,
+         "end_char": 17844
+        }
+       ]
+      }
+     ]
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "The association between lifetime use of cigarettes and left Put volume",
+    "value": "greater lifetime cigarette use was associated with higher left Put volume",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Larger left hemispheric Put volume was associated with greater lifetime cigarette use and a lower age of smoking initiation.",
+         "start_char": 18363,
+         "end_char": 18487
+        }
+       ]
+      }
+     ]
     }
    },
    "prespecification": {
@@ -263,18 +388,56 @@
      "status": "not_found"
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Larger left hemispheric Put volume was associated with greater lifetime cigarette use"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Larger left hemispheric Put volume was associated with greater lifetime cigarette use and a lower age of smoking initiation.",
+         "start_char": 18363,
+         "end_char": 18487
+        }
+       ]
+      }
+     ]
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "roi",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Results of regression analyses with smoking measures as dependent variables and Cau, Put, NAc volumes as predictors are presented separately for the left and right hemispheres ( Table 4 ).",
+         "start_char": 14874,
+         "end_char": 15062
+        }
+       ]
+      }
+     ]
     }
    },
+   "regions": [
+    "reg_left_putamen"
+   ],
+   "defines_regions": [],
    "measure": "mea_put_volume",
    "groups": [
     {
-     "group": "grp_mri_sample",
+     "group": "grp_older_cohort",
      "n": {
       "extraction_status": "extracted",
       "value": 315,
@@ -304,9 +467,21 @@
       "direction": {
        "extraction_status": "extracted",
        "value": "positive",
-       "value_source": "reported",
+       "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "In contrast, the association between lifetime use and Put volume was positive, indicating a correlation of greater use with higher Put volume.",
+            "start_char": 16248,
+            "end_char": 16390
+           }
+          ]
+         }
+        ]
        }
       },
       "level": {
@@ -328,14 +503,28 @@
      "value": "cross_subject_regression",
      "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "We assessed associations between the cigarette use and whole-brain (TBV and TVV) or striatal nuclei volumetric measures by multiple regression while controlling for covariates (see Methods ).",
+          "start_char": 14130,
+          "end_char": 14321
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
      "family": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "beta",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_applicable"
+       "status": "not_found"
       }
      },
      "degrees_of_freedom_numerator": {
@@ -355,197 +544,15 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_regression_smoking_volume",
-   "inference_settings": "inf_p05_uncorrected",
    "acquisitions": [
-    "acq_structural_mri"
+    "acq_mri"
    ],
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "The association between lifetime use and Put volume was positive, indicating a correlation of greater use with higher Put volume.",
-     "Larger left hemispheric Put volume was associated with greater lifetime cigarette use."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "source_table_analysis": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "coordinate_space": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
+   "model_estimation": "mod_regression",
+   "tables": [],
    "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "regions": [
-    "reg_left_putamen"
-   ]
-  },
-  {
-   "local_id": "ana_age_start_put",
-   "name": {
     "extraction_status": "extracted",
-    "value": "Association between age at smoking initiation and left Put volume",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "The association between age at smoking initiation and left Put volume among smokers",
+    "value": "Regression models included age, sex, education, physical and mental health measures, intracranial volume and total brain volume as covariates.",
     "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "prespecification": {
-    "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "measure": "mea_put_volume",
-   "groups": [
-    {
-     "group": "grp_smokers",
-     "n": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "effect": {
-    "cells": [
-     {
-      "term": "trm_age_smoking_start",
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
-      },
-      "level": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     }
-    ],
-    "kind": {
-     "extraction_status": "extracted",
-     "value": "cross_subject_regression",
-     "value_source": "generated",
-     "evidence": {
-      "status": "not_found"
-     }
-    },
-    "statistic": {
-     "family": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "degrees_of_freedom_numerator": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "degrees_of_freedom_denominator": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   },
-   "details": {
-    "details_type": "MassUnivariateDetails"
-   },
-   "model_estimation": "mod_regression_smoking_volume",
-   "inference_settings": "inf_p05_uncorrected",
-   "acquisitions": [
-    "acq_structural_mri"
-   ],
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "In smokers, larger left hemispheric Put volume was significantly associated with a lower age at smoking initiation.",
-     "A positive association was observed between left hemispheric Put volume and age at start of smoking, with larger Put volume associated with earlier smoking initiation."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "source_table_analysis": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "coordinate_space": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "regions": [
-    "reg_left_putamen"
-   ]
-  }
- ],
- "acquisitions": [
-  {
-   "local_id": "acq_structural_mri",
-   "acquisition_type": "MRI",
-   "modality": {
-    "extraction_status": "extracted",
-    "value": "sMRI",
-    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -553,16 +560,57 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "T1-weighted 3-D structural MRI images",
-         "start_char": 7950,
-         "end_char": 7987
+         "text": "a Controlled for age, sex, education, physical and mental health measures, intracranial volume and total brain volume;",
+         "start_char": 15878,
+         "end_char": 15996
         }
        ]
       }
      ]
     }
    },
-   "device": "dev_philips_acs_nt",
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "assessments": [
+    "asm_smoking_history_interview"
+   ]
+  }
+ ],
+ "acquisitions": [
+  {
+   "local_id": "acq_mri",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "sMRI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "T1-weighted 3-D structural MRI images were acquired in coronal plane",
+         "start_char": 7950,
+         "end_char": 8018
+        }
+       ]
+      }
+     ]
+    }
+   },
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 1.5,
@@ -574,9 +622,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MRI data were acquired on a 1.5 Tesla Gyroscan scanner",
+         "text": "MRI data were acquired on a 1.5 Tesla Gyroscan scanner (ACS-NT, Philips Medical Systems, Best, the Netherlands).",
          "start_char": 7837,
-         "end_char": 7891
+         "end_char": 7949
         }
        ]
       }
@@ -586,6 +634,26 @@
    "pulse_sequence_type": {
     "extraction_status": "extracted",
     "value": "Fast Field Echo (FFE)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "T1-weighted 3-D structural MRI images were acquired in coronal plane using Fast Field Echo (FFE) sequence.",
+         "start_char": 7950,
+         "end_char": 8056
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "mr_acquisition_type": {
+    "extraction_status": "extracted",
+    "value": "3-D",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -654,19 +722,7 @@
     ],
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "matrix size = 256 × 256, slices 160, and the field of view (FOV) 256 × 256 mm. Slices were contiguous with slice thickness of 1.5 mm.",
-         "start_char": 8134,
-         "end_char": 8267
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "number_of_volumes": {
@@ -675,17 +731,26 @@
      "status": "not_applicable"
     }
    },
+   "device": "dev_gyroscan_acsnt",
    "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    }
   }
  ],
  "devices": [
   {
-   "local_id": "dev_philips_acs_nt",
+   "local_id": "dev_gyroscan_acsnt",
    "manufacturer": {
     "extraction_status": "extracted",
     "value": "Philips Medical Systems",
@@ -708,18 +773,18 @@
    },
    "model": {
     "extraction_status": "extracted",
-    "value": "ACS-NT",
+    "value": "Gyroscan ACS-NT",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "MRI data were acquired on a 1.5 Tesla Gyroscan scanner (ACS-NT, Philips Medical Systems, Best, the Netherlands).",
-         "start_char": 7837,
-         "end_char": 7949
+         "text": "a 1.5 Tesla Gyroscan scanner (ACS-NT, Philips Medical Systems, Best, the Netherlands)",
+         "start_char": 7863,
+         "end_char": 7948
         }
        ]
       }
@@ -730,10 +795,30 @@
  ],
  "groups": [
   {
-   "local_id": "grp_mri_sample",
+   "local_id": "grp_older_cohort",
    "name": {
     "extraction_status": "extracted",
-    "value": "MRI investigation sample",
+    "value": "older PATH Through Life cohort MRI analysis sample",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the older cohort at the second wave of data collection",
+         "start_char": 6748,
+         "end_char": 6802
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Participants aged 64–70 years from the older PATH Through Life cohort at the second wave of data collection; 315 participants were available for the investigation after exclusions.",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -742,9 +827,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The sample for which MRI data was available (MRI+)",
-         "start_char": 7477,
-         "end_char": 7527
+         "text": "The present study was focused on the older cohort at the second wave of data collection, which included 2222 individuals aged 64–70 years.",
+         "start_char": 6715,
+         "end_char": 6853
         }
        ]
       }
@@ -756,39 +841,7 @@
     "value": "human",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "human",
-         "start_char": 1623,
-         "end_char": 1628
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "The MRI investigation sample comprised older PATH Through Life Project participants available after exclusions.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Of those 431 participants took part in the second wave of data collection and after exclusions for a history of stroke ( n = 8), cognitive impairments ( n = 12), and poor scan quality or missing data for the variables used in statistical analyses ( n = 96), 315 participants were available for this investigation.",
-         "start_char": 7163,
-         "end_char": 7476
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "acquired_count": {
@@ -811,10 +864,14 @@
      ]
     }
    },
-   "excluded_count": {
+   "exclusion_criteria": {
     "extraction_status": "extracted",
-    "value": 116,
-    "value_source": "generated",
+    "value": [
+     "history of stroke",
+     "cognitive impairments",
+     "poor scan quality or missing data for the variables used in statistical analyses"
+    ],
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -831,9 +888,9 @@
      ]
     }
    },
-   "is_healthy": {
+   "recruitment_method": {
     "extraction_status": "extracted",
-    "value": true,
+    "value": "randomly selected individuals who were residents of the city of Canberra and the adjacent town of Queanbeyan, Australia, recruited from the electoral roll",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -842,9 +899,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a community-based sample of healthy individuals aged between 64 and 70 years",
-         "start_char": 5550,
-         "end_char": 5626
+         "text": "Participants were recruited randomly from the electoral roll",
+         "start_char": 6306,
+         "end_char": 6366
         }
        ]
       }
@@ -862,9 +919,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "aged between 64 and 70 years",
-         "start_char": 5598,
-         "end_char": 5626
+         "text": "aged 64–70 years",
+         "start_char": 6836,
+         "end_char": 6852
         }
        ]
       }
@@ -882,9 +939,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "aged between 64 and 70 years",
-         "start_char": 5598,
-         "end_char": 5626
+         "text": "aged 64–70 years",
+         "start_char": 6836,
+         "end_char": 6852
         }
        ]
       }
@@ -902,174 +959,20 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "aged between 64 and 70 years",
-         "start_char": 5598,
-         "end_char": 5626
+         "text": "aged 64–70 years",
+         "start_char": 6836,
+         "end_char": 6852
         }
        ]
       }
      ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "randomly from the electoral roll",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Participants were recruited randomly from the electoral roll, which provides a good representative population sample because enrolment to vote is a legal requirement for all adult Australian citizens.",
-         "start_char": 6306,
-         "end_char": 6506
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "extracted",
-    "value": 622,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "A randomly selected subsample of 622 participants was offered a magnetic resonance imaging (MRI) scan, which 478 eventually completed.",
-         "start_char": 7028,
-         "end_char": 7162
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Older PATH Through Life Project cohort at the second wave of data collection",
-     "Aged 64–70 years",
-     "Completed MRI acquisition",
-     "No cognitive impairment",
-     "No history of stroke",
-     "Adequate scan quality and complete data for statistical analyses"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The present study was focused on the older cohort at the second wave of data collection",
-         "start_char": 6715,
-         "end_char": 6802
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "History of stroke",
-     "Cognitive impairment",
-     "Poor scan quality",
-     "Missing data for variables used in statistical analyses"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "exclusions for a history of stroke ( n = 8), cognitive impairments ( n = 12), and poor scan quality or missing data for the variables used in statistical analyses",
-         "start_char": 7247,
-         "end_char": 7409
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "Healthy individuals"
+     "healthy individuals"
     ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "healthy individuals",
-         "start_char": 5578,
-         "end_char": 5597
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Community-based healthy individuals aged 64–70 years; older cohort at the second wave of the PATH Through Life Project",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1087,109 +990,20 @@
      ]
     }
    },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "grp_smokers",
-   "name": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": "smokers",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "smokers",
-         "start_char": 1957,
-         "end_char": 1964
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
+    "value": "recruited",
     "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "human",
-         "start_char": 1623,
-         "end_char": 1628
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Participants who were currently smoking or had smoked regularly in the past.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "smokers (including current and ex-smokers)",
-         "start_char": 9271,
-         "end_char": 9313
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "cigarette smoking"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "cigarette smoking",
-         "start_char": 11,
-         "end_char": 28
+         "text": "Participants were recruited randomly from the electoral roll, which provides a good representative population sample because enrolment to vote is a legal requirement for all adult Australian citizens.",
+         "start_char": 6306,
+         "end_char": 6506
         }
        ]
       }
@@ -1209,69 +1023,57 @@
     }
    },
    "enrolled_count": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": 431,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Of those 431 participants took part in the second wave of data collection and after exclusions for a history of stroke ( n = 8), cognitive impairments ( n = 12), and poor scan quality or missing data for the variables used in statistical analyses ( n = 96), 315 participants were available for this investigation.",
+         "start_char": 7163,
+         "end_char": 7476
+        }
+       ]
+      }
+     ]
     }
    },
    "excluded_count": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": 116,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "after exclusions for a history of stroke ( n = 8), cognitive impairments ( n = 12), and poor scan quality or missing data for the variables used in statistical analyses ( n = 96)",
+         "start_char": 7241,
+         "end_char": 7419
+        }
+       ]
+      }
+     ]
     }
    },
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Current or former regular cigarette smokers"
+     "Age 64–70 years",
+     "No history of stroke",
+     "No cognitive impairment",
+     "Adequate MRI scan quality",
+     "Nonmissing data for variables used in statistical analyses"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "smokers (including current and ex-smokers)",
-         "start_char": 9271,
-         "end_char": 9313
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Randomly selected community-based participants recruited from the electoral roll in Canberra and the adjacent town of Queanbeyan, Australia, through the PATH Through Life Project",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Participants were recruited randomly from the electoral roll, which provides a good representative population sample because enrolment to vote is a legal requirement for all adult Australian citizens.",
-         "start_char": 6306,
-         "end_char": 6506
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "recruitment_dates": {
@@ -1292,55 +1094,19 @@
      "status": "not_applicable"
     }
    },
-   "age_minimum": {
-    "extraction_status": "extracted",
-    "value": 64,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "aged 64–70 years",
-         "start_char": 6836,
-         "end_char": 6852
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "extracted",
-    "value": 70,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "aged 64–70 years",
-         "start_char": 6836,
-         "end_char": 6852
-        }
-       ]
-      }
-     ]
-    }
-   },
    "age_median": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "age_unit": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": "years",
+    "value": [
+     "Community-based older adults",
+     "Non-smokers, current smokers, and ex-smokers",
+     "Smoking exposure characterized by pack-years, cigarettes per day, total years of smoking, and age at smoking initiation"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1349,29 +1115,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "aged 64–70 years",
-         "start_char": 6836,
-         "end_char": 6852
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "a community-based sample of healthy individuals aged between 64 and 70 years",
-         "start_char": 5550,
-         "end_char": 5626
+         "text": "Based on their smoking history participants were grouped as non-smokers (currently not smoking and never smoked regularly) or smokers (including current and ex-smokers).",
+         "start_char": 9145,
+         "end_char": 9314
         }
        ]
       }
@@ -1386,7 +1132,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Smokers included both current and ex-smokers; smoking exposure was characterized by pack-years, cigarettes per day, total years of smoking, and age at smoking initiation",
+    "value": "Healthy community-based individuals aged 64–70 years; participants with stroke or cognitive impairment were excluded.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1395,9 +1141,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "As both ex-smokers and current smokers were included in our study",
-         "start_char": 24861,
-         "end_char": 24926
+         "text": "a community-based sample of healthy individuals aged between 64 and 70 years",
+         "start_char": 5550,
+         "end_char": 5626
         }
        ]
       }
@@ -1427,229 +1173,73 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  },
-  {
-   "local_id": "grp_non_smokers",
-   "name": {
+   },
+   "sample_source_reference": {
     "extraction_status": "extracted",
-    "value": "non-smokers",
-    "value_source": "generated",
+    "value": "PATH Through Life Project (Jorm et al. 2004)",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The study sample was drawn from the PATH Through Life Project designed to investigate the risk and protective factors for normal ageing, dementia and other neuropsychiatric disorder ( Jorm et al . 2004 )",
+         "start_char": 5868,
+         "end_char": 6071
+        }
+       ]
+      }
+     ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Participants who were currently not smoking and had never smoked regularly.",
-    "value_source": "generated",
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
-   "species": {
+   "is_healthy": {
     "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
+    "value": true,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a community-based sample of healthy individuals aged between 64 and 70 years",
+         "start_char": 5550,
+         "end_char": 5626
+        }
+       ]
+      }
+     ]
     }
    },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Randomly selected community-based participants recruited from the electoral roll in Canberra and the adjacent town of Queanbeyan, Australia, through the PATH Through Life Project",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "extracted",
-    "value": 64.0,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "extracted",
-    "value": 70.0,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_unit": {
+   "age_unit_normalized": {
     "extraction_status": "extracted",
     "value": "years",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "aged 64–70 years",
+         "start_char": 6836,
+         "end_char": 6852
+        }
+       ]
+      }
+     ]
     }
    }
-  }
- ],
- "inference_settings": [
-  {
-   "local_id": "inf_p05_uncorrected",
-   "inference_level": {
-    "extraction_status": "extracted",
-    "value": "uncorrected P value",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Given the explanatory nature of this study and the controversy regarding correction for multiple comparisons ( Rothman 1990 ) we chose to report the uncorrected P values.",
-         "start_char": 26856,
-         "end_char": 27026
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "multiple_comparison_method": {
-    "extraction_status": "extracted",
-    "value": "none",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Given the explanatory nature of this study and the controversy regarding correction for multiple comparisons ( Rothman 1990 ) we chose to report the uncorrected P values.",
-         "start_char": 26856,
-         "end_char": 27026
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "height_threshold_value": {
-    "extraction_status": "extracted",
-    "value": 0.05,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The threshold of significance was set at P = 0.05.",
-         "start_char": 12486,
-         "end_char": 12536
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "height_threshold_type": {
-    "extraction_status": "extracted",
-    "value": "p",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The threshold of significance was set at P = 0.05.",
-         "start_char": 12486,
-         "end_char": 12536
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "cluster_extent_threshold": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clusterwise_threshold_value": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "correction_scope": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "search_volume": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "neighborhood_definition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "tfce_used": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "tfce_parameters": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "permutation_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "alpha_level": {
-    "extraction_status": "extracted",
-    "value": 0.05,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The threshold of significance was set at P = 0.05.",
-         "start_char": 12486,
-         "end_char": 12536
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "number_of_tests": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "correction_regions": [
-    "reg_left_nucleus_accumbens",
-    "reg_left_putamen"
-   ]
   }
  ],
  "measures": [
@@ -1666,9 +1256,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Among the striatal nuclei, significant associations with smoking measures were observed only for left hemisphere with smaller NAc",
-         "start_char": 17644,
-         "end_char": 17773
+         "text": "Volumetric segmentation was performed with the Freesurfer image analysis suite",
+         "start_char": 8291,
+         "end_char": 8369
         }
        ]
       }
@@ -1680,47 +1270,25 @@
     "value": "gray_matter_volume",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Among the striatal nuclei, significant associations with smoking measures were observed only for left hemisphere with smaller NAc",
-         "start_char": 17644,
-         "end_char": 17773
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "left nucleus accumbens volume",
+    "value": "NAc volume",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "nucleus accumbens volume",
+    "value": "uncorrected raw volume",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "NAc volume",
-         "start_char": 13220,
-         "end_char": 13230
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "unit": {
@@ -1743,9 +1311,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Among the striatal nuclei, significant associations with smoking measures were observed only for left hemisphere with smaller NAc and larger Put volumes",
-         "start_char": 17644,
-         "end_char": 17796
+         "text": "Volumetric segmentation was performed with the Freesurfer image analysis suite",
+         "start_char": 8291,
+         "end_char": 8369
         }
        ]
       }
@@ -1757,59 +1325,25 @@
     "value": "gray_matter_volume",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Among the striatal nuclei, significant associations with smoking measures were observed only for left hemisphere with smaller NAc and larger Put volumes",
-         "start_char": 17644,
-         "end_char": 17796
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "left putamen volume",
+    "value": "Put volume",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "left hemispheric Put volume",
-         "start_char": 16549,
-         "end_char": 16576
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "putamen volume",
+    "value": "uncorrected raw volume",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Put volume",
-         "start_char": 16302,
-         "end_char": 16312
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "unit": {
@@ -1822,19 +1356,11 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_regression_smoking_volume",
+   "local_id": "mod_regression",
    "model_family": {
     "extraction_status": "extracted",
-    "value": "robust_regression",
+    "value": "glm",
     "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "multiple regression of smoking measures and brain volumes",
-    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1845,6 +1371,26 @@
          "text": "Association of each of the continuous cigarette smoking measures (dependent variables) and whole-brain measures or striatal nuclei volumes (independent variables) were assessed by multiple regression while controlling for covariates (age and sex).",
          "start_char": 10541,
          "end_char": 10788
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "multiple regression",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "assessed by multiple regression",
+         "start_char": 10709,
+         "end_char": 10740
         }
        ]
       }
@@ -1862,9 +1408,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Association of each of the continuous cigarette smoking measures (dependent variables) and whole-brain measures or striatal nuclei volumes (independent variables) were assessed by multiple regression",
-         "start_char": 10541,
-         "end_char": 10740
+         "text": "Results of regression analyses with smoking measures as dependent variables and Cau, Put, NAc volumes as predictors are presented separately for the left and right hemispheres",
+         "start_char": 14874,
+         "end_char": 15049
         }
        ]
       }
@@ -1893,7 +1439,7 @@
    },
    "software": {
     "extraction_status": "extracted",
-    "value": "SPSS 18",
+    "value": "SPSS 18 (SPSS Inc., Chicago, IL, USA)",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1912,23 +1458,9 @@
     }
    },
    "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "striatal nuclei volumes",
-         "start_char": 4962,
-         "end_char": 4985
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "terms": [
@@ -1957,7 +1489,7 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
       }
@@ -1967,25 +1499,13 @@
       "value": "between_subject",
       "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "pack-years, CPD and total years of smoking were entered as continuous variables",
-           "start_char": 9702,
-           "end_char": 9781
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Lifetime cigarette use measured in pack-years.",
-      "value_source": "generated",
+      "value": "computed from average number of cigarettes smoked per day over the time smoked and age at which smoking started",
+      "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
@@ -1993,9 +1513,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "magnitude of lifetime use of cigarettes or pack-years",
-           "start_char": 13939,
-           "end_char": 13992
+           "text": "Average number of cigarettes smoked per day (CPD) over the time smoked and age at which smoking started were used to compute total years of smoking and pack-years.",
+           "start_char": 9315,
+           "end_char": 9478
           }
          ]
         }
@@ -2042,117 +1562,6 @@
        ]
       }
      }
-    },
-    {
-     "local_id": "trm_age_smoking_start",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "age at start of smoking",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age at start of smoking",
-           "start_char": 9557,
-           "end_char": 9580
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Four continuous smoking variables—pack-years, CPD, total years of smoking and age at start of smoking",
-           "start_char": 9479,
-           "end_char": 9580
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "years",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age at start of smoking",
-           "start_char": 9557,
-           "end_char": 9580
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Four continuous smoking variables—pack-years, CPD, total years of smoking and age at start of smoking",
-           "start_char": 9479,
-           "end_char": 9580
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Age at which smoking started, assessed for smokers only",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age at which smoking started",
-           "start_char": 9390,
-           "end_char": 9418
-          }
-         ]
-        }
-       ]
-      }
-     }
     }
    ],
    "hrf_model": {
@@ -2163,7 +1572,7 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Multiple regression conducted in SPSS 18; covariates were entered first, followed by predictors and interaction terms; nonsignificant predictors with P > 0.10 were progressively removed to generate reduced models; significance threshold P = 0.05",
+    "value": "Multiple regression conducted in SPSS 18; covariates included age, sex, education, physical and mental health measures, diabetes, hypertension, intracranial volume, total brain volume, and alcohol consumption as applicable.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2172,9 +1581,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "In regression analysis the covariates were entered in the model first, followed by the predictors and then the interactions terms.",
-         "start_char": 12172,
-         "end_char": 12302
+         "text": "Hence, in addition to age and sex, we included years of education, physical health [RAND-12 physical health scale ( Hays, Prince-Embury & Chen 1998 )], diabetes and hypertension status, and symptoms of anxiety and depression [Goldberg's scale ( Goldberg et al . 1988 )] as covariates.",
+         "start_char": 10982,
+         "end_char": 11266
         }
        ]
       }
@@ -2191,22 +1600,11 @@
    "local_id": "prp_freesurfer",
    "description": {
     "extraction_status": "extracted",
-    "value": "Volumetric segmentation and subcortical structure segmentation using the Freesurfer image analysis suite.",
+    "value": "Volumetric segmentation was performed with the Freesurfer image analysis suite.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Volumetric segmentation was performed with the Freesurfer image analysis suite",
-         "start_char": 8291,
-         "end_char": 8369
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "software": {
@@ -2235,13 +1633,25 @@
     "extraction_status": "extracted",
     "value": [
      "motion correction",
-     "removal of non-brain tissue using a hybrid watershed/surface deformation procedure",
+     "removal of non-brain tissue",
      "automated Talairach transformation",
-     "segmentation of subcortical structures"
+     "segmentation of the subcortical structures"
     ],
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "This processing includes motion correction, removal of non-brain tissue using a hybrid watershed/surface deformation procedure ( Ségonne et al . 2004 ), automated Talairach transformation, and segmentation of the subcortical structures",
+         "start_char": 8472,
+         "end_char": 8707
+        }
+       ]
+      }
+     ]
     }
    },
    "smoothing_fwhm_mm": {
@@ -2257,7 +1667,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "15ee326130b2356f1a499c7de40e4cd066c7a4e646a432b337db54d5aa4ba9c7",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2373,6 +1783,35 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
+ "assessments": [
+  {
+   "local_id": "asm_smoking_history_interview",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "smoking history interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Participants reported current and past cigarette use, average cigarettes per day, age at smoking initiation, and age at smoking cessation.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ],
  "regions": [
   {
    "local_id": "reg_left_nucleus_accumbens",
@@ -2395,14 +1834,6 @@
    "region_type": {
     "extraction_status": "extracted",
     "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Left nucleus accumbens region whose uncorrected raw volume was measured.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2434,19 +1865,14 @@
     "evidence": {
      "status": "not_found"
     }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Left putamen region whose uncorrected raw volume was measured.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
    }
   }
  ],
  "study_type": [
   "Journal Article",
   "Research Support, Non-U.S. Gov't"
+ ],
+ "language": [
+  "eng"
  ]
 }

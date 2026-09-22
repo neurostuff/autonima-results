@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "Voxel-based morphometry study comparing regional gray matter volume in smokers and non-smokers, including younger and established smoker cohorts.",
-  "value_source": "generated",
+  "value": "The study used voxel-based morphometry to compare regional gray matter volume in smokers and non-smokers, including younger and established smokers.",
+  "value_source": "reported",
   "evidence": {
    "status": "present",
    "sets": [
@@ -10,9 +10,9 @@
      "source": "model_quote",
      "spans": [
       {
-       "text": "The primary goal of this study was to investigate neural tissue volume in a large group of smokers and non-smokers",
-       "start_char": 508,
-       "end_char": 622
+       "text": "We used voxel-based morphometry to compare regional gray matter volume in 118 individuals",
+       "start_char": 695,
+       "end_char": 784
       }
      ]
     }
@@ -22,8 +22,8 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Cross-sectional observational comparison of smokers and non-smokers, with subgroup comparisons by age and smoking history.",
-   "value_source": "generated",
+   "value": "Cross-sectional observational study of smokers and non-smokers recruited at two sites, with age- and gender-matched comparisons.",
+   "value_source": "reported",
    "evidence": {
     "status": "present",
     "sets": [
@@ -31,9 +31,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "this cross-sectional study",
-        "start_char": 38283,
-        "end_char": 38309
+        "text": "The primary goal of this study was to investigate neural tissue volume in a large group of smokers and non-smokers",
+        "start_char": 508,
+        "end_char": 622
        }
       ]
      }
@@ -45,12 +45,24 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "not applicable",
+        "start_char": 12311,
+        "end_char": 12325
+       }
+      ]
+     }
+    ]
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -59,9 +71,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "younger smokers versus younger non-smokers",
-        "start_char": 14754,
-        "end_char": 14796
+        "text": "group-based analyses of the imaging data",
+        "start_char": 10825,
+        "end_char": 10865
        }
       ]
      }
@@ -73,9 +85,23 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "not applicable",
+        "start_char": 12311,
+        "end_char": 12325
+       }
+      ]
+     }
+    ]
    }
-  }
+  },
+  "arms": [],
+  "timepoints": []
  },
  "analyses": [
   {
@@ -134,8 +160,6 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
    "measure": "mea_gmv",
    "groups": [
     {
@@ -176,10 +200,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_all",
       "level": {
        "extraction_status": "extracted",
-       "value": "smokers",
+       "value": "Smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -190,33 +214,23 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-            "start_char": 20607,
-            "end_char": 20808
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_all",
       "level": {
        "extraction_status": "extracted",
-       "value": "non-smokers",
+       "value": "Non-smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -231,9 +245,11 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "non-smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      }
@@ -262,7 +278,7 @@
      "family": {
       "extraction_status": "extracted",
       "value": "t",
-      "value_source": "generated",
+      "value_source": "reported",
       "evidence": {
        "status": "not_found"
       }
@@ -287,11 +303,10 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "m_group",
+   "model_estimation": "mod_vbm_all",
    "inference_settings": "inf_vbm",
    "tables": [
-    "1907"
+    "tbl1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -314,10 +329,7 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "assessments": [
-    "asm_ftnd"
-   ]
+   }
   },
   {
    "local_id": "a_1907_2",
@@ -357,6 +369,16 @@
      ]
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Relative to controls, smokers had significantly higher gray matter volume in the left occipital cortex and the right lingual gyrus."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
@@ -365,8 +387,6 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
    "measure": "mea_gmv",
    "groups": [
     {
@@ -407,10 +427,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_all",
       "level": {
        "extraction_status": "extracted",
-       "value": "smokers",
+       "value": "Smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -425,17 +445,19 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_all",
       "level": {
        "extraction_status": "extracted",
-       "value": "non-smokers",
+       "value": "Non-smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -446,25 +468,15 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-            "start_char": 20607,
-            "end_char": 20808
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "non-smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      }
@@ -493,7 +505,7 @@
      "family": {
       "extraction_status": "extracted",
       "value": "t",
-      "value_source": "generated",
+      "value_source": "reported",
       "evidence": {
        "status": "not_found"
       }
@@ -518,25 +530,14 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "m_group",
+   "model_estimation": "mod_vbm_all",
    "inference_settings": "inf_vbm",
    "tables": [
-    "1907"
+    "tbl1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "1907#2",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Relative to controls, smokers had significantly higher gray matter volume in the left occipital cortex and the right lingual gyrus."
-    ],
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -555,10 +556,7 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "assessments": [
-    "asm_ftnd"
-   ]
+   }
   },
   {
    "local_id": "a_1908_1",
@@ -575,19 +573,7 @@
     "value": "The young smokers had significantly lower gray matter volume than the younger non-smokers.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The young smokers had significantly lower gray matter volume than the younger non-smokers in the left amygdala [ t = 6.03, cluster size = 601, P = 0.002, MNI (X,Y,Z): −21, 2, −18] and the left thalamus ( t = 5.75, cluster size = 234, P < 0.000, MNI: −4, −25, 1) ( Table 3 , Fig.",
-         "start_char": 18066,
-         "end_char": 18344
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "prespecification": {
@@ -610,6 +596,17 @@
      ]
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The young smokers had significantly lower gray matter volume than the younger non-smokers in the left amygdala",
+     "The young smokers had significantly lower gray matter volume than the younger non-smokers in the left thalamus"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
@@ -618,12 +615,10 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
    "measure": "mea_gmv",
    "groups": [
     {
-     "group": "grp_younger_smokers",
+     "group": "grp_young_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 30,
@@ -634,7 +629,7 @@
      }
     },
     {
-     "group": "grp_younger_nonsmokers",
+     "group": "grp_young_nonsmokers",
      "n": {
       "extraction_status": "extracted",
       "value": 29,
@@ -648,10 +643,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_young",
       "level": {
        "extraction_status": "extracted",
-       "value": "younger smokers",
+       "value": "Younger smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -662,33 +657,23 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-            "start_char": 20607,
-            "end_char": 20808
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "young smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_young",
       "level": {
        "extraction_status": "extracted",
-       "value": "younger non-smokers",
+       "value": "Younger non-smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -703,9 +688,11 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "younger non-smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      }
@@ -759,25 +746,14 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "m_group",
+   "model_estimation": "mod_vbm_young",
    "inference_settings": "inf_vbm",
    "tables": [
-    "1908"
+    "tbl2"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "1908#1",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "The young smokers had significantly lower gray matter volume than the younger non-smokers in the left amygdala and the left thalamus. There were no areas in which the younger smokers had significantly higher gray matter volume than the younger non-smokers."
-    ],
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -796,10 +772,7 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "assessments": [
-    "asm_ftnd"
-   ]
+   }
   },
   {
    "local_id": "a_1908_2",
@@ -813,22 +786,10 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "There were no areas in which the younger smokers had significantly higher gray matter volume than the younger non-smokers.",
+    "value": "Higher gray matter volume in younger smokers relative to younger non-smokers.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "There were no areas in which the younger smokers had significantly higher gray matter volume than the younger non-smokers.",
-         "start_char": 18351,
-         "end_char": 18473
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "prespecification": {
@@ -851,6 +812,16 @@
      ]
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "There were no areas in which the younger smokers had significantly higher gray matter volume than the younger non-smokers."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
@@ -859,12 +830,10 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
    "measure": "mea_gmv",
    "groups": [
     {
-     "group": "grp_younger_smokers",
+     "group": "grp_young_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 30,
@@ -875,7 +844,7 @@
      }
     },
     {
-     "group": "grp_younger_nonsmokers",
+     "group": "grp_young_nonsmokers",
      "n": {
       "extraction_status": "extracted",
       "value": 29,
@@ -889,10 +858,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_young",
       "level": {
        "extraction_status": "extracted",
-       "value": "younger smokers",
+       "value": "Younger smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -907,17 +876,19 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "young smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_young",
       "level": {
        "extraction_status": "extracted",
-       "value": "younger non-smokers",
+       "value": "Younger non-smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -928,25 +899,15 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-            "start_char": 20607,
-            "end_char": 20808
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "younger non-smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      }
@@ -1000,25 +961,14 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "m_group",
+   "model_estimation": "mod_vbm_young",
    "inference_settings": "inf_vbm",
    "tables": [
-    "1908"
+    "tbl2"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "1908#2",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "There were no areas in which the younger smokers had significantly higher gray matter volume than the younger non-smokers."
-    ],
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -1037,10 +987,7 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "assessments": [
-    "asm_ftnd"
-   ]
+   }
   },
   {
    "local_id": "a_1909_1",
@@ -1057,19 +1004,7 @@
     "value": "The established smokers had significantly lower gray matter volume than the non-smokers.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The established smokers had significantly lower gray matter volume than the non-smokers in the left insula/parahippocampal gyrus/pallidum ( t = 6.18, cluster size = 609, P < 0.001, MNI: −24, 3, −21).",
-         "start_char": 19773,
-         "end_char": 19972
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "prespecification": {
@@ -1092,6 +1027,16 @@
      ]
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The established smokers had significantly lower gray matter volume than the non-smokers in the left insula/parahippocampal gyrus/pallidum."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
@@ -1100,8 +1045,6 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
    "measure": "mea_gmv",
    "groups": [
     {
@@ -1130,10 +1073,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_established",
       "level": {
        "extraction_status": "extracted",
-       "value": "established smokers",
+       "value": "Established smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -1144,33 +1087,23 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-            "start_char": 20607,
-            "end_char": 20808
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "established smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_established",
       "level": {
        "extraction_status": "extracted",
-       "value": "non-smokers",
+       "value": "Non-smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -1185,9 +1118,11 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "non-smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      }
@@ -1241,25 +1176,14 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "m_group",
+   "model_estimation": "mod_vbm_established",
    "inference_settings": "inf_vbm",
    "tables": [
-    "1909"
+    "tbl3"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "1909#1",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "The established smokers had significantly lower gray matter volume than the non-smokers in the left insula/parahippocampal gyrus/pallidum. A large cluster in the right insula also had lower gray matter volume in established smokers, but it did not meet the predefined 100 voxel limit for cluster significance."
-    ],
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -1278,10 +1202,7 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "assessments": [
-    "asm_ftnd"
-   ]
+   }
   },
   {
    "local_id": "a_1909_2",
@@ -1295,8 +1216,8 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "The established smokers had significantly higher gray matter volume than the non-smokers in the Brodmann 18 area of the occipital cortex.",
-    "value_source": "generated",
+    "value": "Higher gray matter volume in established smokers relative to non-smokers.",
+    "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
@@ -1321,6 +1242,16 @@
      ]
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The established smokers also had significantly higher gray matter volume than the non-smokers in the Brodmann 18 area of the occipital cortex"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
@@ -1329,8 +1260,6 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
    "measure": "mea_gmv",
    "groups": [
     {
@@ -1359,10 +1288,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_established",
       "level": {
        "extraction_status": "extracted",
-       "value": "established smokers",
+       "value": "Established smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -1377,17 +1306,19 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "established smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_smoking_status_established",
       "level": {
        "extraction_status": "extracted",
-       "value": "non-smokers",
+       "value": "Non-smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -1398,25 +1329,15 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-            "start_char": 20607,
-            "end_char": 20808
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "non-smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      }
@@ -1470,25 +1391,14 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "m_group",
+   "model_estimation": "mod_vbm_established",
    "inference_settings": "inf_vbm",
    "tables": [
-    "1909"
+    "tbl3"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "1909#2",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "The established smokers had significantly higher gray matter volume than the non-smokers in the Brodmann 18 area of the occipital cortex."
-    ],
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -1507,51 +1417,24 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "assessments": [
-    "asm_ftnd"
-   ]
+   }
   },
   {
-   "local_id": "a_prose_4",
+   "local_id": "a_prose_1",
    "name": {
     "extraction_status": "extracted",
-    "value": "negative correlation between pack-years of smoking and tissue volume",
+    "value": "Young smokers lower gray matter volume in left amygdala",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-         "start_char": 20607,
-         "end_char": 20808
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
+    "value": "The young smokers had significantly lower gray matter volume than the younger non-smokers in the left amygdala.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-         "start_char": 20607,
-         "end_char": 20808
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "prespecification": {
@@ -1574,6 +1457,16 @@
      ]
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The young smokers had significantly lower gray matter volume than the younger non-smokers in the left amygdala"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
@@ -1582,8 +1475,654 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
+   "measure": "mea_gmv",
+   "groups": [
+    {
+     "group": "grp_young_smokers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 30,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "group": "grp_young_nonsmokers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 29,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_smoking_status_young",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "Younger smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "young smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     },
+     {
+      "term": "trm_smoking_status_young",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "Younger non-smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "younger non-smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "contrast",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "There were no significant differences between the contrast distribution or bias fields on the scans from the different sites.",
+          "start_char": 13204,
+          "end_char": 13329
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "model_estimation": "mod_vbm_young",
+   "inference_settings": "inf_vbm",
+   "source_table_analysis": {
+    "extraction_status": "extracted",
+    "value": "prose#1",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "MNI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "a_prose_2",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Established smokers lower gray matter volume in left insula/parahippocampal gyrus/pallidum",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "The established smokers had significantly lower gray matter volume than the non-smokers in the left insula/parahippocampal gyrus/pallidum.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Hippocampal and striatal gray matter volume are associated with a smoking cessation treatment outcome: results of an exploratory voxel-based morphometric analysis.",
+         "start_char": 46985,
+         "end_char": 47148
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The established smokers had significantly lower gray matter volume than the non-smokers in the left insula/parahippocampal gyrus/pallidum"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "measure": "mea_gmv",
+   "groups": [
+    {
+     "group": "grp_established_smokers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 28,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "group": "grp_established_nonsmokers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 31,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_smoking_status_established",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "Established smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "established smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     },
+     {
+      "term": "trm_smoking_status_established",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "Non-smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "non-smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "contrast",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "There were no significant differences between the contrast distribution or bias fields on the scans from the different sites.",
+          "start_char": 13204,
+          "end_char": 13329
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "model_estimation": "mod_vbm_established",
+   "inference_settings": "inf_vbm",
+   "source_table_analysis": {
+    "extraction_status": "extracted",
+    "value": "prose#2",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "MNI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "a_prose_3",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Established smokers lower gray matter volume in right insula",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "A large cluster in the right insula, nearly symmetric to the left insula cluster, also had lower gray matter volume in established smokers.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Hippocampal and striatal gray matter volume are associated with a smoking cessation treatment outcome: results of an exploratory voxel-based morphometric analysis.",
+         "start_char": 46985,
+         "end_char": 47148
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "A large cluster in the right insula, nearly symmetric to the left insula cluster, also had lower gray matter volume in established smokers, but it did not meet the predefined 100 voxel limit for cluster significance"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "measure": "mea_gmv",
+   "groups": [
+    {
+     "group": "grp_established_smokers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 28,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "group": "grp_established_nonsmokers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 31,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_smoking_status_established",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "Established smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "established smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     },
+     {
+      "term": "trm_smoking_status_established",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "Non-smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "non-smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "contrast",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "There were no significant differences between the contrast distribution or bias fields on the scans from the different sites.",
+          "start_char": 13204,
+          "end_char": 13329
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "model_estimation": "mod_vbm_established",
+   "inference_settings": "inf_vbm",
+   "source_table_analysis": {
+    "extraction_status": "extracted",
+    "value": "prose#3",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "MNI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "a_prose_4",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Negative correlation between pack-years of smoking and tissue volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
+         "start_char": 20607,
+         "end_char": 20808
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "There was a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC among the established smokers.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Hippocampal and striatal gray matter volume are associated with a smoking cessation treatment outcome: results of an exploratory voxel-based morphometric analysis.",
+         "start_char": 46985,
+         "end_char": 47148
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "measure": "mea_gmv",
    "groups": [
     {
@@ -1601,39 +2140,21 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_packyears",
+      "term": "trm_pack_years",
       "direction": {
        "extraction_status": "extracted",
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-            "start_char": 20607,
-            "end_char": 20808
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
-      "level": {
+      "label": {
        "extraction_status": "extracted",
        "value": "pack-years of smoking",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
        }
       }
      }
@@ -1675,22 +2196,11 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "m_group",
+   "model_estimation": "mod_vbm_packyears",
    "inference_settings": "inf_vbm",
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "prose#4",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "There was a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10) among the established smokers."
-    ],
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -1709,39 +2219,24 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "assessments": [
-    "asm_ftnd"
-   ]
+   }
   },
   {
    "local_id": "a_prose_5",
    "name": {
     "extraction_status": "extracted",
-    "value": "Established smokers versus younger smokers: Lower signal intensity",
-    "value_source": "generated",
+    "value": "Established smokers versus younger smokers",
+    "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "With age as a controlled factor in the model, the only region in which the established smokers had significantly lower gray matter volume than the younger smokers was the right insula/pallidum.",
+    "value": "With age as a controlled factor in the model, the established smokers had significantly lower gray matter volume than the younger smokers in the right insula/pallidum.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "With age as a controlled factor in the model, the only region in which the established smokers had significantly lower gray matter volume than the younger smokers was the right insula/pallidum ( t = 5.65, cluster size = 140, MNI: 38, −9, 7).",
-         "start_char": 21314,
-         "end_char": 21555
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "prespecification": {
@@ -1764,6 +2259,16 @@
      ]
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "the only region in which the established smokers had significantly lower gray matter volume than the younger smokers was the right insula/pallidum"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
@@ -1772,8 +2277,6 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
    "measure": "mea_gmv",
    "groups": [
     {
@@ -1788,7 +2291,7 @@
      }
     },
     {
-     "group": "grp_younger_smokers",
+     "group": "grp_young_smokers",
      "n": {
       "extraction_status": "extracted",
       "value": 30,
@@ -1802,10 +2305,10 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_age_group",
       "level": {
        "extraction_status": "extracted",
-       "value": "established smokers",
+       "value": "Established smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -1816,33 +2319,23 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC (Brodmann area 10; −7, 37, 3; cluster size = 122) among the established smokers.",
-            "start_char": 20607,
-            "end_char": 20808
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "established smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_age_group",
       "level": {
        "extraction_status": "extracted",
-       "value": "younger smokers",
+       "value": "Younger smokers",
        "value_source": "reported",
        "evidence": {
         "status": "not_found"
@@ -1857,9 +2350,11 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "younger smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "not_found"
        }
       }
      }
@@ -1913,22 +2408,11 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "m_group",
+   "model_estimation": "mod_vbm_age_group",
    "inference_settings": "inf_vbm",
    "source_table_analysis": {
     "extraction_status": "extracted",
     "value": "prose#5",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "There were no regions in which the younger smokers had significantly lower gray matter than the established smokers. With age as a controlled factor in the model, the only region in which the established smokers had significantly lower gray matter volume than the younger smokers was the right insula/pallidum."
-    ],
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -1947,10 +2431,7 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "assessments": [
-    "asm_ftnd"
-   ]
+   }
   }
  ],
  "acquisitions": [
@@ -1960,6 +2441,26 @@
    "modality": {
     "extraction_status": "extracted",
     "value": "sMRI",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "High-resolution T1-weighted anatomical images were acquired for each participant on a 3T Siemens TIM Trio MRI scanner",
+         "start_char": 12699,
+         "end_char": 12816
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1968,21 +2469,16 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "High-resolution T1-weighted anatomical images were acquired",
-         "start_char": 12699,
-         "end_char": 12758
+         "text": "full brain and cerebellar coverage",
+         "start_char": 12942,
+         "end_char": 12976
         }
        ]
       }
      ]
     }
    },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
+   "device": "dev_siemens_tim_trio",
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3,
@@ -1994,9 +2490,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "on a 3T Siemens TIM Trio MRI scanner",
-         "start_char": 12780,
-         "end_char": 12816
+         "text": "3T",
+         "start_char": 12785,
+         "end_char": 12787
         }
        ]
       }
@@ -2004,15 +2500,23 @@
     }
    },
    "pulse_sequence_type": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "MPRAGE",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "mr_acquisition_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Equivalent magnetic resonance imaging (MRI) scanners and MPRAGE image acquisition parameters were used at both sites.",
+         "start_char": 8014,
+         "end_char": 8131
+        }
+       ]
+      }
+     ]
     }
    },
    "repetition_time_seconds": {
@@ -2081,22 +2585,20 @@
      ]
     }
    },
-   "number_of_volumes": {
+   "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "device": "dev_siemens_tim_trio"
-  }
- ],
- "assessments": [
+   }
+  },
   {
-   "local_id": "asm_ftnd",
-   "name": {
+   "local_id": "acq_mri",
+   "acquisition_type": "MRI",
+   "modality": {
     "extraction_status": "extracted",
-    "value": "FTND",
-    "value_source": "reported",
+    "value": "sMRI",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2104,19 +2606,33 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Nicotine dependence was assessed in the smokers using the FTND",
-         "start_char": 9509,
-         "end_char": 9571
+         "text": "High-resolution T1-weighted anatomical images were acquired for each participant on a 3T Siemens TIM Trio MRI scanner",
+         "start_char": 12699,
+         "end_char": 12816
         }
        ]
       }
      ]
     }
    },
-   "description": {
+   "device": "dev_siemens_tim_trio",
+   "brain_coverage": {
     "extraction_status": "extracted",
-    "value": "Assessment of nicotine dependence in smokers.",
+    "value": "whole_brain",
     "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ],
+ "assessments": [
+  {
+   "local_id": "asm_ftnd",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Fagerstrom Test of Nicotine Dependence",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2147,6 +2663,152 @@
          "text": "The Fagerström Test for Nicotine Dependence: a revision of the Fagerström Tolerance Questionnaire.",
          "start_char": 48479,
          "end_char": 48577
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Fagerstrom Test of Nicotine Dependence administered to smokers to establish nicotine dependence and characterize nicotine-dependence severity; mean scores were 4.25 in younger smokers and 4.85 in established smokers.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Nicotine dependence was assessed in the smokers using the FTND ( Fagerstrom 1978 ; Heatherton et al . 1991 ).",
+         "start_char": 9509,
+         "end_char": 9618
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_bdi",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Beck Depression Inventory",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Beck Depression Inventory",
+         "start_char": 9864,
+         "end_char": 9889
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Beck Depression Inventory administered to all participants as a measure of depressive symptoms.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All participants were also given the Beck Depression Inventory",
+         "start_char": 9827,
+         "end_char": 9889
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "Clinical scale",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All participants were also given the Beck Depression Inventory",
+         "start_char": 9827,
+         "end_char": 9889
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_bsi",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Brief Symptoms Inventory",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All participants were also given the Beck Depression Inventory ( Beck, Steer & Brown 1996 ), and the Brief Symptoms Inventory ( Piersma, Reaume & Boes 1994 ).",
+         "start_char": 9827,
+         "end_char": 9985
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Brief Symptoms Inventory administered to all participants to assess psychiatric symptoms.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All participants were also given the Beck Depression Inventory ( Beck, Steer & Brown 1996 ), and the Brief Symptoms Inventory ( Piersma, Reaume & Boes 1994 ).",
+         "start_char": 9827,
+         "end_char": 9985
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "Clinical questionnaire",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the Brief Symptoms Inventory",
+         "start_char": 9924,
+         "end_char": 9952
         }
        ]
       }
@@ -2243,18 +2905,10 @@
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "nicotine dependence"
+     "Nicotine dependence"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2264,18 +2918,55 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "all smokers had to meet the criteria for dependence",
-         "start_char": 9650,
-         "end_char": 9701
+         "text": "Nicotine dependence was assessed in the smokers",
+         "start_char": 9509,
+         "end_char": 9556
         }
        ]
       }
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_ftnd"
-   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These individuals were recruited through various sources including posted flyers, newspaper ads and Internet advertisement.",
+         "start_char": 7253,
+         "end_char": 7376
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Participants were excluded for both current or a lifetime history of substance or alcohol dependence (other than nicotine for the smokers)",
+         "start_char": 9079,
+         "end_char": 9217
+        }
+       ]
+      }
+     ]
+    }
+   },
    "description": {
     "extraction_status": "extracted",
     "value": "Nicotine-dependent cigarette smokers, compared with age- and gender-matched non-smokers in voxel-based morphometry analyses.",
@@ -2287,9 +2978,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The primary goal of this study was to investigate neural tissue volume in a large group of smokers and non-smokers",
-         "start_char": 508,
-         "end_char": 622
+         "text": "all smokers had to meet the criteria for dependence",
+         "start_char": 9650,
+         "end_char": 9701
         }
        ]
       }
@@ -2371,9 +3062,8 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Age 20–49 years in the final study sample",
-     "Met criteria for nicotine dependence on the Fagerström Test of Nicotine Dependence",
-     "Current cigarette smokers",
+     "Met criteria for nicotine dependence on the FTND",
+     "Currently smoked cigarettes",
      "No current use of non-cigarette tobacco products, nicotine replacement therapy, bupropion, or varenicline"
     ],
     "value_source": "reported",
@@ -2400,13 +3090,14 @@
      "Current substance abuse other than nicotine",
      "Current psychiatric condition",
      "Medical illness affecting brain vasculature or structure",
-     "Use of psychoactive medication",
+     "Psychoactive medication",
      "Head trauma",
      "Neurologic or psychiatric diagnosis",
      "Migraine headaches",
-     "MRI contraindications",
-     "Current pregnancy or intention to become pregnant",
-     "Ghosting artifacts on MRI"
+     "MRI-incompatible metal",
+     "Claustrophobia",
+     "Pregnancy or intent to become pregnant",
+     "Ghosting artifacts"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2416,9 +3107,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants were excluded for both current or a lifetime history of substance or alcohol dependence (other than nicotine for the smokers), current substance abuse (other than nicotine for the smokers), any other current psychiatric condition, a history or present medical illness known to effect brain vasculature or structure",
+         "text": "Participants were excluded for both current or a lifetime history of substance or alcohol dependence (other than nicotine for the smokers), current substance abuse (other than nicotine for the smokers), any other current psychiatric condition, a history or present medical illness known to effect brain vasculature or structure (e.g. diabetes, stroke, traumatic brain injury, hypertension), or the use of psychoactive medication.",
          "start_char": 9079,
-         "end_char": 9406
+         "end_char": 9508
         }
        ]
       }
@@ -2453,14 +3144,12 @@
    },
    "age_mean": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_standard_deviation": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -2531,15 +3220,11 @@
      ]
     }
    },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": "All smokers met criteria for nicotine dependence; younger smokers had smoked less than 10 years and established smokers more than 10 years.",
+    "value": [
+     "Nicotine-dependent cigarette smokers"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2548,9 +3233,35 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "all smokers had to meet the criteria for dependence",
-         "start_char": 9650,
-         "end_char": 9701
+         "text": "Nicotine dependence was assessed in the smokers",
+         "start_char": 9509,
+         "end_char": 9556
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "All smokers met criteria for nicotine dependence; smoking variables included cigarettes per day, FTND score, years smoked, and pack-years.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "There were no significant differences between the younger smokers and the established smokers on (1) the number of cigarettes smoked per day",
+         "start_char": 11518,
+         "end_char": 11658
         }
        ]
       }
@@ -2567,7 +3278,7 @@
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "Not using psychoactive medication, nicotine replacement therapy, bupropion, or varenicline.",
+    "value": "Not taking psychoactive medication, nicotine replacement therapy, bupropion, or varenicline.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2576,9 +3287,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "could not currently be using any non-cigarette tobacco products, nicotine replacement therapy, bupropion or varenicline",
-         "start_char": 9706,
-         "end_char": 9825
+         "text": "or the use of psychoactive medication",
+         "start_char": 9470,
+         "end_char": 9507
         }
        ]
       }
@@ -2587,7 +3298,6 @@
    },
    "education_summary": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -2597,7 +3307,22 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_ftnd"
+   ]
   },
   {
    "local_id": "grp_nonsmokers",
@@ -2641,17 +3366,9 @@
      ]
     }
    },
-   "is_healthy": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Non-smokers serving as age- and gender-matched controls for the smoker groups.",
+    "value": "recruited",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2660,13 +3377,41 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The non-smokers were not excluded if they had fewer than 10 lifetime uses of cigarettes.",
-         "start_char": 10103,
-         "end_char": 10191
+         "text": "These individuals were recruited through various sources including posted flyers, newspaper ads and Internet advertisement.",
+         "start_char": 7253,
+         "end_char": 7376
         }
        ]
       }
      ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All non-smokers had to deny a history of regular cigarette use, but otherwise meet the same criteria as the smokers.",
+         "start_char": 9986,
+         "end_char": 10102
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Non-smokers serving as age- and gender-matched comparison participants.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "approached_count": {
@@ -2692,9 +3437,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "60 non-smokers",
-         "start_char": 7206,
-         "end_char": 7220
+         "text": "Data was collected from a total of 122 individuals (62 smokers, 60 non-smokers)",
+         "start_char": 7142,
+         "end_char": 7221
         }
        ]
       }
@@ -2712,9 +3457,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "60 non-smokers",
-         "start_char": 7206,
-         "end_char": 7220
+         "text": "There was no difference in age ( t = 1.32, P = .19), gender (χ 2 = 3.13, P = .08) or race (χ 2 = 0.34, P = 0.56) between the smokers and non-smokers.",
+         "start_char": 10192,
+         "end_char": 10341
         }
        ]
       }
@@ -2726,26 +3471,13 @@
     "value": 0,
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The imaging data from four individuals (all smokers) were discarded because of ghosting artifacts.",
-         "start_char": 7915,
-         "end_char": 8013
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
      "Denied a history of regular cigarette use",
-     "Fewer than 10 lifetime cigarette uses permitted",
      "Met the same general eligibility criteria as smokers"
     ],
     "value_source": "reported",
@@ -2768,14 +3500,17 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
+     "Current or lifetime substance or alcohol dependence",
+     "Current substance abuse",
+     "Current psychiatric condition",
+     "Medical illness affecting brain vasculature or structure",
+     "Psychoactive medication",
      "Head trauma",
      "Neurologic or psychiatric diagnosis",
      "Migraine headaches",
-     "MRI contraindications",
-     "Current pregnancy or intention to become pregnant",
-     "Substance or alcohol dependence or abuse",
-     "Medical illness affecting brain vasculature or structure",
-     "Use of psychoactive medication"
+     "MRI-incompatible metal",
+     "Claustrophobia",
+     "Pregnancy or intent to become pregnant"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2785,9 +3520,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants were excluded for both current or a lifetime history of substance or alcohol dependence (other than nicotine for the smokers), current substance abuse (other than nicotine for the smokers), any other current psychiatric condition, a history or present medical illness known to effect brain vasculature or structure",
+         "text": "Participants were excluded for both current or a lifetime history of substance or alcohol dependence (other than nicotine for the smokers), current substance abuse (other than nicotine for the smokers), any other current psychiatric condition, a history or present medical illness known to effect brain vasculature or structure (e.g. diabetes, stroke, traumatic brain injury, hypertension), or the use of psychoactive medication.",
          "start_char": 9079,
-         "end_char": 9406
+         "end_char": 9508
         }
        ]
       }
@@ -2822,14 +3557,12 @@
    },
    "age_mean": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_standard_deviation": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -2900,6 +3633,28 @@
      ]
     }
    },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Non-smokers; fewer than 10 lifetime cigarette uses permitted"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The non-smokers were not excluded if they had fewer than 10 lifetime uses of cigarettes.",
+         "start_char": 10103,
+         "end_char": 10191
+        }
+       ]
+      }
+     ]
+    }
+   },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [],
@@ -2915,23 +3670,9 @@
     }
    },
    "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Non-smoking control participants without regular cigarette use.",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All non-smokers had to deny a history of regular cigarette use",
-         "start_char": 9986,
-         "end_char": 10048
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "medications": {
@@ -2950,7 +3691,6 @@
    },
    "education_summary": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -2960,10 +3700,22 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
   },
   {
-   "local_id": "grp_younger_smokers",
+   "local_id": "grp_young_smokers",
    "name": {
     "extraction_status": "extracted",
     "value": "younger smokers",
@@ -3004,18 +3756,10 @@
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "nicotine dependence"
+     "Nicotine dependence"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3025,152 +3769,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "all smokers had to meet the criteria for dependence",
-         "start_char": 9650,
-         "end_char": 9701
+         "text": "All of the smokers in the sample between the ages of 20 and 29 met the criteria for nicotine dependence.",
+         "start_char": 23449,
+         "end_char": 23553
         }
        ]
       }
      ]
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_ftnd"
-   ],
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Younger nicotine-dependent smokers aged 20–29 years with less than 10 years of smoking history.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "smokers ( n = 30; 20–29 years old with a smoking history of less than 10 years)",
-         "start_char": 11096,
-         "end_char": 11175
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 30,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "smokers ( n = 30; 20–29 years old with a smoking history of less than 10 years)",
-         "start_char": 11096,
-         "end_char": 11175
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 30,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "smokers ( n = 30; 20–29 years old with a smoking history of less than 10 years)",
-         "start_char": 11096,
-         "end_char": 11175
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "extracted",
-    "value": 0,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Age 20–29 years",
-     "Nicotine dependence",
-     "Smoking history less than 10 years"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "20–29 years old with a smoking history of less than 10 years",
-         "start_char": 11114,
-         "end_char": 11174
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "age_minimum": {
@@ -3213,16 +3818,10 @@
      ]
     }
    },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_unit": {
     "extraction_status": "extracted",
     "value": "years",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3239,15 +3838,166 @@
      ]
     }
    },
-   "diagnostic_system": {
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These individuals were recruited through various sources including posted flyers, newspaper ads and Internet advertisement.",
+         "start_char": 7253,
+         "end_char": 7376
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All of the smokers in the sample between the ages of 20 and 29 met the criteria for nicotine dependence.",
+         "start_char": 23449,
+         "end_char": 23553
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Nicotine-dependent smokers aged 20–29 years with fewer than 10 years of smoking history.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "clinical_characteristics": {
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
     "extraction_status": "extracted",
-    "value": "Mean smoking duration 6.6 years; mean cigarettes per day 15.25; mean FTND 4.25; mean age of regular smoking initiation 16.23 years.",
+    "value": 30,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "smokers ( n = 30; 20–29 years old with a smoking history of less than 10 years)",
+         "start_char": 11096,
+         "end_char": 11175
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 30,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Age 20–29 years",
+     "Smoking history less than 10 years",
+     "Met nicotine-dependence criteria"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "smokers ( n = 30; 20–29 years old with a smoking history of less than 10 years)",
+         "start_char": 11096,
+         "end_char": 11175
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Nicotine-dependent young adult cigarette smokers",
+     "Average smoking duration 6.6 years"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3265,6 +4015,32 @@
      ]
     }
    },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Mean cigarettes per day 15.25; mean FTND score 4.25; mean age of regular smoking initiation 16.23 years.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "15.25 for the younger smokers",
+         "start_char": 11660,
+         "end_char": 11689
+        }
+       ]
+      }
+     ]
+    }
+   },
    "medications": {
     "extraction_status": "extracted",
     "value": [],
@@ -3274,28 +4050,13 @@
     }
    },
    "medication_status": {
-    "extraction_status": "extracted",
-    "value": "Not taking psychoactive medication, nicotine replacement therapy, bupropion, or varenicline.",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "could not currently be using any non-cigarette tobacco products, nicotine replacement therapy, bupropion or varenicline",
-         "start_char": 9706,
-         "end_char": 9825
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "education_summary": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -3305,10 +4066,25 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_ftnd"
+   ]
   },
   {
-   "local_id": "grp_younger_nonsmokers",
+   "local_id": "grp_young_nonsmokers",
    "name": {
     "extraction_status": "extracted",
     "value": "younger non-smokers",
@@ -3349,148 +4125,6 @@
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Younger non-smokers aged 20–29 years serving as age-matched controls for younger smokers.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "non-smokers ( n = 29)",
-         "start_char": 11073,
-         "end_char": 11094
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 29,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "non-smokers ( n = 29)",
-         "start_char": 11073,
-         "end_char": 11094
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 29,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "non-smokers ( n = 29)",
-         "start_char": 11073,
-         "end_char": 11094
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Age 20–29 years",
-     "Denied a history of regular cigarette use",
-     "Fewer than 10 lifetime cigarette uses permitted"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All non-smokers had to deny a history of regular cigarette use",
-         "start_char": 9986,
-         "end_char": 10048
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_minimum": {
     "extraction_status": "extracted",
     "value": 20,
@@ -3531,16 +4165,10 @@
      ]
     }
    },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_unit": {
     "extraction_status": "extracted",
     "value": "years",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3555,6 +4183,169 @@
        ]
       }
      ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These individuals were recruited through various sources including posted flyers, newspaper ads and Internet advertisement.",
+         "start_char": 7253,
+         "end_char": 7376
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The non-smokers were not excluded if they had fewer than 10 lifetime uses of cigarettes.",
+         "start_char": 10103,
+         "end_char": 10191
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Younger non-smokers aged 20–29 years serving as the comparison group for younger smokers.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 29,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "non-smokers ( n = 29)",
+         "start_char": 11073,
+         "end_char": 11094
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 29,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Age 20–29 years",
+     "Denied a history of regular cigarette use"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the younger non-smokers",
+         "start_char": 18132,
+         "end_char": 18155
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Younger non-smokers"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "medical_condition": {
@@ -3572,11 +4363,9 @@
     }
    },
    "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Non-smoking younger controls.",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "medications": {
@@ -3595,12 +4384,23 @@
    },
    "education_summary": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -3620,9 +4420,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "established individuals",
-         "start_char": 11193,
-         "end_char": 11216
+         "text": "established smokers",
+         "start_char": 67,
+         "end_char": 86
         }
        ]
       }
@@ -3643,6 +4443,108 @@
          "text": "individuals",
          "start_char": 773,
          "end_char": 784
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Nicotine dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All of the smokers in the sample between the ages of 20 and 29 met the criteria for nicotine dependence.",
+         "start_char": 23449,
+         "end_char": 23553
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "extracted",
+    "value": 35,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "35–49",
+         "start_char": 11280,
+         "end_char": 11285
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "extracted",
+    "value": 49,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "35–49",
+         "start_char": 11280,
+         "end_char": 11285
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "years",
+         "start_char": 1339,
+         "end_char": 1344
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These individuals were recruited through various sources including posted flyers, newspaper ads and Internet advertisement.",
+         "start_char": 7253,
+         "end_char": 7376
         }
        ]
       }
@@ -3654,52 +4556,27 @@
     "value": false,
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "nicotine dependence"
-    ],
-    "value_source": "reported",
-    "evidence": {
      "status": "present",
      "sets": [
       {
        "source": "model_quote",
        "spans": [
         {
-         "text": "all smokers had to meet the criteria for dependence",
-         "start_char": 9650,
-         "end_char": 9701
+         "text": "Participants were excluded for both current or a lifetime history of substance or alcohol dependence (other than nicotine for the smokers)",
+         "start_char": 9079,
+         "end_char": 9217
         }
        ]
       }
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_ftnd"
-   ],
    "description": {
     "extraction_status": "extracted",
-    "value": "Established nicotine-dependent smokers aged 35–49 years with more than 10 years of smoking history.",
+    "value": "Nicotine-dependent established smokers aged 35–49 years with more than 10 years of smoking history.",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "established smokers ( n = 28; 35–49 with a smoking history of more than 10 years)",
-         "start_char": 11250,
-         "end_char": 11331
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "approached_count": {
@@ -3739,19 +4616,7 @@
     "value": 28,
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "established smokers ( n = 28; 35–49 with a smoking history of more than 10 years)",
-         "start_char": 11250,
-         "end_char": 11331
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "excluded_count": {
@@ -3764,8 +4629,8 @@
     "extraction_status": "extracted",
     "value": [
      "Age 35–49 years",
-     "Nicotine dependence",
-     "Smoking history more than 10 years"
+     "Smoking history more than 10 years",
+     "Met nicotine-dependence criteria"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3775,9 +4640,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "35–49 with a smoking history of more than 10 years",
-         "start_char": 11280,
-         "end_char": 11330
+         "text": "established smokers ( n = 28; 35–49 with a smoking history of more than 10 years)",
+         "start_char": 11250,
+         "end_char": 11331
         }
        ]
       }
@@ -3804,56 +4669,14 @@
    },
    "age_mean": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "age_standard_deviation": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "extracted",
-    "value": 35,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "35–49",
-         "start_char": 11280,
-         "end_char": 11285
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "extracted",
-    "value": 49,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "35–49",
-         "start_char": 11280,
-         "end_char": 11285
-        }
-       ]
-      }
-     ]
     }
    },
    "age_median": {
@@ -3862,9 +4685,11 @@
      "status": "not_applicable"
     }
    },
-   "age_unit": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": "years",
+    "value": [
+     "Nicotine-dependent established cigarette smokers"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3873,9 +4698,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "years",
-         "start_char": 1339,
-         "end_char": 1344
+         "text": "established smokers",
+         "start_char": 67,
+         "end_char": 86
         }
        ]
       }
@@ -3890,7 +4715,7 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Mean cigarettes per day 17.23; mean FTND 4.85; mean age of regular smoking initiation 17.69 years; pack-years negatively correlated with medial prefrontal gray matter volume.",
+    "value": "Mean cigarettes per day 17.23; mean FTND score 4.85; mean age of regular smoking initiation 17.69 years.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3899,9 +4724,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC",
-         "start_char": 20607,
-         "end_char": 20727
+         "text": "17.23 for the established smokers",
+         "start_char": 11697,
+         "end_char": 11730
         }
        ]
       }
@@ -3917,28 +4742,13 @@
     }
    },
    "medication_status": {
-    "extraction_status": "extracted",
-    "value": "Not taking psychoactive medication, nicotine replacement therapy, bupropion, or varenicline.",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "could not currently be using any non-cigarette tobacco products, nicotine replacement therapy, bupropion or varenicline",
-         "start_char": 9706,
-         "end_char": 9825
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "education_summary": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -3948,24 +4758,39 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_ftnd"
+   ]
   },
   {
    "local_id": "grp_established_nonsmokers",
    "name": {
     "extraction_status": "extracted",
-    "value": "established non-smokers",
+    "value": "non-smokers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "The results of each group independently, however, demonstrate that this decrease in parahippocampal volume is only present when the established smokers are compared with the established non-smokers—suggesting that parahippocampal deficits are only present after an extended history of tobacco use.",
-         "start_char": 34036,
-         "end_char": 34333
+         "text": "non-smokers",
+         "start_char": 99,
+         "end_char": 110
         }
        ]
       }
@@ -3992,148 +4817,6 @@
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Established non-smokers aged 35–49 years serving as age-matched controls for established smokers.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "non-smokers ( n = 31)",
-         "start_char": 11227,
-         "end_char": 11248
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 31,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "non-smokers ( n = 31)",
-         "start_char": 11227,
-         "end_char": 11248
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 31,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "non-smokers ( n = 31)",
-         "start_char": 11227,
-         "end_char": 11248
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Age 35–49 years",
-     "Denied a history of regular cigarette use",
-     "Fewer than 10 lifetime cigarette uses permitted"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All non-smokers had to deny a history of regular cigarette use",
-         "start_char": 9986,
-         "end_char": 10048
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_minimum": {
     "extraction_status": "extracted",
     "value": 35,
@@ -4174,16 +4857,10 @@
      ]
     }
    },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_unit": {
     "extraction_status": "extracted",
     "value": "years",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -4198,6 +4875,169 @@
        ]
       }
      ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These individuals were recruited through various sources including posted flyers, newspaper ads and Internet advertisement.",
+         "start_char": 7253,
+         "end_char": 7376
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All non-smokers had to deny a history of regular cigarette use, but otherwise meet the same criteria as the smokers.",
+         "start_char": 9986,
+         "end_char": 10102
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Established-age non-smokers aged 35–49 years serving as the comparison group for established smokers.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 31,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "non-smokers ( n = 31)",
+         "start_char": 11227,
+         "end_char": 11248
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 31,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Age 35–49 years",
+     "Denied a history of regular cigarette use"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "the established non-smokers",
+         "start_char": 34206,
+         "end_char": 34233
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Established-age non-smokers"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "medical_condition": {
@@ -4215,11 +5055,9 @@
     }
    },
    "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Established non-smoking controls.",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "medications": {
@@ -4238,12 +5076,23 @@
    },
    "education_summary": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
    },
    "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -4256,8 +5105,8 @@
    "local_id": "inf_vbm",
    "inference_level": {
     "extraction_status": "extracted",
-    "value": "cluster",
-    "value_source": "reported",
+    "value": "voxel",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -4265,9 +5114,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Clusters that were significant at this level were then subjected to a cluster-corrected family-wise error threshold",
-         "start_char": 15187,
-         "end_char": 15302
+         "text": "whole brain uncorrected threshold was first applied to the data",
+         "start_char": 15094,
+         "end_char": 15157
         }
        ]
       }
@@ -4296,8 +5145,8 @@
    },
    "height_threshold_type": {
     "extraction_status": "extracted",
-    "value": "P",
-    "value_source": "reported",
+    "value": "p",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -4305,9 +5154,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "P < 0.01",
-         "start_char": 15160,
-         "end_char": 15168
+         "text": "P",
+         "start_char": 146,
+         "end_char": 147
         }
        ]
       }
@@ -4356,18 +5205,18 @@
    },
    "multiple_comparison_method": {
     "extraction_status": "extracted",
-    "value": "family-wise error",
+    "value": "family-wise error correction",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "family-wise error threshold",
-         "start_char": 15275,
-         "end_char": 15302
+         "text": "That is, the established smokers had significantly lower gray matter volume The interaction between age group and smoking status revealed no clusters of over 100 voxels ( P < 0.01 uncorrected) that exceeded a family-wise error correction of P < 0.01 at the cluster level.",
+         "start_char": 17655,
+         "end_char": 17926
         }
        ]
       }
@@ -4377,7 +5226,7 @@
    "correction_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -4385,9 +5234,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a whole brain uncorrected threshold was first applied to the data",
-         "start_char": 15092,
-         "end_char": 15157
+         "text": "whole brain",
+         "start_char": 15094,
+         "end_char": 15105
         }
        ]
       }
@@ -4396,7 +5245,7 @@
    },
    "search_volume": {
     "extraction_status": "extracted",
-    "value": "whole brain",
+    "value": "Whole brain",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4468,6 +5317,9 @@
    }
   }
  ],
+ "language": [
+  "eng"
+ ],
  "measures": [
   {
    "local_id": "mea_gmv",
@@ -4533,7 +5385,7 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "Voxel-based morphometry gray matter volume/density",
+    "value": "Voxel-based gray matter volume/density",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4542,9 +5394,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "voxel-based morphometry data",
-         "start_char": 13571,
-         "end_char": 13599
+         "text": "regional gray matter volume",
+         "start_char": 738,
+         "end_char": 765
         }
        ]
       }
@@ -4561,7 +5413,7 @@
  ],
  "model_estimations": [
   {
-   "local_id": "m_group",
+   "local_id": "mod_vbm_all",
    "model_family": {
     "extraction_status": "extracted",
     "value": "glm",
@@ -4584,8 +5436,8 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "voxel-based morphometry group model",
-    "value_source": "reported",
+    "value": "voxel-based morphometry model for all smokers versus non-smokers",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -4593,9 +5445,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Construction of a general linear model with age group (younger, established) and smoking status (smoker, non-smoker) as variables",
-         "start_char": 17247,
-         "end_char": 17376
+         "text": "Voxel-based statistics were calculated for all smokers versus non-smokers",
+         "start_char": 14661,
+         "end_char": 14734
         }
        ]
       }
@@ -4625,7 +5477,7 @@
    "spatial_unit": {
     "extraction_status": "extracted",
     "value": "voxel",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -4644,10 +5496,10 @@
    },
    "terms": [
     {
-     "local_id": "trm_group",
+     "local_id": "trm_smoking_status_all",
      "name": {
       "extraction_status": "extracted",
-      "value": "smoking group",
+      "value": "smoking status",
       "value_source": "generated",
       "evidence": {
        "status": "present",
@@ -4668,7 +5520,7 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
       }
@@ -4684,8 +5536,8 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "age group (younger, established) and smoking status (smoker, non-smoker) as variables",
-           "start_char": 17291,
+           "text": "smoking status (smoker, non-smoker) as variables",
+           "start_char": 17328,
            "end_char": 17376
           }
          ]
@@ -4697,7 +5549,7 @@
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "smokers",
+        "value": "Smokers",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -4719,30 +5571,16 @@
         "grp_smokers"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "smoker",
-             "start_char": 55,
-             "end_char": 61
-            }
-           ]
-          }
-         ]
+         "status": "not_applicable"
         }
        }
       },
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "non-smokers",
+        "value": "Non-smokers",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -4764,30 +5602,218 @@
         "grp_nonsmokers"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "present",
-         "sets": [
+         "status": "not_applicable"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "extracted",
+    "value": "not_applicable",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Voxel-based morphometry using DARTEL preprocessing; age included as a covariate; whole-brain uncorrected P<0.01 with minimum 100 voxels, followed by cluster-level family-wise error correction at P<0.01.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "age was included as covariate in all statistical models",
+         "start_char": 14604,
+         "end_char": 14659
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM8 voxel-based morphometry toolbox running on MATLAB 7.0.4.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "preprocessing": [
+    "prp_dartel"
+   ]
+  },
+  {
+   "local_id": "mod_vbm_young",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "glm",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "general linear model",
+         "start_char": 17265,
+         "end_char": 17285
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "voxel-based morphometry model for younger smokers versus younger non-smokers",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "for younger smokers versus younger non-smokers",
+         "start_char": 14750,
+         "end_char": 14796
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "group",
+         "start_char": 590,
+         "end_char": 595
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel",
+         "start_char": 703,
+         "end_char": 708
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_smoking_status_young",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "smoking status",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
           {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "non-smoker",
-             "start_char": 99,
-             "end_char": 109
-            }
-           ]
+           "text": "smoking status",
+           "start_char": 17328,
+           "end_char": 17342
           }
          ]
         }
-       }
-      },
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "smoking status (smoker, non-smoker) as variables",
+           "start_char": 17328,
+           "end_char": 17376
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "younger smokers",
+        "value": "Younger smokers",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -4806,21 +5832,19 @@
         }
        },
        "groups": [
-        "grp_younger_smokers"
+        "grp_young_smokers"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 3,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "not_found"
+         "status": "not_applicable"
         }
        }
       },
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "younger non-smokers",
+        "value": "Younger non-smokers",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -4839,21 +5863,221 @@
         }
        },
        "groups": [
-        "grp_younger_nonsmokers"
+        "grp_young_nonsmokers"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 4,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "not_found"
+         "status": "not_applicable"
         }
        }
-      },
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "extracted",
+    "value": "not_applicable",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Voxel-based morphometry comparison of younger smokers and younger non-smokers; age included as a covariate; cluster-level family-wise error correction.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "age was included as covariate in all statistical models",
+         "start_char": 14604,
+         "end_char": 14659
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM8 running on MATLAB 7.0.4.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "preprocessing": [
+    "prp_dartel"
+   ]
+  },
+  {
+   "local_id": "mod_vbm_established",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "glm",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "general linear model",
+         "start_char": 17265,
+         "end_char": 17285
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "voxel-based morphometry model for established smokers versus non-smokers",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "for established smokers versus non-smokers",
+         "start_char": 14818,
+         "end_char": 14860
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "group",
+         "start_char": 590,
+         "end_char": 595
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel",
+         "start_char": 703,
+         "end_char": 708
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_smoking_status_established",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "smoking status",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "smoking status",
+           "start_char": 17328,
+           "end_char": 17342
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "smoking status (smoker, non-smoker) as variables",
+           "start_char": 17328,
+           "end_char": 17376
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "established smokers",
+        "value": "Established smokers",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -4875,29 +6099,27 @@
         "grp_established_smokers"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 5,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "not_found"
+         "status": "not_applicable"
         }
        }
       },
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "established non-smokers",
+        "value": "Non-smokers",
         "value_source": "reported",
         "evidence": {
          "status": "present",
          "sets": [
           {
-           "source": "literal_match",
+           "source": "model_quote",
            "spans": [
             {
-             "text": "The results of each group independently, however, demonstrate that this decrease in parahippocampal volume is only present when the established smokers are compared with the established non-smokers—suggesting that parahippocampal deficits are only present after an extended history of tobacco use.",
-             "start_char": 34036,
-             "end_char": 34333
+             "text": "non-smokers",
+             "start_char": 99,
+             "end_char": 110
             }
            ]
           }
@@ -4908,33 +6130,17 @@
         "grp_established_nonsmokers"
        ],
        "order": {
-        "extraction_status": "extracted",
-        "value": 6,
-        "value_source": "reported",
+        "extraction_status": "not_reported",
         "evidence": {
-         "status": "not_found"
+         "status": "not_applicable"
         }
        }
       }
      ],
      "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Construction of a general linear model with age group (younger, established) and smoking status (smoker, non-smoker) as variables revealed significant main effects smoking status multiple cortical and subcortical regions, including the medial and lateral PFC, insula/parahippocamal gyrus and the thalamus (consistent with the primary analysis).",
-           "start_char": 17247,
-           "end_char": 17591
-          }
-         ]
-        }
-       ]
+       "status": "not_applicable"
       }
      },
      "unit": {
@@ -4944,28 +6150,145 @@
       }
      },
      "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Categorical smoking status/group factor comparing smokers and non-smokers and the younger/established subgroup factors.",
-      "value_source": "reported",
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "present",
-       "sets": [
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "extracted",
+    "value": "not_applicable",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Voxel-based morphometry comparison of established smokers and established non-smokers; age included as a covariate; cluster-level family-wise error correction.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
         {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age group (younger, established) and smoking status (smoker, non-smoker) as variables",
-           "start_char": 17291,
-           "end_char": 17376
-          }
-         ]
+         "text": "age was included as covariate in all statistical models",
+         "start_char": 14604,
+         "end_char": 14659
         }
        ]
       }
-     }
-    },
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM8 running on MATLAB 7.0.4.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "preprocessing": [
+    "prp_dartel"
+   ]
+  },
+  {
+   "local_id": "mod_vbm_packyears",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "glm",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "general linear model",
+         "start_char": 17265,
+         "end_char": 17285
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "voxel-based morphometry correlation model for pack-years",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The relationship between s smoking parameters (e.g. length of smoking, pack-years of smoking, FTND score) and tissue volume was also investigated.",
+         "start_char": 14927,
+         "end_char": 15073
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "group",
+         "start_char": 590,
+         "end_char": 595
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel",
+         "start_char": 703,
+         "end_char": 708
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
     {
-     "local_id": "trm_packyears",
+     "local_id": "trm_pack_years",
      "name": {
       "extraction_status": "extracted",
       "value": "pack-years of smoking",
@@ -4989,7 +6312,7 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
       }
@@ -5053,9 +6376,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "a metric that incorporates both the average number of cigarettes smoked per day and the number of years spent as a smoker",
+           "text": "a metric that incorporates both the average number of cigarettes smoked per day and the number of years spent as a smoker.",
            "start_char": 3550,
-           "end_char": 3671
+           "end_char": 3672
           }
          ]
         }
@@ -5066,7 +6389,7 @@
    ],
    "hrf_model": {
     "extraction_status": "extracted",
-    "value": "Not applicable; voxel-based morphometry models no timeseries.",
+    "value": "not_applicable",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -5074,7 +6397,7 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "SPM8 voxel-based morphometry general linear models; age included as a covariate; initial whole-brain threshold P<0.01 uncorrected with minimum cluster size 100 voxels, followed by cluster-level family-wise error correction at P<0.01.",
+    "value": "Voxel-based correlation of tissue volume with pack-years of smoking among established smokers; age included as a covariate.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -5083,9 +6406,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "age was included as covariate in all statistical models",
-         "start_char": 14604,
-         "end_char": 14659
+         "text": "There was, however, a significant negative correlation between pack-years of smoking and tissue volume in the medial PFC",
+         "start_char": 20607,
+         "end_char": 20727
         }
        ]
       }
@@ -5100,10 +6423,293 @@
    },
    "software": {
     "extraction_status": "extracted",
-    "value": "SPM8 running on MATLAB 7.0.4; voxel-based morphometry toolbox.",
+    "value": "SPM8 running on MATLAB 7.0.4.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "preprocessing": [
+    "prp_dartel"
+   ]
+  },
+  {
+   "local_id": "mod_vbm_age_group",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "anova",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "general linear model",
+         "start_char": 17265,
+         "end_char": 17285
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "voxel-based morphometry model comparing established and younger smokers",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Construction of a general linear model with age group (younger, established) and smoking status (smoker, non-smoker) as variables",
+         "start_char": 17247,
+         "end_char": 17376
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "group",
+         "start_char": 590,
+         "end_char": 595
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel",
+         "start_char": 703,
+         "end_char": 708
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_age_group",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "age group",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age group",
+           "start_char": 17291,
+           "end_char": 17300
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age group (younger, established)",
+           "start_char": 17291,
+           "end_char": 17323
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "Established smokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "established smokers",
+             "start_char": 67,
+             "end_char": 86
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_established_smokers"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "Younger smokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "younger smokers",
+             "start_char": 47,
+             "end_char": 62
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_young_smokers"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Younger individuals were 20–29 years old with less than 10 years of smoking history; established individuals were 35–49 years old with more than 10 years of smoking history.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Based on the natural distribution of the ages and length of smoking history, we divided the group into a cohort of younger individuals",
+           "start_char": 10928,
+           "end_char": 11062
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "extracted",
+    "value": "not_applicable",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "General linear model with age group and smoking status factors; age included as a covariate.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "With age as a controlled factor in the model",
+         "start_char": 21314,
+         "end_char": 21358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM8 running on MATLAB 7.0.4.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "preprocessing": [
@@ -5116,8 +6722,8 @@
    "local_id": "prp_dartel",
    "description": {
     "extraction_status": "extracted",
-    "value": "Voxel-based morphometry preprocessing using unified segmentation and DARTEL normalization.",
-    "value_source": "generated",
+    "value": "Voxel-based morphometry preprocessing using unified segmentation, DARTEL template creation, affine registration, normalization to MNI space, and smoothing.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -5125,9 +6731,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The voxel-based morphometry data were preprocessed using DARTEL 10",
+         "text": "The voxel-based morphometry data were preprocessed using DARTEL 10, a unified segmentation/normalization framework",
          "start_char": 13567,
-         "end_char": 13633
+         "end_char": 13681
         }
        ]
       }
@@ -5161,11 +6767,11 @@
    "steps": {
     "extraction_status": "extracted",
     "value": [
-     "segmentation into gray matter, white matter and cerebrospinal fluid",
-     "creation of a study-specific gray matter and white matter template through DARTEL",
-     "affine registration to the DARTEL template and standardized tissue probability maps",
-     "spatial normalization to standardized MNI space",
-     "spatial smoothing"
+     "segmentation",
+     "study-specific template creation",
+     "affine registration",
+     "spatial normalization",
+     "smoothing"
     ],
     "value_source": "reported",
     "evidence": {
@@ -5175,9 +6781,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "(1) segmentation into gray matter, white matter and cerebrospinal fluid (CSF) through the unified model; (2) creation of a study-specific gray matter and white matter template through DARTEL; (3) affine registration of the individual data to the DARTEL template and subsequently to standardized tissue probability maps in Montreal Neurological Institute (MNI) space; (4) spatial normalization of the modulated, coregistered images to standardized MNI space; (5) smoothing of the modulated, coregistered, normalized images",
-         "start_char": 13852,
-         "end_char": 14373
+         "text": "segmentation into gray matter, white matter and cerebrospinal fluid (CSF) through the unified model",
+         "start_char": 13856,
+         "end_char": 13955
         }
        ]
       }
@@ -5208,9 +6814,14 @@
    }
   }
  ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, N.I.H., Extramural",
+  "Research Support, Non-U.S. Gov't"
+ ],
  "tables": [
   {
-   "local_id": "1907",
+   "local_id": "tbl1",
    "table_number": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -5255,7 +6866,7 @@
    }
   },
   {
-   "local_id": "1908",
+   "local_id": "tbl2",
    "table_number": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -5300,7 +6911,7 @@
    }
   },
   {
-   "local_id": "1909",
+   "local_id": "tbl3",
    "table_number": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -5350,7 +6961,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "7be9689bebd5981fcf71fdf096351af7711e362a5d4982b532c38e5cc8ce10ff",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -5617,10 +7228,5 @@
    }
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
- },
- "study_type": [
-  "Journal Article",
-  "Research Support, N.I.H., Extramural",
-  "Research Support, Non-U.S. Gov't"
- ]
+ }
 }

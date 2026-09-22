@@ -19,12 +19,6 @@
    ]
   }
  },
- "hypothesis": {
-  "extraction_status": "not_reported",
-  "evidence": {
-   "status": "not_applicable"
-  }
- },
  "design": {
   "description": {
    "extraction_status": "extracted",
@@ -37,9 +31,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "Voxel-based morphometry was used to investigate the differences in brain tissue composition in 20 patients with synthetic cannabinoids use and 20 healthy controls.",
-        "start_char": 1764,
-        "end_char": 1927
+        "text": "Compared to healthy controls, voxel of interest analyses showed that regional grey matter volume in both left and right thalamus and left cerebellum was significantly reduced in synthetic cannabinoids users (p < 0.05).",
+        "start_char": 1965,
+        "end_char": 2183
        }
       ]
      }
@@ -56,7 +50,7 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "not_found"
@@ -75,10 +69,30 @@
  },
  "analyses": [
   {
-   "local_id": "ana_vbm_group_difference",
+   "local_id": "ana_vbm_group",
    "name": {
     "extraction_status": "extracted",
-    "value": "voxel of interest analyses",
+    "value": "Thalamic and Cerebellar Gray Matter Volume Reduction in Synthetic Cannabinoids Users",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "# Thalamic and Cerebellar Gray Matter Volume Reduction in Synthetic Cannabinoids Users",
+         "start_char": 0,
+         "end_char": 86
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Compared to healthy controls, voxel of interest analyses showed that regional grey matter volume in both left and right thalamus and left cerebellum was significantly reduced in synthetic cannabinoids users.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -96,9 +110,17 @@
      ]
     }
    },
-   "definition": {
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "interpretations": {
     "extraction_status": "extracted",
-    "value": "regional grey matter volume in synthetic cannabinoids users compared to healthy controls",
+    "value": [
+     "These preliminary results suggest an evidence of some structural differences in the brain of synthetic cannabinoids users, and point the need for further investigation of morphological effects of synthetic cannabinoids in the brain."
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -107,19 +129,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "regional grey matter volume in both left and right thalamus and left cerebellum was significantly reduced in synthetic cannabinoids users",
-         "start_char": 2034,
-         "end_char": 2171
+         "text": "These preliminary results suggest an evidence of some structural differences in the brain of synthetic cannabinoids users, and point the need for further investigation of morphological effects of synthetic cannabinoids in the brain.",
+         "start_char": 2323,
+         "end_char": 2555
         }
        ]
       }
      ]
-    }
-   },
-   "prespecification": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -142,7 +158,7 @@
      ]
     }
    },
-   "measure": "mea_grey_matter_volume",
+   "measure": "mea_regional_grey_matter_volume",
    "groups": [
     {
      "group": "grp_synthetic_cannabinoids_users",
@@ -226,9 +242,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "regional grey matter volume in both left and right thalamus and left cerebellum was significantly reduced in synthetic cannabinoids users",
-            "start_char": 2034,
-            "end_char": 2171
+            "text": "Compared to healthy controls, voxel of interest analyses showed that regional grey matter volume in both left and right thalamus and left cerebellum was significantly reduced in synthetic cannabinoids users (p < 0.05).",
+            "start_char": 1965,
+            "end_char": 2183
            }
           ]
          }
@@ -275,9 +291,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Compared to healthy controls",
+            "text": "Compared to healthy controls, voxel of interest analyses showed that regional grey matter volume in both left and right thalamus and left cerebellum was significantly reduced in synthetic cannabinoids users (p < 0.05).",
             "start_char": 1965,
-            "end_char": 1993
+            "end_char": 2183
            }
           ]
          }
@@ -336,15 +352,9 @@
    "details": {
     "details_type": "MassUnivariateDetails"
    },
-   "model_estimation": "mod_group_vbm",
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "tasks": [],
-   "tables": [],
+   "model_estimation": "m_vbm",
    "source_table_analysis": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -355,91 +365,7 @@
      "status": "not_applicable"
     }
    },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Compared to healthy controls, regional grey matter volume in both left and right thalamus and left cerebellum was significantly reduced in synthetic cannabinoids users (p < 0.05)."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Compared to healthy controls, voxel of interest analyses showed that regional grey matter volume in both left and right thalamus and left cerebellum was significantly reduced in synthetic cannabinoids users (p < 0.05).",
-         "start_char": 1965,
-         "end_char": 2183
-        }
-       ]
-      }
-     ]
-    }
-   },
    "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  }
- ],
- "acquisitions": [
-  {
-   "local_id": "acq_mri",
-   "acquisition_type": "MRI",
-   "modality": {
-    "extraction_status": "extracted",
-    "value": "MRI",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "magnetic_field_strength_tesla": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "pulse_sequence_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "mr_acquisition_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "repetition_time_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "echo_time_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "acquisition_voxel_size_mm": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "number_of_volumes": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -470,9 +396,67 @@
      ]
     }
    },
-   "description": {
+   "species": {
     "extraction_status": "extracted",
-    "value": "Patients with synthetic cannabinoids use.",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "synthetic cannabinoids use"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "synthetic cannabinoids use",
+         "start_char": 1704,
+         "end_char": 1730
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "20 patients with synthetic cannabinoids use",
+         "start_char": 1859,
+         "end_char": 1902
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 20,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -490,10 +474,120 @@
      ]
     }
    },
-   "species": {
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "All participants were male.",
+           "start_char": 1928,
+           "end_char": 1955
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 20,
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All participants were male.",
+           "start_char": 1928,
+           "end_char": 1955
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All participants were male.",
+           "start_char": 1928,
+           "end_char": 1955
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 20,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "20 patients with synthetic cannabinoids use and 20 healthy controls",
+           "start_char": 1859,
+           "end_char": 1926
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "All participants were male.",
+           "start_char": 1928,
+           "end_char": 1955
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "description": {
     "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
+    "value": "Twenty male patients with synthetic cannabinoids use, compared with healthy controls in a voxel-based morphometry study.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -501,9 +595,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All participants were male.",
-         "start_char": 1928,
-         "end_char": 1955
+         "text": "Voxel-based morphometry was used to investigate the differences in brain tissue composition in 20 patients with synthetic cannabinoids use and 20 healthy controls.",
+         "start_char": 1764,
+         "end_char": 1927
         }
        ]
       }
@@ -523,12 +617,6 @@
     }
    },
    "enrolled_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "acquired_count": {
     "extraction_status": "extracted",
     "value": 20,
     "value_source": "reported",
@@ -614,224 +702,10 @@
      "status": "not_applicable"
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "All participants were male.",
-           "start_char": 1928,
-           "end_char": 1955
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 20,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were male.",
-           "start_char": 1928,
-           "end_char": 1955
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 100.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were male.",
-           "start_char": 1928,
-           "end_char": 1955
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 20,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "20 patients with synthetic cannabinoids use",
-           "start_char": 1859,
-           "end_char": 1902
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    },
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "female",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were male.",
-           "start_char": 1928,
-           "end_char": 1955
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 0,
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were male.",
-           "start_char": 1928,
-           "end_char": 1955
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 0.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were male.",
-           "start_char": 1928,
-           "end_char": 1955
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 20,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "20 patients with synthetic cannabinoids use",
-           "start_char": 1859,
-           "end_char": 1902
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
+   "population_characteristics": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "20 patients with synthetic cannabinoids use and 20 healthy controls",
-         "start_char": 1859,
-         "end_char": 1926
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "synthetic cannabinoids use"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "synthetic cannabinoids use",
-         "start_char": 1704,
-         "end_char": 1730
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "diagnostic_system": {
@@ -865,6 +739,24 @@
     }
    },
    "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit_normalized": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -893,10 +785,18 @@
      ]
     }
    },
-   "description": {
+   "species": {
     "extraction_status": "extracted",
-    "value": "Healthy control participants.",
-    "value_source": "reported",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -913,24 +813,12 @@
      ]
     }
    },
-   "species": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": "human",
+    "value": "recruited",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All participants were male.",
-         "start_char": 1928,
-         "end_char": 1955
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "acquired_count": {
@@ -978,7 +866,7 @@
      "count": {
       "extraction_status": "extracted",
       "value": 20,
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "present",
        "sets": [
@@ -1026,8 +914,8 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "20 healthy controls",
-           "start_char": 1907,
+           "text": "20 patients with synthetic cannabinoids use and 20 healthy controls",
+           "start_char": 1859,
            "end_char": 1926
           }
          ]
@@ -1040,18 +928,16 @@
       "evidence": {
        "status": "not_applicable"
       }
-     }
-    },
-    {
-     "category": {
+     },
+     "category_normalized": {
       "extraction_status": "extracted",
-      "value": "female",
+      "value": "male",
       "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
         {
-         "source": "model_quote",
+         "source": "literal_match",
          "spans": [
           {
            "text": "All participants were male.",
@@ -1061,79 +947,13 @@
          ]
         }
        ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 0,
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were male.",
-           "start_char": 1928,
-           "end_char": 1955
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 0.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were male.",
-           "start_char": 1928,
-           "end_char": 1955
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 20,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "20 healthy controls",
-           "start_char": 1907,
-           "end_char": 1926
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
       }
      }
     }
    ],
-   "is_healthy": {
+   "description": {
     "extraction_status": "extracted",
-    "value": true,
+    "value": "Twenty healthy male controls participating in the voxel-based morphometry comparison.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1151,12 +971,6 @@
      ]
     }
    },
-   "medical_condition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1170,9 +984,23 @@
     }
    },
    "enrolled_count": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": 20,
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "20 healthy controls",
+         "start_char": 1907,
+         "end_char": 1926
+        }
+       ]
+      }
+     ]
     }
    },
    "excluded_count": {
@@ -1241,6 +1069,34 @@
      "status": "not_applicable"
     }
    },
+   "population_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "healthy controls"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "healthy controls",
+         "start_char": 1737,
+         "end_char": 1753
+        }
+       ]
+      }
+     ]
+    }
+   },
    "diagnostic_system": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1276,12 +1132,33 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
   }
  ],
+ "language": [
+  "eng"
+ ],
  "measures": [
   {
-   "local_id": "mea_grey_matter_volume",
+   "local_id": "mea_regional_grey_matter_volume",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
@@ -1293,9 +1170,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "morphological differences",
-         "start_char": 1672,
-         "end_char": 1697
+         "text": "regional grey matter volume",
+         "start_char": 2034,
+         "end_char": 2061
         }
        ]
       }
@@ -1343,9 +1220,23 @@
     }
    },
    "specific_metric": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "regional grey matter volume",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Results: Compared to healthy controls, voxel of interest analyses showed that regional grey matter volume in both left and right thalamus and left cerebellum was significantly reduced in synthetic cannabinoids users (p < 0.05).",
+         "start_char": 1956,
+         "end_char": 2183
+        }
+       ]
+      }
+     ]
     }
    },
    "unit": {
@@ -1358,7 +1249,7 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_group_vbm",
+   "local_id": "m_vbm",
    "model_family": {
     "extraction_status": "extracted",
     "value": "glm",
@@ -1369,7 +1260,7 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "voxel-based morphometry group model",
+    "value": "voxel-based morphometry model",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1378,9 +1269,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Voxel-based morphometry was used",
+         "text": "Voxel-based morphometry",
          "start_char": 1764,
-         "end_char": 1796
+         "end_char": 1787
         }
        ]
       }
@@ -1410,7 +1301,7 @@
    "spatial_unit": {
     "extraction_status": "extracted",
     "value": "voxel",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1418,9 +1309,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "voxel of interest analyses",
+         "text": "voxel",
          "start_char": 1995,
-         "end_char": 2021
+         "end_char": 2000
         }
        ]
       }
@@ -1432,18 +1323,18 @@
      "local_id": "trm_group",
      "name": {
       "extraction_status": "extracted",
-      "value": "participant group",
+      "value": "group",
       "value_source": "generated",
       "evidence": {
        "status": "present",
        "sets": [
         {
-         "source": "model_quote",
+         "source": "literal_match",
          "spans": [
           {
-           "text": "participants",
-           "start_char": 1932,
-           "end_char": 1944
+           "text": "However, little is known about the pharmacology and morphological effects of this group of substances in the brain.",
+           "start_char": 1515,
+           "end_char": 1630
           }
          ]
         }
@@ -1453,9 +1344,29 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Compared to healthy controls",
+           "start_char": 1965,
+           "end_char": 1993
+          }
+         ]
+        }
+       ]
       }
      },
      "levels": [
@@ -1484,9 +1395,23 @@
         "grp_synthetic_cannabinoids_users"
        ],
        "order": {
-        "extraction_status": "not_reported",
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "reported",
         "evidence": {
-         "status": "not_applicable"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "synthetic cannabinoids users",
+             "start_char": 1704,
+             "end_char": 1732
+            }
+           ]
+          }
+         ]
         }
        }
       },
@@ -1515,21 +1440,27 @@
         "grp_healthy_controls"
        ],
        "order": {
-        "extraction_status": "not_reported",
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
         "evidence": {
-         "status": "not_applicable"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "healthy controls",
+             "start_char": 1737,
+             "end_char": 1753
+            }
+           ]
+          }
+         ]
         }
        }
       }
      ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
      "functional_form": {
       "extraction_status": "not_reported",
       "evidence": {
@@ -1573,17 +1504,18 @@
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "preprocessing": [],
-   "inputs_from": []
+   }
   }
+ ],
+ "study_type": [
+  "Journal Article"
  ],
  "local_id": "26021304",
  "extraction_metadata": {
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "88a2b0aae41b51d8d7d65c24bf05a4358e424b59906036eb1b4b90b31ff6fb27",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -1618,8 +1550,5 @@
    }
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
- },
- "study_type": [
-  "Journal Article"
- ]
+ }
 }

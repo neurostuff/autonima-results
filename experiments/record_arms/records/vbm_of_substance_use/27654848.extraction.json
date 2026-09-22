@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "A multimodal MRI study comparing cocaine-dependent patients with age-matched controls using tissue volume, cerebral blood flow, brain entropy, and multimodal classification.",
-  "value_source": "generated",
+  "value": "This study examined structural and functional brain alterations in cocaine addiction using multimodal MRI, including brain tissue volume, baseline cerebral blood flow, and resting-state brain entropy, and evaluated multimodal classification of cocaine patients and controls.",
+  "value_source": "reported",
   "evidence": {
    "status": "present",
    "sets": [
@@ -22,32 +22,20 @@
  "hypothesis": {
   "extraction_status": "extracted",
   "value": [
-   "cocaine-addicted brains would show both structural and functional alterations compared to controls, which are correlated with addiction-related behaviors.",
-   "the multimodal brain alteration patterns in cocaine patients would show spatial overlap as well as discrepancies.",
-   "combining multiple modalities (brain tissue, CBF, and the dynamic resting state property) will provide better brain discrimination sensitivity, as compared to single modality-based approaches."
+   "cocaine-addicted brains would show both structural and functional alterations compared to controls, which are correlated with addiction-related behaviors",
+   "the multimodal brain alteration patterns in cocaine patients would show spatial overlap as well as discrepancies",
+   "combining multiple modalities (brain tissue, CBF, and the dynamic resting state property) will provide better brain discrimination sensitivity, as compared to single modality -based approaches"
   ],
   "value_source": "reported",
   "evidence": {
-   "status": "present",
-   "sets": [
-    {
-     "source": "model_quote",
-     "spans": [
-      {
-       "text": "we first hypothesized that cocaine-addicted brains would show both structural and functional alterations compared to controls, which are correlated with addiction-related behaviors.",
-       "start_char": 7981,
-       "end_char": 8162
-      }
-     ]
-    }
-   ]
+   "status": "not_found"
   }
  },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Cross-sectional observational comparison of cocaine-dependent patients and age-matched controls.",
-   "value_source": "generated",
+   "value": "Cross-sectional observational comparison of 20 treatment-seeking cocaine patients and 19 age-matched controls; the same cohort had been reported previously.",
+   "value_source": "reported",
    "evidence": {
     "status": "present",
     "sets": [
@@ -55,9 +43,14 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "The same cocaine dependent cohort and control subjects as in ( Wang et al., 2015 ) were included in the current study.",
-        "start_char": 9054,
-        "end_char": 9172
+        "text": "Twenty treatment-seeking cocaine patients",
+        "start_char": 9304,
+        "end_char": 9345
+       },
+       {
+        "text": "and 19 age/ethnicity/race-matched controls",
+        "start_char": 9505,
+        "end_char": 9547
        }
       ]
      }
@@ -66,7 +59,7 @@
   },
   "allocation": {
    "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -75,9 +68,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "The same cocaine dependent cohort and control subjects as in ( Wang et al., 2015 ) were included in the current study.",
-        "start_char": 9054,
-        "end_char": 9172
+        "text": "The study was approved by a local ethic review board and signed written consent was collected before any experiment was performed.",
+        "start_char": 9173,
+        "end_char": 9303
        }
       ]
      }
@@ -86,7 +79,7 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -95,9 +88,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "The same cocaine dependent cohort and control subjects as in ( Wang et al., 2015 ) were included in the current study.",
-        "start_char": 9054,
-        "end_char": 9172
+        "text": "patients and controls",
+        "start_char": 11624,
+        "end_char": 11645
        }
       ]
      }
@@ -105,20 +98,21 @@
    }
   },
   "blinding": {
-   "extraction_status": "not_reported",
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
    "evidence": {
-    "status": "not_applicable"
+    "status": "not_found",
+    "unlocated_quotes": 1
    }
-  },
-  "arms": [],
-  "timepoints": []
+  }
  },
  "analyses": [
   {
-   "local_id": "ana_group_tissue",
+   "local_id": "ana_group_tissue_volume",
    "name": {
     "extraction_status": "extracted",
-    "value": "tissue volume patient vs control comparison",
+    "value": "cross-sectional GM volume analysis",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -127,9 +121,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The suprathreshold clusters identified from each of the two-sample t-tests for each modality as previously mentioned were used as regions-of-interest (ROIs) to extract data from the corresponding modality images.",
-         "start_char": 16575,
-         "end_char": 16787
+         "text": "Fig. 1 shows the cross-sectional GM volume (hot color), CBF (violet), and BEN (green) analysis results.",
+         "start_char": 18297,
+         "end_char": 18400
         }
        ]
       }
@@ -138,13 +132,337 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy.",
+    "value": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy in ventro-medial prefrontal cortex and right orbital frontal cortex.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy (hot color) in ventro-medial prefrontal cortex (VMPFC) and right orbital frontal cortex (OFC),",
+         "start_char": 18401,
+         "end_char": 18589
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "measure": "mea_tissue_volume",
+   "groups": [
+    {
+     "group": "grp_cocaine",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 20,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Twenty treatment-seeking cocaine patients (DRUG)",
+           "start_char": 9304,
+           "end_char": 9352
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_control",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 19,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "19 age/ethnicity/race-matched controls (CTL)",
+           "start_char": 9509,
+           "end_char": 9553
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "mod_group_voxelwise.trm_group_volume",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "cocaine patients",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "cocaine patients",
+            "start_char": 4055,
+            "end_char": 4071
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "cocaine patients",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "cocaine patients",
+            "start_char": 4055,
+            "end_char": 4071
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "term": "mod_group_voxelwise.trm_group_volume",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "age-matched controls",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "age-matched controls",
+            "start_char": 724,
+            "end_char": 744
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "age-matched controls",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "age-matched controls",
+            "start_char": 724,
+            "end_char": 744
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "contrast",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy",
+          "start_char": 18401,
+          "end_char": 18494
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Voxel-wise patient vs CTL comparisons on tissue volume, CBF, and BEN were performed using two sample t-test implemented in SPM8.",
+           "start_char": 15695,
+           "end_char": 15823
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri_structural"
+   ],
+   "model_estimation": "mod_group_voxelwise",
+   "inference_settings": "inf_cluster_76",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy in the ventro-medial prefrontal cortex (VMPFC) and right orbital frontal cortex (OFC).",
+     "Structural alterations were found to be mainly located in VMPFC and OFC, consistent with the results of previous studies."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy (hot color) in ventro-medial prefrontal cortex (VMPFC) and right orbital frontal cortex (OFC),",
+         "start_char": 18401,
+         "end_char": 18589
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "MNI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The registration transform generated during DARTEL processing was used to register the resting CBF maps and BEN maps into the MNI space.",
+         "start_char": 15498,
+         "end_char": 15634
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "assessments": [
+    "asm_asi",
+    "asm_mini",
+    "asm_craving"
+   ]
+  },
+  {
+   "local_id": "ana_group_cbf",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "cross-sectional CBF analysis",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Compared to the age-matched controls, cocaine patients showed hypoperfusion in prefrontal cortex, right insula, anterior cingulate cortex, right inferior frontal cortex, dorso-lateral prefrontal cortex, and right middle and superior temporal cortex.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
        "spans": [
         {
          "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy (hot color) in ventro-medial prefrontal cortex (VMPFC) and right orbital frontal cortex (OFC), and hypoperfusion (violet color) in prefrontal cortex (PFC), right insula, anterior cingulate cortex (ACC), right inferior frontal cortex (IFC), dorso-lateral prefrontal cortex (DLPFC), and right middle and superior temporal cortex.",
@@ -164,28 +482,6 @@
      "status": "not_found"
     }
    },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "cocaine patients showed significant grey matter atrophy"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy",
-         "start_char": 18401,
-         "end_char": 18494
-        }
-       ]
-      }
-     ]
-    }
-   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
@@ -194,365 +490,10 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
-   "measure": "mea_tissue_volume",
-   "groups": [
-    {
-     "group": "grp_drug",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 20,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Twenty treatment-seeking cocaine patients (DRUG)",
-           "start_char": 9304,
-           "end_char": 9352
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "group": "grp_ctl",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 19,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "19 age/ethnicity/race-matched controls (CTL)",
-           "start_char": 9509,
-           "end_char": 9553
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
-   "effect": {
-    "cells": [
-     {
-      "term": "trm_group_tissue",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "cocaine patients",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "cocaine patients",
-            "start_char": 4055,
-            "end_char": 4071
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "cocaine patients showed significant grey matter atrophy",
-            "start_char": 18439,
-            "end_char": 18494
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "cocaine patients",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "cocaine patients",
-            "start_char": 4055,
-            "end_char": 4071
-           }
-          ]
-         }
-        ]
-       }
-      }
-     },
-     {
-      "term": "trm_group_tissue",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "age-matched controls",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "age-matched controls",
-            "start_char": 724,
-            "end_char": 744
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy",
-            "start_char": 18401,
-            "end_char": 18494
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "age-matched controls",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "age-matched controls",
-            "start_char": 724,
-            "end_char": 744
-           }
-          ]
-         }
-        ]
-       }
-      }
-     }
-    ],
-    "kind": {
-     "extraction_status": "extracted",
-     "value": "contrast",
-     "value_source": "generated",
-     "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "model_quote",
-        "spans": [
-         {
-          "text": "two-sample t-test",
-          "start_char": 13831,
-          "end_char": 13848
-         }
-        ]
-       }
-      ]
-     }
-    },
-    "statistic": {
-     "family": {
-      "extraction_status": "extracted",
-      "value": "t",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "two sample t-test",
-           "start_char": 15785,
-           "end_char": 15802
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "degrees_of_freedom_numerator": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "degrees_of_freedom_denominator": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   },
-   "details": {
-    "details_type": "MassUnivariateDetails"
-   },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "tasks": [
-    "tsk_rest"
-   ],
-   "model_estimation": "mod_group_tissue",
-   "inference_settings": "inf_cluster",
-   "tables": [],
-   "source_table_analysis": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "coordinate_space": {
-    "extraction_status": "extracted",
-    "value": "MNI",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MNI standard space",
-         "start_char": 12780,
-         "end_char": 12798
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessments": [
-    "asm_mini",
-    "asm_asi",
-    "asm_craving"
-   ],
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "ana_group_cbf",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "CBF patient vs control comparison",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The suprathreshold clusters identified from each of the two-sample t-tests for each modality as previously mentioned were used as regions-of-interest (ROIs) to extract data from the corresponding modality images.",
-         "start_char": 16575,
-         "end_char": 16787
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Compared to the age-matched controls, cocaine patients showed hypoperfusion.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "prespecification": {
-    "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "hypoperfusion in cocaine patients was discovered in the dorsal ACC, IFC, insula, and DLPFC"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Hypo-perfusion in cocaine patients was discovered in the dorsal ACC, IFC, insula, and DLPFC",
-         "start_char": 24331,
-         "end_char": 24422
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "regions": [],
-   "defines_regions": [],
    "measure": "mea_cbf",
    "groups": [
     {
-     "group": "grp_drug",
+     "group": "grp_cocaine",
      "n": {
       "extraction_status": "extracted",
       "value": 20,
@@ -575,7 +516,7 @@
      }
     },
     {
-     "group": "grp_ctl",
+     "group": "grp_control",
      "n": {
       "extraction_status": "extracted",
       "value": 19,
@@ -708,19 +649,8 @@
      "value": "contrast",
      "value_source": "generated",
      "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "model_quote",
-        "spans": [
-         {
-          "text": "two-sample t-test",
-          "start_char": 13831,
-          "end_char": 13848
-         }
-        ]
-       }
-      ]
+      "status": "not_found",
+      "unlocated_quotes": 1
      }
     },
     "statistic": {
@@ -735,22 +665,22 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "two sample t-test",
-           "start_char": 15785,
-           "end_char": 15802
+           "text": "Voxel-wise patient vs CTL comparisons on tissue volume, CBF, and BEN were performed using two sample t-test implemented in SPM8.",
+           "start_char": 15695,
+           "end_char": 15823
           }
          ]
         }
        ]
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -762,19 +692,33 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_mri"
+    "acq_mri_asl"
    ],
-   "tasks": [
-    "tsk_rest"
-   ],
-   "model_estimation": "mod_group_cbf",
-   "inference_settings": "inf_cluster",
-   "tables": [],
-   "assessments": [
-    "asm_mini",
-    "asm_asi",
-    "asm_craving"
-   ],
+   "model_estimation": "mod_group_voxelwise",
+   "inference_settings": "inf_cluster_76",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Compared to the age-matched controls, cocaine patients showed hypoperfusion in the prefrontal cortex (PFC), right insula, anterior cingulate cortex (ACC), right inferior frontal cortex (IFC), dorso-lateral prefrontal cortex (DLPFC), and right middle and superior temporal cortex.",
+     "Hypo-perfusion in cocaine patients was discovered in the dorsal ACC, IFC, insula, and DLPFC, indicating an effect on several important brain functions governed by these cortical regions."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy (hot color) in ventro-medial prefrontal cortex (VMPFC) and right orbital frontal cortex (OFC), and hypoperfusion (violet color) in prefrontal cortex (PFC), right insula, anterior cingulate cortex (ACC), right inferior frontal cortex (IFC), dorso-lateral prefrontal cortex (DLPFC), and right middle and superior temporal cortex.",
+         "start_char": 18401,
+         "end_char": 18822
+        }
+       ]
+      }
+     ]
+    }
+   },
    "source_table_analysis": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -792,9 +736,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MNI standard space",
-         "start_char": 12780,
-         "end_char": 12798
+         "text": "The registration transform generated during DARTEL processing was used to register the resting CBF maps and BEN maps into the MNI space.",
+         "start_char": 15498,
+         "end_char": 15634
         }
        ]
       }
@@ -806,39 +750,32 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "assessments": [
+    "asm_asi",
+    "asm_mini",
+    "asm_craving"
+   ]
   },
   {
    "local_id": "ana_group_ben",
    "name": {
     "extraction_status": "extracted",
-    "value": "BEN patient vs control comparison",
+    "value": "cross-sectional BEN analysis",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Patients showed lower BEN in VMPFC, OFC, DLPFC, VS, basal ganglia, visual cortex, and parietal cortex.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
        "source": "model_quote",
-       "spans": [
-        {
-         "text": "The suprathreshold clusters identified from each of the two-sample t-tests for each modality as previously mentioned were used as regions-of-interest (ROIs) to extract data from the corresponding modality images.",
-         "start_char": 16575,
-         "end_char": 16787
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Patients showed lower BEN.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
        "spans": [
         {
          "text": "Patients showed lower BEN (green clusters) in VMPFC, OFC, DLPFC, VS, basal ganglia, visual cortex, and parietal cortex.",
@@ -858,28 +795,6 @@
      "status": "not_found"
     }
    },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Lower resting BEN was found in a large portion of the brain in cocaine-addicted patients"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Lower resting BEN was found in a large portion of the brain in cocaine-addicted patients",
-         "start_char": 25354,
-         "end_char": 25442
-        }
-       ]
-      }
-     ]
-    }
-   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
@@ -888,12 +803,10 @@
      "status": "not_found"
     }
    },
-   "regions": [],
-   "defines_regions": [],
    "measure": "mea_ben",
    "groups": [
     {
-     "group": "grp_drug",
+     "group": "grp_cocaine",
      "n": {
       "extraction_status": "extracted",
       "value": 20,
@@ -916,7 +829,7 @@
      }
     },
     {
-     "group": "grp_ctl",
+     "group": "grp_control",
      "n": {
       "extraction_status": "extracted",
       "value": 19,
@@ -968,19 +881,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Patients showed lower BEN",
-            "start_char": 18823,
-            "end_char": 18848
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -1031,19 +932,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Compared to the age-matched controls",
-            "start_char": 18401,
-            "end_char": 18437
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -1079,9 +968,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "two-sample t-test",
-          "start_char": 13831,
-          "end_char": 13848
+          "text": "Compared to the age-matched controls, cocaine patients showed",
+          "start_char": 18401,
+          "end_char": 18462
          }
         ]
        }
@@ -1100,22 +989,22 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "two sample t-test",
-           "start_char": 15785,
-           "end_char": 15802
+           "text": "Voxel-wise patient vs CTL comparisons on tissue volume, CBF, and BEN were performed using two sample t-test implemented in SPM8.",
+           "start_char": 15695,
+           "end_char": 15823
           }
          ]
         }
        ]
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -1127,19 +1016,34 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_mri"
+    "acq_mri_bold"
    ],
-   "tasks": [
-    "tsk_rest"
-   ],
-   "model_estimation": "mod_group_ben",
-   "inference_settings": "inf_cluster",
-   "tables": [],
-   "assessments": [
-    "asm_mini",
-    "asm_asi",
-    "asm_craving"
-   ],
+   "model_estimation": "mod_group_voxelwise",
+   "inference_settings": "inf_cluster_76",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Patients showed lower BEN in VMPFC, OFC, DLPFC, VS, basal ganglia, visual cortex, and parietal cortex.",
+     "Lower entropy means higher regularity, and technically results in greater inter-regional correlations, meaning increased inter-regional functional connectivity.",
+     "A decrease in the entropy or irregularity of resting brain activity is indicative of a diminished capacity for processing complexity in the resting brain."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Patients showed lower BEN (green clusters) in VMPFC, OFC, DLPFC, VS, basal ganglia, visual cortex, and parietal cortex.",
+         "start_char": 18823,
+         "end_char": 18942
+        }
+       ]
+      }
+     ]
+    }
+   },
    "source_table_analysis": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1157,9 +1061,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MNI standard space",
-         "start_char": 12780,
-         "end_char": 12798
+         "text": "The registration transform generated during DARTEL processing was used to register the resting CBF maps and BEN maps into the MNI space.",
+         "start_char": 15498,
+         "end_char": 15634
         }
        ]
       }
@@ -1171,31 +1075,16 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "assessments": [
+    "asm_asi",
+    "asm_mini",
+    "asm_craving"
+   ]
   },
   {
-   "local_id": "ana_classification",
+   "local_id": "ana_classification_multimodal",
    "name": {
-    "extraction_status": "extracted",
-    "value": "multi-modal patient vs control brain classification",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "multi-modal imaging-based patient vs control brain classification",
-         "start_char": 16508,
-         "end_char": 16573
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
     "extraction_status": "extracted",
     "value": "multi-modal imaging-based patient vs control brain classification",
     "value_source": "reported",
@@ -1215,19 +1104,9 @@
      ]
     }
    },
-   "prespecification": {
+   "definition": {
     "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Combining all three modalities yielded the highest accuracy than any other combination (84.6%)"
-    ],
+    "value": "patient vs control brain classification using combinations of tissue volume, CBF, and BEN data",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1236,19 +1115,27 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Combining all three modalities yielded the highest classification accuracy than any other combination (84.6%)",
-         "start_char": 23121,
-         "end_char": 23230
+         "text": "multi-modal imaging-based patient vs control brain classification",
+         "start_char": 16508,
+         "end_char": 16573
         }
        ]
       }
      ]
     }
    },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "roi",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1268,11 +1155,10 @@
    "regions": [
     "reg_multimodal_rois"
    ],
-   "defines_regions": [],
    "measure": "mea_classification_accuracy",
    "groups": [
     {
-     "group": "grp_drug",
+     "group": "grp_cocaine",
      "n": {
       "extraction_status": "extracted",
       "value": 20,
@@ -1295,7 +1181,7 @@
      }
     },
     {
-     "group": "grp_ctl",
+     "group": "grp_control",
      "n": {
       "extraction_status": "extracted",
       "value": 19,
@@ -1347,19 +1233,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "correct predictions",
-            "start_char": 17800,
-            "end_char": 17819
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -1406,11 +1280,9 @@
     },
     "statistic": {
      "family": {
-      "extraction_status": "extracted",
-      "value": "correlation",
-      "value_source": "generated",
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "not_found"
+       "status": "not_applicable"
       }
      },
      "degrees_of_freedom_numerator": {
@@ -1499,30 +1371,16 @@
        }
       },
       "relation": {
-       "extraction_status": "extracted",
-       "value": "above_reference",
-       "value_source": "generated",
+       "extraction_status": "not_reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "yielded the highest classification accuracy",
-            "start_char": 23152,
-            "end_char": 23195
-           }
-          ]
-         }
-        ]
+        "status": "not_applicable"
        }
       }
      }
     ],
     "validation_scheme": {
      "extraction_status": "extracted",
-     "value": "leave-one-out cross-validations",
+     "value": "39 leave-one-out cross-validations",
      "value_source": "reported",
      "evidence": {
       "status": "present",
@@ -1539,32 +1397,58 @@
        }
       ]
      }
-    },
-    "generalization": {
-     "extraction_status": "not_reported",
-     "evidence": {
-      "status": "not_applicable"
-     }
     }
    },
    "acquisitions": [
-    "acq_mri"
-   ],
-   "tasks": [
-    "tsk_rest"
+    "acq_mri_multimodal",
+    "acq_mri_structural",
+    "acq_mri_asl",
+    "acq_mri_bold"
    ],
    "model_estimation": "mod_svm_classification",
    "inference_settings": "inf_classification",
-   "tables": [],
-   "assessments": [
-    "asm_mini",
-    "asm_asi",
-    "asm_craving"
-   ],
-   "source_table_analysis": {
-    "extraction_status": "not_reported",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "BEN provided the highest classification accuracy, while tissue volume provided the lowest.",
+     "Combining all three modalities yielded the highest classification accuracy than any other combination (84.6%), but tissue volume and CBF did not substantially add to the accuracy of BEN alone (79.5%).",
+     "Combining multi-modal imaging data can improve sensitivity for discriminating drug-addicted brain from non-drug dependent brain."
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "For signal modality, BEN provided the highest classification accuracy, while tissue volume provided the lowest.",
+         "start_char": 22835,
+         "end_char": 22946
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "extracted",
+    "value": "Table 2#1",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Table 2 lists the multi-modality based patient vs control classification accuracy.",
+         "start_char": 22752,
+         "end_char": 22834
+        }
+       ]
+      }
+     ]
     }
    },
    "coordinate_space": {
@@ -1574,20 +1458,8 @@
     }
    },
    "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  }
- ],
- "acquisitions": [
-  {
-   "local_id": "acq_mri",
-   "acquisition_type": "MRI",
-   "modality": {
     "extraction_status": "extracted",
-    "value": "MRI",
+    "value": "Linear support-vector machine models were combined using a multi-kernel combination approach and evaluated with 39 leave-one-out cross-validations.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1596,9 +1468,117 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MR imaging was conducted in a 3-T whole-body scanner (Siemens Medical Systems, Erlangen, Germany).",
+         "text": "Each modality feature was input into a separate SVM model, and the 3 models were subsequently combined using the multi-kernel combination approach ( Zhang et al., 2011 ).",
+         "start_char": 16978,
+         "end_char": 17148
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "acquisitions": [
+  {
+   "local_id": "acq_mri_structural",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "sMRI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "High-resolution structural images",
+         "start_char": 11838,
+         "end_char": 11871
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 3,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "MR imaging was conducted in a 3-T whole-body scanner",
          "start_char": 11739,
-         "end_char": 11837
+         "end_char": 11791
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "MPRAGE",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "High-resolution structural images were acquired for spatial brain normalization using a 3D MPRAGE sequence (TR/TE/TI = 1620/3/950ms).",
+         "start_char": 11838,
+         "end_char": 11971
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "repetition_time_seconds": {
+    "extraction_status": "extracted",
+    "value": 1.62,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TR/TE/TI = 1620/3/950ms",
+         "start_char": 11946,
+         "end_char": 11969
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "echo_time_seconds": {
+    "extraction_status": "extracted",
+    "value": [
+     0.003
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TR/TE/TI = 1620/3/950ms",
+         "start_char": 11946,
+         "end_char": 11969
         }
        ]
       }
@@ -1611,7 +1591,39 @@
      "status": "not_applicable"
     }
    },
-   "device": "dev_siemens",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "device": "dev_siemens_3t"
+  },
+  {
+   "local_id": "acq_mri_asl",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "fMRI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ASL perfusion MRI",
+         "start_char": 11972,
+         "end_char": 11989
+        }
+       ]
+      }
+     ]
+    }
+   },
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3,
@@ -1623,9 +1635,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MR imaging was conducted in a 3-T whole-body scanner (Siemens Medical Systems, Erlangen, Germany).",
+         "text": "MR imaging was conducted in a 3-T whole-body scanner",
          "start_char": 11739,
-         "end_char": 11837
+         "end_char": 11791
         }
        ]
       }
@@ -1634,16 +1646,145 @@
    },
    "pulse_sequence_type": {
     "extraction_status": "extracted",
-    "value": "MPRAGE, pseudo-continuous ASL, and gradient-echo echo-planar imaging",
+    "value": "pseudo-continuous ASL",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "ASL perfusion MRI was acquired using a pseudo-continuous ASL sequence ( Dai et al., 2008 ).",
+         "start_char": 11972,
+         "end_char": 12063
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "repetition_time_seconds": {
+    "extraction_status": "extracted",
+    "value": 4,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TR/TE=4000/17 ms",
+         "start_char": 12229,
+         "end_char": 12245
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "echo_time_seconds": {
+    "extraction_status": "extracted",
+    "value": [
+     0.017
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TR/TE=4000/17 ms",
+         "start_char": 12229,
+         "end_char": 12245
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "extracted",
+    "value": 180.0,
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
    },
-   "mr_acquisition_type": {
-    "extraction_status": "not_reported",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "partial",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found"
+    }
+   },
+   "device": "dev_siemens_3t"
+  },
+  {
+   "local_id": "acq_mri_bold",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "fMRI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "resting BOLD fMRI",
+         "start_char": 12356,
+         "end_char": 12373
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 3,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "MR imaging was conducted in a 3-T whole-body scanner",
+         "start_char": 11739,
+         "end_char": 11791
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "gradient-echo echo-planar imaging",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Gradient-echo echo-planar imaging sequence was used for resting BOLD fMRI data acquisition with parameters of: TR = 2s, TE = 30 ms, FOV = 220×220 mm2, matrix = 64×64×32, slice thickness= 4.5 mm.",
+         "start_char": 12300,
+         "end_char": 12494
+        }
+       ]
+      }
+     ]
     }
    },
    "repetition_time_seconds": {
@@ -1657,9 +1798,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Gradient-echo echo-planar imaging sequence was used for resting BOLD fMRI data acquisition with parameters of: TR = 2s, TE = 30 ms, FOV = 220×220 mm2, matrix = 64×64×32, slice thickness= 4.5 mm.",
-         "start_char": 12300,
-         "end_char": 12494
+         "text": "TR = 2s",
+         "start_char": 12411,
+         "end_char": 12418
         }
        ]
       }
@@ -1669,19 +1810,23 @@
    "echo_time_seconds": {
     "extraction_status": "extracted",
     "value": [
-     0.03,
-     0.017,
-     0.003
+     0.03
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "acquisition_voxel_size_mm": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "TE = 30 ms",
+         "start_char": 12420,
+         "end_char": 12430
+        }
+       ]
+      }
+     ]
     }
    },
    "number_of_volumes": {
@@ -1703,10 +1848,147 @@
       }
      ]
     }
-   }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "extracted",
+    "value": 360.0,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "device": "dev_siemens_3t"
+  },
+  {
+   "local_id": "acq_mri_multimodal",
+   "acquisition_type": "MRI",
+   "modality": {
+    "extraction_status": "extracted",
+    "value": "MRI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "MR imaging",
+         "start_char": 11739,
+         "end_char": 11749
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 3,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "MR imaging was conducted in a 3-T whole-body scanner",
+         "start_char": 11739,
+         "end_char": 11791
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_duration_seconds": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "brain_coverage": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "device": "dev_siemens_3t"
   }
  ],
  "assessments": [
+  {
+   "local_id": "asm_asi",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Addiction Severity Index",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Addiction Severity Index",
+         "start_char": 10278,
+         "end_char": 10302
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Severity of drug dependence (days of the past 30) was assessed using the Addiction Severity Index (ASI)",
+         "start_char": 10205,
+         "end_char": 10308
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The Addiction Severity Index was used to assess severity of cocaine dependence, operationalized as the number of days of cocaine use in the past 30 days.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Severity of drug dependence (days of the past 30) was assessed using the Addiction Severity Index (ASI) ( McLellan et al., 1980 ).",
+         "start_char": 10205,
+         "end_char": 10335
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
   {
    "local_id": "asm_mini",
    "name": {
@@ -1720,29 +2002,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Defined by the M.I.N.I. ( Sheehan et al., 1998 ), 6 patients had a diagnosis of alcohol dependence; 2 with alcohol abuse; 1 had marijuana dependence; and 2 had marijuana abuse.",
-         "start_char": 9854,
-         "end_char": 10030
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Diagnostic interview used to define additional substance-use diagnoses.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Defined by the M.I.N.I. ( Sheehan et al., 1998 ), 6 patients had a diagnosis of alcohol dependence; 2 with alcohol abuse; 1 had marijuana dependence; and 2 had marijuana abuse.",
-         "start_char": 9854,
-         "end_char": 10030
+         "text": "M.I.N.I.",
+         "start_char": 9869,
+         "end_char": 9877
         }
        ]
       }
@@ -1754,26 +2016,15 @@
     "value": "diagnostic interview",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_asi",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Addiction Severity Index (ASI)",
-    "value_source": "reported",
-    "evidence": {
      "status": "present",
      "sets": [
       {
        "source": "model_quote",
        "spans": [
         {
-         "text": "Severity of drug dependence (days of the past 30) was assessed using the Addiction Severity Index (ASI) ( McLellan et al., 1980 ).",
-         "start_char": 10205,
-         "end_char": 10335
+         "text": "Defined by the M.I.N.I.",
+         "start_char": 9854,
+         "end_char": 9877
         }
        ]
       }
@@ -1782,7 +2033,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Assessment of severity of drug dependence.",
+    "value": "The M.I.N.I. was used to identify comorbid substance-use diagnoses among patients: six had alcohol dependence, two had alcohol abuse, one had marijuana dependence, and two had marijuana abuse.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1791,29 +2042,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Severity of drug dependence (days of the past 30) was assessed using the Addiction Severity Index (ASI) ( McLellan et al., 1980 ).",
-         "start_char": 10205,
-         "end_char": 10335
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical scale",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Severity of drug dependence (days of the past 30) was assessed using the Addiction Severity Index (ASI) ( McLellan et al., 1980 ).",
-         "start_char": 10205,
-         "end_char": 10335
+         "text": "Defined by the M.I.N.I. ( Sheehan et al., 1998 ), 6 patients had a diagnosis of alcohol dependence; 2 with alcohol abuse; 1 had marijuana dependence; and 2 had marijuana abuse.",
+         "start_char": 9854,
+         "end_char": 10030
         }
        ]
       }
@@ -1843,30 +2074,19 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Scale measuring drug craving scores.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Drug craving scores were recorded before the MRI scan using the Brief Substance Craving Scale ( Somoza et al., 1995 ).",
-         "start_char": 11500,
-         "end_char": 11618
-        }
-       ]
-      }
-     ]
-    }
-   },
    "assessment_type": {
     "extraction_status": "extracted",
     "value": "clinical scale",
     "value_source": "generated",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The Brief Substance Craving Scale was administered before MRI scanning to record drug-craving scores.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1887,7 +2107,7 @@
  ],
  "devices": [
   {
-   "local_id": "dev_siemens",
+   "local_id": "dev_siemens_3t",
    "manufacturer": {
     "extraction_status": "extracted",
     "value": "Siemens Medical Systems",
@@ -1932,10 +2152,10 @@
  ],
  "groups": [
   {
-   "local_id": "grp_drug",
+   "local_id": "grp_cocaine",
    "name": {
     "extraction_status": "extracted",
-    "value": "DRUG cocaine patients",
+    "value": "cocaine patients",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1944,29 +2164,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty treatment-seeking cocaine patients (DRUG)",
-         "start_char": 9304,
-         "end_char": 9352
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Treatment-seeking cocaine patients.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty treatment-seeking cocaine patients (DRUG)",
-         "start_char": 9304,
-         "end_char": 9352
+         "text": "cocaine patients",
+         "start_char": 4055,
+         "end_char": 4071
         }
        ]
       }
@@ -1984,41 +2184,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty treatment-seeking cocaine patients (DRUG)",
-         "start_char": 9304,
-         "end_char": 9352
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 20,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty treatment-seeking cocaine patients (DRUG)",
-         "start_char": 9304,
-         "end_char": 9352
+         "text": "human",
+         "start_char": 6003,
+         "end_char": 6008
         }
        ]
       }
@@ -2036,19 +2204,104 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty treatment-seeking cocaine patients (DRUG)",
+         "text": "Twenty treatment-seeking cocaine patients",
          "start_char": 9304,
-         "end_char": 9352
+         "end_char": 9345
         }
        ]
       }
      ]
     }
    },
-   "excluded_count": {
-    "extraction_status": "not_reported",
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "cocaine dependence",
+     "alcohol dependence",
+     "alcohol abuse",
+     "marijuana dependence",
+     "marijuana abuse"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "6 patients had a diagnosis of alcohol dependence; 2 with alcohol abuse; 1 had marijuana dependence; and 2 had marijuana abuse.",
+         "start_char": 9904,
+         "end_char": 10030
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "with a DSM-IV diagnosis of cocaine dependence",
+         "start_char": 9459,
+         "end_char": 9504
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_mini"
+   ],
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Severity of drug dependence (days of the past 30) was assessed using the Addiction Severity Index (ASI).",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Severity of drug dependence (days of the past 30) was assessed using the Addiction Severity Index (ASI) ( McLellan et al., 1980 ).",
+         "start_char": 10205,
+         "end_char": 10335
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "treatment-seeking"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Twenty treatment-seeking cocaine patients",
+         "start_char": 9304,
+         "end_char": 9345
+        }
+       ]
+      }
+     ]
     }
    },
    "inclusion_criteria": {
@@ -2151,8 +2404,28 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "age 42.15±4.3 (mean ± standard deviation (std)), years of education 10.07±1.7",
-         "start_char": 9354,
+         "text": "years",
+         "start_char": 9403,
+         "end_char": 9408
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "10.07±1.7 years of education",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "years of education 10.07±1.7",
+         "start_char": 9403,
          "end_char": 9431
         }
        ]
@@ -2193,9 +2466,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "all African-American men",
-           "start_char": 9433,
-           "end_char": 9457
+           "text": "Twenty treatment-seeking cocaine patients",
+           "start_char": 9304,
+           "end_char": 9345
           }
          ]
         }
@@ -2207,6 +2480,22 @@
       "value": 100.0,
       "value_source": "reported",
       "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 20,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "extracted",
+      "value": "All participants were African-American men.",
+      "value_source": "reported",
+      "evidence": {
        "status": "present",
        "sets": [
         {
@@ -2222,7 +2511,51 @@
        ]
       }
      },
-     "denominator": {
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "men",
+           "start_char": 570,
+           "end_char": 573
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "race_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "African-American",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "African-American",
+           "start_char": 9437,
+           "end_char": 9453
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
       "extraction_status": "extracted",
       "value": 20,
       "value_source": "reported",
@@ -2233,18 +2566,34 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Twenty treatment-seeking cocaine patients (DRUG)",
+           "text": "Twenty treatment-seeking cocaine patients",
            "start_char": 9304,
-           "end_char": 9352
+           "end_char": 9345
           }
          ]
         }
        ]
       }
      },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 20,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
      "reporting_framework": {
       "extraction_status": "extracted",
-      "value": "all African-American men",
+      "value": "All participants were African-American men.",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -2261,26 +2610,38 @@
         }
        ]
       }
+     },
+     "category_normalized": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
      }
     }
    ],
-   "is_healthy": {
+   "medication_status": {
     "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
+    "value": "drug-free",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Patients had 4–8 days of residential stabilization prior to study entry, during which they were drug-free, verified by urine drug screens (cocaine, amphetamines, cannabinoids, opiates, and phencyclidine, and alcohol).",
+         "start_char": 11209,
+         "end_char": 11426
+        }
+       ]
+      }
+     ]
     }
    },
-   "medical_condition": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": [
-     "cocaine dependence",
-     "alcohol dependence",
-     "alcohol abuse",
-     "marijuana dependence",
-     "marijuana abuse"
-    ],
+    "value": "previously_reported",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2289,18 +2650,18 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Defined by the M.I.N.I. ( Sheehan et al., 1998 ), 6 patients had a diagnosis of alcohol dependence; 2 with alcohol abuse; 1 had marijuana dependence; and 2 had marijuana abuse.",
-         "start_char": 9854,
-         "end_char": 10030
+         "text": "The same cocaine dependent cohort and control subjects as in ( Wang et al., 2015 ) were included in the current study.",
+         "start_char": 9054,
+         "end_char": 9172
         }
        ]
       }
      ]
     }
    },
-   "diagnostic_system": {
+   "sample_source_reference": {
     "extraction_status": "extracted",
-    "value": "DSM-IV",
+    "value": "(Wang et al., 2015)",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2308,22 +2669,61 @@
       {
        "source": "model_quote",
        "spans": [
+        {
+         "text": "( Wang et al., 2015 )",
+         "start_char": 9115,
+         "end_char": 9136
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Twenty treatment-seeking cocaine-dependent patients with DSM-IV cocaine dependence, recruited from the local community of West Philadelphia, who underwent multimodal MRI and were compared with age-, ethnicity-, and race-matched controls.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Twenty treatment-seeking cocaine patients (DRUG)",
+         "start_char": 9304,
+         "end_char": 9352
+        },
         {
          "text": "with a DSM-IV diagnosis of cocaine dependence",
          "start_char": 9459,
          "end_char": 9504
+        },
+        {
+         "text": "were recruited from the local community of West Philadelphia",
+         "start_char": 9554,
+         "end_char": 9614
         }
        ]
       }
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_mini"
-   ],
-   "clinical_characteristics": {
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
     "extraction_status": "extracted",
-    "value": "Treatment-seeking; 4–8 days of residential stabilization and drug-free before study entry.",
+    "value": 20,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2332,38 +2732,24 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Patients had 4–8 days of residential stabilization prior to study entry, during which they were drug-free, verified by urine drug screens",
-         "start_char": 11209,
-         "end_char": 11346
+         "text": "Twenty treatment-seeking cocaine patients",
+         "start_char": 9304,
+         "end_char": 9345
         }
        ]
       }
      ]
     }
    },
-   "medication_status": {
-    "extraction_status": "extracted",
-    "value": "not receiving psychotropic medications; drug-free before study entry",
-    "value_source": "reported",
+   "excluded_count": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Patients were not using medications that may cause sedation or are known to modify brain dopamine systems during the previous 60 days.",
-         "start_char": 10618,
-         "end_char": 10752
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Recruited from the local community of West Philadelphia; treatment-seeking cocaine patients.",
+    "value": "Recruited from the local community of West Philadelphia; treatment-seeking cocaine patients had 4–8 days of residential stabilization before study entry.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2406,29 +2792,11 @@
     }
    },
    "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
     "extraction_status": "extracted",
-    "value": "Mean years of education: 10.07 ± 1.7 years.",
+    "value": [],
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "years of education 10.07±1.7",
-         "start_char": 9403,
-         "end_char": 9431
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "socioeconomic_status_summary": {
@@ -2436,13 +2804,17 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  },
-  {
-   "local_id": "grp_ctl",
-   "name": {
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "cited_elsewhere",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
     "extraction_status": "extracted",
-    "value": "CTL controls",
+    "value": false,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2451,18 +2823,23 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "19 age/ethnicity/race-matched controls (CTL)",
-         "start_char": 9509,
-         "end_char": 9553
+         "text": "a DSM-IV diagnosis of cocaine dependence",
+         "start_char": 9464,
+         "end_char": 9504
+        },
+        {
+         "text": "Patients had",
+         "start_char": 11209,
+         "end_char": 11221
         }
        ]
       }
      ]
     }
    },
-   "description": {
+   "age_unit_normalized": {
     "extraction_status": "extracted",
-    "value": "Age/ethnicity/race-matched control participants recruited from the local community of West Philadelphia.",
+    "value": "years",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2471,9 +2848,32 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "19 age/ethnicity/race-matched controls (CTL) were recruited from the local community of West Philadelphia",
-         "start_char": 9509,
-         "end_char": 9614
+         "text": "years",
+         "start_char": 9403,
+         "end_char": 9408
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "grp_control",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "age-matched controls",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "age-matched controls",
+         "start_char": 724,
+         "end_char": 744
         }
        ]
       }
@@ -2491,29 +2891,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "19 age/ethnicity/race-matched controls (CTL)",
-         "start_char": 9509,
-         "end_char": 9553
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 19,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "19 age/ethnicity/race-matched controls (CTL)",
-         "start_char": 9509,
-         "end_char": 9553
+         "text": "human",
+         "start_char": 6003,
+         "end_char": 6008
         }
        ]
       }
@@ -2531,9 +2911,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "19 age/ethnicity/race-matched controls (CTL)",
+         "text": "19 age/ethnicity/race-matched controls",
          "start_char": 9509,
-         "end_char": 9553
+         "end_char": 9547
         }
        ]
       }
@@ -2591,9 +2971,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "age, 39.9±4.5",
-         "start_char": 9616,
-         "end_char": 9629
+         "text": "years",
+         "start_char": 9403,
+         "end_char": 9408
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "14.9±2.9 yrs",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Twenty treatment-seeking cocaine patients (DRUG) (age 42.15±4.3 (mean ± standard deviation (std)), years of education 10.07±1.7, all African-American men) with a DSM-IV diagnosis of cocaine dependence and 19 age/ethnicity/race-matched controls (CTL) were recruited from the local community of West Philadelphia (age, 39.9±4.5; education, 14.9±2.9 yrs; all African-American men).",
+         "start_char": 9304,
+         "end_char": 9682
         }
        ]
       }
@@ -2627,7 +3027,19 @@
       "value": 19,
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "19 age/ethnicity/race-matched controls",
+           "start_char": 9509,
+           "end_char": 9547
+          }
+         ]
+        }
+       ]
       }
      },
      "percentage": {
@@ -2641,24 +3053,232 @@
      "denominator": {
       "extraction_status": "extracted",
       "value": 19,
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
       }
      },
      "reporting_framework": {
       "extraction_status": "extracted",
-      "value": "all African-American men",
+      "value": "All participants were African-American men.",
       "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "all African-American men",
+           "start_char": 9433,
+           "end_char": 9457
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "men",
+           "start_char": 570,
+           "end_char": 573
+          }
+         ]
+        }
+       ]
       }
      }
     }
    ],
-   "is_healthy": {
+   "race_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "African-American",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "African-American",
+           "start_char": 9437,
+           "end_char": 9453
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 19,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "19 age/ethnicity/race-matched controls",
+           "start_char": 9509,
+           "end_char": 9547
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 19,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "extracted",
+      "value": "All participants were African-American men.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "all African-American men",
+           "start_char": 9433,
+           "end_char": 9457
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": true,
+    "value": "previously_reported",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The same cocaine dependent cohort and control subjects as in ( Wang et al., 2015 ) were included in the current study.",
+         "start_char": 9054,
+         "end_char": 9172
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "(Wang et al., 2015)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "( Wang et al., 2015 )",
+         "start_char": 9115,
+         "end_char": 9136
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Nineteen age-, ethnicity-, and race-matched controls recruited from the local community of West Philadelphia for comparison with cocaine-dependent patients; all were African-American men and were not dependent on any substances, including alcohol and nicotine.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 19,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "19 age/ethnicity/race-matched controls",
+         "start_char": 9509,
+         "end_char": 9547
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Age-, ethnicity-, and race-matched to the cocaine-dependent group",
+     "No dependence on any substances, including alcohol and nicotine"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2676,72 +3296,10 @@
      ]
     }
    },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_mini"
-   ],
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Age-, ethnicity-, and race-matched to the cocaine-dependent group",
-     "No dependence on any substances including alcohol and nicotine"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "19 age/ethnicity/race-matched controls (CTL)",
-         "start_char": 9509,
-         "end_char": 9553
-        }
-       ]
-      }
-     ]
-    }
-   },
    "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Substance dependence, including alcohol and nicotine",
-     "Cardiovascular, hematologic, hepatic, renal, neurological, or endocrinological abnormalities",
-     "History of head trauma or injury",
-     "Gambling problems",
-     "History of psychosis or neurocognitive disorders unrelated to drug abuse",
-     "Other severe psychiatric disorders",
-     "Use of caffeine within 2 hours before MRI scans"
-    ],
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "recruitment_method": {
@@ -2788,6 +3346,37 @@
      "status": "not_applicable"
     }
    },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "All African-American men",
+     "Not dependent on any substances, including alcohol and nicotine"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "all African-American men",
+         "start_char": 9433,
+         "end_char": 9457
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "diagnostic_system": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -2796,7 +3385,44 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Age-, ethnicity-, and race-matched community controls; all African-American men; not dependent on any substances including alcohol and nicotine.",
+    "value": "Controls were age-matched to the cocaine-dependent group; mean age 39.9 ± 4.5 years and mean education 14.9 ± 2.9 years.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medications": {
+    "extraction_status": "extracted",
+    "value": [],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "extracted",
+    "value": "unmedicated",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "cited_elsewhere",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2814,21 +3440,9 @@
      ]
     }
    },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
+   "age_unit_normalized": {
     "extraction_status": "extracted",
-    "value": "Mean years of education: 14.9 ± 2.9 years.",
+    "value": "years",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2837,30 +3451,52 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "education, 14.9±2.9 yrs",
-         "start_char": 9631,
-         "end_char": 9654
+         "text": "years",
+         "start_char": 9403,
+         "end_char": 9408
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "regions": [
+  {
+   "local_id": "reg_multimodal_rois",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "suprathreshold modality-specific ROI clusters",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "same_study_analysis",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The suprathreshold clusters identified from each of the two-sample t-tests for each modality as previously mentioned were used as regions-of-interest (ROIs)",
+         "start_char": 16575,
+         "end_char": 16731
         }
        ]
       }
      ]
     }
    },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  }
- ],
- "tasks": [
-  {
-   "local_id": "tsk_rest",
-   "name": {
+   "region_type": {
     "extraction_status": "extracted",
-    "value": "resting state MRI protocol",
-    "value_source": "reported",
+    "value": "functional_cluster",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2868,9 +3504,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "resting BOLD fMRI data acquisition",
-         "start_char": 12356,
-         "end_char": 12390
+         "text": "regions-of-interest (ROIs)",
+         "start_char": 16705,
+         "end_char": 16731
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "MNI standard space",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Structural images were spatially registered to a local template generated from the all the subjects and subsequently to the MNI standard space.",
+         "start_char": 12656,
+         "end_char": 12799
         }
        ]
       }
@@ -2879,7 +3535,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Participants lay still in the scanner at rest with eyes open during resting BOLD fMRI acquisition.",
+    "value": "Suprathreshold clusters from the modality-specific patient-versus-control voxelwise t-tests were used as regions of interest for extracting tissue-volume, CBF, and BEN data.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2888,385 +3544,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants were asked to lie still in the scanner at rest and keep eyes open.",
-         "start_char": 12495,
-         "end_char": 12574
+         "text": "The suprathreshold clusters identified from each of the two-sample t-tests for each modality as previously mentioned were used as regions-of-interest (ROIs) to extract data from the corresponding modality images.",
+         "start_char": 16575,
+         "end_char": 16787
         }
        ]
       }
      ]
-    }
-   },
-   "conditions": [],
-   "design_type": {
-    "extraction_status": "extracted",
-    "value": "continuous with no modelled events",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Participants were asked to lie still in the scanner at rest and keep eyes open.",
-         "start_char": 12495,
-         "end_char": 12574
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "instructions": {
-    "extraction_status": "extracted",
-    "value": "lie still in the scanner at rest and keep eyes open",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Participants were asked to lie still in the scanner at rest and keep eyes open.",
-         "start_char": 12495,
-         "end_char": 12574
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stimuli": {
-    "extraction_status": "extracted",
-    "value": "none reported",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Participants were asked to lie still in the scanner at rest and keep eyes open.",
-         "start_char": 12495,
-         "end_char": 12574
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "response_mode": {
-    "extraction_status": "extracted",
-    "value": [
-     "none"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "performance_measures": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "presentation_software": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  }
- ],
- "inference_settings": [
-  {
-   "local_id": "inf_cluster",
-   "inference_level": {
-    "extraction_status": "extracted",
-    "value": "cluster",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "A p<0.005 (uncorrected) was used to collect the suprathreshold clusters, which was further thresholded with a cluster threshold of 76 voxels",
-         "start_char": 17943,
-         "end_char": 18083
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "height_threshold_value": {
-    "extraction_status": "extracted",
-    "value": 0.005,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "A p<0.005 (uncorrected) was used to collect the suprathreshold clusters, which was further thresholded with a cluster threshold of 76 voxels (corrected for multiple comparison using Monto-Carlo simulation through the AlphaSim provided in AFNI ( http://afni.nimh.nih.gov/afni/ ), alpha<0.05).",
-         "start_char": 17943,
-         "end_char": 18234
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "height_threshold_type": {
-    "extraction_status": "extracted",
-    "value": "p",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "A p<0.005 (uncorrected) was used to collect the suprathreshold clusters",
-         "start_char": 17943,
-         "end_char": 18014
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "cluster_extent_threshold": {
-    "extraction_status": "extracted",
-    "value": 76,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "A p<0.005 (uncorrected) was used to collect the suprathreshold clusters, which was further thresholded with a cluster threshold of 76 voxels (corrected for multiple comparison using Monto-Carlo simulation through the AlphaSim provided in AFNI ( http://afni.nimh.nih.gov/afni/ ), alpha<0.05).",
-         "start_char": 17943,
-         "end_char": 18234
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "clusterwise_threshold_value": {
-    "extraction_status": "extracted",
-    "value": 0.05,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "alpha<0.05",
-         "start_char": 18222,
-         "end_char": 18232
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "multiple_comparison_method": {
-    "extraction_status": "extracted",
-    "value": "AlphaSim Monte-Carlo simulation",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "corrected for multiple comparison using Monto-Carlo simulation through the AlphaSim",
-         "start_char": 18085,
-         "end_char": 18168
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "correction_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "alpha_level": {
-    "extraction_status": "extracted",
-    "value": 0.05,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "alpha<0.05",
-         "start_char": 18222,
-         "end_char": 18232
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "search_volume": {
-    "extraction_status": "extracted",
-    "value": "whole brain",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "neighborhood_definition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "tfce_used": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "tfce_parameters": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "permutation_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "number_of_tests": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "inf_classification",
-   "inference_level": {
-    "extraction_status": "extracted",
-    "value": "classification",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "height_threshold_value": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "multiple_comparison_method": {
-    "extraction_status": "extracted",
-    "value": "permutation test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "height_threshold_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "cluster_extent_threshold": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clusterwise_threshold_value": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "correction_scope": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "search_volume": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "neighborhood_definition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "tfce_used": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "tfce_parameters": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "permutation_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "alpha_level": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "number_of_tests": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    }
   }
@@ -3285,9 +3569,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Structural alterations were found to be mainly located in VMPFC and OFC",
-         "start_char": 23925,
-         "end_char": 23996
+         "text": "structural",
+         "start_char": 326,
+         "end_char": 336
         }
        ]
       }
@@ -3305,9 +3589,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "significant grey matter atrophy",
-         "start_char": 18463,
-         "end_char": 18494
+         "text": "GM volume",
+         "start_char": 18330,
+         "end_char": 18339
         }
        ]
       }
@@ -3335,9 +3619,23 @@
     }
    },
    "specific_metric": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Voxel-based morphometry gray-matter tissue volume",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "GM volume",
+         "start_char": 18330,
+         "end_char": 18339
+        }
+       ]
+      }
+     ]
     }
    },
    "unit": {
@@ -3360,9 +3658,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "hypoperfusion",
-         "start_char": 5702,
-         "end_char": 5715
+         "text": "perfusion",
+         "start_char": 917,
+         "end_char": 926
         }
        ]
       }
@@ -3380,9 +3678,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "hypoperfusion",
-         "start_char": 5702,
-         "end_char": 5715
+         "text": "CBF",
+         "start_char": 5064,
+         "end_char": 5067
         }
        ]
       }
@@ -3411,7 +3709,7 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "CBF",
+    "value": "Arterial spin labeling cerebral blood flow",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3420,9 +3718,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "CBF",
-         "start_char": 5064,
-         "end_char": 5067
+         "text": "ASL perfusion MRI",
+         "start_char": 11972,
+         "end_char": 11989
         }
        ]
       }
@@ -3449,9 +3747,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "resting BOLD fMRI",
-         "start_char": 12356,
-         "end_char": 12373
+         "text": "functional",
+         "start_char": 341,
+         "end_char": 351
         }
        ]
       }
@@ -3500,18 +3798,18 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "SampEn",
+    "value": "Sample Entropy (SampEn)",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "SampEn",
-         "start_char": 6393,
-         "end_char": 6399
+         "text": "Recently, we have demonstrated that regional BEN can be reliably mapped in the normal brain using resting state fMRI (rsfMRI) where entropy was approximately measured with the Sample Entropy (SampEn) ( Wang et al., 2014 ).",
+         "start_char": 6201,
+         "end_char": 6423
         }
        ]
       }
@@ -3538,9 +3836,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "multi-modal classification",
-         "start_char": 21377,
-         "end_char": 21403
+         "text": "functional",
+         "start_char": 341,
+         "end_char": 351
         }
        ]
       }
@@ -3578,9 +3876,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "patient vs control classification accuracy",
-         "start_char": 22791,
-         "end_char": 22833
+         "text": "classification accuracy",
+         "start_char": 1760,
+         "end_char": 1783
         }
        ]
       }
@@ -3589,7 +3887,7 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "patient-versus-control classification accuracy",
+    "value": "Patient-versus-control classification accuracy",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3598,9 +3896,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "classification accuracy",
-         "start_char": 1760,
-         "end_char": 1783
+         "text": "patient vs control brain classification",
+         "start_char": 1735,
+         "end_char": 1774
         }
        ]
       }
@@ -3618,9 +3916,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "84.6%",
-         "start_char": 23224,
-         "end_char": 23229
+         "text": "accuracy",
+         "start_char": 1775,
+         "end_char": 1783
         }
        ]
       }
@@ -3631,25 +3929,13 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_group_tissue",
+   "local_id": "mod_group_voxelwise",
    "model_family": {
     "extraction_status": "extracted",
-    "value": "ancova",
+    "value": "anova",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-wise patient vs CTL comparisons on tissue volume, CBF, and BEN were performed using two sample t-test implemented in SPM8.",
-         "start_char": 15695,
-         "end_char": 15823
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "model_type": {
@@ -3683,9 +3969,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Voxel-wise patient vs CTL comparisons on tissue volume, CBF, and BEN were performed using two sample t-test implemented in SPM8.",
-         "start_char": 15695,
-         "end_char": 15823
+         "text": "Group level analyses of tissue volume, CBF, and BEN",
+         "start_char": 15642,
+         "end_char": 15693
         }
        ]
       }
@@ -3703,9 +3989,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Voxel-wise patient vs CTL comparisons",
+         "text": "Voxel-wise",
          "start_char": 15695,
-         "end_char": 15732
+         "end_char": 15705
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM8",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "SPM8",
+         "start_char": 12957,
+         "end_char": 12961
         }
        ]
       }
@@ -3714,11 +4020,11 @@
    },
    "terms": [
     {
-     "local_id": "trm_group_tissue",
+     "local_id": "mod_group_voxelwise.trm_group_volume",
      "name": {
       "extraction_status": "extracted",
-      "value": "participant group for tissue volume",
-      "value_source": "generated",
+      "value": "patient versus control group for tissue volume",
+      "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
@@ -3726,9 +4032,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy",
-           "start_char": 18401,
-           "end_char": 18494
+           "text": "patient vs CTL comparisons on tissue volume",
+           "start_char": 15706,
+           "end_char": 15749
           }
          ]
         }
@@ -3755,74 +4061,6 @@
        ]
       }
      },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "cocaine patients",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "cocaine patients",
-             "start_char": 4055,
-             "end_char": 4071
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_drug"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "age-matched controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "age-matched controls",
-             "start_char": 724,
-             "end_char": 744
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_ctl"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      }
-     ],
      "variation_level": {
       "extraction_status": "extracted",
       "value": "between_subject",
@@ -3834,198 +4072,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy",
-           "start_char": 18401,
-           "end_char": 18494
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "Age and education years were included as nuisance variables; total brain volume was also included as a nuisance variable for tissue-volume analysis. Voxelwise two-sample t-test; p<0.005 uncorrected with cluster threshold of 76 voxels, AlphaSim-corrected alpha<0.05.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "SPM8 voxelwise two-sample t-test.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "implemented in SPM8",
-         "start_char": 12942,
-         "end_char": 12961
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "preprocessing": [
-    "prp_mri"
-   ]
-  },
-  {
-   "local_id": "mod_group_cbf",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-wise patient vs CTL comparisons on tissue volume, CBF, and BEN were performed using two sample t-test implemented in SPM8.",
-         "start_char": 15695,
-         "end_char": 15823
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "voxel-wise patient vs CTL comparison",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-wise patient vs CTL comparisons",
-         "start_char": 15695,
-         "end_char": 15732
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-wise patient vs CTL comparisons on tissue volume, CBF, and BEN were performed using two sample t-test implemented in SPM8.",
-         "start_char": 15695,
-         "end_char": 15823
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "voxel",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-wise patient vs CTL comparisons",
-         "start_char": 15695,
-         "end_char": 15732
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "terms": [
-    {
-     "local_id": "trm_group_cbf",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "participant group for CBF",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy",
-           "start_char": 18401,
-           "end_char": 18494
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "two sample t-test",
-           "start_char": 15785,
-           "end_char": 15802
+           "text": "patients and controls",
+           "start_char": 11624,
+           "end_char": 11645
           }
          ]
         }
@@ -4045,8 +4094,8 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "cocaine patients",
-             "start_char": 4055,
+             "text": "patients",
+             "start_char": 4063,
              "end_char": 4071
             }
            ]
@@ -4055,12 +4104,12 @@
         }
        },
        "groups": [
-        "grp_drug"
+        "grp_cocaine"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 1,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -4070,563 +4119,6 @@
        "level": {
         "extraction_status": "extracted",
         "value": "age-matched controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "age-matched controls",
-             "start_char": 724,
-             "end_char": 744
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_ctl"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      }
-     ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy",
-           "start_char": 18401,
-           "end_char": 18494
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "Age and education years were included as nuisance variables. Voxelwise two-sample t-test; p<0.005 uncorrected with cluster threshold of 76 voxels, AlphaSim-corrected alpha<0.05.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "SPM8 voxelwise two-sample t-test.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "implemented in SPM8",
-         "start_char": 12942,
-         "end_char": 12961
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "preprocessing": [
-    "prp_mri"
-   ]
-  },
-  {
-   "local_id": "mod_group_ben",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-wise patient vs CTL comparisons on tissue volume, CBF, and BEN were performed using two sample t-test implemented in SPM8.",
-         "start_char": 15695,
-         "end_char": 15823
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "voxel-wise patient vs CTL comparison",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-wise patient vs CTL comparisons",
-         "start_char": 15695,
-         "end_char": 15732
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-wise patient vs CTL comparisons on tissue volume, CBF, and BEN were performed using two sample t-test implemented in SPM8.",
-         "start_char": 15695,
-         "end_char": 15823
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "voxel",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Voxel-wise patient vs CTL comparisons",
-         "start_char": 15695,
-         "end_char": 15732
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "terms": [
-    {
-     "local_id": "trm_group_ben",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "participant group for BEN",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy",
-           "start_char": 18401,
-           "end_char": 18494
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "two sample t-test",
-           "start_char": 15785,
-           "end_char": 15802
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "cocaine patients",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "cocaine patients",
-             "start_char": 4055,
-             "end_char": 4071
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_drug"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "age-matched controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "age-matched controls",
-             "start_char": 724,
-             "end_char": 744
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_ctl"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      }
-     ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Compared to the age-matched controls, cocaine patients showed significant grey matter atrophy",
-           "start_char": 18401,
-           "end_char": 18494
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "Age and education years were included as nuisance variables. Voxelwise two-sample t-test; p<0.005 uncorrected with cluster threshold of 76 voxels, AlphaSim-corrected alpha<0.05.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "SPM8 voxelwise two-sample t-test.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "implemented in SPM8",
-         "start_char": 12942,
-         "end_char": 12961
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "preprocessing": [
-    "prp_mri"
-   ],
-   "inputs_from": [
-    "mod_group_cbf"
-   ]
-  },
-  {
-   "local_id": "mod_svm_classification",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "classification model",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "support-vector machine (SVM) learning-based patients vs control brain classification",
-         "start_char": 16848,
-         "end_char": 16932
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "multi-modal SVM classification model",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "multi-modal imaging-based patient vs control brain classification",
-         "start_char": 16508,
-         "end_char": 16573
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "subject and group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "multi-modal imaging-based patient vs control brain classification",
-         "start_char": 16508,
-         "end_char": 16573
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "These ROI data were then used as multivariate features in a support-vector machine (SVM) learning-based patients vs control brain classification ( Wang et al., 2007a ; Zhang et al., 2014 ).",
-         "start_char": 16788,
-         "end_char": 16977
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "terms": [
-    {
-     "local_id": "trm_group_svm",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "participant group for classification",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "known categories of the subjects (cocaine patients marked by 0s, and controls marked by 1s)",
-           "start_char": 17520,
-           "end_char": 17611
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "known categories",
-           "start_char": 17520,
-           "end_char": 17536
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "cocaine patients",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "cocaine patients",
-             "start_char": 4055,
-             "end_char": 4071
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_drug"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "controls",
         "value_source": "reported",
         "evidence": {
          "status": "present",
@@ -4645,38 +4137,18 @@
         }
        },
        "groups": [
-        "grp_ctl"
+        "grp_control"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
        }
       }
      ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "one subject was selected as the testing sample while the others were used as the training samples",
-           "start_char": 17363,
-           "end_char": 17460
-          }
-         ]
-        }
-       ]
-      }
-     },
      "functional_form": {
       "extraction_status": "not_reported",
       "evidence": {
@@ -4690,9 +4162,291 @@
       }
      },
      "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Patient-versus-control group factor comparing cocaine patients with age-matched controls.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_group_cbf",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "patient versus control group for CBF",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "two sample t-test",
+           "start_char": 15785,
+           "end_char": 15802
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "patients and controls",
+           "start_char": 11624,
+           "end_char": 11645
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "cocaine patients",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "patients",
+             "start_char": 4063,
+             "end_char": 4071
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_cocaine"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "age-matched controls",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls",
+             "start_char": 736,
+             "end_char": 744
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_control"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      }
+     ],
+     "functional_form": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Patient-versus-control group factor comparing cocaine patients with age-matched controls.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     }
+    },
+    {
+     "local_id": "trm_group_ben",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "patient versus control group for BEN",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "two sample t-test",
+           "start_char": 15785,
+           "end_char": 15802
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "patients and controls",
+           "start_char": 11624,
+           "end_char": 11645
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "cocaine patients",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "patients",
+             "start_char": 4063,
+             "end_char": 4071
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_cocaine"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "age-matched controls",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls",
+             "start_char": 736,
+             "end_char": 744
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_control"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Patient-versus-control group factor comparing cocaine patients with age-matched controls.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
       }
      }
     }
@@ -4705,7 +4459,7 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Linear SVM; suprathreshold modality-specific clusters were used as ROIs; 39 leave-one-out cross-validations; separate modality models were combined using a multi-kernel combination approach.",
+    "value": "Voxelwise two-sample t-tests implemented in SPM8; age and education years were included as nuisance variables, and total brain volume was additionally included for tissue-volume analyses.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4714,9 +4468,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Linear SVM was used because it is widely considered sufficient for neuroimaging data",
-         "start_char": 17149,
-         "end_char": 17233
+         "text": "Age and education years were included as nuisance variables.",
+         "start_char": 15824,
+         "end_char": 15884
         }
        ]
       }
@@ -4724,26 +4478,6 @@
     }
    },
    "estimator": {
-    "extraction_status": "extracted",
-    "value": "support-vector machine",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "support-vector machine",
-         "start_char": 16848,
-         "end_char": 16870
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -4752,6 +4486,600 @@
    "preprocessing": [
     "prp_mri"
    ]
+  },
+  {
+   "local_id": "mod_svm_classification",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "glm",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "support-vector machine (SVM) learning-based patients vs control brain classification",
+         "start_char": 16848,
+         "end_char": 16932
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "support-vector machine classification model",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "support-vector machine (SVM) learning-based patients vs control brain classification",
+         "start_char": 16848,
+         "end_char": 16932
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "classification",
+         "start_char": 1760,
+         "end_char": 1774
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel-wise",
+         "start_char": 1658,
+         "end_char": 1668
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_svm",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "patient versus control group for classification",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "patients vs control brain classification",
+           "start_char": 16892,
+           "end_char": 16932
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "SVM model",
+           "start_char": 17026,
+           "end_char": 17035
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "patients vs control",
+           "start_char": 16892,
+           "end_char": 16911
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "cocaine patients",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "cocaine patients marked by 0s",
+             "start_char": 17554,
+             "end_char": 17583
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_cocaine"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "age-matched controls",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls marked by 1s",
+             "start_char": 17589,
+             "end_char": 17610
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_control"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Patient-versus-control group labels used for SVM classification; cocaine patients were coded 0 and controls 1.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "the known categories of the subjects (cocaine patients marked by 0s, and controls marked by 1s)",
+           "start_char": 17516,
+           "end_char": 17611
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "local_id": "mod_svm_classification.trm_group_volume",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "patient versus control group for tissue volume",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "tissue volume",
+           "start_char": 841,
+           "end_char": 854
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "modality feature",
+           "start_char": 16983,
+           "end_char": 16999
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "separate SVM model",
+           "start_char": 17017,
+           "end_char": 17035
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Tissue-volume modality feature used for patient-versus-control classification.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Each modality feature was input into a separate SVM model",
+           "start_char": 16978,
+           "end_char": 17035
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Linear support-vector machine classification with 39 leave-one-out cross-validations; modality-specific ROI features were combined using a multi-kernel combination approach.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Linear SVM was used",
+         "start_char": 17149,
+         "end_char": 17168
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM8 for image processing; linear SVM and multi-kernel combination approach, with implementation details not otherwise specified.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "SPM8",
+         "start_char": 12957,
+         "end_char": 12961
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_mri"
+   ],
+   "inputs_from": [
+    "mod_group_voxelwise"
+   ]
+  }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_alphasim",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "cluster",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "cluster threshold",
+         "start_char": 18053,
+         "end_char": 18070
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 0.005,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "A p<0.005 (uncorrected) was used to collect the suprathreshold clusters, which was further thresholded with a cluster threshold of 76 voxels (corrected for multiple comparison using Monto-Carlo simulation through the AlphaSim provided in AFNI ( http://afni.nimh.nih.gov/afni/ ), alpha<0.05).",
+         "start_char": 17943,
+         "end_char": 18234
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "extracted",
+    "value": "p",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "p<0.005 (uncorrected)",
+         "start_char": 17945,
+         "end_char": 17966
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "extracted",
+    "value": 76,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "A p<0.005 (uncorrected) was used to collect the suprathreshold clusters, which was further thresholded with a cluster threshold of 76 voxels (corrected for multiple comparison using Monto-Carlo simulation through the AlphaSim provided in AFNI ( http://afni.nimh.nih.gov/afni/ ), alpha<0.05).",
+         "start_char": 17943,
+         "end_char": 18234
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "Monte-Carlo simulation through AlphaSim",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "alpha<0.05",
+         "start_char": 18222,
+         "end_char": 18232
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 76.0,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "76 voxels",
+         "start_char": 18074,
+         "end_char": 18083
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "search_volume": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "cluster threshold of 76 voxels",
+         "start_char": 18053,
+         "end_char": 18083
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
   }
  ],
  "preprocessings": [
@@ -4759,8 +5087,8 @@
    "local_id": "prp_mri",
    "description": {
     "extraction_status": "extracted",
-    "value": "Structural registration, segmentation, DARTEL normalization, Jacobian modulation, and spatial smoothing; ASL and resting BOLD preprocessing included motion correction, temporal filtering, regression of nuisance signals, normalization, and smoothing.",
-    "value_source": "reported",
+    "value": "Structural, ASL, and resting BOLD images were registered, normalized, filtered, motion-corrected, and spatially smoothed as applicable.",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -4771,6 +5099,16 @@
          "text": "All data preprocessing was performed using SPM8",
          "start_char": 13988,
          "end_char": 14035
+        },
+        {
+         "text": "with the following steps: motion correction, temporal filtering, spatial smoothing with an isotropic Gaussian kernel",
+         "start_char": 14136,
+         "end_char": 14252
+        },
+        {
+         "text": "coregistration, and normalization.",
+         "start_char": 14286,
+         "end_char": 14320
         }
        ]
       }
@@ -4781,8 +5119,7 @@
     "extraction_status": "extracted",
     "value": [
      "SPM8",
-     "ASLtbx",
-     "DARTEL"
+     "ASLtbx"
     ],
     "value_source": "reported",
     "evidence": {
@@ -4811,12 +5148,8 @@
      "normalization",
      "segmentation",
      "DARTEL registration",
-     "Jacobian modulation",
-     "nuisance regression",
      "detrending",
-     "band-pass filtering",
-     "zero-meaning",
-     "unit-norm normalization"
+     "nuisance regression"
     ],
     "value_source": "reported",
     "evidence": {
@@ -4826,9 +5159,14 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "motion correction, temporal filtering, spatial smoothing with an isotropic Gaussian kernel (full width half maximum = 6mm), coregistration, and normalization.",
+         "text": "motion correction, temporal filtering, spatial smoothing",
          "start_char": 14162,
-         "end_char": 14320
+         "end_char": 14218
+        },
+        {
+         "text": "coregistration, and normalization",
+         "start_char": 14286,
+         "end_char": 14319
         }
        ]
       }
@@ -4860,103 +5198,18 @@
    }
   }
  ],
- "regions": [
-  {
-   "local_id": "reg_multimodal_rois",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "suprathreshold modality-specific regions of interest",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The suprathreshold clusters identified from each of the two-sample t-tests for each modality",
-         "start_char": 16575,
-         "end_char": 16667
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "same_study_analysis",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The suprathreshold clusters identified from each of the two-sample t-tests for each modality as previously mentioned were used as regions-of-interest (ROIs)",
-         "start_char": 16575,
-         "end_char": 16731
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "functional_cluster",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "regions-of-interest (ROIs)",
-         "start_char": 16705,
-         "end_char": 16731
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Suprathreshold clusters identified from the modality-specific patient-versus-control two-sample t-tests; these clusters were used as regions of interest to extract data from the corresponding modality images.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The suprathreshold clusters identified from each of the two-sample t-tests for each modality as previously mentioned were used as regions-of-interest (ROIs)",
-         "start_char": 16575,
-         "end_char": 16731
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
+ "study_type": [
+  "Journal Article"
+ ],
+ "language": [
+  "eng"
  ],
  "local_id": "27654848",
  "extraction_metadata": {
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "6ce3d01694533752ddeb31af678570df49924b6e9cf35d788dec72a6fca8356a",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -5151,8 +5404,5 @@
    }
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
- },
- "study_type": [
-  "Journal Article"
- ]
+ }
 }

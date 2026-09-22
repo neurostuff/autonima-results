@@ -13,7 +13,16 @@ from pathlib import Path
 
 from . import paths, spec as spec_mod
 
-ARM_ORDER = ["full text", "record + evidence", "record, no evidence"]
+#: The arms autonima runs. Figure 4 requires all three plus a baseline before it will use
+#: a column, so this list decides which columns the comparison rests on.
+AUTONIMA_ARMS = ["full text", "record + evidence", "record, no evidence"]
+
+#: The deterministic query over the same records, at both of its gates. Scored and plotted
+#: beside the others, never required: a column where the query selects too little to map
+#: should not remove that column from the arms' own comparison.
+QUERY_ARMS = ["query, strict", "query, permissive"]
+
+ARM_ORDER = AUTONIMA_ARMS + QUERY_ARMS
 
 #: Default map metric for the figures. Voxels nonzero in either map -- the shared empty
 #: background dropped. On these maps 88-96% of voxels are exactly zero in BOTH the arm's map
@@ -27,6 +36,18 @@ ARM_ORDER = ["full text", "record + evidence", "record, no evidence"]
 #: them, but an absolute value under it is not a goodness-of-fit. `r2` (brain-masked) and
 #: `r2_allfinite` (the repo's convention) stay in the CSVs and both remain selectable.
 DEFAULT_MAP_METRIC = "r2_nonzero"
+
+#: A map built from fewer experiments than this is not scored. Two experiments leave a map
+#: with almost no suprathreshold voxel, and the masked correlation is then computed over a
+#: handful of them: substance use's cannabis query-strict map is 2 analyses, reads dice
+#: 0.000 against the manual map, and reads r2_nonzero 0.756. Exactly two maps in the whole
+#: comparison fall below five and both are that shape.
+MIN_ANALYSES = 5
+
+
+def _too_small(row: dict) -> bool:
+    n = row.get("n_analyses")
+    return n not in (None, "") and int(n) < MIN_ANALYSES
 
 
 def _read(path: Path) -> list[dict]:
@@ -73,7 +94,7 @@ def maps(metric: str = DEFAULT_MAP_METRIC) -> tuple[dict, dict]:
     for project in projects():
         for row in _read(paths.DATA / f"{project}_maps.csv"):
             v = row.get(metric)
-            if v in (None, ""):
+            if v in (None, "") or _too_small(row):
                 continue
             if row["arm"] == "baseline":
                 base.setdefault(project, {})[row["manual_analysis"]] = float(v)
@@ -89,10 +110,14 @@ def map_columns(metric: str = DEFAULT_MAP_METRIC) -> list[dict]:
         by_col: dict[str, dict[str, float]] = {}
         for row in _read(paths.DATA / f"{project}_maps.csv"):
             v = row.get(metric)
-            if v not in (None, ""):
+            if v not in (None, "") and not _too_small(row):
                 by_col.setdefault(row["manual_analysis"], {})[row["arm"]] = float(v)
         for column, per_arm in by_col.items():
-            if "baseline" in per_arm and all(a in per_arm for a in ARM_ORDER):
+            # The model arms and a baseline are what a column needs to be usable. A query
+            # arm is included where it exists and never required: it maps nothing on a
+            # column where it selects fewer than two analyses, and dropping the column for
+            # that would shrink the arms' own comparison.
+            if "baseline" in per_arm and all(a in per_arm for a in AUTONIMA_ARMS):
                 rows.append({"project": project, "column": column, **per_arm})
     return rows
 

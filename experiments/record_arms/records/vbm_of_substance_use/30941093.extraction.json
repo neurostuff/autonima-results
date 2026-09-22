@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "The study compared subcortical volumes and subcortical surface morphology between alcohol-dependent patients and healthy controls using 3T structural MRI, FSL volumetric analysis, and vertex analysis.",
-  "value_source": "generated",
+  "value": "The study compared subcortical structure volumes and vertex-wise surface morphology between alcohol-dependent patients and healthy controls using 3T structural MRI, FSL, FIRST, and vertex analysis.",
+  "value_source": "reported",
   "evidence": {
    "status": "present",
    "sets": [
@@ -19,44 +19,10 @@
    ]
   }
  },
- "hypothesis": {
-  "extraction_status": "not_reported",
-  "evidence": {
-   "status": "not_applicable"
-  }
- },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Observational cross-sectional comparison of alcohol-dependent patients and healthy controls.",
-   "value_source": "generated",
-   "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "We analyzed the volumes of 14 subcortical structures (bilateral thalamus, caudate, putamen, globus pallidus, hippocampus, amygdala, nucleus accumbens) in 21 alcohol-dependent subjects and 21 healthy controls",
-        "start_char": 1210,
-        "end_char": 1417
-       }
-      ]
-     }
-    ]
-   }
-  },
-  "allocation": {
-   "extraction_status": "extracted",
-   "value": "not_applicable",
-   "value_source": "generated",
-   "evidence": {
-    "status": "not_found"
-   }
-  },
-  "assignment_structure": {
-   "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "Observational cross-sectional comparison of alcohol-dependent patients and age-matched healthy controls.",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -68,6 +34,35 @@
         "text": "Each alcohol-dependent subject was age-matched with a healthy control.",
         "start_char": 12284,
         "end_char": 12354
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "allocation": {
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
+   "evidence": {
+    "status": "not_found",
+    "unlocated_quotes": 1
+   }
+  },
+  "assignment_structure": {
+   "extraction_status": "extracted",
+   "value": "observational_cohorts",
+   "value_source": "generated",
+   "evidence": {
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "alcohol-dependent patients and healthy controls",
+        "start_char": 5116,
+        "end_char": 5163
        }
       ]
      }
@@ -108,7 +103,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "MANCOVA was used to evaluate volumetric differences in subcortical structures between alcohol-dependent patients and healthy controls.",
+    "value": "MANCOVA showed a significant main effect of group (alcohol-dependent patients and healthy controls) on gray matter, white matter, and subcortical volumes.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -117,9 +112,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Multivariate analysis of covariance (MANCOVA) was used to evaluate volumetric differences in subcortical structures.",
-         "start_char": 11017,
-         "end_char": 11133
+         "text": "MANCOVA showed a significant main effect of group (alcohol-dependent patients and healthy controls) on gray matter (  p   < 0.01, corrected) and white matter (  p   < 0.01, corrected), as shown in  Table 2 , and subcortical volumes with significant differences in the bilateral thalamus (left:   p   < 0.01, right:   p   = 0.01), bilateral putamen (left:   p   = 0.02, right:   p   < 0.01), right globus pallidus (  p   < 0.01), bilateral hippocampus (left:   p   = 0.05, right:   p   = 0.03), and bilateral nucleus accumbens (left:   p   < 0.01, right:   p   < 0.01) as shown in  Table 3 .",
+         "start_char": 14160,
+         "end_char": 14750
         }
        ]
       }
@@ -127,11 +122,9 @@
     }
    },
    "prespecification": {
-    "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -200,7 +193,19 @@
        "value": "alcohol-dependent patients",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "MANCOVA showed a significant main effect of group (alcohol-dependent patients and healthy controls)",
+            "start_char": 14160,
+            "end_char": 14259
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
@@ -231,9 +236,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "healthy controls",
-            "start_char": 1401,
-            "end_char": 1417
+            "text": "MANCOVA showed a significant main effect of group (alcohol-dependent patients and healthy controls)",
+            "start_char": 14160,
+            "end_char": 14259
            }
           ]
          }
@@ -245,19 +250,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "healthy controls",
-            "start_char": 1401,
-            "end_char": 1417
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -317,11 +310,19 @@
    "acquisitions": [
     "acq_structural_mri"
    ],
-   "model_estimation": "mod_volumetric_mancova",
+   "model_estimation": "mod_mancova",
+   "inference_settings": "inf_bonferroni",
+   "tables": [
+    "tbl_subcortical_volumes",
+    "tbltable1",
+    "tbltable2",
+    "tbltable3"
+   ],
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "MANCOVA showed significant volumetric reductions in alcohol-dependent patients compared with healthy controls in the bilateral thalamus, bilateral putamen, right globus pallidus, bilateral hippocampus, and bilateral nucleus accumbens. Alcohol-dependent patients also had significant reductions in gray and white matter."
+     "MANCOVA showed significant reductions in gray matter, white matter, bilateral thalamus, bilateral putamen, right globus pallidus, bilateral hippocampus, and bilateral nucleus accumbens in alcohol-dependent patients compared with healthy controls.",
+     "There were no significant correlations between lifetime drinking history and the volumetric changes of subcortical structures."
     ],
     "value_source": "reported",
     "evidence": {
@@ -331,9 +332,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MANCOVA showed a significant main effect of group (alcohol-dependent patients and healthy controls) on gray matter (  p   < 0.01, corrected) and white matter (  p   < 0.01, corrected), as shown in  Table 2 , and subcortical volumes with significant differences in the bilateral thalamus (left:   p   < 0.01, right:   p   = 0.01), bilateral putamen (left:   p   = 0.02, right:   p   < 0.01), right globus pallidus (  p   < 0.01), bilateral hippocampus (left:   p   = 0.05, right:   p   = 0.03), and bilateral nucleus accumbens (left:   p   < 0.01, right:   p   < 0.01) as shown in  Table 3 .",
+         "text": "MANCOVA showed a significant main effect of group (alcohol-dependent patients and healthy controls) on gray matter (  p   < 0.01, corrected) and white matter (  p   < 0.01, corrected), as shown in  Table 2 , and subcortical volumes with significant differences in the bilateral thalamus (left:   p   < 0.01, right:   p   = 0.01), bilateral putamen (left:   p   = 0.02, right:   p   < 0.01), right globus pallidus (  p   < 0.01), bilateral hippocampus (left:   p   = 0.05, right:   p   = 0.03), and bilateral nucleus accumbens (left:   p   < 0.01, right:   p   < 0.01) as shown in  Table 3 . There were no significant correlations between lifetime drinking history and the volumetric changes of subcortical structures.",
          "start_char": 14160,
-         "end_char": 14750
+         "end_char": 14877
         }
        ]
       }
@@ -351,9 +352,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "as shown in  Table 3 .",
-         "start_char": 14728,
-         "end_char": 14750
+         "text": "Group-wise differences of subcortical volumes.",
+         "start_char": 15445,
+         "end_char": 15491
         }
        ]
       }
@@ -372,19 +373,10 @@
      "status": "not_applicable"
     }
    },
-   "regions": [
-    "reg_subcortical_structures"
-   ],
-   "inference_settings": "inf_bonferroni_volumetric",
-   "tables": [
-    "T1",
-    "T2",
-    "T3"
-   ],
    "assessments": [
     "asm_audit_k",
     "asm_smast",
-    "asm_dsm_iv_psychiatric_interview"
+    "asm_dsm_iv"
    ]
   },
   {
@@ -411,7 +403,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Vertex analysis tested significant subcortical surface deformations and volumetric reductions in alcohol-dependent patients compared with healthy controls.",
+    "value": "Vertex analysis tested significant surface deformations and volumetric reductions of subcortical structures in alcohol-dependent patients compared with healthy controls, adjusted for age and total brain volume.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -430,11 +422,9 @@
     }
    },
    "prespecification": {
-    "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -448,8 +438,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "surface deformations of subcortical structures",
-         "start_char": 16878,
+         "text": "Vertex analysis displays probabilistically significant (  p   ≤ 0.05) surface deformations of subcortical structures",
+         "start_char": 16808,
          "end_char": 16924
         }
        ]
@@ -521,9 +511,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "alcohol-dependent patients",
-            "start_char": 295,
-            "end_char": 321
+            "text": "Vertex analysis showed significant subcortical volumetric reductions of alcohol-dependent patients in the bilateral thalamus, bilateral putamen, right globus pallidus, right hippocampus, left caudate, and bilateral nucleus accumbens.",
+            "start_char": 17354,
+            "end_char": 17587
            }
           ]
          }
@@ -535,19 +525,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "significant subcortical volumetric reductions",
-            "start_char": 17377,
-            "end_char": 17422
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -570,9 +548,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "healthy controls",
-            "start_char": 1401,
-            "end_char": 1417
+            "text": "Vertex analysis showed significant subcortical volumetric reductions of alcohol-dependent patients in the bilateral thalamus, bilateral putamen, right globus pallidus, right hippocampus, left caudate, and bilateral nucleus accumbens.",
+            "start_char": 17354,
+            "end_char": 17587
            }
           ]
          }
@@ -584,19 +562,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "reductions",
-            "start_char": 416,
-            "end_char": 426
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -618,9 +584,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "Vertex analysis showed significant subcortical volumetric reductions of alcohol-dependent patients",
+          "text": "Vertex analysis showed significant subcortical volumetric reductions of alcohol-dependent patients in the bilateral thalamus, bilateral putamen, right globus pallidus, right hippocampus, left caudate, and bilateral nucleus accumbens.",
           "start_char": 17354,
-          "end_char": 17452
+          "end_char": 17587
          }
         ]
        }
@@ -630,10 +596,22 @@
     "statistic": {
      "family": {
       "extraction_status": "extracted",
-      "value": "f",
-      "value_source": "generated",
+      "value": "permutation",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference on all the segmented subcortical structures.",
+           "start_char": 11370,
+           "end_char": 11586
+          }
+         ]
+        }
+       ]
       }
      },
      "degrees_of_freedom_numerator": {
@@ -657,10 +635,14 @@
     "acq_structural_mri"
    ],
    "model_estimation": "mod_vertex_glm",
+   "inference_settings": "inf_vertex_fdr",
+   "tables": [],
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "Vertex analysis showed significant subcortical volumetric reductions in alcohol-dependent patients in the bilateral thalamus, bilateral putamen, right globus pallidus, right hippocampus, left caudate, and bilateral nucleus accumbens. The reductions matched the volumetric analysis except for the left hippocampus and left caudate. The hippocampal reductions overlapped the presubiculum, hippocampal tail, hippocampal molecular layer, hippocampal fissure, fimbria, and CA3; thalamic reductions overlapped almost every defined thalamic substructure."
+     "Vertex analysis showed significant subcortical volumetric reductions in alcohol-dependent patients in the bilateral thalamus, bilateral putamen, right globus pallidus, right hippocampus, left caudate, and bilateral nucleus accumbens.",
+     "All significant reductions revealed by vertex analysis matched the volumetric reductions except in the left hippocampus and left caudate.",
+     "Thalamic reductions overlapped almost every defined thalamic substructure, while hippocampal reductions overlapped the presubiculum, hippocampal tail, hippocampal molecular layer, hippocampal fissure, fimbria, and CA3."
     ],
     "value_source": "reported",
     "evidence": {
@@ -670,9 +652,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Vertex analysis showed significant subcortical volumetric reductions of alcohol-dependent patients in the bilateral thalamus, bilateral putamen, right globus pallidus, right hippocampus, left caudate, and bilateral nucleus accumbens.",
+         "text": "Vertex analysis showed significant subcortical volumetric reductions of alcohol-dependent patients in the bilateral thalamus, bilateral putamen, right globus pallidus, right hippocampus, left caudate, and bilateral nucleus accumbens. All the significant reductions revealed from vertex analysis matched the volumetric reductions in all subcortical structures except in the left hippocampus and left caudate.",
          "start_char": 17354,
-         "end_char": 17587
+         "end_char": 17761
         }
        ]
       }
@@ -711,14 +693,10 @@
      "status": "not_applicable"
     }
    },
-   "regions": [
-    "reg_subcortical_structures"
-   ],
-   "inference_settings": "inf_fdr_vertex",
    "assessments": [
     "asm_audit_k",
     "asm_smast",
-    "asm_dsm_iv_psychiatric_interview"
+    "asm_dsm_iv"
    ]
   }
  ],
@@ -746,13 +724,6 @@
      ]
     }
    },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "device": "dev_philips_achieva",
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3,
@@ -774,17 +745,23 @@
     }
    },
    "pulse_sequence_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "mr_acquisition_type": {
     "extraction_status": "extracted",
-    "value": "3D",
-    "value_source": "generated",
+    "value": "T1",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "MRI T1 parameters were referenced from the Alzheimer's Disease Neuroimaging Initiative (ADNI) protocol",
+         "start_char": 8837,
+         "end_char": 8939
+        }
+       ]
+      }
+     ]
     }
    },
    "repetition_time_seconds": {
@@ -853,7 +830,14 @@
      ]
     }
    },
-   "number_of_volumes": {
+   "device": "dev_philips_achieva",
+   "brain_coverage": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -884,26 +868,6 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "A brief questionnaire aimed at self-assessment of alcohol dependence.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "AUDIT-K and SMAST are both brief questionnaires aimed at self-assessment of alcohol dependence",
-         "start_char": 8294,
-         "end_char": 8388
-        }
-       ]
-      }
-     ]
-    }
-   },
    "assessment_type": {
     "extraction_status": "extracted",
     "value": "questionnaire",
@@ -915,9 +879,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "AUDIT-K and SMAST are both brief questionnaires aimed at self-assessment of alcohol dependence",
+         "text": "The Korean version of the Alcohol Use Disorder Identification Test (AUDIT-K) ( 11 ) and the Short Michigan Alcoholism Screening Test (SMAST) ( 15 ) were applied to all subjects.",
+         "start_char": 8116,
+         "end_char": 8293
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Korean version of the Alcohol Use Disorder Identification Test (AUDIT-K), administered to all subjects as a self-assessment questionnaire for alcohol dependence risk; higher scores indicate higher risk. Alcohol-dependent patients mean 28.1 (SD 11.0), healthy controls mean 11.2 (SD 9.0).",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "AUDIT-K and SMAST are both brief questionnaires aimed at self-assessment of alcohol dependence, with higher scores indicating high risk of alcohol dependence.",
          "start_char": 8294,
-         "end_char": 8388
+         "end_char": 8452
         }
        ]
       }
@@ -947,26 +931,6 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "A brief questionnaire aimed at self-assessment of alcohol dependence.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "AUDIT-K and SMAST are both brief questionnaires aimed at self-assessment of alcohol dependence",
-         "start_char": 8294,
-         "end_char": 8388
-        }
-       ]
-      }
-     ]
-    }
-   },
    "assessment_type": {
     "extraction_status": "extracted",
     "value": "questionnaire",
@@ -978,32 +942,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "AUDIT-K and SMAST are both brief questionnaires aimed at self-assessment of alcohol dependence",
-         "start_char": 8294,
-         "end_char": 8388
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_dsm_iv_psychiatric_interview",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "psychiatrist interview using the Diagnostic Statistical Manual 4th Edition (DSM-IV)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV)",
-         "start_char": 7583,
-         "end_char": 7691
+         "text": "The Korean version of the Alcohol Use Disorder Identification Test (AUDIT-K) ( 11 ) and the Short Michigan Alcoholism Screening Test (SMAST) ( 15 ) were applied to all subjects.",
+         "start_char": 8116,
+         "end_char": 8293
         }
        ]
       }
@@ -1012,7 +953,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Psychiatric interview used to determine whether patients met criteria for alcohol dependence and whether healthy controls met the criteria.",
+    "value": "Short Michigan Alcoholism Screening Test (SMAST), administered to all subjects as a self-assessment questionnaire for alcohol dependence risk; higher scores indicate higher risk. Alcohol-dependent patients mean 20.2 (SD 7.6), healthy controls mean 3.1 (SD 6.3).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1021,9 +962,32 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV), which determined that each recruited patient met the criteria for alcohol dependence",
+         "text": "AUDIT-K and SMAST are both brief questionnaires aimed at self-assessment of alcohol dependence, with higher scores indicating high risk of alcohol dependence.",
+         "start_char": 8294,
+         "end_char": 8452
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_dsm_iv",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Diagnostic Statistical Manual 4th Edition (DSM-IV)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV), which determined that each recruited patient met the criteria for alcohol dependence (one of which includes the manifestation of withdrawal symptoms).",
          "start_char": 7583,
-         "end_char": 7777
+         "end_char": 7843
         }
        ]
       }
@@ -1044,6 +1008,26 @@
          "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV)",
          "start_char": 7583,
          "end_char": 7691
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Diagnostic and Statistical Manual, 4th Edition (DSM-IV), used by a psychiatrist to determine whether patients met criteria for alcohol dependence; healthy controls did not meet those criteria.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV), which determined that each recruited patient met the criteria for alcohol dependence (one of which includes the manifestation of withdrawal symptoms). Recruited healthy controls did not meet the criteria for alcohol dependence.",
+         "start_char": 7583,
+         "end_char": 7920
         }
        ]
       }
@@ -1120,6 +1104,26 @@
      ]
     }
    },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A total of 42 right-handed male subjects were involved in this study.",
+         "start_char": 7286,
+         "end_char": 7355
+        }
+       ]
+      }
+     ]
+    }
+   },
    "description": {
     "extraction_status": "extracted",
     "value": "Patients suffering from alcohol dependence recruited from a mental hospital specializing in alcohol.",
@@ -1140,9 +1144,226 @@
      ]
     }
    },
-   "species": {
+   "medical_condition": {
     "extraction_status": "extracted",
-    "value": "human",
+    "value": [
+     "Alcohol dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Twenty-one patients suffering from alcohol dependence were recruited from a mental hospital specializing in alcohol.",
+         "start_char": 7356,
+         "end_char": 7472
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV), which determined that each recruited patient met the criteria for alcohol dependence (one of which includes the manifestation of withdrawal symptoms).",
+         "start_char": 7583,
+         "end_char": 7843
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_dsm_iv"
+   ],
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 21,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Twenty-one patients suffering from alcohol dependence were recruited from a mental hospital specializing in alcohol.",
+         "start_char": 7356,
+         "end_char": 7472
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "A total of 42 right-handed male subjects were involved in this study.",
+           "start_char": 7286,
+           "end_char": 7355
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 21,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "A total of 42 right-handed male subjects were involved in this study.",
+           "start_char": 7286,
+           "end_char": 7355
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 21,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "handedness_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "right-handed",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "A total of 42 right-handed male subjects were involved in this study.",
+           "start_char": 7286,
+           "end_char": 7355
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 21,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "A total of 42 right-handed male subjects were involved in this study.",
+           "start_char": 7286,
+           "end_char": 7355
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 21,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Twenty-one patients suffering from alcohol dependence were recruited from a mental hospital specializing in alcohol.",
+         "start_char": 7356,
+         "end_char": 7472
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -1151,9 +1372,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "A total of 42 right-handed male subjects were involved in this study.",
-         "start_char": 7286,
-         "end_char": 7355
+         "text": "Twenty-one patients suffering from alcohol dependence were recruited from a mental hospital specializing in alcohol.",
+         "start_char": 7356,
+         "end_char": 7472
         }
        ]
       }
@@ -1192,12 +1413,6 @@
      ]
     }
    },
-   "acquired_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "excluded_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1205,18 +1420,36 @@
     }
    },
    "inclusion_criteria": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": [
+     "alcohol dependence according to DSM-IV criteria",
+     "male",
+     "right-handed"
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV), which determined that each recruited patient met the criteria for alcohol dependence (one of which includes the manifestation of withdrawal symptoms).",
+         "start_char": 7583,
+         "end_char": 7843
+        }
+       ]
+      }
+     ]
     }
    },
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "history of a mental disorder",
-     "neurologic disease",
-     "psychiatric disorders",
-     "other substance use disorders excluding nicotine and caffeine"
+     "History of a mental disorder",
+     "Neurologic disease",
+     "Psychiatric disorders",
+     "Other substance use disorders excluding nicotine and caffeine"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1237,7 +1470,7 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "recruited from a mental hospital specializing in alcohol",
+    "value": "Recruited from a mental hospital specializing in alcohol.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1330,84 +1563,39 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Each alcohol-dependent subject was age-matched with a healthy control.",
-         "start_char": 12284,
-         "end_char": 12354
+         "text": "A total of 42 right-handed male subjects were involved in this study.",
+         "start_char": 7286,
+         "end_char": 7355
         }
        ]
       }
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-one patients suffering from alcohol dependence were recruited from a mental hospital specializing in alcohol.",
-         "start_char": 7356,
-         "end_char": 7472
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "alcohol dependence"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-one patients suffering from alcohol dependence were recruited from a mental hospital specializing in alcohol.",
-         "start_char": 7356,
-         "end_char": 7472
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "Diagnostic Statistical Manual 4th Edition (DSM-IV)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV), which determined that each recruited patient met the criteria for alcohol dependence (one of which includes the manifestation of withdrawal symptoms).",
-         "start_char": 7583,
-         "end_char": 7843
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_dsm_iv_psychiatric_interview"
-   ],
-   "clinical_characteristics": {
+   "population_characteristics": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Alcohol-dependent patients; lifetime drinking history mean 80234; AUDIT-K mean 28.1; SMAST mean 20.2.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Alcohol-dependent patients had greater lifetime drinking history than healthy controls (  p   = 0.003). Alcohol-dependent patients also scored higher points on AUDIT-K (  p   < 0.001) and SMAST (  p   < 0.001) tests.",
+         "start_char": 12517,
+         "end_char": 12733
+        }
+       ]
+      }
+     ]
     }
    },
    "medications": {
@@ -1433,9 +1621,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Education (years)\t13.7 (2.7)\t13.7 (3.0)",
+         "text": "Education (years)\t13.7 (2.7)\t13.7 (3.0)\t0.961\tAD = HC (NS)",
          "start_char": 13338,
-         "end_char": 13377
+         "end_char": 13396
         }
        ]
       }
@@ -1447,6 +1635,18 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
   },
   {
@@ -1454,26 +1654,6 @@
    "name": {
     "extraction_status": "extracted",
     "value": "healthy controls",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-one age-matched (range 40–63 years, mean 50.4 years) healthy controls were recruited by advertisement.",
-         "start_char": 7473,
-         "end_char": 7582
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Healthy controls recruited by advertisement who did not meet criteria for alcohol dependence.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1511,7 +1691,27 @@
      ]
     }
    },
-   "enrolled_count": {
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Age-matched healthy controls recruited by advertisement who did not meet criteria for alcohol dependence.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Twenty-one age-matched (range 40–63 years, mean 50.4 years) healthy controls were recruited by advertisement.",
+         "start_char": 7473,
+         "end_char": 7582
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
     "extraction_status": "extracted",
     "value": 21,
     "value_source": "reported",
@@ -1531,6 +1731,46 @@
      ]
     }
    },
+   "age_minimum": {
+    "extraction_status": "extracted",
+    "value": 40,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "range 40–63 years",
+         "start_char": 7497,
+         "end_char": 7514
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "extracted",
+    "value": 63,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "range 40–63 years",
+         "start_char": 7497,
+         "end_char": 7514
+        }
+       ]
+      }
+     ]
+    }
+   },
    "age_mean": {
     "extraction_status": "extracted",
     "value": 50.4,
@@ -1542,9 +1782,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty-one age-matched (range 40–63 years, mean 50.4 years) healthy controls were recruited by advertisement.",
-         "start_char": 7473,
-         "end_char": 7582
+         "text": "mean 50.4 years",
+         "start_char": 7516,
+         "end_char": 7531
         }
        ]
       }
@@ -1571,49 +1811,181 @@
      ]
     }
    },
-   "age_minimum": {
-    "extraction_status": "extracted",
-    "value": 40,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-one age-matched (range 40–63 years, mean 50.4 years) healthy controls were recruited by advertisement.",
-         "start_char": 7473,
-         "end_char": 7582
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "extracted",
-    "value": 63,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-one age-matched (range 40–63 years, mean 50.4 years) healthy controls were recruited by advertisement.",
-         "start_char": 7473,
-         "end_char": 7582
-        }
-       ]
-      }
-     ]
-    }
-   },
    "age_unit": {
     "extraction_status": "extracted",
     "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "range 40–63 years",
+         "start_char": 7497,
+         "end_char": 7514
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "A total of 42 right-handed male subjects were involved in this study.",
+           "start_char": 7286,
+           "end_char": 7355
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 21,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "A total of 42 right-handed male subjects were involved in this study.",
+           "start_char": 7286,
+           "end_char": 7355
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 21,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "handedness_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "right-handed",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "A total of 42 right-handed male subjects were involved in this study.",
+           "start_char": 7286,
+           "end_char": 7355
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 21,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "A total of 42 right-handed male subjects were involved in this study.",
+           "start_char": 7286,
+           "end_char": 7355
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 21,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "advertisement",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Twenty-one age-matched (range 40–63 years, mean 50.4 years) healthy controls were recruited by advertisement.",
+         "start_char": 7473,
+         "end_char": 7582
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1634,7 +2006,7 @@
    "is_healthy": {
     "extraction_status": "extracted",
     "value": true,
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1651,49 +2023,6 @@
      ]
     }
    },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "Diagnostic Statistical Manual 4th Edition (DSM-IV)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV), which determined that each recruited patient met the criteria for alcohol dependence (one of which includes the manifestation of withdrawal symptoms).",
-         "start_char": 7583,
-         "end_char": 7843
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_dsm_iv_psychiatric_interview"
-   ],
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1706,7 +2035,7 @@
      "status": "not_applicable"
     }
    },
-   "acquired_count": {
+   "enrolled_count": {
     "extraction_status": "extracted",
     "value": 21,
     "value_source": "reported",
@@ -1735,10 +2064,9 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Male",
-     "Age-matched to an alcohol-dependent participant",
-     "Did not meet DSM-IV criteria for alcohol dependence",
-     "No history of mental disorder, neurologic disease, psychiatric disorder, or other substance use disorder except nicotine and caffeine"
+     "did not meet DSM-IV criteria for alcohol dependence",
+     "male",
+     "right-handed"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1760,10 +2088,10 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "history of a mental disorder",
-     "neurologic disease",
-     "psychiatric disorders",
-     "other substance use disorders excluding nicotine and caffeine"
+     "History of a mental disorder",
+     "Neurologic disease",
+     "Psychiatric disorders",
+     "Other substance use disorders excluding nicotine and caffeine"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1782,9 +2110,29 @@
      ]
     }
    },
-   "recruitment_method": {
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medical_condition": {
     "extraction_status": "extracted",
-    "value": "Recruited by advertisement from the community.",
+    "value": [
+     "healthy controls"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1802,21 +2150,29 @@
      ]
     }
    },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All subjects were interviewed by a psychiatrist using the Diagnostic Statistical Manual 4th Edition (DSM-IV), which determined that each recruited patient met the criteria for alcohol dependence (one of which includes the manifestation of withdrawal symptoms).",
+         "start_char": 7583,
+         "end_char": 7843
+        }
+       ]
+      }
+     ]
     }
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Healthy controls did not meet DSM-IV criteria for alcohol dependence; mean age 50.4 years (SD 6.1).",
+    "value": "Did not meet criteria for alcohol dependence.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1834,6 +2190,18 @@
      ]
     }
    },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "education_summary": {
     "extraction_status": "extracted",
     "value": "Mean 13.7 years of education (SD 3.0).",
@@ -1845,9 +2213,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Education (years)\t13.7 (2.7)\t13.7 (3.0)",
+         "text": "Education (years)\t13.7 (2.7)\t13.7 (3.0)\t0.961\tAD = HC (NS)",
          "start_char": 13338,
-         "end_char": 13377
+         "end_char": 13396
         }
        ]
       }
@@ -1859,1067 +2227,36 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  }
- ],
- "measures": [
-  {
-   "local_id": "mea_subcortical_volume",
-   "family": {
-    "extraction_status": "extracted",
-    "value": "structural_morphometry",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "subcortical volumes",
-         "start_char": 5972,
-         "end_char": 5991
-        }
-       ]
-      }
-     ]
-    }
    },
-   "type": {
-    "extraction_status": "extracted",
-    "value": "gray_matter_volume",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "subcortical volumes",
-         "start_char": 5972,
-         "end_char": 5991
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "source_label": {
-    "extraction_status": "extracted",
-    "value": "subcortical structure volume",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "subcortical volumes",
-         "start_char": 5972,
-         "end_char": 5991
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "specific_metric": {
+   "sample_source_reference": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "unit": {
-    "extraction_status": "extracted",
-    "value": "cm3",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "cm3",
-         "start_char": 15200,
-         "end_char": 15203
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "mea_subcortical_surface_volume",
-   "family": {
-    "extraction_status": "extracted",
-    "value": "structural_morphometry",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "type": {
-    "extraction_status": "extracted",
-    "value": "structural_morphometry_other",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "source_label": {
-    "extraction_status": "extracted",
-    "value": "subcortical surface volumetric reduction",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "surface reductions",
-         "start_char": 2039,
-         "end_char": 2057
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "specific_metric": {
-    "extraction_status": "extracted",
-    "value": "vertex analysis",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Vertex analysis showed significant subcortical volumetric reductions of alcohol-dependent patients",
-         "start_char": 17354,
-         "end_char": 17452
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "unit": {
+   "sample_overlap_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "diagnostic_instrument": [
+    "asm_dsm_iv"
+   ]
   }
  ],
- "model_estimations": [
+ "inference_settings": [
   {
-   "local_id": "mod_volumetric_mancova",
-   "model_family": {
+   "local_id": "inf_bonferroni",
+   "multiple_comparison_method": {
     "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Multivariate analysis of covariance (MANCOVA) was used to evaluate volumetric differences in subcortical structures.",
-         "start_char": 11017,
-         "end_char": 11133
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "multivariate analysis of covariance",
+    "value": "Bonferroni correction",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
        "source": "literal_match",
-       "spans": [
-        {
-         "text": "Multivariate analysis of covariance (MANCOVA) was used to evaluate volumetric differences in subcortical structures.",
-         "start_char": 11017,
-         "end_char": 11133
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "terms": [
-    {
-     "local_id": "trm_group_volumetric",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "group",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "MANCOVA showed a significant main effect of group",
-           "start_char": 14160,
-           "end_char": 14209
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "alcohol-dependent patients",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "MANCOVA showed a significant main effect of group (alcohol-dependent patients and healthy controls)",
-             "start_char": 14160,
-             "end_char": 14259
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_alcohol_dependent"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "MANCOVA showed a significant main effect of group (alcohol-dependent patients and healthy controls)",
-             "start_char": 14160,
-             "end_char": 14259
-            }
-           ]
-          }
-         ]
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "healthy controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       },
-       "groups": [
-        "grp_healthy_controls"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      }
-     ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Group factor comparing alcohol-dependent patients with healthy controls.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    },
-    {
-     "local_id": "trm_age_volumetric",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "age",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Age and normalized total brain volume were significant predictors of variance and were used as covariates.",
-           "start_char": 11134,
-           "end_char": 11240
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference on all the segmented subcortical structures.",
-           "start_char": 11370,
-           "end_char": 11586
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Age and normalized total brain volume were significant predictors of variance and were used as covariates.",
-           "start_char": 11134,
-           "end_char": 11240
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Participant age.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    },
-    {
-     "local_id": "trm_total_brain_volume_volumetric",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "normalized total brain volume",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Age and normalized total brain volume were significant predictors of variance and were used as covariates.",
-           "start_char": 11134,
-           "end_char": 11240
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference on all the segmented subcortical structures.",
-           "start_char": 11370,
-           "end_char": 11586
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "cm3",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Age and normalized total brain volume were significant predictors of variance and were used as covariates.",
-           "start_char": 11134,
-           "end_char": 11240
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Normalized total brain volume obtained using SIENAX.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "extracted",
-    "value": "not applicable; morphometric analysis with no timeseries",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "MANCOVA of regional subcortical volumes with age and normalized total brain volume as covariates; Bonferroni correction with significance at p ≤ 0.05.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Bonferroni correction with significance at   p   ≤ 0.05 was used to correct for multiple comparisons.",
-         "start_char": 11241,
-         "end_char": 11342
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "IBM SPSS Statistics version 23.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Volumetric Analysis was performed using IBM SPSS software (version 23, IBM Corporation, New York).",
-         "start_char": 10826,
-         "end_char": 10924
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "preprocessing": [
-    "prp_fsl_structural"
-   ]
-  },
-  {
-   "local_id": "mod_vertex_glm",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "glm",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Vertex analysis was performed using FSL's generalized linear model",
-         "start_char": 11370,
-         "end_char": 11436
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "FSL generalized linear model",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Vertex analysis was performed using FSL's generalized linear model",
-         "start_char": 11370,
-         "end_char": 11436
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Vertex analysis was performed using FSL's generalized linear model",
-         "start_char": 11370,
-         "end_char": 11436
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "terms": [
-    {
-     "local_id": "trm_group_vertex",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "group",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Vertex analysis displays probabilistically significant (  p   ≤ 0.05) surface deformations of subcortical structures while using age and total brain volume as covariates.",
-           "start_char": 16808,
-           "end_char": 16978
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "alcohol-dependent patients",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "the bilateral thalamus, left caudate, bilateral putamen, right globus pallidus, right hippocampus, and bilateral nucleus accumbens",
-             "start_char": 27225,
-             "end_char": 27355
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_alcohol_dependent"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "the bilateral thalamus, left caudate, bilateral putamen, right globus pallidus, right hippocampus, and bilateral nucleus accumbens",
-             "start_char": 27225,
-             "end_char": 27355
-            }
-           ]
-          }
-         ]
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "healthy controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       },
-       "groups": [
-        "grp_healthy_controls"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      }
-     ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Group factor comparing alcohol-dependent patients with healthy controls.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    },
-    {
-     "local_id": "trm_age_vertex",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "age",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age",
-           "start_char": 1426,
-           "end_char": 1429
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference on all the segmented subcortical structures.",
-           "start_char": 11370,
-           "end_char": 11586
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age",
-           "start_char": 1426,
-           "end_char": 1429
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Participant age.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    },
-    {
-     "local_id": "trm_total_brain_volume_vertex",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "total brain volume",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "total brain volume",
-           "start_char": 9316,
-           "end_char": 9334
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "continuous",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "levels": [],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "functional_form": {
-      "extraction_status": "extracted",
-      "value": "linear",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference on all the segmented subcortical structures.",
-           "start_char": 11370,
-           "end_char": 11586
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "cm3",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "total brain volume",
-           "start_char": 9316,
-           "end_char": 9334
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Normalized total brain volume obtained using SIENAX.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "extracted",
-    "value": "not applicable; morphometric analysis with no timeseries",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "FSL generalized linear model with Randomize non-parametric permutation inference; age and normalized total brain volume as covariates; multiple-comparison correction at p ≤ 0.05 using FDR.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The test was corrected for multiple comparison at   p   ≤ 0.05, using age and normalized total brain volume as covariates.",
-         "start_char": 11587,
-         "end_char": 11709
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "extracted",
-    "value": "non-parametric permutation inference",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Randomize ( 16 ) to perform a non-parametric permutation inference",
-         "start_char": 11475,
-         "end_char": 11541
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "FSL generalized linear model and Randomize; FSL version 5.0.1.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference",
-         "start_char": 11370,
-         "end_char": 11541
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "vertex",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Vertex analysis displays probabilistically significant (  p   ≤ 0.05) surface deformations of subcortical structures",
-         "start_char": 16808,
-         "end_char": 16924
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "preprocessing": [
-    "prp_fsl_structural"
-   ]
-  }
- ],
- "inference_settings": [
-  {
-   "local_id": "inf_bonferroni_volumetric",
-   "inference_level": {
-    "extraction_status": "extracted",
-    "value": "region",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "multiple_comparison_method": {
-    "extraction_status": "extracted",
-    "value": "Bonferroni",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
        "spans": [
         {
          "text": "Bonferroni correction with significance at   p   ≤ 0.05 was used to correct for multiple comparisons.",
@@ -2951,16 +2288,53 @@
      ]
     }
    },
-   "height_threshold_value": {
-    "extraction_status": "not_reported",
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "region",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Bonferroni correction with significance at   p   ≤ 0.05 was used to correct for multiple comparisons.",
+         "start_char": 11241,
+         "end_char": 11342
+        }
+       ]
+      }
+     ]
     }
    },
    "height_threshold_type": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "p",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Bonferroni correction with significance at   p   ≤ 0.05 was used to correct for multiple comparisons.",
+         "start_char": 11241,
+         "end_char": 11342
+        }
+       ]
+      }
+     ]
     }
    },
    "cluster_extent_threshold": {
@@ -2976,11 +2350,9 @@
     }
    },
    "correction_scope": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "search_volume": {
@@ -3014,27 +2386,14 @@
     }
    },
    "number_of_tests": {
-    "extraction_status": "extracted",
-    "value": 14,
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
-   },
-   "correction_regions": [
-    "reg_subcortical_structures"
-   ]
+   }
   },
   {
-   "local_id": "inf_fdr_vertex",
-   "inference_level": {
-    "extraction_status": "extracted",
-    "value": "vertex",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
+   "local_id": "inf_vertex_fdr",
    "multiple_comparison_method": {
     "extraction_status": "extracted",
     "value": "FDR",
@@ -3058,6 +2417,26 @@
    "alpha_level": {
     "extraction_status": "extracted",
     "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The test was corrected for multiple comparison at   p   ≤ 0.05",
+         "start_char": 11587,
+         "end_char": 11649
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "vertex",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3128,11 +2507,9 @@
     }
    },
    "correction_scope": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "search_volume": {
@@ -3148,11 +2525,9 @@
     }
    },
    "tfce_used": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "tfce_parameters": {
@@ -3186,18 +2561,1230 @@
     "evidence": {
      "status": "not_applicable"
     }
+   }
+  }
+ ],
+ "language": [
+  "eng"
+ ],
+ "measures": [
+  {
+   "local_id": "mea_subcortical_volume",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Changes in brain morphometry have been extensively reported",
+         "start_char": 168,
+         "end_char": 227
+        }
+       ]
+      }
+     ]
+    }
    },
-   "correction_regions": [
-    "reg_subcortical_structures"
+   "type": {
+    "extraction_status": "extracted",
+    "value": "gray_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "subcortical volumes",
+         "start_char": 5972,
+         "end_char": 5991
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "subcortical structure volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "subcortical volumes",
+         "start_char": 5972,
+         "end_char": 5991
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "extracted",
+    "value": "cm3",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Region\tAlcohol-dependentpatients Mean (SD)\tHealthy controlsMean (SD)\tp-value(uncorrected)\tp-value (Bonferronicorrected)\tEffect size\tPairwise comparison",
+         "start_char": 15009,
+         "end_char": 15160
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "volume of each subcortical structure",
+         "start_char": 9696,
+         "end_char": 9732
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "mea_subcortical_surface_volume",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "surface reductions",
+         "start_char": 2039,
+         "end_char": 2057
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry_other",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "subcortical surface volumetric reduction",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "surface reductions",
+         "start_char": 2039,
+         "end_char": 2057
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Surface volumetric reduction",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "surface reductions",
+         "start_char": 2039,
+         "end_char": 2057
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "model_estimations": [
+  {
+   "local_id": "mod_mancova",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "ancova",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Multivariate analysis of covariance (MANCOVA) was used to evaluate volumetric differences in subcortical structures.",
+         "start_char": 11017,
+         "end_char": 11133
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "multivariate analysis of covariance (MANCOVA)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Multivariate analysis of covariance (MANCOVA) was used to evaluate volumetric differences in subcortical structures.",
+         "start_char": 11017,
+         "end_char": 11133
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "MANCOVA showed a significant main effect of group",
+         "start_char": 14160,
+         "end_char": 14209
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "subcortical structures",
+         "start_char": 430,
+         "end_char": 452
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_volumetric",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "group",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "main effect of group",
+           "start_char": 13847,
+           "end_char": 13867
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "between alcohol-dependent patients and healthy controls",
+           "start_char": 5108,
+           "end_char": 5163
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "alcohol-dependent patients",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "alcohol-dependent patients",
+             "start_char": 295,
+             "end_char": 321
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_alcohol_dependent"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "healthy controls",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "healthy controls",
+             "start_char": 1401,
+             "end_char": 1417
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_healthy_controls"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Group: alcohol-dependent patients versus healthy controls.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "MANCOVA showed a significant main effect of group (alcohol-dependent patients and healthy controls)",
+           "start_char": 14160,
+           "end_char": 14259
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "local_id": "trm_age_mancova",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "age",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Age and normalized total brain volume were significant predictors of variance and were used as covariates.",
+           "start_char": 11134,
+           "end_char": 11240
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Age and normalized total brain volume were significant predictors of variance and were used as covariates.",
+           "start_char": 11134,
+           "end_char": 11240
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference on all the segmented subcortical structures.",
+           "start_char": 11370,
+           "end_char": 11586
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "years",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Age",
+           "start_char": 11134,
+           "end_char": 11137
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Participant age, used as a covariate.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Age and normalized total brain volume were significant predictors of variance and were used as covariates.",
+           "start_char": 11134,
+           "end_char": 11240
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "local_id": "trm_total_brain_volume_mancova",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "normalized total brain volume",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "normalized total brain volume",
+           "start_char": 11142,
+           "end_char": 11171
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Age and normalized total brain volume were significant predictors of variance and were used as covariates.",
+           "start_char": 11134,
+           "end_char": 11240
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference on all the segmented subcortical structures.",
+           "start_char": 11370,
+           "end_char": 11586
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "cm3",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "normalized total brain volume",
+           "start_char": 11142,
+           "end_char": 11171
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Normalized total brain volume obtained using SIENAX, used as a covariate.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Age and normalized total brain volume were significant predictors of variance and were used as covariates.",
+           "start_char": 11134,
+           "end_char": 11240
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "MANCOVA of subcortical volumes with age and normalized total brain volume as covariates; Bonferroni correction with significance at p ≤ 0.05.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Bonferroni correction with significance at   p   ≤ 0.05 was used to correct for multiple comparisons.",
+         "start_char": 11241,
+         "end_char": 11342
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "IBM SPSS Statistics version 23.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Volumetric Analysis was performed using IBM SPSS software (version 23, IBM Corporation, New York).",
+         "start_char": 10826,
+         "end_char": 10924
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_fsl"
+   ]
+  },
+  {
+   "local_id": "mod_vertex_glm",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "glm",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Vertex analysis was performed using FSL's generalized linear model",
+         "start_char": 11370,
+         "end_char": 11436
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "FSL generalized linear model vertex analysis",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Vertex analysis was performed using FSL's generalized linear model",
+         "start_char": 11370,
+         "end_char": 11436
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Vertex analysis displays probabilistically significant (  p   ≤ 0.05) surface deformations of subcortical structures",
+         "start_char": 16808,
+         "end_char": 16924
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "non-parametric permutation inference",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Randomize ( 16 ) to perform a non-parametric permutation inference",
+         "start_char": 11475,
+         "end_char": 11541
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "FSL Randomize",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Randomize ( 16 )",
+         "start_char": 11475,
+         "end_char": 11491
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "vertex",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_vertex",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "group",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "group",
+           "start_char": 6591,
+           "end_char": 6596
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "between alcohol-dependent patients and healthy controls",
+           "start_char": 5108,
+           "end_char": 5163
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "alcohol-dependent patients",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "alcohol-dependent patients",
+             "start_char": 295,
+             "end_char": 321
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_alcohol_dependent"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "healthy controls",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "healthy controls",
+             "start_char": 1401,
+             "end_char": 1417
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_healthy_controls"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "generated",
+        "evidence": {
+         "status": "not_found"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Group: alcohol-dependent patients versus healthy controls.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "significant group differences",
+           "start_char": 6579,
+           "end_char": 6608
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "local_id": "trm_age_vertex",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "age",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age",
+           "start_char": 1426,
+           "end_char": 1429
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "using age and total brain volume as covariates",
+           "start_char": 16931,
+           "end_char": 16977
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference on all the segmented subcortical structures.",
+           "start_char": 11370,
+           "end_char": 11586
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "years",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age",
+           "start_char": 1426,
+           "end_char": 1429
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Participant age, used as a covariate.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "using age and total brain volume as covariates",
+           "start_char": 16931,
+           "end_char": 16977
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "local_id": "trm_total_brain_volume_vertex",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "normalized total brain volume",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "normalized total brain volume",
+           "start_char": 11142,
+           "end_char": 11171
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "continuous",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "using age and total brain volume as covariates",
+           "start_char": 16931,
+           "end_char": 16977
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Vertex analysis was performed using FSL's generalized linear model to construct a statistical matrix and Randomize ( 16 ) to perform a non-parametric permutation inference on all the segmented subcortical structures.",
+           "start_char": 11370,
+           "end_char": 11586
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "cm3",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "total brain volume",
+           "start_char": 9316,
+           "end_char": 9334
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Normalized total brain volume obtained using SIENAX, used as a covariate.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "using age and total brain volume as covariates",
+           "start_char": 16931,
+           "end_char": 16977
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "FSL generalized linear model with Randomize non-parametric permutation inference; age and normalized total brain volume as covariates; 5,000 resamples; FDR-corrected p ≤ 0.05.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The test was corrected for multiple comparison at   p   ≤ 0.05, using age and normalized total brain volume as covariates.",
+         "start_char": 11587,
+         "end_char": 11709
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_fsl"
    ]
   }
  ],
  "preprocessings": [
   {
-   "local_id": "prp_fsl_structural",
+   "local_id": "prp_fsl",
    "description": {
     "extraction_status": "extracted",
-    "value": "T1 images were processed using FSL, including SIENAX, FIRST, and FSLstats.",
+    "value": "T1 images processed using FMRIB Software Library programs including SIENAX, FIRST, and Vertex analysis.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3231,8 +3818,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Data analysis was performed on T1 images using FMRIB Software Library (FSL, version 5.0.1)",
-         "start_char": 9091,
+         "text": "FMRIB Software Library (FSL, version 5.0.1)",
+         "start_char": 9138,
          "end_char": 9181
         }
        ]
@@ -3243,10 +3830,10 @@
    "steps": {
     "extraction_status": "extracted",
     "value": [
-     "SIENAX obtained normalized white matter, gray matter, and total brain volumes",
-     "FIRST segmented bilateral thalamus, caudate, putamen, globus pallidus, hippocampus, amygdala, and nucleus accumbens",
-     "FSLstats obtained the volume of each subcortical structure",
-     "Subcortical structure volumes were normalized using the SIENAX V-scaling factor"
+     "Obtained normalized white matter, gray matter, and total brain volume using SIENAX",
+     "Segmented bilateral thalamus, caudate, putamen, globus pallidus, hippocampus, amygdala, and nucleus accumbens using FIRST",
+     "Obtained subcortical structure volumes using FSLstats",
+     "Normalized subcortical structure volumes using each subject's V-scaling factor"
     ],
     "value_source": "generated",
     "evidence": {
@@ -3261,9 +3848,12 @@
    }
   }
  ],
+ "study_type": [
+  "Journal Article"
+ ],
  "tables": [
   {
-   "local_id": "T1",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -3290,7 +3880,7 @@
    }
   },
   {
-   "local_id": "T2",
+   "local_id": "tbltable2",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 2",
@@ -3317,7 +3907,7 @@
    }
   },
   {
-   "local_id": "T3",
+   "local_id": "tbltable3",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 3",
@@ -3349,7 +3939,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "1f8259471acf8cb09fdeff2817f6c200b0e59e9ec4899d13975b59fcbcac0176",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -3483,57 +4073,5 @@
    }
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
- },
- "regions": [
-  {
-   "local_id": "reg_subcortical_structures",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "subcortical structures",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "subcortical structures",
-         "start_char": 430,
-         "end_char": 452
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Bilateral thalamus, caudate, putamen, globus pallidus, hippocampus, amygdala, and nucleus accumbens.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
- "study_type": [
-  "Journal Article"
- ]
+ }
 }

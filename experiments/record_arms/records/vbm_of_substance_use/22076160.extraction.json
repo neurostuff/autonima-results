@@ -1,4 +1,58 @@
 {
+ "description": {
+  "extraction_status": "extracted",
+  "value": "To characterize both grey and white matter changes in heavy male smokers, we investigated 16 heavy smokers and 16 matched healthy controls, using both univariate voxel-based morphometry (VBM) and multivariate pattern classification analysis.",
+  "value_source": "reported",
+  "evidence": {
+   "status": "present",
+   "sets": [
+    {
+     "source": "literal_match",
+     "spans": [
+      {
+       "text": "To characterize both grey and white matter changes in heavy male smokers, we investigated 16 heavy smokers and 16 matched healthy controls, using both univariate voxel-based morphometry (VBM) and multivariate pattern classification analysis.",
+       "start_char": 299,
+       "end_char": 540
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "design": {
+  "description": {
+   "extraction_status": "extracted",
+   "value": "The study compared heavy smokers with matched healthy nonsmoking controls in a cross-sectional structural MRI study.",
+   "value_source": "generated",
+   "evidence": {
+    "status": "not_found"
+   }
+  },
+  "allocation": {
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
+   "evidence": {
+    "status": "not_found"
+   }
+  },
+  "assignment_structure": {
+   "extraction_status": "extracted",
+   "value": "observational_cohorts",
+   "value_source": "generated",
+   "evidence": {
+    "status": "not_found"
+   }
+  },
+  "blinding": {
+   "extraction_status": "extracted",
+   "value": "not_applicable",
+   "value_source": "generated",
+   "evidence": {
+    "status": "not_found"
+   }
+  }
+ },
  "analyses": [
   {
    "local_id": "a_pone_0027440_t001_1",
@@ -13,9 +67,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Gray Matter",
-         "start_char": 9525,
-         "end_char": 9536
+         "text": "Nonsmokers minus smokers",
+         "start_char": 9542,
+         "end_char": 9566
         }
        ]
       }
@@ -24,7 +78,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Nonsmokers minus smokers",
+    "value": "Gray matter regions where nonsmokers > smokers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -43,14 +97,29 @@
     }
    },
    "prespecification": {
-    "value": "exploratory"
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "VBM allows for examining the entire brain on a voxel-by-voxel basis",
+         "start_char": 4006,
+         "end_char": 4073
+        }
+       ]
+      }
+     ]
     }
    },
    "regions": [],
@@ -70,9 +139,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age",
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
            "start_char": 5258,
-           "end_char": 5348
+           "end_char": 5312
           }
          ]
         }
@@ -81,7 +150,7 @@
      }
     },
     {
-     "group": "grp_nonsmokers",
+     "group": "grp_controls",
      "n": {
       "extraction_status": "extracted",
       "value": 16,
@@ -93,9 +162,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age",
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
            "start_char": 5258,
-           "end_char": 5348
+           "end_char": 5312
           }
          ]
         }
@@ -107,7 +176,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group_gray",
+      "term": "trm_group_svm_gray",
       "level": {
        "extraction_status": "extracted",
        "value": "nonsmokers",
@@ -129,22 +198,31 @@
        }
       },
       "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
+       "value": "positive"
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Nonsmokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Nonsmokers",
+            "start_char": 9542,
+            "end_char": 9552
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_group_gray",
+      "term": "trm_group_svm_gray",
       "level": {
        "extraction_status": "extracted",
        "value": "smokers",
@@ -166,17 +244,26 @@
        }
       },
       "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
+       "value": "negative"
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Smokers",
+            "start_char": 53,
+            "end_char": 60
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -186,7 +273,10 @@
     },
     "statistic": {
      "family": {
-      "value": "z"
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
      },
      "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
@@ -203,16 +293,103 @@
     }
    },
    "details": {
-    "details_type": "MassUnivariateDetails"
+    "details_type": "DecodingDetails",
+    "decoded_variable": {
+     "extraction_status": "extracted",
+     "value": "smokers versus controls",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "according to a class label (i.e. smokers vs. controls)",
+          "start_char": 22522,
+          "end_char": 22576
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "classes": [],
+    "performance_metrics": [
+     {
+      "name": {
+       "extraction_status": "extracted",
+       "value": "classification accuracy",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The classification accuracy was 81.25% for using GM images.",
+            "start_char": 7245,
+            "end_char": 7304
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "value": {
+       "extraction_status": "extracted",
+       "value": 81.25,
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The classification accuracy was 81.25% for using GM images.",
+            "start_char": 7245,
+            "end_char": 7304
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "relation": {
+       "value": "above_reference"
+      }
+     }
+    ],
+    "validation_scheme": {
+     "extraction_status": "extracted",
+     "value": "leave-one-out cross-validation",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "A “leave-one-out” cross-validation method was used",
+          "start_char": 23868,
+          "end_char": 23918
+         }
+        ]
+       }
+      ]
+     }
+    }
    },
    "acquisitions": [
-    "acq_structural_mri"
+    "acq_mri"
    ],
    "tasks": [],
-   "model_estimation": "mod_gray_vbm",
-   "inference_settings": "inf_vbm",
+   "model_estimation": "mod_svm_gray",
    "tables": [
-    "pone-0027440-t001"
+    "tbltable1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -222,9 +399,11 @@
      "status": "not_found"
     }
    },
-   "coordinate_space": {
+   "interpretations": {
     "extraction_status": "extracted",
-    "value": "MNI",
+    "value": [
+     "The discrimination maps for GM classification showed smaller GM volumes in cerebellum, ACC, and other brain regions in smokers."
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -233,24 +412,33 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MNI Coordinates",
-         "start_char": 9467,
-         "end_char": 9482
+         "text": "The discrimination maps for GM classification showed smaller GM volumes in cerebellum, ACC, and other brain regions in smokers",
+         "start_char": 8205,
+         "end_char": 8331
         }
        ]
       }
      ]
     }
    },
-   "interpretations": {
+   "coordinate_space": {
     "extraction_status": "extracted",
-    "value": [
-     "Compared with non-smokers, chronic smokers displayed significantly smaller GM volume in the bilateral cerebellum tonsil.",
-     "The discrimination maps for GM classification showed smaller GM volumes in cerebellum, ACC, and other brain regions in smokers."
-    ],
+    "value": "Talairach",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The x-coordinate for each sagittal slice and y-coordinate for each coronal slice in the standard Talairach space are given in millimetres.",
+         "start_char": 9180,
+         "end_char": 9318
+        }
+       ]
+      }
+     ]
     }
    },
    "model_representation_notes": {
@@ -260,8 +448,8 @@
     }
    },
    "assessments": [
-    "asm_structured_clinical_intervie",
-    "asm_fagerstr_m_test"
+    "asm_ftnd",
+    "asm_scid"
    ]
   },
   {
@@ -277,9 +465,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Gray Matter",
-         "start_char": 9525,
-         "end_char": 9536
+         "text": "Smokers minus nonsmokers",
+         "start_char": 9979,
+         "end_char": 10003
         }
        ]
       }
@@ -288,7 +476,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Smokers minus nonsmokers",
+    "value": "Gray matter regions where smokers > nonsmokers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -307,14 +495,29 @@
     }
    },
    "prespecification": {
-    "value": "exploratory"
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "VBM allows for examining the entire brain on a voxel-by-voxel basis",
+         "start_char": 4006,
+         "end_char": 4073
+        }
+       ]
+      }
+     ]
     }
    },
    "regions": [],
@@ -334,9 +537,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age",
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
            "start_char": 5258,
-           "end_char": 5348
+           "end_char": 5312
           }
          ]
         }
@@ -345,7 +548,7 @@
      }
     },
     {
-     "group": "grp_nonsmokers",
+     "group": "grp_controls",
      "n": {
       "extraction_status": "extracted",
       "value": 16,
@@ -357,9 +560,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age",
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
            "start_char": 5258,
-           "end_char": 5348
+           "end_char": 5312
           }
          ]
         }
@@ -371,7 +574,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group_gray",
+      "term": "trm_group_svm_gray",
       "level": {
        "extraction_status": "extracted",
        "value": "smokers",
@@ -393,22 +596,31 @@
        }
       },
       "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
+       "value": "positive"
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Smokers",
+            "start_char": 53,
+            "end_char": 60
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_group_gray",
+      "term": "trm_group_svm_gray",
       "level": {
        "extraction_status": "extracted",
        "value": "nonsmokers",
@@ -430,17 +642,26 @@
        }
       },
       "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
+       "value": "negative"
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Nonsmokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Nonsmokers",
+            "start_char": 9542,
+            "end_char": 9552
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -450,7 +671,10 @@
     },
     "statistic": {
      "family": {
-      "value": "z"
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
      },
      "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
@@ -467,16 +691,83 @@
     }
    },
    "details": {
-    "details_type": "MassUnivariateDetails"
+    "details_type": "DecodingDetails",
+    "decoded_variable": {
+     "extraction_status": "extracted",
+     "value": "smokers versus controls",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "according to a class label (i.e. smokers vs. controls)",
+          "start_char": 22522,
+          "end_char": 22576
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "classes": [],
+    "performance_metrics": [
+     {
+      "name": {
+       "extraction_status": "extracted",
+       "value": "classification accuracy",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The classification accuracy was 81.25% for using GM images.",
+            "start_char": 7245,
+            "end_char": 7304
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "relation": {
+       "value": "above_reference"
+      }
+     }
+    ],
+    "validation_scheme": {
+     "extraction_status": "extracted",
+     "value": "leave-one-out cross-validation",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "A “leave-one-out” cross-validation method was used",
+          "start_char": 23868,
+          "end_char": 23918
+         }
+        ]
+       }
+      ]
+     }
+    }
    },
    "acquisitions": [
-    "acq_structural_mri"
+    "acq_mri"
    ],
    "tasks": [],
-   "model_estimation": "mod_gray_vbm",
-   "inference_settings": "inf_vbm",
+   "model_estimation": "mod_svm_gray",
    "tables": [
-    "pone-0027440-t001"
+    "tbltable1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -486,9 +777,11 @@
      "status": "not_found"
     }
    },
-   "coordinate_space": {
+   "interpretations": {
     "extraction_status": "extracted",
-    "value": "MNI",
+    "value": [
+     "Multivariate analysis also found larger GM volumes in several regions in smokers, including parahippocampal gyrus, posterior cingulate cortex, and other areas."
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -497,24 +790,33 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MNI Coordinates",
-         "start_char": 9467,
-         "end_char": 9482
+         "text": "multivariate analysis also found larger GM volumes in several regions in smokers, including parahippocampa gyrus, posterior cingulate cortex, and other areas",
+         "start_char": 8374,
+         "end_char": 8531
         }
        ]
       }
      ]
     }
    },
-   "interpretations": {
+   "coordinate_space": {
     "extraction_status": "extracted",
-    "value": [
-     "The discrimination maps for GM classification also found larger GM volumes in several regions in smokers, including the parahippocampal gyrus and posterior cingulate cortex.",
-     "The GM volumes in ACC were found significantly smaller in smokers in multivariate analysis."
-    ],
+    "value": "Talairach",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The x-coordinate for each sagittal slice and y-coordinate for each coronal slice in the standard Talairach space are given in millimetres.",
+         "start_char": 9180,
+         "end_char": 9318
+        }
+       ]
+      }
+     ]
     }
    },
    "model_representation_notes": {
@@ -524,8 +826,8 @@
     }
    },
    "assessments": [
-    "asm_structured_clinical_intervie",
-    "asm_fagerstr_m_test"
+    "asm_ftnd",
+    "asm_scid"
    ]
   },
   {
@@ -541,9 +843,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "White Matter",
-         "start_char": 18,
-         "end_char": 30
+         "text": "Nonsmokers minus smokers",
+         "start_char": 9542,
+         "end_char": 9566
         }
        ]
       }
@@ -552,7 +854,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Nonsmokers minus smokers",
+    "value": "Adjacent white matter regions where nonsmokers > smokers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -571,14 +873,29 @@
     }
    },
    "prespecification": {
-    "value": "exploratory"
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "VBM allows for examining the entire brain on a voxel-by-voxel basis",
+         "start_char": 4006,
+         "end_char": 4073
+        }
+       ]
+      }
+     ]
     }
    },
    "regions": [],
@@ -598,9 +915,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age",
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
            "start_char": 5258,
-           "end_char": 5348
+           "end_char": 5312
           }
          ]
         }
@@ -609,7 +926,7 @@
      }
     },
     {
-     "group": "grp_nonsmokers",
+     "group": "grp_controls",
      "n": {
       "extraction_status": "extracted",
       "value": 16,
@@ -621,9 +938,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age",
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
            "start_char": 5258,
-           "end_char": 5348
+           "end_char": 5312
           }
          ]
         }
@@ -635,7 +952,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group_white",
+      "term": "trm_group_svm_white",
       "level": {
        "extraction_status": "extracted",
        "value": "nonsmokers",
@@ -657,22 +974,31 @@
        }
       },
       "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
+       "value": "positive"
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Nonsmokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Nonsmokers",
+            "start_char": 9542,
+            "end_char": 9552
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_group_white",
+      "term": "trm_group_svm_white",
       "level": {
        "extraction_status": "extracted",
        "value": "smokers",
@@ -694,17 +1020,26 @@
        }
       },
       "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
+       "value": "negative"
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Smokers",
+            "start_char": 53,
+            "end_char": 60
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -714,7 +1049,10 @@
     },
     "statistic": {
      "family": {
-      "value": "z"
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
      },
      "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
@@ -731,16 +1069,103 @@
     }
    },
    "details": {
-    "details_type": "MassUnivariateDetails"
+    "details_type": "DecodingDetails",
+    "decoded_variable": {
+     "extraction_status": "extracted",
+     "value": "smokers versus controls",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "according to a class label (i.e. smokers vs. controls)",
+          "start_char": 22522,
+          "end_char": 22576
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "classes": [],
+    "performance_metrics": [
+     {
+      "name": {
+       "extraction_status": "extracted",
+       "value": "classification accuracy",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The similar classification accuracy was achieved for using WM images",
+            "start_char": 7819,
+            "end_char": 7887
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "value": {
+       "extraction_status": "extracted",
+       "value": 81.25,
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "accuracy = 81.25%",
+            "start_char": 7889,
+            "end_char": 7906
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "relation": {
+       "value": "above_reference"
+      }
+     }
+    ],
+    "validation_scheme": {
+     "extraction_status": "extracted",
+     "value": "leave-one-out cross-validation",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "A “leave-one-out” cross-validation method was used",
+          "start_char": 23868,
+          "end_char": 23918
+         }
+        ]
+       }
+      ]
+     }
+    }
    },
    "acquisitions": [
-    "acq_structural_mri"
+    "acq_mri"
    ],
    "tasks": [],
-   "model_estimation": "mod_white_vbm",
-   "inference_settings": "inf_vbm",
+   "model_estimation": "mod_svm_white",
    "tables": [
-    "pone-0027440-t001"
+    "tbltable1"
    ],
    "source_table_analysis": {
     "extraction_status": "extracted",
@@ -748,26 +1173,6 @@
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
-    }
-   },
-   "coordinate_space": {
-    "extraction_status": "extracted",
-    "value": "MNI",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MNI Coordinates",
-         "start_char": 9467,
-         "end_char": 9482
-        }
-       ]
-      }
-     ]
     }
    },
    "interpretations": {
@@ -783,9 +1188,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "In addition, smaller WM volumes were found in cerebellum, pons, and other brain regions in smokers",
-         "start_char": 8762,
+         "text": "smaller WM volumes were found in cerebellum, pons, and other brain regions in smokers",
+         "start_char": 8775,
          "end_char": 8860
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "Talairach",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The x-coordinate for each sagittal slice and y-coordinate for each coronal slice in the standard Talairach space are given in millimetres.",
+         "start_char": 9180,
+         "end_char": 9318
         }
        ]
       }
@@ -799,8 +1224,8 @@
     }
    },
    "assessments": [
-    "asm_structured_clinical_intervie",
-    "asm_fagerstr_m_test"
+    "asm_ftnd",
+    "asm_scid"
    ]
   },
   {
@@ -816,9 +1241,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "White Matter",
-         "start_char": 18,
-         "end_char": 30
+         "text": "Smokers minus nonsmokers",
+         "start_char": 9979,
+         "end_char": 10003
         }
        ]
       }
@@ -827,7 +1252,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Smokers minus nonsmokers",
+    "value": "Adjacent white matter regions where smokers > nonsmokers",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -846,14 +1271,29 @@
     }
    },
    "prespecification": {
-    "value": "exploratory"
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "whole_brain",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "VBM allows for examining the entire brain on a voxel-by-voxel basis",
+         "start_char": 4006,
+         "end_char": 4073
+        }
+       ]
+      }
+     ]
     }
    },
    "regions": [],
@@ -873,9 +1313,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age",
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
            "start_char": 5258,
-           "end_char": 5348
+           "end_char": 5312
           }
          ]
         }
@@ -884,7 +1324,7 @@
      }
     },
     {
-     "group": "grp_nonsmokers",
+     "group": "grp_controls",
      "n": {
       "extraction_status": "extracted",
       "value": 16,
@@ -896,9 +1336,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age",
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
            "start_char": 5258,
-           "end_char": 5348
+           "end_char": 5312
           }
          ]
         }
@@ -910,7 +1350,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group_white",
+      "term": "trm_group_svm_white",
       "level": {
        "extraction_status": "extracted",
        "value": "smokers",
@@ -932,22 +1372,31 @@
        }
       },
       "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
+       "value": "positive"
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Smokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Smokers",
+            "start_char": 53,
+            "end_char": 60
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_group_white",
+      "term": "trm_group_svm_white",
       "level": {
        "extraction_status": "extracted",
        "value": "nonsmokers",
@@ -969,17 +1418,391 @@
        }
       },
       "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "reported",
-       "evidence": {
-        "status": "not_found"
-       }
+       "value": "negative"
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "Nonsmokers",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Nonsmokers",
+            "start_char": 9542,
+            "end_char": 9552
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "kind": {
+     "value": "contrast"
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "DecodingDetails",
+    "decoded_variable": {
+     "extraction_status": "extracted",
+     "value": "smokers versus controls",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "according to a class label (i.e. smokers vs. controls)",
+          "start_char": 22522,
+          "end_char": 22576
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "classes": [],
+    "performance_metrics": [
+     {
+      "name": {
+       "extraction_status": "extracted",
+       "value": "classification accuracy",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The similar classification accuracy was achieved for using WM images",
+            "start_char": 7819,
+            "end_char": 7887
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "value": {
+       "extraction_status": "extracted",
+       "value": 81.25,
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "accuracy = 81.25%",
+            "start_char": 7889,
+            "end_char": 7906
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "relation": {
+       "value": "above_reference"
+      }
+     }
+    ],
+    "validation_scheme": {
+     "extraction_status": "extracted",
+     "value": "leave-one-out cross-validation",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "A “leave-one-out” cross-validation method was used",
+          "start_char": 23868,
+          "end_char": 23918
+         }
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "tasks": [],
+   "model_estimation": "mod_svm_white",
+   "tables": [
+    "tbltable1"
+   ],
+   "source_table_analysis": {
+    "extraction_status": "extracted",
+    "value": "pone-0027440-t001#4",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The discrimination maps for WM classification revealed larger WM volumes in ACC, MCC/PCC, putamen, as well as other regions including the superior temporal cortex, inferior parietal cortex, and middle occipital gyrus in smokers."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "larger WM volumes in ACC, MCC/PCC, putamen, as well as other regions including the superior temporal cortex, inferior parietal cortex, and middle occipital gyrus in smokers",
+         "start_char": 8588,
+         "end_char": 8760
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "extracted",
+    "value": "Talairach",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The x-coordinate for each sagittal slice and y-coordinate for each coronal slice in the standard Talairach space are given in millimetres.",
+         "start_char": 9180,
+         "end_char": 9318
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "assessments": [
+    "asm_ftnd",
+    "asm_scid"
+   ]
+  },
+  {
+   "local_id": "a_prose_1",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Gray matter volume comparison",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "In comparison with non-smokers, the chronic smokers displayed significantly smaller GM volume in cerebellum",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "In comparison with non-smokers, the chronic smokers displayed significantly smaller GM volume in cerebellum tosil (left, MNI [x = −34, y = −46, z = −44], peak z = 3.82; right, MNI [x = 26, y = −40, z = −46], peak z = 3.95, P <0.05, small volume correction (svc)), as well as larger WM volume in the left ACC (MNI [x = −10, y = 44, z = 8], peak z = 3.63, P <0.05, svc), the left midcingulate cortex (MCC)/posterior cingulate cortex (PCC) (MNI [x = −8, y = −42, z = 36], peak z = 3.78; MNI [x = −8, y = −38],",
+         "start_char": 5769,
+         "end_char": 6275
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "VBM allows for examining the entire brain on a voxel-by-voxel basis",
+         "start_char": 4006,
+         "end_char": 4073
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "regions": [],
+   "defines_regions": [],
+   "measure": "mea_gray_matter_volume",
+   "groups": [
+    {
+     "group": "grp_smokers",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
+           "start_char": 5258,
+           "end_char": 5312
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_controls",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The smoker (n = 16) and the non-smoker (n = 16) groups",
+           "start_char": 5258,
+           "end_char": 5312
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_group_vbm_gray",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found",
+        "unlocated_quotes": 1
+       }
+      },
+      "direction": {
+       "value": "negative"
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "smokers",
+            "start_char": 290,
+            "end_char": 297
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "term": "trm_group_vbm_gray",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "non-smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found",
+        "unlocated_quotes": 1
+       }
+      },
+      "direction": {
+       "value": "positive"
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "non-smokers",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "non-smokers",
+            "start_char": 3720,
+            "end_char": 3731
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -1009,20 +1832,28 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_structural_mri"
+    "acq_mri"
    ],
    "tasks": [],
-   "model_estimation": "mod_white_vbm",
-   "inference_settings": "inf_vbm",
-   "tables": [
-    "pone-0027440-t001"
-   ],
+   "model_estimation": "mod_vbm_gray",
    "source_table_analysis": {
     "extraction_status": "extracted",
-    "value": "pone-0027440-t001#4",
+    "value": "prose#1",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
+    }
+   },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Compared with non-smokers, the chronic smokers displayed significantly smaller GM volume in cerebellum tonsil.",
+     "The findings demonstrated significant GM reduction in cerebellum in heavy smokers."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "coordinate_space": {
@@ -1036,24 +1867,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MNI Coordinates",
-         "start_char": 9467,
-         "end_char": 9482
+         "text": "MNI [x = −34, y = −46, z = −44]",
+         "start_char": 5890,
+         "end_char": 5921
         }
        ]
       }
      ]
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "Compared with controls, heavy smokers exhibited significantly larger WM volumes in the putamen, anterior cingulate cortex, and midcingulate cortex/posterior cingulate cortex.",
-     "The discrimination maps for WM classification revealed larger WM volumes in ACC, MCC/PCC, putamen, as well as other regions including the superior temporal cortex, inferior parietal cortex, and middle occipital gyrus in smokers."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "model_representation_notes": {
@@ -1062,15 +1882,18 @@
      "status": "not_applicable"
     }
    },
+   "tables": [
+    "tbltable1"
+   ],
    "assessments": [
-    "asm_structured_clinical_intervie",
-    "asm_fagerstr_m_test"
+    "asm_ftnd",
+    "asm_scid"
    ]
   }
  ],
  "acquisitions": [
   {
-   "local_id": "acq_structural_mri",
+   "local_id": "acq_mri",
    "acquisition_type": "MRI",
    "modality": {
     "extraction_status": "extracted",
@@ -1090,1230 +1913,113 @@
        ]
       }
      ]
-    },
-    "magnetic_field_strength_tesla": {
-     "extraction_status": "extracted",
-     "value": 3,
-     "value_source": "reported",
-     "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "quotes": [
-         "Siemens 3-T Tim Trio Magnetic Resonance Imaging scanner"
-        ]
-       }
-      ]
-     },
-     "pulse_sequence_type": {
-      "extraction_status": "extracted",
-      "value": "magnetization prepared rapid gradient echo",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
+    }
+   },
+   "device": "dev_siemens_tim_trio",
+   "magnetic_field_strength_tesla": {
+    "extraction_status": "extracted",
+    "value": 3,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
         {
-         "quotes": [
-          "A high-resolution structural magnetization prepared rapid gradient echo scan"
-         ]
+         "text": "All data were acquired on a Siemens 3-T Tim Trio Magnetic Resonance Imaging scanner",
+         "start_char": 19373,
+         "end_char": 19456
         }
        ]
-      },
-      "repetition_time_seconds": {
-       "extraction_status": "extracted",
-       "value": 2.25,
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "quotes": [
-           "repetition time = 2250 ms"
-          ]
-         }
-        ]
-       },
-       "echo_time_seconds": {
-        "extraction_status": "extracted",
-        "value": [
-         0.00299
-        ],
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "quotes": [
-            "echo time = 2.99 ms"
-           ]
-          }
-         ]
-        },
-        "acquisition_voxel_size_mm": {
-         "extraction_status": "extracted",
-         "value": [
-          1.3,
-          1.3,
-          1
-         ],
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "voxel size = 1.3×1.3×1 mm"
-            ]
-           }
-          ]
-         }
-        }
-       },
-       "assessments": [
-        {
-         "local_id": "asm_ftnd",
-         "name": {
-          "extraction_status": "extracted",
-          "value": "Fagerström Test for Nicotine Dependence",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "Fagerström Test for Nicotine Dependence (FTND) questionnaire"
-             ]
-            }
-           ]
-          }
-         },
-         "assessment_type": {
-          "extraction_status": "extracted",
-          "value": "questionnaire",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "Fagerström Test for Nicotine Dependence (FTND) questionnaire"
-             ]
-            }
-           ]
-          }
-         }
-        },
-        {
-         "local_id": "asm_scid",
-         "name": {
-          "extraction_status": "extracted",
-          "value": "Structured Clinical Interview for the Diagnostic and Statistical Manual of Mental Disorders, 4th edition",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "All subjects were screened for psychiatric and nonpsychiatric medical disorders using the Structured Clinical Interview for the   Diagnostic and Statistical Manual of Mental Disorders  , 4th edition (DSM-IV; SCID)."
-             ]
-            }
-           ]
-          }
-         },
-         "assessment_type": {
-          "extraction_status": "extracted",
-          "value": "diagnostic interview",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "using the Structured Clinical Interview for the   Diagnostic and Statistical Manual of Mental Disorders  , 4th edition (DSM-IV; SCID)"
-             ]
-            }
-           ]
-          }
-         }
-        }
-       ],
-       "devices": [
-        {
-         "local_id": "dev_siemens_tim_trio",
-         "manufacturer": {
-          "extraction_status": "extracted",
-          "value": "Siemens",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "Siemens 3-T Tim Trio Magnetic Resonance Imaging scanner"
-             ]
-            }
-           ]
-          }
-         },
-         "model": {
-          "extraction_status": "extracted",
-          "value": "Tim Trio",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "Siemens 3-T Tim Trio Magnetic Resonance Imaging scanner"
-             ]
-            }
-           ]
-          }
-         }
-        }
-       ],
-       "external_datasets": [],
-       "groups": [
-        {
-         "local_id": "grp_smokers",
-         "name": {
-          "extraction_status": "extracted",
-          "value": "smokers",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "The smoker (n = 16) and the non-smoker (n = 16) groups"
-             ]
-            }
-           ]
-          }
-         },
-         "species": {
-          "extraction_status": "extracted",
-          "value": "human",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "human brain structure"
-             ]
-            }
-           ]
-          }
-         },
-         "enrolled_count": {
-          "extraction_status": "extracted",
-          "value": 16,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "Data were collected from 16 cigarette smokers"
-             ]
-            }
-           ]
-          }
-         },
-         "age_mean": {
-          "extraction_status": "extracted",
-          "value": 41.6,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "smokers 41.6±5.5"
-             ]
-            }
-           ]
-          }
-         },
-         "age_standard_deviation": {
-          "extraction_status": "extracted",
-          "value": 5.5,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "smokers 41.6±5.5"
-             ]
-            }
-           ]
-          }
-         },
-         "age_unit": {
-          "extraction_status": "extracted",
-          "value": "years",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "smokers 41.6±5.5"
-             ]
-            }
-           ]
-          }
-         },
-         "sex_distribution": [
-          {
-           "category": {
-            "extraction_status": "extracted",
-            "value": "male",
-            "value_source": "reported",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "we only examined male smokers"
-               ]
-              }
-             ]
-            }
-           },
-           "count": {
-            "extraction_status": "extracted",
-            "value": 16,
-            "value_source": "generated",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "Data were collected from 16 cigarette smokers"
-               ]
-              }
-             ]
-            }
-           }
-          }
-         ],
-         "is_healthy": {
-          "extraction_status": "extracted",
-          "value": false,
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "men who met the DSM-IV criteria for current nicotine dependence"
-             ]
-            }
-           ]
-          }
-         },
-         "medical_condition": {
-          "extraction_status": "extracted",
-          "value": [
-           "current nicotine dependence"
-          ],
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "men who met the DSM-IV criteria for current nicotine dependence"
-             ]
-            }
-           ]
-          }
-         },
-         "diagnostic_system": {
-          "extraction_status": "extracted",
-          "value": "DSM-IV",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "met the DSM-IV criteria for current nicotine dependence"
-             ]
-            }
-           ]
-          }
-         },
-         "diagnostic_instrument": [
-          "asm_scid",
-          "asm_ftnd"
-         ],
-         "clinical_characteristics": {
-          "extraction_status": "extracted",
-          "value": "20.6±7.4 cigarettes per day; average smoke years 21.1±3.9; mean FTND score 7.19±1.42",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "Smokers smoke 20.6±7.4 (mean±SD) cigarettes per day and the average smoke years are 21.1±3.9 (mean±SD). The mean score on the Fagerström Test for Nicotine Dependence (FTND) questionnaire was 7.19±1.42"
-             ]
-            }
-           ]
-          }
-         },
-         "medication_status": {
-          "extraction_status": "extracted",
-          "value": "not currently taking any medications",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "were not currently taking any medications"
-             ]
-            }
-           ]
-          }
-         }
-        },
-        {
-         "local_id": "grp_nonsmokers",
-         "name": {
-          "extraction_status": "extracted",
-          "value": "nonsmokers",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "The smoker (n = 16) and the non-smoker (n = 16) groups"
-             ]
-            }
-           ]
-          }
-         },
-         "species": {
-          "extraction_status": "extracted",
-          "value": "human",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "human brain structure"
-             ]
-            }
-           ]
-          }
-         },
-         "enrolled_count": {
-          "extraction_status": "extracted",
-          "value": 16,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "16 matched healthy nonsmoking controls"
-             ]
-            }
-           ]
-          }
-         },
-         "age_mean": {
-          "extraction_status": "extracted",
-          "value": 39.2,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "non-smokers 39.2±4.5"
-             ]
-            }
-           ]
-          }
-         },
-         "age_standard_deviation": {
-          "extraction_status": "extracted",
-          "value": 4.5,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "non-smokers 39.2±4.5"
-             ]
-            }
-           ]
-          }
-         },
-         "age_unit": {
-          "extraction_status": "extracted",
-          "value": "years",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "non-smokers 39.2±4.5"
-             ]
-            }
-           ]
-          }
-         },
-         "sex_distribution": [
-          {
-           "category": {
-            "extraction_status": "extracted",
-            "value": "male",
-            "value_source": "reported",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "we only examined male smokers"
-               ]
-              }
-             ]
-            }
-           },
-           "count": {
-            "extraction_status": "extracted",
-            "value": 16,
-            "value_source": "generated",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "16 matched healthy nonsmoking controls"
-               ]
-              }
-             ]
-            }
-           }
-          }
-         ],
-         "is_healthy": {
-          "extraction_status": "extracted",
-          "value": true,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "16 matched healthy nonsmoking controls"
-             ]
-            }
-           ]
-          }
-         },
-         "medical_condition": {
-          "extraction_status": "extracted",
-          "value": [
-           "no history of any neurological or psychiatric disorder",
-           "no other drug dependence"
-          ],
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "All subjects were right-handed and male, had no history of any neurological or psychiatric disorder, had no other drug dependence"
-             ]
-            }
-           ]
-          }
-         },
-         "medication_status": {
-          "extraction_status": "extracted",
-          "value": "not currently taking any medications",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "were not currently taking any medications"
-             ]
-            }
-           ]
-          }
-         }
-        }
-       ],
-       "inference_settings": [
-        {
-         "local_id": "inf_vbm",
-         "inference_level": {
-          "extraction_status": "extracted",
-          "value": "voxel",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "voxel-by-voxel basis"
-             ]
-            }
-           ]
-          }
-         },
-         "height_threshold_value": {
-          "extraction_status": "extracted",
-          "value": 0.001,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "images were thresholded at P<0.001, uncorrected"
-             ]
-            }
-           ]
-          }
-         },
-         "height_threshold_type": {
-          "extraction_status": "extracted",
-          "value": "p",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "images were thresholded at P<0.001, uncorrected"
-             ]
-            }
-           ]
-          }
-         },
-         "cluster_extent_threshold": {
-          "extraction_status": "extracted",
-          "value": 50,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "minimum cluster extent of 50 contiguous voxels"
-             ]
-            }
-           ]
-          }
-         },
-         "multiple_comparison_method": {
-          "extraction_status": "extracted",
-          "value": "false discovery rate",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "thresholded using a false discovery rate correction of P <0.05"
-             ]
-            }
-           ]
-          }
-         },
-         "correction_scope": {
-          "extraction_status": "extracted",
-          "value": "whole_brain",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "for the whole-brain volume"
-             ]
-            }
-           ]
-          }
-         },
-         "alpha_level": {
-          "extraction_status": "extracted",
-          "value": 0.05,
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "false discovery rate correction of P <0.05"
-             ]
-            }
-           ]
-          }
-         }
-        }
-       ],
-       "measures": [
-        {
-         "local_id": "mea_gray_matter_volume",
-         "family": {
-          "extraction_status": "extracted",
-          "value": "structural_morphometry",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "grey matter (GM) volume"
-             ]
-            }
-           ]
-          }
-         },
-         "type": {
-          "extraction_status": "extracted",
-          "value": "gray_matter_volume",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "grey matter (GM) volume"
-             ]
-            }
-           ]
-          }
-         },
-         "source_label": {
-          "extraction_status": "extracted",
-          "value": "grey matter volume",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "grey matter (GM) volume"
-             ]
-            }
-           ]
-          }
-         }
-        },
-        {
-         "local_id": "mea_white_matter_volume",
-         "family": {
-          "extraction_status": "extracted",
-          "value": "structural_morphometry",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "white matter (WM) volume"
-             ]
-            }
-           ]
-          }
-         },
-         "type": {
-          "extraction_status": "extracted",
-          "value": "white_matter_volume",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "white matter (WM) volume"
-             ]
-            }
-           ]
-          }
-         },
-         "source_label": {
-          "extraction_status": "extracted",
-          "value": "white matter volume",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "white matter (WM) volume"
-             ]
-            }
-           ]
-          }
-         }
-        }
-       ],
-       "model_estimations": [
-        {
-         "local_id": "mod_gray_vbm",
-         "model_family": {
-          "extraction_status": "extracted",
-          "value": "glm",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "univariate voxel-based morphometry (VBM)"
-             ]
-            }
-           ]
-          }
-         },
-         "model_type": {
-          "extraction_status": "extracted",
-          "value": "voxel-based morphometry (VBM)",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "VBM analysis"
-             ]
-            }
-           ]
-          }
-         },
-         "stage": {
-          "extraction_status": "extracted",
-          "value": "group",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "between-group comparisons"
-             ]
-            }
-           ]
-          }
-         },
-         "spatial_unit": {
-          "extraction_status": "extracted",
-          "value": "voxel",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "voxel-by-voxel basis"
-             ]
-            }
-           ]
-          }
-         },
-         "terms": [
-          {
-           "local_id": "trm_group_gray",
-           "name": {
-            "extraction_status": "extracted",
-            "value": "group",
-            "value_source": "reported",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "with the group (smokers and controls)"
-               ]
-              }
-             ]
-            }
-           },
-           "type": {
-            "extraction_status": "extracted",
-            "value": "categorical",
-            "value_source": "generated",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "smokers minus controls for grey matter"
-               ]
-              }
-             ]
-            }
-           },
-           "variation_level": {
-            "extraction_status": "extracted",
-            "value": "between_subject",
-            "value_source": "generated",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "between-group comparisons"
-               ]
-              }
-             ]
-            }
-           },
-           "levels": [
-            {
-             "level": {
-              "extraction_status": "extracted",
-              "value": "smokers",
-              "value_source": "reported",
-              "evidence": {
-               "status": "present",
-               "sets": [
-                {
-                 "quotes": [
-                  "smokers minus controls for grey matter"
-                 ]
-                }
-               ]
-              },
-              "groups": [
-               "grp_smokers"
-              ]
-             }
-            },
-            {
-             "level": {
-              "extraction_status": "extracted",
-              "value": "nonsmokers",
-              "value_source": "reported",
-              "evidence": {
-               "status": "present",
-               "sets": [
-                {
-                 "quotes": [
-                  "Nonsmokers minus smokers"
-                 ]
-                }
-               ]
-              },
-              "groups": [
-               "grp_nonsmokers"
-              ]
-             }
-            }
-           ]
-          }
-         ]
-        },
-        {
-         "local_id": "mod_white_vbm",
-         "model_family": {
-          "extraction_status": "extracted",
-          "value": "glm",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "univariate voxel-based morphometry (VBM)"
-             ]
-            }
-           ]
-          }
-         },
-         "model_type": {
-          "extraction_status": "extracted",
-          "value": "voxel-based morphometry (VBM)",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "VBM analysis"
-             ]
-            }
-           ]
-          }
-         },
-         "stage": {
-          "extraction_status": "extracted",
-          "value": "group",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "between-group comparisons"
-             ]
-            }
-           ]
-          }
-         },
-         "spatial_unit": {
-          "extraction_status": "extracted",
-          "value": "voxel",
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "voxel-by-voxel basis"
-             ]
-            }
-           ]
-          }
-         },
-         "terms": [
-          {
-           "local_id": "trm_group_white",
-           "name": {
-            "extraction_status": "extracted",
-            "value": "group",
-            "value_source": "reported",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "with the group (smokers and controls)"
-               ]
-              }
-             ]
-            }
-           },
-           "type": {
-            "extraction_status": "extracted",
-            "value": "categorical",
-            "value_source": "generated",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "smokers minus controls for white matter"
-               ]
-              }
-             ]
-            }
-           },
-           "variation_level": {
-            "extraction_status": "extracted",
-            "value": "between_subject",
-            "value_source": "generated",
-            "evidence": {
-             "status": "present",
-             "sets": [
-              {
-               "quotes": [
-                "between-group comparisons"
-               ]
-              }
-             ]
-            }
-           },
-           "levels": [
-            {
-             "level": {
-              "extraction_status": "extracted",
-              "value": "smokers",
-              "value_source": "reported",
-              "evidence": {
-               "status": "present",
-               "sets": [
-                {
-                 "quotes": [
-                  "Smokers minus nonsmokers"
-                 ]
-                }
-               ]
-              },
-              "groups": [
-               "grp_smokers"
-              ]
-             }
-            },
-            {
-             "level": {
-              "extraction_status": "extracted",
-              "value": "nonsmokers",
-              "value_source": "reported",
-              "evidence": {
-               "status": "present",
-               "sets": [
-                {
-                 "quotes": [
-                  "Nonsmokers minus smokers"
-                 ]
-                }
-               ]
-              },
-              "groups": [
-               "grp_nonsmokers"
-              ]
-             }
-            }
-           ]
-          }
-         ]
-        }
-       ],
-       "preprocessings": [
-        {
-         "local_id": "prp_spm5_vbm",
-         "software": {
-          "extraction_status": "extracted",
-          "value": [
-           "SPM5"
-          ],
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "VBM analysis was performed in SPM5"
-             ]
-            }
-           ]
-          }
-         },
-         "steps": {
-          "extraction_status": "extracted",
-          "value": [
-           "spatial normalization",
-           "tissue classification",
-           "intensity inhomogeneity correction",
-           "segmentation",
-           "modulation"
-          ],
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "automated spatial normalization, tissue classification, and intensity inhomogeneity correction to be combined within the segmentation step"
-             ]
-            }
-           ]
-          }
-         },
-         "smoothing_fwhm_mm": {
-          "extraction_status": "extracted",
-          "value": [
-           8
-          ],
-          "value_source": "reported",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "smoothed using a Gaussian kernel of 8-mm full-width at half-maximum (FWHM)"
-             ]
-            }
-           ]
-          }
-         }
-        }
-       ],
-       "regions": [],
-       "tasks": [],
-       "study": {
-        "description": {
-         "extraction_status": "extracted",
-         "value": "To characterize both grey and white matter changes in heavy male smokers, we investigated 16 heavy smokers and 16 matched healthy controls, using both univariate voxel-based morphometry (VBM) and multivariate pattern classification analysis.",
-         "value_source": "reported",
-         "evidence": {
-          "status": "present",
-          "sets": [
-           {
-            "quotes": [
-             "To characterize both grey and white matter changes in heavy male smokers, we investigated 16 heavy smokers and 16 matched healthy controls, using both univariate voxel-based morphometry (VBM) and multivariate pattern classification analysis."
-            ]
-           }
-          ]
-         }
-        },
-        "design": {
-         "description": {
-          "extraction_status": "extracted",
-          "value": "Cross-sectional comparison of heavy male smokers and matched healthy nonsmoking controls.",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "Data were collected from 16 cigarette smokers and 16 matched healthy nonsmoking controls."
-             ]
-            }
-           ]
-          }
-         },
-         "allocation": {
-          "extraction_status": "extracted",
-          "value": "non_randomized",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "Participants were recruited from the community through advertisements."
-             ]
-            }
-           ]
-          }
-         },
-         "assignment_structure": {
-          "extraction_status": "extracted",
-          "value": "parallel",
-          "value_source": "generated",
-          "evidence": {
-           "status": "present",
-           "sets": [
-            {
-             "quotes": [
-              "The smoker (n = 16) and the non-smoker (n = 16) groups were selected"
-             ]
-            }
-           ]
-          }
-         },
-         "blinding": {
-          "extraction_status": "not_reported",
-          "evidence": {
-           "status": "not_applicable"
-          }
-         },
-         "arms": [],
-         "timepoints": []
-        }
-       }
       }
-     }
+     ]
+    }
+   },
+   "pulse_sequence_type": {
+    "extraction_status": "extracted",
+    "value": "magnetization prepared rapid gradient echo",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "A high-resolution structural magnetization prepared rapid gradient echo scan (voxel size = 1.3×1.3×1 mm, repetition time = 2250 ms, echo time = 2.99 ms, inversion time = 900 ms, flip angle = 9°) was acquired in all participants.",
+         "start_char": 19514,
+         "end_char": 19742
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "repetition_time_seconds": {
+    "extraction_status": "extracted",
+    "value": 2.25,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "repetition time = 2250 ms",
+         "start_char": 19619,
+         "end_char": 19644
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "echo_time_seconds": {
+    "extraction_status": "extracted",
+    "value": [
+     0.00299
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "echo time = 2.99 ms",
+         "start_char": 19646,
+         "end_char": 19665
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquisition_voxel_size_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     1.3,
+     1.3,
+     1
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel size = 1.3×1.3×1 mm",
+         "start_char": 19592,
+         "end_char": 19617
+        }
+       ]
+      }
+     ]
     }
    },
    "acquisition_duration_seconds": {
@@ -2321,12 +2027,2818 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
    }
   }
  ],
+ "assessments": [
+  {
+   "local_id": "asm_ftnd",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Fagerström Test for Nicotine Dependence (FTND) questionnaire",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The mean score on the Fagerström Test for Nicotine Dependence (FTND) questionnaire was 7.19±1.42 (mean±SD), indicating heavy nicotine dependence.",
+         "start_char": 5589,
+         "end_char": 5734
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "questionnaire",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The mean score on the Fagerström Test for Nicotine Dependence (FTND) questionnaire was 7.19±1.42 (mean±SD), indicating heavy nicotine dependence.",
+         "start_char": 5589,
+         "end_char": 5734
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The Fagerström Test for Nicotine Dependence questionnaire was administered by interview to smokers to assess nicotine dependence severity; the mean score was 7.19±1.42, indicating heavy nicotine dependence.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The cigarette use survey and Fagerström Test for Nicotine Dependence (FTND) were administered to each smoker by interview  [31] .",
+         "start_char": 18504,
+         "end_char": 18633
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_scid",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Structured Clinical Interview for the Diagnostic and Statistical Manual of Mental Disorders, 4th edition (DSM-IV; SCID)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Structured Clinical Interview for the   Diagnostic and Statistical Manual of Mental Disorders  , 4th edition (DSM-IV; SCID)",
+         "start_char": 18379,
+         "end_char": 18502
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "structured clinical interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All subjects were screened for psychiatric and nonpsychiatric medical disorders using the Structured Clinical Interview for the   Diagnostic and Statistical Manual of Mental Disorders  , 4th edition (DSM-IV; SCID).",
+         "start_char": 18289,
+         "end_char": 18503
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "The Structured Clinical Interview for the DSM-IV was administered to all subjects to screen for psychiatric and nonpsychiatric medical disorders.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were screened for psychiatric and nonpsychiatric medical disorders using the Structured Clinical Interview for the   Diagnostic and Statistical Manual of Mental Disorders  , 4th edition (DSM-IV; SCID).",
+         "start_char": 18289,
+         "end_char": 18503
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "devices": [
+  {
+   "local_id": "dev_siemens_tim_trio",
+   "manufacturer": {
+    "extraction_status": "extracted",
+    "value": "Siemens",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Siemens",
+         "start_char": 19401,
+         "end_char": 19408
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model": {
+    "extraction_status": "extracted",
+    "value": "Tim Trio",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All data were acquired on a Siemens 3-T Tim Trio Magnetic Resonance Imaging scanner (Siemens, Germany) by using a standard head-coil system.",
+         "start_char": 19373,
+         "end_char": 19513
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "groups": [
+  {
+   "local_id": "grp_smokers",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "heavy smokers",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The smoker (n = 16)",
+         "start_char": 5258,
+         "end_char": 5277
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "human",
+         "start_char": 1973,
+         "end_char": 1978
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 16,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Data were collected from 16 cigarette smokers",
+         "start_char": 18199,
+         "end_char": 18244
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "men who met the DSM-IV criteria for current nicotine dependence",
+     "smoked at least 15 cigarettes per day for at least 10 years"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Additional inclusion criteria for smokers included men who met the DSM-IV criteria for current nicotine dependence (smokers) and smoked at least 15 cigarettes per day for at least 10 years.",
+         "start_char": 18799,
+         "end_char": 18988
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_mean": {
+    "extraction_status": "extracted",
+    "value": 41.6,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age (mean±SD: smokers 41.6±5.5 vs.",
+         "start_char": 5258,
+         "end_char": 5379
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "extracted",
+    "value": 5.5,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The smoker (n = 16) and the non-smoker (n = 16) groups were selected to be matched for age (mean±SD: smokers 41.6±5.5 vs.",
+         "start_char": 5258,
+         "end_char": 5379
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "mean±SD: smokers 41.6±5.5",
+         "start_char": 5350,
+         "end_char": 5375
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Additional inclusion criteria for smokers included men",
+           "start_char": 18799,
+           "end_char": 18853
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Data were collected from 16 cigarette smokers",
+           "start_char": 18199,
+           "end_char": 18244
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right-handed and male",
+           "start_char": 19051,
+           "end_char": 19090
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Data were collected from 16 cigarette smokers",
+           "start_char": 18199,
+           "end_char": 18244
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "handedness_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "right-handed",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "All subjects were right-handed and male, had no history of any neurological or psychiatric disorder, had no other drug dependence, and were not currently taking any medications.",
+           "start_char": 19051,
+           "end_char": 19228
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right-handed and male",
+           "start_char": 19051,
+           "end_char": 19090
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right-handed and male",
+           "start_char": 19051,
+           "end_char": 19090
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Data were collected from 16 cigarette smokers",
+           "start_char": 18199,
+           "end_char": 18244
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "heavy smoking",
+     "20.6 cigarettes per day",
+     "21.1 smoke years"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Smokers smoke 20.6±7.4 (mean±SD) cigarettes per day and the average smoke years are 21.1±3.9 (mean±SD).",
+         "start_char": 5485,
+         "end_char": 5588
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Current nicotine dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "men who met the DSM-IV criteria for current nicotine dependence",
+         "start_char": 18850,
+         "end_char": 18913
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "DSM-IV",
+         "start_char": 18489,
+         "end_char": 18495
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_scid",
+    "asm_ftnd"
+   ],
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "FTND score 7.19±1.42",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The mean score on the Fagerström Test for Nicotine Dependence (FTND) questionnaire was 7.19±1.42 (mean±SD), indicating heavy nicotine dependence.",
+         "start_char": 5589,
+         "end_char": 5734
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medication_status": {
+    "extraction_status": "extracted",
+    "value": "not currently taking any medications",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All subjects were right-handed and male, had no history of any neurological or psychiatric disorder, had no other drug dependence, and were not currently taking any medications.",
+         "start_char": 19051,
+         "end_char": 19228
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "recruited from the community through advertisements",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants were recruited from the community through advertisements.",
+         "start_char": 18128,
+         "end_char": 18198
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants were recruited from the community through advertisements.",
+         "start_char": 18128,
+         "end_char": 18198
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Sixteen male heavy cigarette smokers meeting DSM-IV criteria for current nicotine dependence and smoking at least 15 cigarettes per day for at least 10 years; compared with matched healthy nonsmoking controls in a structural MRI study.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Additional inclusion criteria for smokers included men who met the DSM-IV criteria for current nicotine dependence (smokers) and smoked at least 15 cigarettes per day for at least 10 years.",
+         "start_char": 18799,
+         "end_char": 18988
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 16,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Data were collected from 16 cigarette smokers",
+         "start_char": 18199,
+         "end_char": 18244
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Neurological or psychiatric disorder",
+     "Other drug dependence or substance abuse",
+     "Current medication use",
+     "Failure to meet current nicotine dependence criteria",
+     "Smoking fewer than 15 cigarettes per day or for fewer than 10 years"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were right-handed and male, had no history of any neurological or psychiatric disorder, had no other drug dependence, and were not currently taking any medications.",
+         "start_char": 19051,
+         "end_char": 19228
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medications": {
+    "extraction_status": "extracted",
+    "value": [],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "were not currently taking any medications",
+         "start_char": 19186,
+         "end_char": 19227
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "Mean education was 10.9±2.2 years.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "education (mean±SD: smokers 10.9±2.2 vs. non-smokers 12.2±2.5)",
+         "start_char": 5406,
+         "end_char": 5468
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "16 matched healthy nonsmoking controls",
+         "start_char": 18249,
+         "end_char": 18287
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "grp_controls",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "healthy nonsmoking controls",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Data were collected from 16 cigarette smokers and 16 matched healthy nonsmoking controls.",
+         "start_char": 18199,
+         "end_char": 18288
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All subjects were right-handed and male",
+         "start_char": 19051,
+         "end_char": 19090
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 16,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "16 matched healthy nonsmoking controls",
+         "start_char": 18249,
+         "end_char": 18287
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "never had a history of smoking",
+     "no history of any neurological or psychiatric disorder",
+     "no other drug dependence",
+     "not currently taking any medications"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All nonsmokers in this sample never had a history of smoking.",
+         "start_char": 18989,
+         "end_char": 19050
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_mean": {
+    "extraction_status": "extracted",
+    "value": 39.2,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "non-smokers 39.2±4.5) and education (mean±SD: smokers 10.9±2.2 vs.",
+         "start_char": 5380,
+         "end_char": 5446
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "extracted",
+    "value": 4.5,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "non-smokers 39.2±4.5) and education (mean±SD: smokers 10.9±2.2 vs.",
+         "start_char": 5380,
+         "end_char": 5446
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "mean±SD: smokers 41.6±5.5 vs. non-smokers 39.2±4.5",
+         "start_char": 5350,
+         "end_char": 5400
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right-handed and male",
+           "start_char": 19051,
+           "end_char": 19090
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "16 matched healthy nonsmoking controls",
+           "start_char": 18249,
+           "end_char": 18287
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right-handed and male",
+           "start_char": 19051,
+           "end_char": 19090
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "16 matched healthy nonsmoking controls",
+           "start_char": 18249,
+           "end_char": 18287
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "handedness_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "right-handed",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "All subjects were right-handed and male, had no history of any neurological or psychiatric disorder, had no other drug dependence, and were not currently taking any medications.",
+           "start_char": 19051,
+           "end_char": 19228
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right-handed and male",
+           "start_char": 19051,
+           "end_char": 19090
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "All subjects were right-handed and male",
+           "start_char": 19051,
+           "end_char": 19090
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "16 matched healthy nonsmoking controls",
+           "start_char": 18249,
+           "end_char": 18287
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "no neurological or psychiatric disorder",
+     "no other drug dependence"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "had no history of any neurological or psychiatric disorder, had no other drug dependence",
+         "start_char": 19092,
+         "end_char": 19180
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medication_status": {
+    "extraction_status": "extracted",
+    "value": "not currently taking any medications",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "All subjects were right-handed and male, had no history of any neurological or psychiatric disorder, had no other drug dependence, and were not currently taking any medications.",
+         "start_char": 19051,
+         "end_char": 19228
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "recruited from the community through advertisements",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants were recruited from the community through advertisements.",
+         "start_char": 18128,
+         "end_char": 18198
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants were recruited from the community through advertisements.",
+         "start_char": 18128,
+         "end_char": 18198
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Sixteen matched healthy male nonsmoking controls who had never smoked, with no neurological or psychiatric disorder, no other drug dependence, and no current medication use.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "16 matched healthy nonsmoking controls",
+         "start_char": 18249,
+         "end_char": 18287
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 16,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "16 matched healthy nonsmoking controls",
+         "start_char": 18249,
+         "end_char": 18287
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "History of smoking",
+     "Neurological or psychiatric disorder",
+     "Other drug dependence or substance abuse",
+     "Current medication use"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All nonsmokers in this sample never had a history of smoking.",
+         "start_char": 18989,
+         "end_char": 19050
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Never had a history of smoking"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All nonsmokers in this sample never had a history of smoking.",
+         "start_char": 18989,
+         "end_char": 19050
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "DSM-IV",
+         "start_char": 18489,
+         "end_char": 18495
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Healthy nonsmoking controls with no neurological or psychiatric disorder, no other drug dependence, and no current medication use.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "16 matched healthy nonsmoking controls",
+         "start_char": 18249,
+         "end_char": 18287
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "extracted",
+    "value": [],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "were not currently taking any medications",
+         "start_char": 19186,
+         "end_char": 19227
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "Mean education was 12.2±2.5 years.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "education (mean±SD: smokers 10.9±2.2 vs. non-smokers 12.2±2.5)",
+         "start_char": 5406,
+         "end_char": 5468
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "16 matched healthy nonsmoking controls",
+         "start_char": 18249,
+         "end_char": 18287
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_scid"
+   ]
+  }
+ ],
+ "language": [
+  "eng"
+ ],
+ "measures": [
+  {
+   "local_id": "mea_gray_matter_volume",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Recent structural neuroimaging studies have begun to examine the brain abnormality in smokers, focusing on regional grey matter (GM) volume or density.",
+         "start_char": 2015,
+         "end_char": 2166
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "gray_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "GM volume",
+         "start_char": 5853,
+         "end_char": 5862
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "grey matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Compared with controls, heavy smokers exhibited smaller grey matter volume in cerebellum, as well as larger white matter volume in putamen, anterior and middle cingulate cortex.",
+         "start_char": 541,
+         "end_char": 718
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Voxel-based morphometric gray matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "VBM analysis",
+         "start_char": 1149,
+         "end_char": 1161
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "mea_white_matter_volume",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Regional white matter (WM) in smokers",
+         "start_char": 3410,
+         "end_char": 3447
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "white_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "white matter volume",
+         "start_char": 649,
+         "end_char": 668
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "white matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "larger WM volume",
+         "start_char": 6044,
+         "end_char": 6060
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Voxel-based morphometric white matter volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "VBM",
+         "start_char": 486,
+         "end_char": 489
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "model_estimations": [
+  {
+   "local_id": "mod_svm_gray",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "other",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A multivariate whole-brain classification approach, using support vector machine (SVM)",
+         "start_char": 4452,
+         "end_char": 4538
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "gray matter support vector machine classification",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We repeated this procedure for gray",
+         "start_char": 24627,
+         "end_char": 24662
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "subject",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Individual brain scans were treated as points",
+         "start_char": 22239,
+         "end_char": 22284
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "linear support vector machine",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "After preprocessing, a linear support vector machine (SVM) as implemented in the PROBID software package (  http://www.brainmap.co.uk/probid.htm  ) was used for image classification  [11] ,  [34] .",
+         "start_char": 22041,
+         "end_char": 22238
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "one dimension per voxel",
+         "start_char": 22600,
+         "end_char": 22623
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_svm_gray",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "smokers versus nonsmokers",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "smokers vs. controls",
+           "start_char": 22555,
+           "end_char": 22575
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "the images of the two groups differ most",
+           "start_char": 22702,
+           "end_char": 22742
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "smokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "smokers",
+             "start_char": 290,
+             "end_char": 297
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_smokers"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "patients and controls, with the labels +1 and −1, respectively",
+             "start_char": 22947,
+             "end_char": 23009
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "nonsmokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls",
+             "start_char": 429,
+             "end_char": 437
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_controls"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "patients and controls, with the labels +1 and −1, respectively",
+             "start_char": 22947,
+             "end_char": 23009
+            }
+           ]
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "A linear decision boundary",
+           "start_char": 22392,
+           "end_char": 22418
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Group contrast comparing smokers with nonsmokers.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "a class label (i.e. smokers vs. controls)",
+           "start_char": 22535,
+           "end_char": 22576
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Linear SVM with recursive feature elimination and a linear kernel; leave-one-out cross-validation excluding one subject from each group per iteration; significance assessed by 1000-label permutation testing; discrimination maps thresholded at the top 30% of weight-vector scores.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A “leave-one-out” cross-validation method was used",
+         "start_char": 23868,
+         "end_char": 23918
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "PROBID software package; linear support vector machine.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a linear support vector machine (SVM) as implemented in the PROBID software package",
+         "start_char": 22062,
+         "end_char": 22145
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_vbm"
+   ]
+  },
+  {
+   "local_id": "mod_svm_white",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "other",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A multivariate whole-brain classification approach, using support vector machine (SVM)",
+         "start_char": 4452,
+         "end_char": 4538
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "white matter support vector machine classification",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We repeated this procedure for gray and white matter images separately",
+         "start_char": 24627,
+         "end_char": 24697
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "subject",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Individual brain scans were treated as points",
+         "start_char": 22239,
+         "end_char": 22284
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "linear support vector machine",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "After preprocessing, a linear support vector machine (SVM) as implemented in the PROBID software package (  http://www.brainmap.co.uk/probid.htm  ) was used for image classification  [11] ,  [34] .",
+         "start_char": 22041,
+         "end_char": 22238
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "one dimension per voxel",
+         "start_char": 22600,
+         "end_char": 22623
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_svm_white",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "smokers versus nonsmokers",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "smokers vs. controls",
+           "start_char": 22555,
+           "end_char": 22575
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "the images of the two groups differ most",
+           "start_char": 22702,
+           "end_char": 22742
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "smokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "smokers",
+             "start_char": 290,
+             "end_char": 297
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_smokers"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "patients and controls, with the labels +1 and −1, respectively",
+             "start_char": 22947,
+             "end_char": 23009
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "nonsmokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls",
+             "start_char": 429,
+             "end_char": 437
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_controls"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "patients and controls, with the labels +1 and −1, respectively",
+             "start_char": 22947,
+             "end_char": 23009
+            }
+           ]
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "A linear decision boundary",
+           "start_char": 22392,
+           "end_char": 22418
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Group contrast comparing smokers with nonsmokers.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "a class label (i.e. smokers vs. controls)",
+           "start_char": 22535,
+           "end_char": 22576
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Linear SVM with recursive feature elimination and a linear kernel; leave-one-out cross-validation excluding one subject from each group per iteration; significance assessed by 1000-label permutation testing; discrimination maps thresholded at the top 30% of weight-vector scores.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "A “leave-one-out” cross-validation method was used",
+         "start_char": 23868,
+         "end_char": 23918
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "PROBID software package; linear support vector machine.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a linear support vector machine (SVM) as implemented in the PROBID software package",
+         "start_char": 22062,
+         "end_char": 22145
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_vbm"
+   ]
+  },
+  {
+   "local_id": "mod_vbm_gray",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "glm",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "This mass-univariate approach",
+         "start_char": 4347,
+         "end_char": 4376
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "gray matter voxel-based morphometry",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "voxel-based morphometry (VBM)",
+         "start_char": 461,
+         "end_char": 490
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "whole-brain volume",
+         "start_char": 21913,
+         "end_char": 21931
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "voxel",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "on a voxel-by-voxel basis",
+         "start_char": 4048,
+         "end_char": 4073
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_vbm_gray",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "smokers versus nonsmokers",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "smokers minus controls",
+           "start_char": 6502,
+           "end_char": 6524
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "between groups",
+           "start_char": 3809,
+           "end_char": 3823
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "smokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "smokers",
+             "start_char": 290,
+             "end_char": 297
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_smokers"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 1,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "smokers minus controls",
+             "start_char": 6502,
+             "end_char": 6524
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "non-smokers",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls",
+             "start_char": 429,
+             "end_char": 437
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_controls"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "smokers minus controls",
+             "start_char": 6502,
+             "end_char": 6524
+            }
+           ]
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "mass-univariate",
+           "start_char": 4352,
+           "end_char": 4367
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Group contrast comparing smokers with nonsmokers.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "In comparison with non-smokers, the chronic smokers displayed",
+           "start_char": 5769,
+           "end_char": 5830
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "model_settings": {
+    "extraction_status": "extracted",
+    "value": "Voxel-based morphometry general linear model with global gray matter volume and age as covariates; small-volume correction for a priori regions and false discovery rate correction for other whole-brain activations, with a minimum cluster extent of 50 contiguous voxels.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Global WM and global GM volumes were calculated from segmentations in native space.",
+         "start_char": 20876,
+         "end_char": 20959
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "SPM5 (Wellcome Trust Centre for Neuroimaging).",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "VBM analysis was performed in SPM5",
+         "start_char": 19774,
+         "end_char": 19808
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "preprocessing": [
+    "prp_vbm"
+   ]
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_vbm",
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "SPM5"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "VBM analysis was performed in SPM5",
+         "start_char": 19774,
+         "end_char": 19808
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "spatial normalization",
+     "tissue classification",
+     "intensity inhomogeneity correction",
+     "segmentation",
+     "modulation"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "automated spatial normalization, tissue classification, and intensity inhomogeneity correction",
+         "start_char": 19876,
+         "end_char": 19970
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     8
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "smoothed using a Gaussian kernel of 8-mm full-width at half-maximum (FWHM)",
+         "start_char": 20617,
+         "end_char": 20691
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Structural T1-weighted images were processed in SPM5 with spatial normalization, tissue classification into gray and white matter, intensity inhomogeneity correction, modulation using Jacobian determinants, and 8-mm FWHM Gaussian smoothing. Global gray or white matter volumes were used as covariates in the corresponding VBM analyses.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Following normalization and segmentation into GM and WM, a modulation step was incorporated",
+         "start_char": 20209,
+         "end_char": 20300
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "study_type": [
+  "Comparative Study",
+  "Journal Article",
+  "Research Support, Non-U.S. Gov't"
+ ],
  "tables": [
   {
-   "local_id": "pone-0027440-t001",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -2358,49 +4870,6 @@
     "evidence": {
      "status": "not_found"
     }
-   },
-   "title": {
-    "extraction_status": "extracted",
-    "value": "Most important gray and adjacent white matter regions discriminating between heavy smokers and controls.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Most important gray and adjacent white matter regions discriminating between heavy smokers and controls.",
-         "start_char": 9325,
-         "end_char": 9429
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "column_headings": {
-    "extraction_status": "extracted",
-    "value": [
-     "Lobe",
-     "Brain Regions",
-     "Wi",
-     "MNI Coordinates X",
-     "MNI Coordinates Y",
-     "MNI Coordinates Z"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Discrimination map regions for gray matter and white matter classifiers.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
    }
   }
  ],
@@ -2409,7 +4878,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "d62c4bce7bbbc11effb06c8dbcd115a1d7788d126f27062833f2907d7d7f3001",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2513,386 +4982,12 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "assessments": [
-  {
-   "local_id": "asm_structured_clinical_intervie",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Structured Clinical Interview for the Diagnostic and Statistical Manual of Mental Disorders, 4th edition",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Structured Clinical Interview for DSM-IV used to screen participants for psychiatric and nonpsychiatric medical disorders and to establish DSM-IV nicotine dependence in smokers.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "asm_fagerstr_m_test",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Fagerström Test for Nicotine Dependence",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Fagerström Test for Nicotine Dependence",
-         "start_char": 5611,
-         "end_char": 5650
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Questionnaire administered to smokers to assess nicotine dependence.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
- "groups": [
-  {
-   "local_id": "grp_smokers",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Smokers",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Male, right-handed cigarette smokers meeting DSM-IV criteria for current nicotine dependence and smoking at least 15 cigarettes per day for at least 10 years.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "approached_count": {
-    "extraction_status": "extracted",
-    "value": 16,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 16,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 16,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Male",
-     "Right-handed",
-     "Met DSM-IV criteria for current nicotine dependence",
-     "Smoked at least 15 cigarettes per day for at least 10 years"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Neurological disorder",
-     "Psychiatric disorder",
-     "Other drug dependence",
-     "Current medication use",
-     "Substance abuse other than cigarettes"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Community advertisements",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "extracted",
-    "value": 41.6,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "extracted",
-    "value": 5.5,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "Current nicotine dependence"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "DSM-IV",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Mean cigarettes per day 20.6±7.4; mean smoking duration 21.1±3.9 years; mean Fagerström Test for Nicotine Dependence score 7.19±1.42.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "extracted",
-    "value": "Not currently taking any medications",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "extracted",
-    "value": "Mean education 10.9±2.2 years",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_structured_clinical_intervie",
-    "asm_fagerstr_m_test"
-   ]
-  },
-  {
-   "local_id": "grp_nonsmokers",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Nonsmokers",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Male, right-handed healthy nonsmoking controls with no history of smoking.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "approached_count": {
-    "extraction_status": "extracted",
-    "value": 16,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 16,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 16,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Male",
-     "Right-handed",
-     "No history of smoking",
-     "No neurological disorder",
-     "No psychiatric disorder",
-     "No other drug dependence",
-     "Not currently taking medications"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Neurological disorder",
-     "Psychiatric disorder",
-     "Other drug dependence",
-     "Current medication use",
-     "Substance abuse"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Community advertisements",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "extracted",
-    "value": 39.2,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "extracted",
-    "value": 4.5,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "extracted",
-    "value": "Not currently taking any medications",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "extracted",
-    "value": "Mean education 12.2±2.5 years",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_structured_clinical_intervie"
-   ]
-  }
- ],
  "regions": [
   {
    "local_id": "reg_putamen",
    "name": {
     "extraction_status": "extracted",
-    "value": "Putamen",
+    "value": "putamen",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2900,7 +4995,7 @@
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
+    "value": "atlas",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2924,7 +5019,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "A priori anatomical region used for small volume correction.",
+    "value": "A priori anatomical region of interest used for small-volume correction.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2935,15 +5030,27 @@
    "local_id": "reg_anterior_cingulate_cortex",
    "name": {
     "extraction_status": "extracted",
-    "value": "Anterior cingulate cortex",
-    "value_source": "generated",
+    "value": "anterior cingulate cortex",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "anterior cingulate cortex",
+         "start_char": 3021,
+         "end_char": 3046
+        }
+       ]
+      }
+     ]
     }
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
+    "value": "atlas",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2967,7 +5074,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "A priori anatomical region used for small volume correction.",
+    "value": "A priori anatomical region of interest used for small-volume correction.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -2978,15 +5085,27 @@
    "local_id": "reg_midcingulate_cortex_posterio",
    "name": {
     "extraction_status": "extracted",
-    "value": "Midcingulate cortex/posterior cingulate cortex",
-    "value_source": "generated",
+    "value": "midcingulate cortex/posterior cingulate cortex",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "midcingulate cortex/posterior cingulate cortex",
+         "start_char": 21591,
+         "end_char": 21637
+        }
+       ]
+      }
+     ]
     }
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
+    "value": "atlas",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -3010,7 +5129,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "A priori anatomical region used for small volume correction.",
+    "value": "A priori anatomical region of interest used for small-volume correction.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -3021,7 +5140,7 @@
    "local_id": "reg_cerebellum",
    "name": {
     "extraction_status": "extracted",
-    "value": "Cerebellum",
+    "value": "cerebellum",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -3029,7 +5148,7 @@
    },
    "definition_method": {
     "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
+    "value": "atlas",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -3053,17 +5172,12 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "A priori anatomical region used for small volume correction.",
+    "value": "A priori anatomical region of interest used for small-volume correction.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    }
   }
- ],
- "study_type": [
-  "Comparative Study",
-  "Journal Article",
-  "Research Support, Non-U.S. Gov't"
  ]
 }

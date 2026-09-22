@@ -19,12 +19,6 @@
    ]
   }
  },
- "hypothesis": {
-  "extraction_status": "not_reported",
-  "evidence": {
-   "status": "not_applicable"
-  }
- },
  "design": {
   "description": {
    "extraction_status": "extracted",
@@ -56,7 +50,7 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "not_found"
@@ -69,13 +63,11 @@
    "evidence": {
     "status": "not_found"
    }
-  },
-  "arms": [],
-  "timepoints": []
+  }
  },
  "analyses": [
   {
-   "local_id": "ana_preaction_vs_controls",
+   "local_id": "ana_preaction_controls",
    "name": {
     "extraction_status": "extracted",
     "value": "PreAction subgroup compared with controls",
@@ -101,7 +93,19 @@
     "value": "The PreAction subgroup had gray matter volume deficits compared with controls.",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+         "start_char": 935,
+         "end_char": 1043
+        }
+       ]
+      }
+     ]
     }
    },
    "prespecification": {
@@ -116,7 +120,7 @@
      "status": "not_applicable"
     }
    },
-   "measure": "mea_gray_matter_volume",
+   "measure": "mea_gm_volume",
    "groups": [
     {
      "group": "grp_preaction",
@@ -140,13 +144,25 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "t_group",
       "level": {
        "extraction_status": "extracted",
        "value": "PreAction",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+            "start_char": 935,
+            "end_char": 1043
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
@@ -170,20 +186,46 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "PreAction patients",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "literal_match",
+          "spans": [
+           {
+            "text": "Unlike the patients in the Action subgroup, the PreAction patients had gray matter abnormalities in the cerebellum (Crus I), fusiform gyri and frontal cortex.",
+            "start_char": 1044,
+            "end_char": 1202
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "t_group",
       "level": {
        "extraction_status": "extracted",
        "value": "controls",
        "value_source": "reported",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+            "start_char": 935,
+            "end_char": 1043
+           }
+          ]
+         }
+        ]
        }
       },
       "direction": {
@@ -191,13 +233,39 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "not_found"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+            "start_char": 935,
+            "end_char": 1043
+           }
+          ]
+         }
+        ]
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "controls",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+            "start_char": 935,
+            "end_char": 1043
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -207,7 +275,19 @@
      "value": "contrast",
      "value_source": "generated",
      "evidence": {
-      "status": "not_found"
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+          "start_char": 935,
+          "end_char": 1043
+         }
+        ]
+       }
+      ]
      }
     },
     "statistic": {
@@ -235,18 +315,30 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_mri_15t"
+    "acq_mri"
    ],
-   "model_estimation": "mod_group_morphology",
+   "model_estimation": "m_gm_group",
+   "tables": [],
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
-     "The PreAction patients had gray matter abnormalities in the cerebellum (Crus I), fusiform gyri and frontal cortex."
+     "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls. Unlike the patients in the Action subgroup, the PreAction patients had gray matter abnormalities in the cerebellum (Crus I), fusiform gyri and frontal cortex."
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls. Unlike the patients in the Action subgroup, the PreAction patients had gray matter abnormalities in the cerebellum (Crus I), fusiform gyri and frontal cortex.",
+         "start_char": 935,
+         "end_char": 1202
+        }
+       ]
+      }
+     ]
     }
    },
    "source_table_analysis": {
@@ -268,13 +360,282 @@
     }
    },
    "assessments": [
-    "asm_readiness_to_change"
+    "asm_readiness_to_change_questionnaire"
+   ]
+  },
+  {
+   "local_id": "ana_action_controls",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Action subgroup compared with controls",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+         "start_char": 935,
+         "end_char": 1043
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "The Action subgroup did not have gray matter volume deficits compared with controls.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+         "start_char": 935,
+         "end_char": 1043
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "measure": "mea_gm_volume",
+   "groups": [
+    {
+     "group": "grp_action",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    },
+    {
+     "group": "grp_controls",
+     "n": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "t_group",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "Action",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+            "start_char": 935,
+            "end_char": 1043
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "patients in the Action subgroup",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "literal_match",
+          "spans": [
+           {
+            "text": "Unlike the patients in the Action subgroup, the PreAction patients had gray matter abnormalities in the cerebellum (Crus I), fusiform gyri and frontal cortex.",
+            "start_char": 1044,
+            "end_char": 1202
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "term": "t_group",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "controls",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+            "start_char": 935,
+            "end_char": 1043
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "not_reported",
+       "evidence": {
+        "status": "not_applicable"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "controls",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+            "start_char": 935,
+            "end_char": 1043
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "contrast",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+          "start_char": 935,
+          "end_char": 1043
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "model_estimation": "m_gm_group",
+   "tables": [],
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The Action subgroup did not have gray matter volume deficits compared with controls."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+         "start_char": 935,
+         "end_char": 1043
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "assessments": [
+    "asm_readiness_to_change_questionnaire"
    ]
   }
  ],
  "acquisitions": [
   {
-   "local_id": "acq_mri_15t",
+   "local_id": "acq_mri",
    "acquisition_type": "MRI",
    "modality": {
     "extraction_status": "extracted",
@@ -287,19 +648,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants comprised 31 alcoholic patients and 27 controls, who underwent 1.5-T magnetic resonance imaging.",
-         "start_char": 489,
-         "end_char": 598
+         "text": "1.5-T magnetic resonance imaging",
+         "start_char": 565,
+         "end_char": 597
         }
        ]
       }
      ]
-    }
-   },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "magnetic_field_strength_tesla": {
@@ -322,40 +677,81 @@
      ]
     }
    },
-   "pulse_sequence_type": {
+   "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "mr_acquisition_type": {
+   "brain_coverage": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
-   },
-   "repetition_time_seconds": {
-    "extraction_status": "not_reported",
+   }
+  }
+ ],
+ "assessments": [
+  {
+   "local_id": "asm_readiness_to_change_questionnaire",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Readiness to Change Questionnaire",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The Readiness to Change Questionnaire, designed to assess three stages of motivation to change (precontemplation, contemplation and action stages), was completed by all patients, who were then divided into “Action” (i.e.",
+         "start_char": 599,
+         "end_char": 819
+        }
+       ]
+      }
+     ]
     }
    },
-   "echo_time_seconds": {
-    "extraction_status": "not_reported",
+   "description": {
+    "extraction_status": "extracted",
+    "value": "designed to assess three stages of motivation to change (precontemplation, contemplation and action stages)",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The Readiness to Change Questionnaire, designed to assess three stages of motivation to change (precontemplation, contemplation and action stages), was completed by all patients, who were then divided into “Action” (i.e.",
+         "start_char": 599,
+         "end_char": 819
+        }
+       ]
+      }
+     ]
     }
    },
-   "acquisition_voxel_size_mm": {
-    "extraction_status": "not_reported",
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "questionnaire",
+    "value_source": "generated",
     "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "number_of_volumes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The Readiness to Change Questionnaire, designed to assess three stages of motivation to change (precontemplation, contemplation and action stages), was completed by all patients, who were then divided into “Action” (i.e.",
+         "start_char": 599,
+         "end_char": 819
+        }
+       ]
+      }
+     ]
     }
    }
   }
@@ -365,15 +761,7 @@
    "local_id": "grp_preaction",
    "name": {
     "extraction_status": "extracted",
-    "value": "PreAction",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "patients in precontemplation or in contemplation stage",
+    "value": "PreAction patients",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -382,9 +770,9 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "patients in precontemplation or in contemplation stage) subgroups.",
-         "start_char": 868,
-         "end_char": 934
+         "text": "Unlike the patients in the Action subgroup, the PreAction patients had gray matter abnormalities in the cerebellum (Crus I), fusiform gyri and frontal cortex.",
+         "start_char": 1044,
+         "end_char": 1202
         }
        ]
       }
@@ -402,112 +790,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants comprised 31 alcoholic patients and 27 controls",
-         "start_char": 489,
-         "end_char": 549
+         "text": "31 alcoholic patients",
+         "start_char": 512,
+         "end_char": 533
         }
        ]
       }
      ]
-    }
-   },
-   "arm": null,
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "medical_condition": {
@@ -532,6 +821,173 @@
      ]
     }
    },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "patients in precontemplation or in contemplation stage"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "patients in precontemplation or in contemplation stage",
+         "start_char": 868,
+         "end_char": 922
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_readiness_to_change_questionnaire"
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "alcoholic patients",
+         "start_char": 515,
+         "end_char": 533
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Alcoholic patients in the precontemplation or contemplation stage of readiness to change, forming the PreAction subgroup for comparison of gray matter volume with Action patients and controls.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+         "start_char": 935,
+         "end_char": 1043
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Precontemplation or contemplation stage of readiness to change"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "diagnostic_system": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -568,15 +1024,24 @@
      "status": "not_applicable"
     }
    },
-   "diagnostic_instrument": [
-    "asm_readiness_to_change"
-   ]
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
   },
   {
-   "local_id": "grp_controls",
+   "local_id": "grp_action",
    "name": {
     "extraction_status": "extracted",
-    "value": "controls",
+    "value": "Action patients",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -585,29 +1050,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "controls",
-         "start_char": 541,
-         "end_char": 549
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "control participants",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "27 controls",
-         "start_char": 538,
-         "end_char": 549
+         "text": "“Action”",
+         "start_char": 805,
+         "end_char": 813
         }
        ]
       }
@@ -625,9 +1070,104 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants comprised 31 alcoholic patients and 27 controls",
-         "start_char": 489,
-         "end_char": 549
+         "text": "31 alcoholic patients",
+         "start_char": 512,
+         "end_char": 533
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "alcoholism"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "alcoholic patients",
+         "start_char": 515,
+         "end_char": 533
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "patients in action stage"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "patients in action stage",
+         "start_char": 820,
+         "end_char": 844
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_readiness_to_change_questionnaire"
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "alcoholic patients",
+         "start_char": 515,
+         "end_char": 533
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Alcoholic patients in the action stage of readiness to change, forming the Action subgroup for comparison of gray matter volume with PreAction patients and controls.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "patients in action stage",
+         "start_char": 820,
+         "end_char": 844
         }
        ]
       }
@@ -656,6 +1196,253 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Action stage of readiness to change"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "grp_controls",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "controls",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "controls",
+         "start_char": 541,
+         "end_char": 549
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "27 controls",
+         "start_char": 538,
+         "end_char": 549
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "27 controls",
+         "start_char": 538,
+         "end_char": 549
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Control participants used as the comparison group for gray matter volume analyses.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "27 controls",
+         "start_char": 538,
+         "end_char": 549
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 27,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Participants comprised 31 alcoholic patients and 27 controls, who underwent 1.5-T magnetic resonance imaging.",
+         "start_char": 489,
+         "end_char": 598
+        }
+       ]
+      }
+     ]
     }
    },
    "excluded_count": {
@@ -724,12 +1511,10 @@
      "status": "not_applicable"
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
+   "population_characteristics": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
    "medical_condition": {
@@ -773,72 +1558,24 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
-  },
-  {
-   "local_id": "grp_action",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Action",
-    "value_source": "generated",
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Patients in action stage",
-    "value_source": "reported",
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "patients in action stage",
-         "start_char": 820,
-         "end_char": 844
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_readiness_to_change"
-   ],
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "chronic alcoholism"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    }
   }
  ],
  "measures": [
   {
-   "local_id": "mea_gray_matter_volume",
+   "local_id": "mea_gm_volume",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
@@ -850,9 +1587,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "gray matter volume deficits",
-         "start_char": 992,
-         "end_char": 1019
+         "text": "macrostructural gray matter abnormalities",
+         "start_char": 420,
+         "end_char": 461
         }
        ]
       }
@@ -900,9 +1637,23 @@
     }
    },
    "specific_metric": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "gray matter volume",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The PreAction subgroup, but not the Action subgroup, had gray matter volume deficits compared with controls.",
+         "start_char": 935,
+         "end_char": 1043
+        }
+       ]
+      }
+     ]
     }
    },
    "unit": {
@@ -915,7 +1666,7 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_group_morphology",
+   "local_id": "m_gm_group",
    "model_family": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -924,7 +1675,27 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "gray matter volume group comparison",
+    "value": "group-level gray matter volume comparison",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "gray matter volume deficits compared with controls",
+         "start_char": 992,
+         "end_char": 1042
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -942,59 +1713,44 @@
      ]
     }
    },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "stage": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "estimator": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "software": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "spatial_unit": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "terms": [
     {
-     "local_id": "trm_group",
+     "local_id": "t_group",
      "name": {
       "extraction_status": "extracted",
-      "value": "participant group",
+      "value": "patient subgroup versus controls",
       "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "compared with controls",
+           "start_char": 1020,
+           "end_char": 1042
+          }
+         ]
+        }
+       ]
       }
      },
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found",
+       "unlocated_quotes": 1
       }
      },
      "levels": [
@@ -1027,7 +1783,64 @@
         "value": 1,
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "“Action” (i.e. patients in action stage) and “PreAction”",
+             "start_char": 805,
+             "end_char": 861
+            }
+           ]
+          }
+         ]
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "Action",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "“Action”",
+             "start_char": 805,
+             "end_char": 813
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_action"
+       ],
+       "order": {
+        "extraction_status": "extracted",
+        "value": 2,
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "“Action”",
+             "start_char": 805,
+             "end_char": 813
+            }
+           ]
+          }
+         ]
         }
        }
       },
@@ -1057,22 +1870,26 @@
        ],
        "order": {
         "extraction_status": "extracted",
-        "value": 2,
+        "value": 3,
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "controls",
+             "start_char": 541,
+             "end_char": 549
+            }
+           ]
+          }
+         ]
         }
        }
       }
      ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
      "functional_form": {
       "extraction_status": "not_reported",
       "evidence": {
@@ -1093,7 +1910,36 @@
      }
     }
    ],
-   "inputs_from": []
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "estimator": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "software": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
   }
  ],
  "local_id": "23838052",
@@ -1101,7 +1947,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "fee130adeab693da750de22da802f9c05a8e10648d11b722a13cbceccc120d8a",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -1129,49 +1975,11 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "assessments": [
-  {
-   "local_id": "asm_readiness_to_change",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Readiness to Change Questionnaire",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Readiness to Change Questionnaire",
-         "start_char": 603,
-         "end_char": 636
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Questionnaire designed to assess precontemplation, contemplation, and action stages of motivation to change.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
  "study_type": [
   "Journal Article",
   "Research Support, Non-U.S. Gov't"
+ ],
+ "language": [
+  "eng"
  ]
 }

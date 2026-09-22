@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "A surface-based MRI study comparing volumetric parameters, cortical thickness, and surface area between abstinent male patients with alcohol use disorder and age-matched healthy male controls, before and after head-size correction.",
-  "value_source": "reported",
+  "value": "A surface-based MRI study comparing brain volume, cortical thickness, and surface area between abstinent male patients with alcohol use disorder and age-matched healthy male controls, before and after head-size correction.",
+  "value_source": "generated",
   "evidence": {
    "status": "present",
    "sets": [
@@ -19,33 +19,11 @@
    ]
   }
  },
- "hypothesis": {
-  "extraction_status": "extracted",
-  "value": [
-   "expecting significant group differences"
-  ],
-  "value_source": "reported",
-  "evidence": {
-   "status": "present",
-   "sets": [
-    {
-     "source": "model_quote",
-     "spans": [
-      {
-       "text": "expecting significant group differences",
-       "start_char": 13890,
-       "end_char": 13929
-      }
-     ]
-    }
-   ]
-  }
- },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "A non-randomized parallel-group, cross-sectional comparison of abstinent male patients with alcohol dependence and healthy male controls; all participants underwent one 3T MRI scan.",
-   "value_source": "reported",
+   "value": "Observational comparison of abstinent male patients with alcohol use disorder and age-matched healthy male controls recruited from an inpatient mental hospital and the community.",
+   "value_source": "generated",
    "evidence": {
     "status": "present",
     "sets": [
@@ -53,9 +31,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "All participants underwent a 3T MRI scan.",
-        "start_char": 842,
-        "end_char": 883
+        "text": "We investigated the differences in brain structures of middle-aged male patients with alcohol dependence and age-matched healthy male controls based on similar backgrounds.",
+        "start_char": 6202,
+        "end_char": 6374
        }
       ]
      }
@@ -64,7 +42,7 @@
   },
   "allocation": {
    "extraction_status": "extracted",
-   "value": "non_randomized",
+   "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
     "status": "not_found"
@@ -72,10 +50,22 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "We investigated the differences in brain structures of middle-aged male patients with alcohol dependence and age-matched healthy male controls based on similar backgrounds.",
+        "start_char": 6202,
+        "end_char": 6374
+       }
+      ]
+     }
+    ]
    }
   },
   "blinding": {
@@ -89,10 +79,10 @@
  },
  "analyses": [
   {
-   "local_id": "ana_volume_group",
+   "local_id": "ana_volume_uncorrected",
    "name": {
     "extraction_status": "extracted",
-    "value": "group differences in volumetric parameters",
+    "value": "group differences in volumetric parameters before head-size correction",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -101,9 +91,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Volumetric parameters",
-         "start_char": 11865,
-         "end_char": 11886
+         "text": "there were significant group differences in total gray matter volume, total white matter volume, and whole brain volume.",
+         "start_char": 11939,
+         "end_char": 12059
         }
        ]
       }
@@ -112,7 +102,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "The differences in surface-based parameters between groups were tested by Student's t-test.",
+    "value": "The differences in surface-based parameters between groups were tested by Student's t-test; volumetric parameters in the alcohol group were lower than those of the control group.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -121,9 +111,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The differences in surface-based parameters between groups were tested by Student's t-test",
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
          "start_char": 11187,
-         "end_char": 11277
+         "end_char": 11358
         }
        ]
       }
@@ -136,13 +126,10 @@
      "status": "not_applicable"
     }
    },
-   "interpretations": {
+   "spatial_scope": {
     "extraction_status": "extracted",
-    "value": [
-     "Those measures in the alcohol group were significantly lower than those of the control group.",
-     "The group differences in volumes were robust after correcting for head size."
-    ],
-    "value_source": "reported",
+    "value": "whole_brain",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -150,23 +137,17 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Those measures in the alcohol group were significantly lower than those of the control group. The group differences in volumes were robust after correcting for head size.",
-         "start_char": 12060,
-         "end_char": 12230
+         "text": "there were significant group differences in total gray matter volume, total white matter volume, and whole brain volume.",
+         "start_char": 11939,
+         "end_char": 12059
         }
        ]
       }
      ]
     }
    },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
+   "regions": [],
+   "defines_regions": [],
    "measure": "mea_volume",
    "groups": [
     {
@@ -219,7 +200,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_group_volume",
       "level": {
        "extraction_status": "extracted",
        "value": "alcohol group",
@@ -261,14 +242,28 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "alcohol group",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Those measures in the alcohol group were significantly lower than those of the control group.",
+            "start_char": 12060,
+            "end_char": 12153
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_group_volume",
       "level": {
        "extraction_status": "extracted",
        "value": "control group",
@@ -310,9 +305,23 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "control group",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Those measures in the alcohol group were significantly lower than those of the control group.",
+            "start_char": 12060,
+            "end_char": 12153
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -349,9 +358,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The differences in surface-based parameters between groups were tested by Student's t-test",
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
            "start_char": 11187,
-           "end_char": 11277
+           "end_char": 11358
           }
          ]
         }
@@ -378,8 +387,32 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_group_surface",
-   "inference_settings": "inf_group",
+   "tasks": [],
+   "model_estimation": "mod_volume_uncorrected",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "There were significant group differences in total gray matter volume, total white matter volume, and whole brain volume. Those measures in the alcohol group were significantly lower than those of the control group.",
+     "The cortical gray matter volumes in whole, frontal, parietal, temporal, occipital, and insula brain of the alcohol group were significantly lower than those of the control group.",
+     "The volumes of cerebellum, thalamus, caudate, putamen, hippocampus, amygdala, and accumbens in the alcohol group were significantly lower than those in the control group."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "there were significant group differences in total gray matter volume, total white matter volume, and whole brain volume. Those measures in the alcohol group were significantly lower than those of the control group.",
+         "start_char": 11939,
+         "end_char": 12153
+        }
+       ]
+      }
+     ]
+    }
+   },
    "source_table_analysis": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -403,10 +436,10 @@
    ]
   },
   {
-   "local_id": "ana_thickness_group",
+   "local_id": "ana_volume_corrected",
    "name": {
     "extraction_status": "extracted",
-    "value": "group differences in cortical thickness",
+    "value": "group differences in volumetric parameters after head-size correction",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -415,9 +448,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Surface area and thickness",
-         "start_char": 12922,
-         "end_char": 12948
+         "text": "The group differences in volumes were robust after correcting for head size.",
+         "start_char": 12154,
+         "end_char": 12230
         }
        ]
       }
@@ -426,7 +459,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "The differences in surface-based parameters between groups were tested by Student's t-test.",
+    "value": "Volumetric group differences were tested after controlling for head size using estimated total intracranial volume.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -435,9 +468,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The differences in surface-based parameters between groups were tested by Student's t-test",
-         "start_char": 11187,
-         "end_char": 11277
+         "text": "head-size-corrected brain parameters were estimated using the formula:",
+         "start_char": 10603,
+         "end_char": 10673
         }
        ]
       }
@@ -450,11 +483,320 @@
      "status": "not_applicable"
     }
    },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The group differences in volumes were robust after correcting for head size.",
+         "start_char": 12154,
+         "end_char": 12230
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "regions": [],
+   "defines_regions": [],
+   "measure": "mea_volume",
+   "groups": [
+    {
+     "group": "grp_aud",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 26,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Finally, 26 patients with alcohol dependence and 28 healthy male controls were selected for the study.",
+           "start_char": 7682,
+           "end_char": 7784
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_control",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 28,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Finally, 26 patients with alcohol dependence and 28 healthy male controls were selected for the study.",
+           "start_char": 7682,
+           "end_char": 7784
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_group_volume_corrected",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "alcohol group",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Those measures in the alcohol group were significantly lower than those of the control group.",
+            "start_char": 12060,
+            "end_char": 12153
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Those measures in the alcohol group were significantly lower than those of the control group.",
+            "start_char": 12060,
+            "end_char": 12153
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "alcohol group",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Those measures in the alcohol group were significantly lower than those of the control group.",
+            "start_char": 12060,
+            "end_char": 12153
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "term": "trm_group_volume_corrected",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "control group",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Those measures in the alcohol group were significantly lower than those of the control group.",
+            "start_char": 12060,
+            "end_char": 12153
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Those measures in the alcohol group were significantly lower than those of the control group.",
+            "start_char": 12060,
+            "end_char": 12153
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "control group",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "Those measures in the alcohol group were significantly lower than those of the control group.",
+            "start_char": 12060,
+            "end_char": 12153
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "contrast",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "In contrast to volume studies, there are mixed opinions about whether it is necessary to correct for head size in thickness studies.",
+          "start_char": 5512,
+          "end_char": 5644
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+           "start_char": 11187,
+           "end_char": 11358
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "tasks": [],
+   "model_estimation": "mod_volume_corrected",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "The cortical thicknesses of whole, frontal, parietal, temporal, occipital, and insula brain in the alcohol group were significantly lower than cortical thicknesses in those areas of the control group's brains."
+     "The group differences in volumes were robust after correcting for head size.",
+     "The cortical gray matter volume group differences were also robust after controlling for head size.",
+     "The group differences in subcortical volumes were slightly increased after controlling for head size."
     ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The group differences in volumes were robust after correcting for head size.",
+         "start_char": 12154,
+         "end_char": 12230
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "assessments": [
+    "asm_structured_interview"
+   ]
+  },
+  {
+   "local_id": "ana_thickness",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "group differences in cortical thickness",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -470,6 +812,32 @@
        ]
       }
      ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "The differences in cortical thickness between the alcohol and control groups were tested before and after head-size correction.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
    },
    "spatial_scope": {
@@ -492,6 +860,8 @@
      ]
     }
    },
+   "regions": [],
+   "defines_regions": [],
    "measure": "mea_thickness",
    "groups": [
     {
@@ -544,7 +914,7 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_group_thickness",
       "level": {
        "extraction_status": "extracted",
        "value": "alcohol group",
@@ -586,14 +956,28 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "alcohol group",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The cortical thicknesses of whole, frontal, parietal, temporal, occipital, and insula brain in the alcohol group were significantly lower than cortical thicknesses in those areas of the control group's brains.",
+            "start_char": 12953,
+            "end_char": 13162
+           }
+          ]
+         }
+        ]
        }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_group_thickness",
       "level": {
        "extraction_status": "extracted",
        "value": "control group",
@@ -635,9 +1019,23 @@
        }
       },
       "label": {
-       "extraction_status": "not_reported",
+       "extraction_status": "extracted",
+       "value": "control group",
+       "value_source": "reported",
        "evidence": {
-        "status": "not_applicable"
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The cortical thicknesses of whole, frontal, parietal, temporal, occipital, and insula brain in the alcohol group were significantly lower than cortical thicknesses in those areas of the control group's brains.",
+            "start_char": 12953,
+            "end_char": 13162
+           }
+          ]
+         }
+        ]
        }
       }
      }
@@ -674,9 +1072,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The differences in surface-based parameters between groups were tested by Student's t-test",
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
            "start_char": 11187,
-           "end_char": 11277
+           "end_char": 11358
           }
          ]
         }
@@ -703,11 +1101,34 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_group_surface",
-   "inference_settings": "inf_group",
+   "tasks": [],
+   "model_estimation": "mod_thickness",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The cortical thicknesses of whole, frontal, parietal, temporal, occipital, and insula brain in the alcohol group were significantly lower than cortical thicknesses in those areas of the control group's brains.",
+     "There was no group difference in thickness of cingulate. These patterns of differences were not affected by head-size correction.",
+     "Effect sizes of group differences in the parietal and temporal lobes were relatively larger than those of the frontal, occipital, and insular lobes."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The cortical thicknesses of whole, frontal, parietal, temporal, occipital, and insula brain in the alcohol group were significantly lower than cortical thicknesses in those areas of the control group's brains. There was no group difference in thickness of cingulate. These patterns of differences were not affected by head-size correction.",
+         "start_char": 12953,
+         "end_char": 13292
+        }
+       ]
+      }
+     ]
+    }
+   },
    "source_table_analysis": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -729,7 +1150,7 @@
    ]
   },
   {
-   "local_id": "ana_surface_area_group",
+   "local_id": "ana_surface_area",
    "name": {
     "extraction_status": "extracted",
     "value": "group differences in surface areas",
@@ -741,9 +1162,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Surface area and thickness",
-         "start_char": 12922,
-         "end_char": 12948
+         "text": "There were no group differences in surface areas in the whole brain and each lobe.",
+         "start_char": 13444,
+         "end_char": 13526
         }
        ]
       }
@@ -752,7 +1173,7 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "The differences in surface-based parameters between groups were tested by Student's t-test.",
+    "value": "Surface areas were compared between the alcohol and control groups before and after head-size correction; no significant group differences were observed, although trends appeared after correction.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -761,9 +1182,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The differences in surface-based parameters between groups were tested by Student's t-test",
-         "start_char": 11187,
-         "end_char": 11277
+         "text": "There were no group differences in surface areas in the whole brain and each lobe. However, some trends of group differences were shown in whole, frontal, and parietal brain after controlling for head size ( Table 2 ).",
+         "start_char": 13444,
+         "end_char": 13662
         }
        ]
       }
@@ -774,16 +1195,6 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "There were no group differences in surface areas in the whole brain and each lobe. However, some trends of group differences were shown in whole, frontal, and parietal brain after controlling for head size."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "spatial_scope": {
@@ -806,6 +1217,8 @@
      ]
     }
    },
+   "regions": [],
+   "defines_regions": [],
    "measure": "mea_surface_area",
    "groups": [
     {
@@ -858,76 +1271,52 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group",
+      "term": "trm_group_surface_area",
       "level": {
        "extraction_status": "extracted",
        "value": "alcohol group",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "There were no group differences in surface areas in the whole brain and each lobe.",
-            "start_char": 13444,
-            "end_char": 13526
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
-       "evidence": {
         "status": "not_found"
        }
       },
-      "label": {
+      "direction": {
        "extraction_status": "not_reported",
        "evidence": {
         "status": "not_applicable"
        }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "alcohol group",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
+       }
       }
      },
      {
-      "term": "trm_group",
+      "term": "trm_group_surface_area",
       "level": {
        "extraction_status": "extracted",
        "value": "control group",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "There were no group differences in surface areas in the whole brain and each lobe.",
-            "start_char": 13444,
-            "end_char": 13526
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "generated",
-       "evidence": {
         "status": "not_found"
        }
       },
-      "label": {
+      "direction": {
        "extraction_status": "not_reported",
        "evidence": {
         "status": "not_applicable"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "control group",
+       "value_source": "reported",
+       "evidence": {
+        "status": "not_found"
        }
       }
      }
@@ -964,9 +1353,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "The differences in surface-based parameters between groups were tested by Student's t-test",
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
            "start_char": 11187,
-           "end_char": 11277
+           "end_char": 11358
           }
          ]
         }
@@ -993,11 +1382,33 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "model_estimation": "mod_group_surface",
-   "inference_settings": "inf_group",
+   "tasks": [],
+   "model_estimation": "mod_surface_area",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "There were no group differences in surface areas in the whole brain and each lobe.",
+     "Some trends of group differences were shown in whole, frontal, and parietal brain after controlling for head size."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "There were no group differences in surface areas in the whole brain and each lobe. However, some trends of group differences were shown in whole, frontal, and parietal brain after controlling for head size ( Table 2 ).",
+         "start_char": 13444,
+         "end_char": 13662
+        }
+       ]
+      }
+     ]
+    }
+   },
    "source_table_analysis": {
     "extraction_status": "not_reported",
-    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -1026,7 +1437,7 @@
    "modality": {
     "extraction_status": "extracted",
     "value": "sMRI",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1034,9 +1445,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All magnetic resonance imaging (MRI) tests were collected on a 3T Philips Achieva scanner",
+         "text": "All magnetic resonance imaging (MRI) tests were collected on a 3T Philips Achieva scanner (Philips Medical System, Best, Netherlands) at the Ochang campus of the Korean Basic Science Institute.",
          "start_char": 7914,
-         "end_char": 8003
+         "end_char": 8107
         }
        ]
       }
@@ -1050,6 +1461,14 @@
     }
    },
    "device": "dev_philips_achieva",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3,
@@ -1061,9 +1480,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All magnetic resonance imaging (MRI) tests were collected on a 3T Philips Achieva scanner",
+         "text": "All magnetic resonance imaging (MRI) tests were collected on a 3T Philips Achieva scanner (Philips Medical System, Best, Netherlands) at the Ochang campus of the Korean Basic Science Institute.",
          "start_char": 7914,
-         "end_char": 8003
+         "end_char": 8107
         }
        ]
       }
@@ -1107,9 +1526,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "TR=6.8 ms",
-         "start_char": 8256,
-         "end_char": 8265
+         "text": "MRI T1 parameters were referenced from ADNI protocol [TR=6.8 ms, TE=3.1 ms, flip angle=9 degrees, 256×256 (1×1 mm) in-plane resolution, 170 1.2-mm slices without gaps].",
+         "start_char": 8202,
+         "end_char": 8370
         }
        ]
       }
@@ -1129,9 +1548,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "TE=3.1 ms",
-         "start_char": 8267,
-         "end_char": 8276
+         "text": "MRI T1 parameters were referenced from ADNI protocol [TR=6.8 ms, TE=3.1 ms, flip angle=9 degrees, 256×256 (1×1 mm) in-plane resolution, 170 1.2-mm slices without gaps].",
+         "start_char": 8202,
+         "end_char": 8370
         }
        ]
       }
@@ -1153,9 +1572,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "256×256 (1×1 mm) in-plane resolution, 170 1.2-mm slices without gaps",
-         "start_char": 8300,
-         "end_char": 8368
+         "text": "MRI T1 parameters were referenced from ADNI protocol [TR=6.8 ms, TE=3.1 ms, flip angle=9 degrees, 256×256 (1×1 mm) in-plane resolution, 170 1.2-mm slices without gaps].",
+         "start_char": 8202,
+         "end_char": 8370
         }
        ]
       }
@@ -1195,8 +1614,8 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Structured interviews confirmed the diagnosis of alcohol dependence.",
-    "value_source": "reported",
+    "value": "Structured interviews confirmed the diagnosis of alcohol dependence according to DSM-IV.",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1224,9 +1643,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "structured interviews",
-         "start_char": 7303,
-         "end_char": 7324
+         "text": "Diagnosis of alcohol dependence according to the Diagnostic and Statistical Manual, 4th edition (DSM-IV), was confirmed using structured interviews.",
+         "start_char": 7177,
+         "end_char": 7325
         }
        ]
       }
@@ -1240,13 +1659,13 @@
    "local_id": "dev_philips_achieva",
    "manufacturer": {
     "extraction_status": "extracted",
-    "value": "Philips Medical System",
+    "value": "Philips",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
          "text": "All magnetic resonance imaging (MRI) tests were collected on a 3T Philips Achieva scanner (Philips Medical System, Best, Netherlands) at the Ochang campus of the Korean Basic Science Institute.",
@@ -1294,9 +1713,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "alcohol group",
-         "start_char": 668,
-         "end_char": 681
+         "text": "Finally, 26 patients with alcohol dependence and 28 healthy male controls were selected for the study.",
+         "start_char": 7682,
+         "end_char": 7784
         }
        ]
       }
@@ -1305,8 +1724,8 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Abstinent male patients with alcohol use disorder recruited from an inpatient mental hospital.",
-    "value_source": "reported",
+    "value": "Male patients with alcohol use disorder recruited from an inpatient mental hospital specializing in alcohol dependence; all received ongoing treatment and were completely abstinent.",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1314,9 +1733,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Participants were enrolled male patients admitted to a mental hospital specializing in alcohol dependence",
+         "text": "Participants were enrolled male patients admitted to a mental hospital specializing in alcohol dependence in Cheongju, South Korea, from March 1, 2014, to August 31, 2014.",
          "start_char": 6903,
-         "end_char": 7008
+         "end_char": 7074
         }
        ]
       }
@@ -1344,6 +1763,12 @@
     }
    },
    "enrolled_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquired_count": {
     "extraction_status": "extracted",
     "value": 26,
     "value_source": "reported",
@@ -1363,26 +1788,6 @@
      ]
     }
    },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 26,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-         "start_char": 11416,
-         "end_char": 11495
-        }
-       ]
-      }
-     ]
-    }
-   },
    "excluded_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1392,25 +1797,14 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "male patients with alcohol dependence",
-     "ongoing treatment for AUD for a minimum of 3 months",
-     "complete abstinence"
+     "Male patients admitted to a mental hospital specializing in alcohol dependence",
+     "Alcohol dependence according to DSM-IV",
+     "Ongoing treatment for AUD for a minimum of 3 months",
+     "Complete abstinence"
     ],
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All participants received ongoing treatment for AUD for a minimum of 3 months with complete abstinence.",
-         "start_char": 7330,
-         "end_char": 7433
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "exclusion_criteria": {
@@ -1440,18 +1834,18 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "inpatient mental hospital",
+    "value": "recruited from an inpatient mental hospital specializing in alcohol dependence",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Twenty-six abstinent male patients with AUD (alcohol group, mean abstinence=13.2 months) and twenty-eight age-matched healthy participants (control group) were recruited from an inpatient mental hospital and community.",
-         "start_char": 623,
-         "end_char": 841
+         "text": "Participants were enrolled male patients admitted to a mental hospital specializing in alcohol dependence in Cheongju, South Korea, from March 1, 2014, to August 31, 2014.",
+         "start_char": 6903,
+         "end_char": 7074
         }
        ]
       }
@@ -1501,9 +1895,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-         "start_char": 11416,
-         "end_char": 11495
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
         }
        ]
       }
@@ -1521,9 +1915,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-         "start_char": 11416,
-         "end_char": 11495
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
         }
        ]
       }
@@ -1539,7 +1933,7 @@
    "age_unit": {
     "extraction_status": "extracted",
     "value": "years",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1547,9 +1941,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-         "start_char": 11416,
-         "end_char": 11495
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
         }
        ]
       }
@@ -1569,9 +1963,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-           "start_char": 11416,
-           "end_char": 11495
+           "text": "Finally, 26 patients with alcohol dependence and 28 healthy male controls were selected for the study.",
+           "start_char": 7682,
+           "end_char": 7784
           }
          ]
         }
@@ -1589,9 +1983,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-           "start_char": 11416,
-           "end_char": 11495
+           "text": "Finally, 26 patients with alcohol dependence and 28 healthy male controls were selected for the study.",
+           "start_char": 7682,
+           "end_char": 7784
           }
          ]
         }
@@ -1603,39 +1997,15 @@
       "value": 100.0,
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-           "start_char": 11416,
-           "end_char": 11495
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "denominator": {
       "extraction_status": "extracted",
       "value": 26,
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-           "start_char": 11416,
-           "end_char": 11495
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "reporting_framework": {
@@ -1646,51 +2016,26 @@
      }
     }
    ],
-   "gender_distribution": [],
-   "handedness_distribution": [],
-   "race_distribution": [],
-   "ethnicity_distribution": [],
-   "is_healthy": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": false,
+    "value": [
+     "Mean abstinence period was 13.2 ± 16.1 months",
+     "All participants were male"
+    ],
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Twenty-six abstinent male patients with AUD",
-         "start_char": 623,
-         "end_char": 666
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "alcohol dependence",
-     "alcohol use disorder"
+     "Alcohol use disorder",
+     "Alcohol dependence"
     ],
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "patients with alcohol dependence",
-         "start_char": 2087,
-         "end_char": 2119
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "diagnostic_system": {
@@ -1718,7 +2063,7 @@
    ],
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Mean abstinence period was 13.2 ± 16.1 months.",
+    "value": "mean abstinence period 13.2±16.1 months",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1727,9 +2072,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Their mean abstinence period was 13.2±16.1 months. Participants who had a major mental disorder, neurologic disease, severe systemic disease, or other substance use disorder, except nicotine and caffeine use disorder, were excluded from the study.",
+         "text": "Their mean abstinence period was 13.2±16.1 months.",
          "start_char": 7434,
-         "end_char": 7681
+         "end_char": 7484
         }
        ]
       }
@@ -1744,18 +2089,18 @@
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "abstinent",
+    "value": "All participants received ongoing treatment for AUD.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "Twenty-six abstinent male patients with AUD",
-         "start_char": 623,
-         "end_char": 666
+         "text": "20  All participants received ongoing treatment for AUD for a minimum of 3 months with complete abstinence.",
+         "start_char": 7326,
+         "end_char": 7433
         }
        ]
       }
@@ -1763,12 +2108,56 @@
     }
    },
    "education_summary": {
+    "extraction_status": "extracted",
+    "value": "Education level did not differ between groups.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "extracted",
+    "value": "Socioeconomic status did not differ between groups.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Participants were enrolled male patients admitted to a mental hospital specializing in alcohol dependence in Cheongju, South Korea, from March 1, 2014, to August 31, 2014.",
+         "start_char": 6903,
+         "end_char": 7074
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "socioeconomic_status_summary": {
+   "sample_overlap_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -1788,9 +2177,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "control group",
-         "start_char": 763,
-         "end_char": 776
+         "text": "Finally, 26 patients with alcohol dependence and 28 healthy male controls were selected for the study.",
+         "start_char": 7682,
+         "end_char": 7784
         }
        ]
       }
@@ -1800,7 +2189,7 @@
    "description": {
     "extraction_status": "extracted",
     "value": "Age-matched healthy male controls recruited by advertisement from the community.",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1825,6 +2214,276 @@
      "status": "not_found"
     }
    },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 28,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Finally, 26 patients with alcohol dependence and 28 healthy male controls were selected for the study.",
+         "start_char": 7682,
+         "end_char": 7784
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Healthy male controls",
+     "Age 40–65 years"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Major mental disorder",
+     "Neurologic disease",
+     "Severe systemic disease",
+     "Other substance use disorder except nicotine and caffeine use disorder"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "recruited by advertisement from the community",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "extracted",
+    "value": 40,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "extracted",
+    "value": 65,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sex_distribution": [
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "male",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Finally, 26 patients with alcohol dependence and 28 healthy male controls were selected for the study.",
+           "start_char": 7682,
+           "end_char": 7784
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 28,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Finally, 26 patients with alcohol dependence and 28 healthy male controls were selected for the study.",
+           "start_char": 7682,
+           "end_char": 7784
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 100.0,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 28,
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "none reported; healthy participants"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age were recruited by advertisement.",
+         "start_char": 7075,
+         "end_char": 7176
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "enrolled_count": {
     "extraction_status": "extracted",
     "value": 28,
@@ -1845,94 +2504,7 @@
      ]
     }
    },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 28,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-         "start_char": 11416,
-         "end_char": 11495
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "healthy male controls",
-     "age 40 to 65 years"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age",
-         "start_char": 7075,
-         "end_char": 7143
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "advertisement; community",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "were recruited by advertisement",
-         "start_char": 7144,
-         "end_char": 7175
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -1950,55 +2522,17 @@
      "status": "not_applicable"
     }
    },
-   "age_minimum": {
-    "extraction_status": "extracted",
-    "value": 40,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age",
-         "start_char": 7075,
-         "end_char": 7143
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "extracted",
-    "value": 65,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age",
-         "start_char": 7075,
-         "end_char": 7143
-        }
-       ]
-      }
-     ]
-    }
-   },
    "age_median": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "age_unit": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": "years",
+    "value": [
+     "social-level alcohol consumption"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2007,112 +2541,24 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Age-matched healthy male controls ranging from 40 to 65 years of age",
-         "start_char": 7075,
-         "end_char": 7143
+         "text": "healthy male controls who consumed alcohol at a social level",
+         "start_char": 13828,
+         "end_char": 13888
         }
        ]
       }
      ]
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-           "start_char": 11416,
-           "end_char": 11495
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 28,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-           "start_char": 11416,
-           "end_char": 11495
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 100.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-           "start_char": 11416,
-           "end_char": 11495
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 28,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All 54 participants (26 alcohol group, 28 control group) were males ages 40–65.",
-           "start_char": 11416,
-           "end_char": 11495
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
+   "diagnostic_system": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
     }
-   ],
-   "gender_distribution": [],
-   "handedness_distribution": [],
-   "race_distribution": [],
-   "ethnicity_distribution": [],
-   "is_healthy": {
+   },
+   "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": true,
+    "value": "Healthy male controls",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2130,29 +2576,6 @@
      ]
     }
    },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [],
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_structured_interview"
-   ],
-   "clinical_characteristics": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "medications": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -2166,106 +2589,28 @@
     }
    },
    "education_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  }
- ],
- "inference_settings": [
-  {
-   "local_id": "inf_group",
-   "inference_level": {
     "extraction_status": "extracted",
-    "value": "whole brain",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "height_threshold_value": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "height_threshold_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "cluster_extent_threshold": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clusterwise_threshold_value": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "multiple_comparison_method": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "correction_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
+    "value": "Education level did not differ between groups.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    },
-   "correction_regions": [],
-   "search_volume": {
+   "socioeconomic_status_summary": {
+    "extraction_status": "extracted",
+    "value": "Socioeconomic status did not differ between groups.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "sample_source_reference": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "neighborhood_definition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "tfce_used": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "tfce_parameters": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "permutation_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "alpha_level": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "number_of_tests": {
+   "sample_overlap_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -2281,7 +2626,19 @@
     "value": "structural_morphometry",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Surface-based parameters were determined by using FreeSurfer.",
+         "start_char": 884,
+         "end_char": 945
+        }
+       ]
+      }
+     ]
     }
    },
    "type": {
@@ -2289,15 +2646,39 @@
     "value": "gray_matter_volume",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "there were significant group differences in total gray matter volume, total white matter volume, and whole brain volume.",
+         "start_char": 11939,
+         "end_char": 12059
+        }
+       ]
+      }
+     ]
     }
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "volumetric parameters",
+    "value": "surface-based volume",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We found group differences in the volume of all cortical gray matter except cingulate.",
+         "start_char": 15916,
+         "end_char": 16002
+        }
+       ]
+      }
+     ]
     }
    },
    "specific_metric": {
@@ -2320,7 +2701,19 @@
     "value": "structural_morphometry",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Surface-based parameters were determined by using FreeSurfer.",
+         "start_char": 884,
+         "end_char": 945
+        }
+       ]
+      }
+     ]
     }
    },
    "type": {
@@ -2328,7 +2721,19 @@
     "value": "cortical_thickness",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The cortical thicknesses of whole, frontal, parietal, temporal, occipital, and insula brain in the alcohol group were significantly lower than cortical thicknesses in those areas of the control group's brains.",
+         "start_char": 12953,
+         "end_char": 13162
+        }
+       ]
+      }
+     ]
     }
    },
    "source_label": {
@@ -2336,7 +2741,19 @@
     "value": "cortical thickness",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The cortical thicknesses of whole, frontal, parietal, temporal, occipital, and insula brain in the alcohol group were significantly lower than cortical thicknesses in those areas of the control group's brains.",
+         "start_char": 12953,
+         "end_char": 13162
+        }
+       ]
+      }
+     ]
     }
    },
    "specific_metric": {
@@ -2359,7 +2776,19 @@
     "value": "structural_morphometry",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Surface-based parameters were determined by using FreeSurfer.",
+         "start_char": 884,
+         "end_char": 945
+        }
+       ]
+      }
+     ]
     }
    },
    "type": {
@@ -2367,15 +2796,39 @@
     "value": "surface_area",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "There were no group differences in surface areas in the whole brain and each lobe.",
+         "start_char": 13444,
+         "end_char": 13526
+        }
+       ]
+      }
+     ]
     }
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "surface areas",
+    "value": "surface area",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "There were no group differences in surface areas in the whole brain and each lobe.",
+         "start_char": 13444,
+         "end_char": 13526
+        }
+       ]
+      }
+     ]
     }
    },
    "specific_metric": {
@@ -2394,7 +2847,7 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_group_surface",
+   "local_id": "mod_volume_uncorrected",
    "model_family": {
     "extraction_status": "extracted",
     "value": "anova",
@@ -2405,22 +2858,8 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "group comparison model",
+    "value": "Student's t-test of volumetric parameters before head-size correction",
     "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "model_settings": {
-    "extraction_status": "extracted",
-    "value": "head-size correction using the covariance approach was evaluated for structural parameters",
-    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2428,9 +2867,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Head-size correction of structural parameters was derived using a procedure commonly described in the literature. Standardized structural values were calculated using the covariance approach.",
-         "start_char": 10390,
-         "end_char": 10581
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
         }
        ]
       }
@@ -2448,49 +2887,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The differences in surface-based parameters between groups were tested by Student's t-test",
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
          "start_char": 11187,
-         "end_char": 11277
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "estimator": {
-    "extraction_status": "extracted",
-    "value": "Student's t-test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Student's t-test",
-         "start_char": 11095,
-         "end_char": 11111
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "R statistical package v. 2.15.3",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Analyses were conducted using the R statistical package v. 2.15.3 as described in the website (  http://r-project.org  ) with appropriate packages.",
-         "start_char": 10899,
-         "end_char": 11046
+         "end_char": 11358
         }
        ]
       }
@@ -2505,27 +2904,55 @@
      "status": "not_found"
     }
    },
-   "preprocessing": [
-    "prp_freesurfer"
-   ],
-   "inputs_from": [],
    "terms": [
     {
-     "local_id": "trm_group",
+     "local_id": "trm_group_volume",
      "name": {
       "extraction_status": "extracted",
-      "value": "group",
-      "value_source": "reported",
+      "value": "group for volumetric parameters",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+           "start_char": 11187,
+           "end_char": 11358
+          }
+         ]
+        }
+       ]
       }
      },
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+           "start_char": 11187,
+           "end_char": 11358
+          }
+         ]
+        }
+       ]
       }
      },
      "levels": [
@@ -2541,9 +2968,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "alcohol group",
-             "start_char": 668,
-             "end_char": 681
+             "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+             "start_char": 11187,
+             "end_char": 11358
             }
            ]
           }
@@ -2572,9 +2999,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "control group",
-             "start_char": 763,
-             "end_char": 776
+             "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+             "start_char": 11187,
+             "end_char": 11358
             }
            ]
           }
@@ -2592,33 +3019,12 @@
        }
       }
      ],
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The differences in surface-based parameters between groups were tested by Student's t-test",
-           "start_char": 11187,
-           "end_char": 11277
-          }
-         ]
-        }
-       ]
-      }
-     },
      "functional_form": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "interaction_with": [],
      "unit": {
       "extraction_status": "not_reported",
       "evidence": {
@@ -2632,15 +3038,22 @@
       }
      }
     }
-   ]
-  }
- ],
- "preprocessings": [
-  {
-   "local_id": "prp_freesurfer",
-   "description": {
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "estimator": {
     "extraction_status": "extracted",
-    "value": "FreeSurfer processing of T1-weighted MPRAGE images, including alignment, segmentation, surface reconstruction, surface-based averaging, and manual quality control and reprocessing.",
+    "value": "Student's t-test",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2649,9 +3062,792 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All images were processed using FreeSurfer (v. 5.3.0) with the default settings",
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "R statistical package v. 2.15.3",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Analyses were conducted using the R statistical package v. 2.15.3 as described in the website (  http://r-project.org  ) with appropriate packages.",
+         "start_char": 10899,
+         "end_char": 11046
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "mod_volume_corrected",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "ancova",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "Student's t-test of head-size-corrected volumetric parameters",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "vertex",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_volume_corrected",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "group for head-size-corrected volumetric parameters",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+           "start_char": 11187,
+           "end_char": 11358
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+           "start_char": 11187,
+           "end_char": 11358
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "alcohol group",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+             "start_char": 11187,
+             "end_char": 11358
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_aud"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "control group",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+             "start_char": 11187,
+             "end_char": 11358
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_control"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "Student's t-test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "R statistical package v. 2.15.3",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Analyses were conducted using the R statistical package v. 2.15.3 as described in the website (  http://r-project.org  ) with appropriate packages.",
+         "start_char": 10899,
+         "end_char": 11046
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "mod_thickness",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "anova",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "Student's t-test of cortical thickness",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "vertex",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_thickness",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "group for cortical thickness",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+           "start_char": 11187,
+           "end_char": 11358
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+           "start_char": 11187,
+           "end_char": 11358
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "alcohol group",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+             "start_char": 11187,
+             "end_char": 11358
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_aud"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "control group",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+             "start_char": 11187,
+             "end_char": 11358
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_control"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "Student's t-test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "R statistical package v. 2.15.3",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Analyses were conducted using the R statistical package v. 2.15.3 as described in the website (  http://r-project.org  ) with appropriate packages.",
+         "start_char": 10899,
+         "end_char": 11046
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "mod_surface_area",
+   "model_family": {
+    "extraction_status": "extracted",
+    "value": "anova",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "model_type": {
+    "extraction_status": "extracted",
+    "value": "Student's t-test of surface area",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "stage": {
+    "extraction_status": "extracted",
+    "value": "group",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "vertex",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "terms": [
+    {
+     "local_id": "trm_group_surface_area",
+     "name": {
+      "extraction_status": "extracted",
+      "value": "group for surface area",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+           "start_char": 11187,
+           "end_char": 11358
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "type": {
+      "extraction_status": "extracted",
+      "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
+      "value_source": "generated",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+           "start_char": 11187,
+           "end_char": 11358
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "levels": [
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "alcohol group",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+             "start_char": 11187,
+             "end_char": 11358
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_aud"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      },
+      {
+       "level": {
+        "extraction_status": "extracted",
+        "value": "control group",
+        "value_source": "reported",
+        "evidence": {
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+             "start_char": 11187,
+             "end_char": 11358
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "groups": [
+        "grp_control"
+       ],
+       "order": {
+        "extraction_status": "not_reported",
+        "evidence": {
+         "status": "not_applicable"
+        }
+       }
+      }
+     ],
+     "functional_form": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "unit": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "source_definition": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_settings": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "estimator": {
+    "extraction_status": "extracted",
+    "value": "Student's t-test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The differences in surface-based parameters between groups were tested by Student's t-test, and the effect sizes of group differences were estimated using Cohen's d value.",
+         "start_char": 11187,
+         "end_char": 11358
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": "R statistical package v. 2.15.3",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Analyses were conducted using the R statistical package v. 2.15.3 as described in the website (  http://r-project.org  ) with appropriate packages.",
+         "start_char": 10899,
+         "end_char": 11046
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_freesurfer",
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Surface-based processing with FreeSurfer, including segmentation, cortical surface reconstruction, alignment to a common surface template, and regional parameter computation.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All images were processed using FreeSurfer (v. 5.3.0) with the default settings (  http://surfer.nmr.mgh.harvard.edu  ) on a Mac Pro 64-bit OS X platform.",
          "start_char": 8399,
-         "end_char": 8478
+         "end_char": 8553
         }
        ]
       }
@@ -2661,8 +3857,8 @@
    "software": {
     "extraction_status": "extracted",
     "value": [
-     "FreeSurfer v. 5.3.0",
-     "Mac Pro 64-bit OS X"
+     "FreeSurfer (v. 5.3.0)",
+     "R statistical package v. 2.15.3"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2672,9 +3868,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "FreeSurfer (v. 5.3.0)",
-         "start_char": 8431,
-         "end_char": 8452
+         "text": "All images were processed using FreeSurfer (v. 5.3.0) with the default settings (  http://surfer.nmr.mgh.harvard.edu  ) on a Mac Pro 64-bit OS X platform.",
+         "start_char": 8399,
+         "end_char": 8553
         }
        ]
       }
@@ -2685,11 +3881,12 @@
     "extraction_status": "extracted",
     "value": [
      "alignment",
-     "segmentation of gray matter, white matter, and cerebrospinal fluid space",
-     "surface-based averaging",
-     "manual quality control and reprocessing"
+     "segmentation of gray matter, white matter, and CSF space",
+     "surface-based averaging and alignment to a common surface template",
+     "manual quality control and reprocessing",
+     "cortical parcellation"
     ],
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -2719,7 +3916,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "a081c5ed69d1f4b5c46320c8c79ce378b7a6d4a6451c7fad8a19322e567347b0",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -2853,5 +4050,8 @@
  },
  "study_type": [
   "Journal Article"
+ ],
+ "language": [
+  "eng"
  ]
 }

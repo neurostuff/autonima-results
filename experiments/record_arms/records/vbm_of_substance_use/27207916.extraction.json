@@ -1,7 +1,7 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "A cross-sectional structural MRI study comparing regional brain volumes across obesity, alcohol dependence, and healthy volunteer controls, and examining associations with BMI and AUDIT.",
+  "value": "A cross-sectional structural MRI study comparing nucleus accumbens and hippocampal volumes across obesity, alcohol dependence, and healthy controls.",
   "value_source": "generated",
   "evidence": {
    "status": "present",
@@ -19,33 +19,10 @@
    ]
   }
  },
- "hypothesis": {
-  "extraction_status": "extracted",
-  "value": [
-   "We specifically hypothesized that these 2 established regions in addiction neurocircuitry are associated with distinctive in vivo structural abnormalities in obesity and alcohol dependence.",
-   "Here, we hypothesize that both obesity and AUD are associated with lower ventral striatal and subicular hippocampal subfield volumes in vivo."
-  ],
-  "value_source": "reported",
-  "evidence": {
-   "status": "present",
-   "sets": [
-    {
-     "source": "model_quote",
-     "spans": [
-      {
-       "text": "We specifically hypothesized that these 2 established regions in addiction neurocircuitry are associated with distinctive in vivo structural abnormalities in obesity and alcohol dependence.",
-       "start_char": 333,
-       "end_char": 522
-      }
-     ]
-    }
-   ]
-  }
- },
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Cross-sectional observational comparison of three participant groups.",
+   "value": "Cross-sectional observational study of three participant groups recruited from the community.",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -68,15 +45,28 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "not_found",
+    "unlocated_quotes": 1
    }
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "Groups were comparable in age and gender composition",
+        "start_char": 13274,
+        "end_char": 13326
+       }
+      ]
+     }
+    ]
    }
   },
   "blinding": {
@@ -84,24 +74,113 @@
    "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
-    "status": "not_found"
+    "status": "present",
+    "sets": [
+     {
+      "source": "model_quote",
+      "spans": [
+       {
+        "text": "All images were visually reviewed for exclusion of brain pathology.",
+        "start_char": 10706,
+        "end_char": 10773
+       }
+      ]
+     }
+    ]
    }
+  },
+  "timepoints": [
+   {
+    "local_id": "tp_scan",
+    "name": {
+     "extraction_status": "extracted",
+     "value": "scanned",
+     "value_source": "reported",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "literal_match",
+        "spans": [
+         {
+          "text": "Subjects with AUD met DSM-IV-TR criteria ( American Psychiatric Association, 2000 ) for alcohol dependence and were abstinent for 2 weeks to 1 year when scanned.",
+          "start_char": 9083,
+          "end_char": 9244
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "relation_to_intervention": {
+     "extraction_status": "extracted",
+     "value": "single_occasion",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "when scanned",
+          "start_char": 9231,
+          "end_char": 9243
+         }
+        ]
+       }
+      ]
+     }
+    }
+   }
+  ]
+ },
+ "hypothesis": {
+  "extraction_status": "extracted",
+  "value": [
+   "both obesity and AUD are associated with lower ventral striatal and subicular hippocampal subfield volumes in vivo"
+  ],
+  "value_source": "reported",
+  "evidence": {
+   "status": "present",
+   "sets": [
+    {
+     "source": "model_quote",
+     "spans": [
+      {
+       "text": "Here, we hypothesize that both obesity and AUD are associated with lower ventral striatal and subicular hippocampal subfield volumes in vivo",
+       "start_char": 8513,
+       "end_char": 8653
+      }
+     ]
+    }
+   ]
   }
  },
  "analyses": [
   {
-   "local_id": "ana_obesity_accumbens",
+   "local_id": "ana_obesity_hv_accumbens",
    "name": {
     "extraction_status": "extracted",
-    "value": "Obesity vs HV nucleus accumbens volume",
-    "value_source": "generated",
+    "value": "Obesity vs HV accumbens volume",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "definition": {
     "extraction_status": "extracted",
     "value": "Increased accumbens volumes were found in obese participants compared with healthy controls.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "hypothesis-led",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -110,21 +189,13 @@
        "source": "literal_match",
        "spans": [
         {
-         "text": "Increased accumbens volumes were found in obese participants compared with healthy controls ( Table 1 ).",
-         "start_char": 14945,
-         "end_char": 15049
+         "text": "Hypothesis-led, selective group difference comparisons were analyzed.",
+         "start_char": 1052,
+         "end_char": 1121
         }
        ]
       }
      ]
-    }
-   },
-   "prespecification": {
-    "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "spatial_scope": {
@@ -138,16 +209,16 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "From the outputs of the segmentations, we analysed mean volumetric measures of the nucleus accumbens",
+         "text": "From the outputs of the segmentations, we analysed mean volumetric measures of the nucleus accumbens, cornu ammonis (CA) 2-3, CA4, subiculum and presubiculum.",
          "start_char": 11976,
-         "end_char": 12076
+         "end_char": 12134
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_regional_volume",
+   "measure": "mea_accumbens_volume",
    "groups": [
     {
      "group": "grp_obesity",
@@ -205,19 +276,8 @@
        "value": "obesity",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "obese participants",
-            "start_char": 9336,
-            "end_char": 9354
-           }
-          ]
-         }
-        ]
+        "status": "not_found",
+        "unlocated_quotes": 1
        }
       },
       "direction": {
@@ -225,19 +285,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Subjects were also screened using a drug urine test or breathalyzer on the day of testing and excluded if found to be positive.",
-            "start_char": 10152,
-            "end_char": 10279
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -324,9 +372,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "Hypothesis-led, selective group difference comparisons were analyzed.",
-          "start_char": 1052,
-          "end_char": 1121
+          "text": "Compared with controls, total subcortical gray matter was lower in the AUD group but not the obesity group.",
+          "start_char": 15389,
+          "end_char": 15496
          }
         ]
        }
@@ -339,19 +387,7 @@
       "value": "f",
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Group difference effects for the segmented subcortical and hippocampal subfield volumes were assessed using an ANCOVA",
-           "start_char": 12137,
-           "end_char": 12254
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "degrees_of_freedom_numerator": {
@@ -372,14 +408,35 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_mri_t1"
+    "acq_t1_mri"
    ],
-   "model_estimation": "mod_ancova_group",
+   "model_estimation": "mod_ancova",
+   "inference_settings": "inf_bonferroni",
+   "source_table_analysis": {
+    "extraction_status": "extracted",
+    "value": "Table 2",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Table 2",
+         "start_char": 14809,
+         "end_char": 14816
+        }
+       ]
+      }
+     ]
+    }
+   },
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
      "In obese subjects we found higher ventral striatal volume relative to controls.",
-     "Increased accumbens volumes were found in obese participants compared with healthy controls."
+     "We found increased accumbens volume in obesity, suggesting regionally specific structural alteration in reward neurocircuitry."
     ],
     "value_source": "reported",
     "evidence": {
@@ -389,19 +446,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "In the current study, although no total gray matter volume reduction was found, we found increased volume in the accumbens.",
-         "start_char": 18708,
-         "end_char": 18831
+         "text": "Specifically, relative to controls, in obese subjects we found higher ventral striatal volume",
+         "start_char": 18080,
+         "end_char": 18173
         }
        ]
       }
      ]
-    }
-   },
-   "source_table_analysis": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "coordinate_space": {
@@ -420,11 +471,11 @@
     "reg_nucleus_accumbens"
    ],
    "tables": [
-    "T1",
-    "T2"
+    "tbltable1",
+    "tbltable2"
    ],
    "assessments": [
-    "asm_nart"
+    "asm_bmi"
    ]
   },
   {
@@ -440,26 +491,6 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Within hippocampal subfields, the subiculum and presubiculum showed the most significantly different volume",
-         "start_char": 15267,
-         "end_char": 15374
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Compared with controls, total subcortical gray matter was lower in the AUD group but not the obesity group.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
          "text": "Compared with controls, total subcortical gray matter was lower in the AUD group but not the obesity group.",
          "start_char": 15389,
          "end_char": 15496
@@ -469,12 +500,44 @@
      ]
     }
    },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "Compared with controls, alcohol dependence was associated with lower whole-hippocampal and specific ventral hippocampal subfield volumes, including the subiculum and presubiculum.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Within hippocampal subfields, the subiculum and presubiculum showed the most significantly different volume (  P  <.025).",
+         "start_char": 15267,
+         "end_char": 15388
+        }
+       ]
+      }
+     ]
+    }
+   },
    "prespecification": {
     "extraction_status": "extracted",
-    "value": "preregistered",
-    "value_source": "generated",
+    "value": "hypothesis-led",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Hypothesis-led, selective group difference comparisons were analyzed.",
+         "start_char": 1052,
+         "end_char": 1121
+        }
+       ]
+      }
+     ]
     }
    },
    "spatial_scope": {
@@ -497,7 +560,7 @@
      ]
     }
    },
-   "measure": "mea_regional_volume",
+   "measure": "mea_hippocampal_subfield_volume",
    "groups": [
     {
      "group": "grp_aud",
@@ -561,9 +624,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "AUD showed lower whole-hippocampal volume findings.",
-            "start_char": 15215,
-            "end_char": 15266
+            "text": "in alcohol dependence",
+            "start_char": 1276,
+            "end_char": 1297
            }
           ]
          }
@@ -580,18 +643,18 @@
       },
       "label": {
        "extraction_status": "extracted",
-       "value": "alcohol dependence group",
+       "value": "alcohol dependence",
        "value_source": "reported",
        "evidence": {
         "status": "present",
         "sets": [
          {
-          "source": "literal_match",
+          "source": "model_quote",
           "spans": [
            {
-            "text": "Smaller global subcortical gray-matter volume was found in the alcohol dependence group only.",
-            "start_char": 1423,
-            "end_char": 1516
+            "text": "AUD subjects",
+            "start_char": 18186,
+            "end_char": 18198
            }
           ]
          }
@@ -626,35 +689,23 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "healthy controls",
+       "value_source": "reported",
+       "evidence": {
         "status": "present",
         "sets": [
          {
           "source": "literal_match",
           "spans": [
            {
-            "text": "Subjects were also screened using a drug urine test or breathalyzer on the day of testing and excluded if found to be positive.",
-            "start_char": 10152,
-            "end_char": 10279
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "extracted",
-       "value": "controls",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "controls",
-            "start_char": 795,
-            "end_char": 803
+            "text": "Increased accumbens volumes were found in obese participants compared with healthy controls ( Table 1 ).",
+            "start_char": 14945,
+            "end_char": 15049
            }
           ]
          }
@@ -668,19 +719,7 @@
      "value": "contrast",
      "value_source": "generated",
      "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "model_quote",
-        "spans": [
-         {
-          "text": "Group difference effects for the segmented subcortical and hippocampal subfield volumes were assessed using an ANCOVA",
-          "start_char": 12137,
-          "end_char": 12254
-         }
-        ]
-       }
-      ]
+      "status": "not_found"
      }
     },
     "statistic": {
@@ -689,19 +728,7 @@
       "value": "f",
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Group difference effects for the segmented subcortical and hippocampal subfield volumes were assessed using an ANCOVA",
-           "start_char": 12137,
-           "end_char": 12254
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "degrees_of_freedom_numerator": {
@@ -722,15 +749,13 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_mri_t1"
+    "acq_t1_mri"
    ],
-   "model_estimation": "mod_ancova_group",
-   "interpretations": {
+   "model_estimation": "mod_ancova",
+   "inference_settings": "inf_bonferroni",
+   "source_table_analysis": {
     "extraction_status": "extracted",
-    "value": [
-     "In alcohol dependence, we found atrophy of specific ventral hippocampal subfields, the subiculum and presubiculum.",
-     "The subiculum and presubiculum showed the most significantly different volume compared with controls."
-    ],
+    "value": "Table 2",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -739,19 +764,25 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Conversely, in alcohol dependence, we found preserved accumbens volumes but atrophy of specific ventral hippocampal subfields, the subiculum and presubiculum.",
-         "start_char": 1264,
-         "end_char": 1422
+         "text": "Table 2",
+         "start_char": 14809,
+         "end_char": 14816
         }
        ]
       }
      ]
     }
    },
-   "source_table_analysis": {
-    "extraction_status": "not_reported",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "In alcohol dependence, we found a lower total hippocampal volume, including the presubiculum and subiculum, as well as reduced subcortical gray matter relative to controls.",
+     "Atrophy appeared to significantly affect the subiculum, and the adjoining presubiculum further showed involvement."
+    ],
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "coordinate_space": {
@@ -768,25 +799,17 @@
    },
    "regions": [
     "reg_subiculum",
-    "reg_presubiculum",
-    "reg_ca_2_3",
-    "reg_ca_4_dg",
-    "reg_whole_hippocampus",
-    "reg_global_subcortical_gray"
+    "reg_presubiculum"
    ],
    "tables": [
-    "T1",
-    "T2"
-   ],
-   "assessments": [
-    "asm_nart"
+    "tbltable2"
    ]
   },
   {
-   "local_id": "ana_bmi_accumbens",
+   "local_id": "ana_bmi_accumbens_correlation",
    "name": {
     "extraction_status": "extracted",
-    "value": "BMI and accumbens volume correlation",
+    "value": "BMI correlation with accumbens volume",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -795,9 +818,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "BMI was positively correlated with accumbens volumes across all subjects (r = 0.467,   P  ≤.01)",
-         "start_char": 16410,
-         "end_char": 16505
+         "text": "Relationship between accumbens volume and body mass index (BMI).",
+         "start_char": 17058,
+         "end_char": 17122
         }
        ]
       }
@@ -806,18 +829,18 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Subcortical volumes were examined for partial correlations with BMI.",
+    "value": "BMI was positively correlated with accumbens volumes across all subjects.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Subcortical volumes were examined for partial correlations with BMI and Binge Eating Scale (BES) in SPSS controlling for age and total intracranial volume.",
-         "start_char": 12612,
-         "end_char": 12767
+         "text": "Correlation analyses revealed that BMI was positively correlated with accumbens volumes across all subjects (r = 0.467,   P  ≤.01)",
+         "start_char": 16375,
+         "end_char": 16505
         }
        ]
       }
@@ -827,7 +850,7 @@
    "prespecification": {
     "extraction_status": "extracted",
     "value": "exploratory",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -855,79 +878,33 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Subcortical volumes were examined for partial correlations with BMI and Binge Eating Scale (BES) in SPSS",
-         "start_char": 12612,
-         "end_char": 12716
+         "text": "From the outputs of the segmentations, we analysed mean volumetric measures of the nucleus accumbens",
+         "start_char": 11976,
+         "end_char": 12076
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_regional_volume",
+   "measure": "mea_accumbens_volume",
    "groups": [
     {
-     "group": "grp_obesity",
+     "group": "grp_all_subjects",
      "n": {
       "extraction_status": "extracted",
-      "value": 42,
+      "value": 118,
       "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
         {
-         "source": "model_quote",
+         "source": "literal_match",
          "spans": [
           {
-           "text": "obesity (n=42)",
-           "start_char": 730,
-           "end_char": 744
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "group": "grp_aud",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 32,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "alcohol dependence (n=32)",
-           "start_char": 746,
-           "end_char": 771
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "group": "grp_hv",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 44,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "healthy volunteer controls (n=44)",
-           "start_char": 777,
-           "end_char": 810
+           "text": "To specifically investigate anatomically discrete volumetric changes associated with overconsumption of different rewards, we acquired T1 MRI data from 118 subjects in 3 groups comprising obesity (n=42), alcohol dependence (n=32), and healthy volunteer controls (n=44).",
+           "start_char": 542,
+           "end_char": 811
           }
          ]
         }
@@ -945,39 +922,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Subjects were also screened using a drug urine test or breathalyzer on the day of testing and excluded if found to be positive.",
-            "start_char": 10152,
-            "end_char": 10279
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "level": {
-       "extraction_status": "extracted",
-       "value": "BMI",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "BMI",
-            "start_char": 4446,
-            "end_char": 4449
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -1007,19 +952,8 @@
      "value": "cross_subject_regression",
      "value_source": "generated",
      "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "model_quote",
-        "spans": [
-         {
-          "text": "Correlation analyses revealed that BMI was positively correlated with accumbens volumes across all subjects",
-          "start_char": 16375,
-          "end_char": 16482
-         }
-        ]
-       }
-      ]
+      "status": "not_found",
+      "unlocated_quotes": 1
      }
     },
     "statistic": {
@@ -1028,28 +962,16 @@
       "value": "correlation",
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "partial correlation",
-           "start_char": 12650,
-           "end_char": 12669
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -1061,13 +983,14 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_mri_t1"
+    "acq_t1_mri"
    ],
    "model_estimation": "mod_partial_correlation",
+   "inference_settings": "inf_correlation",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "BMI was positively correlated with accumbens volumes across all subjects (r = 0.467, P ≤ .01), but this BMI correlation was not significant in the obesity group or healthy volunteers."
+     "BMI was positively correlated with accumbens volumes across all subjects (r = 0.467, P ≤ .01)."
     ],
     "value_source": "reported",
     "evidence": {
@@ -1077,9 +1000,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Correlation analyses revealed that BMI was positively correlated with accumbens volumes across all subjects (r = 0.467,   P  ≤.01) ( Figure 1 ), but this BMI correlation was not significant in the obesity group (r = 0.088,   P  =.590) or healthy volunteers.",
+         "text": "Correlation analyses revealed that BMI was positively correlated with accumbens volumes across all subjects (r = 0.467,   P  ≤.01)",
          "start_char": 16375,
-         "end_char": 16632
+         "end_char": 16505
         }
        ]
       }
@@ -1088,6 +1011,7 @@
    },
    "source_table_analysis": {
     "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
     "evidence": {
      "status": "not_applicable"
     }
@@ -1108,25 +1032,17 @@
     "reg_nucleus_accumbens"
    ],
    "tables": [
-    "T2"
+    "tbltable2"
    ],
    "assessments": [
-    "asm_nart"
+    "asm_bmi"
    ]
   },
   {
-   "local_id": "ana_audit_hippocampal_volume",
+   "local_id": "ana_audit_hippocampal_correlation",
    "name": {
     "extraction_status": "extracted",
     "value": "AUDIT correlations with hippocampal volumes",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "We further assessed the relationship between BMI and AUDIT with regions identified to be significantly different in the group analysis using partial correlations",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1135,9 +1051,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We further assessed the relationship between BMI and AUDIT (Alcohol Use Disorders Identification Test,  Saunders et al., 1993 ) with regions identified to be significantly different in the group analysis using partial correlations",
-         "start_char": 12768,
-         "end_char": 12998
+         "text": "Relationship between subiculum volume and alcohol use disorders identification test (AUDIT).",
+         "start_char": 17252,
+         "end_char": 17344
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "AUDIT scores significantly negatively correlated with volumes of the whole hippocampus and CA4.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "AUDIT scores significantly negatively correlated with volumes of the whole hippocampus volume and CA4",
+         "start_char": 16633,
+         "end_char": 16734
         }
        ]
       }
@@ -1147,7 +1083,7 @@
    "prespecification": {
     "extraction_status": "extracted",
     "value": "exploratory",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1175,79 +1111,33 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "with regions identified to be significantly different in the group analysis",
-         "start_char": 12896,
-         "end_char": 12971
+         "text": "From the outputs of the segmentations, we analysed mean volumetric measures of the nucleus accumbens, cornu ammonis (CA) 2-3, CA4, subiculum and presubiculum.",
+         "start_char": 11976,
+         "end_char": 12134
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_regional_volume",
+   "measure": "mea_hippocampal_volume",
    "groups": [
     {
-     "group": "grp_obesity",
+     "group": "grp_all_subjects",
      "n": {
       "extraction_status": "extracted",
-      "value": 42,
+      "value": 118,
       "value_source": "reported",
       "evidence": {
        "status": "present",
        "sets": [
         {
-         "source": "model_quote",
+         "source": "literal_match",
          "spans": [
           {
-           "text": "obesity (n=42)",
-           "start_char": 730,
-           "end_char": 744
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "group": "grp_aud",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 32,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "alcohol dependence (n=32)",
-           "start_char": 746,
-           "end_char": 771
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "group": "grp_hv",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 44,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "healthy volunteer controls (n=44)",
-           "start_char": 777,
-           "end_char": 810
+           "text": "To specifically investigate anatomically discrete volumetric changes associated with overconsumption of different rewards, we acquired T1 MRI data from 118 subjects in 3 groups comprising obesity (n=42), alcohol dependence (n=32), and healthy volunteer controls (n=44).",
+           "start_char": 542,
+           "end_char": 811
           }
          ]
         }
@@ -1265,39 +1155,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "AUDIT scores significantly negatively correlated with volumes of the whole hippocampus volume and CA4",
-            "start_char": 16633,
-            "end_char": 16734
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "level": {
-       "extraction_status": "extracted",
-       "value": "AUDIT",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "AUDIT",
-            "start_char": 12821,
-            "end_char": 12826
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -1333,9 +1191,9 @@
         "source": "model_quote",
         "spans": [
          {
-          "text": "AUDIT scores significantly negatively correlated with volumes of the whole hippocampus volume and CA4",
-          "start_char": 16633,
-          "end_char": 16734
+          "text": "partial correlations controlling for age, total intracranial volume, sex, and NART performance",
+          "start_char": 16233,
+          "end_char": 16327
          }
         ]
        }
@@ -1348,19 +1206,7 @@
       "value": "correlation",
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "partial correlations",
-           "start_char": 12650,
-           "end_char": 12670
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "degrees_of_freedom_numerator": {
@@ -1381,14 +1227,14 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_mri_t1"
+    "acq_t1_mri"
    ],
    "model_estimation": "mod_partial_correlation",
+   "inference_settings": "inf_correlation",
    "interpretations": {
     "extraction_status": "extracted",
     "value": [
-     "AUDIT scores significantly negatively correlated with volumes of the whole hippocampus and CA4 and reached trend level for the subiculum (P = .090).",
-     "The relatively strong negative correlation of AUDIT scores with subicular volume may hence provide a pathological basis that contributes to the high rates of relapse seen in detoxified patients."
+     "AUDIT scores significantly negatively correlated with volumes of the whole hippocampus and CA4 and reached trend level for the subiculum."
     ],
     "value_source": "reported",
     "evidence": {
@@ -1398,9 +1244,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "AUDIT scores significantly negatively correlated with volumes of the whole hippocampus volume and CA4 and reached trend level for the subiculum (  P  =.090) ( Figure 2 ).",
+         "text": "AUDIT scores significantly negatively correlated with volumes of the whole hippocampus volume and CA4",
          "start_char": 16633,
-         "end_char": 16803
+         "end_char": 16734
         }
        ]
       }
@@ -1408,9 +1254,23 @@
     }
    },
    "source_table_analysis": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Table 2#2",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Table 2",
+         "start_char": 14809,
+         "end_char": 14816
+        }
+       ]
+      }
+     ]
     }
    },
    "coordinate_space": {
@@ -1426,24 +1286,20 @@
     }
    },
    "regions": [
-    "reg_subiculum",
-    "reg_presubiculum",
-    "reg_ca_2_3",
-    "reg_ca_4_dg",
-    "reg_whole_hippocampus"
+    "reg_whole_hippocampus",
+    "reg_ca4"
    ],
    "tables": [
-    "T2"
+    "tbltable2"
    ],
    "assessments": [
-    "asm_audit",
-    "asm_nart"
+    "asm_audit"
    ]
   }
  ],
  "acquisitions": [
   {
-   "local_id": "acq_mri_t1",
+   "local_id": "acq_t1_mri",
    "acquisition_type": "MRI",
    "modality": {
     "extraction_status": "extracted",
@@ -1463,12 +1319,6 @@
        ]
       }
      ]
-    }
-   },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "device": "dev_trio",
@@ -1494,7 +1344,7 @@
    },
    "pulse_sequence_type": {
     "extraction_status": "extracted",
-    "value": "magnetization-prepared rapid gradient-echo",
+    "value": "T1-weighted magnetization-prepared rapid gradient-echo",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1510,12 +1360,6 @@
        ]
       }
      ]
-    }
-   },
-   "mr_acquisition_type": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    },
    "repetition_time_seconds": {
@@ -1584,7 +1428,13 @@
      ]
     }
    },
-   "number_of_volumes": {
+   "brain_coverage": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquisition_duration_seconds": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -1594,171 +1444,14 @@
  ],
  "assessments": [
   {
-   "local_id": "asm_mini",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Mini International Neuropsychiatric Inventory",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Universal exclusion criteria included current major depressive episode or any history of severe psychiatric disorder (e.g., bipolar affective disorder or schizophrenia) or an active substance use disorder, such as regular cannabis use, assessed using the Mini International Neuropsychiatric Inventory.",
-         "start_char": 9850,
-         "end_char": 10151
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment used for psychiatric screening.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects were also screened using a drug urine test or breathalyzer on the day of testing",
-         "start_char": 10152,
-         "end_char": 10241
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "diagnostic interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All diagnoses were confirmed by a psychiatrist.",
-         "start_char": 10377,
-         "end_char": 10424
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_nart",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "National Adult Reading Test",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The National Adult Reading Test (NART)",
-         "start_char": 10307,
-         "end_char": 10345
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Assessment producing NART performance and error scores.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects further completed The National Adult Reading Test (NART)",
-         "start_char": 10280,
-         "end_char": 10345
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "cognitive test",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects further completed The National Adult Reading Test (NART)",
-         "start_char": 10280,
-         "end_char": 10345
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
    "local_id": "asm_audit",
    "name": {
     "extraction_status": "extracted",
     "value": "Alcohol Use Disorders Identification Test",
     "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "AUDIT (Alcohol Use Disorders Identification Test,  Saunders et al., 1993 )",
-         "start_char": 12821,
-         "end_char": 12895
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Measure of alcohol use disorder severity.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "AUDIT (Alcohol Use Disorders Identification Test,  Saunders et al., 1993 )",
-         "start_char": 12821,
-         "end_char": 12895
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "assessment_type": {
@@ -1772,13 +1465,208 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "AUDIT (Alcohol Use Disorders Identification Test,  Saunders et al., 1993 )",
-         "start_char": 12821,
-         "end_char": 12895
+         "text": "AUDIT scores",
+         "start_char": 16633,
+         "end_char": 16645
         }
        ]
       }
      ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Alcohol Use Disorders Identification Test used to characterize alcohol-related problems and severity; scores were reported for the alcohol dependence and healthy volunteer groups and used in partial correlations with regional brain volumes.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We further assessed the relationship between BMI and AUDIT (Alcohol Use Disorders Identification Test,  Saunders et al., 1993 ) with regions identified to be significantly different in the group analysis using partial correlations controlling for intracranial volume and age with   P  <.05 considered significant.",
+         "start_char": 12768,
+         "end_char": 13081
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_bmi",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "BMI",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "BMI",
+         "start_char": 4446,
+         "end_char": 4449
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "anthropometric measure",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "BMI",
+         "start_char": 4446,
+         "end_char": 4449
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Body mass index used to define obesity (BMI ≥30) and to assess its relationship with accumbens and other subcortical volumes.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Obese participants had a BMI ≥ 30.",
+         "start_char": 9245,
+         "end_char": 9279
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "asm_mini_international_neuropsyc",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Mini International Neuropsychiatric Inventory",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Mini International Neuropsychiatric Inventory",
+         "start_char": 10105,
+         "end_char": 10150
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "diagnostic interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_national_adult_reading",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "National Adult Reading Test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "National Adult Reading Test",
+         "start_char": 10311,
+         "end_char": 10338
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "cognitive test",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_beck_depression_inventory",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Beck Depression Inventory",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Beck Depression Inventory",
+         "start_char": 14500,
+         "end_char": 14525
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_binge_eating_scale",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Binge Eating Scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical scale",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    }
   }
@@ -1851,9 +1739,9 @@
      ]
     }
    },
-   "description": {
+   "species": {
     "extraction_status": "extracted",
-    "value": "Obese participants with BMI ≥ 30.",
+    "value": "human",
     "value_source": "generated",
     "evidence": {
      "status": "present",
@@ -1862,19 +1750,61 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Obese participants had a BMI ≥ 30.",
-         "start_char": 9245,
-         "end_char": 9279
+         "text": "Subjects",
+         "start_char": 9083,
+         "end_char": 9091
         }
        ]
       }
      ]
     }
    },
-   "species": {
+   "acquired_count": {
     "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
+    "value": 42,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "obesity (n=42)",
+         "start_char": 730,
+         "end_char": 744
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "obesity"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "obesity",
+         "start_char": 491,
+         "end_char": 498
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1889,6 +1819,14 @@
        ]
       }
      ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Obese participants with BMI ≥30, including a subset with comorbid binge-eating disorder, compared with alcohol-dependent participants and healthy volunteers in an MRI volumetric study.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "approached_count": {
@@ -1923,301 +1861,38 @@
      ]
     }
    },
-   "acquired_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "excluded_count": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "healthy volunteer controls",
-         "start_char": 777,
-         "end_char": 803
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "obesity"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "obesity",
-         "start_char": 491,
-         "end_char": 498
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Mean BMI 33.02 ± 3.26.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "BMI\t33.02±3.26",
-         "start_char": 13992,
-         "end_char": 14006
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Sex Male Female\t21M21F\t18M14F\t26M18F\t0.323, .851\t1.540, .463\t0.061, .804\t0.285, .594",
-           "start_char": 13907,
-           "end_char": 13991
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 21,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "BDI\t11.73±8.21\t12.92±10.14\t6.236±6.92\t7.86, .001\t3.07, .003\t3.19, .003\t0.747, .458",
-           "start_char": 14347,
-           "end_char": 14429
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 50.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "21M21F",
-           "start_char": 13923,
-           "end_char": 13929
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 42,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "obesity (n=42)",
-           "start_char": 730,
-           "end_char": 744
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Sex (Male/Female)",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Sex Male Female",
-           "start_char": 13907,
-           "end_char": 13922
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "female",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Sex Male Female\t21M21F\t18M14F\t26M18F\t0.323, .851\t1.540, .463\t0.061, .804\t0.285, .594",
-           "start_char": 13907,
-           "end_char": 13991
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 21,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "BDI\t11.73±8.21\t12.92±10.14\t6.236±6.92\t7.86, .001\t3.07, .003\t3.19, .003\t0.747, .458",
-           "start_char": 14347,
-           "end_char": 14429
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 50.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "21M21F",
-           "start_char": 13923,
-           "end_char": 13929
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 42,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "obesity (n=42)",
-           "start_char": 730,
-           "end_char": 744
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Sex (Male/Female)",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Sex Male Female",
-           "start_char": 13907,
-           "end_char": 13922
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
      "Age over 18 years",
-     "BMI ≥ 30"
+     "BMI ≥30"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Community-based advertisements were used to recruit subjects over 18 years old in the East Anglia region",
+         "start_char": 8977,
+         "end_char": 9081
+        },
+        {
+         "text": ". Obese participants had a BMI ≥ 30.",
+         "start_char": 9243,
+         "end_char": 9279
+        }
+       ]
+      }
+     ]
     }
    },
    "exclusion_criteria": {
@@ -2226,7 +1901,7 @@
      "Current major depressive episode",
      "History of severe psychiatric disorder such as bipolar affective disorder or schizophrenia",
      "Active substance use disorder such as regular cannabis use",
-     "Positive drug urine test or breathalyzer on the day of testing",
+     "Positive drug urine test or breathalyzer on the testing day",
      "Brain pathology on MRI"
     ],
     "value_source": "reported",
@@ -2237,9 +1912,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Universal exclusion criteria included current major depressive episode or any history of severe psychiatric disorder (e.g., bipolar affective disorder or schizophrenia) or an active substance use disorder, such as regular cannabis use",
+         "text": "Universal exclusion criteria included current major depressive episode or any history of severe psychiatric disorder (e.g., bipolar affective disorder or schizophrenia) or an active substance use disorder, such as regular cannabis use, assessed using the Mini International Neuropsychiatric Inventory.",
          "start_char": 9850,
-         "end_char": 10084
+         "end_char": 10151
         }
        ]
       }
@@ -2350,6 +2025,74 @@
      ]
     }
    },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Subjects who smoked tobacco were included",
+     "A subset of 22 participants met DSM-IV-TR criteria for binge-eating disorder"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": ". A subset of the obese participants (n=22) further met DSM-IV-TR criteria for binge-eating disorder",
+         "start_char": 9455,
+         "end_char": 9555
+        },
+        {
+         "text": "Subjects who smoked tobacco were included in the study",
+         "start_char": 9794,
+         "end_char": 9848
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "DSM-IV",
+         "start_char": 9105,
+         "end_char": 9111
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Mean BMI 33.02 ± 3.26; 22 participants had comorbid binge-eating disorder.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "BMI\t33.02±3.26",
+         "start_char": 13992,
+         "end_char": 14006
+        }
+       ]
+      }
+     ]
+    }
+   },
    "medications": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -2374,9 +2117,72 @@
      "status": "not_applicable"
     }
    },
-   "diagnostic_instrument": [
-    "asm_mini"
-   ]
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Mole et al., 2015; Voon et al., 2015",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Mole et al., 2015 ;  Voon et al., 2015",
+         "start_char": 8801,
+         "end_char": 8839
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Obese participants had a BMI ≥ 30.",
+         "start_char": 9245,
+         "end_char": 9279
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "subjects over 18 years old",
+         "start_char": 9029,
+         "end_char": 9055
+        }
+       ]
+      }
+     ]
+    }
+   }
   },
   {
    "local_id": "grp_aud",
@@ -2400,26 +2206,6 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Subjects meeting DSM-IV-TR criteria for alcohol dependence and abstinent for 2 weeks to 1 year when scanned.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Subjects with AUD met DSM-IV-TR criteria ( American Psychiatric Association, 2000 ) for alcohol dependence and were abstinent for 2 weeks to 1 year when scanned.",
-         "start_char": 9083,
-         "end_char": 9244
-        }
-       ]
-      }
-     ]
-    }
-   },
    "species": {
     "extraction_status": "extracted",
     "value": "human",
@@ -2431,16 +2217,16 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Community-based advertisements were used to recruit subjects over 18 years old in the East Anglia region.",
-         "start_char": 8977,
-         "end_char": 9082
+         "text": "Subjects",
+         "start_char": 9083,
+         "end_char": 9091
         }
        ]
       }
      ]
     }
    },
-   "enrolled_count": {
+   "acquired_count": {
     "extraction_status": "extracted",
     "value": 32,
     "value_source": "reported",
@@ -2454,26 +2240,6 @@
          "text": "alcohol dependence (n=32)",
          "start_char": 746,
          "end_char": 771
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "healthy volunteer controls",
-         "start_char": 777,
-         "end_char": 803
         }
        ]
       }
@@ -2522,18 +2288,35 @@
      ]
     }
    },
-   "diagnostic_instrument": [
-    "asm_mini"
-   ],
-   "medication_status": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": "abstinent for 2 weeks to 1 year when scanned",
+    "value": "recruited",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Community-based advertisements were used to recruit subjects over 18 years old in the East Anglia region.",
+         "start_char": 8977,
+         "end_char": 9082
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Participants meeting DSM-IV-TR criteria for alcohol dependence, abstinent for 2 weeks to 1 year before scanning, compared with obese participants and healthy volunteers in an MRI volumetric study.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
        "spans": [
         {
          "text": "Subjects with AUD met DSM-IV-TR criteria ( American Psychiatric Association, 2000 ) for alcohol dependence and were abstinent for 2 weeks to 1 year when scanned.",
@@ -2545,212 +2328,6 @@
      ]
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Sex Male Female\t21M21F\t18M14F\t26M18F\t0.323, .851\t1.540, .463\t0.061, .804\t0.285, .594",
-           "start_char": 13907,
-           "end_char": 13991
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 18,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "18M14F",
-           "start_char": 13930,
-           "end_char": 13936
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 56.25,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "18M14F",
-           "start_char": 13930,
-           "end_char": 13936
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 32,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "alcohol dependence (n=32)",
-           "start_char": 746,
-           "end_char": 771
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Sex (Male/Female)",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Sex Male Female",
-           "start_char": 13907,
-           "end_char": 13922
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "female",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Sex Male Female\t21M21F\t18M14F\t26M18F\t0.323, .851\t1.540, .463\t0.061, .804\t0.285, .594",
-           "start_char": 13907,
-           "end_char": 13991
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 14,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "BDI\t11.73±8.21\t12.92±10.14\t6.236±6.92\t7.86, .001\t3.07, .003\t3.19, .003\t0.747, .458",
-           "start_char": 14347,
-           "end_char": 14429
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 43.75,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "18M14F",
-           "start_char": 13930,
-           "end_char": 13936
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 32,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "alcohol dependence (n=32)",
-           "start_char": 746,
-           "end_char": 771
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Sex (Male/Female)",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Sex Male Female",
-           "start_char": 13907,
-           "end_char": 13922
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
    "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -2763,7 +2340,7 @@
      "status": "not_applicable"
     }
    },
-   "acquired_count": {
+   "enrolled_count": {
     "extraction_status": "extracted",
     "value": 32,
     "value_source": "reported",
@@ -2793,8 +2370,8 @@
     "extraction_status": "extracted",
     "value": [
      "Age over 18 years",
-     "DSM-IV-TR criteria for alcohol dependence",
-     "Abstinent from alcohol for 2 weeks to 1 year at scanning"
+     "Meeting DSM-IV-TR criteria for alcohol dependence",
+     "Abstinence from alcohol for 2 weeks to 1 year at scanning"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2819,12 +2396,24 @@
      "Current major depressive episode",
      "History of severe psychiatric disorder such as bipolar affective disorder or schizophrenia",
      "Active substance use disorder such as regular cannabis use",
-     "Positive drug urine test or breathalyzer on the day of testing",
+     "Positive drug urine test or breathalyzer on the testing day",
      "Brain pathology on MRI"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Universal exclusion criteria included current major depressive episode or any history of severe psychiatric disorder (e.g., bipolar affective disorder or schizophrenia) or an active substance use disorder, such as regular cannabis use, assessed using the Mini International Neuropsychiatric Inventory.",
+         "start_char": 9850,
+         "end_char": 10151
+        }
+       ]
+      }
+     ]
     }
    },
    "recruitment_method": {
@@ -2931,9 +2520,11 @@
      ]
     }
    },
-   "clinical_characteristics": {
+   "population_characteristics": {
     "extraction_status": "extracted",
-    "value": "Alcohol dependence meeting DSM-IV-TR criteria; abstinent for 2 weeks to 1 year when scanned",
+    "value": [
+     "Subjects who smoked tobacco were included"
+    ],
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2942,9 +2533,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Subjects with AUD met DSM-IV-TR criteria ( American Psychiatric Association, 2000 ) for alcohol dependence and were abstinent for 2 weeks to 1 year when scanned.",
-         "start_char": 9083,
-         "end_char": 9244
+         "text": "Subjects who smoked tobacco were included in the study.",
+         "start_char": 9794,
+         "end_char": 9849
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Mean AUDIT score 20.63 ± 12.89; abstinence duration ranged from 2 weeks to 1 year, with duration available for 25 participants.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "AUDIT\t6.26±5.86\t20.63±12.89\t5.08±3.763",
+         "start_char": 14161,
+         "end_char": 14199
         }
        ]
       }
@@ -2952,6 +2563,12 @@
     }
    },
    "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -2967,6 +2584,72 @@
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Mole et al., 2015; Voon et al., 2015",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Mole et al., 2015 ;  Voon et al., 2015",
+         "start_char": 8801,
+         "end_char": 8839
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects with AUD met DSM-IV-TR criteria ( American Psychiatric Association, 2000 ) for alcohol dependence",
+         "start_char": 9083,
+         "end_char": 9189
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "subjects over 18 years old",
+         "start_char": 9029,
+         "end_char": 9055
+        }
+       ]
+      }
+     ]
     }
    }
   },
@@ -2992,26 +2675,6 @@
      ]
     }
    },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Healthy volunteer control participants.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "healthy volunteer controls",
-         "start_char": 777,
-         "end_char": 803
-        }
-       ]
-      }
-     ]
-    }
-   },
    "species": {
     "extraction_status": "extracted",
     "value": "human",
@@ -3023,16 +2686,16 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Community-based advertisements were used to recruit subjects over 18 years old in the East Anglia region.",
-         "start_char": 8977,
-         "end_char": 9082
+         "text": "Subjects",
+         "start_char": 9083,
+         "end_char": 9091
         }
        ]
       }
      ]
     }
    },
-   "enrolled_count": {
+   "acquired_count": {
     "extraction_status": "extracted",
     "value": 44,
     "value_source": "reported",
@@ -3052,9 +2715,9 @@
      ]
     }
    },
-   "is_healthy": {
+   "sample_source": {
     "extraction_status": "extracted",
-    "value": true,
+    "value": "recruited",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3063,221 +2726,23 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "healthy volunteer controls",
-         "start_char": 777,
-         "end_char": 803
+         "text": "Community-based advertisements were used to recruit subjects over 18 years old in the East Anglia region.",
+         "start_char": 8977,
+         "end_char": 9082
         }
        ]
       }
      ]
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Sex Male Female\t21M21F\t18M14F\t26M18F\t0.323, .851\t1.540, .463\t0.061, .804\t0.285, .594",
-           "start_char": 13907,
-           "end_char": 13991
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 26,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "26M18F",
-           "start_char": 13937,
-           "end_char": 13943
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 59.0909,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "26M18F",
-           "start_char": 13937,
-           "end_char": 13943
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 44,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "healthy volunteer controls (n=44)",
-           "start_char": 777,
-           "end_char": 810
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Sex (Male/Female)",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Sex Male Female",
-           "start_char": 13907,
-           "end_char": 13922
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "female",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "Sex Male Female\t21M21F\t18M14F\t26M18F\t0.323, .851\t1.540, .463\t0.061, .804\t0.285, .594",
-           "start_char": 13907,
-           "end_char": 13991
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 18,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "26M18F",
-           "start_char": 13937,
-           "end_char": 13943
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 40.9091,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "26M18F",
-           "start_char": 13937,
-           "end_char": 13943
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 44,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "healthy volunteer controls (n=44)",
-           "start_char": 777,
-           "end_char": 810
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "Sex (Male/Female)",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "Sex Male Female",
-           "start_char": 13907,
-           "end_char": 13922
-          }
-         ]
-        }
-       ]
-      }
-     }
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Healthy volunteer controls without the study's specified psychiatric or active substance-use exclusions, serving as the comparison group.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
     }
-   ],
+   },
    "approached_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -3290,7 +2755,7 @@
      "status": "not_applicable"
     }
    },
-   "acquired_count": {
+   "enrolled_count": {
     "extraction_status": "extracted",
     "value": 44,
     "value_source": "reported",
@@ -3324,7 +2789,19 @@
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Community-based advertisements were used to recruit subjects over 18 years old in the East Anglia region.",
+         "start_char": 8977,
+         "end_char": 9082
+        }
+       ]
+      }
+     ]
     }
    },
    "exclusion_criteria": {
@@ -3333,12 +2810,24 @@
      "Current major depressive episode",
      "History of severe psychiatric disorder such as bipolar affective disorder or schizophrenia",
      "Active substance use disorder such as regular cannabis use",
-     "Positive drug urine test or breathalyzer on the day of testing",
+     "Positive drug urine test or breathalyzer on the testing day",
      "Brain pathology on MRI"
     ],
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Universal exclusion criteria included current major depressive episode or any history of severe psychiatric disorder (e.g., bipolar affective disorder or schizophrenia) or an active substance use disorder, such as regular cannabis use, assessed using the Mini International Neuropsychiatric Inventory.",
+         "start_char": 9850,
+         "end_char": 10151
+        }
+       ]
+      }
+     ]
     }
    },
    "recruitment_method": {
@@ -3445,10 +2934,32 @@
      ]
     }
    },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Subjects who smoked tobacco were included"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects who smoked tobacco were included in the study.",
+         "start_char": 9794,
+         "end_char": 9849
+        }
+       ]
+      }
+     ]
+    }
+   },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "Healthy volunteer controls"
+     "Healthy volunteers"
     ],
     "value_source": "reported",
     "evidence": {
@@ -3474,23 +2985,9 @@
     }
    },
    "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Healthy volunteer controls",
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "To specifically investigate anatomically discrete volumetric changes associated with overconsumption of different rewards, we acquired T1 MRI data from 118 subjects in 3 groups comprising obesity (n=42), alcohol dependence (n=32), and healthy volunteer controls (n=44).",
-         "start_char": 542,
-         "end_char": 811
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "medications": {
@@ -3517,23 +3014,78 @@
      "status": "not_applicable"
     }
    },
-   "diagnostic_instrument": [
-    "asm_mini"
-   ]
-  },
-  {
-   "local_id": "grp_obesity_with_binge",
-   "name": {
+   "sample_source_reference": {
     "extraction_status": "extracted",
-    "value": "obesity with binge-eating disorder",
-    "value_source": "generated",
+    "value": "Mole et al., 2015; Voon et al., 2015",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Mole et al., 2015 ;  Voon et al., 2015",
+         "start_char": 8801,
+         "end_char": 8839
+        }
+       ]
+      }
+     ]
     }
    },
-   "description": {
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
     "extraction_status": "extracted",
-    "value": "Subset of obese participants meeting DSM-IV-TR criteria for binge-eating disorder.",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "healthy volunteer controls",
+         "start_char": 777,
+         "end_char": 803
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "subjects over 18 years old",
+         "start_char": 9029,
+         "end_char": 9055
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "grp_all_subjects",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "all subjects",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -3544,53 +3096,25 @@
     "value": "human",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "subjects",
+         "start_char": 698,
+         "end_char": 706
+        }
+       ]
+      }
+     ]
     }
    },
-   "enrolled_count": {
+   "description": {
     "extraction_status": "extracted",
-    "value": 22,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "obesity",
-     "binge-eating disorder"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "DSM-IV-TR",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  }
- ],
- "measures": [
-  {
-   "local_id": "mea_regional_volume",
-   "family": {
-    "extraction_status": "extracted",
-    "value": "structural_morphometry",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "type": {
-    "extraction_status": "extracted",
-    "value": "gray_matter_volume",
-    "value_source": "generated",
+    "value": "All 118 participants across obesity, alcohol dependence, and healthy volunteer control groups included in the MRI study.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3598,18 +3122,437 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "gray-matter volume",
-         "start_char": 1450,
-         "end_char": 1468
+         "text": "we acquired T1 MRI data from 118 subjects in 3 groups comprising obesity (n=42), alcohol dependence (n=32), and healthy volunteer controls (n=44).",
+         "start_char": 665,
+         "end_char": 811
         }
        ]
       }
      ]
     }
    },
-   "source_label": {
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
     "extraction_status": "extracted",
-    "value": "regional brain volume",
+    "value": 118,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "To specifically investigate anatomically discrete volumetric changes associated with overconsumption of different rewards, we acquired T1 MRI data from 118 subjects in 3 groups comprising obesity (n=42), alcohol dependence (n=32), and healthy volunteer controls (n=44).",
+         "start_char": 542,
+         "end_char": 811
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 118,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "118 subjects in 3 groups",
+         "start_char": 694,
+         "end_char": 718
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Age over 18 years",
+     "Membership in one of the obesity, alcohol dependence, or healthy volunteer groups"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Community-based advertisements were used to recruit subjects over 18 years old in the East Anglia region.",
+         "start_char": 8977,
+         "end_char": 9082
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Current major depressive episode",
+     "History of severe psychiatric disorder such as bipolar affective disorder or schizophrenia",
+     "Active substance use disorder such as regular cannabis use",
+     "Positive drug urine test or breathalyzer on the testing day",
+     "Brain pathology on MRI"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Universal exclusion criteria included current major depressive episode or any history of severe psychiatric disorder (e.g., bipolar affective disorder or schizophrenia) or an active substance use disorder, such as regular cannabis use, assessed using the Mini International Neuropsychiatric Inventory.",
+         "start_char": 9850,
+         "end_char": 10151
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Community-based advertisements recruiting participants from the East Anglia region",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Community-based advertisements were used to recruit subjects over 18 years old in the East Anglia region.",
+         "start_char": 8977,
+         "end_char": 9082
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "Subjects who smoked tobacco were included"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects who smoked tobacco were included in the study.",
+         "start_char": 9794,
+         "end_char": 9849
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Obesity",
+     "Alcohol dependence",
+     "Healthy volunteer status",
+     "Binge-eating disorder in a subset of obese participants"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "obesity (n=42), alcohol dependence (n=32), and healthy volunteer controls (n=44)",
+         "start_char": 730,
+         "end_char": 810
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV-TR",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "DSM-IV-TR criteria",
+         "start_char": 9105,
+         "end_char": 9123
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "previously_reported",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The recruitment, diagnostic criteria, and inclusion and exclusion criteria have been previously reported",
+         "start_char": 8694,
+         "end_char": 8798
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Mole et al., 2015; Voon et al., 2015",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Mole et al., 2015 ;  Voon et al., 2015",
+         "start_char": 8801,
+         "end_char": 8839
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "healthy volunteer controls",
+         "start_char": 777,
+         "end_char": 803
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "subjects over 18 years old",
+         "start_char": 9029,
+         "end_char": 9055
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_bonferroni",
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "Bonferroni",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Results were Bonferroni corrected for multiple comparisons, with   P  <.01 considered significant (0.05/5; 1 accumbens and 4 hippocampal subfield ROIs).",
+         "start_char": 12459,
+         "end_char": 12611
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.01,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "P  <.01 considered significant",
+         "start_char": 12526,
+         "end_char": 12556
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "extracted",
+    "value": 5,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "1 accumbens and 4 hippocampal subfield ROIs",
+         "start_char": 12566,
+         "end_char": 12609
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "region",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3627,9 +3570,9 @@
      ]
     }
    },
-   "specific_metric": {
+   "height_threshold_value": {
     "extraction_status": "extracted",
-    "value": "regional volume",
+    "value": 0.01,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3638,9 +3581,546 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "mean volumetric measures",
+         "text": "P  <.01 considered significant",
+         "start_char": 12526,
+         "end_char": 12556
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "extracted",
+    "value": "p",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "P",
+         "start_char": 151,
+         "end_char": 152
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "multiple comparisons",
+         "start_char": 12497,
+         "end_char": 12517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "search_volume": {
+    "extraction_status": "extracted",
+    "value": "Five bilateral ROIs: nucleus accumbens and four hippocampal subfields",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "1 accumbens and 4 hippocampal subfield ROIs",
+         "start_char": 12566,
+         "end_char": 12609
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_regions": [
+    "reg_nucleus_accumbens",
+    "reg_subiculum",
+    "reg_presubiculum",
+    "reg_ca4",
+    "reg_whole_hippocampus"
+   ]
+  },
+  {
+   "local_id": "inf_correlation",
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "none",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Results were Bonferroni corrected for multiple comparisons, with   P  <.01 considered significant (0.05/5; 1 accumbens and 4 hippocampal subfield ROIs).",
+         "start_char": 12459,
+         "end_char": 12611
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inference_level": {
+    "extraction_status": "extracted",
+    "value": "region",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "regional structures",
+         "start_char": 14855,
+         "end_char": 14874
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 0.05,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "Results were Bonferroni corrected for multiple comparisons, with   P  <.01 considered significant (0.05/5; 1 accumbens and 4 hippocampal subfield ROIs).",
+         "start_char": 12459,
+         "end_char": 12611
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "height_threshold_type": {
+    "extraction_status": "extracted",
+    "value": "p",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "P",
+         "start_char": 151,
+         "end_char": 152
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "multiple comparisons",
+         "start_char": 12497,
+         "end_char": 12517
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "search_volume": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  }
+ ],
+ "language": [
+  "eng"
+ ],
+ "measures": [
+  {
+   "local_id": "mea_accumbens_volume",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "volumetric data",
+         "start_char": 925,
+         "end_char": 940
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "gray_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "gray matter",
+         "start_char": 4376,
+         "end_char": 4387
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "nucleus accumbens volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "nucleus accumbens",
+         "start_char": 298,
+         "end_char": 315
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Nucleus accumbens volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "mean volumetric measures of the nucleus accumbens",
          "start_char": 12027,
-         "end_char": 12051
+         "end_char": 12076
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "mea_hippocampal_subfield_volume",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "volumetric data",
+         "start_char": 925,
+         "end_char": 940
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "gray_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "hippocampal subfield volumes",
+         "start_char": 1223,
+         "end_char": 1251
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "hippocampal subfield volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "hippocampal subfields",
+         "start_char": 1368,
+         "end_char": 1389
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Hippocampal subfield volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "hippocampal subfields",
+         "start_char": 1368,
+         "end_char": 1389
+        },
+        {
+         "text": "mean volumetric measures of the",
+         "start_char": 12027,
+         "end_char": 12058
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   }
+  },
+  {
+   "local_id": "mea_hippocampal_volume",
+   "family": {
+    "extraction_status": "extracted",
+    "value": "structural_morphometry",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "volumetric data",
+         "start_char": 925,
+         "end_char": 940
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "type": {
+    "extraction_status": "extracted",
+    "value": "gray_matter_volume",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "whole-hippocampal volume",
+         "start_char": 15232,
+         "end_char": 15256
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_label": {
+    "extraction_status": "extracted",
+    "value": "whole hippocampal volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "whole-hippocampal volume",
+         "start_char": 15232,
+         "end_char": 15256
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "specific_metric": {
+    "extraction_status": "extracted",
+    "value": "Whole-hippocampus volume",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "whole-hippocampal volume",
+         "start_char": 15232,
+         "end_char": 15256
         }
        ]
       }
@@ -3657,11 +4137,11 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_ancova_group",
+   "local_id": "mod_ancova",
    "model_family": {
     "extraction_status": "extracted",
     "value": "ancova",
-    "value_source": "generated",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -3709,9 +4189,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Group difference effects for the segmented subcortical and hippocampal subfield volumes were assessed using an ANCOVA",
+         "text": "Group difference effects",
          "start_char": 12137,
-         "end_char": 12254
+         "end_char": 12161
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ROIs",
+         "start_char": 6941,
+         "end_char": 6945
         }
        ]
       }
@@ -3744,9 +4244,21 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "literal_match",
+         "spans": [
+          {
+           "text": "Abbreviations: AUDIT, Alcohol Use Disorders Identification Test; BDI, Beck Depression Inventory; BES, binge eating scale; BMI, body mass index; NART, National Adult Reading Test.Categorical variables were compared using χ2 tests.",
+           "start_char": 14430,
+           "end_char": 14659
+          }
+         ]
+        }
+       ]
       }
      },
      "variation_level": {
@@ -3760,9 +4272,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "Group difference effects",
-           "start_char": 12137,
-           "end_char": 12161
+           "text": "Groups",
+           "start_char": 13274,
+           "end_char": 13280
           }
          ]
         }
@@ -3797,21 +4309,9 @@
        "order": {
         "extraction_status": "extracted",
         "value": 1,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "Obesity",
-             "start_char": 70,
-             "end_char": 77
-            }
-           ]
-          }
-         ]
+         "status": "not_found"
         }
        }
       },
@@ -3827,9 +4327,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "AUD",
-             "start_char": 6511,
-             "end_char": 6514
+             "text": "alcohol dependence",
+             "start_char": 503,
+             "end_char": 521
             }
            ]
           }
@@ -3842,21 +4342,9 @@
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "AUD",
-             "start_char": 6511,
-             "end_char": 6514
-            }
-           ]
-          }
-         ]
+         "status": "not_found"
         }
        }
       },
@@ -3895,9 +4383,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "healthy controls",
-             "start_char": 15020,
-             "end_char": 15036
+             "text": "healthy volunteer controls",
+             "start_char": 777,
+             "end_char": 803
             }
            ]
           }
@@ -3907,9 +4395,23 @@
       }
      ],
      "functional_form": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "linear",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Group difference effects",
+           "start_char": 12137,
+           "end_char": 12161
+          }
+         ]
+        }
+       ]
       }
      },
      "unit": {
@@ -3919,16 +4421,36 @@
       }
      },
      "source_definition": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "Three-level participant group factor: obesity, alcohol dependence, and healthy volunteer controls.",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Group difference effects for the segmented subcortical and hippocampal subfield volumes were assessed using an ANCOVA controlling for age, sex, NART performance, and intracranial volume.",
+           "start_char": 12137,
+           "end_char": 12323
+          }
+         ]
+        }
+       ]
       }
      }
     }
    ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Controlled for age, sex, NART performance, intracranial volume, and smoking status.",
+    "value": "ANCOVA controlling for age, sex, NART performance, intracranial volume, and smoking status; Bonferroni correction across five ROIs with P<.01 considered significant.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3937,9 +4459,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "controlling for age, sex, NART performance, and intracranial volume. To assess for potential effects of smoking status on the hippocampus ( Durazzo et al., 2013 ), smoking status was also controlled for.",
-         "start_char": 12255,
-         "end_char": 12458
+         "text": "Group difference effects for the segmented subcortical and hippocampal subfield volumes were assessed using an ANCOVA controlling for age, sex, NART performance, and intracranial volume. To assess for potential effects of smoking status on the hippocampus ( Durazzo et al., 2013 ), smoking status was also controlled for. Results were Bonferroni corrected for multiple comparisons, with   P  <.01 considered significant (0.05/5; 1 accumbens and 4 hippocampal subfield ROIs).",
+         "start_char": 12137,
+         "end_char": 12611
         }
        ]
       }
@@ -3953,37 +4475,28 @@
     }
    },
    "software": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "spatial_unit": {
     "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
+    "value": "SPSS",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "ROIs",
-         "start_char": 6941,
-         "end_char": 6945
+         "text": "Subcortical volumes were examined for partial correlations with BMI and Binge Eating Scale (BES) in SPSS controlling for age and total intracranial volume.",
+         "start_char": 12612,
+         "end_char": 12767
         }
        ]
       }
      ]
     }
    },
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
+   "preprocessing": [
+    "prp_freesurfer"
+   ]
   },
   {
    "local_id": "mod_partial_correlation",
@@ -4038,9 +4551,29 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We further assessed the relationship between BMI and AUDIT",
-         "start_char": 12768,
-         "end_char": 12826
+         "text": "group",
+         "start_char": 712,
+         "end_char": 717
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "spatial_unit": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "regions",
+         "start_char": 387,
+         "end_char": 394
         }
        ]
       }
@@ -4073,9 +4606,21 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "partial correlations",
+           "start_char": 12650,
+           "end_char": 12670
+          }
+         ]
+        }
+       ]
       }
      },
      "variation_level": {
@@ -4083,13 +4628,39 @@
       "value": "between_subject",
       "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "BMI",
+           "start_char": 4446,
+           "end_char": 4449
+          }
+         ]
+        }
+       ]
       }
      },
      "source_definition": {
-      "extraction_status": "not_reported",
+      "extraction_status": "extracted",
+      "value": "body mass index",
+      "value_source": "reported",
       "evidence": {
-       "status": "not_applicable"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "BMI",
+           "start_char": 4446,
+           "end_char": 4449
+          }
+         ]
+        }
+       ]
       }
      },
      "functional_form": {
@@ -4103,9 +4674,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "relationship between BMI and AUDIT",
-           "start_char": 12792,
-           "end_char": 12826
+           "text": "partial correlations",
+           "start_char": 12650,
+           "end_char": 12670
           }
          ]
         }
@@ -4119,7 +4690,8 @@
       "evidence": {
        "status": "not_found"
       }
-     }
+     },
+     "assessment": "asm_bmi"
     },
     {
      "local_id": "trm_audit",
@@ -4146,9 +4718,21 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "partial correlations",
+           "start_char": 12650,
+           "end_char": 12670
+          }
+         ]
+        }
+       ]
       }
      },
      "variation_level": {
@@ -4156,16 +4740,22 @@
       "value": "between_subject",
       "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "AUDIT scores",
+           "start_char": 16633,
+           "end_char": 16645
+          }
+         ]
+        }
+       ]
       }
      },
      "assessment": "asm_audit",
-     "source_definition": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
      "functional_form": {
       "extraction_status": "extracted",
       "value": "linear",
@@ -4177,9 +4767,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "relationship between BMI and AUDIT",
-           "start_char": 12792,
-           "end_char": 12826
+           "text": "partial correlations",
+           "start_char": 12650,
+           "end_char": 12670
           }
          ]
         }
@@ -4191,12 +4781,38 @@
       "evidence": {
        "status": "not_applicable"
       }
+     },
+     "source_definition": {
+      "extraction_status": "extracted",
+      "value": "Alcohol Use Disorders Identification Test score.",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "AUDIT (Alcohol Use Disorders Identification Test,  Saunders et al., 1993 )",
+           "start_char": 12821,
+           "end_char": 12895
+          }
+         ]
+        }
+       ]
+      }
      }
     }
    ],
+   "hrf_model": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Controlling for age, total intracranial volume, sex, and NART performance.",
+    "value": "Partial correlations controlling for age and total intracranial volume; correlations involving identified regions additionally controlled for sex and NART performance.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -4205,9 +4821,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "partial correlations controlling for intracranial volume and age",
-         "start_char": 12978,
-         "end_char": 13042
+         "text": "Subcortical volumes were examined for partial correlations with BMI and Binge Eating Scale (BES) in SPSS controlling for age and total intracranial volume.",
+         "start_char": 12612,
+         "end_char": 12767
         }
        ]
       }
@@ -4240,10 +4856,20 @@
      ]
     }
    },
-   "spatial_unit": {
+   "preprocessing": [
+    "prp_freesurfer"
+   ]
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_freesurfer",
+   "software": {
     "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
+    "value": [
+     "FreeSurfer"
+    ],
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -4251,16 +4877,61 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "regions identified to be significantly different in the group analysis",
-         "start_char": 12901,
-         "end_char": 12971
+         "text": "Freesurfer",
+         "start_char": 893,
+         "end_char": 903
         }
        ]
       }
      ]
     }
    },
-   "hrf_model": {
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "nonbrain tissue removal",
+     "Talairach transform",
+     "subcortical parcellation",
+     "automated hippocampal subfield segmentation"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "nonbrain tissues are removed and a Tailairach transform is applied. Subcortical white matter and deep gray matter structures are parcellated",
+         "start_char": 11051,
+         "end_char": 11191
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "User-independent FreeSurfer parcellation of T1-weighted MRI data, including removal of nonbrain tissue, Talairach transformation, automated subcortical segmentation using voxel intensity, probabilistic atlas location and local anatomical relationships, and Bayesian labeling; the hippocampal subfield pipeline generated automated segmentations of CA2-3, CA4, subiculum, and presubiculum.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subcortical volumes were extracted using a user-independent parcellation process in Freesurfer.",
+         "start_char": 10833,
+         "end_char": 10928
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -4268,9 +4939,12 @@
    }
   }
  ],
+ "study_type": [
+  "Journal Article"
+ ],
  "tables": [
   {
-   "local_id": "T1",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1.",
@@ -4294,30 +4968,10 @@
     "evidence": {
      "status": "not_found"
     }
-   },
-   "title": {
-    "extraction_status": "extracted",
-    "value": "Subject Characteristics",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Subject Characteristics",
-         "start_char": 13660,
-         "end_char": 13683
-        }
-       ]
-      }
-     ]
-    }
    }
   },
   {
-   "local_id": "T2",
+   "local_id": "tbltable2",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 2.",
@@ -4341,26 +4995,6 @@
     "evidence": {
      "status": "not_found"
     }
-   },
-   "title": {
-    "extraction_status": "extracted",
-    "value": "Cross-Diagnostic Volumetric Comparisons",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "repair_pass",
-       "spans": [
-        {
-         "text": "Cross-Diagnostic Volumetric Comparisons",
-         "start_char": 15501,
-         "end_char": 15540
-        }
-       ]
-      }
-     ]
-    }
    }
   }
  ],
@@ -4369,7 +5003,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "f6db6c217b24984193d872b690f2ac4d7701fbfce9080710358624dd92bbd691",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -4537,7 +5171,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Bilateral nucleus accumbens region used for volumetric analysis.",
+    "value": "Bilateral nucleus accumbens, a ventral striatal region measured volumetrically.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -4572,7 +5206,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Bilateral hippocampal subfield used for volumetric analysis.",
+    "value": "Bilateral hippocampal subfield measured volumetrically.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -4607,7 +5241,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Bilateral hippocampal subfield used for volumetric analysis.",
+    "value": "Bilateral hippocampal subfield measured volumetrically.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -4615,10 +5249,10 @@
    }
   },
   {
-   "local_id": "reg_ca_2_3",
+   "local_id": "reg_ca4",
    "name": {
     "extraction_status": "extracted",
-    "value": "CA 2-3",
+    "value": "CA4",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -4642,42 +5276,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Bilateral hippocampal subfield used for volumetric analysis.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_ca_4_dg",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "CA 4 DG",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Bilateral hippocampal subfield used for volumetric analysis.",
+    "value": "Bilateral cornu ammonis 4 hippocampal subfield measured volumetrically.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
@@ -4712,50 +5311,12 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Bilateral whole-hippocampus region used for volumetric analysis.",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   }
-  },
-  {
-   "local_id": "reg_global_subcortical_gray",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "global subcortical gray matter",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "anatomical_a_priori",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "anatomical",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Global subcortical gray-matter volume measure.",
+    "value": "Bilateral whole-hippocampal volume.",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    }
   }
- ],
- "study_type": [
-  "Journal Article"
  ]
 }

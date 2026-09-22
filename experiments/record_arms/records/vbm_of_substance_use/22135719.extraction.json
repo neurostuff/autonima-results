@@ -1,8 +1,8 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "A preliminary voxel-based morphometry study comparing regional gray matter volume in homeless crack-cocaine-dependent African American men with healthy controls.",
-  "value_source": "reported",
+  "value": "A preliminary structural MRI voxel-based morphometry study comparing regional gray matter volume in homeless African American cocaine-dependent men with healthy controls.",
+  "value_source": "generated",
   "evidence": {
    "status": "present",
    "sets": [
@@ -10,9 +10,9 @@
      "source": "model_quote",
      "spans": [
       {
-       "text": "The present preliminary study investigated brain structure in such an understudied group, homeless, crack-cocaine-dependent African American men, comparing it to that in healthy controls",
+       "text": "The present preliminary study investigated brain structure in such an understudied group, homeless, crack-cocaine-dependent African American men, comparing it to that in healthy controls.",
        "start_char": 24553,
-       "end_char": 24739
+       "end_char": 24740
       }
      ]
     }
@@ -22,8 +22,8 @@
  "hypothesis": {
   "extraction_status": "extracted",
   "value": [
-   "We hypothesized that homeless cocaine-dependent individuals, compared to healthy controls, would have less gray matter volume in areas reported as abnormal in non-homeless cocaine-dependent individuals.",
-   "We hypothesized that regions such as dorsolateral prefrontal cortex, anterior cingulate cortex, and the insula, related to executive function, inhibitory control, and autonomic reactivity to emotional stimuli [e.g.,  9 ,  22 ,  23 ; for review see  24 ], would show less gray matter volume."
+   "homeless cocaine-dependent individuals, compared to healthy controls, would have less gray matter volume in areas reported as abnormal in non-homeless cocaine-dependent individuals",
+   "regions such as dorsolateral prefrontal cortex, anterior cingulate cortex, and the insula ... would show less gray matter volume"
   ],
   "value_source": "reported",
   "evidence": {
@@ -45,7 +45,7 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Observational, cross-sectional comparison of a homeless cocaine-dependent group and healthy controls.",
+   "value": "Observational, cross-sectional comparison of homeless cocaine-dependent men and healthy controls.",
    "value_source": "generated",
    "evidence": {
     "status": "present",
@@ -54,9 +54,9 @@
       "source": "model_quote",
       "spans": [
        {
-        "text": "comparing it to that in healthy controls",
-        "start_char": 588,
-        "end_char": 628
+        "text": "In the present exploratory study, we used voxel-based morphometry (VBM)",
+        "start_char": 2330,
+        "end_char": 2401
        }
       ]
      }
@@ -85,18 +85,18 @@
   },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
     "status": "present",
     "sets": [
      {
-      "source": "literal_match",
+      "source": "model_quote",
       "spans": [
        {
-        "text": "The neuroimaging studies were conducted using a Philips Intera ultra-short bore (1.57 m), 3.0 Tesla (T) magnet with parallel imaging capabilities (SENSE).",
-        "start_char": 8361,
-        "end_char": 8515
+        "text": "comparing it to that in healthy controls",
+        "start_char": 588,
+        "end_char": 628
        }
       ]
      }
@@ -128,11 +128,11 @@
  },
  "analyses": [
   {
-   "local_id": "ana_roi_group",
+   "local_id": "ana_1",
    "name": {
     "extraction_status": "extracted",
-    "value": "Regional gray matter volume group comparison",
-    "value_source": "generated",
+    "value": "regional gray matter volume group comparison",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -140,9 +140,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "group differences in regional gray matter volume",
+         "text": "group differences in regional gray matter volume were assessed using independent samples t-tests",
          "start_char": 9862,
-         "end_char": 9910
+         "end_char": 9958
         }
        ]
       }
@@ -151,18 +151,18 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "Less gray matter volume in the cocaine-dependent men compared to the controls.",
+    "value": "less gray matter volume in the cocaine-dependent men compared to the controls within the selected regions of interest",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Of the nine ROIs, five showed significantly less gray matter volume in the cocaine-dependent men compared to the controls (Fig.",
-         "start_char": 11211,
-         "end_char": 11338
+         "text": "five showed significantly less gray matter volume in the cocaine-dependent men compared to the controls",
+         "start_char": 11229,
+         "end_char": 11332
         }
        ]
       }
@@ -189,6 +189,28 @@
      ]
     }
    },
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Homeless cocaine-dependent individuals had smaller gray matter volume in dorsolateral prefrontal cortex, anterior cingulate, the cerebellum, insula, and superior temporal gyrus."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Homeless cocaine-dependent individuals had smaller gray matter volume in dorsolateral prefrontal cortex, anterior cingulate, the cerebellum, insula, and superior temporal gyrus",
+         "start_char": 746,
+         "end_char": 922
+        }
+       ]
+      }
+     ]
+    }
+   },
    "spatial_scope": {
     "extraction_status": "extracted",
     "value": "roi",
@@ -200,16 +222,27 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "within each ROI",
-         "start_char": 10912,
-         "end_char": 10927
+         "text": "Selection of nine gray matter ROIs",
+         "start_char": 10007,
+         "end_char": 10041
         }
        ]
       }
      ]
     }
    },
-   "measure": "mea_gray_matter_volume",
+   "regions": [
+    "reg_dlpfc_ifg",
+    "reg_acc",
+    "reg_insula",
+    "reg_stg",
+    "reg_cerebellum",
+    "reg_lateral_ofc",
+    "reg_medial_ofc",
+    "reg_amygdala",
+    "reg_mfg"
+   ],
+   "measure": "mea_gm_volume",
    "groups": [
     {
      "group": "grp_cocaine",
@@ -235,7 +268,7 @@
      }
     },
     {
-     "group": "grp_controls",
+     "group": "grp_control",
      "n": {
       "extraction_status": "extracted",
       "value": 8,
@@ -247,8 +280,8 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "final control n of 8",
-           "start_char": 6275,
+           "text": "This left us with a final control n of 8",
+           "start_char": 6255,
            "end_char": 6295
           }
          ]
@@ -273,9 +306,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "cocaine-dependent men",
-            "start_char": 2534,
-            "end_char": 2555
+            "text": "the cocaine-dependent men",
+            "start_char": 11282,
+            "end_char": 11307
            }
           ]
          }
@@ -287,19 +320,7 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "significantly less gray matter volume in the cocaine-dependent men compared to the controls",
-            "start_char": 11241,
-            "end_char": 11332
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -322,9 +343,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "controls",
-            "start_char": 620,
-            "end_char": 628
+            "text": "the controls",
+            "start_char": 11320,
+            "end_char": 11332
            }
           ]
          }
@@ -336,19 +357,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Exclusionary criteria consisted of: 1) not being right-handed, as assessed with a score of at least 8 of 10 right-handed responses to the Edinburgh Handedness Inventory [ 29 ]; 2) showing signs of or having a history of a neurological disease or other brain abnormality; 3) being HIV positive; and 4) having worse than 20/60 vision reading a Snellen eye chart without corrective glasses.",
-            "start_char": 5118,
-            "end_char": 5505
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -364,19 +373,7 @@
      "value": "contrast",
      "value_source": "generated",
      "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "model_quote",
-        "spans": [
-         {
-          "text": "group differences",
-          "start_char": 7504,
-          "end_char": 7521
-         }
-        ]
-       }
-      ]
+      "status": "not_found"
      }
     },
     "statistic": {
@@ -385,28 +382,16 @@
       "value": "t",
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "independent samples t-tests",
-           "start_char": 9931,
-           "end_char": 9958
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
-     "degrees_of_freedom_denominator": {
+     "degrees_of_freedom_numerator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
       }
      },
-     "degrees_of_freedom_numerator": {
+     "degrees_of_freedom_denominator": {
       "extraction_status": "not_reported",
       "evidence": {
        "status": "not_applicable"
@@ -420,12 +405,7 @@
    "acquisitions": [
     "acq_mri"
    ],
-   "tasks": [],
    "model_estimation": "mod_vbm_group",
-   "inference_settings": "inf_vbm_uncorrected",
-   "tables": [
-    "T1"
-   ],
    "source_table_analysis": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -433,339 +413,14 @@
     }
    },
    "coordinate_space": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "assessments": [
-    "asm_bsi",
-    "asm_ehi",
-    "asm_cesd"
-   ],
-   "interpretations": {
     "extraction_status": "extracted",
-    "value": [
-     "Of the nine ROIs, five showed significantly less gray matter volume in the cocaine-dependent men compared to the controls: right dorsolateral prefrontal cortex (IFG), right anterior cingulate, right and left posterior insula, right superior temporal gyrus, and right and left cerebellum."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Of the nine ROIs, five showed significantly less gray matter volume in the cocaine-dependent men compared to the controls (Fig.   1  ; Table   1  ). These were right dorsolateral prefrontal cortex (IFG), right anterior cingulate, right and left posterior insula, right superior temporal gyrus, and right and left cerebellum (Fig.   2  ).",
-         "start_char": 11211,
-         "end_char": 11548
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "regions": [
-    "reg_right_dlpfc_ifg",
-    "reg_right_acc",
-    "reg_right_posterior_insula",
-    "reg_left_posterior_insula",
-    "reg_right_stg",
-    "reg_right_cerebellum",
-    "reg_left_cerebellum",
-    "reg_left_stg",
-    "reg_left_acc",
-    "reg_lateral_ofc",
-    "reg_medial_ofc",
-    "reg_amygdala"
-   ]
-  },
-  {
-   "local_id": "ana_roi_ancova",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Regional gray matter volume ANCOVA controlling for education",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "group differences in regional gray matter volume",
-         "start_char": 9862,
-         "end_char": 9910
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition": {
-    "extraction_status": "extracted",
-    "value": "Less gray matter volume in the cocaine-dependent men while statistically controlling for education.",
+    "value": "MNI",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
     }
    },
-   "prespecification": {
-    "extraction_status": "extracted",
-    "value": "exploratory",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "In the present exploratory study, we used voxel-based morphometry (VBM) [ 18 ,  19 ], a quantitative approach to magnetic resonance image (MRI) analysis that is automated and nonbiased, in homeless crack-cocaine-dependent men.",
-         "start_char": 2330,
-         "end_char": 2556
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "spatial_scope": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "within each ROI",
-         "start_char": 10912,
-         "end_char": 10927
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "measure": "mea_gray_matter_volume",
-   "groups": [
-    {
-     "group": "grp_cocaine",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 9,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The cocaine-dependent men (n = 9)",
-           "start_char": 3926,
-           "end_char": 3959
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
-    {
-     "group": "grp_controls",
-     "n": {
-      "extraction_status": "extracted",
-      "value": 8,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "final control n of 8",
-           "start_char": 6275,
-           "end_char": 6295
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
-   "effect": {
-    "cells": [
-     {
-      "term": "trm_group_ancova",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "cocaine-dependent men",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "cocaine-dependent men",
-            "start_char": 2534,
-            "end_char": 2555
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "negative",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "less gray matter volume in the cocaine-dependent men",
-            "start_char": 11255,
-            "end_char": 11307
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     },
-     {
-      "term": "trm_group_ancova",
-      "level": {
-       "extraction_status": "extracted",
-       "value": "controls",
-       "value_source": "reported",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "controls",
-            "start_char": 620,
-            "end_char": 628
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "direction": {
-       "extraction_status": "extracted",
-       "value": "positive",
-       "value_source": "generated",
-       "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Exclusionary criteria consisted of: 1) not being right-handed, as assessed with a score of at least 8 of 10 right-handed responses to the Edinburgh Handedness Inventory [ 29 ]; 2) showing signs of or having a history of a neurological disease or other brain abnormality; 3) being HIV positive; and 4) having worse than 20/60 vision reading a Snellen eye chart without corrective glasses.",
-            "start_char": 5118,
-            "end_char": 5505
-           }
-          ]
-         }
-        ]
-       }
-      },
-      "label": {
-       "extraction_status": "not_reported",
-       "evidence": {
-        "status": "not_applicable"
-       }
-      }
-     }
-    ],
-    "kind": {
-     "extraction_status": "extracted",
-     "value": "contrast",
-     "value_source": "generated",
-     "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "model_quote",
-        "spans": [
-         {
-          "text": "group difference",
-          "start_char": 7504,
-          "end_char": 7520
-         }
-        ]
-       }
-      ]
-     }
-    },
-    "statistic": {
-     "family": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "degrees_of_freedom_denominator": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "degrees_of_freedom_numerator": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     }
-    }
-   },
-   "details": {
-    "details_type": "MassUnivariateDetails"
-   },
-   "acquisitions": [
-    "acq_mri"
-   ],
-   "tasks": [],
-   "model_estimation": "mod_vbm_ancova",
-   "inference_settings": "inf_vbm_ancova_uncorrected",
-   "tables": [
-    "T1"
-   ],
-   "source_table_analysis": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "coordinate_space": {
+   "model_representation_notes": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -773,50 +428,12 @@
    },
    "assessments": [
     "asm_bsi",
-    "asm_ehi",
+    "asm_edinburgh",
     "asm_cesd"
    ],
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "The ANCOVA revealed a similar pattern of results to that found leaving education out of the analysis; i.e., less gray matter volume in the cocaine-dependent men in right dorsolateral prefrontal cortex (IFG), right anterior cingulate, right cerebellum, bilateral superior temporal gyrus, and bilateral insula."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ANCOVA revealed a similar pattern of results to that found leaving education out of the analysis; i.e., less gray matter volume in the cocaine-dependent men in right dorsolateral prefrontal cortex (IFG), right anterior cingulate, right cerebellum, bilateral superior temporal gyrus, and bilateral insula.",
-         "start_char": 12138,
-         "end_char": 12446
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_representation_notes": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "regions": [
-    "reg_right_dlpfc_ifg",
-    "reg_right_acc",
-    "reg_right_posterior_insula",
-    "reg_left_posterior_insula",
-    "reg_right_stg",
-    "reg_right_cerebellum",
-    "reg_left_cerebellum",
-    "reg_left_stg",
-    "reg_left_acc",
-    "reg_lateral_ofc",
-    "reg_medial_ofc",
-    "reg_amygdala"
+   "inference_settings": "inf_uncorrected_p001",
+   "tables": [
+    "tbltable1"
    ]
   }
  ],
@@ -835,9 +452,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "For the high resolution anatomical scan used for the VBM analysis",
+         "text": "For the high resolution anatomical scan used for the VBM analysis, 160, 1 mm thick parasagittal 3-D slices were acquired using a T1 Turbo-field Echo (TFE) sequence",
          "start_char": 8516,
-         "end_char": 8581
+         "end_char": 8679
         }
        ]
       }
@@ -850,7 +467,14 @@
      "status": "not_applicable"
     }
    },
-   "device": "dev_philips_intera",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 3.0,
@@ -982,7 +606,8 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "device": "dev_philips_intera"
   }
  ],
  "assessments": [
@@ -1010,8 +635,8 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Used to signal significant psychological distress for eligibility.",
-    "value_source": "generated",
+    "value": "Used to assess significant psychological distress.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1030,15 +655,27 @@
    },
    "assessment_type": {
     "extraction_status": "extracted",
-    "value": "questionnaire",
+    "value": "clinical questionnaire",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Brief Symptom Inventory (BSI) Scales",
+         "start_char": 4492,
+         "end_char": 4528
+        }
+       ]
+      }
+     ]
     }
    }
   },
   {
-   "local_id": "asm_ehi",
+   "local_id": "asm_edinburgh",
    "name": {
     "extraction_status": "extracted",
     "value": "Edinburgh Handedness Inventory",
@@ -1061,8 +698,8 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Assessment of handedness.",
-    "value_source": "generated",
+    "value": "Used to assess handedness.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1070,8 +707,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "not being right-handed, as assessed with a score of at least 8 of 10 right-handed responses to the Edinburgh Handedness Inventory",
-         "start_char": 5157,
+         "text": "as assessed with a score of at least 8 of 10 right-handed responses to the Edinburgh Handedness Inventory",
+         "start_char": 5181,
          "end_char": 5286
         }
        ]
@@ -1082,7 +719,7 @@
    "assessment_type": {
     "extraction_status": "extracted",
     "value": "handedness inventory",
-    "value_source": "reported",
+    "value_source": "generated",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1124,18 +761,42 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Community screening device for depressive symptoms and social stressors; not a diagnostic tool for depression.",
+    "value": "Used as a community screening device to refer people to care.",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "is used as a community screening device to refer people to care",
+         "start_char": 6903,
+         "end_char": 6966
+        }
+       ]
+      }
+     ]
     }
    },
    "assessment_type": {
     "extraction_status": "extracted",
-    "value": "clinical scale",
-    "value_source": "generated",
+    "value": "depression scale",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "depression scale",
+         "start_char": 23039,
+         "end_char": 23055
+        }
+       ]
+      }
+     ]
     }
    }
   }
@@ -1165,7 +826,7 @@
    },
    "model": {
     "extraction_status": "extracted",
-    "value": "Intera",
+    "value": "Intera ultra-short bore",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1210,7 +871,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Homeless men with cocaine dependence recruited from Birmingham Healthcare and newly enrolled in a cognitive-behavioral treatment program.",
+    "value": "Cocaine-dependent men recruited from Birmingham Healthcare and newly enrolled in a cognitive-behavioral treatment program.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1219,9 +880,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The cocaine-dependent men (n = 9) were recruited from Birmingham Healthcare (BHC), the largest agency serving homeless persons in Alabama. They were newly enrolled participants in a cognitive-behavioral treatment program for chronic crack cocaine-dependent individuals",
+         "text": "The cocaine-dependent men (n = 9) were recruited from Birmingham Healthcare (BHC), the largest agency serving homeless persons in Alabama. They were newly enrolled participants in a cognitive-behavioral treatment program for chronic crack cocaine-dependent individuals [ 25 ].",
          "start_char": 3926,
-         "end_char": 4194
+         "end_char": 4202
         }
        ]
       }
@@ -1261,6 +922,12 @@
     }
    },
    "enrolled_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquired_count": {
     "extraction_status": "extracted",
     "value": 9,
     "value_source": "reported",
@@ -1280,14 +947,6 @@
      ]
     }
    },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 9,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "excluded_count": {
     "extraction_status": "not_reported",
     "evidence": {
@@ -1300,7 +959,7 @@
      "McKinney Act homelessness",
      "cocaine dependence according to DSM–IV",
      "self-reported cocaine use within the last two weeks",
-     "a score of 70 on one or more Brief Symptom Inventory (BSI) Scales"
+     "significant psychological distress"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1310,9 +969,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Eligibility criteria for the treatment program were: 1) McKinney Act homelessness [ 26 ]; 2) cocaine dependence according to DSM–IV [ 27 ], with self-reported cocaine use within the last two weeks  ;   and 3) significant psychological distress, as signaled by a score of 70 on one or more Brief Symptom Inventory (BSI) Scales [ 28 ]",
+         "text": "Eligibility criteria for the treatment program were: 1) McKinney Act homelessness [ 26 ]; 2) cocaine dependence according to DSM–IV [ 27 ], with self-reported cocaine use within the last two weeks  ;   and 3) significant psychological distress, as signaled by a score of 70 on one or more Brief Symptom Inventory (BSI) Scales [ 28 ].",
          "start_char": 4203,
-         "end_char": 4535
+         "end_char": 4536
         }
        ]
       }
@@ -1323,9 +982,9 @@
     "extraction_status": "extracted",
     "value": [
      "not being right-handed",
-     "neurological disease or other brain abnormality",
+     "signs of or history of neurological disease or other brain abnormality",
      "HIV positive",
-     "worse than 20/60 vision reading a Snellen eye chart without corrective glasses"
+     "worse than 20/60 vision without corrective glasses"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1335,9 +994,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Exclusionary criteria consisted of: 1) not being right-handed, as assessed with a score of at least 8 of 10 right-handed responses to the Edinburgh Handedness Inventory [ 29 ]; 2) showing signs of or having a history of a neurological disease or other brain abnormality; 3) being HIV positive; and 4) having worse than 20/60 vision reading a Snellen eye chart without corrective glasses",
+         "text": "Exclusionary criteria consisted of: 1) not being right-handed, as assessed with a score of at least 8 of 10 right-handed responses to the Edinburgh Handedness Inventory [ 29 ]; 2) showing signs of or having a history of a neurological disease or other brain abnormality; 3) being HIV positive; and 4) having worse than 20/60 vision reading a Snellen eye chart without corrective glasses.",
          "start_char": 5118,
-         "end_char": 5504
+         "end_char": 5505
         }
        ]
       }
@@ -1346,7 +1005,7 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Recruited from Birmingham Healthcare (BHC).",
+    "value": "recruited from Birmingham Healthcare (BHC), the largest agency serving homeless persons in Alabama",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1404,9 +1063,9 @@
      ]
     }
    },
-   "age_unit": {
+   "age_minimum": {
     "extraction_status": "extracted",
-    "value": "years",
+    "value": 33,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1424,114 +1083,54 @@
      ]
     }
    },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were African American males",
-           "start_char": 7174,
-           "end_char": 7218
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 9,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The cocaine-dependent men (n = 9)",
-           "start_char": 3926,
-           "end_char": 3959
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 100.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were African American males",
-           "start_char": 7174,
-           "end_char": 7218
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 9,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "The cocaine-dependent men (n = 9)",
-           "start_char": 3926,
-           "end_char": 3959
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "All participants were male.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were African American males",
-           "start_char": 7174,
-           "end_char": 7218
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
-   "is_healthy": {
+   "age_maximum": {
     "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
+    "value": 50,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All participants were African American males of ages 33-50",
+         "start_char": 7174,
+         "end_char": 7232
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ages 33-50",
+         "start_char": 7222,
+         "end_char": 7232
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "homeless",
+     "African American",
+     "crack-cocaine-dependent"
+    ],
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -1563,9 +1162,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Other DSM-IV Axis I non-psychotic diagnoses were present and in order of most prevalent were: Anxiety Mediated Disorders (especially Simple Phobia and Generalized Anxiety Disorder) and Depression Disorders (Major Depressive Disorder, Dysthymia, and Depressive Disorder not otherwise specified)",
+         "text": "Other DSM-IV Axis I non-psychotic diagnoses were present and in order of most prevalent were: Anxiety Mediated Disorders (especially Simple Phobia and Generalized Anxiety Disorder) and Depression Disorders (Major Depressive Disorder, Dysthymia, and Depressive Disorder not otherwise specified).",
          "start_char": 4537,
-         "end_char": 4830
+         "end_char": 4831
         }
        ]
       }
@@ -1592,10 +1191,12 @@
      ]
     }
    },
-   "diagnostic_instrument": [],
+   "diagnostic_instrument": [
+    "asm_bsi"
+   ],
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Participants were abstinent for 1-19 days before imaging (mean = 4.8 days, SD = 7.1).",
+    "value": "Abstinent for 1-19 days before imaging (mean = 4.8 days, SD = 7.1).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1604,9 +1205,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "All participants were within the first three weeks of treatment and were abstinent for 1-19 days (mean = 4.8 days, SD = 7.1) before imaging",
+         "text": "All participants were within the first three weeks of treatment and were abstinent for 1-19 days (mean = 4.8 days, SD = 7.1) before imaging.",
          "start_char": 5588,
-         "end_char": 5727
+         "end_char": 5728
         }
        ]
       }
@@ -1615,56 +1216,56 @@
    },
    "medication_status": {
     "extraction_status": "extracted",
-    "value": "Cocaine-abstinent for 1–19 days before imaging; mean abstinence 4.8 days, SD 7.1.",
+    "value": "Not reported",
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "were recruited from Birmingham Healthcare (BHC)",
+         "start_char": 3960,
+         "end_char": 4007
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The cocaine-dependent men",
+         "start_char": 3926,
+         "end_char": 3951
+        }
+       ]
+      }
+     ]
     }
    },
    "recruitment_dates": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "extracted",
-    "value": 33.0,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All participants were African American males of ages 33-50",
-         "start_char": 7174,
-         "end_char": 7232
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "extracted",
-    "value": 50.0,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All participants were African American males of ages 33-50",
-         "start_char": 7174,
-         "end_char": 7232
-        }
-       ]
-      }
-     ]
     }
    },
    "age_median": {
@@ -1681,7 +1282,7 @@
    },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Mean maximum years of education completed: 11.56 ± 0.18 years.",
+    "value": "Mean maximum years of education completed: 11.56 years (SD 0.18).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1718,10 +1319,36 @@
       }
      ]
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "[25]",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "chronic crack cocaine-dependent individuals [ 25 ]",
+         "start_char": 4151,
+         "end_char": 4201
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
   },
   {
-   "local_id": "grp_controls",
+   "local_id": "grp_control",
    "name": {
     "extraction_status": "extracted",
     "value": "healthy controls",
@@ -1733,9 +1360,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "healthy controls",
-         "start_char": 612,
-         "end_char": 628
+         "text": "Non-cocaine-dependent men",
+         "start_char": 5756,
+         "end_char": 5781
         }
        ]
       }
@@ -1744,7 +1371,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Non-cocaine-dependent men recruited from the Birmingham area and matched on ethnicity, age, and handedness.",
+    "value": "Non-cocaine-dependent men recruited from the Birmingham area and matched with cocaine subjects on ethnicity, age, and handedness.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1756,6 +1383,11 @@
          "text": "Non-cocaine-dependent men (n = 9) were recruited from the Birmingham area",
          "start_char": 5756,
          "end_char": 5829
+        },
+        {
+         "text": ". They were matched with the cocaine subjects on ethnicity, age, and handedness.",
+         "start_char": 5980,
+         "end_char": 6060
         }
        ]
       }
@@ -1782,26 +1414,6 @@
      ]
     }
    },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 9,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Non-cocaine-dependent men (n = 9)",
-         "start_char": 5756,
-         "end_char": 5789
-        }
-       ]
-      }
-     ]
-    }
-   },
    "acquired_count": {
     "extraction_status": "extracted",
     "value": 8,
@@ -1813,29 +1425,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "This left us with a final control n of 8",
+         "text": "This left us with a final control n of 8.",
          "start_char": 6255,
-         "end_char": 6295
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "extracted",
-    "value": 1,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "We subsequently excluded MRI data from one control participant",
-         "start_char": 6061,
-         "end_char": 6123
+         "end_char": 6296
         }
        ]
       }
@@ -1882,256 +1474,9 @@
      ]
     }
    },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "All participants were African American males of ages 33-50",
-         "start_char": 7174,
-         "end_char": 7232
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "sex_distribution": [
-    {
-     "category": {
-      "extraction_status": "extracted",
-      "value": "male",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were African American males",
-           "start_char": 7174,
-           "end_char": 7218
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "count": {
-      "extraction_status": "extracted",
-      "value": 8,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "This left us with a final control n of 8",
-           "start_char": 6255,
-           "end_char": 6295
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "percentage": {
-      "extraction_status": "extracted",
-      "value": 100.0,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were African American males",
-           "start_char": 7174,
-           "end_char": 7218
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "denominator": {
-      "extraction_status": "extracted",
-      "value": 8,
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "This left us with a final control n of 8",
-           "start_char": 6255,
-           "end_char": 6295
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "reporting_framework": {
-      "extraction_status": "extracted",
-      "value": "All participants were male.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "All participants were African American males",
-           "start_char": 7174,
-           "end_char": 7218
-          }
-         ]
-        }
-       ]
-      }
-     }
-    }
-   ],
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "healthy controls",
-         "start_char": 612,
-         "end_char": 628
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "absence of current or prior DSM-IV alcohol or substance abuse disorder"
-    ],
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "diagnostic_instrument": [],
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Male",
-     "Non-cocaine-dependent",
-     "No current or prior history of a DSM-IV alcohol or substance abuse disorder",
-     "No use of illegal drugs",
-     "Matched with cocaine subjects on ethnicity, age, and handedness"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Control subjects were allowed use of alcohol but no current or prior history of a DSM-IV alcohol or substance abuse disorder, or use of illegal drugs",
-         "start_char": 5831,
-         "end_char": 5980
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Inaccurately reported years of education; one participant reporting 12 rather than the actual 16 years was excluded from MRI data analysis"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "We subsequently excluded MRI data from one control participant when we learned that he had inaccurately described his years of education completed, reporting 12 rather than the actual 16 years",
-         "start_char": 6061,
-         "end_char": 6253
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Recruited from the Birmingham area.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Non-cocaine-dependent men (n = 9) were recruited from the Birmingham area.",
-         "start_char": 5756,
-         "end_char": 5830
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
    "age_minimum": {
     "extraction_status": "extracted",
-    "value": 33.0,
+    "value": 33,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2151,7 +1496,7 @@
    },
    "age_maximum": {
     "extraction_status": "extracted",
-    "value": 50.0,
+    "value": 50,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2169,10 +1514,233 @@
      ]
     }
    },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "ages 33-50",
+         "start_char": 7222,
+         "end_char": 7232
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_cesd"
+   ],
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "were recruited from the Birmingham area",
+         "start_char": 5790,
+         "end_char": 5829
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Control subjects",
+         "start_char": 5831,
+         "end_char": 5847
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "extracted",
+    "value": 9,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Non-cocaine-dependent men (n = 9)",
+         "start_char": 5756,
+         "end_char": 5789
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "extracted",
+    "value": 1,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We subsequently excluded MRI data from one control participant",
+         "start_char": 6061,
+         "end_char": 6123
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Non-cocaine-dependent men",
+     "No current or prior DSM-IV alcohol or substance abuse disorder",
+     "No use of illegal drugs",
+     "Matched to cocaine subjects on ethnicity, age, and handedness"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Control subjects were allowed use of alcohol but no current or prior history of a DSM-IV alcohol or substance abuse disorder, or use of illegal drugs.",
+         "start_char": 5831,
+         "end_char": 5981
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Current or prior DSM-IV alcohol or substance abuse disorder",
+     "Use of illegal drugs",
+     "Inaccurate reporting of years of education completed"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "no current or prior history of a DSM-IV alcohol or substance abuse disorder, or use of illegal drugs",
+         "start_char": 5880,
+         "end_char": 5980
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Recruited from the Birmingham, Alabama area.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Non-cocaine-dependent men (n = 9) were recruited from the Birmingham area.",
+         "start_char": 5756,
+         "end_char": 5830
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "age_median": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "African American",
+     "Male"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "All participants were African American males",
+         "start_char": 7174,
+         "end_char": 7218
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "Absence of current or prior DSM-IV alcohol or substance abuse disorder"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
     }
    },
    "diagnostic_system": {
@@ -2186,8 +1754,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "a DSM-IV alcohol or substance abuse disorder",
-         "start_char": 5911,
+         "text": "DSM-IV alcohol or substance abuse disorder",
+         "start_char": 5913,
          "end_char": 5955
         }
        ]
@@ -2197,22 +1765,10 @@
    },
    "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "Non-cocaine-dependent men; final n=8 after exclusion of one participant's MRI data.",
-    "value_source": "reported",
+    "value": "No current or prior history of alcohol or substance abuse disorder and no use of illegal drugs.",
+    "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "This left us with a final control n of 8",
-         "start_char": 6255,
-         "end_char": 6295
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "medications": {
@@ -2221,9 +1777,15 @@
      "status": "not_applicable"
     }
    },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "Mean maximum years of education completed: 13.25 ± 0.37 years.",
+    "value": "Mean maximum years of education completed: 13.25 years (SD 0.37).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2246,23 +1808,87 @@
     "evidence": {
      "status": "not_applicable"
     }
+   },
+   "sample_source_reference": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
    }
   }
  ],
- "inference_settings": [
+ "regions": [
   {
-   "local_id": "inf_vbm_uncorrected",
-   "inference_level": {
+   "local_id": "reg_dlpfc_ifg",
+   "name": {
     "extraction_status": "extracted",
-    "value": "voxel",
+    "value": "right dorsolateral prefrontal cortex (IFG)",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "right dorsolateral prefrontal cortex (IFG)",
+         "start_char": 11371,
+         "end_char": 11413
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
     }
    },
-   "height_threshold_value": {
+   "atlas": {
     "extraction_status": "extracted",
-    "value": 0.001,
+    "value": "WFU PickAtlas; AAL Library templates",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2271,18 +1897,18 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "p < .001",
-         "start_char": 9960,
-         "end_char": 9968
+         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
+         "start_char": 10681,
+         "end_char": 10756
         }
        ]
       }
      ]
     }
    },
-   "height_threshold_type": {
+   "description": {
     "extraction_status": "extracted",
-    "value": "p",
+    "value": "Gray matter ROI for dorsolateral prefrontal cortex, separately defined for the inferior frontal gyrus, using the WFU PickAtlas templates, including the AAL Library templates.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2291,259 +1917,779 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "p < .001",
-         "start_char": 9960,
-         "end_char": 9968
+         "text": "These ROIs were: dorsolateral prefrontal cortex (separately for the middle frontal gyrus, MFG, and inferior frontal gyrus, IFG)",
+         "start_char": 10298,
+         "end_char": 10425
         }
        ]
       }
      ]
-    }
-   },
-   "cluster_extent_threshold": {
-    "extraction_status": "extracted",
-    "value": 7,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "≥ 7 contiguous voxels",
-         "start_char": 9983,
-         "end_char": 10004
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "multiple_comparison_method": {
-    "extraction_status": "extracted",
-    "value": "uncorrected",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "p < .001, uncorrected",
-         "start_char": 9960,
-         "end_char": 9981
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "correction_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "correction_regions": [],
-   "clusterwise_threshold_value": {
-    "extraction_status": "extracted",
-    "value": 7.0,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "≥ 7 contiguous voxels",
-         "start_char": 9983,
-         "end_char": 10004
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "search_volume": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "neighborhood_definition": {
-    "extraction_status": "extracted",
-    "value": "At least 7 contiguous voxels.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "≥ 7 contiguous voxels",
-         "start_char": 9983,
-         "end_char": 10004
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "tfce_used": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "tfce_parameters": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "permutation_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "alpha_level": {
-    "extraction_status": "extracted",
-    "value": 0.001,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "p < .001",
-         "start_char": 9960,
-         "end_char": 9968
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "number_of_tests": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    }
   },
   {
-   "local_id": "inf_vbm_ancova_uncorrected",
-   "inference_level": {
+   "local_id": "reg_acc",
+   "name": {
     "extraction_status": "extracted",
-    "value": "voxel",
+    "value": "anterior cingulate cortex",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "anterior cingulate cortex",
+         "start_char": 1945,
+         "end_char": 1970
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "height_threshold_value": {
-    "extraction_status": "extracted",
-    "value": 0.001,
-    "value_source": "reported",
-    "evidence": {
      "status": "present",
      "sets": [
       {
        "source": "model_quote",
        "spans": [
         {
-         "text": "p < .001",
-         "start_char": 9960,
-         "end_char": 9968
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
         }
        ]
       }
      ]
     }
    },
-   "height_threshold_type": {
+   "region_type": {
     "extraction_status": "extracted",
-    "value": "p",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "p < .001",
-         "start_char": 9960,
-         "end_char": 9968
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "cluster_extent_threshold": {
-    "extraction_status": "extracted",
-    "value": 7,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "≥ 7 contiguous voxels",
-         "start_char": 9983,
-         "end_char": 10004
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "multiple_comparison_method": {
-    "extraction_status": "extracted",
-    "value": "uncorrected",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "p < .001, uncorrected",
-         "start_char": 9960,
-         "end_char": 9981
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "correction_scope": {
-    "extraction_status": "extracted",
-    "value": "whole_brain",
+    "value": "atlas_parcel",
     "value_source": "generated",
     "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "WFU PickAtlas; AAL Library templates",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
+         "start_char": 10681,
+         "end_char": 10756
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Gray matter anterior cingulate cortex ROI defined using the WFU PickAtlas templates, including the AAL Library templates.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These ROIs were: dorsolateral prefrontal cortex (separately for the middle frontal gyrus, MFG, and inferior frontal gyrus, IFG), anterior cingulate cortex",
+         "start_char": 10298,
+         "end_char": 10452
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "reg_insula",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "insula",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "insula",
+         "start_char": 887,
+         "end_char": 893
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "WFU PickAtlas; AAL Library templates",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
+         "start_char": 10681,
+         "end_char": 10756
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Gray matter insula ROI defined using the WFU PickAtlas templates, including the AAL Library templates; left and right sides were considered separately.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   }
+  },
+  {
+   "local_id": "reg_stg",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "superior temporal gyrus",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "superior temporal gyrus",
+         "start_char": 899,
+         "end_char": 922
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "WFU PickAtlas; AAL Library templates",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
+         "start_char": 10681,
+         "end_char": 10756
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Gray matter superior temporal gyrus ROI defined using the WFU PickAtlas templates, including the AAL Library templates.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These ROIs were: dorsolateral prefrontal cortex (separately for the middle frontal gyrus, MFG, and inferior frontal gyrus, IFG), anterior cingulate cortex, lateral orbitofrontal cortex, medial orbitofrontal cortex, insula, superior temporal gyrus, amygdala, and cerebellum.",
+         "start_char": 10298,
+         "end_char": 10571
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "reg_cerebellum",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "cerebellum",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "cerebellum",
+         "start_char": 875,
+         "end_char": 885
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "WFU PickAtlas; AAL Library templates",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
+         "start_char": 10681,
+         "end_char": 10756
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Gray matter cerebellum ROI defined using the WFU PickAtlas templates, including the AAL Library templates; left and right sides were considered separately.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Left and right sides were considered separately.",
+         "start_char": 10572,
+         "end_char": 10620
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "reg_lateral_ofc",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "lateral orbitofrontal cortex",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "These ROIs were: dorsolateral prefrontal cortex (separately for the middle frontal gyrus, MFG, and inferior frontal gyrus, IFG), anterior cingulate cortex, lateral orbitofrontal cortex, medial orbitofrontal cortex, insula, superior temporal gyrus, amygdala, and cerebellum.",
+         "start_char": 10298,
+         "end_char": 10571
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "WFU PickAtlas; AAL Library templates",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
+         "start_char": 10681,
+         "end_char": 10756
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Gray matter lateral orbitofrontal cortex ROI defined using the WFU PickAtlas templates, including the AAL Library templates.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These ROIs were: dorsolateral prefrontal cortex (separately for the middle frontal gyrus, MFG, and inferior frontal gyrus, IFG), anterior cingulate cortex, lateral orbitofrontal cortex",
+         "start_char": 10298,
+         "end_char": 10482
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "reg_medial_ofc",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "medial orbitofrontal cortex",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "medial orbitofrontal cortex",
+         "start_char": 1984,
+         "end_char": 2011
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "WFU PickAtlas; AAL Library templates",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
+         "start_char": 10681,
+         "end_char": 10756
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Gray matter medial orbitofrontal cortex ROI defined using the WFU PickAtlas templates, including the AAL Library templates.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These ROIs were: dorsolateral prefrontal cortex (separately for the middle frontal gyrus, MFG, and inferior frontal gyrus, IFG), anterior cingulate cortex, lateral orbitofrontal cortex, medial orbitofrontal cortex",
+         "start_char": 10298,
+         "end_char": 10511
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "reg_amygdala",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "amygdala",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "amygdala",
+         "start_char": 2025,
+         "end_char": 2033
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "WFU PickAtlas; AAL Library templates",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
+         "start_char": 10681,
+         "end_char": 10756
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Gray matter amygdala ROI defined using the WFU PickAtlas templates, including the AAL Library templates.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "These ROIs were: dorsolateral prefrontal cortex (separately for the middle frontal gyrus, MFG, and inferior frontal gyrus, IFG), anterior cingulate cortex, lateral orbitofrontal cortex, medial orbitofrontal cortex, insula, superior temporal gyrus, amygdala",
+         "start_char": 10298,
+         "end_char": 10554
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "local_id": "reg_mfg",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "middle frontal gyrus",
+    "value_source": "reported",
+    "evidence": {
      "status": "not_found"
     }
    },
-   "correction_regions": [],
-   "clusterwise_threshold_value": {
+   "definition_method": {
     "extraction_status": "extracted",
-    "value": 7.0,
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": "atlas_parcel",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
+         "start_char": 10621,
+         "end_char": 10694
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "atlas": {
+    "extraction_status": "extracted",
+    "value": "WFU PickAtlas; AAL Library templates",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2552,24 +2698,18 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "≥ 7 contiguous voxels",
-         "start_char": 9983,
-         "end_char": 10004
+         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
+         "start_char": 10681,
+         "end_char": 10756
         }
        ]
       }
      ]
     }
    },
-   "search_volume": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "neighborhood_definition": {
+   "description": {
     "extraction_status": "extracted",
-    "value": "At least 7 contiguous voxels.",
+    "value": "Gray matter dorsolateral prefrontal cortex ROI for the middle frontal gyrus, defined using the WFU PickAtlas templates, including the AAL Library templates.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2578,66 +2718,20 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "cluster extent ≥ 7 contiguous voxels",
-         "start_char": 12095,
-         "end_char": 12131
+         "text": "dorsolateral prefrontal cortex (separately for the middle frontal gyrus, MFG, and inferior frontal gyrus, IFG)",
+         "start_char": 10315,
+         "end_char": 10425
         }
        ]
       }
      ]
-    }
-   },
-   "tfce_used": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "tfce_parameters": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "permutation_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "alpha_level": {
-    "extraction_status": "extracted",
-    "value": 0.001,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "p < .001",
-         "start_char": 9960,
-         "end_char": 9968
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "number_of_tests": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
     }
    }
   }
  ],
  "measures": [
   {
-   "local_id": "mea_gray_matter_volume",
+   "local_id": "mea_gm_volume",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
@@ -2669,9 +2763,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "total gray matter, white matter, and CSF volume",
-         "start_char": 9486,
-         "end_char": 9533
+         "text": "gray matter volume",
+         "start_char": 797,
+         "end_char": 815
         }
        ]
       }
@@ -2709,8 +2803,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "group differences in regional gray matter volume",
-         "start_char": 9862,
+         "text": "regional gray matter volume",
+         "start_char": 9883,
          "end_char": 9910
         }
        ]
@@ -2751,7 +2845,7 @@
    },
    "model_type": {
     "extraction_status": "extracted",
-    "value": "VBM general linear model group comparison",
+    "value": "group-level VBM general linear model",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2774,43 +2868,15 @@
     "value": "group",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "estimator": {
-    "extraction_status": "extracted",
-    "value": "independent samples t-tests",
-    "value_source": "reported",
-    "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Statistical parametric maps were generated within the context of the General Linear Model, and group differences in regional gray matter volume were assessed using independent samples t-tests (p < .001, uncorrected, ≥ 7 contiguous voxels).",
-         "start_char": 9767,
-         "end_char": 10006
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "software": {
-    "extraction_status": "extracted",
-    "value": "SPM2",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Images were analyzed using statistical parametric mapping as implemented in the SPM2 software package (Statistical Parametric Mapping, Wellcome Department of Cognitive Neurology, London, UK).",
-         "start_char": 9575,
-         "end_char": 9766
+         "text": "group differences",
+         "start_char": 7504,
+         "end_char": 7521
         }
        ]
       }
@@ -2828,24 +2894,22 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "VBM was used to compute total gray matter, white matter, and CSF volume",
-         "start_char": 9462,
-         "end_char": 9533
+         "text": "voxels",
+         "start_char": 9998,
+         "end_char": 10004
         }
        ]
       }
      ]
     }
    },
-   "preprocessing": [],
-   "inputs_from": [],
    "terms": [
     {
      "local_id": "trm_group",
      "name": {
       "extraction_status": "extracted",
       "value": "group",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
        "status": "present",
        "sets": [
@@ -2853,9 +2917,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "group differences",
-           "start_char": 7504,
-           "end_char": 7521
+           "text": "group",
+           "start_char": 517,
+           "end_char": 522
           }
          ]
         }
@@ -2865,6 +2929,14 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "variation_level": {
+      "extraction_status": "extracted",
+      "value": "between_subject",
       "value_source": "generated",
       "evidence": {
        "status": "present",
@@ -2882,34 +2954,26 @@
        ]
       }
      },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "group differences in regional gray matter volume",
-           "start_char": 9862,
-           "end_char": 9910
-          }
-         ]
-        }
-       ]
-      }
-     },
      "levels": [
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "homeless crack-cocaine-dependent African American men",
+        "value": "cocaine-dependent men",
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "cocaine-dependent men",
+             "start_char": 2534,
+             "end_char": 2555
+            }
+           ]
+          }
+         ]
         }
        },
        "groups": [
@@ -2920,26 +2984,38 @@
         "value": 1,
         "value_source": "reported",
         "evidence": {
-         "status": "not_found"
+         "status": "present",
+         "sets": [
+          {
+           "source": "model_quote",
+           "spans": [
+            {
+             "text": "group differences in regional gray matter volume were assessed using independent samples t-tests",
+             "start_char": 9862,
+             "end_char": 9958
+            }
+           ]
+          }
+         ]
         }
        }
       },
       {
        "level": {
         "extraction_status": "extracted",
-        "value": "healthy controls",
+        "value": "controls",
         "value_source": "reported",
         "evidence": {
          "status": "not_found"
         }
        },
        "groups": [
-        "grp_controls"
+        "grp_control"
        ],
        "order": {
         "extraction_status": "extracted",
         "value": 2,
-        "value_source": "reported",
+        "value_source": "generated",
         "evidence": {
          "status": "not_found"
         }
@@ -2959,23 +3035,9 @@
       }
      },
      "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Group membership comparing homeless crack-cocaine-dependent men with healthy controls.",
-      "value_source": "reported",
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "group comparisons could be made",
-           "start_char": 9542,
-           "end_char": 9573
-          }
-         ]
-        }
-       ]
+       "status": "not_applicable"
       }
      }
     }
@@ -2988,7 +3050,7 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "Optimized VBM; study-specific customized brain template; 12 mm Gaussian smoothing; modulation by the Jacobian determinant; SPM2; general linear model; independent-samples t-tests; p < .001 uncorrected; cluster extent ≥ 7 contiguous voxels.",
+    "value": "Optimized VBM with a customized study-specific brain template, 12 mm Gaussian smoothing, and modulation of segmented and normalized images using the Jacobian determinant; group differences assessed with independent-samples t-tests at p < .001 uncorrected and a cluster extent of at least 7 contiguous voxels.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2997,69 +3059,18 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "VBM was used to compute total gray matter, white matter, and CSF volume so that group comparisons could be made",
-         "start_char": 9462,
-         "end_char": 9573
+         "text": "This included creation of a customized, study-specific brain template  ,   use of a standard 12 mm Gaussian filter for smoothing, and modulation of the segmented and normalized images to correct volume changes by the Jacobian determinant of the transformation matrices.",
+         "start_char": 9192,
+         "end_char": 9461
         }
        ]
       }
      ]
-    }
-   }
-  },
-  {
-   "local_id": "mod_vbm_ancova",
-   "model_family": {
-    "extraction_status": "extracted",
-    "value": "ancova",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "ANCOVA",
-         "start_char": 12064,
-         "end_char": 12070
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "model_type": {
-    "extraction_status": "extracted",
-    "value": "VBM ANCOVA controlling for education",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ANCOVA revealed a similar pattern of results",
-         "start_char": 12138,
-         "end_char": 12186
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "stage": {
-    "extraction_status": "extracted",
-    "value": "group",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "estimator": {
     "extraction_status": "extracted",
-    "value": "ANCOVA",
+    "value": "Independent-samples t-tests within the general linear model.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3068,9 +3079,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "ANCOVA",
-         "start_char": 12064,
-         "end_char": 12070
+         "text": "group differences in regional gray matter volume were assessed using independent samples t-tests",
+         "start_char": 9862,
+         "end_char": 9958
         }
        ]
       }
@@ -3079,148 +3090,152 @@
    },
    "software": {
     "extraction_status": "extracted",
-    "value": "SPM2",
+    "value": "SPM2 (Statistical Parametric Mapping, Wellcome Department of Cognitive Neurology, London).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "literal_match",
+       "source": "model_quote",
        "spans": [
         {
-         "text": "Images were analyzed using statistical parametric mapping as implemented in the SPM2 software package (Statistical Parametric Mapping, Wellcome Department of Cognitive Neurology, London, UK).",
-         "start_char": 9575,
-         "end_char": 9766
+         "text": "SPM2 software package (Statistical Parametric Mapping, Wellcome Department of Cognitive Neurology, London, UK)",
+         "start_char": 9655,
+         "end_char": 9765
         }
        ]
       }
      ]
     }
    },
-   "spatial_unit": {
+   "preprocessing": [
+    "prp_vbm"
+   ]
+  }
+ ],
+ "preprocessings": [
+  {
+   "local_id": "prp_vbm",
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Optimized VBM preprocessing including motion correction, customized template creation, smoothing, segmentation, normalization, and modulation.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The images were motion-corrected and then analyzed using the optimized VBM procedures",
+         "start_char": 9015,
+         "end_char": 9100
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "software": {
+    "extraction_status": "extracted",
+    "value": [
+     "SPM2",
+     "WFU PickAtlas"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "SPM2 software package",
+         "start_char": 9655,
+         "end_char": 9676
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "steps": {
+    "extraction_status": "extracted",
+    "value": [
+     "motion correction",
+     "creation of a customized, study-specific brain template",
+     "segmentation",
+     "normalization",
+     "smoothing",
+     "modulation"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The images were motion-corrected and then analyzed using the optimized VBM procedures",
+         "start_char": 9015,
+         "end_char": 9100
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "smoothing_fwhm_mm": {
+    "extraction_status": "extracted",
+    "value": [
+     12
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "a standard 12 mm Gaussian filter for smoothing",
+         "start_char": 9274,
+         "end_char": 9320
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "inference_settings": [
+  {
+   "local_id": "inf_uncorrected_p001",
+   "inference_level": {
     "extraction_status": "extracted",
     "value": "voxel",
     "value_source": "generated",
     "evidence": {
-     "status": "not_found"
-    }
-   },
-   "preprocessing": [],
-   "inputs_from": [],
-   "terms": [
-    {
-     "local_id": "trm_group_ancova",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "group",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
         {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "group difference in maximum education level achieved",
-           "start_char": 11914,
-           "end_char": 11966
-          }
-         ]
+         "text": "within the context of the General Linear Model",
+         "start_char": 9810,
+         "end_char": 9856
         }
        ]
       }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "homeless crack-cocaine-dependent African American men",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       },
-       "groups": [
-        "grp_cocaine"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "healthy controls",
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       },
-       "groups": [
-        "grp_controls"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      }
-     ],
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Group membership comparing homeless crack-cocaine-dependent men with healthy controls, with education statistically controlled.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     }
-    }
-   ],
-   "hrf_model": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
+     ]
     }
    },
-   "model_settings": {
+   "height_threshold_value": {
     "extraction_status": "extracted",
-    "value": "ANCOVA controlling for maximum education; optimized VBM; SPM2; p < .001 uncorrected; cluster extent ≥ 7 contiguous voxels.",
+    "value": 0.001,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3229,874 +3244,183 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "The ANCOVA revealed a similar pattern of results to that found leaving education out of the analysis",
-         "start_char": 12138,
-         "end_char": 12238
+         "text": "p < .001",
+         "start_char": 9960,
+         "end_char": 9968
         }
        ]
       }
      ]
     }
-   }
+   },
+   "height_threshold_type": {
+    "extraction_status": "extracted",
+    "value": "p",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "p",
+         "start_char": 75,
+         "end_char": 76
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "cluster_extent_threshold": {
+    "extraction_status": "extracted",
+    "value": 7,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "≥ 7 contiguous voxels",
+         "start_char": 9983,
+         "end_char": 10004
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "multiple_comparison_method": {
+    "extraction_status": "extracted",
+    "value": "uncorrected",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "uncorrected",
+         "start_char": 9970,
+         "end_char": 9981
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "correction_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "clusterwise_threshold_value": {
+    "extraction_status": "extracted",
+    "value": 7,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "≥ 7 contiguous voxels",
+         "start_char": 9983,
+         "end_char": 10004
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "search_volume": {
+    "extraction_status": "extracted",
+    "value": "Nine gray matter regions of interest defined with WFU PickAtlas templates, including AAL Library templates.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "neighborhood_definition": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "tfce_used": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "group differences in regional gray matter volume were assessed using independent samples t-tests",
+         "start_char": 9862,
+         "end_char": 9958
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "tfce_parameters": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "permutation_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "alpha_level": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "number_of_tests": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "correction_regions": [
+    "reg_dlpfc_ifg",
+    "reg_acc",
+    "reg_insula",
+    "reg_stg",
+    "reg_cerebellum",
+    "reg_lateral_ofc",
+    "reg_medial_ofc",
+    "reg_amygdala",
+    "reg_mfg"
+   ]
   }
  ],
- "regions": [
-  {
-   "local_id": "reg_right_dlpfc_ifg",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "right dorsolateral prefrontal cortex (IFG)",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
-         "start_char": 10681,
-         "end_char": 10756
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_right_acc",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "right anterior cingulate",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
-         "start_char": 10681,
-         "end_char": 10756
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_right_posterior_insula",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "right posterior insula",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
-         "start_char": 10681,
-         "end_char": 10756
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_left_posterior_insula",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "left posterior insula",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "These were right dorsolateral prefrontal cortex (IFG), right anterior cingulate, right and left posterior insula, right superior temporal gyrus, and right and left cerebellum (Fig.",
-         "start_char": 11360,
-         "end_char": 11540
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_right_stg",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "right superior temporal gyrus",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
-         "start_char": 10681,
-         "end_char": 10756
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_right_cerebellum",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "right cerebellum",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "The ANCOVA revealed a similar pattern of results to that found leaving education out of the analysis; i.e., less gray matter volume in the cocaine-dependent men in right dorsolateral prefrontal cortex (IFG), right anterior cingulate, right cerebellum, bilateral superior temporal gyrus, and bilateral insula.",
-         "start_char": 12138,
-         "end_char": 12446
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_left_cerebellum",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "left cerebellum",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
-         "start_char": 10681,
-         "end_char": 10756
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_left_stg",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "left superior temporal gyrus",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
-         "start_char": 10681,
-         "end_char": 10756
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_left_acc",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "left anterior cingulate",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
-         "start_char": 10681,
-         "end_char": 10756
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_lateral_ofc",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "lateral orbitofrontal cortex",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "These ROIs were: dorsolateral prefrontal cortex (separately for the middle frontal gyrus, MFG, and inferior frontal gyrus, IFG), anterior cingulate cortex, lateral orbitofrontal cortex, medial orbitofrontal cortex, insula, superior temporal gyrus, amygdala, and cerebellum.",
-         "start_char": 10298,
-         "end_char": 10571
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_medial_ofc",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "medial orbitofrontal cortex",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
-         "start_char": 10681,
-         "end_char": 10756
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "reg_amygdala",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "amygdala",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The ROIs were defined according to the templates within the WFU PickAtlas",
-         "start_char": 10621,
-         "end_char": 10694
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "WFU PickAtlas; AAL Library templates",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "WFU PickAtlas [ 34 ,  35 ], which included the AAL Library templates [ 36 ]",
-         "start_char": 10681,
-         "end_char": 10756
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  }
+ "language": [
+  "eng"
+ ],
+ "study_type": [
+  "Journal Article"
  ],
  "tables": [
   {
-   "local_id": "T1",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1.",
@@ -4128,7 +3452,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "c809da1a814bb1014978d10140699f5abdbfac36151f6498a7346627c56360d5",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -4262,8 +3586,5 @@
    }
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
- },
- "study_type": [
-  "Journal Article"
- ]
+ }
 }

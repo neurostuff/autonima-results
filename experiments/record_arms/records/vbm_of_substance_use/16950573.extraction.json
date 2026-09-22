@@ -1,7 +1,7 @@
 {
  "description": {
   "extraction_status": "extracted",
-  "value": "Retrospective quantitative MRI study comparing regional neocortical gray matter volumes among smoking heavy drinkers, non-smoking heavy drinkers, and non-smoking light drinkers.",
+  "value": "A retrospective analysis of regional neocortical gray matter volumes among smoking heavy drinkers, non-smoking heavy drinkers, and non-smoking light drinkers using high-resolution MRI.",
   "value_source": "generated",
   "evidence": {
    "status": "present",
@@ -10,9 +10,9 @@
      "source": "model_quote",
      "spans": [
       {
-       "text": "Regional volumetric comparisons were made among age-matched smoking HD ( n = 17), non-smoking HD ( n = 16), and non-smoking light drinkers (nsLD; n = 20)",
-       "start_char": 961,
-       "end_char": 1114
+       "text": "The goal of this retrospective analysis was to determine if chronic smoking affected brain structure in the non-treatment-seeking heavy drinking sample from our earlier report",
+       "start_char": 754,
+       "end_char": 929
       }
      ]
     }
@@ -22,50 +22,27 @@
  "design": {
   "description": {
    "extraction_status": "extracted",
-   "value": "Retrospective, non-treatment-seeking, community-based group comparison study.",
+   "value": "Retrospective, observational comparison of three non-treatment-seeking drinking and smoking groups drawn from an earlier sample.",
+   "value_source": "generated",
+   "evidence": {
+    "status": "not_found",
+    "unlocated_quotes": 1
+   }
+  },
+  "allocation": {
+   "extraction_status": "extracted",
+   "value": "not_applicable",
    "value_source": "generated",
    "evidence": {
     "status": "not_found"
    }
   },
-  "allocation": {
-   "extraction_status": "extracted",
-   "value": "non_randomized",
-   "value_source": "generated",
-   "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "retrospective analysis",
-        "start_char": 771,
-        "end_char": 793
-       }
-      ]
-     }
-    ]
-   }
-  },
   "assignment_structure": {
    "extraction_status": "extracted",
-   "value": "parallel",
+   "value": "observational_cohorts",
    "value_source": "generated",
    "evidence": {
-    "status": "present",
-    "sets": [
-     {
-      "source": "model_quote",
-      "spans": [
-       {
-        "text": "among age-matched smoking HD ( n = 17), non-smoking HD ( n = 16), and non-smoking light drinkers (nsLD; n = 20)",
-        "start_char": 1003,
-        "end_char": 1114
-       }
-      ]
-     }
-    ]
+    "status": "not_found"
    }
   },
   "blinding": {
@@ -81,41 +58,30 @@
  },
  "analyses": [
   {
-   "local_id": "ana_hd_nsld_gm",
+   "local_id": "ana_sHD_nsLD_gm",
    "name": {
     "extraction_status": "extracted",
-    "value": "HD and nsLD regional neocortical GM comparison",
-    "value_source": "generated",
+    "value": "sHD compared to nsLD regional neocortical GM volumes",
+    "value_source": "reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "HD and nsLD",
-         "start_char": 1563,
-         "end_char": 1574
-        }
-       ]
-      }
-     ]
+     "status": "not_found",
+     "unlocated_quotes": 1
     }
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "MANCOVA comparing the combined heavy-drinking group with non-smoking light drinkers on regional neocortical gray matter volume",
-    "value_source": "generated",
+    "value": "Smaller volumes in sHD compared to nsLD in the frontal, parietal, and temporal GM and for total cortical GM.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
       {
-       "source": "model_quote",
+       "source": "literal_match",
        "spans": [
         {
-         "text": "MANCOVA (Wilks’ Lambda) comparing the combined HD group (i.e., nsHD + sHD) to the nsLD group on regional neocortical GM was significant [ F (4, 47) = 2.77, p = .05)].",
-         "start_char": 13840,
-         "end_char": 14006
+         "text": "Bonferroni corrected pairwise comparisons indicated significantly smaller volumes in sHD compared to nsLD in the frontal, parietal, and temporal GM and for total cortical GM ( p = .001–.02) (see ).",
+         "start_char": 14763,
+         "end_char": 14960
         }
        ]
       }
@@ -128,28 +94,6 @@
     "value_source": "generated",
     "evidence": {
      "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "The HD sample demonstrated smaller volumes in these regions than the nsLD group."
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The HD sample demonstrated smaller volumes in these regions than the nsLD group.",
-         "start_char": 14153,
-         "end_char": 14233
-        }
-       ]
-      }
-     ]
     }
    },
    "spatial_scope": {
@@ -172,20 +116,13 @@
      ]
     }
    },
-   "regions": [
-    "r_frontal_gm",
-    "r_parietal_gm",
-    "r_temporal_gm",
-    "r_total_cortical_gm"
-   ],
-   "defines_regions": [],
-   "measure": "mea_neocortical_gm_volume",
+   "measure": "mea_gm_volume",
    "groups": [
     {
-     "group": "grp_sHD_nsHD",
+     "group": "grp_shd",
      "n": {
       "extraction_status": "extracted",
-      "value": 33,
+      "value": 17,
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -194,9 +131,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "From the 49 actively drinking HD participants in , we identified 17 smoking HD (sHD; 3 females)",
-           "start_char": 4850,
-           "end_char": 4945
+           "text": "we identified 17 smoking HD (sHD; 3 females) who reported smoking daily ( n = 10) or nearly everyday ( n = 7) for at least 6 months prior to enrolment in the study.",
+           "start_char": 4901,
+           "end_char": 5065
           }
          ]
         }
@@ -205,7 +142,7 @@
      }
     },
     {
-     "group": "grp_nsLD",
+     "group": "grp_nsld",
      "n": {
       "extraction_status": "extracted",
       "value": 20,
@@ -231,21 +168,21 @@
    "effect": {
     "cells": [
      {
-      "term": "trm_group_hd_nsld",
+      "term": "trm_group_three",
       "level": {
        "extraction_status": "extracted",
-       "value": "combined HD group",
+       "value": "sHD",
        "value_source": "reported",
        "evidence": {
         "status": "present",
         "sets": [
          {
-          "source": "literal_match",
+          "source": "model_quote",
           "spans": [
            {
-            "text": "MANCOVA (Wilks’ Lambda) comparing the combined HD group (i.e., nsHD + sHD) to the nsLD group on regional neocortical GM was significant [ F (4, 47) = 2.77, p = .05)].",
-            "start_char": 13840,
-            "end_char": 14006
+            "text": "we identified 17 smoking HD (sHD; 3 females) who reported smoking daily ( n = 10) or nearly everyday ( n = 7) for at least 6 months prior to enrolment in the study.",
+            "start_char": 4901,
+            "end_char": 5065
            }
           ]
          }
@@ -257,44 +194,21 @@
        "value": "negative",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "The HD sample demonstrated smaller volumes in these regions than the nsLD group.",
-            "start_char": 14153,
-            "end_char": 14233
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
        "extraction_status": "extracted",
-       "value": "combined HD group",
+       "value": "sHD",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "MANCOVA (Wilks’ Lambda) comparing the combined HD group (i.e., nsHD + sHD) to the nsLD group on regional neocortical GM was significant [ F (4, 47) = 2.77, p = .05)].",
-            "start_char": 13840,
-            "end_char": 14006
-           }
-          ]
-         }
-        ]
+        "status": "not_found",
+        "unlocated_quotes": 1
        }
       }
      },
      {
-      "term": "trm_group_hd_nsld",
+      "term": "trm_group_three",
       "level": {
        "extraction_status": "extracted",
        "value": "nsLD",
@@ -306,9 +220,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "The HD sample demonstrated smaller volumes in these regions than the nsLD group.",
-            "start_char": 14153,
-            "end_char": 14233
+            "text": "The 16 non-smoking HD (nsHD; 3 females) and 20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort by age matching to the sHD sample.",
+            "start_char": 5467,
+            "end_char": 5630
            }
           ]
          }
@@ -320,19 +234,7 @@
        "value": "positive",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Additionally, the designation of smoking status was based on self-report rather than confirmation with biological measures (e.g., breath carbon monoxide level, positive plasma nicotine).",
-            "start_char": 24065,
-            "end_char": 24251
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -340,19 +242,8 @@
        "value": "nsLD",
        "value_source": "reported",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "The HD sample demonstrated smaller volumes in these regions than the nsLD group.",
-            "start_char": 14153,
-            "end_char": 14233
-           }
-          ]
-         }
-        ]
+        "status": "not_found",
+        "unlocated_quotes": 1
        }
       }
      }
@@ -362,25 +253,14 @@
      "value": "contrast",
      "value_source": "generated",
      "evidence": {
-      "status": "present",
-      "sets": [
-       {
-        "source": "model_quote",
-        "spans": [
-         {
-          "text": "MANCOVA (Wilks’ Lambda) comparing the combined HD group (i.e., nsHD + sHD) to the nsLD group on regional neocortical GM was significant [ F (4, 47) = 2.77, p = .05)].",
-          "start_char": 13840,
-          "end_char": 14006
-         }
-        ]
-       }
-      ]
+      "status": "not_found",
+      "unlocated_quotes": 1
      }
     },
     "statistic": {
      "family": {
       "extraction_status": "extracted",
-      "value": "f",
+      "value": "t",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -389,9 +269,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "MANCOVA (Wilks’ Lambda) comparing the combined HD group (i.e., nsHD + sHD) to the nsLD group on regional neocortical GM was significant [ F (4, 47) = 2.77, p = .05)].",
-           "start_char": 13840,
-           "end_char": 14006
+           "text": "Significant univariate tests were further evaluated for group differences among sHD, nsHD, and nsLD with Bonferroni corrected pairwise t -tests.",
+           "start_char": 11243,
+           "end_char": 11387
           }
          ]
         }
@@ -399,43 +279,15 @@
       }
      },
      "degrees_of_freedom_numerator": {
-      "extraction_status": "extracted",
-      "value": 4,
-      "value_source": "reported",
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "MANCOVA (Wilks’ Lambda) comparing the combined HD group (i.e., nsHD + sHD) to the nsLD group on regional neocortical GM was significant [ F (4, 47) = 2.77, p = .05)].",
-           "start_char": 13840,
-           "end_char": 14006
-          }
-         ]
-        }
-       ]
+       "status": "not_applicable"
       }
      },
      "degrees_of_freedom_denominator": {
-      "extraction_status": "extracted",
-      "value": 47,
-      "value_source": "reported",
+      "extraction_status": "not_reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "literal_match",
-         "spans": [
-          {
-           "text": "MANCOVA (Wilks’ Lambda) comparing the combined HD group (i.e., nsHD + sHD) to the nsLD group on regional neocortical GM was significant [ F (4, 47) = 2.77, p = .05)].",
-           "start_char": 13840,
-           "end_char": 14006
-          }
-         ]
-        }
-       ]
+       "status": "not_applicable"
       }
      }
     }
@@ -444,20 +296,20 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_mri",
-    "dev_siemens_vision"
+    "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "mod_mancova_age",
-   "inference_settings": "inf_p05_bonferroni",
-   "tables": [
-    "tbl1"
-   ],
-   "assessments": [
-    "asm_scid_dsmiv",
-    "asm_bdi",
-    "asm_ldh"
-   ],
+   "model_estimation": "mod_three_group_mancova",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "Bonferroni corrected pairwise comparisons indicated significantly smaller volumes in sHD compared to nsLD in the frontal, parietal, and temporal GM and for total cortical GM."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
    "source_table_analysis": {
     "extraction_status": "not_reported",
     "unreported_reason": "outside_text",
@@ -476,13 +328,29 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "regions": [
+    "reg_frontal_lobe",
+    "reg_parietal_lobe",
+    "reg_temporal_lobe",
+    "reg_occipital_lobe"
+   ],
+   "assessments": [
+    "asm_structured_clinical_intervie",
+    "asm_lifetime_drinking_history",
+    "asm_beck_depression_inventory",
+    "asm_substance_use_questionnaire",
+    "asm_american_national_adult"
+   ],
+   "tables": [
+    "tbltable1"
+   ]
   },
   {
-   "local_id": "ana_three_group_gm",
+   "local_id": "ana_sHD_nsHD_gm",
    "name": {
     "extraction_status": "extracted",
-    "value": "sHD, nsHD, and nsLD regional neocortical GM comparison",
+    "value": "sHD compared to nsHD regional and total cortical GM volumes",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -491,9 +359,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "sHD, nsHD, and nsLD",
-         "start_char": 10829,
-         "end_char": 10848
+         "text": "sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
+         "start_char": 14970,
+         "end_char": 15037
         }
        ]
       }
@@ -502,8 +370,8 @@
    },
    "definition": {
     "extraction_status": "extracted",
-    "value": "MANCOVA and follow-up pairwise comparisons of regional and total cortical gray matter volumes among smoking heavy drinkers, non-smoking heavy drinkers, and non-smoking light drinkers",
-    "value_source": "generated",
+    "value": "sHD demonstrated smaller temporal GM and total GM volumes than nsHD.",
+    "value_source": "reported",
     "evidence": {
      "status": "present",
      "sets": [
@@ -511,9 +379,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "We then separately evaluated regional and total cortical GM, WM and sulcal and ventricular CSF for sHD, nsHD, and nsLD with MANCOVA.",
-         "start_char": 10730,
-         "end_char": 10862
+         "text": "sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
+         "start_char": 14970,
+         "end_char": 15037
         }
        ]
       }
@@ -524,17 +392,6 @@
     "extraction_status": "extracted",
     "value": "exploratory",
     "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "interpretations": {
-    "extraction_status": "extracted",
-    "value": [
-     "sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
-     "No significant differences were observed between nsLD and nsHD for regional lobar GM or total GM volumes."
-    ],
-    "value_source": "reported",
     "evidence": {
      "status": "not_found"
     }
@@ -559,17 +416,10 @@
      ]
     }
    },
-   "regions": [
-    "r_frontal_gm",
-    "r_parietal_gm",
-    "r_temporal_gm",
-    "r_total_cortical_gm"
-   ],
-   "defines_regions": [],
-   "measure": "mea_neocortical_gm_volume",
+   "measure": "mea_gm_volume",
    "groups": [
     {
-     "group": "grp_sHD",
+     "group": "grp_shd",
      "n": {
       "extraction_status": "extracted",
       "value": 17,
@@ -581,9 +431,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "From the 49 actively drinking HD participants in , we identified 17 smoking HD (sHD; 3 females)",
-           "start_char": 4850,
-           "end_char": 4945
+           "text": "we identified 17 smoking HD (sHD; 3 females) who reported smoking daily ( n = 10) or nearly everyday ( n = 7) for at least 6 months prior to enrolment in the study.",
+           "start_char": 4901,
+           "end_char": 5065
           }
          ]
         }
@@ -592,7 +442,340 @@
      }
     },
     {
-     "group": "grp_nsHD",
+     "group": "grp_nshd",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 16,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "The 16 non-smoking HD (nsHD; 3 females) and 20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort by age matching to the sHD sample.",
+           "start_char": 5467,
+           "end_char": 5630
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "effect": {
+    "cells": [
+     {
+      "term": "trm_group_three",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "sHD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "we identified 17 smoking HD (sHD; 3 females) who reported smoking daily ( n = 10) or nearly everyday ( n = 7) for at least 6 months prior to enrolment in the study.",
+            "start_char": 4901,
+            "end_char": 5065
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "negative",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "sHD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
+            "start_char": 14970,
+            "end_char": 15037
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "term": "trm_group_three",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "nsHD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The 16 non-smoking HD (nsHD; 3 females) and 20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort by age matching to the sHD sample.",
+            "start_char": 5467,
+            "end_char": 5630
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "positive",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "nsHD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
+            "start_char": 14970,
+            "end_char": 15037
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "kind": {
+     "extraction_status": "extracted",
+     "value": "contrast",
+     "value_source": "generated",
+     "evidence": {
+      "status": "present",
+      "sets": [
+       {
+        "source": "model_quote",
+        "spans": [
+         {
+          "text": "sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
+          "start_char": 14970,
+          "end_char": 15037
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "statistic": {
+     "family": {
+      "extraction_status": "extracted",
+      "value": "t",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "Significant univariate tests were further evaluated for group differences among sHD, nsHD, and nsLD with Bonferroni corrected pairwise t -tests.",
+           "start_char": 11243,
+           "end_char": 11387
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "degrees_of_freedom_numerator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     },
+     "degrees_of_freedom_denominator": {
+      "extraction_status": "not_reported",
+      "evidence": {
+       "status": "not_applicable"
+      }
+     }
+    }
+   },
+   "details": {
+    "details_type": "MassUnivariateDetails"
+   },
+   "acquisitions": [
+    "acq_mri"
+   ],
+   "model_estimation": "mod_three_group_mancova",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "sHD demonstrated smaller temporal GM and total GM volumes than nsHD, with a trend for smaller parietal GM in sHD; the significant differences remained after covarying for lifetime ethanol consumption, drinks per month over lifetime, and months of heavy drinking."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Notably, sHD demonstrated smaller temporal GM and total GM volumes than nsHD (both p ≤ .02), with a trend ( p = .07) for smaller parietal GM in sHD (see ). Given the greater total ethanol consumption and number of drinks per month over lifetime in sHD compared to nsHD, we used these variable as well as months of heavy drinking as covariates in pairwise comparisons of sHD and nsHD. The neocortical GM differences between sHD and nsHD remained significant after covarying for these variables.",
+         "start_char": 14961,
+         "end_char": 15454
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "source_table_analysis": {
+    "extraction_status": "not_reported",
+    "unreported_reason": "outside_text",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "coordinate_space": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "model_representation_notes": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "regions": [
+    "reg_temporal_lobe",
+    "reg_frontal_lobe",
+    "reg_parietal_lobe",
+    "reg_occipital_lobe"
+   ],
+   "assessments": [
+    "asm_structured_clinical_intervie",
+    "asm_lifetime_drinking_history",
+    "asm_beck_depression_inventory",
+    "asm_substance_use_questionnaire",
+    "asm_american_national_adult"
+   ],
+   "tables": [
+    "tbltable1"
+   ]
+  },
+  {
+   "local_id": "ana_three_group_gm_omnibus",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "sHD, nsHD, and nsLD regional neocortical GM MANCOVA",
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
+   "definition": {
+    "extraction_status": "extracted",
+    "value": "MANCOVA for regional neocortical GM comparing sHD, nsHD, and nsLD",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "MANCOVA (Wilks’ Lambda) for regional neocortical GM was significant [ F (2, 92) = 2.19, p = .04)].",
+         "start_char": 14479,
+         "end_char": 14577
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "prespecification": {
+    "extraction_status": "extracted",
+    "value": "exploratory",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "spatial_scope": {
+    "extraction_status": "extracted",
+    "value": "roi",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "An atlas-based deformable registration method was used to automatically identify regions of interest (ROIs) in the brain as described in .",
+         "start_char": 8961,
+         "end_char": 9099
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "measure": "mea_gm_volume",
+   "groups": [
+    {
+     "group": "grp_shd",
+     "n": {
+      "extraction_status": "extracted",
+      "value": 17,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "we identified 17 smoking HD (sHD; 3 females) who reported smoking daily ( n = 10) or nearly everyday ( n = 7) for at least 6 months prior to enrolment in the study.",
+           "start_char": 4901,
+           "end_char": 5065
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "group": "grp_nshd",
      "n": {
       "extraction_status": "extracted",
       "value": 16,
@@ -615,7 +798,7 @@
      }
     },
     {
-     "group": "grp_nsLD",
+     "group": "grp_nsld",
      "n": {
       "extraction_status": "extracted",
       "value": 20,
@@ -653,9 +836,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Notably, sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
-            "start_char": 14961,
-            "end_char": 15037
+            "text": "we identified 17 smoking HD (sHD; 3 females) who reported smoking daily ( n = 10) or nearly everyday ( n = 7) for at least 6 months prior to enrolment in the study.",
+            "start_char": 4901,
+            "end_char": 5065
            }
           ]
          }
@@ -664,22 +847,10 @@
       },
       "direction": {
        "extraction_status": "extracted",
-       "value": "negative",
+       "value": "undirected",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "model_quote",
-          "spans": [
-           {
-            "text": "Notably, sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
-            "start_char": 14961,
-            "end_char": 15037
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -693,9 +864,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Notably, sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
-            "start_char": 14961,
-            "end_char": 15037
+            "text": "MANCOVA (Wilks’ Lambda) for regional neocortical GM was significant [ F (2, 92) = 2.19, p = .04)].",
+            "start_char": 14479,
+            "end_char": 14577
            }
           ]
          }
@@ -716,9 +887,9 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Notably, sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
-            "start_char": 14961,
-            "end_char": 15037
+            "text": "The 16 non-smoking HD (nsHD; 3 females) and 20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort by age matching to the sHD sample.",
+            "start_char": 5467,
+            "end_char": 5630
            }
           ]
          }
@@ -727,22 +898,10 @@
       },
       "direction": {
        "extraction_status": "extracted",
-       "value": "positive",
+       "value": "undirected",
        "value_source": "generated",
        "evidence": {
-        "status": "present",
-        "sets": [
-         {
-          "source": "literal_match",
-          "spans": [
-           {
-            "text": "Additionally, the designation of smoking status was based on self-report rather than confirmation with biological measures (e.g., breath carbon monoxide level, positive plasma nicotine).",
-            "start_char": 24065,
-            "end_char": 24251
-           }
-          ]
-         }
-        ]
+        "status": "not_found"
        }
       },
       "label": {
@@ -756,9 +915,60 @@
           "source": "model_quote",
           "spans": [
            {
-            "text": "Notably, sHD demonstrated smaller temporal GM and total GM volumes than nsHD",
-            "start_char": 14961,
-            "end_char": 15037
+            "text": "MANCOVA (Wilks’ Lambda) for regional neocortical GM was significant [ F (2, 92) = 2.19, p = .04)].",
+            "start_char": 14479,
+            "end_char": 14577
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "term": "trm_group_three",
+      "level": {
+       "extraction_status": "extracted",
+       "value": "nsLD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "The 16 non-smoking HD (nsHD; 3 females) and 20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort by age matching to the sHD sample.",
+            "start_char": 5467,
+            "end_char": 5630
+           }
+          ]
+         }
+        ]
+       }
+      },
+      "direction": {
+       "extraction_status": "extracted",
+       "value": "undirected",
+       "value_source": "generated",
+       "evidence": {
+        "status": "not_found"
+       }
+      },
+      "label": {
+       "extraction_status": "extracted",
+       "value": "nsLD",
+       "value_source": "reported",
+       "evidence": {
+        "status": "present",
+        "sets": [
+         {
+          "source": "model_quote",
+          "spans": [
+           {
+            "text": "MANCOVA (Wilks’ Lambda) for regional neocortical GM was significant [ F (2, 92) = 2.19, p = .04)].",
+            "start_char": 14479,
+            "end_char": 14577
            }
           ]
          }
@@ -769,7 +979,7 @@
     ],
     "kind": {
      "extraction_status": "extracted",
-     "value": "contrast",
+     "value": "omnibus",
      "value_source": "generated",
      "evidence": {
       "status": "present",
@@ -854,20 +1064,20 @@
     "details_type": "MassUnivariateDetails"
    },
    "acquisitions": [
-    "acq_mri",
-    "dev_siemens_vision"
+    "acq_mri"
    ],
-   "tasks": [],
-   "model_estimation": "mod_mancova_age",
-   "inference_settings": "inf_p05_bonferroni",
-   "tables": [
-    "tbl1"
-   ],
-   "assessments": [
-    "asm_scid_dsmiv",
-    "asm_bdi",
-    "asm_ldh"
-   ],
+   "model_estimation": "mod_three_group_mancova",
+   "interpretations": {
+    "extraction_status": "extracted",
+    "value": [
+     "The MANCOVA for regional neocortical GM was significant. ANCOVAs were significant for frontal, parietal, temporal, and total cortical GM, with a trend for occipital GM; sHD had smaller volumes than nsLD, sHD had smaller temporal and total GM volumes than nsHD, and nsLD and nsHD did not differ significantly."
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found",
+     "unlocated_quotes": 1
+    }
+   },
    "source_table_analysis": {
     "extraction_status": "not_reported",
     "unreported_reason": "outside_text",
@@ -886,7 +1096,23 @@
     "evidence": {
      "status": "not_applicable"
     }
-   }
+   },
+   "regions": [
+    "reg_frontal_lobe",
+    "reg_parietal_lobe",
+    "reg_temporal_lobe",
+    "reg_occipital_lobe"
+   ],
+   "assessments": [
+    "asm_structured_clinical_intervie",
+    "asm_lifetime_drinking_history",
+    "asm_beck_depression_inventory",
+    "asm_substance_use_questionnaire",
+    "asm_american_national_adult"
+   ],
+   "tables": [
+    "tbltable1"
+   ]
   }
  ],
  "acquisitions": [
@@ -904,16 +1130,24 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MRI data acquisition was conducted on a clinical 1.5 T MR scanner",
-         "start_char": 8102,
-         "end_char": 8167
+         "text": "MRI",
+         "start_char": 209,
+         "end_char": 212
         }
        ]
       }
      ]
     }
    },
-   "device": "dev_siemens_vision",
+   "device": "dev_vision",
+   "brain_coverage": {
+    "extraction_status": "extracted",
+    "value": "whole_brain",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
    "magnetic_field_strength_tesla": {
     "extraction_status": "extracted",
     "value": 1.5,
@@ -925,8 +1159,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "clinical 1.5 T MR scanner",
-         "start_char": 8142,
+         "text": "MRI data acquisition was conducted on a clinical 1.5 T MR scanner",
+         "start_char": 8102,
          "end_char": 8167
         }
        ]
@@ -936,7 +1170,27 @@
    },
    "pulse_sequence_type": {
     "extraction_status": "extracted",
-    "value": "double spin-echo and Magnetization Prepared Rapid Acquisition Gradient Echo (MPRAGE)",
+    "value": "MPRAGE",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "nner (Vision, Siemens Medical Systems, Iselin, NJ) and consisted of two sequences: (1) double spin-echo (TR/TE 1 /TE 2 = 2500 ms/20 ms/80 ms, 1 mm × 1 mm in-plane resolution, 3 mm slice thickness, no slice gap, oriented at the orbital-metal angle +5° as seen in the midsagittal scout) yielded proton density and T 2 -weighted MR images and (2) Magnetization Prepared Rapid Acquisition Gradient Echo (MPRAGE; TR/TI/TE = 9.7 ms/300 ms/4 ms, 1 mm × 1 mm in-plane resolution, 1.5 mm slabs; oriented orthogonal to the long axis of the hippocampus) yielded coronal T 1 -weighted (T 1 -w) MR images.",
+         "start_char": 8163,
+         "end_char": 8755
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "mr_acquisition_type": {
+    "extraction_status": "extracted",
+    "value": "3D",
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
@@ -953,8 +1207,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MPRAGE; TR/TI/TE = 9.7 ms/300 ms/4 ms",
-         "start_char": 8563,
+         "text": "TR/TI/TE = 9.7 ms/300 ms/4 ms",
+         "start_char": 8571,
          "end_char": 8600
         }
        ]
@@ -965,8 +1219,6 @@
    "echo_time_seconds": {
     "extraction_status": "extracted",
     "value": [
-     0.02,
-     0.08,
      0.004
     ],
     "value_source": "reported",
@@ -977,61 +1229,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "double spin-echo (TR/TE 1 /TE 2 = 2500 ms/20 ms/80 ms",
-         "start_char": 8250,
-         "end_char": 8303
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquisition_voxel_size_mm": {
-    "extraction_status": "extracted",
-    "value": [
-     1,
-     1,
-     1.5
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "1 mm × 1 mm in-plane resolution, 1.5 mm slabs",
-         "start_char": 8602,
-         "end_char": 8647
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquisition_duration_seconds": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "dev_siemens_vision",
-   "manufacturer": {
-    "extraction_status": "extracted",
-    "value": "Siemens Medical Systems",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "MRI data acquisition was conducted on a clinical 1.5 T MR scanner (Vision, Siemens Medical Systems, Iselin, NJ) and consisted of two sequences: (1) double spin-echo (TR/TE 1 /TE 2 = 2500 ms/20 ms/80 ms, 1 mm × 1 mm in-plane resolution, 3 mm slice thickness, no slice gap, oriented at the orbital-metal angle +5° as seen in the midsagittal scout) yielded proton density and T 2 -weighted MR images and (2) Magnetization Prepared Rapid Acquisition Gradient Echo (MPRAGE; TR/TI/TE = 9.7 ms/300 ms/4 ms",
-         "start_char": 8102,
+         "text": "TR/TI/TE = 9.7 ms/300 ms/4 ms",
+         "start_char": 8571,
          "end_char": 8600
         }
        ]
@@ -1039,45 +1238,16 @@
      ]
     }
    },
-   "model": {
-    "extraction_status": "extracted",
-    "value": "Vision",
-    "value_source": "reported",
+   "acquisition_voxel_size_mm": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "MRI data acquisition was conducted on a clinical 1.5 T MR scanner (Vision, Siemens Medical Systems, Iselin, NJ) and consisted of two sequences: (1) double spin-echo (TR/TE 1 /TE 2 = 2500 ms/20 ms/80 ms, 1 mm × 1 mm in-plane resolution, 3 mm slice thickness, no slice gap, oriented at the orbital-metal angle +5° as seen in the midsagittal scout) yielded proton density and T 2 -weighted MR images and (2) Magnetization Prepared Rapid Acquisition Gradient Echo (MPRAGE; TR/T",
-         "start_char": 8102,
-         "end_char": 8575
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
-   "acquisition_type": "sMRI",
-   "modality": {
-    "extraction_status": "extracted",
-    "value": "MRI",
-    "value_source": "reported",
+   "number_of_volumes": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MRI",
-         "start_char": 209,
-         "end_char": 212
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "acquisition_duration_seconds": {
@@ -1088,200 +1258,9 @@
    }
   }
  ],
- "assessments": [
-  {
-   "local_id": "asm_scid_dsmiv",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Structured Clinical Interview for DSM-IV Axis I disorders",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "At the time of enrolment, participants completed the Structured Clinical Interview for DSM-IV Axis I disorders ( ), and interviews and questionnaires assessing depressive symptomatology (Beck Depression Inventory, BDI; ), lifetime alcohol consumption (Lifetime Drinking History, LDH; ), and substance use (in-house questionnaire assessing substance type, and quantity and frequency of use).",
-         "start_char": 7023,
-         "end_char": 7413
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "diagnostic interview",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "participants completed the Structured Clinical Interview for DSM-IV Axis I disorders",
-         "start_char": 7049,
-         "end_char": 7133
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Structured Clinical Interview for DSM-IV Axis I disorders administered at enrollment to characterize psychiatric diagnoses and establish alcohol-use and other substance-use diagnoses.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "At the time of enrolment, participants completed the Structured Clinical Interview for DSM-IV Axis I disorders ( ), and interviews and questionnaires assessing depressive symptomatology (Beck Depression Inventory, BDI; ), lifetime alcohol consumption (Lifetime Drinking History, LDH; ), and substance use",
-         "start_char": 7023,
-         "end_char": 7327
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_bdi",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Beck Depression Inventory",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Beck Depression Inventory, BDI",
-         "start_char": 7210,
-         "end_char": 7240
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "clinical scale",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "interviews and questionnaires assessing depressive symptomatology",
-         "start_char": 7143,
-         "end_char": 7208
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Beck Depression Inventory administered at enrollment to assess depressive symptomatology; groups were compared on BDI scores.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Groups were equivalent in age and on BDI scores.",
-         "start_char": 12107,
-         "end_char": 12155
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "asm_ldh",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "Lifetime Drinking History",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "At the time of enrolment, participants completed the Structured Clinical Interview for DSM-IV Axis I disorders ( ), and interviews and questionnaires assessing depressive symptomatology (Beck Depression Inventory, BDI; ), lifetime alcohol consumption (Lifetime Drinking History, LDH; ), and substance use (in-house questionnaire assessing substance type, and quantity and frequency of use).",
-         "start_char": 7023,
-         "end_char": 7413
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "assessment_type": {
-    "extraction_status": "extracted",
-    "value": "questionnaire",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "At the time of enrolment, participants completed the Structured Clinical Interview for DSM-IV Axis I disorders ( ), and interviews and questionnaires assessing depressive symptomatology (Beck Depression Inventory, BDI; ), lifetime alcohol consumption (Lifetime Drinking History, LDH; ), and substance use (in-house questionnaire assessing substance type, and quantity and frequency of use).",
-         "start_char": 7023,
-         "end_char": 7413
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Lifetime Drinking History interview used to quantify drinks in the preceding week, average drinks per month over the previous year and lifetime, months of heavy drinking, years of regular drinking, and cumulative lifetime ethanol consumption.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "From the LDH, we derived the number of drinks in the week prior to enrolment, and average number of drinks per month in the previous year and over lifetime, number of months of heavy drinking (i.e., total number of months over lifetime in which the participant drank in excess of 100 drinks per month), and cumulative ethanol consumption over lifetime in kilograms",
-         "start_char": 7414,
-         "end_char": 7778
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
- ],
  "devices": [
   {
-   "local_id": "dev_siemens_vision",
+   "local_id": "dev_vision",
    "manufacturer": {
     "extraction_status": "extracted",
     "value": "Siemens Medical Systems",
@@ -1326,10 +1305,10 @@
  ],
  "groups": [
   {
-   "local_id": "grp_sHD_nsHD",
+   "local_id": "grp_shd",
    "name": {
     "extraction_status": "extracted",
-    "value": "combined heavy-drinking group",
+    "value": "smoking HD",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1338,9 +1317,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "combined HD group (i.e., nsHD + sHD)",
-         "start_char": 13878,
-         "end_char": 13914
+         "text": "17 smoking HD (sHD; 3 females)",
+         "start_char": 4915,
+         "end_char": 4945
         }
        ]
       }
@@ -1367,260 +1346,11 @@
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "alcohol abuse or dependence"
+     "alcohol dependence or alcohol abuse"
     ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "alcohol use disorders",
-         "start_char": 2057,
-         "end_char": 2078
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Combined actively drinking heavy-drinker group comprising smoking heavy drinkers and non-smoking heavy drinkers, used for comparison with non-smoking light drinkers and in regional brain-volume analyses.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MANCOVA (Wilks’ Lambda) comparing the combined HD group (i.e., nsHD + sHD) to the nsLD group",
-         "start_char": 13840,
-         "end_char": 13932
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 33,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "17 smoking HD (sHD; 3 females)",
-         "start_char": 4915,
-         "end_char": 4945
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 33,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "17 smoking HD (sHD; 3 females)",
-         "start_char": 4915,
-         "end_char": 4945
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Average consumption of at least 100 standard alcoholic drinks per month for men or 80 for women for a minimum of 3 years before enrollment",
-     "Active alcohol consumption at study enrollment",
-     "No general medical, neurologic, or neuropsychiatric condition known or suspected to influence brain morphology"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Classification as a HD required average consumption of at least 100 (80 for women) standard alcoholic drinks per month for a minimum of 3 years prior to enrolment and active alcohol consumption at time of study.",
-         "start_char": 6222,
-         "end_char": 6433
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "DSM-IV dependence on any substance other than alcohol or nicotine within 6 months before enrollment",
-     "Medical, neurologic, or neuropsychiatric conditions known or suspected to influence brain morphology"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "all participants were free of general medical, neurologic and neuropsychiatric conditions known or suspected to influence brain morphology. Subjects were excluded if they met DSM-IV criteria for dependence on any other substance than alcohol or nicotine in the 6 months prior to enrolment.",
-         "start_char": 6487,
-         "end_char": 6776
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Community-dwelling participants originally recruited for a larger longitudinal study of the central nervous system effects of HIV and alcohol use disorders; this report was a retrospective analysis.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Participants in this report and were originally recruited for a larger longitudinal study of the central nervous system effects of HIV and AUD.",
-         "start_char": 4706,
-         "end_char": 4849
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "age-matched",
-         "start_char": 1009,
-         "end_char": 1020
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "DSM-IV",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "DSM-IV criteria",
-         "start_char": 6662,
-         "end_char": 6677
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Non-treatment-seeking, actively drinking heavy drinkers; 26 of 33 met criteria for alcohol dependence and the remainder met criteria for alcohol abuse. Heavy drinking required at least 100 drinks per month for men or 80 for women for at least 3 years.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1638,74 +1368,9 @@
      ]
     }
    },
-   "medications": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "medication_status": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   }
-  },
-  {
-   "local_id": "grp_sHD",
-   "name": {
+   "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "smoking heavy drinkers",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "participants",
-         "start_char": 4883,
-         "end_char": 4895
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "alcohol abuse or dependence"
-    ],
+    "value": "actively drinking heavy drinkers; reported smoking daily or nearly everyday for at least 6 months prior to enrolment",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1714,48 +1379,94 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "alcohol dependence",
-         "start_char": 12546,
-         "end_char": 12564
+         "text": "17 smoking HD (sHD; 3 females) who reported smoking daily ( n = 10) or nearly everyday ( n = 7) for at least 6 months prior to enrolment",
+         "start_char": 4915,
+         "end_char": 5051
         }
        ]
       }
      ]
-    }
-   },
-   "medications": {
-    "extraction_status": "extracted",
-    "value": [
-     "nicotine"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "nicotine",
-         "start_char": 6732,
-         "end_char": 6740
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medication_status": {
-    "extraction_status": "extracted",
-    "value": "smoking",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "sex_distribution": [
     {
      "category": {
+      "extraction_status": "extracted",
+      "value": "females",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "17 smoking HD (sHD; 3 females)",
+           "start_char": 4915,
+           "end_char": 4945
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "count": {
+      "extraction_status": "extracted",
+      "value": 3,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "17 smoking HD (sHD; 3 females)",
+           "start_char": 4915,
+           "end_char": 4945
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "percentage": {
+      "extraction_status": "extracted",
+      "value": 17.6470588235,
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "denominator": {
+      "extraction_status": "extracted",
+      "value": 17,
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "From the 49 actively drinking HD participants in , we identified 17 smoking HD",
+           "start_char": 4850,
+           "end_char": 4928
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "reporting_framework": {
+      "extraction_status": "extracted",
+      "value": "Sex categories reported as females and males",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "category_normalized": {
       "extraction_status": "extracted",
       "value": "female",
       "value_source": "reported",
@@ -1774,21 +1485,31 @@
         }
        ]
       }
+     }
+    },
+    {
+     "category": {
+      "extraction_status": "extracted",
+      "value": "males",
+      "value_source": "generated",
+      "evidence": {
+       "status": "not_found"
+      }
      },
      "count": {
       "extraction_status": "extracted",
-      "value": 3,
-      "value_source": "reported",
+      "value": 14,
+      "value_source": "generated",
       "evidence": {
        "status": "present",
        "sets": [
         {
-         "source": "model_quote",
+         "source": "literal_match",
          "spans": [
           {
-           "text": "3 females",
-           "start_char": 4935,
-           "end_char": 4944
+           "text": "| Education (years) | 14±2 | 15±2 | 13±2 |",
+           "start_char": 26912,
+           "end_char": 26954
           }
          ]
         }
@@ -1797,47 +1518,31 @@
      },
      "percentage": {
       "extraction_status": "extracted",
-      "value": 17.6470588235,
+      "value": 82.3529411765,
       "value_source": "reported",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "3 females",
-           "start_char": 4935,
-           "end_char": 4944
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "denominator": {
       "extraction_status": "extracted",
       "value": 17,
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "17 smoking HD",
-           "start_char": 4915,
-           "end_char": 4928
-          }
-         ]
-        }
-       ]
+       "status": "not_found"
       }
      },
      "reporting_framework": {
       "extraction_status": "extracted",
-      "value": "Sex categories reported as females and the remainder of the group; classification framework otherwise unreported.",
+      "value": "Sex categories reported as females and males",
+      "value_source": "reported",
+      "evidence": {
+       "status": "not_found"
+      }
+     },
+     "category_normalized": {
+      "extraction_status": "extracted",
+      "value": "male",
       "value_source": "reported",
       "evidence": {
        "status": "not_found"
@@ -1845,9 +1550,72 @@
      }
     }
    ],
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "heavy drinkers",
+     "daily or nearly everyday smokers"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "actively drinking HD participants",
+         "start_char": 4862,
+         "end_char": 4895
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Participants in this report and were originally recruited for a larger longitudinal study of the central nervous system effects of HIV and AUD.",
+         "start_char": 4706,
+         "end_char": 4849
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Cardenas et al., 2005",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The goal of this retrospective analysis was to determine if chronic smoking affected brain structure in the non-treatment-seeking heavy drinking sample from our earlier report (i.e., Cardenas et al., 2005).",
+         "start_char": 754,
+         "end_char": 960
+        }
+       ]
+      }
+     ]
+    }
+   },
    "description": {
     "extraction_status": "extracted",
-    "value": "Smoking heavy drinkers who reported smoking daily or nearly every day for at least 6 months before enrollment; the group was the primary smoking heavy-drinker comparison cohort.",
+    "value": "Non-treatment-seeking, actively drinking heavy drinkers who smoked cigarettes daily or nearly every day for at least 6 months before enrollment; 17 participants (3 females).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -1878,23 +1646,9 @@
     }
    },
    "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 17,
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "17 smoking HD",
-         "start_char": 4915,
-         "end_char": 4928
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "acquired_count": {
@@ -1908,8 +1662,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "17 smoking HD",
-         "start_char": 4915,
+         "text": "we identified 17 smoking HD",
+         "start_char": 4901,
          "end_char": 4928
         }
        ]
@@ -1926,10 +1680,9 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Active heavy drinking: at least 100 standard alcoholic drinks per month for men or 80 for women for at least 3 years before enrollment",
+     "Average consumption of at least 100 standard alcoholic drinks per month for men or 80 for women for a minimum of 3 years before enrollment",
      "Active alcohol consumption at enrollment",
-     "Daily or nearly-every-day cigarette smoking for at least 6 months before enrollment",
-     "No general medical, neurologic, or neuropsychiatric condition known or suspected to influence brain morphology"
+     "Daily or nearly-everyday cigarette smoking for at least 6 months before enrollment"
     ],
     "value_source": "reported",
     "evidence": {
@@ -1939,9 +1692,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "reported smoking daily ( n = 10) or nearly everyday ( n = 7) for at least 6 months prior to enrolment",
-         "start_char": 4950,
-         "end_char": 5051
+         "text": "Classification as a HD required average consumption of at least 100 (80 for women) standard alcoholic drinks per month for a minimum of 3 years prior to enrolment and active alcohol consumption at time of study.",
+         "start_char": 6222,
+         "end_char": 6433
         }
        ]
       }
@@ -1951,365 +1704,9 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Sporadic smoking",
+     "General medical, neurologic, or neuropsychiatric conditions known or suspected to influence brain morphology",
      "DSM-IV dependence on any substance other than alcohol or nicotine within 6 months before enrollment",
-     "Medical, neurologic, or neuropsychiatric conditions known or suspected to influence brain morphology"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "did not include sporadic smokers",
-         "start_char": 5132,
-         "end_char": 5164
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_method": {
-    "extraction_status": "extracted",
-    "value": "Community-dwelling participants originally recruited for a larger longitudinal study of the central nervous system effects of HIV and alcohol use disorders; selected retrospectively from the original heavy-drinker sample.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "From the 49 actively drinking HD participants in , we identified 17 smoking HD",
-         "start_char": 4850,
-         "end_char": 4928
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "recruitment_dates": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_mean": {
-    "extraction_status": "extracted",
-    "value": 45.0,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The “daily” sHD were 8 years younger ( p = .04) than the “nearly everyday” sHD",
-         "start_char": 5283,
-         "end_char": 5361
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "age_standard_deviation": {
-    "extraction_status": "extracted",
-    "value": 8.0,
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "age_minimum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_maximum": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_median": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "age_unit": {
-    "extraction_status": "extracted",
-    "value": "years",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "years",
-         "start_char": 5306,
-         "end_char": 5311
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "diagnostic_system": {
-    "extraction_status": "extracted",
-    "value": "DSM-IV",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "DSM-IV criteria",
-         "start_char": 6662,
-         "end_char": 6677
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Non-treatment-seeking, actively drinking heavy drinkers; 14 of 17 met criteria for alcohol dependence and 3 met criteria for alcohol abuse. Three females; 9 Caucasian and 8 African American. Daily smokers numbered 10 and nearly-every-day smokers 7. Mean lifetime ethanol consumption was 597 kg.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "education_summary": {
-    "extraction_status": "extracted",
-    "value": "13 ± 2 years of education",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "nsHD had 2 more years of education than sHD ( p = .04",
-         "start_char": 12204,
-         "end_char": 12257
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "socioeconomic_status_summary": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "diagnostic_instrument": [
-    "asm_scid_dsmiv"
-   ]
-  },
-  {
-   "local_id": "grp_nsHD",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "non-smoking heavy drinkers",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "species": {
-    "extraction_status": "extracted",
-    "value": "human",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "participants",
-         "start_char": 4883,
-         "end_char": 4895
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "medical_condition": {
-    "extraction_status": "extracted",
-    "value": [
-     "alcohol abuse or dependence"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "alcohol dependence",
-         "start_char": 12546,
-         "end_char": 12564
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "medication_status": {
-    "extraction_status": "extracted",
-    "value": "non-smoking",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "non-smoking",
-         "start_char": 1043,
-         "end_char": 1054
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Non-smoking heavy drinkers selected from the larger heavy-drinker cohort by age matching to the smoking heavy-drinker sample; they reported no consumption of any tobacco products in the 6 months before enrollment.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "The 16 non-smoking HD (nsHD; 3 females) and 20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort by age matching to the sHD sample.",
-         "start_char": 5467,
-         "end_char": 5630
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "approached_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "consented_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 16,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "16 non-smoking HD",
-         "start_char": 5471,
-         "end_char": 5488
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "acquired_count": {
-    "extraction_status": "extracted",
-    "value": 16,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "16 non-smoking HD",
-         "start_char": 5471,
-         "end_char": 5488
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "excluded_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "inclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "Active heavy drinking: at least 100 standard alcoholic drinks per month for men or 80 for women for at least 3 years before enrollment",
-     "Active alcohol consumption at enrollment",
-     "No consumption of tobacco products in the 6 months before enrollment",
-     "No general medical, neurologic, or neuropsychiatric condition known or suspected to influence brain morphology"
-    ],
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "nsHD reported no consumption of any tobacco products in the 6 months prior to enrolment.",
-         "start_char": 5631,
-         "end_char": 5719
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "exclusion_criteria": {
-    "extraction_status": "extracted",
-    "value": [
-     "DSM-IV dependence on any substance other than alcohol or nicotine within 6 months before enrollment",
-     "Medical, neurologic, or neuropsychiatric conditions known or suspected to influence brain morphology"
+     "Sporadic cigarette smoking"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2330,7 +1727,7 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Community-dwelling participants originally recruited for a larger longitudinal study of the central nervous system effects of HIV and alcohol use disorders; selected retrospectively from the larger cohort by age matching to the smoking heavy-drinker sample.",
+    "value": "Community-dwelling, non-treatment-seeking participants originally recruited for a larger longitudinal study of the central nervous system effects of HIV and alcohol use disorders.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2339,9 +1736,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "selected from the larger cohort by age matching to the sHD sample",
-         "start_char": 5564,
-         "end_char": 5629
+         "text": "Participants in this report and were originally recruited for a larger longitudinal study of the central nervous system effects of HIV and AUD.",
+         "start_char": 4706,
+         "end_char": 4849
         }
        ]
       }
@@ -2356,18 +1753,42 @@
    },
    "age_mean": {
     "extraction_status": "extracted",
-    "value": 43.0,
+    "value": 45,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "45±8",
+         "start_char": 26905,
+         "end_char": 26909
+        }
+       ]
+      }
+     ]
     }
    },
    "age_standard_deviation": {
     "extraction_status": "extracted",
-    "value": 11.0,
+    "value": 8,
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "45±8",
+         "start_char": 26905,
+         "end_char": 26909
+        }
+       ]
+      }
+     ]
     }
    },
    "age_minimum": {
@@ -2399,9 +1820,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "years",
-         "start_char": 5306,
-         "end_char": 5311
+         "text": "Age (years)",
+         "start_char": 26875,
+         "end_char": 26886
         }
        ]
       }
@@ -2419,21 +1840,13 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "DSM-IV criteria",
+         "text": "DSM-IV",
          "start_char": 6662,
-         "end_char": 6677
+         "end_char": 6668
         }
        ]
       }
      ]
-    }
-   },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Non-treatment-seeking, actively drinking heavy drinkers; 12 of 16 met criteria for alcohol dependence and 4 met criteria for alcohol abuse. Three females. Mean lifetime ethanol consumption was 367 kg.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
     }
    },
    "medications": {
@@ -2442,9 +1855,15 @@
      "status": "not_applicable"
     }
    },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "education_summary": {
     "extraction_status": "extracted",
-    "value": "15 ± 2 years of education",
+    "value": "13 ± 2 years of education",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2453,9 +1872,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "nsHD had 2 more years of education than sHD ( p = .04",
-         "start_char": 12204,
-         "end_char": 12257
+         "text": "13±2",
+         "start_char": 26948,
+         "end_char": 26952
         }
        ]
       }
@@ -2468,18 +1887,78 @@
      "status": "not_applicable"
     }
    },
-   "diagnostic_instrument": [
-    "asm_scid_dsmiv"
-   ]
-  },
-  {
-   "local_id": "grp_nsLD",
-   "name": {
+   "sample_overlap_count": {
     "extraction_status": "extracted",
-    "value": "non-smoking light drinkers",
+    "value": 17,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "From the 49 actively drinking HD participants in , we identified 17 smoking HD",
+         "start_char": 4850,
+         "end_char": 4928
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
     "value_source": "reported",
     "evidence": {
      "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age (years)",
+         "start_char": 26875,
+         "end_char": 26886
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_structured_clinical_intervie"
+   ]
+  },
+  {
+   "local_id": "grp_nshd",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "non-smoking HD",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "16 non-smoking HD (nsHD; 3 females)",
+         "start_char": 5471,
+         "end_char": 5506
+        }
+       ]
+      }
+     ]
     }
    },
    "species": {
@@ -2493,27 +1972,19 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "participants",
-         "start_char": 4883,
-         "end_char": 4895
+         "text": "all participants",
+         "start_char": 6487,
+         "end_char": 6503
         }
        ]
       }
      ]
     }
    },
-   "is_healthy": {
-    "extraction_status": "extracted",
-    "value": true,
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
    "medical_condition": {
     "extraction_status": "extracted",
     "value": [
-     "no history of current or past alcohol or substance abuse"
+     "alcohol dependence or alcohol abuse"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2523,18 +1994,18 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "no history of current or past alcohol or substance abuse",
-         "start_char": 6106,
-         "end_char": 6162
+         "text": "Fourteen of 17 sHD, and 12 of 16 nsHD met criteria for alcohol dependence, and the rest of the HD met criteria for alcohol abuse.",
+         "start_char": 12491,
+         "end_char": 12620
         }
        ]
       }
      ]
     }
    },
-   "medication_status": {
+   "clinical_characteristics": {
     "extraction_status": "extracted",
-    "value": "non-smoking",
+    "value": "actively drinking heavy drinkers; no consumption of tobacco products in the 6 months prior to enrolment",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2543,9 +2014,71 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "non-smoking",
-         "start_char": 1043,
-         "end_char": 1054
+         "text": "The 16 non-smoking HD (nsHD; 3 females)",
+         "start_char": 5467,
+         "end_char": 5506
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "heavy drinkers"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The 16 non-smoking HD",
+         "start_char": 5467,
+         "end_char": 5488
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "recruited",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Participants in this report and were originally recruited for a larger longitudinal study of the central nervous system effects of HIV and AUD.",
+         "start_char": 4706,
+         "end_char": 4849
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Cardenas et al., 2005",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The goal of this retrospective analysis was to determine if chronic smoking affected brain structure in the non-treatment-seeking heavy drinking sample from our earlier report (i.e., Cardenas et al., 2005).",
+         "start_char": 754,
+         "end_char": 960
         }
        ]
       }
@@ -2554,7 +2087,7 @@
    },
    "description": {
     "extraction_status": "extracted",
-    "value": "Non-smoking light drinkers serving as the control group; selected from the larger cohort and age-matched to the smoking heavy-drinker sample.",
+    "value": "Non-treatment-seeking, actively drinking heavy drinkers who reported no consumption of any tobacco products during the 6 months before enrollment; 16 participants (3 females).",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2563,9 +2096,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort by age matching to the sHD sample.",
-         "start_char": 5511,
-         "end_char": 5630
+         "text": "The 16 non-smoking HD (nsHD; 3 females)",
+         "start_char": 5467,
+         "end_char": 5506
         }
        ]
       }
@@ -2585,28 +2118,14 @@
     }
    },
    "enrolled_count": {
-    "extraction_status": "extracted",
-    "value": 20,
-    "value_source": "reported",
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "20 non-smoking light drinkers",
-         "start_char": 5511,
-         "end_char": 5540
-        }
-       ]
-      }
-     ]
+     "status": "not_applicable"
     }
    },
    "acquired_count": {
     "extraction_status": "extracted",
-    "value": 20,
+    "value": 16,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2615,9 +2134,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "20 non-smoking light drinkers",
-         "start_char": 5511,
-         "end_char": 5540
+         "text": "The 16 non-smoking HD (nsHD; 3 females)",
+         "start_char": 5467,
+         "end_char": 5506
         }
        ]
       }
@@ -2633,10 +2152,439 @@
    "inclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Lifetime average consumption of no more than 45 standard alcoholic drinks per month, or no more than 35 for women",
+     "Average consumption of at least 100 standard alcoholic drinks per month for men or 80 for women for a minimum of 3 years before enrollment",
+     "Active alcohol consumption at enrollment",
+     "No consumption of tobacco products during the 6 months before enrollment"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Classification as a HD required average consumption of at least 100 (80 for women) standard alcoholic drinks per month for a minimum of 3 years prior to enrolment and active alcohol consumption at time of study.",
+         "start_char": 6222,
+         "end_char": 6433
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "exclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "General medical, neurologic, or neuropsychiatric conditions known or suspected to influence brain morphology",
+     "DSM-IV dependence on any substance other than alcohol or nicotine within 6 months before enrollment"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Subjects were excluded if they met DSM-IV criteria for dependence on any other substance than alcohol or nicotine in the 6 months prior to enrolment.",
+         "start_char": 6627,
+         "end_char": 6776
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_method": {
+    "extraction_status": "extracted",
+    "value": "Community-dwelling, non-treatment-seeking participants originally recruited for a larger longitudinal study of the central nervous system effects of HIV and alcohol use disorders; selected by age matching to the smoking heavy drinkers.",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The 16 non-smoking HD (nsHD; 3 females) and 20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort by age matching to the sHD sample.",
+         "start_char": 5467,
+         "end_char": 5630
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "recruitment_dates": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_mean": {
+    "extraction_status": "extracted",
+    "value": 43,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "43±11",
+         "start_char": 26897,
+         "end_char": 26902
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_standard_deviation": {
+    "extraction_status": "extracted",
+    "value": 11,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "43±11",
+         "start_char": 26897,
+         "end_char": 26902
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "age_minimum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_maximum": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_median": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "age_unit": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age (years)",
+         "start_char": 26875,
+         "end_char": 26886
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_system": {
+    "extraction_status": "extracted",
+    "value": "DSM-IV",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "DSM-IV",
+         "start_char": 6662,
+         "end_char": 6668
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medications": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "medication_status": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "education_summary": {
+    "extraction_status": "extracted",
+    "value": "15 ± 2 years of education",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "15±2",
+         "start_char": 26941,
+         "end_char": 26945
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "socioeconomic_status_summary": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "sample_overlap_count": {
+    "extraction_status": "extracted",
+    "value": 16,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The 16 non-smoking HD (nsHD; 3 females)",
+         "start_char": 5467,
+         "end_char": 5506
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": false,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age (years)",
+         "start_char": 26875,
+         "end_char": 26886
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "diagnostic_instrument": [
+    "asm_structured_clinical_intervie"
+   ]
+  },
+  {
+   "local_id": "grp_nsld",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "non-smoking light drinkers",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "20 non-smoking light drinkers (nsLD; 3 females)",
+         "start_char": 5511,
+         "end_char": 5558
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "species": {
+    "extraction_status": "extracted",
+    "value": "human",
+    "value_source": "generated",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "all participants",
+         "start_char": 6487,
+         "end_char": 6503
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "population_characteristics": {
+    "extraction_status": "extracted",
+    "value": [
+     "light drinkers"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "20 non-smoking light drinkers",
+         "start_char": 5511,
+         "end_char": 5540
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source": {
+    "extraction_status": "extracted",
+    "value": "previously_reported",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "The 16 non-smoking HD (nsHD; 3 females) and 20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort",
+         "start_char": 5467,
+         "end_char": 5595
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sample_source_reference": {
+    "extraction_status": "extracted",
+    "value": "Cardenas et al., 2005",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "The goal of this retrospective analysis was to determine if chronic smoking affected brain structure in the non-treatment-seeking heavy drinking sample from our earlier report (i.e., Cardenas et al., 2005).",
+         "start_char": 754,
+         "end_char": 960
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Non-smoking light drinkers serving as comparison controls; 20 participants (3 females).",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "20 non-smoking light drinkers (nsLD; 3 females)",
+         "start_char": 5511,
+         "end_char": 5558
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "approached_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "consented_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "enrolled_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "acquired_count": {
+    "extraction_status": "extracted",
+    "value": 20,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "20 non-smoking light drinkers (nsLD; 3 females)",
+         "start_char": 5511,
+         "end_char": 5558
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "excluded_count": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
+   "inclusion_criteria": {
+    "extraction_status": "extracted",
+    "value": [
+     "Lifetime average of no more than 45 standard alcoholic drinks per month for men or 35 for women",
      "No history of current or past alcohol or substance abuse",
-     "No history of drinking more than 100 drinks per month",
-     "No general medical, neurologic, or neuropsychiatric condition known or suspected to influence brain morphology"
+     "No history of drinking more than 100 standard alcoholic drinks per month",
+     "No consumption of tobacco products during the 6 months before enrollment"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2658,9 +2606,7 @@
    "exclusion_criteria": {
     "extraction_status": "extracted",
     "value": [
-     "Current or past alcohol or substance abuse",
-     "History of drinking more than 100 drinks per month",
-     "Medical, neurologic, or neuropsychiatric conditions known or suspected to influence brain morphology"
+     "General medical, neurologic, or neuropsychiatric conditions known or suspected to influence brain morphology"
     ],
     "value_source": "reported",
     "evidence": {
@@ -2670,9 +2616,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "with no history of current or past alcohol or substance abuse and no history of drinking more than 100 drinks per month",
+         "text": "with no history of current or past alcohol or substance abuse",
          "start_char": 6101,
-         "end_char": 6220
+         "end_char": 6162
         }
        ]
       }
@@ -2681,7 +2627,7 @@
    },
    "recruitment_method": {
     "extraction_status": "extracted",
-    "value": "Community-dwelling participants originally recruited for a larger longitudinal study of the central nervous system effects of HIV and alcohol use disorders; selected retrospectively from the original light-drinker cohort.",
+    "value": "Community-dwelling light-drinking comparison participants originally recruited for a larger longitudinal study; selected by age matching to the smoking heavy drinkers.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2690,9 +2636,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "selected from the larger cohort by age matching to the sHD sample",
-         "start_char": 5564,
-         "end_char": 5629
+         "text": "The 16 non-smoking HD (nsHD; 3 females) and 20 non-smoking light drinkers (nsLD; 3 females) were selected from the larger cohort by age matching to the sHD sample.",
+         "start_char": 5467,
+         "end_char": 5630
         }
        ]
       }
@@ -2707,7 +2653,7 @@
    },
    "age_mean": {
     "extraction_status": "extracted",
-    "value": 43.0,
+    "value": 43,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2716,8 +2662,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Age (years) | 43±10",
-         "start_char": 26875,
+         "text": "43±10",
+         "start_char": 26889,
          "end_char": 26894
         }
        ]
@@ -2727,7 +2673,7 @@
    },
    "age_standard_deviation": {
     "extraction_status": "extracted",
-    "value": 10.0,
+    "value": 10,
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2736,8 +2682,8 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "Age (years) | 43±10",
-         "start_char": 26875,
+         "text": "43±10",
+         "start_char": 26889,
          "end_char": 26894
         }
        ]
@@ -2774,9 +2720,31 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "years",
-         "start_char": 5306,
-         "end_char": 5311
+         "text": "Age (years)",
+         "start_char": 26875,
+         "end_char": 26886
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "medical_condition": {
+    "extraction_status": "extracted",
+    "value": [
+     "No current or past alcohol or substance abuse"
+    ],
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "no history of current or past alcohol or substance abuse",
+         "start_char": 6106,
+         "end_char": 6162
         }
        ]
       }
@@ -2786,6 +2754,14 @@
    "diagnostic_system": {
     "extraction_status": "extracted",
     "value": "DSM-IV",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "clinical_characteristics": {
+    "extraction_status": "extracted",
+    "value": "Non-smoking light drinkers; lifetime average consumption no more than 45 standard drinks per month for men or 35 for women.",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -2794,24 +2770,22 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "DSM-IV criteria",
-         "start_char": 6662,
-         "end_char": 6677
+         "text": "nsLD participants consumed a lifetime average of less than or equal to 45 (35 for women) standard alcoholic drinks per month",
+         "start_char": 5836,
+         "end_char": 5960
         }
        ]
       }
      ]
     }
    },
-   "clinical_characteristics": {
-    "extraction_status": "extracted",
-    "value": "Non-smoking light drinkers with no current or past alcohol or substance abuse; 3 females. Mean lifetime average consumption was 10 ± 8 drinks per month.",
-    "value_source": "reported",
+   "medications": {
+    "extraction_status": "not_reported",
     "evidence": {
-     "status": "not_found"
+     "status": "not_applicable"
     }
    },
-   "medications": {
+   "medication_status": {
     "extraction_status": "not_reported",
     "evidence": {
      "status": "not_applicable"
@@ -2828,9 +2802,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "nsLD and nsHD were equivalent on education",
-         "start_char": 12156,
-         "end_char": 12198
+         "text": "14±2",
+         "start_char": 26934,
+         "end_char": 26938
         }
        ]
       }
@@ -2843,207 +2817,62 @@
      "status": "not_applicable"
     }
    },
+   "sample_overlap_count": {
+    "extraction_status": "extracted",
+    "value": 20,
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "20 non-smoking light drinkers (nsLD; 3 females)",
+         "start_char": 5511,
+         "end_char": 5558
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "is_healthy": {
+    "extraction_status": "extracted",
+    "value": true,
+    "value_source": "reported",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "age_unit_normalized": {
+    "extraction_status": "extracted",
+    "value": "years",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "Age (years)",
+         "start_char": 26875,
+         "end_char": 26886
+        }
+       ]
+      }
+     ]
+    }
+   },
    "diagnostic_instrument": [
-    "asm_scid_dsmiv"
-   ]
-  }
- ],
- "inference_settings": [
-  {
-   "local_id": "inf_p05_bonferroni",
-   "inference_level": {
-    "extraction_status": "extracted",
-    "value": "region",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "literal_match",
-       "spans": [
-        {
-         "text": "Additionally, there were no volumetric disparities in any region or structure between the daily-smoking and near-daily-smoking participants comprising the sHD group.",
-         "start_char": 16126,
-         "end_char": 16291
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "height_threshold_value": {
-    "extraction_status": "extracted",
-    "value": 0.05,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Significant MANCOVAs ( p ≤ .05)",
-         "start_char": 10657,
-         "end_char": 10688
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "multiple_comparison_method": {
-    "extraction_status": "extracted",
-    "value": "Bonferroni",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Bonferroni corrected pairwise t -tests",
-         "start_char": 11348,
-         "end_char": 11386
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "alpha_level": {
-    "extraction_status": "extracted",
-    "value": 0.05,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Significant MANCOVAs ( p ≤ .05)",
-         "start_char": 10657,
-         "end_char": 10688
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "height_threshold_type": {
-    "extraction_status": "extracted",
-    "value": "p",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "p",
-         "start_char": 121,
-         "end_char": 122
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "cluster_extent_threshold": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "clusterwise_threshold_value": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "correction_scope": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "for multiple correlations",
-         "start_char": 16335,
-         "end_char": 16360
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "search_volume": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "neighborhood_definition": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "tfce_used": {
-    "extraction_status": "extracted",
-    "value": false,
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "MANCOVA",
-         "start_char": 10337,
-         "end_char": 10344
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "tfce_parameters": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "permutation_count": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "number_of_tests": {
-    "extraction_status": "not_reported",
-    "evidence": {
-     "status": "not_applicable"
-    }
-   },
-   "correction_regions": [
-    "r_frontal_gm",
-    "r_parietal_gm",
-    "r_temporal_gm",
-    "r_total_cortical_gm"
+    "asm_structured_clinical_intervie"
    ]
   }
  ],
  "measures": [
   {
-   "local_id": "mea_neocortical_gm_volume",
+   "local_id": "mea_gm_volume",
    "family": {
     "extraction_status": "extracted",
     "value": "structural_morphometry",
@@ -3057,24 +2886,12 @@
     "value": "gray_matter_volume",
     "value_source": "generated",
     "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "neocortical gray matter (GM)",
-         "start_char": 1177,
-         "end_char": 1205
-        }
-       ]
-      }
-     ]
+     "status": "not_found"
     }
    },
    "source_label": {
     "extraction_status": "extracted",
-    "value": "neocortical gray matter volume",
+    "value": "regional neocortical gray matter volume",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3083,9 +2900,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "neocortical GM",
-         "start_char": 1447,
-         "end_char": 1461
+         "text": "regional neocortical GM",
+         "start_char": 13936,
+         "end_char": 13959
         }
        ]
       }
@@ -3094,7 +2911,7 @@
    },
    "specific_metric": {
     "extraction_status": "extracted",
-    "value": "Regional and total neocortical gray matter volume",
+    "value": "Regional neocortical gray matter volume",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3103,9 +2920,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "regional and total cortical GM",
-         "start_char": 10759,
-         "end_char": 10789
+         "text": "regional neocortical GM",
+         "start_char": 13936,
+         "end_char": 13959
         }
        ]
       }
@@ -3122,7 +2939,7 @@
  ],
  "model_estimations": [
   {
-   "local_id": "mod_mancova_age",
+   "local_id": "mod_three_group_mancova",
    "model_family": {
     "extraction_status": "extracted",
     "value": "ancova",
@@ -3134,9 +2951,9 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "MANCOVA",
-         "start_char": 10337,
-         "end_char": 10344
+         "text": "ANCOVAs were significant",
+         "start_char": 14007,
+         "end_char": 14031
         }
        ]
       }
@@ -3174,167 +2991,22 @@
        "source": "model_quote",
        "spans": [
         {
-         "text": "group comparisons",
-         "start_char": 10417,
-         "end_char": 10434
+         "text": "We then separately evaluated regional and total cortical GM, WM and sulcal and ventricular CSF for sHD, nsHD, and nsLD with MANCOVA.",
+         "start_char": 10730,
+         "end_char": 10862
         }
        ]
       }
      ]
     }
    },
+   "spatial_unit": {
+    "extraction_status": "not_reported",
+    "evidence": {
+     "status": "not_applicable"
+    }
+   },
    "terms": [
-    {
-     "local_id": "trm_group_hd_nsld",
-     "name": {
-      "extraction_status": "extracted",
-      "value": "HD versus nsLD group",
-      "value_source": "generated",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "type": {
-      "extraction_status": "extracted",
-      "value": "categorical",
-      "value_source": "reported",
-      "evidence": {
-       "status": "not_found"
-      }
-     },
-     "variation_level": {
-      "extraction_status": "extracted",
-      "value": "between_subject",
-      "value_source": "generated",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "group",
-           "start_char": 1638,
-           "end_char": 1643
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "levels": [
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "combined HD group",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "literal_match",
-           "spans": [
-            {
-             "text": "MANCOVA (Wilks’ Lambda) comparing the combined HD group (i.e., nsHD + sHD) to the nsLD group on regional neocortical GM was significant [ F (4, 47) = 2.77, p = .05)].",
-             "start_char": 13840,
-             "end_char": 14006
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_sHD_nsHD"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 1,
-        "value_source": "reported",
-        "evidence": {
-         "status": "not_found"
-        }
-       }
-      },
-      {
-       "level": {
-        "extraction_status": "extracted",
-        "value": "nsLD",
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "nsLD",
-             "start_char": 1101,
-             "end_char": 1105
-            }
-           ]
-          }
-         ]
-        }
-       },
-       "groups": [
-        "grp_nsLD"
-       ],
-       "order": {
-        "extraction_status": "extracted",
-        "value": 2,
-        "value_source": "reported",
-        "evidence": {
-         "status": "present",
-         "sets": [
-          {
-           "source": "model_quote",
-           "spans": [
-            {
-             "text": "compared to",
-             "start_char": 611,
-             "end_char": 622
-            }
-           ]
-          }
-         ]
-        }
-       }
-      }
-     ],
-     "functional_form": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "unit": {
-      "extraction_status": "not_reported",
-      "evidence": {
-       "status": "not_applicable"
-      }
-     },
-     "source_definition": {
-      "extraction_status": "extracted",
-      "value": "Categorical grouping factor contrasting the combined heavy-drinker group (smoking and non-smoking heavy drinkers) with non-smoking light drinkers.",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "regional cortical GM, WM, and sulcal CSF were separately evaluated with MANCOVA for the HD group irrespective of smoking status (i.e., sHD and nsHD combined) compared to the nsLD group.",
-           "start_char": 10471,
-           "end_char": 10656
-          }
-         ]
-        }
-       ]
-      }
-     }
-    },
     {
      "local_id": "trm_group_three",
      "name": {
@@ -3360,9 +3032,21 @@
      "type": {
       "extraction_status": "extracted",
       "value": "categorical",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "sHD, nsHD, and nsLD",
+           "start_char": 10829,
+           "end_char": 10848
+          }
+         ]
+        }
+       ]
       }
      },
      "variation_level": {
@@ -3376,9 +3060,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "group",
-           "start_char": 1638,
-           "end_char": 1643
+           "text": "We then separately evaluated regional and total cortical GM, WM and sulcal and ventricular CSF for sHD, nsHD, and nsLD with MANCOVA.",
+           "start_char": 10730,
+           "end_char": 10862
           }
          ]
         }
@@ -3408,7 +3092,7 @@
         }
        },
        "groups": [
-        "grp_sHD"
+        "grp_shd"
        ],
        "order": {
         "extraction_status": "extracted",
@@ -3421,9 +3105,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "1",
-             "start_char": 102,
-             "end_char": 103
+             "text": "sHD, nsHD, and nsLD",
+             "start_char": 10829,
+             "end_char": 10848
             }
            ]
           }
@@ -3453,7 +3137,7 @@
         }
        },
        "groups": [
-        "grp_nsHD"
+        "grp_nshd"
        ],
        "order": {
         "extraction_status": "extracted",
@@ -3466,9 +3150,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "2",
-             "start_char": 123,
-             "end_char": 124
+             "text": "sHD, nsHD, and nsLD",
+             "start_char": 10829,
+             "end_char": 10848
             }
            ]
           }
@@ -3498,7 +3182,7 @@
         }
        },
        "groups": [
-        "grp_nsLD"
+        "grp_nsld"
        ],
        "order": {
         "extraction_status": "extracted",
@@ -3511,9 +3195,9 @@
            "source": "model_quote",
            "spans": [
             {
-             "text": "3",
-             "start_char": 133,
-             "end_char": 134
+             "text": "sHD, nsHD, and nsLD",
+             "start_char": 10829,
+             "end_char": 10848
             }
            ]
           }
@@ -3536,7 +3220,7 @@
      },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Categorical three-level grouping factor comprising smoking heavy drinkers, non-smoking heavy drinkers, and non-smoking light drinkers.",
+      "value": "Three-level group factor comprising smoking heavy drinkers (sHD), non-smoking heavy drinkers (nsHD), and non-smoking light drinkers (nsLD).",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -3580,9 +3264,21 @@
      "type": {
       "extraction_status": "extracted",
       "value": "continuous",
-      "value_source": "reported",
+      "value_source": "generated",
       "evidence": {
-       "status": "not_found"
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age as a covariate",
+           "start_char": 10351,
+           "end_char": 10369
+          }
+         ]
+        }
+       ]
       }
      },
      "variation_level": {
@@ -3596,29 +3292,9 @@
          "source": "model_quote",
          "spans": [
           {
-           "text": "age–volume relationships",
-           "start_char": 10385,
-           "end_char": 10409
-          }
-         ]
-        }
-       ]
-      }
-     },
-     "unit": {
-      "extraction_status": "extracted",
-      "value": "years",
-      "value_source": "reported",
-      "evidence": {
-       "status": "present",
-       "sets": [
-        {
-         "source": "model_quote",
-         "spans": [
-          {
-           "text": "age",
-           "start_char": 1009,
-           "end_char": 1012
+           "text": "We used multivariate analysis of covariance (MANCOVA) with age as a covariate",
+           "start_char": 10292,
+           "end_char": 10369
           }
          ]
         }
@@ -3645,9 +3321,29 @@
        ]
       }
      },
+     "unit": {
+      "extraction_status": "extracted",
+      "value": "years",
+      "value_source": "reported",
+      "evidence": {
+       "status": "present",
+       "sets": [
+        {
+         "source": "model_quote",
+         "spans": [
+          {
+           "text": "age",
+           "start_char": 1009,
+           "end_char": 1012
+          }
+         ]
+        }
+       ]
+      }
+     },
      "source_definition": {
       "extraction_status": "extracted",
-      "value": "Participant age, included as a covariate to control for the linear age-volume relationship.",
+      "value": "Participant age, included as a covariate to control for age-volume relationships.",
       "value_source": "reported",
       "evidence": {
        "status": "present",
@@ -3675,21 +3371,47 @@
    },
    "model_settings": {
     "extraction_status": "extracted",
-    "value": "MANCOVA with age as a covariate; significant multivariate tests at p ≤ .05 were followed by univariate comparisons, and significant univariate tests by Bonferroni-corrected pairwise t-tests.",
+    "value": "MANCOVA with age as a covariate; Wilks' Lambda; significant multivariate tests at p ≤ .05 followed by univariate tests and Bonferroni-corrected pairwise t-tests; analyses performed with SPSS v12.0 and S-plus v6.1.",
     "value_source": "reported",
     "evidence": {
-     "status": "not_found"
+     "status": "present",
+     "sets": [
+      {
+       "source": "model_quote",
+       "spans": [
+        {
+         "text": "We used multivariate analysis of covariance (MANCOVA) with age as a covariate to control for age–volume relationships in all group comparisons.",
+         "start_char": 10292,
+         "end_char": 10435
+        }
+       ]
+      }
+     ]
     }
    },
    "estimator": {
-    "extraction_status": "not_reported",
+    "extraction_status": "extracted",
+    "value": "Multivariate analysis of covariance",
+    "value_source": "reported",
     "evidence": {
-     "status": "not_applicable"
+     "status": "present",
+     "sets": [
+      {
+       "source": "literal_match",
+       "spans": [
+        {
+         "text": "We used multivariate analysis of covariance (MANCOVA) with age as a covariate to control for age–volume relationships in all group comparisons.",
+         "start_char": 10292,
+         "end_char": 10435
+        }
+       ]
+      }
+     ]
     }
    },
    "software": {
     "extraction_status": "extracted",
-    "value": "SPSS v12.0 and S-PLUS v6.1",
+    "value": "SPSS v12.0 and S-plus v6.1",
     "value_source": "reported",
     "evidence": {
      "status": "present",
@@ -3706,386 +3428,20 @@
       }
      ]
     }
-   },
-   "spatial_unit": {
-    "extraction_status": "extracted",
-    "value": "roi",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "regions of interest (ROIs)",
-         "start_char": 9042,
-         "end_char": 9068
-        }
-       ]
-      }
-     ]
-    }
    }
   }
  ],
- "regions": [
-  {
-   "local_id": "r_frontal_gm",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "frontal gray matter",
-    "value_source": "reported",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "regions of interest (ROIs)",
-         "start_char": 9042,
-         "end_char": 9068
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "frontal lobe gray matter volume",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "frontal, parietal, temporal GM, and total cortical GM",
-         "start_char": 14040,
-         "end_char": 14093
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "Study-specific MRI reference atlas based on a single MRI from a 36-year-old man, with manually delineated frontal lobe ROI.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "a single MRI from a 36-year-old man served as a reference atlas and was manually edited to delineate ROIs including the major lobes of the brain (frontal, temporal, parietal, and occipital)",
-         "start_char": 9112,
-         "end_char": 9301
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "r_parietal_gm",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "parietal gray matter",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "parietal GM",
-         "start_char": 15090,
-         "end_char": 15101
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "regions of interest (ROIs)",
-         "start_char": 9042,
-         "end_char": 9068
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "Study-specific MRI reference atlas based on a single MRI from a 36-year-old man, with manually delineated parietal lobe ROI.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "a single MRI from a 36-year-old man served as a reference atlas and was manually edited to delineate ROIs including the major lobes of the brain (frontal, temporal, parietal, and occipital)",
-         "start_char": 9112,
-         "end_char": 9301
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Parietal lobe gray matter volume obtained by combining atlas-based parietal-lobe labels with three-tissue segmentation of T1-weighted MRI.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "parietal GM",
-         "start_char": 15090,
-         "end_char": 15101
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "r_temporal_gm",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "temporal gray matter",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "temporal GM",
-         "start_char": 1420,
-         "end_char": 1431
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "regions of interest (ROIs)",
-         "start_char": 9042,
-         "end_char": 9068
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "Study-specific MRI reference atlas based on a single MRI from a 36-year-old man, with manually delineated temporal lobe ROI.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "a single MRI from a 36-year-old man served as a reference atlas and was manually edited to delineate ROIs including the major lobes of the brain (frontal, temporal, parietal, and occipital)",
-         "start_char": 9112,
-         "end_char": 9301
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Temporal lobe gray matter volume obtained by combining atlas-based temporal-lobe labels with three-tissue segmentation; temporal gray matter included some tissue from the amygdala and hippocampal complex.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Temporal GM volume included some tissue from the amygdala and the hippocampal complex",
-         "start_char": 9388,
-         "end_char": 9473
-        }
-       ]
-      }
-     ]
-    }
-   }
-  },
-  {
-   "local_id": "r_total_cortical_gm",
-   "name": {
-    "extraction_status": "extracted",
-    "value": "total cortical gray matter",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "total cortical GM",
-         "start_char": 10772,
-         "end_char": 10789
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "definition_method": {
-    "extraction_status": "extracted",
-    "value": "atlas",
-    "value_source": "generated",
-    "evidence": {
-     "status": "not_found"
-    }
-   },
-   "region_type": {
-    "extraction_status": "extracted",
-    "value": "atlas_parcel",
-    "value_source": "generated",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "regions of interest (ROIs)",
-         "start_char": 9042,
-         "end_char": 9068
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "atlas": {
-    "extraction_status": "extracted",
-    "value": "Study-specific MRI reference atlas based on a single MRI from a 36-year-old man, with manually delineated frontal, temporal, parietal, and occipital lobe ROIs.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "a single MRI from a 36-year-old man served as a reference atlas and was manually edited to delineate ROIs including the major lobes of the brain (frontal, temporal, parietal, and occipital)",
-         "start_char": 9112,
-         "end_char": 9301
-        }
-       ]
-      }
-     ]
-    }
-   },
-   "description": {
-    "extraction_status": "extracted",
-    "value": "Total cortical gray matter volume defined as the sum of gray matter volumes in the four main lobar regions: frontal, temporal, parietal, and occipital.",
-    "value_source": "reported",
-    "evidence": {
-     "status": "present",
-     "sets": [
-      {
-       "source": "model_quote",
-       "spans": [
-        {
-         "text": "Total cortical GM, WM and sulcal CSF volumes for sHD, nsHD, and nsLD represent the summed tissue volume the four main lobar regions.",
-         "start_char": 10863,
-         "end_char": 10995
-        }
-       ]
-      }
-     ]
-    }
-   }
-  }
+ "language": [
+  "eng"
+ ],
+ "study_type": [
+  "Journal Article",
+  "Research Support, N.I.H., Extramural",
+  "Research Support, Non-U.S. Gov't"
  ],
  "tables": [
   {
-   "local_id": "tbl1",
+   "local_id": "tbltable1",
    "table_number": {
     "extraction_status": "extracted",
     "value": "Table 1",
@@ -4117,7 +3473,7 @@
   "extractor_model": "@psyc-aid338-ope-333f18/gpt-5.6-luna",
   "extractor_version": "pondie-1",
   "source_text_hash": "00c1bd7fd9a89280389182a4cf9f12b0a13b4b32270ba599ed639fac02417760",
-  "extraction_date": "2026-09-09",
+  "extraction_date": "2026-09-22",
   "paper_sections": [
    {
     "ordinal": 0,
@@ -4265,9 +3621,343 @@
   ],
   "repaired_by": "pondie-repair-1+backfill-1"
  },
- "study_type": [
-  "Journal Article",
-  "Research Support, N.I.H., Extramural",
-  "Research Support, Non-U.S. Gov't"
+ "assessments": [
+  {
+   "local_id": "asm_structured_clinical_intervie",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Structured Clinical Interview for DSM-IV Axis I disorders",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Structured Clinical Interview for DSM-IV Axis I disorders",
+         "start_char": 7076,
+         "end_char": 7133
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Structured interview completed at enrolment to assess DSM-IV Axis I disorders, including alcohol and other substance-use diagnoses.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "psychiatric diagnostic interview",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_beck_depression_inventory",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Beck Depression Inventory",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Beck Depression Inventory",
+         "start_char": 7210,
+         "end_char": 7235
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Questionnaire assessing depressive symptomatology.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "clinical questionnaire",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_lifetime_drinking_history",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Lifetime Drinking History",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "Lifetime Drinking History",
+         "start_char": 7275,
+         "end_char": 7300
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Interview assessing lifetime alcohol consumption, drinks per month, months of heavy drinking, and cumulative lifetime ethanol consumption.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "alcohol-use assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_substance_use_questionnaire",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "Substance use questionnaire",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "In-house questionnaire assessing substance type and quantity and frequency of use.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "substance-use assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "asm_american_national_adult",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "American National Adult Reading Test",
+    "value_source": "reported",
+    "evidence": {
+     "status": "present",
+     "sets": [
+      {
+       "source": "repair_pass",
+       "spans": [
+        {
+         "text": "American National Adult Reading Test",
+         "start_char": 27452,
+         "end_char": 27488
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Assessment used to predict general verbal intellectual functioning and premorbid verbal IQ.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "assessment_type": {
+    "extraction_status": "extracted",
+    "value": "cognitive assessment",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
+ ],
+ "regions": [
+  {
+   "local_id": "reg_frontal_lobe",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "frontal lobe",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": [
+     "anatomical",
+     "atlas_parcel"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Atlas-defined frontal lobe region of interest.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_temporal_lobe",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "temporal lobe",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": [
+     "anatomical",
+     "atlas_parcel"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Atlas-defined temporal lobe region of interest; temporal gray matter included some tissue from the amygdala and hippocampal complex.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_parietal_lobe",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "parietal lobe",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": [
+     "anatomical",
+     "atlas_parcel"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Atlas-defined parietal lobe region of interest.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  },
+  {
+   "local_id": "reg_occipital_lobe",
+   "name": {
+    "extraction_status": "extracted",
+    "value": "occipital lobe",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "definition_method": {
+    "extraction_status": "extracted",
+    "value": "atlas",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "region_type": {
+    "extraction_status": "extracted",
+    "value": [
+     "anatomical",
+     "atlas_parcel"
+    ],
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   },
+   "description": {
+    "extraction_status": "extracted",
+    "value": "Atlas-defined occipital lobe region of interest.",
+    "value_source": "generated",
+    "evidence": {
+     "status": "not_found"
+    }
+   }
+  }
  ]
 }
