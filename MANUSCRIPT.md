@@ -622,15 +622,59 @@ on `vbm_of_ptsd`, whose map is correct but sparse, which a thresholded overlap m
 and a correlation does not. All correlations in this corpus are positive, so squaring discards no
 directional information.
 
-## Matching automated analyses to expert records
+## Recovery of expert-curated analyses from table parsing
 
-Automatically parsed analyses are matched to expert-curated records by optimal one-to-one
-assignment (Hungarian algorithm) on a combined coordinate- and label-similarity score.
-Coordinates reported in Talairach space are transformed where a mapping is available, and
-analyses whose coordinates are reported at decimal precision are handled under an explicit policy
-rather than silently dropped. Matching is performed only for articles present in both the expert
-record and the automated output; articles yielding no automated analyses are excluded from
-analysis-level comparisons and accounted for at the retrieval and parsing stages instead.
+Automatically parsed analyses were matched to expert-curated records within the corresponding
+article by optimal one-to-one assignment (Hungarian algorithm, `scipy.optimize.
+linear_sum_assignment`) over the matrix of pairwise similarities, so that a single automated
+analysis can never account for more than one expert record. Matching was performed only for
+articles present in both the expert record and the automated output; articles yielding no
+automated analyses are excluded here and accounted for at the retrieval and parsing stages
+instead. `scripts/compare_analyses_to_benchmark.py` implements the procedure.
+
+**Pairwise similarity.** Each candidate pair receives a combined score
+*s* = 0.70 · *s*~coord~ + 0.30 · *s*~label~. Coordinates carry the greater weight because an
+analysis is individuated by the peaks it reports, while its label is whatever prose the table
+caption happened to use.
+
+- ***s*~coord~, coordinate agreement.** Expert and automated coordinates are first paired by a
+  second Hungarian assignment, this one minimising Euclidean distance in millimetres, which
+  makes the score independent of the order coordinates appear in. Each paired distance *d* is
+  mapped to a similarity by a piecewise-linear curve: 1.0 for *d* ≤ 1 mm, 0.9 for *d* ≤ 2 mm,
+  then falling linearly to 0.6 at 4 mm, 0.2 at 8 mm and 0 at 12 mm and beyond. The mean of the
+  paired similarities is multiplied by a coverage penalty,
+  min(*n*~expert~, *n*~auto~) / max(*n*~expert~, *n*~auto~), so an automated analysis that
+  recovers the right peaks but the wrong number of them is discounted in proportion. A bonus of
+  0.05 is added when the two coordinate sets are identical to one decimal place, and the result
+  is clipped to [0, 1].
+- ***s*~label~, analysis-name agreement.** The maximum `difflib.SequenceMatcher` ratio over four
+  comparisons of the expert and automated analysis names — full against full, base against base,
+  and each against the other's base — where the base is the text before the first semicolon and
+  both strings are case-folded and whitespace-normalised. Taking the maximum lets a
+  fully-qualified label match a truncated one without penalty.
+
+**Acceptance.** A pair counts as a recovered analysis at *s* ≥ 0.55. Pairs at *s* ≥ 0.75 are
+additionally flagged as high-confidence; that stricter tier drives the human-review triage
+described below, not the recovery rate reported in the Results. Only 4.4% of matches fall between
+the two thresholds, and applying the stricter bar throughout would move the pooled recovery rate
+from 89.5% to 85.6% of expert analyses, so the reported figure does not rest on the looser tier.
+
+A coordinate-driven override additionally accepts a pair whose combined score is low but whose
+geometry is unambiguous, when any of the following holds: *s*~coord~ ≥ 0.90; *s*~coord~ ≥ 0.80
+with the two coordinate sets of equal size and at least three coordinates; or equal-sized sets of
+at least three coordinates with ≥ 90% of pairs within 8 mm and a median paired distance ≤ 6 mm.
+The override exists because an automated analysis can reproduce an expert analysis exactly and
+still score poorly on the label, having inherited a table caption rather than a contrast name.
+
+**Coordinate space during matching.** Expert records whose coordinates are reported at decimal
+precision are the residue of an undocumented space conversion by the original authors, so the
+space they are nominally in cannot be trusted. Rather than drop them, the default policy
+(`match_best_space`) scores three variants of each such record — the coordinates as published,
+and both the Talairach-to-MNI and MNI-to-Talairach re-expressions — and keeps the best-scoring
+one. The two converted variants are allowed to qualify as an exact set under an axis-wise
+tolerance of ± 1.0 mm, which the as-published variant is not. Expert records with integer
+coordinates are used exactly as reported. This transform is applied only for matching; it is
+independent of the space handling inside the meta-analysis (see *Meta-analytic modeling*).
 
 ## Recall against an attainable denominator
 
