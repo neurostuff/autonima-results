@@ -66,6 +66,7 @@ from scipy.stats import pearsonr
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from nmb_mapping import resolve_analysis_dir  # noqa: E402
 from run_tiers import add_tier_argument, resolve_tier  # noqa: E402
+from map_mask import common_mask  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MANUAL_ANALYSIS_BASE = Path("/home/zorro/repos/neurometabench/analysis")
@@ -303,9 +304,7 @@ def main() -> int:
             shapes = {arr.shape for arr in loaded.values()}
             if len(shapes) != 1:
                 return None, None
-            m = np.ones(next(iter(shapes)), dtype=bool)
-            for arr in loaded.values():
-                m &= np.isfinite(arr)
+            m = common_mask(*loaded.values())
             return {n: arr[m].ravel() for n, arr in loaded.items()}, m
 
         vecs, mask = vectors(args.map_filename)

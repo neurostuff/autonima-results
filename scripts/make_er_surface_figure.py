@@ -49,6 +49,7 @@ import numpy as np
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_tiers import resolve_tier  # noqa: E402
+from map_mask import common_mask  # noqa: E402
 
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
 CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
@@ -171,7 +172,7 @@ def similarity(expert: Path, other: Path, metric: str, threshold: float) -> floa
     if a.shape != b.shape:
         raise SystemExit(f"shape mismatch: {expert} {a.shape} vs {other} {b.shape}")
     if metric == "r2":
-        m = np.isfinite(a) & np.isfinite(b)
+        m = common_mask(a, b)
         return float(np.corrcoef(a[m].ravel(), b[m].ravel())[0, 1] ** 2)
     ba, bb = a > threshold, b > threshold
     total = ba.sum() + bb.sum()

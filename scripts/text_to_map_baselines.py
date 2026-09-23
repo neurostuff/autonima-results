@@ -59,6 +59,7 @@ import numpy as np
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from benchmark_exclusions import filter_rows  # noqa: E402
+from map_mask import common_mask  # noqa: E402
 
 _RESAMPLE_PARAMS: set[str] = set()
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
@@ -215,7 +216,7 @@ def main(argv: list[str] | None = None) -> int:
 
         a = np.asarray(pred_r.dataobj)
         g = gold_img.get_fdata()
-        m = np.isfinite(a) & np.isfinite(g)
+        m = common_mask(a, g)
         r2 = float(np.corrcoef(a[m].ravel(), g[m].ravel())[0, 1] ** 2)
 
         # Comparators on the same footing: the pipeline's own column and the project-wide
@@ -251,7 +252,7 @@ def main(argv: list[str] | None = None) -> int:
             nv = nib.load(str(nvlm_path))
             nv_r = resample_to_img(nv, gold_img, **kw)
             nva = np.asarray(nv_r.dataobj)
-            mm = np.isfinite(nva) & np.isfinite(g)
+            mm = common_mask(nva, g)
             nvlm_r2 = round(float(np.corrcoef(nva[mm].ravel(), g[mm].ravel())[0, 1] ** 2), 6)
             if k >= MIN_TOPK and nva.shape == g.shape:
                 nvlm_topk = round(top_k_dice(nva, g, k), 6)

@@ -55,6 +55,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, "/home/zorro/repos/autonima")
 from run_tiers import resolve_tier  # noqa: E402
 from benchmark_exclusions import filter_rows  # noqa: E402
+from map_mask import common_mask  # noqa: E402
 
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
 # THE METRIC/MAP RULE. R-squared compares *unthresholded* maps, so it reads the raw z. Dice
@@ -116,7 +117,7 @@ def _fit(studyset, analysis_ids):
 
 def _r2(a: np.ndarray, gold: np.ndarray) -> float:
     """Unthresholded agreement. Both arguments must be raw z maps."""
-    m = np.isfinite(a) & np.isfinite(gold)
+    m = common_mask(a, gold)
     if m.sum() < 2:
         return float("nan")
     return float(np.corrcoef(a[m].ravel(), gold[m].ravel())[0, 1] ** 2)

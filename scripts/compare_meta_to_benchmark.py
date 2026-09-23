@@ -32,6 +32,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from nmb_mapping import resolve_analysis_dir  # noqa: E402
+from map_mask import common_mask  # noqa: E402
 
 import matplotlib.pyplot as plt
 import nibabel as nib
@@ -861,13 +862,12 @@ def load_maps_and_vectors(
         )
 
     common_shape = unique_shapes[0]
-    mask = np.ones(common_shape, dtype=bool)
-
-    for arr in manual_data.values():
-        mask &= np.isfinite(arr)
-    for run_data in auto_data_by_run.values():
-        for arr in run_data.values():
-            mask &= np.isfinite(arr)
+    # THE BRAIN MASK: finite in every map AND inside NiMARE's mni152_2mm brain mask. The finite
+    # test alone selects nothing -- NiMARE writes zeros, not NaNs, outside the brain -- so this
+    # used to correlate over all 902,629 voxels, 75% of them out-of-brain zeros. See map_mask.py.
+    all_arrays = [*manual_data.values(),
+                  *(arr for run_data in auto_data_by_run.values() for arr in run_data.values())]
+    mask = common_mask(*all_arrays)
 
     n_valid_voxels = int(mask.sum())
     if n_valid_voxels == 0:

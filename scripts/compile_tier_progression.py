@@ -47,6 +47,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_tiers import resolve_tier, load_registry  # noqa: E402
 from benchmark_exclusions import is_excluded  # noqa: E402
+from map_mask import common_mask  # noqa: E402
 
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
 UNCORRECTED_MAP = "z.nii.gz"
@@ -103,7 +104,7 @@ def score(auto_dir: Path, gold: Path) -> tuple[float, float] | None:
     A, G = _load(need[0]), _load(need[2])
     if A.shape != G.shape:
         return None
-    m = np.isfinite(A) & np.isfinite(G)
+    m = common_mask(A, G)
     r2 = float(np.corrcoef(A[m].ravel(), G[m].ravel())[0, 1] ** 2)
     Ac, Gc = _load(need[1]), _load(need[3])
     ba, bb = Ac > DICE_THRESHOLD, Gc > DICE_THRESHOLD

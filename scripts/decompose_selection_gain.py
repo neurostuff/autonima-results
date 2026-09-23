@@ -49,6 +49,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_tiers import resolve_tier  # noqa: E402
 from benchmark_exclusions import filter_rows  # noqa: E402
+from map_mask import common_mask  # noqa: E402
 
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
 UNCORRECTED_MAP = "z.nii.gz"
@@ -95,7 +96,7 @@ def main(argv: list[str] | None = None) -> int:
         return cache[path]
 
     def r2(a: np.ndarray, b: np.ndarray) -> float:
-        m = np.isfinite(a) & np.isfinite(b)
+        m = common_mask(a, b)
         return float(np.corrcoef(a[m].ravel(), b[m].ravel())[0, 1] ** 2)
 
     with open(args.baseline_table) as f:

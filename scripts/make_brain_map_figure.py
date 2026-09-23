@@ -59,6 +59,7 @@ from run_tiers import resolve_tier  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from nmb_mapping import load_mappings  # noqa: E402
+from map_mask import common_mask  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
@@ -150,7 +151,7 @@ def verify(paths: dict[str, Path], expected: float, metric: str = "r2",
     gd, ad = gold.get_fdata(), auto.get_fdata()
     if gd.shape != ad.shape:
         return None
-    mask = np.isfinite(gd) & np.isfinite(ad)
+    mask = common_mask(gd, ad)
     if mask.sum() < 100:
         return None
     g, a = gd[mask].ravel(), ad[mask].ravel()

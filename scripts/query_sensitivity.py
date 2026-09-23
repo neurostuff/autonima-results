@@ -48,6 +48,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from text_to_map_baselines import gold_dir, UNCORRECTED_MAP  # noqa: E402
 from make_brain_map_figure import pretty_column  # noqa: E402
 from make_nature_methods_figures import DISPLAY  # noqa: E402
+from map_mask import common_mask  # noqa: E402
 
 STRATEGIES = ["preregistered", "column_name", "project+column", "head_term", "plus_modality"]
 
@@ -69,7 +70,7 @@ def r2(candidate, gold_img, gold: np.ndarray) -> tuple[float, bool]:
 
     pred = resample_to_img(candidate, gold_img, interpolation="continuous", force_resample=True)
     a = np.asarray(pred.dataobj)
-    m = np.isfinite(a) & np.isfinite(gold)
+    m = common_mask(a, gold)
     if a[m].std() == 0 or gold[m].std() == 0:
         return 0.0, True
     return float(np.corrcoef(a[m].ravel(), gold[m].ravel())[0, 1] ** 2), False
