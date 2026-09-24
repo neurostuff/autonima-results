@@ -47,7 +47,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 from run_tiers import resolve_tier  # noqa: E402
 from map_mask import common_mask  # noqa: E402
 

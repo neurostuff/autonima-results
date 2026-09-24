@@ -23,7 +23,7 @@ for this refactor.
 
 WHY A FILE AND NOT A CALL
 
-`make_brain_map_figure.py` runs under system python3 (nilearn 0.13), which carries a different
+`paper/make_brain_map_figure.py` runs under system python3 (nilearn 0.13), which carries a different
 NiMARE than the pixi environment. Materialising the mask once and loading it with nibabel means
 both interpreters index exactly the same voxels, and the mask is an auditable artifact rather
 than whatever the installed NiMARE happens to return.

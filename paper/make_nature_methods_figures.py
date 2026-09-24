@@ -25,7 +25,7 @@ still built and still correct but are no longer cited, so they keep descriptive 
 (annotation in precision-recall space, was S7).
 
 Moved to the supplement 2026-09-09: Nature allows six display items, and the emotion-regulation
-surface figure (scripts/make_er_surface_figure.py) is a stronger use of the slot than a cost
+surface figure (paper/make_er_surface_figure.py) is a stronger use of the slot than a cost
 bar chart. Cost is a paragraph in the text plus S5.
 
 Figure 1 is a schematic (pipeline, benchmark, and the paper-vs-analysis unit) and is not
@@ -37,8 +37,8 @@ in PAPER_OUTLINE.md; those are transcribed below as COST_PER_STAGE and should mo
 generated CSV before submission.
 
 Usage:
-    python scripts/make_nature_methods_figures.py                  # all figures
-    python scripts/make_nature_methods_figures.py --only 4 5       # just those
+    python paper/make_nature_methods_figures.py                  # all figures
+    python paper/make_nature_methods_figures.py --only 4 5       # just those
 """
 
 from __future__ import annotations
@@ -57,6 +57,10 @@ from matplotlib.lines import Line2D
 from matplotlib.transforms import Bbox
 
 import sys
+# Both explicitly: scripts/ for the shared libraries, and this directory for the sibling
+# figure module. Relying on Python adding the script's own directory is what breaks the
+# moment anything imports this file rather than running it -- see scripts/map_mask.py.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from make_brain_map_figure import pretty_column  # noqa: E402
 from benchmark_exclusions import filter_rows  # noqa: E402
@@ -1495,7 +1499,7 @@ def figureS2(out_dir: Path) -> None:
 
 # -------------------------------------------------------------------- Supplementary S4
 
-BRAIN_MAP_SCRIPT = REPO_ROOT / "scripts" / "make_brain_map_figure.py"
+BRAIN_MAP_SCRIPT = Path(__file__).resolve().parent / "make_brain_map_figure.py"
 
 
 def figureS4(out_dir: Path) -> None:
@@ -1522,7 +1526,7 @@ def figureS4(out_dir: Path) -> None:
         subprocess.run(cmd, check=True, cwd=REPO_ROOT)
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:
         print(f"  figureS4: FAILED ({exc}). Build it directly with:")
-        print("    python3 scripts/make_brain_map_figure.py --mode all")
+        print("    python3 paper/make_brain_map_figure.py --mode all")
 
 
 # -------------------------------------------------------------------- Supplementary S5

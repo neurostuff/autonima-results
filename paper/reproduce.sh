@@ -107,13 +107,13 @@ if [ "$DO_SLOW" = 1 ]; then
 fi
 
 step "5/6  figures  ->  reports/nature_methods_figures/"
-run "${PY[@]}" scripts/make_nature_methods_figures.py          # all but S4
-run "$SYSPY" scripts/make_brain_map_figure.py --mode all       # figureS4
-run "$SYSPY" scripts/make_brain_map_figure.py --mode contrast
-run "$SYSPY" scripts/make_er_surface_figure.py                 # paper Figure 5
+run "${PY[@]}" paper/make_nature_methods_figures.py          # all but S4
+run "$SYSPY" paper/make_brain_map_figure.py --mode all       # figureS4
+run "$SYSPY" paper/make_brain_map_figure.py --mode contrast
+run "$SYSPY" paper/make_er_surface_figure.py                 # paper Figure 5
 
 step "6/6  manuscript numbers"
-run "${PY[@]}" scripts/manuscript_numbers.py
+run "${PY[@]}" paper/manuscript_numbers.py
 
 step "verifying every expected display item was written"
 FIGS=(figure2_precision_and_attainable_recall figure3_recover_and_select_analyses

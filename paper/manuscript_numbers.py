@@ -15,9 +15,9 @@ artifacts during drafting. Four errors found on 2026-09-10 while building the sk
 Run this to check the numbers in the manuscript against the artifacts after any re-run. Each
 block prints the CSV it came from so a reader can go straight to the source.
 
-    pixi run python scripts/manuscript_numbers.py
+    pixi run python paper/manuscript_numbers.py
 
-Computations mirror scripts/make_nature_methods_figures.py so the text cannot disagree with the
+Computations mirror paper/make_nature_methods_figures.py so the text cannot disagree with the
 figure it sits beside. Where a figure applies benchmark_exclusions, so does this.
 """
 
@@ -29,7 +29,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 from benchmark_exclusions import filter_rows  # noqa: E402
 
 REPORTS = REPO_ROOT / "reports"
@@ -296,7 +296,7 @@ def result5() -> None:
 
 def result6() -> None:
     head("RESULT 6 / Supplementary S5 — cost and scale",
-         "!! NOT CSV-DERIVED — hardcoded as COST_PER_STAGE in make_nature_methods_figures.py, "
+         "!! NOT CSV-DERIVED — hardcoded as COST_PER_STAGE in paper/make_nature_methods_figures.py, "
          "transcribed from PAPER_OUTLINE.md S1")
     print("  abstract screening   $0.0023/call      full-text screening  $0.0138/call")
     print("  coordinate parsing   $0.0059/call      annotation           $0.0211/call")
