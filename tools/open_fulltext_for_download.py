@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
-"""Open PubMed and/or publisher pages from a list of PMIDs."""
+"""Open the best available full-text page for each PMID, for manual download.
+
+The third retrieval path. pubget covers the PMC open-access subset and the Elsevier
+text-mining API covers Elsevier; everything else -- roughly two thirds of the corpus --
+arrives through a human with a browser. This drives that loop.
+
+Per PMID it resolves a PMCID through ELink, picks a primary publisher URL, normalises
+ScienceDirect links to their PII form, optionally rewrites the result through the
+institutional EZproxy, and opens it. It tracks which PMIDs already have a downloaded
+file so a re-run only opens what is still missing, and writes a manifest of what it
+opened. `--dry-run` prints the targets without launching anything.
+
+Pairs with collect_downloaded_fulltexts.py, which files the saved pages afterwards.
+"""
 
 from __future__ import annotations
 

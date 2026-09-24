@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Move downloaded PMID HTML files into a target folder."""
+"""File manually downloaded full texts into the corpus, keyed by PMID.
+
+The second half of the manual retrieval loop. A browser saves pages as `<pmid>.html`,
+and as `<pmid> (2).html` when the same PMID is fetched twice; this moves them into the
+target folder under a clean `<pmid>.html` name, resolving those duplicates according to
+--conflict.
+
+Pairs with open_fulltext_for_download.py, which opens the pages in the first place.
+"""
 
 from __future__ import annotations
 
