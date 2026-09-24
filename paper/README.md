@@ -17,8 +17,19 @@ items were written this run, so a silent half-rebuild is not possible.
 It does **not** re-run the AutoNIMA pipeline. Stage outputs under
 `projects/<project>/<run>/outputs/` are the inputs here, and regenerating them
 means re-running the LLM stages against PubMed and the publisher APIs — days of
-wall time, paid API calls, and a corpus that has moved on since. Those artifacts
-are tracked precisely so the evaluation is reproducible without them.
+wall time, paid API calls, and a corpus that has moved on since. The screening
+results, coordinate parsing and NiMADS studysets are tracked precisely so the
+evaluation is reproducible without them.
+
+**The meta-analytic maps are not yet among them.** `.gitignore` excludes
+`meta_analysis_results/`, so a fresh clone has the studysets but none of the maps
+that every map-level figure reads, and `reproduce.sh` cannot run there. On this
+machine they are present as ignored files left by earlier runs, which is why it
+works here. The planned fix is to convert the repository to DataLad and hold the
+maps in git-annex against an S3 remote; after that `datalad get` supplies them and
+the `meta_analysis_results/` ignore rule comes out. Until then, treat
+`reproduce.sh` as reproducible on a machine that has already run the pipeline,
+not from a clone.
 
 ## Figure names do not match figure numbers
 
