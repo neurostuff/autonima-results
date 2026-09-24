@@ -1,20 +1,22 @@
+# This repository is an analysis workspace, not a Python package. It used to declare
+# itself as one -- src/autonima_results/ held a single empty __init__.py, built by
+# hatchling and installed editable through pypi-dependencies below. Of the eleven
+# dependencies that arrangement delivered, exactly one (nimare) is imported by any
+# code here, and it is declared on its own account. The rest belong to autonima,
+# pubget and ACE, which declare them themselves. The package was a decoy: it made
+# the repo look importable while every module lived in scripts/ and was reached by
+# sys.path insertion.
 [project]
 authors = [{name = "Alejandro de la Vega", email = "aleph4@gmail.com"}]
-dependencies = ["beautifulsoup4>=4.14.2,<5", "lxml>=6.0.2,<7", "regex>=2025.10.23,<2027", "requests>=2.32.5,<3", "simplejson", "sqlalchemy", "selenium>=4.37.0,<5", "seleniumbase>=4.43.1,<5", "tqdm>=4.67.1,<5", "xmltodict>=1.0.2,<2", "nimare>=0.2.1,<0.3"]
 name = "autonima-results"
 requires-python = ">= 3.11"
 version = "0.1.0"
-
-[build-system]
-build-backend = "hatchling.build"
-requires = ["hatchling"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
 platforms = ["linux-64", "osx-arm64", "win-64"]
 
 [tool.pixi.pypi-dependencies]
-autonima_results = { path = ".", editable = true }
 autonima = { path = '../autonima', editable = true, extras = ["meta"] }
 ace = { path = '../ACE', editable = true }
 pubget = { path = "../pubget", editable = true }
