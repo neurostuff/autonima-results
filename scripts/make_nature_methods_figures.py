@@ -19,10 +19,10 @@ Figures map onto NATURE_METHODS_SKELETON.md:
     Figure S4  brain maps, all columns                --only S4  (~2 min, shells out)
     Figure S5  measured cost per stage                --only S5
 
-Supplementary figures were renumbered 2026-09-16. Three that previously carried S-numbers are
+Supplementary figures were renumbered 2026-09-16. Two that previously carried S-numbers are
 still built and still correct but are no longer cited, so they keep descriptive keys instead:
-`--only text2map` (text-to-map baselines, was S4), `--only retention` (raw-denominator gold
-retention, was S6) and `--only annotationpr` (annotation in precision-recall space, was S7).
+`--only retention` (raw-denominator gold retention, was S6) and `--only annotationpr`
+(annotation in precision-recall space, was S7).
 
 Moved to the supplement 2026-09-09: Nature allows six display items, and the emotion-regulation
 surface figure (scripts/make_er_surface_figure.py) is a stronger use of the slot than a cost
@@ -1358,185 +1358,6 @@ def figureS1(out_dir: Path) -> None:
     save(fig, out_dir, "figureS1_tier_progression")
 
 
-# ------------------------------------------------- Text-to-map baselines (unnumbered)
-
-def figure_text_to_map(out_dir: Path) -> None:
-    """A term is not an analysis: text-to-map prediction against curated synthesis.
-
-    Every baseline in Result 4 is a *search* baseline, which tests the pipeline against the
-    Neurosynth-style workflow but not against the current generation of automated map generators.
-    NeuroQuery predicts a map from free text with no studyset, no screening and no coordinate
-    extraction, so it is the strongest available "do nothing" arm and the one a reviewer will name.
-
-    The overall gap is large -- mean r-squared 0.075 against 0.574, behind on 32 of 32 columns --
-    but reporting only that would miss the finding, and would invite the fair suspicion that the
-    comparison is rigged. The structure of *where* it fails is the result:
-
-      canonical cognitive terms   executive function 0.308, working memory 0.278,
-                                  problem solving 0.256, mental arithmetic 0.240
-      condition contrasts         all three emotion-regulation contrasts 0.002
-      clinical group comparisons  alcohol 0.002, dementia functional 0.002, PTSD 0.022
-
-    NeuroQuery encodes term-level association. Where a benchmark column essentially *is* a term it
-    does respectably; where the column is a contrast between conditions or a between-group clinical
-    comparison it has no representation for the thing being asked and scores near zero. That is
-    this paper's analysis-unit argument arriving from an independent direction.
-
-    Two caveats belong in the caption. This is not like-for-like: NeuroQuery answers a different
-    and much cheaper question, so the comparison shows that term-level prediction cannot substitute
-    for contrast-level synthesis, not that NeuroQuery is poor at its own task. And r-squared is the
-    only applicable metric -- NeuroQuery produces no FDR-corrected map, so dice would require a
-    threshold with no error control, which the metric/map rule forbids.
-    """
-    path = REPO_ROOT / "reports" / "text_to_map_baselines.csv"
-    if not path.exists():
-        print("  figure_text_to_map: run scripts/text_to_map_baselines.py first; skipped")
-        return
-    rows = read(path)
-    for r in rows:
-        for k in ("neuroquery_r2", "autonima_r2", "best_baseline_r2"):
-            r[k] = float(r[k])
-        r["neurovlm_r2"] = float(r["neurovlm_r2"]) if r.get("neurovlm_r2") else None
-    has_nvlm = all(r["neurovlm_r2"] is not None for r in rows)
-
-    # Prompt-sensitivity ranges from query_sensitivity.py. The interval is the min-to-max over
-    # five UNIFORM query strategies, i.e. what one global prompt decision is worth -- not the
-    # per-column oracle, which is an unreachable upper bound and would overstate the range.
-    sens_path = REPO_ROOT / "reports" / "query_sensitivity.csv"
-    prompt_range: dict[tuple[str, str], tuple[float, float]] = {}
-    overall_range: dict[str, tuple[float, float]] = {}
-    if sens_path.exists():
-        sens = read(sens_path)
-        for key, arm in (("neuroquery_r2", "neuroquery_r2"), ("neurovlm_r2", "neurovlm_r2")):
-            per_strategy_project: dict[str, dict[str, list[float]]] = collections.defaultdict(
-                lambda: collections.defaultdict(list))
-            per_strategy_all: dict[str, list[float]] = collections.defaultdict(list)
-            for x in sens:
-                if not x.get(key):
-                    continue
-                v = float(x[key])
-                per_strategy_project[x["project"]][x["strategy"]].append(v)
-                per_strategy_all[x["strategy"]].append(v)
-            for proj, by_strat in per_strategy_project.items():
-                means = [st.mean(v) for v in by_strat.values() if v]
-                if len(means) > 1:
-                    prompt_range[(proj, arm)] = (min(means), max(means))
-            means = [st.mean(v) for v in per_strategy_all.values() if v]
-            if len(means) > 1:
-                overall_range[arm] = (min(means), max(means))
-
-    fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(2.7)),
-                             gridspec_kw={"width_ratios": [1.25, 1]})
-
-    # a: per-project means for the three arms, ordered by how well NeuroQuery does
-    ax = axes[0]
-    by: dict[str, list[dict]] = collections.defaultdict(list)
-    for r in rows:
-        by[r["project"]].append(r)
-    rank_key = "neurovlm_r2" if has_nvlm else "neuroquery_r2"
-    order = sorted(by, key=lambda p: st.mean([r[rank_key] for r in by[p]]))
-    # Colour, not shades of grey: four grey bars at this size were not separable. Hue encodes the
-    # KIND of arm and lightness the ordering within a kind -- the two text->map models share a
-    # blue family (light = weaker), the search baseline is orange, the pipeline black. Okabe-Ito,
-    # so it survives colour-blind viewing; this figure draws no per-project colour, so no clash
-    # with the project palette used in the other figures.
-    arms = [("neuroquery_r2", "NeuroQuery (text \u2192 map)", "#56B4E9")]
-    if has_nvlm:
-        arms.append(("neurovlm_r2", "NeuroVLM (text \u2192 map)", "#0072B2"))
-    arms += [("best_baseline_r2", "best search baseline", "#E69F00"),
-             ("autonima_r2", "full pipeline", MEAN_COLOR)]
-    h = 0.86 / len(arms)
-    for j, (key, label, colour) in enumerate(arms):
-        off = (j - (len(arms) - 1) / 2) * h
-        ys = [i + off for i in range(len(order))]
-        vals = [st.mean([r[key] for r in by[p]]) for p in order]
-        ax.barh(ys, vals, height=h * 0.9, color=colour, lw=0, label=label, zorder=3)
-        # Prompt-sensitivity whisker, text->map arms only: the search baseline and the pipeline
-        # take no query, so they have no such range.
-        if key in ("neuroquery_r2", "neurovlm_r2"):
-            lo = [prompt_range.get((p, key), (v, v))[0] for p, v in zip(order, vals)]
-            hi = [prompt_range.get((p, key), (v, v))[1] for p, v in zip(order, vals)]
-            ax.hlines(ys, lo, hi, color=INK, lw=0.7, zorder=5)
-            ax.vlines(lo, [y - h * 0.28 for y in ys], [y + h * 0.28 for y in ys],
-                      color=INK, lw=0.7, zorder=5)
-            ax.vlines(hi, [y - h * 0.28 for y in ys], [y + h * 0.28 for y in ys],
-                      color=INK, lw=0.7, zorder=5)
-    ax.set_yticks(range(len(order)))
-    ax.set_yticklabels([DISPLAY.get(p, p) for p in order])
-    ax.set_ylim(-0.6, len(order) - 0.4)
-    ax.set_xlabel("Mean $R^2$ against the expert map")
-    ax.set_xlim(0, 1.12)
-    ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
-    ax.legend(loc="lower right", fontsize=fs(5.0), handlelength=1.1, handletextpad=0.4,
-              borderaxespad=0.5)
-    # The two projects where NeuroQuery is not near zero are the two whose columns are closest to
-    # being plain terms, which is the point of ordering the panel this way.
-    # Top right: the two highest-NeuroQuery projects top out around 0.67, so this corner is free.
-    # Mid-height on the right: no bar in the middle rows passes 0.63 and the x limit is 1.12.
-    panel_label(ax, "a", dx=-0.42)
-
-    # b: the same three arms under two measures, because r-squared is not a fair one here
-    ax = axes[1]
-    # All three arms must have a top-k value, or the three bars would be means over different
-    # column sets.
-    have = [r for r in rows
-            if all(r.get(f"topk_dice_{n}") not in ("", None)
-                   for n in (["neuroquery"] + (["neurovlm"] if has_nvlm else [])
-                             + ["best_baseline", "pipeline"]))]
-    r2_keys = [a[0] for a in arms]
-    tk_names = {"neuroquery_r2": "neuroquery", "neurovlm_r2": "neurovlm",
-                "best_baseline_r2": "best_baseline", "autonima_r2": "pipeline"}
-    groups = [("$R^2$\n(all voxels)", [st.mean([r[k] for r in rows]) for k in r2_keys])]
-    if have:
-        groups.append(("top-$k$ dice\n(ranked, form-free)",
-                       [st.mean([float(r[f"topk_dice_{tk_names[k]}"]) for r in have])
-                        for k in r2_keys]))
-    w = 0.82 / len(arms)
-    for j, (key, label, colour) in enumerate(arms):
-        off = (j - (len(arms) - 1) / 2) * w
-        xs2 = [i + off for i in range(len(groups))]
-        ax.bar(xs2, [g[1][j] for g in groups], width=w * 0.88, color=colour, lw=0,
-               zorder=3)
-        # Only the r-squared group (index 0) has a prompt range: per-strategy top-k dice was not
-        # computed for the variants, so a whisker there would be fabricated.
-        if key in overall_range:
-            lo, hi = overall_range[key]
-            ax.vlines(xs2[0], lo, hi, color=INK, lw=0.7, zorder=5)
-            ax.hlines([lo, hi], xs2[0] - w * 0.22, xs2[0] + w * 0.22, color=INK, lw=0.7,
-                      zorder=5)
-    ax.set_xticks(range(len(groups)))
-    ax.set_xticklabels([g[0] for g in groups], linespacing=1.3)
-    ax.set_xlim(-0.5, len(groups) - 0.5)
-    ax.set_ylabel("Mean agreement with the expert map")
-    ax.set_ylim(0, max(max(g[1]) for g in groups) * 1.75)
-    ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
-    if len(groups) == 2:
-        # Kept deliberately short: the form argument and the baseline shares are caption material
-        # and live in the docstring and NATURE_METHODS_SKELETON.md. Only what cannot be read off
-        # the bars goes in the panel -- what the whisker means, and the resulting range.
-        i_base = len(arms) - 2
-        lines = []
-        if has_nvlm and "neurovlm_r2" in overall_range:
-            nv_lo, nv_hi = overall_range["neurovlm_r2"]
-            nq_lo, nq_hi = overall_range.get("neuroquery_r2", (0.0, 0.0))
-            lines += [
-                "whiskers = min\u2013max over five uniform query strategies",
-                f"NeuroVLM {nv_lo:.2f}\u2013{nv_hi:.2f} (bar = {groups[0][1][1]:.2f} "
-                f"pre-registered)",
-                f"NeuroQuery {nq_lo:.2f}\u2013{nq_hi:.2f}; even NeuroVLM's best prompt",
-                "stays below the search baseline",
-            ]
-        lines.append(f"NeuroVLM leads NeuroQuery "
-                     f"{groups[0][1][1] / groups[0][1][0]:.1f}$\\times$ on $R^2$, "
-                     f"{groups[1][1][1] / groups[1][1][0]:.1f}$\\times$ ranked")
-        ax.text(0.5, 0.985, "\n".join(lines), transform=ax.transAxes, ha="center", va="top",
-                fontsize=fs(4.6), color=INK, linespacing=1.5)
-    panel_label(ax, "b", dx=-0.26)
-
-    fig.subplots_adjust(wspace=0.42)
-    save(fig, out_dir, "figure_text_to_map_baselines")
-
-
 # -------------------------------------------------------------------- Supplementary S2
 
 def _screening_metric(filename: str, metric: str) -> dict[str, dict[str, float]]:
@@ -1758,7 +1579,6 @@ def figureS5(out_dir: Path) -> None:
 FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
            "S1": figureS1, "S2": figureS2, "S3": figureS3, "S4": figureS4,
            "S5": figureS5,
-           "text2map": figure_text_to_map,
            "retention": figure_gold_retention_raw_fig,
            "annotationpr": figure_annotation_pr}
 

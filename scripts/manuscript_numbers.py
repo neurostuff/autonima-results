@@ -359,16 +359,6 @@ def supplementary() -> None:
     print("  recall is the control: it barely moves, so the precision gain is a corpus "
           "difference, not a screening effect.")
 
-    head("TEXT-TO-MAP BASELINES (unnumbered) — a term is not an analysis",
-         "reports/text_to_map_baselines.csv")
-    rows = filter_rows(read(REPORTS / "text_to_map_baselines.csv"), announce=False)
-    for label, key in (("NeuroQuery", "neuroquery_r2"), ("NeuroVLM", "neurovlm_r2"),
-                       ("best search baseline", "best_baseline_r2"), ("pipeline", "autonima_r2")):
-        v = [float(r[key]) for r in rows if r.get(key)]
-        if v:
-            print(f"  {label:<22} mean r^2 {st.mean(v):.3f}  median {st.median(v):.3f}  "
-                  f"(n={len(v)})")
-
     head("RAW-DENOMINATOR GOLD RETENTION (unnumbered)",
          "reports/gold_survival_by_stage.csv")
     rows = [r for r in read(REPORTS / "gold_survival_by_stage.csv")

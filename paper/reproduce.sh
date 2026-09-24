@@ -7,8 +7,9 @@
 #
 # The chain from run outputs to figures is real but was never written down: it
 # lives in the import graph of ~27 scripts and in whoever last ran them. That is
-# how reports/text_to_map_baselines.csv came to hold 32 rows against a 28-row
-# input, and how figureS4 sat a week stale at a superseded column count. A file
+# how reports/annotation_bootstrap_null.csv came to hold 35 rows after three of
+# its columns were excluded, and how figureS4 sat a week stale at a superseded
+# column count. A file
 # that states the order, and fails loudly when a step does, is the difference
 # between "the figures are in git" and "the figures can be rebuilt".
 #
@@ -84,8 +85,6 @@ PYEOF
   run "${PY[@]}" scripts/compile_best_baselines.py --exclude-project dementia
   run "${PY[@]}" scripts/compile_analysis_counts.py
   run "${PY[@]}" scripts/decompose_selection_gain.py
-  run "${PY[@]}" scripts/text_to_map_baselines.py
-  run "${PY[@]}" scripts/query_sensitivity.py
   run "${PY[@]}" scripts/annotation_value.py
   run "${PY[@]}" scripts/compile_tier_progression.py
 
@@ -122,8 +121,7 @@ FIGS=(figure2_precision_and_attainable_recall figure3_recover_and_select_analyse
       figureS1_tier_progression figureS2_pool_mismatch figureS3_size_matched_null
       figureS4_brain_maps_all figureS5_measured_cost
       figure_er_surface_contrasts figure_brain_maps_contrast
-      figure_text_to_map_baselines figure_annotation_precision_recall
-      figure_gold_retention_raw)
+      figure_annotation_precision_recall figure_gold_retention_raw)
 missing=0 stale=0
 for f in "${FIGS[@]}"; do
   for ext in pdf png; do
