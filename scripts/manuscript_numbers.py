@@ -3,17 +3,17 @@
 
 WHY THIS EXISTS
 
-MANUSCRIPT.md carries a writing brief per section listing the numbers to quote. Those numbers
-were NOT transcribed from NATURE_METHODS_SKELETON.md or PAPER_OUTLINE.md, because both have
-drifted from the artifacts. Four errors found on 2026-09-10 while building the skeleton:
+The manuscript quotes numbers that must match the report CSVs exactly. They were NOT
+transcribed from the planning notes (now under attic/notes/), because those drifted from the
+artifacts during drafting. Four errors found on 2026-09-10 while building the skeleton:
 
     parsing "90% vs 31%, +60 pts"        actual 91.4% vs 33.3%, +58.1 pts
     Figure 4 "+0.110, p=3.5e-06, 31/35"  superseded; 35-column era
     outline S7 "0.495 vs 0.394, 30/35"   superseded; 35-column era
     "35 columns" in five places          32; three substance-use columns are excluded
 
-Run this to regenerate the brief numbers, or to check the ones in MANUSCRIPT.md after any re-run.
-Each block prints the CSV it came from so a reader can go straight to the source.
+Run this to check the numbers in the manuscript against the artifacts after any re-run. Each
+block prints the CSV it came from so a reader can go straight to the source.
 
     pixi run python scripts/manuscript_numbers.py
 
@@ -399,8 +399,8 @@ def supplementary() -> None:
 
 
 def main() -> int:
-    print("Manuscript brief numbers, re-derived from reports/. "
-          "Every figure here is what MANUSCRIPT.md should quote.")
+    print("Manuscript numbers, re-derived from reports/. "
+          "Every figure here is what the manuscript should quote.")
     for fn in (result1, result2, result3, result4, result5, result6, supplementary):
         try:
             fn()
