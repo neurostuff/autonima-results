@@ -252,7 +252,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--font-scale", type=float, default=1.0,
                     help="scale all label sizes; use ~1.5 for slides")
     ap.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
-    ap.add_argument("--name", default="figure_er_surface_contrasts")
+    ap.add_argument("--name", default="figure5_er_surface_contrasts")
     args = ap.parse_args(argv)
 
     from nilearn import datasets

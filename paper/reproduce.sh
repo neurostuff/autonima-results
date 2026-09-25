@@ -117,10 +117,10 @@ run "${PY[@]}" paper/manuscript_numbers.py
 
 step "verifying every expected display item was written"
 FIGS=(figure2_precision_and_attainable_recall figure3_recover_and_select_analyses
-      figure4_pipeline_vs_baseline figure5_selection_decomposition
+      figure4_pipeline_vs_baseline figure6_selection_decomposition
       figureS1_tier_progression figureS2_pool_mismatch figureS3_size_matched_null
       figureS4_brain_maps_all figureS5_measured_cost
-      figure_er_surface_contrasts figure_brain_maps_contrast
+      figure5_er_surface_contrasts figure_brain_maps_contrast
       figure_annotation_precision_recall figure_gold_retention_raw)
 missing=0 stale=0
 for f in "${FIGS[@]}"; do

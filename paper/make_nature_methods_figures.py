@@ -1143,7 +1143,7 @@ def figure5(out_dir: Path) -> None:
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.19),
                handletextpad=0.3, columnspacing=1.1)
     fig.subplots_adjust(wspace=0.34)
-    save(fig, out_dir, "figure5_selection_decomposition")
+    save(fig, out_dir, "figure6_selection_decomposition")
 
 
 # -------------------------------------------------------------------- Supplementary S3
