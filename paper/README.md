@@ -26,8 +26,18 @@ which therefore cannot be reproduced from a clone. Everything downstream can: th
 NiMADS studysets and annotations for all 94 runs are tracked, and
 `autonima meta` regenerates the meta-analytic maps from those alone.
 
-**The meta-analytic maps**, for that reason. They are derived data,
-regenerable from the tracked studysets, and `.gitignore` excludes them.
+**The meta-analytic maps**, for that reason. They are derived data, regenerable
+from the tracked studysets, and `.gitignore` excludes them. They are distributed
+instead as `maps.tar.gz` on the Zenodo record, because Zenodo's GitHub
+integration archives the release zipball and so contains tracked files only:
+
+```bash
+tools/bundle_maps.py restore maps.tar.gz   # put them back where the scripts expect
+tools/bundle_maps.py verify                # check them against reports/maps_manifest.json
+```
+
+`reports/maps_manifest.json` is tracked, so the sha256 of every map the paper was
+built from can be checked without downloading the archive.
 
 ## What it does not do
 
