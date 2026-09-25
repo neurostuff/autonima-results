@@ -58,27 +58,78 @@ the `meta_analysis_results/` ignore rule comes out. Until then, treat
 `reproduce.sh` as reproducible on a machine that has already run the pipeline,
 not from a clone.
 
-## Figure names do not match figure numbers
+## The manuscript
 
-The repository filenames predate the manuscript's final ordering. Two are
-inverted; check this table before pasting anything into the document.
+`latex/` holds the manuscript. Build it with:
+
+```
+paper/latex/build.sh
+```
+
+`manuscript.tex` is the document -- preamble, front matter, and the order in
+which the pieces are assembled. It `\input`s two generated files:
+
+| | |
+|---|---|
+| `body.tex` | Abstract through the end of the Methods |
+| `supplementary.tex` | the supplementary figure captions |
+
+Both are written by `latex/convert.py` from `Autonima - Manuscript.docx`, the
+Google Docs export, against `references.bib`, the Paperpile export. **While the
+Google Doc is still the source of truth, edit there and re-run `convert.py`;
+edits made directly to those two files are overwritten.** Once the Doc is
+retired, stop running the script and edit them as ordinary LaTeX.
+
+Four things in the export do not survive a plain `pandoc docx -o tex`, and the
+script's module docstring explains each: Paperpile writes hyperlinks rather than
+Word field codes, so the only link from a superscript number to a BibTeX entry
+is the citation URL; pandoc's markdown writer reads `$` as math and welds the
+Fig. S5 cost figures into single words; that caption is separately corrupt in
+the Doc itself; and every display equation appears twice, once as the Docs
+rendering and once as the LaTeX the author typed beside it.
+
+The script refuses to write anything it cannot verify. It checks that the
+Paperpile-id-to-BibTeX-key mapping is a bijection over all 28 references, that
+the in-text citations and the reference list name the same set, and -- because
+BibTeX renumbers by order of first citation -- that every marker keeps the
+number the Doc gave it.
+
+Known defects in the Google Doc, corrected during conversion and worth fixing
+upstream if the Doc is ever used again:
+
+- The **Fig. S5 caption**. Docs' equation autoformat consumed the `$...$` spans
+  and re-emitted them as Mathematical-Alphanumeric italics with the spaces
+  gone, which is visible in the exported PDF too. All seven figures match
+  `manuscript_numbers.py`, so the caption is restored from that verified text.
+- **No subscripts anywhere** (zero `w:vertAlign` runs), so the similarity and
+  count variables set as `scoord`, `slabel`, `nexpert`, `nauto`.
+- **`?utm_source=chatgpt.com`** on the GitHub URLs in Data and Code
+  availability.
+
+## Figure files and figure numbers
+
+Filenames match the manuscript's numbering. They did not until the LaTeX
+conversion: `figure_er_surface_contrasts` was Figure 5 and
+`figure5_selection_decomposition` was Figure 6, so the names were one apart
+from the numbers for everything after Figure 4. Both were renamed; the
+generating scripts and `reproduce.sh` were updated with them.
 
 | Manuscript | File in `reports/nature_methods_figures/` |
 |---|---|
-| Figure 1 | *(schematic, drawn by hand — not generated)* |
+| Figure 1 | *(schematic, drawn by hand -- not generated)* |
 | Figure 2 | `figure2_precision_and_attainable_recall` |
 | Figure 3 | `figure3_recover_and_select_analyses` |
 | Figure 4 | `figure4_pipeline_vs_baseline` |
-| **Figure 5** | **`figure_er_surface_contrasts`** |
-| **Figure 6** | **`figure5_selection_decomposition`** |
+| Figure 5 | `figure5_er_surface_contrasts` |
+| Figure 6 | `figure6_selection_decomposition` |
 | Supplementary S1 | `figureS1_tier_progression` |
 | Supplementary S2 | `figureS2_pool_mismatch` |
 | Supplementary S3 | `figureS3_size_matched_null` |
 | Supplementary S4 | `figureS4_brain_maps_all` |
 | Supplementary S5 | `figureS5_measured_cost` |
 
-Three further items are built but not cited: `figure_text_to_map_baselines`,
-`figure_annotation_precision_recall`, `figure_brain_maps_contrast`.
+Two further items are built but not cited:
+`figure_annotation_precision_recall` and `figure_brain_maps_contrast`.
 
 ## Two interpreters, on purpose
 
