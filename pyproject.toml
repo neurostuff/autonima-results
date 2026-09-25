@@ -43,11 +43,12 @@ autonima = { git = "https://github.com/neurostuff/autonima.git", tag = "v0.1.0",
 # a retrieval source (articles/ace_outputs), which the manuscript covers as
 # "user-provided article files".
 ace = { git = "https://github.com/neurosynth/ACE.git", rev = "d64291e06655d60049e046baeb670f8ffb5db360" }
-# NOT YET PINNABLE. The retrieval used a local fix that exists on no public commit:
-# "Skip an article with no usable PMCID instead of failing its whole batch". It is
-# open as neuroquery/pubget#61; pin the merge commit, or a release, once it lands.
-# Until then the default environment is not fully reproducible either.
-pubget = { path = "../pubget", editable = true }
+# 236b762 is the merge of neuroquery/pubget#61, which carries the fix the
+# retrieval depended on: "Skip an article with no usable PMCID instead of failing
+# its whole batch". Before it, one unidentifiable record discarded every sibling
+# in its batch -- observed on a 413-PMCID retrieval that produced zero article
+# directories. Pinned to the merge commit because pubget has cut no release since.
+pubget = { git = "https://github.com/neuroquery/pubget.git", rev = "236b762e2be90bb7525e296922bfc463c9e01605" }
 
 [tool.pixi.feature.dev.pypi-dependencies]
 autonima = { path = '../autonima', editable = true, extras = ["meta"] }

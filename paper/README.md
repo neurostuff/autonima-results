@@ -75,12 +75,11 @@ pixi run -e dev <cmd>   # development: siblings as editable ../ checkouts
 `autonima` at `440de05` and `ace` at `d64291e`. Edits to `../autonima` do **not**
 affect that environment; use `-e dev` when working on the siblings.
 
-**One dependency is still unpinnable.** The retrieval used a local `pubget` fix
-that exists on no public commit — "Skip an article with no usable PMCID instead of
-failing its whole batch" — currently open as
-[neuroquery/pubget#61](https://github.com/neuroquery/pubget/pull/61). Both
-environments therefore still resolve `pubget` through `../pubget`, and a fresh
-clone cannot build either until that merges and the commit is pinned here.
+All three siblings are now pinned to public commits, so a fresh clone can build
+the default environment. `pubget` is pinned to `236b762`, the merge of
+[neuroquery/pubget#61](https://github.com/neuroquery/pubget/pull/61), which
+carries the fix the retrieval depended on — before it, one unidentifiable record
+discarded every sibling article in its batch.
 
 A second caveat belongs with the autonima pin: `440de05` is where master stood
 when the evaluation ran, but Supplementary S5's cost figures were measured on
