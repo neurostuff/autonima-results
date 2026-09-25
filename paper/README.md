@@ -64,12 +64,28 @@ This split is why `figureS4` once sat a week stale at a superseded column count:
 it was outside the figure registry and nothing rebuilt it. `reproduce.sh` now
 invokes both interpreters explicitly and verifies the outputs.
 
-## Known environment limitation
+## Two environments
 
-`pyproject.toml` resolves `autonima`, `ace` and `pubget` through local editable
-paths (`../autonima`, `../ACE`, `../pubget`). A fresh clone cannot build the
-environment until those are pinned to released versions or git revisions. This
-must be fixed before the repository is frozen for submission.
+```bash
+pixi run <cmd>          # default: siblings pinned to public commits
+pixi run -e dev <cmd>   # development: siblings as editable ../ checkouts
+```
+
+`reproduce.sh` uses the default, so it builds against the pinned revisions —
+`autonima` at `440de05` and `ace` at `d64291e`. Edits to `../autonima` do **not**
+affect that environment; use `-e dev` when working on the siblings.
+
+**One dependency is still unpinnable.** The retrieval used a local `pubget` fix
+that exists on no public commit — "Skip an article with no usable PMCID instead of
+failing its whole batch" — currently open as
+[neuroquery/pubget#61](https://github.com/neuroquery/pubget/pull/61). Both
+environments therefore still resolve `pubget` through `../pubget`, and a fresh
+clone cannot build either until that merges and the commit is pinned here.
+
+A second caveat belongs with the autonima pin: `440de05` is where master stood
+when the evaluation ran, but Supplementary S5's cost figures were measured on
+2026-09-04 and come from a later commit (`fef53ac`). No single revision produced
+every number in the paper, and `execution_manifest.json` records no version.
 
 ## The chain
 

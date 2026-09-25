@@ -16,9 +16,21 @@ version = "0.1.0"
 channels = ["conda-forge"]
 platforms = ["linux-64", "osx-arm64", "win-64"]
 
-# The three siblings used to resolve through ../ paths, so the environment could only
-# be built in one directory on one machine. Pinned to public commits instead.
 [tool.pixi.pypi-dependencies]
+nimare = ">=0.2.1,<0.3"
+
+# TWO ENVIRONMENTS, because the siblings are wanted two different ways.
+#
+#   pixi run <cmd>            default: siblings pinned to public commits.
+#                             Reproducible from a clone; edits to ../autonima
+#                             have NO effect.
+#   pixi run -e dev <cmd>     development: siblings as editable local checkouts,
+#                             exactly as before. Edits take effect immediately.
+#
+# The siblings used to sit in the default pypi-dependencies as ../ paths, which
+# meant the environment could only be built in one directory on one machine.
+
+[tool.pixi.feature.pinned.pypi-dependencies]
 # 440de05 is where master stood locally when the evaluation was run (2026-09-08).
 # Deliberately NOT origin/master: the eight commits after it change how the model is
 # called (model-parameter passthrough, model_params read from config), and the
@@ -35,8 +47,17 @@ ace = { git = "https://github.com/neurosynth/ACE.git", rev = "d64291e06655d60049
 # NOT YET PINNABLE. The retrieval used a local fix that exists on no public commit:
 # "Skip an article with no usable PMCID instead of failing its whole batch". It is
 # open as neuroquery/pubget#61; pin the merge commit, or a release, once it lands.
+# Until then the default environment is not fully reproducible either.
 pubget = { path = "../pubget", editable = true }
-nimare = ">=0.2.1,<0.3"
+
+[tool.pixi.feature.dev.pypi-dependencies]
+autonima = { path = '../autonima', editable = true, extras = ["meta"] }
+ace = { path = '../ACE', editable = true }
+pubget = { path = "../pubget", editable = true }
+
+[tool.pixi.environments]
+default = { features = ["pinned"], solve-group = "pinned" }
+dev = { features = ["dev"], solve-group = "dev" }
 
 [tool.pixi.tasks]
 
