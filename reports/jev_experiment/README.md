@@ -52,8 +52,51 @@ near-equal recall from a 12% smaller pool, still at better precision. That is th
 point the map result argues for, and it is the opposite end of the range from the F1 optimum
 (tau = 0.60). **Tuning screening on F1 would have made the maps worse.**
 
-Untested: whether tau = 0.20 actually closes the map gap. It needs screening and annotation
-re-run at the new threshold, roughly $0.90.
+## Tested: tau = 0.20 does NOT close the map gap
+
+`v7-jev` re-runs at abstract tau = 0.20. Screening improved exactly as the sweep predicted
+and the maps did not move at all.
+
+| | gpt-5-mini | jev tau=0.50 | jev tau=0.20 |
+|---|---|---|---|
+| abstract gold recall | 1.000 | 0.937 | **0.987** |
+| full-text gold recall | 0.961 | 0.958 | **0.961** |
+| full-text F1 | 0.383 | 0.481 | **0.482** |
+| **end-to-end gold recall** | **0.830** | 0.784 | **0.830** |
+| studies included | 305 | 215 | 227 |
+| **map r² (mean)** | **0.632** | 0.577 | **0.573** |
+
+**The hypothesis was wrong.** "Jev's maps lag because it loses gold studies at screening" is
+falsified: gold recall is now identical at 73/88 and the maps are unchanged (0.577 -> 0.573),
+still behind in 4 of 4 contrasts.
+
+What differs is the SURPLUS. Both arms include the same 73 gold studies; GPT-5-mini includes
+**232 non-gold** against Jev's **154**, and contributes more analyses to every map:
+
+| contrast | gpt experiments | jev experiments | r² gap |
+|---|---|---|---|
+| reappraisal | 279 | 186 | -0.046 |
+| decrease | 266 | 236 | **-0.127** |
+| increase | 56 | 33 | -0.055 |
+| maintain | 204 | 107 | -0.010 |
+
+But volume alone does not explain it. `decrease` has near-equal experiment counts (236 v 266,
+11% apart) and the largest r² gap of all four; `maintain` has half the experiments and the
+smallest gap. So the remaining difference is about WHICH analyses are selected, not how many
+-- which moves the open question from screening to analysis-level selection.
+
+Two readings of the surplus, not yet distinguished:
+
+1. Those "false positives" are largely correct inclusions the expert pool missed. The project's
+   own Supplementary S2 supports this -- measured precision rises from 49.7% to 65.7% when
+   author-provided candidate lists replace the PubMed search, so much of the apparent FP rate
+   is pool mismatch rather than error.
+2. MKDA simply benefits from more coordinates. The `decrease` row argues against this being
+   the whole story.
+
+Distinguishing them is the next experiment, and it matters beyond Jev: if (1), then screening
+precision measured against published inclusion lists is systematically penalising correct
+decisions.
 
 ## Cost
 
@@ -63,7 +106,12 @@ re-run at the new threshold, roughly $0.90.
 | annotation v4-jev | 313 | $0.5466 |
 | annotation v5-jev | 309 | $0.4850 |
 | screening v6-jev (probability capture) | 1,578 | $0.2676 |
-| **total** | **3,780** | **$1.569** |
+| v7-jev at tau=0.20 (abstract fully cached) | 449 | $0.5512 |
+| aborted launches while fixing the cache layers | ~470 | ~$0.08 |
+| **total** | **~4,700** | **~$2.20** |
+
+The tau change itself cost $0.00 at abstract screening and charged full-text for only the 145
+newly included studies, because thresholds are now post-hoc over stored probabilities.
 
 Same work on gpt-5-mini would be several dollars of input alone, before output tokens --
 and output is where chat models cost, since they write a rationale for every decision.
