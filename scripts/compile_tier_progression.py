@@ -49,7 +49,7 @@ from run_tiers import resolve_tier, load_registry  # noqa: E402
 from benchmark_exclusions import is_excluded  # noqa: E402
 from map_mask import common_mask  # noqa: E402
 
-MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
+MANUAL_BASE = REPO_ROOT.parent / "neurometabench" / "analysis"
 UNCORRECTED_MAP = "z.nii.gz"
 CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
 DICE_THRESHOLD = 1.96

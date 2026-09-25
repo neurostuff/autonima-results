@@ -51,7 +51,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 from run_tiers import resolve_tier  # noqa: E402
 from map_mask import common_mask  # noqa: E402
 
-MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
+MANUAL_BASE = REPO_ROOT.parent / "neurometabench" / "analysis"
 CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
 UNCORRECTED_MAP = "z.nii.gz"
 MAP_NAME = CORRECTED_MAP  # what gets rendered

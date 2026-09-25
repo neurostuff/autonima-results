@@ -38,7 +38,8 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, "/home/zorro/repos/autonima")
+# autonima.backends.jev does not exist in the pinned v0.1.0. Run this under
+# `pixi run -e dev`, whose editable ../autonima checkout provides it.
 from autonima.backends.jev import apply_gate  # noqa: E402
 
 SYSTEM_ANNOTATIONS = {"all_studies", "all_abstract", "all_analyses"}

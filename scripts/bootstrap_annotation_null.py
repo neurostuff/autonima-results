@@ -52,12 +52,11 @@ import numpy as np
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-sys.path.insert(0, "/home/zorro/repos/autonima")
 from run_tiers import resolve_tier  # noqa: E402
 from benchmark_exclusions import filter_rows  # noqa: E402
 from map_mask import common_mask  # noqa: E402
 
-MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
+MANUAL_BASE = REPO_ROOT.parent / "neurometabench" / "analysis"
 # THE METRIC/MAP RULE. R-squared compares *unthresholded* maps, so it reads the raw z. Dice
 # compares *thresholded* maps, so it reads the FDR-corrected z at the corrected q <= 0.05
 # boundary, which on these maps is exactly z > 1.96 (verified voxel-identical against the

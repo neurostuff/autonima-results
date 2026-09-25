@@ -30,6 +30,7 @@ from dataclasses import dataclass
 from html import escape
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from nmb_mapping import resolve_analysis_dir  # noqa: E402
 from map_mask import common_mask  # noqa: E402
@@ -107,13 +108,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--manual-analysis-base",
         type=Path,
-        default=Path("/home/zorro/repos/neurometabench/analysis"),
+        default=REPO_ROOT.parent / "neurometabench" / "analysis",
         help="Root containing manual benchmark maps by project.",
     )
     parser.add_argument(
         "--manual-nimads-base",
         type=Path,
-        default=Path("/home/zorro/repos/neurometabench/data/nimads"),
+        default=REPO_ROOT.parent / "neurometabench" / "data" / "nimads",
         help="Root containing merged manual benchmark nimads datasets by project.",
     )
     parser.add_argument(

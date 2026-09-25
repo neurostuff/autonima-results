@@ -69,8 +69,8 @@ from run_tiers import add_tier_argument, resolve_tier  # noqa: E402
 from map_mask import common_mask  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_MANUAL_ANALYSIS_BASE = Path("/home/zorro/repos/neurometabench/analysis")
-DEFAULT_MANUAL_NIMADS_BASE = Path("/home/zorro/repos/neurometabench/data/nimads")
+DEFAULT_MANUAL_ANALYSIS_BASE = REPO_ROOT.parent / "neurometabench" / "analysis"
+DEFAULT_MANUAL_NIMADS_BASE = REPO_ROOT.parent / "neurometabench" / "data" / "nimads"
 CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
 UNCORRECTED_MAP = "z.nii.gz"
 DICE_THRESHOLD = 1.96

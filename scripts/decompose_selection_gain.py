@@ -51,7 +51,7 @@ from run_tiers import resolve_tier  # noqa: E402
 from benchmark_exclusions import filter_rows  # noqa: E402
 from map_mask import common_mask  # noqa: E402
 
-MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
+MANUAL_BASE = REPO_ROOT.parent / "neurometabench" / "analysis"
 UNCORRECTED_MAP = "z.nii.gz"
 SCREENING_ONLY_COLUMN = "all_analyses"
 

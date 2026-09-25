@@ -22,7 +22,8 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, "/home/zorro/repos/autonima")
+# autonima.backends.jev does not exist in the pinned v0.1.0. Run this under
+# `pixi run -e dev`, whose editable ../autonima checkout provides it.
 from autonima.backends.jev import POST_HOC_CONFIG_KEYS  # noqa: E402
 from autonima.config import ConfigManager  # noqa: E402
 from autonima.execution import stable_hash  # noqa: E402

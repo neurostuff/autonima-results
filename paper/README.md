@@ -12,6 +12,23 @@ paper/reproduce.sh --skip-slow      # full chain minus the size-matched null
 The script fails on the first error and ends by checking that all 14 display
 items were written this run, so a silent half-rebuild is not possible.
 
+## What this repository does not contain
+
+**The expert reference maps.** Every map-level comparison is against reference
+maps curated in neurometabench, which is a separate repository and a separate
+artifact with its own manuscript and DOI. The scripts default to finding it as a
+sibling directory (`../neurometabench/analysis`), overridable with
+`--manual-analysis-base`. Without it, Figures 4, 5, 6 and S3 cannot be computed.
+
+**The article full texts.** Third-party full texts cannot be redistributed. They
+are needed only for the upstream stages -- screening and coordinate parsing --
+which therefore cannot be reproduced from a clone. Everything downstream can: the
+NiMADS studysets and annotations for all 94 runs are tracked, and
+`autonima meta` regenerates the meta-analytic maps from those alone.
+
+**The meta-analytic maps**, for that reason. They are derived data,
+regenerable from the tracked studysets, and `.gitignore` excludes them.
+
 ## What it does not do
 
 It does **not** re-run the AutoNIMA pipeline. Stage outputs under

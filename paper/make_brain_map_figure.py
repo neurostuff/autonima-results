@@ -62,7 +62,7 @@ from nmb_mapping import load_mappings  # noqa: E402
 from map_mask import common_mask  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-MANUAL_BASE = Path("/home/zorro/repos/neurometabench/analysis")
+MANUAL_BASE = REPO_ROOT.parent / "neurometabench" / "analysis"
 MAP_NAME = "z_corr-FDR_method-indep.nii.gz"
 POOLED = REPO_ROOT / "reports" / "cross_project_best_baseline.csv"
 DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"

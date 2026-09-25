@@ -390,7 +390,7 @@ def main() -> int:
     ap.add_argument("--check-recall", action="store_true",
                     help="report each baseline's gold recall, and the ceiling imposed by the "
                          "shared modality clause, against the benchmark's annotation columns")
-    ap.add_argument("--manual-nimads-base", default="/home/zorro/repos/neurometabench/data/nimads",
+    ap.add_argument("--manual-nimads-base", default=str(REPO_ROOT.parent / "neurometabench" / "data" / "nimads"),
                     help="benchmark NiMADS base dir (for --check-recall)")
     args = ap.parse_args()
 
