@@ -115,3 +115,45 @@ newly included studies, because thresholds are now post-hoc over stored probabil
 
 Same work on gpt-5-mini would be several dollars of input alone, before output tokens --
 and output is where chat models cost, since they write a rationale for every decision.
+
+
+## Tested: matching GPT's selection COUNT makes the maps worse
+
+`v8-jev` keeps abstract tau = 0.20 and loosens analysis selection to tau = 0.30, taking
+selections from 584 to 626 against GPT-5-mini's 623.
+
+| contrast | gpt-5-mini | jev v5 (.5/.5) | jev v7 (.2/.5) | jev v8 (.2/.3) |
+|---|---|---|---|---|
+| decrease | 0.745 | 0.620 | 0.619 | 0.569 |
+| increase | 0.440 | 0.385 | 0.385 | **0.410** |
+| maintain | 0.556 | 0.560 | 0.545 | 0.487 |
+| reappraisal | 0.788 | 0.742 | 0.741 | 0.679 |
+| **MEAN** | **0.632** | 0.577 | 0.573 | **0.536** |
+
+Worse in three of four. So the deficit is not volume: the 42 analyses added between tau 0.50
+and 0.30 are the wrong ones, and adding them costs 0.037 of mean r-squared.
+
+## Study breadth helps; analysis breadth hurts
+
+| arm | studies | analyses | analyses/study | map r² |
+|---|---|---|---|---|
+| gpt-5-mini | 305 | 623 | **2.04** | **0.632** |
+| jev v7 | 227 | 584 | 2.57 | 0.573 |
+| jev v8 | 227 | 626 | 2.76 | 0.536 |
+
+Jev already selects MORE analyses per study than GPT-5-mini, and pushing that ratio higher
+made correspondence worse monotonically. GPT's advantage is the opposite shape: it draws on
+**more studies, more selectively within each**.
+
+Two things follow.
+
+**It supports the paper's central claim rather than undermining it.** Analysis-level
+selectivity is what buys correspondence -- loosening it degrades the map even while the raw
+count moves toward the better arm. "Pool more analyses" is not the mechanism.
+
+**The remaining gap is screening breadth, and its status is unresolved.** With gold recall
+equalised at 73/88, GPT still includes 232 non-gold studies to Jev's 154, and those extra
+studies carry the advantage. Whether they are genuinely relevant work the expert pool missed
+-- which Supplementary S2's 49.7% to 65.7% precision jump on author-provided lists suggests --
+or whether MKDA simply rewards study count, is not settled here and is a question about the
+benchmark rather than about Jev.
