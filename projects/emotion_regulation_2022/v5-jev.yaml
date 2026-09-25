@@ -1,0 +1,231 @@
+# Emotion regulation, criteria rewritten for a proposition evaluator (Jev).
+#
+# WHAT CHANGED FROM v4-jev.yaml, AND WHY
+#
+# v4's criteria were written as prompt instructions to a chat model, which absorbs them as
+# guidance. jev-1.13 reads each criterion literally and asks "is this true of the analysis?",
+# so an instruction scores near zero and, under a conjunctive gate, silently kills the target.
+# On the v4-jev run `maintain` selected 0 of 703 analyses at every threshold down to 0.3.
+#
+# Three changes, all following docs.typesafe.ai/model-jaggedness/jev-1.13:
+#
+# 1. INSTRUCTIONS MOVED OUT OF THE CRITERIA LIST. Global I3 ("either direction qualifies"),
+#    I4 ("judge from the analysis name...") and I5 ("assign every label that applies"), plus
+#    maintain's I2 (commentary about the benchmark), are guidance, not properties of a study.
+#    They now ride in `additional_instructions`, reaching the model with every question but
+#    never scored. This alone took maintain from 0 to 43 selections in an offline re-gate.
+#
+# 2. EVERY CRITERION IS NOW ONE PROPOSITION, with its boundary cases in `true`/`false` rather
+#    than buried in the statement -- the docs are explicit that a caveat inside the statement
+#    becomes part of what is judged. Compound criteria were split; increase's I2 was a
+#    boundary condition on I1 and folded into its `false`.
+#
+# 3. THE within-group/between-group DUPLICATE IS GONE. Global I2 asked for within-group and
+#    E3 asks for between-group: the same question and its negation. jev-1.13 does not
+#    guarantee P(noul) + P(not noul) == 1, so asking both double-counts one judgement. Only
+#    E3 remains.
+#
+# Full text is still sent as state. The docs warn that accuracy falls as the state grows with
+# irrelevant detail, so this config measures the CEILING with a well-formed criteria set and
+# an unfiltered article -- context reduction is a separate change.
+#
+#   cp -r projects/emotion_regulation_2022/v4 projects/emotion_regulation_2022/v5-jev
+#   pixi run python -m autonima.cli run projects/emotion_regulation_2022/v5-jev.yaml \
+#       projects/emotion_regulation_2022/v5-jev -j 4
+search:
+  database: pubmed
+  query: '((("functional magnetic resonance imaging"[tiab] OR "functional MRI"[tiab] OR fMRI[tiab] OR
+    neuroimaging[tiab] OR "Magnetic Resonance Imaging"[Mesh] OR "Brain Mapping"[Mesh]) AND ("emotion regulation"[tiab]
+    OR "affective regulation"[tiab] OR reappraisal[tiab])) AND ("2000/01/01"[Date - Publication] : "2019/12/31"[Date
+    - Publication])) NOT (Editorial[pt] OR Letter[pt] OR Comment[pt] OR "Case Reports"[pt] OR News[pt]
+    OR Review[pt])'
+  date_from: 2000/01/01
+  date_to: 2019/12/31
+  max_results: 20000
+  email: delavega@utexas.edu
+retrieval:
+  load_excluded: true
+  sources:
+  - pubget
+  full_text_sources:
+  - root_path: /home/zorro/repos/autonima-results/articles/elsevier_output
+    pmid_source: folder_name
+    text_path_templates:
+    - text.txt
+    coordinates_path_templates:
+    - coordinates.json
+  - root_path: /home/zorro/repos/autonima-results/articles/ace_outputs
+    pmid_source: file_name
+    allowed_extensions:
+    - .html
+    processed_data_path: /home/zorro/repos/autonima-results/articles/ace_outputs/processed
+screening:
+  abstract:
+    model: jev-latest
+    objective: Meta-analysis of fMRI studies in which participants regulate an emotional response to visual
+      stimuli, or view them without regulating.
+    confidence_reporting: true
+    inclusion_criteria:
+    - Task-based fMRI study.
+    - Human participants performing an emotion regulation task, broadly defined. Cognitive reappraisal
+      is the core case, and it covers reinterpretation, perspective-taking and distancing. Also admit
+      adjacent antecedent-focused strategies- acceptance, "reality checking", cognitive control of emotion,
+      and regulation applied during an anticipation or cue period rather than during the stimulus itself.
+    - Any healthy or clinical participant group qualifies, at ANY age- children, adolescents, adults,
+      older adults, and mixed-age samples all count. A patient study qualifies if a control group is reported
+      separately.
+    - Reports task-related brain activation results.
+    exclusion_criteria:
+    - Non-empirical papers (e.g., reviews, meta-analyses) without original human data.
+    - Empathy or perspective-taking studies in which participants adopt a self- or other-oriented perspective
+      toward a depicted person WITHOUT being instructed to amplify or dampen their own emotional response.
+    backend: jev
+    inclusion_threshold: 0.5
+    exclusion_threshold: 0.5
+  fulltext:
+    model: jev-latest
+    objective: Meta-analysis of fMRI studies in which participants regulate an emotional response to visual
+      stimuli, or view them without regulating.
+    confidence_reporting: true
+    inclusion_criteria:
+    - Task-based fMRI study.
+    - fMRI task- an emotion regulation strategy is instructed. Cognitive reappraisal is the core case
+      (reinterpretation, perspective-taking, distancing), and adjacent antecedent-focused strategies also
+      qualify- acceptance, "reality checking", and instructed cognitive control of an emotional response.
+      Regulation instructed during an anticipation or cue period qualifies as well as regulation during
+      the stimulus.
+    - Stimuli- the emotional stimuli are VISUAL. Static images (IAPS pictures, photographs of faces or
+      scenes) are the common case, and film or video clips ALSO qualify. Exclude only studies whose regulated
+      stimuli are non-visual- purely auditory material, script-driven imagery with no visual stimulus,
+      or word and sentence stimuli.
+    - Sample- any participant group at any age qualifies, including children, adolescents and older adults.
+      A study of a patient or clinical population qualifies when a control group's results are reported
+      separately.
+    - Analysis- reports at least one within-task contrast related to emotion regulation (e.g. "reappraise
+      > look", "down-regulate > maintain", "up-regulate > maintain"), or an unregulated viewing contrast
+      (e.g. "emotion > baseline", "watch negative > neutral").
+    - Whole-brain evidence- at least one analysis is a group-level, whole-brain (voxelwise) task-evoked
+      statistical map with peak coordinates in a standard anatomical space.
+    - It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures,
+      or supplementary materials, as long as they are clearly described in the text.
+    exclusion_criteria:
+    - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original
+      fMRI data.
+    - Studies that report ONLY region-of-interest or small-volume-corrected results, or that used partial
+      brain coverage, with no accompanying whole-brain analysis.
+    - Studies that report ONLY seed-based connectivity, effective connectivity (e.g. PPI, DCM) or resting-state
+      analyses, without also reporting a whole-brain task activation map.
+    - Studies that report ONLY between-group contrasts or interactions, with no within-group task effect
+      for any group.
+    - Empathy or perspective-taking studies in which participants take a self- or other-oriented perspective
+      toward a depicted person with no instruction to amplify or dampen their own emotional response.
+    backend: jev
+    inclusion_threshold: 0.5
+    exclusion_threshold: 0.5
+parsing:
+  parse_coordinates: true
+  coordinate_model: '@psyc-aid338-ope-333f18/gpt-5-mini-2025-08-07'
+annotation:
+  enabled: true
+  model: jev-latest
+  create_all_included_annotations: true
+  prompt_type: multi_analysis
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  inclusion_criteria:
+  - statement: This analysis is a group-level, univariate, whole-brain (voxelwise), task-evoked statistical
+      map.
+    'true': A group-level voxelwise task contrast, whether or not other analyses in the same study are
+      whole-brain.
+    'false': A single-subject analysis, a non-voxelwise summary, or an analysis that is not task-evoked.
+      That the study reports some other whole-brain analysis does not make this one qualify.
+  - statement: This contrast concerns either the regulation of an emotional response or the passive, unregulated
+      viewing of emotional stimuli.
+    'true': Either a regulation contrast or an unregulated emotional-viewing contrast.
+    'false': Neither -- for example a motor, memory or non-emotional cognitive contrast.
+  exclusion_criteria:
+  - statement: This analysis is explicitly described as region-of-interest or small-volume-corrected,
+      with no whole-brain result behind it.
+    'true': The text explicitly says ROI, small-volume correction, or an a-priori mask, and no whole-brain
+      result is reported for it.
+    'false': Whole-brain, or not stated. A short coordinate table or anatomically focused results are
+      NOT evidence of an ROI analysis -- whole-brain analyses routinely report few peaks.
+  - statement: This analysis is a connectivity or resting-state result rather than a task activation map.
+    'true': Seed-based or effective connectivity, PPI, DCM, ICA, or a resting-state result.
+    'false': A task-evoked activation map.
+  - statement: This contrast is between two participant groups, or is a group x condition interaction.
+    'true': A between-group comparison or interaction, including gender and other subgroup difference
+      effects.
+    'false': A within-group contrast.
+  annotations:
+  - name: reappraisal
+    description: 'Cognitive reappraisal as the regulation strategy: changing the meaning of a pictured
+      situation in order to change one''s emotional response to it. The union of the decrease and increase
+      goals.'
+    inclusion_criteria:
+    - statement: The contrast isolates a reappraisal regulation attempt against a less-regulated or unregulated
+        comparison.
+      'true': Forms such as reappraise > look, reappraise > view, reappraise > watch, reappraise > maintain,
+        decrease > look, or increase > maintain. Either regulation goal qualifies.
+      'false': No regulation attempt in the active condition, or the comparison is itself equally regulated.
+    exclusion_criteria:
+    - statement: This is a passive viewing contrast with no regulation instruction.
+      'true': Neither condition involves an instruction to regulate.
+      'false': The active condition involves a regulation attempt.
+  - name: decrease
+    description: 'Down-regulation goal: reappraisal used to reduce the intensity of an emotional response.'
+    inclusion_criteria:
+    - statement: The regulation goal of this contrast is to reduce or dampen the emotional response.
+      'true': Forms such as decrease > look, decrease > maintain, downregulate > view, or an instruction
+        to distance oneself.
+      'false': The goal is to amplify the response, or there is no regulation goal.
+    exclusion_criteria:
+    - statement: The only stated regulation goal of this contrast is to amplify emotion.
+      'true': Up-regulation only.
+      'false': Down-regulation, or both, or no stated goal.
+  - name: increase
+    description: 'Up-regulation goal: reappraisal used to amplify the intensity of an emotional response.'
+    inclusion_criteria:
+    - statement: The regulation goal of this contrast is explicitly to amplify or intensify the emotional
+        response.
+      'true': Forms such as increase > maintain, increase > look, increase > view, upregulate > watch,
+        or an instruction to feel the emotion more intensely.
+      'false': Down-regulation, no regulation, or up-regulation that is neither stated nor clearly implied
+        by the condition name.
+    exclusion_criteria:
+    - statement: The only stated regulation goal of this contrast is to dampen emotion.
+      'true': Down-regulation only.
+      'false': Up-regulation, or both, or no stated goal.
+  - name: maintain
+    description: Viewing emotional pictures passively and responding naturally, with no instruction to
+      regulate.
+    inclusion_criteria:
+    - statement: This contrast reflects viewing emotional stimuli under NO regulation instruction.
+      'true': Forms such as emotion > baseline, look negative > baseline, view emotional > neutral, watch
+        negative > watch neutral, react > baseline, attend > rest.
+      'false': The active condition carries any instruction to regulate.
+    exclusion_criteria:
+    - statement: The active condition of THIS contrast involves a regulation attempt.
+      'true': The active condition asks participants to reappraise, decrease or increase their response.
+      'false': The active condition is unregulated viewing.
+    additional_instructions: Expect to find this label INSIDE regulation studies. Almost every study here
+      is a reappraisal experiment, and its Look/Watch/React condition is the control arm of that same
+      experiment. That the paper is about regulation is NOT a reason to withhold this label from its unregulated
+      condition.
+  backend: jev
+  inclusion_threshold: 0.5
+  exclusion_threshold: 0.5
+  additional_instructions: 'Judge the CONTRAST described in `analysis`, not the study it comes from. Use
+    the analysis name, analysis description and table caption first; the article is background. An empty
+    or generic analysis name (e.g. ''analysis_0'') is never itself a reason to answer no -- it usually
+    means the analysis is the only one in its table, so the caption describes it fully. Either an activation
+    or a deactivation effect qualifies; direction is never a reason to answer no. Labels are assigned
+    independently: a contrast may satisfy more than one target, and a regulation contrast normally carries
+    both a goal label (decrease or increase) and the strategy label (reappraisal).'
+output:
+  nimads: true
+  export_excluded_studies: true
