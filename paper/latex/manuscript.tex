@@ -17,6 +17,15 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 
+% Bitstream Charter for text, Times for math, Helvetica for headings. Charter
+% was drawn for low-resolution output, so it holds up on screen where Computer
+% Modern's thin strokes go weak. mathptmx is loaded first so that charter wins
+% for the body and only the math is Times.
+\usepackage{mathptmx}
+\usepackage{charter}
+\usepackage[scaled=0.92]{helvet}
+\usepackage{microtype}
+
 % Numeric superscript citations with compressed ranges, so 7,8,9,10,11 sets as
 % 7-11 exactly as the Doc had them.
 \usepackage[super,comma,sort&compress]{natbib}
@@ -34,15 +43,11 @@
 }
 
 % ---------------------------------------------------------------- OPTIONAL ---
-% sudo apt install texlive-latex-recommended texlive-latex-extra
-% then uncomment for 1.5 spacing, line numbers for review, and better justification:
+% Uncomment for circulating a draft; both are review aids, not preprint style.
 %   \usepackage{setspace}\onehalfspacing
 %   \usepackage{lineno}\linenumbers
-%   \usepackage{microtype}
-% texlive-publishers additionally provides naturemag.bst, which sets the
-% reference list in Nature's own style; swap it into \bibliographystyle above.
 % -----------------------------------------------------------------------------
-\linespread{1.15}
+\linespread{1.16}
 
 % Nature-style captions: "Fig. 1 | Title. Body...", with no "Figure 1:" prefix.
 \renewcommand{\figurename}{Fig.}
@@ -54,6 +59,10 @@
   \endgroup
   \vskip\belowcaptionskip}
 \makeatother
+
+% Sans-serif headings against the serif body.
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\bfseries}
 
 \setcounter{secnumdepth}{0}   % Nature-style: unnumbered headings
 \setlength{\parskip}{0.4em}
