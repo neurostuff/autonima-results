@@ -31,15 +31,14 @@ nimare = ">=0.2.1,<0.3"
 # meant the environment could only be built in one directory on one machine.
 
 [tool.pixi.feature.pinned.pypi-dependencies]
-# 440de05 is where master stood locally when the evaluation was run (2026-09-08).
-# Deliberately NOT origin/master: the eight commits after it change how the model is
-# called (model-parameter passthrough, model_params read from config), and the
-# canonical runs finished 2026-08-27. One caveat for Methods -- Supplementary S5's
-# cost figures were measured 2026-09-04 and therefore come from fef53ac, which is
-# AFTER this pin. No single commit produced every number in the paper, and
-# execution_manifest.json records no version, so this cannot be recovered from the
-# artifacts.
-autonima = { git = "https://github.com/neurostuff/autonima.git", rev = "440de05b77a1ce00ca05cc9b5c73755ac8987b11", extras = ["meta"] }
+# v0.1.0 (12a3d75), the release cut for the manuscript. Not 440de05, where master
+# stood when the canonical runs finished: the eight commits between the two are
+# inert here -- the model-parameter passthrough only applies when
+# AUTONIMA_MODEL_PARAMS or a config model_params block is set, and no benchmark
+# project uses either -- while 12a3d75 additionally carries the per-stage token
+# and cost accounting that Supplementary S5 was measured with. Pinning the release
+# therefore covers every number in the paper, which 440de05 did not.
+autonima = { git = "https://github.com/neurostuff/autonima.git", tag = "v0.1.0", extras = ["meta"] }
 # no_miss was merged upstream; d64291e is origin/master. ACE supplies scraped HTML as
 # a retrieval source (articles/ace_outputs), which the manuscript covers as
 # "user-provided article files".
