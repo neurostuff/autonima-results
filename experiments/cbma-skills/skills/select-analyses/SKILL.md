@@ -15,8 +15,12 @@ The batch has:
 - **`objective`**: what the review is for.
 - **`criteria`**: global criteria (`GI1`, `GE1`, ...). They apply to every target
   and act as a gate.
-- **`targets`**: `{name: {description, criteria: {I1, E1, ...}}}`. Each target is
-  one meta-analysis.
+- **`targets`**: `{name: {description, criteria: {I1, E1, ...}, instructions}}`.
+  Each target is one meta-analysis. `instructions` is optional.
+- **`instructions`** (optional), and a target's own **`instructions`**: guidance
+  from the review on how to read the criteria. Follow it. It is not a criterion: it
+  has no ID and gets no state. It takes precedence over the general guidance here,
+  but never over the output format.
 - **`items`**: one per study, with `pmid`, `title`, `abstract`, `text_file` and
   `analyses`. Each analysis has an `analysis_id`, a table label and caption, a
   name, a description and a point count.

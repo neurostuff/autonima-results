@@ -64,7 +64,8 @@ selection:                      # analysis-level selection for each meta-analyti
         - The contrast isolates working-memory load or task versus baseline
       exclusion:
         - Resting-state or connectivity maps
-  instructions: ""
+      instructions: ""                   # optional, guidance for this target only
+  instructions: ""                       # optional, guidance for every target
 
 meta:
   estimator: mkdadensity        # mkdadensity | ale | kda
@@ -72,6 +73,15 @@ meta:
   estimator_args: {}
   corrector_args: {}
 ```
+
+## Criteria versus instructions
+
+A criterion gets an ID and a state (`met`, `not_met` or `unclear`) for every item,
+and an include needs every inclusion `met`. So a line that tells the judge how to
+read the criteria, rather than stating something true or false of a study or an
+analysis, belongs in `instructions`. Examples: "either an activation or a
+deactivation qualifies", "judge the contrast from its own name and caption". As a
+criterion, a line like that can only ever block an include.
 
 ## How changes propagate
 
@@ -86,7 +96,7 @@ Every decision stores two hashes, and it stays valid only while both still match
 | an abstract criterion | abstract decisions (full-text IDs are unaffected: IDs are per stage) |
 | a full-text criterion | full-text decisions |
 | a full-text source, or re-gathering yields a different text | that study's full-text decision and extraction |
-| a target's criteria | selection decisions |
+| a target's criteria or instructions | selection decisions |
 | a skill file under `SKILLS/` | every decision of the stages that skill instructs |
 
 Nothing else re-opens a decision. Re-running a stage after a change batches only

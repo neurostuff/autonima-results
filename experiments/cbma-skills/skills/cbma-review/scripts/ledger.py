@@ -129,7 +129,7 @@ _ALLOWED = {
     "extraction": {"drop_unverified", "instructions"},
     "selection": {"global", "targets", "instructions"},
     "selection.global": {"inclusion", "exclusion"},
-    "selection.target": {"name", "description", "inclusion", "exclusion"},
+    "selection.target": {"name", "description", "inclusion", "exclusion", "instructions"},
     "meta": {"estimator", "corrector", "estimator_args", "corrector_args"},
 }
 
@@ -201,10 +201,13 @@ def stage_criteria(spec: dict, stage: str) -> dict:
         sel = spec.get("selection") or {}
         glob = sel.get("global") or {}
         crit = number(glob.get("inclusion"), glob.get("exclusion"), prefix="G")
-        targets = {
-            t["name"]: {"description": t.get("description"), "criteria": number(t.get("inclusion"), t.get("exclusion"))}
-            for t in sel.get("targets") or []
-        }
+        targets = {}
+        for t in sel.get("targets") or []:
+            targets[t["name"]] = {"description": t.get("description"),
+                                  "criteria": number(t.get("inclusion"), t.get("exclusion"))}
+            # Only when present, so reviews without target instructions keep their hashes.
+            if t.get("instructions"):
+                targets[t["name"]]["instructions"] = t["instructions"]
         payload = {"objective": spec["objective"], "global": crit, "targets": targets,
                    "instructions": sel.get("instructions")}
     else:

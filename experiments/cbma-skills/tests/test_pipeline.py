@@ -211,6 +211,23 @@ def test_spec_rejects_typos(review):
     assert run_ledger("init", review) == 1
 
 
+def test_target_instructions_are_guidance_that_reaches_the_hash(review):
+    # A review without target instructions keeps the hash it had before the key existed.
+    before = ledger.Review(review).criteria
+    assert "instructions" not in before["selection"]["payload"]["targets"]["patients_gt_controls"]
+    text = (review / "review.yaml").read_text().replace(
+        "      inclusion: [Patients greater than controls]\n",
+        "      inclusion: [Patients greater than controls]\n"
+        "      instructions: Either an activation or a deactivation qualifies.\n")
+    (review / "review.yaml").write_text(text)
+    after = ledger.Review(review).criteria
+    target = after["selection"]["payload"]["targets"]["patients_gt_controls"]
+    assert target["instructions"] == "Either an activation or a deactivation qualifies."
+    assert list(target["criteria"]) == ["I1"]                            # guidance gets no ID
+    assert after["selection"]["hash"] != before["selection"]["hash"]    # so editing it re-opens selection
+    assert all(after[s]["hash"] == before[s]["hash"] for s in ("abstract", "fulltext", "extraction"))
+
+
 def test_full_flow(review, capsys):
     assert run_ledger("init", review) == 0
     capsys.readouterr()
