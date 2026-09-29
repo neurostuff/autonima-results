@@ -1,4 +1,4 @@
-"""Normalize a full-text article (PMC JATS XML, publisher HTML, or plain text)
+"""Normalize a full-text article (PMC JATS XML, publisher HTML, Elsevier API XML, or plain text)
 into the source-agnostic document layout every later stage reads:
 
     docs/<pmid>/
@@ -8,9 +8,12 @@ into the source-agnostic document layout every later stage reads:
         tables/<id>.json   one file per table: label, caption, footer, the cell grid
                            with row/col spans expanded, a TSV rendering, and flags
 
-Standard library only. Import it, or run it directly on one file:
+Import it, or run it directly on one file:
 
-    python docnorm.py ARTICLE_FILE --pmid 12345 --out docs/ [--format auto|jats|html|text]
+    python docnorm.py ARTICLE_FILE --pmid 12345 --out docs/ [--format auto|jats|html|elsevier|text]
+
+Standard library only, except Elsevier XML: that is parsed by elsevier_coordinate_extraction
+(lxml, pandas), imported only when an Elsevier file is met.
 """
 
 from __future__ import annotations
@@ -36,6 +39,8 @@ _REF_HEADING = re.compile(r"^\s*(references?|bibliography|literature cited|works
 _REF_CLASS = re.compile(r"(^|[\s_-])(ref-?list|references?|bibliography|citations?)($|[\s_-])", re.I)
 _DROP_TAGS = {"script", "style", "noscript", "nav", "header", "footer", "form", "button", "svg", "iframe"}
 _BLOCK_TAGS = {"p", "div", "section", "article", "li", "dd", "dt", "blockquote", "figcaption", "pre"}
+# Containers that are never a paragraph themselves but hold blocks.
+_CONTAINER_TAGS = {"main", "aside", "figure", "ol", "ul", "dl", "body", "center", "details"}
 
 
 def _clean(text: Optional[str]) -> str:
@@ -49,6 +54,12 @@ def _sha256_bytes(data: bytes) -> str:
 # --------------------------------------------------------------------------- #
 # Table helpers shared by the JATS and HTML paths
 # --------------------------------------------------------------------------- #
+
+def _span(value) -> int:
+    """A colspan or rowspan as publishers write it: "2", 2, "2px", "", "NaN". Junk means 1."""
+    m = re.match(r"\s*(\d+)", str(value if value is not None else ""))
+    return min(max(1, int(m.group(1))), 100) if m else 1
+
 
 def expand_grid(rows: List[List[dict]]) -> List[List[str]]:
     """Turn rows of {text, colspan, rowspan} cells into a rectangular grid.
@@ -64,8 +75,8 @@ def expand_grid(rows: List[List[dict]]) -> List[List[str]]:
         for cell in row:
             while (r, c) in grid:
                 c += 1
-            colspan = max(1, int(cell.get("colspan") or 1))
-            rowspan = max(1, int(cell.get("rowspan") or 1))
+            colspan = _span(cell.get("colspan"))
+            rowspan = _span(cell.get("rowspan"))
             for dr in range(rowspan):
                 for dc in range(colspan):
                     grid[(r + dr, c + dc)] = cell["text"]
@@ -250,9 +261,13 @@ def parse_jats(xml_bytes: bytes) -> dict:
         for child in node:
             emit(child, depth)
 
+    body_start = len(lines)
     if body is not None:
         for child in body:
             emit(child, 1)
+    # Judge completeness on the text this produced, not on the raw <body>: XML that
+    # only looks like JATS (Elsevier's ja:article has a ja:body) yields almost nothing.
+    body_text = "\n".join(lines[body_start:])
     if back is not None:
         for child in back:
             emit(child, 1)
@@ -262,10 +277,12 @@ def parse_jats(xml_bytes: bytes) -> dict:
             emit(child, 1)
 
     mark_duplicates(tables)
-    complete = body is not None and len(_jats_text(body)) > 1500
+    complete = body is not None and len(body_text) > 1500
     reason = None
     if body is None:
         reason = "PMC XML has no <body>: the article is not in the open-access subset, or is embargoed"
+    elif not complete and len(_jats_text(body)) > 1500:
+        reason = "XML has a long <body> but no JATS sections or paragraphs; it is probably not JATS"
     elif not complete:
         reason = "PMC XML body is very short; likely incomplete"
     return {"title": title, "abstract": abstract, "text_md": "\n".join(lines).strip() + "\n",
@@ -406,12 +423,30 @@ def parse_html(html_bytes: bytes) -> dict:
         heading = next((c for c in n.children if isinstance(c, _Node) and re.match(r"h[1-6]$", c.tag)), None)
         return heading is not None and bool(_REF_HEADING.match(heading.text()))
 
+    def structural(g: _Node) -> bool:
+        return g.tag in _BLOCK_TAGS or g.tag in _CONTAINER_TAGS or g.tag == "table" or bool(re.match(r"h[1-6]$", g.tag))
+
     def emit(n: _Node) -> None:
+        # Loose text and inline elements between structural children form paragraphs;
+        # without this, recursing into a mixed container would drop its text.
+        run: List[str] = []
+
+        def flush() -> None:
+            text = _clean("".join(run))
+            run.clear()
+            if text and not in_refs["flag"]:
+                lines.extend([text, ""])
+
         for c in n.children:
             if isinstance(c, str):
+                run.append(c)
                 continue
             if c.tag in _DROP_TAGS:
                 continue
+            if not structural(c) and not any(structural(g) for g in c.iter()):
+                run.append(c.text())
+                continue
+            flush()
             if c.tag in {"section", "div", "ol", "ul"} and is_ref_container(c):
                 continue
             if re.match(r"h[1-6]$", c.tag):
@@ -434,14 +469,16 @@ def parse_html(html_bytes: bytes) -> dict:
                 cap = next(c.iter("figcaption"), None)
                 lines.extend([f"[FIGURE: {cap.text() if cap is not None else ''}]", ""])
                 continue
-            has_block_child = any(isinstance(g, _Node) and (g.tag in _BLOCK_TAGS or g.tag == "table"
-                                  or re.match(r"h[1-6]$", g.tag)) for g in c.children)
-            if c.tag in _BLOCK_TAGS and not has_block_child:
+            # A block is one paragraph only if nothing structural sits anywhere below it.
+            # Checking direct children alone flattened whole articles wrapped in
+            # <div><main>, tables included (Wiley and PMC pages in the ACE corpus).
+            if c.tag in _BLOCK_TAGS and not any(structural(g) for g in c.iter()):
                 text = c.text()
                 if text:
                     lines.extend([text, ""])
             else:
                 emit(c)
+        flush()
 
     body = next(root.iter("body"), None) or root
     emit(body)
@@ -450,6 +487,86 @@ def parse_html(html_bytes: bytes) -> dict:
     complete = len(text_md) > 3000
     return {"title": title, "abstract": "", "text_md": text_md, "tables": tables, "complete": complete,
             "reason": None if complete else "HTML yields very little body text; likely an abstract page or paywall"}
+
+
+# --------------------------------------------------------------------------- #
+# Elsevier full-text API XML (ScienceDirect), through elsevier_coordinate_extraction
+# --------------------------------------------------------------------------- #
+
+ELSEVIER_INSTALL = ("Elsevier XML needs the elsevier_coordinate_extraction package, which needs lxml and "
+                    "pandas: pip install lxml pandas && pip install --no-deps -e "
+                    "~/repos/elsevier_coordinate_extractor")
+
+
+def elsevier_available() -> bool:
+    try:
+        import elsevier_coordinate_extraction.extract.text  # noqa: F401
+        import elsevier_coordinate_extraction.table_extraction  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
+def _frame_rows(df) -> List[List[dict]]:
+    """A pandas table from the extractor, header levels first, as rows of cells.
+
+    The extractor has already expanded row and column spans, so each cell has span 1.
+    """
+    import pandas as pd
+
+    def cell(v) -> str:
+        if v is None or (not isinstance(v, (list, tuple)) and pd.isna(v)):
+            return ""
+        if isinstance(v, float) and v.is_integer():
+            return str(int(v))
+        s = _clean(str(v))
+        return "" if re.match(r"^Unnamed: \d+(_level_\d+)?$", s) else s
+
+    levels = df.columns.nlevels
+    header = [[cell(col[level] if levels > 1 else col) for col in df.columns] for level in range(levels)]
+    body = [[cell(v) for v in row] for row in df.itertuples(index=False, name=None)]
+    return [[{"text": x} for x in row] for row in header + body]
+
+
+def parse_elsevier(xml_bytes: bytes) -> dict:
+    """Parse a ScienceDirect full-text API response (<full-text-retrieval-response>).
+
+    The parsing is elsevier_coordinate_extraction's: its stylesheets already handle
+    Elsevier's section markup and CALS tables (spans, labels, captions, legends), and it
+    produced the Elsevier corpus in the first place. This only maps its output onto the
+    document layout. Its text leaves out tables, figures and the bibliography, so the
+    table markers go after the body.
+    """
+    try:
+        from elsevier_coordinate_extraction.extract.text import extract_text_from_article
+        from elsevier_coordinate_extraction.table_extraction import extract_tables_from_article
+    except ImportError as exc:
+        raise RuntimeError(ELSEVIER_INSTALL) from exc
+    text = extract_text_from_article(xml_bytes)
+    tables: List[dict] = []
+    for i, (meta, df) in enumerate(extract_tables_from_article(xml_bytes), 1):
+        footer = " ".join(x for x in (meta.legend, meta.foot) if x)
+        tables.append(table_record(meta.identifier or f"T{i}", _clean(meta.label), _clean(meta.caption),
+                                   _clean(footer), _frame_rows(df), meta.raw_xml or ""))
+    mark_duplicates(tables)
+    title = text.get("title") or ""
+    abstract = text.get("abstract") or ""
+    body = (text.get("body") or "").strip()
+    lines: List[str] = [f"# {title}", ""]
+    if abstract:
+        lines += ["## Abstract", "", abstract, ""]
+    if body:
+        lines += [body, ""]
+    for t in tables:
+        lines.extend([f"[TABLE {t['table_id']}: {t['label']} {t['caption']}]".replace("  ", " "), ""])
+    complete = len(body) > 1500
+    reason = None
+    if not body:
+        reason = "Elsevier XML has no body text: the response holds metadata or the abstract only"
+    elif not complete:
+        reason = "Elsevier XML body is very short; likely incomplete"
+    return {"title": title, "abstract": abstract, "text_md": "\n".join(lines).strip() + "\n",
+            "tables": tables, "complete": complete, "reason": reason}
 
 
 def parse_text(raw: bytes) -> dict:
@@ -461,6 +578,8 @@ def parse_text(raw: bytes) -> dict:
 
 def detect_format(path: Path, raw: bytes) -> str:
     head = raw[:4000].decode("utf-8", errors="replace").lower()
+    if "<full-text-retrieval-response" in head or "elsevier.com/xml/svapi/article" in head:
+        return "elsevier"
     if "<pmc-articleset" in head or "<!doctype article" in head or re.search(r"<article[\s>][^<]*(dtd-version|xmlns:xlink)", head):
         return "jats"
     if path.suffix.lower() in {".html", ".htm", ".xhtml"} or "<html" in head:
@@ -475,6 +594,8 @@ def normalize(raw: bytes, fmt: str) -> dict:
         return parse_jats(raw)
     if fmt == "html":
         return parse_html(raw)
+    if fmt == "elsevier":
+        return parse_elsevier(raw)
     if fmt == "text":
         return parse_text(raw)
     raise ValueError(f"unknown format {fmt!r}")
@@ -515,7 +636,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("file", type=Path)
     ap.add_argument("--pmid", required=True)
     ap.add_argument("--out", type=Path, required=True, help="the review's docs/ directory")
-    ap.add_argument("--format", default="auto", choices=["auto", "jats", "html", "text"])
+    ap.add_argument("--format", default="auto", choices=["auto", "jats", "html", "elsevier", "text"])
     ap.add_argument("--source", default="manual")
     args = ap.parse_args(argv)
     raw = args.file.read_bytes()

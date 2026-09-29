@@ -1,6 +1,6 @@
 ---
 name: fulltext-sources
-description: Retrieve and normalize full texts for a systematic review, from PubMed Central open access (no key) and from any folders of pre-downloaded articles (publisher HTML, JATS XML, plain text), into one per-study layout of text plus parsed tables. Use when a review needs full texts gathered, when adding a local folder of downloaded papers as a source, or when checking which studies have usable text.
+description: Retrieve and normalize full texts for a systematic review, from PubMed Central open access (no key) and from any folders of pre-downloaded articles (publisher HTML, JATS XML, Elsevier API XML, plain text), into one per-study layout of text plus parsed tables. Use when a review needs full texts gathered, when adding a local folder of downloaded papers as a source, or when checking which studies have usable text.
 ---
 
 # Full-text sources
@@ -28,8 +28,15 @@ fulltext:
       pattern: "**/*.html"
       id_from: filename               # filename | parent_dir | regex | sidecar
       id_kind: pmid                   # pmid | doi | pmcid
-      format: auto                    # auto | html | jats | text
+      format: auto                    # auto | html | jats | elsevier | text
 ```
+
+`elsevier` is the ScienceDirect full-text API's XML, as elsevier_coordinate_extractor
+saves it (`<pmid>/article.xml`). Auto-detection recognizes it. It is parsed by that
+package, which needs lxml and pandas:
+`pip install lxml pandas && pip install --no-deps -e ~/repos/elsevier_coordinate_extractor`.
+Without it, a source declared `format: elsevier` stops the run before anything is
+gathered.
 
 ### Source order
 

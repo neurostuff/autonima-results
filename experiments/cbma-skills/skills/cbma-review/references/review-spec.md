@@ -44,7 +44,7 @@ fulltext:
       pattern: "**/*.html"
       id_from: filename         # filename | parent_dir | regex | sidecar
       id_kind: pmid             # pmid | doi | pmcid
-      format: auto              # auto | html | jats | text
+      format: auto              # auto | html | jats | elsevier | text
 
 extraction:
   drop_unverified: true         # default true: export only points found in their table row

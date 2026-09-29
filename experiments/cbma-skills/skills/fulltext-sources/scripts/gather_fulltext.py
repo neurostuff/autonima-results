@@ -20,7 +20,7 @@ kept and marked incomplete.
           # regex: "PMID(?P<id>\\d+)"    # for id_from: regex, matched against the relative path
           # sidecar: identifiers.json    # for id_from: sidecar, a JSON file next to the article
           # sidecar_key: pmid
-          format: auto                   # auto | html | jats | text
+          format: auto                   # auto | html | jats | elsevier | text
 
 Writes docs/<pmid>/ (see docnorm.py) and fulltext/index.jsonl, one line per PMID:
     {pmid, status: available|incomplete|unavailable, source, attempts: [...], ...}
@@ -219,6 +219,8 @@ def build_sources(spec: dict, review_dir: Path, records: Dict[str, dict], http: 
             sources.append(PMCSource(review_dir, records, http=http, api_key=os.environ.get("NCBI_API_KEY"),
                                      email=(spec.get("search") or {}).get("email")))
         elif s.get("type") == "local":
+            if s.get("format") == "elsevier" and not docnorm.elsevier_available():
+                raise SystemExit(f"source {s.get('name') or s['path']}: {docnorm.ELSEVIER_INSTALL}")
             sources.append(LocalSource(s, review_dir, records))
         else:
             raise SystemExit(f"unknown full-text source type {s.get('type')!r}; use pmc or local")
