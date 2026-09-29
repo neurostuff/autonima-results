@@ -902,9 +902,13 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         if args.cmd == "init":
             for d in ("search", "docs", "fulltext", "decisions", "work", "analyses", "results"):
                 (rv.root / d).mkdir(parents=True, exist_ok=True)
+            shown = {s: rv.criteria[s]["criteria"] for s in STAGES}
+            # Target criteria live in the payload, not the global IDs; show them too.
+            target_ids = {t: v["criteria"] for t, v in rv.criteria["selection"]["payload"]["targets"].items()}
             write_json(rv.root / "results" / "criteria.json",
-                       {s: {"criteria": rv.criteria[s]["criteria"], "hash": rv.criteria[s]["hash"]} for s in STAGES})
-            print(json.dumps({s: rv.criteria[s]["criteria"] for s in STAGES}, indent=1))
+                       {s: {"criteria": shown[s], "hash": rv.criteria[s]["hash"],
+                            **({"targets": target_ids} if s == "selection" else {})} for s in STAGES})
+            print(json.dumps({**shown, "targets": target_ids}, indent=1))
             print("review.yaml is valid; criteria IDs written to results/criteria.json", file=sys.stderr)
         elif args.cmd == "batches":
             paths = cmd_batches(rv, args.stage, args.size, args.limit, args.discard)

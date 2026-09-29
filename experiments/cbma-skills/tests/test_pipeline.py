@@ -276,10 +276,12 @@ def test_run_batches_passes_the_prompt_past_list_options(review, tmp_path, capsy
 
 def test_full_flow(review, capsys):
     assert run_ledger("init", review) == 0
-    capsys.readouterr()
     criteria = json.loads((review / "results" / "criteria.json").read_text())
     assert list(criteria["abstract"]["criteria"]) == ["I1", "I2", "E1"]
     assert list(criteria["fulltext"]["criteria"]) == ["I1", "I2"]       # numbered per stage
+    # per-target criteria are shown too, not only the global ones
+    assert criteria["selection"]["targets"] == {"patients_gt_controls": {"I1": "Patients greater than controls"}}
+    assert last_json(capsys)["targets"] == {"patients_gt_controls": {"I1": "Patients greater than controls"}}
 
     # ---- abstract stage: one good line, one inconsistent line, one missing
     assert run_ledger("batches", review, "--stage", "abstract", "--size", "10") == 0
