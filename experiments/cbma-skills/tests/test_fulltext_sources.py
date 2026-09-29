@@ -55,6 +55,32 @@ def test_html_wrapped_article_keeps_its_structure_and_tables():
     assert ledger.verify_point([-20, 0, -16], t["grid"]) == "row"
 
 
+def _tandf_page() -> bytes:
+    """A Taylor & Francis page: the body has no <table>, the tables live in a script."""
+    import json
+    table = ('<div id="table-content-T0001"><table class="topbot"><caption><div class="paragraph">\n'
+             '<b>TABLE 1 Main effects of social versus nonsocial scenes</b>\n</div></caption>'
+             '<thead><tr><th align="left">Region</th><th>t-value</th><th>x, y, z</th></tr></thead>\n'
+             '<tbody><tr><td>Amygdala left</td><td>3.55</td><td>−21, −9, −18</td></tr>\n'
+             '<tr><td>mOFC</td><td>5.26</td><td>−3, 54, −18</td></tr></tbody></table></div>')
+    data = {"table-index-map": {"T0001": 0}, "tables": [{"settings": {"hasCsvFormat": True},
+                                                          "content": table, "id": "T0001"}]}
+    blob = json.dumps(data, ensure_ascii=False).replace("/", "\\/")     # the page escapes slashes
+    return (f'<html><body><h1>Attachment and social scenes</h1><p>{PARA}</p>'
+            f'<div class="tableViewerArticleInfo" id="T0001"><a href="#">Display Table</a></div>'
+            f'<script>tandf.tfviewerdata={blob};</script></body></html>').encode()
+
+
+def test_html_tables_embedded_in_a_script_are_recovered():
+    parsed = docnorm.parse_html(_tandf_page())
+    assert len(parsed["tables"]) == 1                               # was 0: the script was dropped whole
+    t = parsed["tables"][0]
+    assert t["table_id"] == "T0001" and t["label"].upper() == "TABLE 1"
+    assert t["coordinate_candidate"] and t["grid"][1] == ["Amygdala left", "3.55", "−21, −9, −18"]
+    assert "[TABLE T0001:" in parsed["text_md"]
+    assert "tfviewerdata" not in parsed["text_md"]                  # the script itself stays out of the text
+
+
 def test_span_attributes_tolerate_publisher_junk():
     assert [docnorm._span(v) for v in ("2", 2, "3px", "", None, "NaN", "0", "9999")] == [2, 2, 3, 1, 1, 1, 1, 100]
 

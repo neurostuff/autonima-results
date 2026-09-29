@@ -398,6 +398,42 @@ def _html_table(table: _Node, index: int) -> dict:
     return table_record(table_id, label, caption, footer, rows, "")
 
 
+_TANDF_VIEWER = re.compile(r"tfviewerdata\s*=\s*")
+
+
+def _script_tables(root: _Node, start: int) -> List[dict]:
+    """Tables that a page ships only inside a script, as JSON-escaped HTML.
+
+    Taylor & Francis pages keep their tables in `tandf.tfviewerdata = {"tables":
+    [{"id": "T0001", "content": "<table>..."}]}` and render them with JavaScript,
+    so the body holds no <table> at all and the tables were silently lost.
+    """
+    out: List[dict] = []
+    for script in root.iter("script"):
+        raw = "".join(c for c in script.children if isinstance(c, str))
+        m = _TANDF_VIEWER.search(raw)
+        if not m:
+            continue
+        try:
+            data, _ = json.JSONDecoder().raw_decode(raw, m.end())
+        except ValueError:
+            continue
+        entries = data.get("tables") if isinstance(data, dict) else None
+        for entry in entries or []:
+            if not isinstance(entry, dict):
+                continue
+            builder = _TreeBuilder()
+            builder.feed(str(entry.get("content") or ""))
+            table = next(builder.root.iter("table"), None)
+            if table is None:
+                continue
+            t = _html_table(table, start + len(out) + 1)
+            if entry.get("id"):
+                t["table_id"] = str(entry["id"])
+            out.append(t)
+    return out
+
+
 def _is_inside(node: _Node, ancestor: _Node) -> bool:
     while node is not None:
         if node is ancestor:
@@ -482,6 +518,12 @@ def parse_html(html_bytes: bytes) -> dict:
 
     body = next(root.iter("body"), None) or root
     emit(body)
+    seen_ids = {t["table_id"] for t in tables}
+    for t in _script_tables(root, len(tables)):
+        if t["table_id"] in seen_ids:
+            continue
+        tables.append(t)
+        lines.extend([f"[TABLE {t['table_id']}: {t['label']} {t['caption']}]".replace("  ", " "), ""])
     mark_duplicates(tables)
     text_md = "\n".join(lines).strip() + "\n"
     complete = len(text_md) > 3000
