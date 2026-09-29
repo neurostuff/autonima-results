@@ -83,7 +83,14 @@ PYEOF
   # --exclude-project dementia: its reference pools coordinates across studies,
   # so its analysis units are not comparable at map level (28 columns, 8 projects).
   run "${PY[@]}" scripts/compile_best_baselines.py --exclude-project dementia
-  run "${PY[@]}" scripts/compile_analysis_counts.py
+  # analysis_counts.csv sizes the whole benchmark (32 columns, 9 projects), but it takes its
+  # column list from a best-baseline table, and the one above is map-level. Fed that one it
+  # silently dropped dementia's four columns, and Result 1 read 28 over 8. So build a full
+  # table for it on the side; the directory is temporary because a _stats file lands beside it.
+  ALL_BB_DIR="$(mktemp -d)"
+  run "${PY[@]}" scripts/compile_best_baselines.py --output "$ALL_BB_DIR/best_baseline_all.csv"
+  run "${PY[@]}" scripts/compile_analysis_counts.py --baseline-table "$ALL_BB_DIR/best_baseline_all.csv"
+  rm -rf "$ALL_BB_DIR"
   run "${PY[@]}" scripts/decompose_selection_gain.py
   run "${PY[@]}" scripts/annotation_value.py
   run "${PY[@]}" scripts/compile_tier_progression.py
@@ -94,7 +101,7 @@ PYEOF
   run "${PY[@]}" scripts/compute_gold_survival.py
   run "${PY[@]}" scripts/compute_stage_precision_recall.py
   run "${PY[@]}" scripts/compute_stage_precision_recall.py \
-      --suffix -allstudies --output reports/stage_precision_recall_allstudies.csv
+      --suffix=-allstudies --output reports/stage_precision_recall_allstudies.csv
   run "${PY[@]}" scripts/compute_attainable_recall.py
   # manuscript_numbers.py reads this one as data, not as an import -- easy to miss
   # when tracing the chain through the import graph alone.
