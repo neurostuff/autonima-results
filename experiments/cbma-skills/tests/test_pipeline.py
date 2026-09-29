@@ -228,6 +228,52 @@ def test_target_instructions_are_guidance_that_reaches_the_hash(review):
     assert all(after[s]["hash"] == before[s]["hash"] for s in ("abstract", "fulltext", "extraction"))
 
 
+FAKE_AGENT = r'''
+import json, re, sys
+# Parse like claude's CLI: an option that takes a list keeps every following
+# argument until the next option, and only "--" ends the options.
+args, prompt, i = sys.argv[1:], [], 0
+while i < len(args):
+    a = args[i]
+    if a == "--":
+        prompt = args[i + 1:]
+        break
+    if a == "--allowedTools":
+        i += 1
+        while i < len(args) and not args[i].startswith("-"):
+            i += 1
+        continue
+    if not a.startswith("-"):
+        prompt.append(a)
+    i += 1
+if not prompt:
+    sys.exit("Error: Input must be provided either through stdin or as a prompt argument")
+batch = json.load(open(re.search(r"Your batch file is (\S+)\. ", prompt[-1]).group(1)))
+open(batch["output"], "w").write("".join(
+    json.dumps({"pmid": it["pmid"], "decision": "uncertain", "reason": "fake",
+                "criteria": {k: "unclear" for k in batch["criteria"]}}) + "\n" for it in batch["items"]))
+print(len(batch["items"]))
+'''
+
+
+def test_run_batches_passes_the_prompt_past_list_options(review, tmp_path, capsys):
+    import subprocess
+    assert run_ledger("init", review) == 0
+    assert run_ledger("batches", review, "--stage", "abstract", "--size", "2") == 0
+    capsys.readouterr()
+    agent = tmp_path / "fake_agent.py"
+    agent.write_text(FAKE_AGENT)
+    env = dict(__import__("os").environ,
+               AGENT_CMD=f"{sys.executable} {agent} -p --allowedTools Read,Write,Glob")
+    run = subprocess.run(["bash", str(SKILLS / "cbma-review/scripts/run_batches.sh"), str(review), "abstract", "1"],
+                         env=env, capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    assert "FAILED" not in run.stdout, run.stdout
+    assert run.stdout.count("done batch_") == 2
+    assert run_ledger("ingest", review, "--stage", "abstract", "--agent", "test/fake") == 0
+    assert ledger.Review(review).pending("abstract") == []
+
+
 def test_full_flow(review, capsys):
     assert run_ledger("init", review) == 0
     capsys.readouterr()

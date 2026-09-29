@@ -5,21 +5,23 @@
 # stage outside an interactive session. Each batch gets a clean context, which is
 # the point: the 40th batch is judged with the same instructions as the first.
 #
-#   AGENT_CMD='claude -p --allowedTools Read,Write,Glob' \
+#   AGENT_CMD='claude -p --model <model id> --allowedTools Read,Write,Glob' \
 #     scripts/run_batches.sh REVIEW abstract [PARALLEL]
 #   AGENT_CMD='codex exec --full-auto' \
 #     scripts/run_batches.sh REVIEW fulltext 2
 #
 # AGENT_CMD is any command that takes a prompt as its final argument, runs to
-# completion, and can read and write files. Check your harness's flags for
+# completion, and can read and write files. The prompt is passed after `--`, because
+# options that take a list (claude's --allowedTools) otherwise swallow it as one more
+# value, and every batch fails. Name the model in AGENT_CMD, so that the --agent you
+# give `ledger.py ingest` afterwards is true. Check your harness's flags for
 # non-interactive runs and file permissions; the ones above are examples.
-# Afterwards run `ledger.py ingest` as usual.
 set -euo pipefail
 
 review="${1:?usage: run_batches.sh REVIEW STAGE [PARALLEL]}"
 stage="${2:?usage: run_batches.sh REVIEW STAGE [PARALLEL]}"
 parallel="${3:-4}"
-: "${AGENT_CMD:?set AGENT_CMD, e.g. AGENT_CMD='claude -p --allowedTools Read,Write,Glob'}"
+: "${AGENT_CMD:?set AGENT_CMD, e.g. AGENT_CMD='claude -p --model <model id> --allowedTools Read,Write,Glob'}"
 
 skills_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 work="$(cd "$review" && pwd)/work/$stage"
@@ -35,7 +37,7 @@ run_one() {
   prompt="Read ${skills_dir}/${skill}/SKILL.md and follow it exactly. Your batch file is ${batch}. Process every item in it and write your output to the path in the batch's \"output\" field. Do not read or write any other part of the review folder except the files the batch names. When done, reply with only the number of items you wrote."
   log="${batch%.json}.agent.log"
   # shellcheck disable=SC2086
-  if $AGENT_CMD "$prompt" >"$log" 2>&1; then
+  if $AGENT_CMD -- "$prompt" >"$log" 2>&1; then
     echo "done $(basename "$batch")"
   else
     echo "FAILED $(basename "$batch") (see $log); it stays pending"
