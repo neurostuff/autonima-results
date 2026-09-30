@@ -116,7 +116,7 @@ def test_elsevier_xml_through_the_extractor():
     assert "Methods" in text and "reappraise negative > look negative" in text
     assert "nobody should read" not in text                         # bibliography dropped
     assert "[TABLE tbl1: Table 1 Regions more active" in text
-    (t,) = parsed["tables"]
+    t = parsed["tables"][0]
     assert t["label"] == "Table 1" and "reappraise than for look" in t["caption"]
     assert "p < 0.001" in t["footer"]                               # the legend is kept
     assert t["grid"][0][1:4] == ["MNI coordinates"] * 3             # column span expanded
@@ -124,3 +124,15 @@ def test_elsevier_xml_through_the_extractor():
     assert t["coordinate_candidate"]
     assert ledger.verify_point([-48, 22, 4], t["grid"]) == "row"    # U+2212 minus survives
     assert ledger.verify_point([48, 22, 4], t["grid"]) == "unverified"
+
+
+def test_elsevier_multi_part_table_keeps_each_contrast_above_its_own_rows():
+    pytest.importorskip("elsevier_coordinate_extraction.table_extraction")
+    parsed = docnorm.normalize((FIX / "elsevier_44444444.xml").read_bytes(), "elsevier")
+    t = next(t for t in parsed["tables"] if t["table_id"] == "tbl2")
+    # Two tgroups, each with its own header. pandas used to stack both headers above all
+    # the data, so the second contrast's rows could not be told from the first's.
+    assert [row[1] for row in t["grid"]] == ["Reappraise > Look", "(x, y, z)", "−48, 22, 4", "−2, 12, 60",
+                                              "Look > Reappraise", "(x, y, z)", "−14 −4 −18"]
+    assert t["grid"][3][2] == "3.20"                                # printed text, not pandas' 3.2
+    assert ledger.verify_point([-14, -4, -18], t["grid"]) == "row"   # <ce:hsp/> separates numbers

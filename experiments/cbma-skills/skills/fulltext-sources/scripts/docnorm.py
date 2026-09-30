@@ -570,6 +570,74 @@ def _frame_rows(df) -> List[List[dict]]:
     return [[{"text": x} for x in row] for row in header + body]
 
 
+_CALS_SPACERS = {"hsp", "vsp", "br"}
+
+
+def _cals_text(el: ET.Element) -> str:
+    """Cell text, with Elsevier's spacing elements read as spaces: "−14<hsp/>−40<hsp/>50"
+    is three numbers, not one."""
+    parts: List[str] = []
+
+    def walk(node: ET.Element) -> None:
+        if _local(node.tag) in _CALS_SPACERS:
+            parts.append(" ")
+        if node.text:
+            parts.append(node.text)
+        for child in node:
+            walk(child)
+            if child.tail:
+                parts.append(child.tail)
+    walk(el)
+    return _clean("".join(parts))
+
+
+def _cals_rows(table_xml: str) -> Optional[List[List[dict]]]:
+    """Rows of a CALS <ce:table>, every tgroup's header and body in document order.
+
+    A table can hold several tgroups, each with its own header naming a different
+    contrast ("S > M", then "M > S"). The extractor's pandas frame folds every header
+    into the column index, which puts the second contrast's header above all the data.
+    Here each group's header stays where it is, above its own rows. Spans come from
+    namest/nameend and morerows. Returns None when the markup has no tgroup.
+    """
+    try:
+        root = ET.fromstring(table_xml)
+    except ET.ParseError:
+        return None
+    tgroups = [n for n in root.iter() if _local(n.tag) == "tgroup"]
+    if not tgroups:
+        return None
+    grid: Dict[tuple, str] = {}
+    first_row = n_cols = 0
+    for tg in tgroups:
+        cols: Dict[str, int] = {}
+        for i, spec in enumerate(c for c in tg if _local(c.tag) == "colspec"):
+            num = spec.get("colnum") or ""
+            if spec.get("colname"):
+                cols[spec.get("colname")] = int(num) - 1 if num.isdigit() else i
+        rows = [row for part in tg if _local(part.tag) in ("thead", "tbody")
+                for row in part if _local(row.tag) == "row"]
+        for r, row in enumerate(rows, first_row):
+            c = 0
+            for entry in (e for e in row if _local(e.tag) == "entry"):
+                start = cols.get(entry.get("namest") or entry.get("colname") or "")
+                if start is None:
+                    while (r, c) in grid:
+                        c += 1
+                    start = c
+                end = max(start, cols.get(entry.get("nameend") or "", start))
+                more = (entry.get("morerows") or "0").strip()
+                rowspan = 1 + min(int(more), 99) if more.isdigit() else 1
+                text = _cals_text(entry)
+                for dr in range(rowspan):
+                    for dc in range(start, end + 1):
+                        grid[(r + dr, dc)] = text
+                c = end + 1
+                n_cols = max(n_cols, end + 1)
+        first_row = max(first_row + len(rows), max((k[0] for k in grid), default=-1) + 1)
+    return [[{"text": grid.get((r, c), "")} for c in range(n_cols)] for r in range(first_row)]
+
+
 def parse_elsevier(xml_bytes: bytes) -> dict:
     """Parse a ScienceDirect full-text API response (<full-text-retrieval-response>).
 
@@ -588,8 +656,11 @@ def parse_elsevier(xml_bytes: bytes) -> dict:
     tables: List[dict] = []
     for i, (meta, df) in enumerate(extract_tables_from_article(xml_bytes), 1):
         footer = " ".join(x for x in (meta.legend, meta.foot) if x)
+        # The grid comes from the table's own CALS markup when it has any: document order
+        # for multi-part tables, and cell text exactly as printed ("3.20", not pandas' 3.2).
+        rows = _cals_rows(meta.raw_xml) if meta.raw_xml else None
         tables.append(table_record(meta.identifier or f"T{i}", _clean(meta.label), _clean(meta.caption),
-                                   _clean(footer), _frame_rows(df), meta.raw_xml or ""))
+                                   _clean(footer), rows if rows else _frame_rows(df), meta.raw_xml or ""))
     mark_duplicates(tables)
     title = text.get("title") or ""
     abstract = text.get("abstract") or ""
