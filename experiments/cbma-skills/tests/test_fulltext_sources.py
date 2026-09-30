@@ -143,7 +143,7 @@ def test_html_article_inside_an_aspnet_form_is_kept():
     page = f"""<html><body><form id="aspnetForm" action="/article">
 <input type="hidden" name="__VIEWSTATE" value="x"><select name="q"><option>All journals</option></select>
 <div class="article"><h1>Smaller cortical volume in PTSD</h1>
-<h2>Methods</h2><p>{PARA}</p>
+<h2>Methods</h2><p>{PARA}</p><h2>Results</h2><p>{PARA}</p>
 <table><tr><th>Region</th><th>x</th><th>y</th><th>z</th></tr><tr><td>Insula</td><td>-38</td><td>4</td><td>2</td></tr></table>
 </div></form></body></html>""".encode()
     parsed = docnorm.parse_html(page)
