@@ -154,6 +154,11 @@ abstract screening, full-text screening, extraction and selection:
    `fulltext-sources`. Report available, incomplete and unavailable counts by source.
 4. **Full-text screening:** run the `fulltext` stage. Items whose text is
    unavailable are never batched.
+   **Combined mode** (`screening.fulltext.select_analyses: true`, records mode only): run
+   `ledger.py import-analyses` *before* this stage. The full-text runner then decides
+   screening and selection together, following the `screen-and-select` skill. An
+   included study with no eligible analysis is recorded as excluded. The selection
+   stage afterwards has nothing pending.
 5. **Extraction:** run the `extraction` stage, one study per batch. In records mode
    (`extraction.records` is set in `review.yaml`) there is nothing to judge: run
    `python SKILLS/cbma-review/scripts/ledger.py import-analyses REVIEW --agent <records source>`

@@ -251,3 +251,44 @@ and the user accepted both as judged:
   records mode can match full text.
 - **E3 interacts with this:** relaxing the whole-brain criterion would hide the
   scope-label defect rather than fix it.
+
+## Notes for future skill development (2026-09-30)
+
+### Guardrails against taking the orchestrator off route
+
+The user was strict in the first run and E1: the criteria were never modified.
+Nothing mechanical stops a user, or the orchestrator itself, from changing how items
+are judged without a new `review.yaml` version. Examples:
+- telling the orchestrator "be lenient on ROI studies";
+- a runner or judge prompt with added guidance;
+- a verbal ruling on a borderline case that shapes later batches.
+
+The ledger hashes `review.yaml` and the skill files, but not the prompt a judge
+actually received. Wanted:
+- **Iterative refinement as a first-class, stoppable step.** The orchestrator should
+  stop and help the user revise criteria, for example after a pilot or when a runner
+  reports PROBLEM. Every revision is then a new, versioned protocol, never an
+  instruction given in chat.
+  - Each version is stored with its date, reason and author.
+  - Every decision is tied to the version it was made under.
+  - Reports show which decisions each change re-opened.
+- **Only the batch file carries judging instructions.** Judges must take criteria and
+  guidance from the batch file alone, and the dispatch prompt must be the fixed
+  template. The transcript audit should check that every judge's first prompt matches
+  the template and carries no extra guidance. It should also flag orchestrator or
+  runner messages that restate or reinterpret criteria.
+- **Chat rulings go into the protocol or nowhere.** A ruling the user gives in chat
+  ("accept as judged") that changes future judging must become a protocol version. If
+  it only settles past decisions, it is recorded as such in the run notes.
+
+### Pondie records
+
+E1 lost recall because of how the records present some papers: whole-brain analyses
+omitted beside ROI ones, `roi` scope labels, stubs.
+- **Check against the traditional harness.** Compare E1's results with the
+  in-development Pondie integration in autonima's own pipeline, so that records mode is
+  judged against the same inputs in both harnesses.
+- **Manual review decides the fix.** The user will review the lost articles by hand
+  (PLAN E1 result; `gold_with_text_not_included` in the E1 `score.json`). That decides,
+  case by case, whether the fix belongs in the records or in the criteria (relax or
+  adjust them). Fixing the records waits until then.

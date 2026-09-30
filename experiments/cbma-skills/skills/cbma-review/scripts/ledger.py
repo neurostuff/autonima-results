@@ -48,6 +48,7 @@ STAGE_SKILL = {
     "extraction": "extract-coordinates",
     "selection": "select-analyses",
 }
+COMBINED_SKILL = "screen-and-select"
 CRITERION_STATES = {"met", "not_met", "unclear"}
 POINT_VALUE_KINDS = {"z-statistic", "t-statistic", "f-statistic", "p-value", "beta", "correlation", "other"}
 
@@ -125,7 +126,7 @@ _ALLOWED = {
     "": {"name", "objective", "search", "screening", "fulltext", "extraction", "selection", "meta", "notes"},
     "search": {"query", "date_from", "date_to", "pmids", "pmids_file", "email"},
     "screening": {"abstract", "fulltext"},
-    "screening.stage": {"inclusion", "exclusion", "instructions"},
+    "screening.stage": {"inclusion", "exclusion", "instructions", "select_analyses"},
     "fulltext": {"sources"},
     "extraction": {"drop_unverified", "instructions", "records"},
     "selection": {"global", "targets", "instructions"},
@@ -162,6 +163,12 @@ def validate_spec(spec: dict) -> None:
         _check_keys(block, "screening.stage", f"screening.{stage}")
         if not block.get("inclusion"):
             raise LedgerError(f"screening.{stage}.inclusion needs at least one criterion")
+    if (screening.get("abstract") or {}).get("select_analyses"):
+        raise LedgerError("select_analyses belongs to screening.fulltext, not screening.abstract")
+    ft = screening.get("fulltext") or {}
+    if ft.get("select_analyses") and not (spec.get("extraction") or {}).get("records"):
+        raise LedgerError("screening.fulltext.select_analyses needs extraction.records: the analyses must "
+                          "exist before full-text screening")
     _check_keys(spec.get("fulltext") or {}, "fulltext", "fulltext")
     _check_keys(spec.get("extraction") or {}, "extraction", "extraction")
     selection = spec.get("selection") or {}
@@ -232,6 +239,17 @@ class Review:
         self.records = {r["pmid"]: r for r in read_jsonl(self.root / "search" / "records.jsonl")}
         self.fulltext_index = {e["pmid"]: e for e in read_jsonl(self.root / "fulltext" / "index.jsonl")}
         self.criteria = {s: stage_criteria(self.spec, s) for s in STAGES}
+        # Combined mode: one judge decides a study's full-text criteria and every analysis x
+        # target at once. Both stages then share one hash, over both criteria sets and all
+        # three skill files, so each decision records that it was made this way.
+        self.combined = bool((self.spec["screening"]["fulltext"] or {}).get("select_analyses"))
+        if self.combined:
+            path = SKILLS_ROOT / COMBINED_SKILL / "SKILL.md"
+            payload = {"combined": True, "fulltext": self.criteria["fulltext"]["payload"],
+                       "selection": self.criteria["selection"]["payload"],
+                       "skill": sha(path.read_bytes()) if path.exists() else "no-skill-file"}
+            for stage in ("fulltext", "selection"):
+                self.criteria[stage]["hash"] = sha(payload)
 
     # paths
     def decisions_path(self, stage: str) -> Path:
@@ -281,6 +299,10 @@ class Review:
         dec = self.valid_decisions("abstract")
         return sorted((k[0] for k, r in dec.items() if r["decision"] in ("include", "uncertain")), key=int)
 
+    def with_text(self) -> List[str]:
+        return [p for p in self.abstract_passed()
+                if self.fulltext_index.get(p, {}).get("status") in ("available", "incomplete")]
+
     def fulltext_included(self) -> List[str]:
         dec = self.valid_decisions("fulltext")
         return sorted((k[0] for k, r in dec.items() if r["decision"] == "include"), key=int)
@@ -319,11 +341,18 @@ class Review:
             return [p for p in sorted(self.records, key=int) if p not in done]
         if stage == "fulltext":
             done = {k[0] for k in self.valid_decisions("fulltext")}
-            return [p for p in self.abstract_passed()
-                    if p not in done and self.fulltext_index.get(p, {}).get("status") in ("available", "incomplete")]
+            out = [p for p in self.abstract_passed()
+                   if p not in done and self.fulltext_index.get(p, {}).get("status") in ("available", "incomplete")]
+            if self.combined:
+                # A combined judgment needs the study's analyses: wait for import-analyses.
+                waiting = set(self.pending("extraction"))
+                out = [p for p in out if p not in waiting]
+            return out
         if stage == "extraction":
             out = []
-            for p in self.fulltext_included():
+            # Combined mode imports analyses before full-text screening, for every study with text.
+            candidates = self.with_text() if self.combined else self.fulltext_included()
+            for p in candidates:
                 a = self.analyses(p)
                 if a is None or a.get("input_hash") != self.input_hash("extraction", p) \
                         or a.get("criteria_hash") != self.criteria["extraction"]["hash"]:
@@ -414,10 +443,11 @@ def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard
         chunk = pending[i:i + size]
         n = i // size + 1
         path = work / f"batch_{n:04d}.json"
+        combined = stage == "fulltext" and rv.combined
         batch = {
             "stage": stage,
             "batch_id": f"{stage}-{n:04d}",
-            "skill": STAGE_SKILL[stage],
+            "skill": COMBINED_SKILL if combined else STAGE_SKILL[stage],
             "objective": rv.spec["objective"],
             "criteria": crit["criteria"],
             "instructions": crit["payload"].get("instructions"),
@@ -429,6 +459,14 @@ def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard
         }
         if stage == "selection":
             batch["targets"] = crit["payload"]["targets"]
+        if combined:
+            sel = rv.criteria["selection"]
+            for item, p in zip(batch["items"], chunk):
+                item["analyses"] = _selection_item(rv, p)["analyses"]
+            batch["selection_criteria"] = sel["criteria"]
+            batch["selection_instructions"] = sel["payload"].get("instructions")
+            batch["targets"] = sel["payload"]["targets"]
+            batch["_analyses_hashes"] = {p: rv.input_hash("selection", p) for p in chunk}
         write_json(path, batch)
         paths.append(path)
     return paths
@@ -695,11 +733,37 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
                 if errs:
                     report["errors"] += [f"{batch['batch_id']}: {e}" for e in errs]
                     continue
+                sel_rows: List[dict] = []
+                decision = rec["decision"]
+                if "_analyses_hashes" in batch:
+                    # Combined: an included study carries a decision for every analysis x target.
+                    # It stays included only if some analysis is eligible for some target.
+                    if batch["_analyses_hashes"][pmid] != rv.input_hash("selection", pmid):
+                        report["errors"].append(f"{batch['batch_id']}: pmid {pmid}: analyses changed after "
+                                                "the batch was made")
+                        continue
+                    if decision == "include":
+                        lines_sel = [dict(r, pmid=pmid) for r in rec.get("analyses") or [] if isinstance(r, dict)]
+                        serrs, recs = validate_selection(lines_sel, items[pmid], batch["targets"],
+                                                         list(batch["selection_criteria"]))
+                        if serrs:
+                            report["errors"] += [f"{batch['batch_id']}: {e}" for e in serrs]
+                            continue
+                        sel_rows = [dict(base, stage="selection", pmid=pmid,
+                                         input_hash=batch["_analyses_hashes"][pmid], analysis_id=r["analysis_id"],
+                                         target=r["target"], include=r["include"], criteria=r["criteria"],
+                                         reason=r["reason"].strip()) for r in recs]
+                        if not any(r["include"] for r in sel_rows):
+                            decision = "exclude"
+                            flags["no_eligible_analysis"] = True
+                    flags["judged_decision"] = rec["decision"]
                 row = dict(base, pmid=pmid, input_hash=batch["_input_hashes"][pmid],
-                           decision=rec["decision"], criteria=rec["criteria"], reason=rec["reason"].strip(),
+                           decision=decision, criteria=rec["criteria"], reason=rec["reason"].strip(),
                            **({"evidence": rec.get("evidence")} if stage == "fulltext" else {}),
                            **({"model": rec["model"]} if rec.get("model") else {}), **flags)
                 accepted_rows.append(row)
+                if sel_rows:
+                    append_jsonl(rv.decisions_path("selection"), sel_rows)
             not_returned = set(items) - seen
             if not_returned:
                 report["errors"].append(f"{batch['batch_id']}: no output for {sorted(not_returned)[:5]}"
@@ -873,6 +937,7 @@ def cmd_status(rv: Review) -> dict:
     f_dec = rv.valid_decisions("fulltext")
     f = Counter(r["decision"] for r in f_dec.values())
     ungrounded = sum(1 for r in f_dec.values() if r.get("ungrounded_evidence"))
+    no_eligible = sum(1 for r in f_dec.values() if r.get("no_eligible_analysis"))
     included = rv.fulltext_included()
     ext = {"studies": len(included), "extracted": 0, "with_analyses": 0, "analyses": 0, "points": 0,
            "points_verified_row": 0, "points_verified_table_only": 0, "points_unverified": 0,
@@ -910,7 +975,8 @@ def cmd_status(rv: Review) -> dict:
                                "by_source": dict(ft_source)},
         "fulltext_screening": {"screened": sum(f.values()), "include": f["include"], "exclude": f["exclude"],
                                "text_incomplete": f["incomplete"], "pending": len(rv.pending("fulltext")),
-                               "decisions_with_ungrounded_evidence": ungrounded},
+                               "decisions_with_ungrounded_evidence": ungrounded,
+                               **({"excluded_no_eligible_analysis": no_eligible} if rv.combined else {})},
         "extraction": ext,
         "selection": {"pending_studies": len(rv.pending("selection")), "targets": targets},
         "criteria_hashes": {s: rv.criteria[s]["hash"] for s in STAGES},

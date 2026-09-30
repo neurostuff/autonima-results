@@ -149,3 +149,79 @@ def test_a_records_folder_changes_the_extraction_hash_only(review):
     after = ledger.Review(review).criteria
     assert before["extraction"]["hash"] != after["extraction"]["hash"]
     assert all(before[s]["hash"] == after[s]["hash"] for s in ("abstract", "fulltext", "selection"))
+
+
+def test_combined_mode_screens_and_selects_in_one_pass(review, capsys):
+    text = (review / "review.yaml").read_text().replace(
+        "    inclusion: [Whole-brain coordinates reported]\n",
+        "    inclusion: [Whole-brain coordinates reported]\n    select_analyses: true\n")
+    (review / "review.yaml").write_text(text)
+    an = review / "records" / "analyses"
+    (an / "33333333.analyses.json").write_text(record([
+        {"key": "a1", "name": "Controls > Patients", "description": "", "table_id": "t1",
+         "points": [{"coordinates": [1.0, 2.0, 3.0], "space": "MNI", "values": []}], "document": "- x"}]))
+    assert run_ledger("init", review) == 0
+    rv = ledger.Review(review)
+    assert rv.combined and rv.criteria["fulltext"]["hash"] == rv.criteria["selection"]["hash"]
+    assert run_ledger("batches", review, "--stage", "abstract", "--size", "10") == 0
+    batch = json.loads((review / "work/abstract/batch_0001.json").read_text())
+    fake_output(batch, [{"pmid": p, "decision": d, "criteria": {"I1": s}, "reason": "r"} for p, d, s in
+                        (("11111111", "include", "met"), ("22222222", "exclude", "not_met"),
+                         ("33333333", "include", "met"))])
+    assert run_ledger("ingest", review, "--stage", "abstract", "--agent", "test") == 0
+    spec, records = gather.load_spec(review), gather.load_records(review)
+    gather.write_index(review, gather.gather(review, ["11111111", "33333333"],
+                                             gather.build_sources(spec, review, records)))
+    assert ledger.Review(review).pending("fulltext") == []          # waits for the analyses
+    assert run_ledger("import-analyses", review) == 0
+    capsys.readouterr()
+    assert ledger.Review(review).pending("fulltext") == ["11111111", "33333333"]
+
+    assert run_ledger("batches", review, "--stage", "fulltext", "--size", "5") == 0
+    batch = json.loads((review / "work/fulltext/batch_0001.json").read_text())
+    assert batch["skill"] == "screen-and-select" and "patients_gt_controls" in batch["targets"]
+    assert [a["analysis_id"] for a in batch["items"][0]["analyses"]] == ["11111111-ana_pt_gt_hc"]
+    quote = [{"criterion": "I1", "quote": "A whole-brain analysis of patients versus controls."}]
+    fake_output(batch, [
+        {"pmid": "11111111", "decision": "include", "criteria": {"I1": "met"}, "reason": "r", "evidence": quote,
+         "analyses": [{"analysis_id": "11111111-ana_pt_gt_hc", "target": "patients_gt_controls", "include": True,
+                       "criteria": {"I1": "met"}, "reason": "patients > controls"}]},
+        # screened in, but its only analysis fits no target: recorded as excluded
+        {"pmid": "33333333", "decision": "include", "criteria": {"I1": "met"}, "reason": "r", "evidence": quote,
+         "analyses": [{"analysis_id": "33333333-a1", "target": "patients_gt_controls", "include": False,
+                       "criteria": {"I1": "not_met"}, "reason": "wrong direction"}]}])
+    assert run_ledger("ingest", review, "--stage", "fulltext", "--agent", "test") == 0
+    capsys.readouterr()
+    rv = ledger.Review(review)
+    ft = rv.valid_decisions("fulltext")
+    assert ft[("11111111",)]["decision"] == "include"
+    assert ft[("33333333",)]["decision"] == "exclude" and ft[("33333333",)]["no_eligible_analysis"]
+    assert ft[("33333333",)]["judged_decision"] == "include"
+    assert rv.pending("selection") == [] and len(rv.valid_decisions("selection")) == 2
+    assert run_ledger("export", review) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert out["studies"] == 1
+    assert run_ledger("status", review) == 0
+    assert json.loads(capsys.readouterr().out)["fulltext_screening"]["excluded_no_eligible_analysis"] == 1
+
+
+def test_combined_mode_rejects_an_included_study_missing_pairs(review, capsys):
+    (review / "review.yaml").write_text((review / "review.yaml").read_text().replace(
+        "    inclusion: [Whole-brain coordinates reported]\n",
+        "    inclusion: [Whole-brain coordinates reported]\n    select_analyses: true\n"))
+    assert run_ledger("init", review) == 0
+    assert run_ledger("batches", review, "--stage", "abstract", "--size", "10") == 0
+    batch = json.loads((review / "work/abstract/batch_0001.json").read_text())
+    fake_output(batch, [{"pmid": p, "decision": "include" if p == "11111111" else "exclude",
+                         "criteria": {"I1": "met" if p == "11111111" else "not_met"}, "reason": "r"}
+                        for p in ("11111111", "22222222", "33333333")])
+    assert run_ledger("ingest", review, "--stage", "abstract", "--agent", "test") == 0
+    spec, records = gather.load_spec(review), gather.load_records(review)
+    gather.write_index(review, gather.gather(review, ["11111111"], gather.build_sources(spec, review, records)))
+    assert run_ledger("import-analyses", review) == 0
+    assert run_ledger("batches", review, "--stage", "fulltext") == 0
+    batch = json.loads((review / "work/fulltext/batch_0001.json").read_text())
+    fake_output(batch, [{"pmid": "11111111", "decision": "include", "criteria": {"I1": "met"}, "reason": "r",
+                         "evidence": [], "analyses": []}])
+    assert run_ledger("ingest", review, "--stage", "fulltext", "--agent", "test") == 2   # pairs missing
+    assert ledger.Review(review).pending("fulltext") == ["11111111"]

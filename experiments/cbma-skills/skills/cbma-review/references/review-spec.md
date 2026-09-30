@@ -90,6 +90,18 @@ extraction:
   them against, and export accepts them.
 - **Missing records:** a study without a record stays pending.
 
+### Combined mode
+
+With `screening.fulltext.select_analyses: true` (it needs `extraction.records`), one
+judge per study decides the full-text criteria and every analysis × target at once:
+1. Run `import-analyses` right after retrieval.
+2. Run the full-text stage with the `screen-and-select` skill.
+
+- **No eligible analysis:** a study that passes screening but has no analysis eligible
+  for any target is recorded as excluded (`no_eligible_analysis`).
+- **Hashes:** the full-text and selection decisions share one hash, over both criteria
+  sets and the three skill files.
+
 ## Criteria versus instructions
 
 A criterion gets an ID and a state (`met`, `not_met` or `unclear`) for every item,

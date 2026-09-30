@@ -64,6 +64,9 @@ ingest agent string `AGENT/effort-<level>`, for example
      criterion against it. Count disagreements.
    - **extraction:** report `points_unverified` from status. For 2 random studies,
      compare `analyses/<pmid>.json` with their tables.
+   - **fulltext in combined mode** (the batch's `skill` is `screen-and-select`): the
+     fulltext checks above, then the selection checks below, since the same judges made
+     both decisions. Report `excluded_no_eligible_analysis` from status.
    - **selection:** report included analyses and studies per target. Flag any target
      below 10 studies, and any analysis carrying a label that the target rules make
      inconsistent with another label.
