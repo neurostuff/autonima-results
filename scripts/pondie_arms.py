@@ -3,10 +3,14 @@
   python scripts/pondie_arms.py <project> <text|records> [--live] [--workers N]
   python scripts/pondie_arms.py <project> <text|records> --write-config
 
-The arm's config is the project's `best` config (run_categories.yaml) with only what documents
+The two arms are `text` (the record replaces the article; analyses still come from the
+article) and `records` (the record also carries its analyses, with coordinates from pondie's
+parse). They run as autonima's retrieval.records kinds `text` and `analyses`.
+
+The arm's config is the project's `best` config (run_categories.yaml) with only what records
 require changed, and the script refuses to run if anything else differs:
 
-  documents:                      added, pointing at articles/pondie/md/<project>/<kind>
+  retrieval.records               added, pointing at articles/pondie/md/<project>/<arm>
   parsing.parse_coordinates       false for `records` (the records carry the analyses)
   annotation.metadata_fields      + study_fulltext when best lacks it (autonima refuses a
                                   document run whose annotation never reads the document --
@@ -21,7 +25,7 @@ the LLM is stubbed (full-text decisions replay best's, annotation returns placeh
 abstract or coordinate-parsing call raises), which checks the whole run for free. --live
 needs OPENAI_API_KEY and OPENAI_API_GATEWAY in the environment.
 
-Documents come from scripts/compile_pondie_records.py. The `text` kind re-runs article
+Records come from scripts/compile_pondie_records.py. The `text` kind re-runs article
 retrieval, which needs a full ACE import (ACE, xmltodict, seleniumbase) on PYTHONPATH.
 """
 
@@ -40,6 +44,8 @@ import yaml
 
 REPO = Path(__file__).resolve().parents[1]
 DESCRIPTION = "a structured extraction record of the article produced by pondie"
+# Arm name -> autonima's retrieval.records.kind.
+KINDS = {"text": "text", "records": "analyses"}
 
 
 def best_run(project: str) -> str:
@@ -56,9 +62,9 @@ def arm_config(project: str, kind: str):
         for key in ("root_path", "processed_data_path"):
             if source.get(key) and not Path(source[key]).is_absolute():
                 source[key] = str(REPO / source[key])
-    arm["documents"] = {
+    arm.setdefault("retrieval", {})["records"] = {
         "enabled": True,
-        "kind": kind,
+        "kind": KINDS[kind],
         "root": str(REPO / "articles" / "pondie" / "md" / project / kind),
         "description": DESCRIPTION,
     }
@@ -79,9 +85,9 @@ def arm_config(project: str, kind: str):
 
 
 def assert_equivalent(base: dict, arm: dict) -> None:
-    """Fail unless the arm differs from best only in the keys documents require."""
+    """Fail unless the arm differs from best only in the keys records require."""
     allowed = {
-        ("documents",),
+        ("retrieval", "records"),
         ("parsing", "parse_coordinates"),
         ("annotation", "metadata_fields"),
         ("output", "directory"),
@@ -90,7 +96,7 @@ def assert_equivalent(base: dict, arm: dict) -> None:
     def flatten(d, prefix=()):
         for key, value in d.items():
             path = prefix + (key,)
-            if isinstance(value, dict) and path != ("documents",):
+            if isinstance(value, dict) and path != ("retrieval", "records"):
                 yield from flatten(value, path)
             else:
                 yield path, value
@@ -136,9 +142,10 @@ def write_run_config(project: str, kind: str) -> Path:
     )
     if config["retrieval"]["full_text_sources"] is None:
         del config["retrieval"]["full_text_sources"]
-    config["documents"]["root"] = str(Path(config["documents"]["root"]).relative_to(REPO))
+    records = config["retrieval"]["records"]
+    records["root"] = str(Path(records["root"]).relative_to(REPO))
     changes = [
-        "documents: added (kind %s, root %s)" % (kind, config["documents"]["root"]),
+        "retrieval.records: added (kind %s, root %s)" % (records["kind"], records["root"]),
     ]
     if kind == "records":
         changes.append("parsing.parse_coordinates: false (the records carry the analyses)")

@@ -1,13 +1,13 @@
 """Compile pondie extraction records into compact autonima document sources.
 
-One-time conversion for testing autonima's `documents:` support against pondie records. For
+One-time conversion for testing autonima's `retrieval.records` support against pondie records. For
 each project under --records it writes, under --out/<project>/:
 
   text/<pmid>.md               the record as compact markdown, pondie's ids left as written
-                               (documents kind `text`: coordinates still come from the article)
+                               (retrieval.records kind `text`: coordinates come from the article)
   records/<pmid>.md            the same render with every analysis id written as
                                {{analysis:<local_id>}}, for autonima to rewrite to its own ids
-  records/<pmid>.analyses.json one entry per record analysis, in record order, with
+  records/<pmid>.analyses.json (kind `analyses`) one entry per record analysis, in record order, with
                                coordinates joined from pondie's final stage-1 parse
   MANIFEST.csv                 per paper: characters, analyses, analyses with coordinates
 
