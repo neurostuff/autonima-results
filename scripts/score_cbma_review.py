@@ -26,7 +26,7 @@ WHAT IT MEASURES, for both arms on the same footing
   maps         the manuscript's metric: Dice of FDR-corrected z maps above 1.96 and Pearson r of
                unthresholded z maps, inside the NiMARE brain mask (scripts/map_mask.py). Both
                arms are scored on one common mask. A cbma run saves p but not z, so z is
-               isf(p), which reproduces NiMARE's z maps exactly.
+               z_from_p(p): isf(p) clipped at 0, which reproduces NiMARE's z maps exactly.
 """
 
 from __future__ import annotations
@@ -89,6 +89,23 @@ def peak_recall(ours: dict, gold: dict, ids, tol: float = 2.0) -> dict:
                     break
     return {"studies": len(ids), "gold_peaks": total, "recovered": hit,
             "recall": round(hit / total, 4) if total else None}
+
+
+def z_from_p(p: np.ndarray) -> np.ndarray:
+    """One-tailed z from p, as NiMARE's MKDA z maps hold it: z = isf(p), clipped at 0.
+
+    NiMARE's z maps (and the gold and autonima maps) are 0 wherever p >= 0.5; this
+    reproduces them to within 3e-7. The earlier plain isf(p) got two things wrong on a
+    cbma map:
+    - negative z where 0.5 < p < 1;
+    - -inf where p = 1, for voxels no kernel reaches. That dropped those voxels from the
+      common mask, for every arm.
+
+    Emotion regulation E1, reappraisal: r 0.726 with plain isf, against 0.798 now.
+    """
+    z = norm.isf(np.clip(p, 1e-300, 1))
+    z[~np.isfinite(z)] = 0.0
+    return np.maximum(z, 0.0)
 
 
 def main(argv=None) -> int:
@@ -188,7 +205,7 @@ def main(argv=None) -> int:
     for t in targets:
         m_dir, a_dir, c_dir = manual_maps / t, run / "outputs" / "meta_analysis_results" / t, review / "results" / "meta" / t
         mz, az = load(m_dir / "z.nii.gz"), load(a_dir / "z.nii.gz")
-        cz = norm.isf(np.clip(load(c_dir / "p.nii.gz"), 1e-300, 1))
+        cz = z_from_p(load(c_dir / "p.nii.gz"))
         fdr = "z_corr-FDR_method-indep.nii.gz"
         mf, af, cf = load(m_dir / fdr), load(a_dir / fdr), load(c_dir / fdr)
         mask = common_mask(mz, az, cz, mf, af, cf)

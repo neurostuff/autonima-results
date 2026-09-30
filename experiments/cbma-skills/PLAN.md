@@ -381,3 +381,58 @@ criteria is not the current aim, which is running the other projects against the
 original harness. Applying it later needs the recorded-revision tooling
 (`ledger.py revise`, see the guardrail notes). It reopens every abstract, full-text and
 selection decision of an emotion regulation run.
+
+## Correction, and why the skills maps trail autonima's (2026-09-30)
+
+**Scoring bug (fixed).** `scripts/score_cbma_review.py` derived a cbma map's z from p
+as `isf(p)`. NiMARE's MKDA z maps, and the gold and autonima maps, are clipped at 0.
+The derivation therefore put negative z where 0.5 < p < 1, and -inf where p = 1. The
+-inf also dropped those voxels, about a fifth of the brain, from the shared mask for
+every arm.
+- **Effect:** Dice was essentially unaffected, but every Pearson r reported for the
+  skills runs was too low. First run, corrected: reappraisal 0.847 (was 0.761),
+  decrease 0.836, increase 0.674, maintain 0.637, against autonima v4's 0.888, 0.863,
+  0.664 and 0.745.
+- **Superseded:** the r values in the E1 and E2 tables above. The re-scored reports are
+  in `projects/emotion_regulation_2022/reports/`.
+
+**Same records, different judges** (E1 against autonima's `v4-pondie-records`, the
+user's evaluation). With inputs held equal, the skills maps still trail: reappraisal
+Dice 0.61 against 0.71, maintain r 0.59 against 0.76. Counterfactual maps, which add
+or remove one thing at a time (scripts beside that report), locate the gap.
+
+- **Reverse contrasts** ("Look > Reappraise", "Maintain > Decrease") are the largest
+  single cause.
+  - **Where each arm puts them:** skills judges put them in the regulation targets
+    (12% of reappraisal and 11% of decrease selections), following the global guidance
+    "either an ACTIVATION or a DEACTIVATION effect qualifies". Autonima's judges put
+    them in maintain (14%).
+  - **The gold uses none,** under any label.
+  - **Effect of removing them** from E1: reappraisal Dice 0.606 to 0.663 and r 0.798
+    to 0.854; decrease 0.633 to 0.683 and 0.816 to 0.853. That is most of the way to
+    autonima (0.709 and 0.873; 0.700 and 0.859). The same criteria text was read
+    differently by the two models.
+- **Maintain** is limited by the records.
+  - **Missing contrasts:** for 17 of the 19 gold maintain studies that E1 included
+    without a maintain label, the record has no unregulated contrast ("Emotion >
+    Baseline"), which is what the gold uses.
+  - **Why autonima's map scores better:** its labelling of reverse contrasts as maintain
+    helps its map (E1 plus its reverse contrasts: r 0.585 to 0.683), although the gold
+    never labels them so.
+  - **The real fix is upstream:** records should capture unregulated contrasts.
+- **Study recall at full text** is a smaller cause. For reappraisal, adding autonima's
+  picks from the 10 gold studies E1 excluded at full text (I4, I5, I6) raises r 0.798 to
+  0.828.
+- **Autonima's extra non-gold studies do not matter.** Removing them leaves its map
+  unchanged (r 0.873).
+
+**NiMARE versions differ across arms:** 0.16.0 for the gold maps, 0.2.1 for autonima,
+0.21.0 for cbma-skills. Refitting autonima's selection with 0.21 gives r 0.873, against
+0.869 from its saved map, so the version effect looks small. Pin one version for future
+comparisons.
+
+**Candidate rule for the parked draft revision:** a regulation target's contrast has
+the regulation condition as its active condition (regulate > comparison). A reverse
+contrast (comparison > regulate) belongs to no regulation target. This matches the
+paper's Dec and Inc categories and the gold. It conflicts with the global
+"deactivation qualifies" guidance, which the revision would have to reword.
