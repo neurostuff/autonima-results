@@ -19,6 +19,8 @@ output tokens for subagents can undercount: some lines keep the usage from the s
 the stream.
 
 RULES CHECKED
+    prompts     a judge's first prompt holding anything beyond the dispatch template:
+                guidance that reached a judge outside the versioned protocol
     blinding    any tool call whose path or command touches a --forbid prefix
     writes      a judge writing anywhere but its batch output (Write/Edit targets, and
                 Bash redirections or file writes); anyone else writing to decisions/,
@@ -65,6 +67,28 @@ HEREDOC = re.compile(r"<<-?\s*['\"]?(\w+)['\"]?[^\n]*\n.*?\n\s*\1\b", re.S)
 QUOTED = re.compile(r"'[^']*'|\"(?:\\.|[^\"\\])*\"")
 REDIRECT = re.compile(r"(?<![0-9&<>=-])>>?\s*(?!&|=)([^\s;|&<>()]+)|\btee\s+(?:-a\s+)?([^\s;|&]+)")
 PY_OPEN = re.compile(r"open\(\s*['\"]([^'\"]+)['\"]\s*,\s*['\"][wa]")
+# The sentences of the stage runner's judge prompt (agents/cbma-stage-runner.md). Anything a
+# judge's first prompt holds beyond them is guidance the skills did not give.
+JUDGE_TEMPLATE = [
+    r"Your batch file is `[^`]+`\.",
+    r"Follow the skill at\s+`[^`]+`,?(\s*where `[^`]+` is the batch's `skill` field\.)?",
+    r"Write your output to the path in the batch's `output` field\.",
+    r"Reply with only the number of items you wrote\.",
+    # the orchestrator skill's older loop template, for runs without stage runners
+    r"Read `[^`]+SKILL\.md` and follow it exactly\.",
+    r"Process every item in it and write your output to the path in the batch's `output` field\.",
+    r"Do not read or write any other part of the review folder except the files the batch names\.",
+    r"When done, reply with only the number of items you wrote\.",
+]
+
+
+def prompt_additions(prompt: str) -> str:
+    rest = prompt
+    for sentence in JUDGE_TEMPLATE:
+        rest = re.sub(sentence, " ", rest)
+    return re.sub(r"\s+", " ", rest).strip(" .")
+
+
 LEDGER_SUBCOMMANDS = {"init", "batches", "ingest", "status", "export", "needs-fulltext", "import-analyses"}
 
 
@@ -214,7 +238,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 targets += [str(base / w) if base and not Path(w).is_absolute() else w
                             for w in bash_write_targets(command)]
             for target in targets:
-                if target in ("/dev/null", "None") or target.startswith("&"):
+                if target in ("/dev/null", "None", "", "''") or target.startswith("&"):
                     continue
                 if t["role"] == "judge":
                     if output and same_file(target, output, review):
@@ -233,6 +257,10 @@ def main(argv: Optional[List[str]] = None) -> int:
                     direct_decision_writes.append({"file": t["file"], "role": t["role"], "tool": name,
                                                    "target": target[:200]})
 
+    prompt_extra = [{"file": t["file"], "stage": t["stage"], "batch": t["batch"],
+                     "added": prompt_additions(t["first_prompt"])[:300]}
+                    for t in rows if t["role"] == "judge" and prompt_additions(t["first_prompt"])]
+
     ledger_calls = collections.Counter()
     for t in rows:
         if t["role"] in ("orchestrator", "runner"):
@@ -250,6 +278,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "blinding_hits": blinding,
         "judge_writes_outside_output": stray_writes,
         "judge_writes_unresolved": unresolved_writes,
+        "judge_prompts_with_added_guidance": prompt_extra,
         "decision_files_written_directly": direct_decision_writes,
         "ledger_calls": dict(ledger_calls),
     }
@@ -266,6 +295,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     print(f"blinding hits {len(blinding)} | judge writes outside output {len(stray_writes)} "
           f"({len({w['file'] for w in stray_writes})} judges; {len(unresolved_writes)} unresolved) | "
           f"decision files written directly {len(direct_decision_writes)}")
+    print(f"judge prompts with guidance beyond the template: {len(prompt_extra)}")
+    for x in prompt_extra[:5]:
+        print(f"   {x['batch']}: {x['added'][:140]}")
     print(f"ledger calls {report['ledger_calls']}")
     return 0
 

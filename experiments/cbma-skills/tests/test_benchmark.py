@@ -58,7 +58,10 @@ def test_audit_roles_tokens_and_writes(tmp_path, capsys):
     (tr / "s1" / "subagents" / "agent-r.jsonl").write_text(
         _line("user", "Run the `abstract` stage. REVIEW=x") +
         _assistant("r1", [("Bash", {"command": "python ledger.py batches R --stage abstract"})], {"input_tokens": 5}, "medium"))
-    judge = _line("user", f"Your batch file is `{review}/work/abstract/batch_0001.json`. Follow the skill")
+    judge = _line("user", f"Your batch file is `{review}/work/abstract/batch_0001.json`. Follow the skill at "
+                          f"`/s/screen-studies/SKILL.md`, where `screen-studies` is the batch's `skill` field. "
+                          "Write your output to the path in the batch's `output` field. "
+                          "Be lenient on ROI studies. Reply with only the number of items you wrote.")
     # the same message logged twice (streaming): counted once, at its largest usage
     judge += _assistant("j1", [], {"input_tokens": 2, "output_tokens": 1})
     judge += _assistant("j1", [("Bash", {"command": f"cat > {out} <<'EOF'\n{{\"reason\": \"reappraise > look\"}}\nEOF"}),
@@ -77,3 +80,4 @@ def test_audit_roles_tokens_and_writes(tmp_path, capsys):
     assert audit.main([str(tr), "--review", str(review), "--forbid", "/data/go", "--out", str(tmp_path / "b.json")]) == 0
     assert json.loads((tmp_path / "b.json").read_text())["blinding_hits"] == []
     assert r["ledger_calls"] == {"orchestrator:status": 1, "runner:batches": 1}
+    assert [x["added"] for x in r["judge_prompts_with_added_guidance"]] == ["Be lenient on ROI studies"]

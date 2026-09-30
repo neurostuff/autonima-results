@@ -73,6 +73,12 @@ ingest agent string `AGENT/effort-<level>`, for example
 
 ## Rules
 
+- **The judge prompt is fixed.** Use the dispatch prompt above word for word, in every
+  round, retries included. Never add reminders, guidance or rulings to it, not even "cover
+  every criterion". Judging instructions reach judges only through the batch file, which
+  the ledger builds from the versioned `review.yaml`. If a judge keeps omitting something,
+  retry with the same prompt, then report it as a finding. The transcript audit flags any
+  judge prompt that differs from the template.
 - **Only the ledger writes decisions.** Never write or edit anything under
   `decisions/`, `analyses/` or a batch output. Never judge an item in your own
   context.

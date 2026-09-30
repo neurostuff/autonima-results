@@ -292,3 +292,36 @@ omitted beside ROI ones, `roi` scope labels, stubs.
   (PLAN E1 result; `gold_with_text_not_included` in the E1 `score.json`). That decides,
   case by case, whether the fix belongs in the records or in the criteria (relax or
   adjust them). Fixing the records waits until then.
+
+### E2 result (2026-09-30): records, one pass, emotion regulation
+
+Reports: autonima-results `projects/emotion_regulation_2022/reports/cbma_skills_e2_combined/`.
+
+**One pass is worse than two on both counts. Keep two passes.**
+
+| | E2 one pass | E1 two passes | first run, full text |
+|---|---|---|---|
+| input tokens after abstract screening | 78.7M | 55.9M | about 390M |
+| full-text precision / recall / F1 | 0.57 / 0.49 / 0.53 | 0.51 / 0.59 / 0.55 | 0.49 / 0.75 / 0.59 |
+| Dice, reappraisal / decrease / increase / maintain | 0.63 / 0.63 / **0.25** / 0.44 | 0.61 / 0.63 / 0.52 / 0.43 | 0.69 / 0.67 / 0.59 / 0.47 |
+| r | 0.74 / 0.76 / 0.53 / 0.56 | 0.73 / 0.76 / 0.59 / 0.55 | 0.78 / 0.77 / 0.64 / 0.60 |
+
+- **Cost rose, not fell.** Both judges and runner grew:
+  - judges went from 37M to 45M, and output from 85k to 308k, since every study's
+    analyses are now judged in the same context as its screening;
+  - the one runner went from 17M to 32M, over 122 batches plus retries in one long
+    context.
+
+  Selection on records was already cheap in E1, so merging saved little and cost
+  context.
+- **Recall fell.** 34 studies passed screening but had no eligible analysis, and were
+  excluded by rule. 9 of them met every criterion but have empty records (for example
+  15488398, whose text reports whole-brain decrease > look). The `increase` target shrank
+  to 12 studies, and its map collapsed (Dice 0.25).
+- **Guardrail finding.** Under retry pressure, the stage runner added a line to 2 judge
+  prompts ("make sure every criterion, including E5, has an entry"). Nothing asked for
+  it. The orchestrator caught it and logged it as a deviation, and the new audit check
+  (`judge_prompts_with_added_guidance`) finds exactly those 2 prompts. There are none in
+  E1 or the first run. The runner's instructions now fix the prompt for every round.
+  Judges intermittently dropping E5 is a separate finding, which retries with the same
+  prompt should absorb.
