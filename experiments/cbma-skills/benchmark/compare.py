@@ -100,8 +100,14 @@ def binary_metrics(predicted: Set[str], judged: Set[str], positives: Set[str], u
     rec = tp / (tp + fn) if tp + fn else None
     f1 = 2 * prec * rec / (prec + rec) if prec and rec else None
     return {"tp": tp, "fp": fp, "fn": fn, "tn": tn, "precision": _r(prec), "recall": _r(rec), "f1": _r(f1),
-            "missed": sorted(positives - predicted, key=int)[:50],
-            "false_positives": sorted(predicted - positives, key=int)[:50]}
+            "missed": sorted(positives - predicted, key=_id_key)[:50],
+            "false_positives": sorted(predicted - positives, key=_id_key)[:50]}
+
+
+def _id_key(study_id: str):
+    """Sort PMIDs numerically, and anything else after them. Benchmark studysets can hold
+    studies the curators could not match to a PMID, identified by a name ("Chen 2017")."""
+    return (0, int(study_id), "") if study_id.isdigit() else (1, 0, study_id)
 
 
 def _r(x):
@@ -117,7 +123,7 @@ def kappa(a: Set[str], b: Set[str], common: Set[str]) -> dict:
     pe = pa * pb + (1 - pa) * (1 - pb)
     po = agree / n
     return {"n": n, "agreement": _r(po), "kappa": _r((po - pe) / (1 - pe)) if pe < 1 else None,
-            "only_first": sorted((a - b) & common, key=int)[:50], "only_second": sorted((b - a) & common, key=int)[:50]}
+            "only_first": sorted((a - b) & common, key=_id_key)[:50], "only_second": sorted((b - a) & common, key=_id_key)[:50]}
 
 
 def score(system: dict, gold: Dict[str, dict]) -> dict:
@@ -125,7 +131,7 @@ def score(system: dict, gold: Dict[str, dict]) -> dict:
     abs_pos = {p for p, g in gold.items() if g.get("abstract_included")} or final_pos
     universe = system["universe"]
     out = {
-        "not_retrieved_by_search": sorted(final_pos - universe, key=int),
+        "not_retrieved_by_search": sorted(final_pos - universe, key=_id_key),
         "search_recall_of_final_includes": _r(len(final_pos & universe) / len(final_pos)) if final_pos else None,
         "abstract": binary_metrics(system["abstract_pass"], system["abstract_judged"], abs_pos, universe),
         "final": binary_metrics(system["fulltext_include"], system["fulltext_judged"], final_pos, universe),
@@ -135,7 +141,7 @@ def score(system: dict, gold: Dict[str, dict]) -> dict:
         pos_r = final_pos & retrievable
         out["final_given_retrievable_text"] = binary_metrics(system["fulltext_include"] & retrievable,
                                                              system["fulltext_judged"] & retrievable, pos_r, universe)
-        out["gold_includes_without_text"] = sorted((final_pos & universe) - retrievable, key=int)
+        out["gold_includes_without_text"] = sorted((final_pos & universe) - retrievable, key=_id_key)
     return out
 
 
@@ -151,7 +157,7 @@ def compare_coordinates(review: Path, gold_nimads: Path, tol: float) -> dict:
         return by
     a, b = points(ours), points(theirs)
     rows, tp_all, na, nb = [], 0, 0, 0
-    for pmid in sorted(set(a) & set(b), key=int):
+    for pmid in sorted(set(a) & set(b), key=_id_key):
         pa, pb = list(a[pmid]), list(b[pmid])
         used, tp = set(), 0
         for p in pa:
@@ -163,7 +169,7 @@ def compare_coordinates(review: Path, gold_nimads: Path, tol: float) -> dict:
         tp_all, na, nb = tp_all + tp, na + len(pa), nb + len(pb)
     return {"studies_compared": len(rows), "point_precision": _r(tp_all / na) if na else None,
             "point_recall": _r(tp_all / nb) if nb else None, "tolerance_mm": tol,
-            "only_ours": sorted(set(a) - set(b), key=int), "only_gold": sorted(set(b) - set(a), key=int),
+            "only_ours": sorted(set(a) - set(b), key=_id_key), "only_gold": sorted(set(b) - set(a), key=_id_key),
             "per_study": rows}
 
 
