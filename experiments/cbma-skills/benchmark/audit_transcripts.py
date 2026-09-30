@@ -8,7 +8,8 @@ The transcript folder is the one Claude Code keeps for the workspace the review 
 is every subagent file under <session>/subagents/.
 
 ROLES. Each transcript is classified by its first prompt:
-    judge <stage>    names a batch file (work/<stage>/batch_...)
+    judge <stage>    starts "Your batch file is ..." (a subagent, or a headless session
+                     started by run_stage.py)
     runner <stage>   asks for a stage ("Run the `<stage>` stage")
     orchestrator     any top-level session
     other            anything else (a subagent that is neither)
@@ -45,8 +46,9 @@ LIMIT = re.compile(r"hit your (session|usage|weekly) limit|rate_limit|\b429\b", 
 
 
 def classify(first_prompt: str, top_level: bool) -> tuple:
+    # A judge may be a subagent, or a top-level headless session started by run_stage.py.
     m = re.search(r"work/(abstract|fulltext|extraction|selection)/batch_\d+\.json", first_prompt)
-    if m and not top_level:
+    if m and first_prompt.lstrip().startswith("Your batch file is"):
         return "judge", m.group(1), m.group(0)
     m = re.search(r"Run the `?(abstract|fulltext|extraction|selection)`? stage", first_prompt)
     if m and not top_level:
@@ -224,6 +226,11 @@ def main(argv: Optional[List[str]] = None) -> int:
             except (OSError, KeyError, json.JSONDecodeError):
                 done = sorted((review / Path(t["batch"]).parent / "done").glob(f"*_{Path(t['batch']).name}"))
                 output = json.loads(done[-1].read_text())["output"] if done else None
+            if output is None:
+                # The batch file is gone (archived elsewhere or moved): its output path is
+                # determined by the batch path, as ledger._output_path makes it.
+                b = review / t["batch"]
+                output = str(b.with_suffix(".out") if t["stage"] == "extraction" else b.with_suffix(".out.jsonl"))
         for name, inp, ts in t["tools"]:
             for s in tool_paths(name, inp):
                 hit = next((f for f, rx in forbid.items() if rx.search(s) and not any(a in s for a in allow)), None)

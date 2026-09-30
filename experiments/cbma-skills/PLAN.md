@@ -325,3 +325,39 @@ Reports: autonima-results `projects/emotion_regulation_2022/reports/cbma_skills_
   E1 or the first run. The runner's instructions now fix the prompt for every round.
   Judges intermittently dropping E5 is a separate finding, which retries with the same
   prompt should absorb.
+
+### E0 result (2026-09-30): token reductions, and the noise floor
+
+Reports: autonima-results `projects/emotion_regulation_2022/reports/cbma_skills_e0_tokens/`.
+
+**Setup.** A copy of the first run (full-text mode). These were held out and re-judged
+with the new setup: text bundles, slim judges, `run_stage.py` dispatch, and per-stage
+effort. Other things held equal: the same documents, criteria and default batch sizes.
+
+| judge stage | effort | turns per judge | input per unit | first run | agreement with first run |
+|---|---|---|---|---|---|
+| abstract (200) | low | 3.0 | 3.0k per record | 8.5k | 189/200 pass or exclude |
+| full text (20) | medium | 6.5 | 112k per study | 219k | 19/20 |
+| extraction (20) | low | 4.1 | 88k per study | 209k | 755/755 points identical, same 109 analyses |
+| selection (20) | medium | 4.0 | 74k per study | 237k | 512/516 analysis × target |
+
+**Coordination.** It nearly vanished: 0.3–0.4M per stage runner, against 5–12M in E1,
+and 0.55M for the orchestrator. Judges start at 7k tokens of context, against 28.6k.
+
+**Scaled up.** A full emotion regulation run in full-text mode would come to roughly 70M
+input tokens, against 405M for the first run. Records mode would be less.
+
+**Noise floor.** A medium-effort re-run of the same 200 abstracts agreed with the first
+run on 191/200 pass or exclude calls, and the low-effort run on 189/200. Neither dropped
+a gold study. Low leaned slightly toward excluding: 8 passes lost against 3.
+
+**Found on the way.**
+- **Agent frontmatter doesn't reach headless sessions.** A headless `claude -p --agent`
+  session ignores the agent's `effort:` and `skills:`. `run_stage.py` now passes
+  `--effort` and `--append-system-prompt-file` explicitly.
+- **Mislabelled effort.** 200 smoke-test decisions ran at medium while recorded as
+  effort-low. They are kept apart, as the medium noise-floor sample.
+
+**Recurring criteria gaps.** Every run's runners raise the same two: food-craving
+regulation under I2, and how to label pooled up + down contrasts. Both belong in a
+versioned `review.yaml` revision, not in further per-run rulings.
