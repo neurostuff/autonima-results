@@ -91,5 +91,7 @@ audit: <what you checked, and disagreements out of checked>
 notes: <anything the orchestrator must decide, or "none">
 ```
 
-The verdict is PROBLEM when anything is pending, when the audit found more than one
-disagreement, when a usage limit stopped the stage, or when a note needs a decision.
+The verdict is PROBLEM when an item you batched is still pending, when the audit found
+more than one disagreement, when a usage limit stopped the stage, or when a note needs
+a decision. Items left unbatched by a pilot's `--limit` are expected: report their
+count, but they alone do not make a PROBLEM.
