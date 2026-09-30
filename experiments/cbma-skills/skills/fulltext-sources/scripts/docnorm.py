@@ -37,7 +37,9 @@ _COORD_HEADER = re.compile(
 _SIGNED_NUM = re.compile(r"^[\s(]*[-−–+]?\d{1,3}(\.\d+)?[\s)]*$")
 _REF_HEADING = re.compile(r"^\s*(references?|bibliography|literature cited|works cited)\s*$", re.I)
 _REF_CLASS = re.compile(r"(^|[\s_-])(ref-?list|references?|bibliography|citations?)($|[\s_-])", re.I)
-_DROP_TAGS = {"script", "style", "noscript", "nav", "header", "footer", "form", "button", "svg", "iframe"}
+# Not "form": ASP.NET-style publisher pages (JAMA, LWW journals) wrap the whole page, article
+# included, in one <form>. A search form's few words are cheap; a dropped article is not.
+_DROP_TAGS = {"script", "style", "noscript", "nav", "header", "footer", "button", "svg", "iframe", "select", "option"}
 _BLOCK_TAGS = {"p", "div", "section", "article", "li", "dd", "dt", "blockquote", "figcaption", "pre"}
 # Containers that are never a paragraph themselves but hold blocks.
 _CONTAINER_TAGS = {"main", "aside", "figure", "ol", "ul", "dl", "body", "center", "details"}

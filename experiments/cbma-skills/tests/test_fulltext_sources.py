@@ -136,3 +136,16 @@ def test_elsevier_multi_part_table_keeps_each_contrast_above_its_own_rows():
                                               "Look > Reappraise", "(x, y, z)", "−14 −4 −18"]
     assert t["grid"][3][2] == "3.20"                                # printed text, not pandas' 3.2
     assert ledger.verify_point([-14, -4, -18], t["grid"]) == "row"   # <ce:hsp/> separates numbers
+
+
+def test_html_article_inside_an_aspnet_form_is_kept():
+    # JAMA and LWW pages wrap the whole page, article included, in one <form>.
+    page = f"""<html><body><form id="aspnetForm" action="/article">
+<input type="hidden" name="__VIEWSTATE" value="x"><select name="q"><option>All journals</option></select>
+<div class="article"><h1>Smaller cortical volume in PTSD</h1>
+<h2>Methods</h2><p>{PARA}</p>
+<table><tr><th>Region</th><th>x</th><th>y</th><th>z</th></tr><tr><td>Insula</td><td>-38</td><td>4</td><td>2</td></tr></table>
+</div></form></body></html>""".encode()
+    parsed = docnorm.parse_html(page)
+    assert parsed["complete"] and "## Methods" in parsed["text_md"] and len(parsed["tables"]) == 1
+    assert "All journals" not in parsed["text_md"]                  # form controls are still dropped
