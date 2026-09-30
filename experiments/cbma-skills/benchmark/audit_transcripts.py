@@ -72,6 +72,7 @@ PY_OPEN = re.compile(r"open\(\s*['\"]([^'\"]+)['\"]\s*,\s*['\"][wa]")
 JUDGE_TEMPLATE = [
     r"Your batch file is `[^`]+`\.",
     r"Follow the skill at\s+`[^`]+`,?(\s*where `[^`]+` is the batch's `skill` field\.)?",
+    r"Follow the `[^`]+` skill, which is already in your system prompt \(source: `[^`]+`\)\.",
     r"Write your output to the path in the batch's `output` field\.",
     r"Reply with only the number of items you wrote\.",
     # the orchestrator skill's older loop template, for runs without stage runners

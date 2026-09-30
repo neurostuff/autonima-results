@@ -105,6 +105,9 @@ def test_records_stand_in_for_full_text_and_extraction(review, capsys):
 
     assert run_ledger("batches", review, "--stage", "fulltext", "--size", "5") == 0
     batch = json.loads((review / "work/fulltext/batch_0001.json").read_text())
+    bundle = Path(batch["texts_file"]).read_text()                   # one file with every item's text
+    assert bundle.count("======== ITEM ") == 2 and "A whole-brain analysis of patients" in bundle
+    assert max(len(line) for line in bundle.splitlines()) <= ledger.BUNDLE_WIDTH
     fake_output(batch, [{"pmid": p, "decision": "include", "criteria": {"I1": "met"}, "reason": "r",
                          "evidence": [{"criterion": "I1", "quote": "A whole-brain analysis of patients versus controls."}]}
                         for p in ("11111111", "33333333")])

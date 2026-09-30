@@ -35,6 +35,7 @@ import os
 import re
 import shutil
 import sys
+import textwrap
 import unicodedata
 from collections import Counter
 from pathlib import Path
@@ -459,6 +460,10 @@ def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard
         }
         if stage == "selection":
             batch["targets"] = crit["payload"]["targets"]
+        if stage in ("fulltext", "extraction", "selection"):
+            bundle = path.with_suffix(".texts.md")
+            _write_bundle(bundle, stage, batch["items"])
+            batch["texts_file"] = str(bundle)
         if combined:
             sel = rv.criteria["selection"]
             for item, p in zip(batch["items"], chunk):
@@ -470,6 +475,35 @@ def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard
         write_json(path, batch)
         paths.append(path)
     return paths
+
+
+BUNDLE_WIDTH = 1000   # the Read tool truncates very long lines; wrap well below that
+
+
+def _wrap(text: str) -> str:
+    return "\n".join(textwrap.fill(line, BUNDLE_WIDTH, break_long_words=False, break_on_hyphens=False)
+                     if len(line) > BUNDLE_WIDTH else line for line in text.splitlines())
+
+
+def _write_bundle(path: Path, stage: str, items: List[dict]) -> None:
+    """One file holding every item's text (and, for extraction, its tables as TSV), so a
+    judge reads its whole batch in one or two reads instead of one read per file.
+
+    Wrapping long lines changes no evidence check: the ledger compares quotes to the
+    original text_file with whitespace collapsed.
+    """
+    parts = []
+    for it in items:
+        parts.append(f"\n\n======== ITEM {it['pmid']}: {it.get('title') or ''} ========\n")
+        tf = Path(it["text_file"])
+        parts.append(_wrap(tf.read_text(encoding="utf-8")) if tf.exists() else "(no text file)")
+        if stage == "extraction":
+            for t in it.get("tables", []):
+                grid = json.loads(Path(t["file"]).read_text())
+                parts.append(f"\n\n-------- TABLE {t['table_id']} (file {t['file']}) --------\n"
+                             f"label: {grid.get('label', '')}\ncaption: {grid.get('caption', '')}\n"
+                             f"footer: {grid.get('footer', '')}\n\n{grid.get('tsv', '')}")
+    path.write_text("".join(parts).lstrip() + "\n", encoding="utf-8")
 
 
 def _output_path(batch_path: Path, stage: str) -> Path:
@@ -828,7 +862,7 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
 def _archive(batch_path: Path, out_path: Path, done_dir: Path) -> None:
     done_dir.mkdir(parents=True, exist_ok=True)
     stamp = dt.datetime.now().strftime("%Y%m%dT%H%M%S")
-    for p in (batch_path, out_path):
+    for p in (batch_path, out_path, batch_path.with_suffix(".texts.md")):
         if p.exists():
             shutil.move(str(p), str(done_dir / f"{stamp}_{p.name}"))
 

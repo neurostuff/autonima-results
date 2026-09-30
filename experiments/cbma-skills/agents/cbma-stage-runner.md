@@ -25,37 +25,55 @@ an item yourself. Your prompt gives you:
 | extraction | `cbma-extractor` | 1 |
 | selection | `cbma-selector` | 1 |
 
-Each judge's reasoning effort is the `effort:` line of its definition in
-`.claude/agents/<judge>.md`. Read it once at the start
-(`grep '^effort:' .claude/agents/<judge>.md`). Every decision records it through the
-ingest agent string `AGENT/effort-<level>`, for example
-`claude-code/claude-opus-5-5/effort-low`.
+Each judge's reasoning effort, tools and preloaded skill are set in its definition in
+`.claude/agents/<judge>.md`. Every decision records the effort through the ingest agent
+string `AGENT/effort-<level>`, for example `claude-code/claude-opus-5-5/effort-low`.
+`run_stage.py` builds that string itself.
 
 ## The loop
 
 1. **Status.** Run `LEDGER status REVIEW` and note the stage's pending count. If
    nothing is pending, report that and stop.
-2. **Batches.** Run `LEDGER batches REVIEW --stage <stage> --size <n> [--limit N]`.
-3. **Dispatch.** Start one judge subagent per batch file, at most 8 at a time. Give
-   each one this prompt, with the paths filled in:
+2. **Judge, by script.** Run the scripted loop:
+
+   ```bash
+   PYTHON SKILLS/cbma-review/scripts/run_stage.py REVIEW --stage <stage> \
+       --model <model id from AGENT> --add-dir "$(realpath SKILLS/cbma-review/../..)" [--size <n>] [--limit N]
+   ```
+
+   Give this command a 10-minute timeout (600000 ms): it runs for up to 9 minutes.
+
+   What it does:
+   - makes the batches;
+   - starts each judge as a fresh `claude -p --agent <judge>` session with the fixed
+     prompt (the judge's effort, tools and skill come from its definition);
+   - ingests, and retries rejected items;
+   - prints a JSON summary.
+
+   It stops at a time budget (9 minutes by default) so that it fits one command.
+   - **Exit code 3:** work remains. Run the same command again, until it exits 0.
+   - **`usage_limited` true:** stop, and report.
+   - **The same items `batched_but_pending` twice running:** that is an input problem.
+     Report the items; do not keep retrying.
+   - **Record the numbers:** keep the summaries' accepted, rejected, judge failures and
+     `usage` token totals for your report.
+3. **Fallback,** only when the `claude` CLI is not available to you. Dispatch judges
+   yourself: run `LEDGER batches`, then start one judge subagent per batch file, at most 8
+   at a time, with exactly this prompt:
 
    > Your batch file is `<batch path>`. Follow the skill at
    > `SKILLS/<skill>/SKILL.md`, where `<skill>` is the batch's `skill` field. Write
    > your output to the path in the batch's `output` field. Reply with only the
    > number of items you wrote.
 
-   Wait for each group to finish before starting more.
-   - A judge that errors or times out leaves no output, and its items stay pending.
-   - If judges fail with a usage or rate limit, stop dispatching and report. Do not
-     retry in a loop.
-4. **Ingest.** Run `LEDGER ingest REVIEW --stage <stage> --agent "AGENT/effort-<level>"`.
-   Keep the accepted and rejected counts and the rejection reasons. Exit code 2 means
-   something was rejected.
-5. **Retry.** Go back to step 2 for whatever is still pending, up to 2 more rounds.
-   An item that fails twice for the same reason is an input problem, such as a broken
-   table or a text with no Methods. Leave it pending and say why in your report.
-   Never exclude an item to make progress.
-6. **Audit** the stage:
+   Then run `LEDGER ingest REVIEW --stage <stage> --agent "AGENT/effort-<level>"`, where
+   `<level>` is the judge definition's `effort:` line. Retry what stays pending, up to 2
+   more rounds.
+   - A judge that errors leaves its items pending.
+   - An item that fails twice for the same reason is an input problem: leave it pending
+     and report it.
+   - Never exclude an item to make progress.
+4. **Audit** the stage:
    - **abstract:** read 10 random excludes and 10 random includes from
      `decisions/abstract.jsonl` (title, abstract and reason). Count those you
      disagree with.
@@ -73,8 +91,8 @@ ingest agent string `AGENT/effort-<level>`, for example
 
 ## Rules
 
-- **The judge prompt is fixed.** Use the dispatch prompt above word for word, in every
-  round, retries included. Never add reminders, guidance or rulings to it, not even "cover
+- **The judge prompt is fixed.** `run_stage.py` sends one fixed prompt. In the fallback,
+  use the dispatch prompt above word for word, in every round, retries included. Never add reminders, guidance or rulings to it, not even "cover
   every criterion". Judging instructions reach judges only through the batch file, which
   the ledger builds from the versioned `review.yaml`. If a judge keeps omitting something,
   retry with the same prompt, then report it as a finding. The transcript audit flags any
