@@ -38,3 +38,19 @@ the review is finished. If you run it through an agent, use a fresh session that
 did not run the review.
 
 See [../PLAN.md](../PLAN.md) for the full protocol and metrics.
+
+## Auditing a run from its transcripts
+
+`audit_transcripts.py` reads the Claude Code session transcripts of the workspace a
+review ran in, so every run reports cost and rule-keeping the same way:
+
+```bash
+python benchmark/audit_transcripts.py ~/.claude/projects/<workspace path, "/" as "-"> \
+  --review REVIEW --forbid /path/to/gold --out audit.json
+```
+
+- **Tokens:** per role (orchestrator, stage runner, judge) and stage, with each role's
+  effort and the usage-limit events.
+- **Blinding:** any tool call touching a `--forbid` path.
+- **Writes:** judge writes outside their batch output, and decision files written
+  anywhere but through the ledger.
