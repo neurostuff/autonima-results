@@ -152,3 +152,55 @@ already validates everything that matters; it just relies on the agent calling i
 Also note: moving the ledger into an MCP server is a thin wrapper, because
 `ledger.py` already exposes these operations: init, batches, ingest, status,
 needs-fulltext and export.
+
+## First run, and the experiments that follow (2026-09-29)
+
+**First run (emotion regulation, full-text mode, Opus 5.5 at medium effort).** Scored by
+`scripts/score_cbma_review.py`; report in autonima-results
+`projects/emotion_regulation_2022/reports/cbma_skills_v1/`.
+
+**Accuracy.** Against autonima v4:
+- **Full-text includes:** precision 0.49 versus 0.24, recall 0.75 versus 0.83, F1 0.59
+  versus 0.37.
+- **Coordinates:** gold peak recall on the same studies is 0.48 versus 0.42.
+- **Maps:** Dice is within 0.03 of autonima on reappraisal, decrease and maintain, and
+  better on increase. Pearson r is lower on all four targets.
+
+**Where recall was lost.** Most of it came from the whole-brain criterion (I6/E2), applied
+literally: the gold includes studies with small-volume-corrected, ROI-masked and
+partial-coverage results.
+
+**Guardrails.** The skills held: no blinding breach, no decision written outside the
+ledger, and every failure retried.
+
+**Cost.** 405M input tokens, 63% of them the orchestrator's re-read context. It hit the
+five-hour usage limit twice. That led to the stage runners.
+
+**Pre-extracted records.** Pondie records (`articles/pondie/md/<project>/`) summarize each
+paper and its analyses, with coordinates. Each is about 3k tokens, against 10–15k for a
+normalized full text.
+- They exist for 5 projects, built from autonima's abstract passes.
+- Coverage is unbiased for emotion_regulation_2022, vbm_of_ptsd and dementia. It is
+  slightly biased for vbm_of_substance_use: 99% of gold covered, 87% of other candidates.
+  It is strongly biased for cue_reactivity: 79% versus 46%. Score cue_reactivity only on
+  candidates with a record.
+
+**Sequence.** Each experiment changes one thing.
+
+| | Experiment | Changes | Needs |
+|---|---|---|---|
+| E0 | abstract noise floor and low effort | re-screen 200 ER abstracts at low effort in a fresh session | about 2M tokens |
+| E1 | records, two passes (ER, v4 criteria) | full text and selection read records; extraction is `ledger.py import-analyses` | record source, import, export of record points |
+| E2 | records, one pass (ER) | one judge decides study criteria and every analysis × target; no eligible analysis means excluded | a combined ledger stage |
+| E3 | whole-brain criterion (ER) | relax I6/E2 and GE1 together, in the better of E1/E2; reported as gold-tuned | none |
+| E4 | the other four projects with records | "best" config tier; vbm_of_ptsd first, then vbm_of_substance_use, dementia, cue_reactivity | a scorer for projects without annotations |
+| E5 | the four projects without records | decision_making, executive_function, problem_solving, social: build records first, or run in full-text mode (about 1.2B tokens) | records, or budget |
+| E6 | Codex | the winning mode on ER plus one project | Codex install |
+
+**Deferred.**
+- **Re-gathering ER with the parser fixes:** only if full text stays in production.
+- **A coordinate service or local model:** the records already carry points. A service
+  can sit behind the same import step later.
+
+**Before E1.** Make the transcript audit a reusable script, so every run reports tokens
+and rule-following the same way.

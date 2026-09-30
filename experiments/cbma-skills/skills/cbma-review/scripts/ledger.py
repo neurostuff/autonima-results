@@ -7,6 +7,7 @@ the only thing that writes decisions. Standard library plus PyYAML.
     python ledger.py needs-fulltext REVIEW_DIR             # writes fulltext/needed.txt
     python ledger.py status   REVIEW_DIR [--json]          # PRISMA-style counts, writes results/prisma.json
     python ledger.py export   REVIEW_DIR                   # NiMADS studyset + annotation for NiMARE
+    python ledger.py import-analyses REVIEW_DIR            # records mode: analyses from pre-extracted records
 
 Stages, in order: abstract, fulltext, extraction, selection.
 
@@ -126,7 +127,7 @@ _ALLOWED = {
     "screening": {"abstract", "fulltext"},
     "screening.stage": {"inclusion", "exclusion", "instructions"},
     "fulltext": {"sources"},
-    "extraction": {"drop_unverified", "instructions"},
+    "extraction": {"drop_unverified", "instructions", "records"},
     "selection": {"global", "targets", "instructions"},
     "selection.global": {"inclusion", "exclusion"},
     "selection.target": {"name", "description", "inclusion", "exclusion", "instructions"},
@@ -196,7 +197,11 @@ def stage_criteria(spec: dict, stage: str) -> dict:
         payload = {"objective": spec["objective"], "criteria": crit, "instructions": block.get("instructions")}
     elif stage == "extraction":
         crit = {}
-        payload = {"instructions": (spec.get("extraction") or {}).get("instructions")}
+        ext = spec.get("extraction") or {}
+        payload = {"instructions": ext.get("instructions")}
+        # Only when set, so reviews that extract with judges keep their hashes.
+        if ext.get("records"):
+            payload["records"] = ext["records"]
     elif stage == "selection":
         sel = spec.get("selection") or {}
         glob = sel.get("global") or {}
@@ -298,6 +303,8 @@ class Review:
             if grids[tid] is None:
                 continue
             for p in x["points"]:
+                if p.get("verification") == "source":
+                    continue      # imported from a record; there is no table to check it against
                 p["verification"] = verify_point(p["xyz"], grids[tid])
                 counts.setdefault(tid, Counter())[p["verification"]] += 1
         for t in data.get("tables", []):
@@ -763,6 +770,95 @@ def _archive(batch_path: Path, out_path: Path, done_dir: Path) -> None:
 
 
 # --------------------------------------------------------------------------- #
+# Importing pre-extracted analyses (records mode)
+# --------------------------------------------------------------------------- #
+
+_SPACE_NAMES = {"MNI": "MNI", "TAL": "TAL", "TALAIRACH": "TAL"}
+_SPACE_LINE = re.compile(r"^-?\s*coordinate space:\s*(.+)$", re.I | re.M)
+
+
+def _space(value: Optional[str]) -> Optional[str]:
+    v = re.sub(r"[^A-Z]", "", (value or "").upper())
+    if v.startswith("MNI"):
+        return "MNI"
+    return _SPACE_NAMES.get(v) or ("TAL" if v.startswith("TAL") else None)
+
+
+def cmd_import_analyses(rv: Review, agent: str) -> dict:
+    """Write analyses/<pmid>.json from pre-extracted records, for studies pending extraction.
+
+    review.yaml `extraction.records` names a folder of <pmid>.analyses.json files, each
+    {"analyses": [{"key", "name", "description", "table_id", "points": [{"coordinates",
+    "space", "values"}], "document"}]}. This replaces the judged extraction stage: the
+    record is the extractor. Points keep verification "source", since there is no table
+    grid to check them against, and export accepts them. A point with no space takes the
+    space its analysis states ("coordinate space: Talairach"). An analysis with no points
+    is left out, as a judged extraction would leave it out. A study with no record file
+    stays pending, and is reported.
+    """
+    records = (rv.spec.get("extraction") or {}).get("records")
+    if not records:
+        raise LedgerError("review.yaml sets no extraction.records folder")
+    folder = Path(records).expanduser()
+    folder = folder if folder.is_absolute() else rv.root / folder
+    if not folder.is_dir():
+        raise LedgerError(f"extraction.records folder {folder} does not exist")
+    report = {"imported": 0, "with_analyses": 0, "analyses": 0, "points": 0, "space_from_analysis": 0,
+              "space_unknown": 0, "no_record": []}
+    crit_hash = rv.criteria["extraction"]["hash"]
+    for pmid in rv.pending("extraction"):
+        src = folder / f"{pmid}.analyses.json"
+        if not src.exists():
+            report["no_record"].append(pmid)
+            continue
+        raw = src.read_bytes()
+        analyses, tables = [], {}
+        for a in json.loads(raw).get("analyses", []):
+            stated = _SPACE_LINE.search(a.get("document") or "")
+            fallback = _space(stated.group(1)) if stated else None
+            pts = []
+            for p in a.get("points") or []:
+                xyz = p.get("coordinates")
+                if not (isinstance(xyz, list) and len(xyz) == 3 and all(isinstance(v, (int, float)) for v in xyz)):
+                    continue
+                space = _space(p.get("space"))
+                if space is None and fallback:
+                    space = fallback
+                    report["space_from_analysis"] += 1
+                report["space_unknown"] += space is None
+                values = [{"kind": v["kind"], "value": v.get("value")} for v in p.get("values") or []
+                          if isinstance(v, dict) and v.get("kind") in POINT_VALUE_KINDS]
+                pts.append({"xyz": [float(v) for v in xyz], "space": space, "values": values,
+                            "verification": "source"})
+            if not pts:
+                continue
+            tid = a.get("table_id") or "record"
+            tables.setdefault(tid, 0)
+            tables[tid] += len(pts)
+            analyses.append({
+                "analysis_id": f"{pmid}-{a.get('key') or len(analyses) + 1}",
+                "table_id": tid, "table_label": tid, "table_caption": "",
+                "name": a.get("name"),
+                # The record's structured account of the contrast is what selection judges.
+                "description": a.get("document") or a.get("description"),
+                "n_points": len(pts), "points": pts,
+            })
+        record = {"pmid": pmid,
+                  "tables": [{"table_id": t, "status": "imported", "space": None, "note": None, "points": n,
+                              "verified_row": 0, "verified_table_only": 0, "unverified": 0, "from_records": n}
+                             for t, n in tables.items()],
+                  "analyses": analyses, "stage": "extraction", "batch_id": "import", "agent": agent,
+                  "ingested_at": now(), "criteria_hash": crit_hash, "input_hash": rv.input_hash("extraction", pmid),
+                  "source": {"path": str(src), "sha256": sha(raw)}}
+        write_json(rv.root / "analyses" / f"{pmid}.json", record)
+        report["imported"] += 1
+        report["with_analyses"] += bool(analyses)
+        report["analyses"] += len(analyses)
+        report["points"] += sum(x["n_points"] for x in analyses)
+    return report
+
+
+# --------------------------------------------------------------------------- #
 # Status
 # --------------------------------------------------------------------------- #
 
@@ -780,7 +876,7 @@ def cmd_status(rv: Review) -> dict:
     included = rv.fulltext_included()
     ext = {"studies": len(included), "extracted": 0, "with_analyses": 0, "analyses": 0, "points": 0,
            "points_verified_row": 0, "points_verified_table_only": 0, "points_unverified": 0,
-           "pending": 0}
+           "points_from_records": 0, "pending": 0}
     ext_pending = set(rv.pending("extraction"))
     ext["pending"] = len(ext_pending)
     for p in included:
@@ -795,6 +891,7 @@ def cmd_status(rv: Review) -> dict:
             ext["points_verified_row"] += t["verified_row"]
             ext["points_verified_table_only"] += t["verified_table_only"]
             ext["points_unverified"] += t["unverified"]
+            ext["points_from_records"] += t.get("from_records", 0)
     sel_dec = rv.valid_decisions("selection")
     targets = {}
     for t in rv.criteria["selection"]["payload"]["targets"]:
@@ -843,7 +940,8 @@ def cmd_export(rv: Review, allow_pending: bool, include_table_only: bool) -> dic
     if (pending_sel or pending_ext) and not allow_pending:
         raise LedgerError(f"{len(pending_ext)} studies await extraction and {len(pending_sel)} await selection; "
                           "finish them or pass --allow-pending to export only completed studies")
-    ok_checks = {"row", "table"} if include_table_only else {"row"}
+    # "source": imported from a pre-extracted record, which is the extractor in that mode.
+    ok_checks = ({"row", "table"} if include_table_only else {"row"}) | {"source"}
     studies, notes = [], []
     dropped = Counter()
     for pmid in rv.fulltext_included():
@@ -916,6 +1014,9 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     p.add_argument("--allow-pending", action="store_true")
     p.add_argument("--include-table-only", action="store_true",
                    help="also export points verified only somewhere in the table, not within one row")
+    p = sub.add_parser("import-analyses", help="records mode: analyses from pre-extracted records")
+    p.add_argument("review_dir", type=Path)
+    p.add_argument("--agent", default="records", help="what produced the records, e.g. pondie")
     p = sub.add_parser("ingest")
     p.add_argument("review_dir", type=Path)
     p.add_argument("--stage", choices=STAGES, required=True)
@@ -950,6 +1051,10 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
             passed = rv.abstract_passed()
             path.write_text("".join(f"{p}\n" for p in passed))
             print(f"{len(passed)} PMIDs passed abstract screening -> {path}")
+        elif args.cmd == "import-analyses":
+            report = cmd_import_analyses(rv, args.agent)
+            print(json.dumps({**report, "no_record": len(report["no_record"]),
+                              "no_record_pmids": report["no_record"][:50]}, indent=1))
         elif args.cmd == "export":
             print(json.dumps(cmd_export(rv, args.allow_pending, args.include_table_only), indent=1))
         elif args.cmd == "status":

@@ -49,6 +49,7 @@ fulltext:
 extraction:
   drop_unverified: true         # default true: export only points found in their table row
   instructions: ""              # optional, appended to the extraction skill
+  records: /data/pondie/records # optional: records mode, see below
 
 selection:                      # analysis-level selection for each meta-analytic target
   global:                       # apply to every target; become GI1.., GE1..
@@ -73,6 +74,21 @@ meta:
   estimator_args: {}
   corrector_args: {}
 ```
+
+## Records mode
+
+Pre-extracted records (for example Pondie's) can stand in for full text and for
+extraction:
+- **Full text:** add the records' text files as a `local` source with `format: text`.
+  Full-text screening then reads the record.
+- **Extraction:** set `extraction.records` to the folder of `<pmid>.analyses.json`
+  files. Extraction is then `ledger.py import-analyses REVIEW`, not a judged stage.
+- **The imported analyses:** each keeps the record's points and its structured account
+  of the contrast, which selection judges. A point with no space takes the one its
+  analysis states.
+- **Verification:** the points are marked `source`, because there is no table to check
+  them against, and export accepts them.
+- **Missing records:** a study without a record stays pending.
 
 ## Criteria versus instructions
 
