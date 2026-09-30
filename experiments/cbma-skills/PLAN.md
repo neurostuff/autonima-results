@@ -361,3 +361,23 @@ a gold study. Low leaned slightly toward excluding: 8 passes lost against 3.
 **Recurring criteria gaps.** Every run's runners raise the same two: food-craving
 regulation under I2, and how to label pooled up + down contrasts. Both belong in a
 versioned `review.yaml` revision, not in further per-run rulings.
+
+### Draft criteria revision (2026-09-30, not applied)
+
+The user chose four fixes for the gaps the stage runners kept flagging:
+1. craving and appetitive regulation is excluded;
+2. goal labels require reappraisal as the strategy;
+3. pooled up + down contrasts carry reappraisal only;
+4. reappraisal induced by experimenter framing counts as instructed.
+
+The same text is drafted in both harnesses:
+- `projects/emotion_regulation_2022/drafts/v5.yaml`: autonima, traditional schema, v4
+  plus appended lines;
+- `experiments/cbma-skills/reviews/emotion_regulation_2022/review.v2.draft.yaml`:
+  cbma-skills.
+
+`check_cbma_translation.py` confirms the two match. The draft is parked: improving the
+criteria is not the current aim, which is running the other projects against the
+original harness. Applying it later needs the recorded-revision tooling
+(`ledger.py revise`, see the guardrail notes). It reopens every abstract, full-text and
+selection decision of an emotion regulation run.
