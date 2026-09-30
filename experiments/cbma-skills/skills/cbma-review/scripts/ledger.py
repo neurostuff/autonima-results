@@ -282,7 +282,29 @@ class Review:
 
     def analyses(self, pmid: str) -> Optional[dict]:
         path = self.root / "analyses" / f"{pmid}.json"
-        return json.loads(path.read_text()) if path.exists() else None
+        if not path.exists():
+            return None
+        data = json.loads(path.read_text())
+        # Verification is a pure function of the point and its table's grid, so it is
+        # recomputed on every load: a fix to verify_point then reaches studies ingested
+        # before it, instead of leaving their stale labels to drop good points at export.
+        grids: Dict[str, Optional[list]] = {}
+        counts: Dict[str, Counter] = {}
+        for x in data.get("analyses", []):
+            tid = x["table_id"]
+            if tid not in grids:
+                tpath = self.doc_dir(pmid) / "tables" / f"{tid}.json"
+                grids[tid] = json.loads(tpath.read_text())["grid"] if tpath.exists() else None
+            if grids[tid] is None:
+                continue
+            for p in x["points"]:
+                p["verification"] = verify_point(p["xyz"], grids[tid])
+                counts.setdefault(tid, Counter())[p["verification"]] += 1
+        for t in data.get("tables", []):
+            if t["table_id"] in counts:
+                c = counts[t["table_id"]]
+                t["verified_row"], t["verified_table_only"], t["unverified"] = c["row"], c["table"], c["unverified"]
+        return data
 
     def pending(self, stage: str) -> List[str]:
         if stage == "abstract":
@@ -475,10 +497,14 @@ def validate_screening(rec: dict, stage: str, ids: List[str], text: Optional[str
 
 
 _NUM = re.compile(r"[-+]?\d+(?:\.\d+)?")
+# A sign typeset apart from its digits ("− 34", common in publisher HTML) belongs to
+# them when it starts the cell or follows a separator; "23 - 36" stays a range.
+_DETACHED_SIGN = re.compile(r"(^|[,;(\[/]\s*)([-+])\s+(?=\d)")
 
 
 def _cell_numbers(cell: str) -> List[float]:
     s = unicodedata.normalize("NFKC", cell).replace("−", "-").replace("–", "-").replace("—", "-")
+    s = _DETACHED_SIGN.sub(r"\1\2", s.strip())
     return [float(x) for x in _NUM.findall(s)]
 
 

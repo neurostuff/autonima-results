@@ -81,6 +81,19 @@ def test_html_tables_embedded_in_a_script_are_recovered():
     assert "tfviewerdata" not in parsed["text_md"]                  # the script itself stays out of the text
 
 
+def test_signs_typeset_apart_from_their_digits_still_verify():
+    # ACE HTML tables write negative coordinates as "− 34" (minus, space, digits);
+    # read as +34, every such point was marked unverified and dropped at export.
+    grid = [["Region", "x", "y", "z", "t"],
+            ["Ant. insula L", "− 34", "− 9", "0", "5.7"],
+            ["Amygdala", "−21, − 9, − 18", "", "", "3.5"],
+            ["Age range", "23 - 36", "", "", ""]]
+    assert ledger.verify_point([-34, -9, 0], grid) == "row"
+    assert ledger.verify_point([-21, -9, -18], grid) == "row"
+    assert ledger.verify_point([34, 9, 0], grid) == "unverified"        # sign flips are still caught
+    assert ledger._cell_numbers("23 - 36") == [23.0, 36.0]               # a range is not a negative number
+
+
 def test_span_attributes_tolerate_publisher_junk():
     assert [docnorm._span(v) for v in ("2", 2, "3px", "", None, "NaN", "0", "9999")] == [2, 2, 3, 1, 1, 1, 1, 100]
 

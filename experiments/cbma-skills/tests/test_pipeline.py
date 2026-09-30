@@ -433,3 +433,22 @@ def last_json(capsys):
         except json.JSONDecodeError:
             pos = start + 1
     return last
+
+
+def test_stored_verification_is_recomputed_on_load(review):
+    # An extraction ingested before a verify_point fix keeps its old labels on disk;
+    # loading it must re-check the points against the table, or export drops them.
+    pmid = "11111111"
+    tables = review / "docs" / pmid / "tables"
+    tables.mkdir(parents=True)
+    (tables / "T1.json").write_text(json.dumps({"grid": [["Region", "x", "y", "z"], ["Insula", "− 34", "− 9", "0"]]}))
+    (review / "analyses").mkdir()
+    (review / "analyses" / f"{pmid}.json").write_text(json.dumps({
+        "pmid": pmid,
+        "tables": [{"table_id": "T1", "points": 2, "verified_row": 0, "verified_table_only": 0, "unverified": 2}],
+        "analyses": [{"analysis_id": f"{pmid}-T1-a1", "table_id": "T1", "points": [
+            {"xyz": [-34, -9, 0], "space": "TAL", "values": [], "verification": "unverified"},
+            {"xyz": [34, 9, 0], "space": "TAL", "values": [], "verification": "unverified"}]}]}))
+    a = ledger.Review(review).analyses(pmid)
+    assert [p["verification"] for p in a["analyses"][0]["points"]] == ["row", "unverified"]
+    assert a["tables"][0]["verified_row"] == 1 and a["tables"][0]["unverified"] == 1
