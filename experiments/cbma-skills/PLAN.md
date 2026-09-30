@@ -436,3 +436,54 @@ the regulation condition as its active condition (regulate > comparison). A reve
 contrast (comparison > regulate) belongs to no regulation target. This matches the
 paper's Dec and Inc categories and the gold. It conflicts with the global
 "deactivation qualifies" guidance, which the revision would have to reword.
+
+## Potential improvements (backlog, 2026-09-30)
+
+Collected from the emotion regulation runs. None is applied yet. Criteria items belong
+in a recorded protocol revision (the parked draft); package items are code changes.
+
+**Criteria (map accuracy)**
+1. **Reverse-contrast rule.** A regulation target's contrast has the regulation
+   condition as its active condition; a reverse contrast (look > regulate) belongs to no
+   regulation target. This means rewording the global "either an ACTIVATION or a
+   DEACTIVATION effect qualifies" guidance. It is the largest measured gain: E1
+   reappraisal r 0.798 to 0.854, and decrease 0.816 to 0.853.
+2. **The four parked choices:** craving excluded, goal labels require reappraisal,
+   pooled goals carry reappraisal only, experimenter framing counts.
+3. **Full-text strictness** (I4 sample, I5 contrast, I6 whole-brain), decided by the
+   user's manual review of the lost gold studies. A smaller gain: +0.03 r on
+   reappraisal.
+4. **Word guidance so that it cannot be read two ways.** Claude and GPT read the same
+   "deactivation qualifies" line in opposite ways.
+
+**Inputs**
+5. **Records should capture unregulated contrasts** ("Emotion > Baseline", look >
+   baseline). 17 of 19 missed gold maintain studies lack them. This is upstream, in
+   Pondie.
+6. **Records completeness:** whole-brain analyses reported beside ROI ones, scope labels,
+   stubs, unresolved coordinate links. See memory "Pondie record coordinate gaps".
+7. **Full-text mode: recover tables that publisher pages link out** (ACE pages), or fall
+   back to ACE's or autonima's parsed coordinates.
+
+**Scoring and comparability**
+8. **Pin one NiMARE version** across the gold, autonima and cbma maps (now 0.16, 0.2.1
+   and 0.21).
+9. **Score analysis-level selection** against the gold labels, in `score_cbma_review.py`
+   (so far done ad hoc by coordinate matching).
+
+**Tokens**
+10. **Bigger batches for records:** full text 10–15, selection 6. Check on the
+    noise-floor sample.
+11. **Skip studies whose record has no analysis with points,** if maps are the goal.
+    About 30% of full-text judging in records mode; PRISMA completeness suffers.
+12. **Abstract batches of 50,** shorter reason limits, and smaller models (Haiku or
+    Sonnet) for abstract and extraction.
+
+**Guardrails and provenance**
+13. **`ledger.py revise`:** versioned protocol snapshots with reason and author, a
+    reopen preview, and a refusal to batch when `review.yaml` does not match the last
+    recorded version.
+14. **Craving and pooled-contrast rulings** keep stopping end-to-end runs. Settle them
+    in the revision.
+15. **Record the NiMARE version and the per-role effort** in the run notes
+    automatically (the audit reports effort already).
