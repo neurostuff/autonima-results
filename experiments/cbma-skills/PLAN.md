@@ -204,3 +204,50 @@ normalized full text.
 
 **Before E1.** Make the transcript audit a reusable script, so every run reports tokens
 and rule-following the same way.
+
+### E1 result (2026-09-30): records, two passes, emotion regulation
+
+Reports: autonima-results `projects/emotion_regulation_2022/reports/cbma_skills_e1_records/`
+(`score.json`, `audit.json`).
+
+**Cost.** 56M input tokens for everything after abstract screening:
+- full-text judges 28M, which is 76k per study against 219k in full-text mode;
+- selection judges 9M, 99k per study against 237k;
+- runners 17M and the orchestrator 2M;
+- extraction is free.
+
+The first run spent about 390M on the same stages, part of it one-off debugging. There
+was one usage-limit event.
+
+**Guardrails.** The audit is clean: no blinding hit, no stray write, no decision
+written outside the ledger. Two PROBLEM verdicts surfaced real protocol ambiguities,
+and the user accepted both as judged:
+- food-craving regulation under I2;
+- pooled up + down contrasts at selection.
+
+**Accuracy is lower than full-text mode.**
+
+| | E1 records | first run, full text | autonima v4 |
+|---|---|---|---|
+| full-text precision / recall / F1 | 0.51 / 0.59 / 0.55 | 0.49 / 0.75 / 0.59 | 0.24 / 0.83 / 0.37 |
+| Dice, reappraisal / decrease / increase / maintain | 0.61 / 0.63 / 0.52 / 0.43 | 0.69 / 0.67 / 0.59 / 0.47 | 0.72 / 0.70 / 0.54 / 0.51 |
+| r, reappraisal / decrease / increase / maintain | 0.73 / 0.76 / 0.59 / 0.55 | 0.78 / 0.77 / 0.64 / 0.60 | 0.88 / 0.86 / 0.69 / 0.74 |
+
+**The loss comes from the records, not the judging.**
+- **24 gold studies with a record were not included,** against 10 in full-text mode.
+  13 of them were included in the first run.
+- **Scope labels:** records that label every analysis `roi` and omit the paper's
+  supplementary whole-brain analyses. In 17133391 and 23144849 the full text says a
+  whole-brain analysis was done, and the record never mentions it. This fails I6/E2.
+- **Sparse records:** 5 gold records are stubs or very sparse, and were returned as
+  incomplete.
+- **Coverage:** 52 abstract passes have no record, 3 of them gold.
+- **Studies that added nothing:** 8 of the 13 lost first-run includes had contributed
+  no coordinates in the first run. Their loss lowers screening recall, but not the maps.
+
+**Next.**
+- **Upstream (Pondie):** fix record completeness (whole-brain analyses reported
+  alongside ROI ones, scope labels, stubs, unresolved coordinate links) before
+  records mode can match full text.
+- **E3 interacts with this:** relaxing the whole-brain criterion would hide the
+  scope-label defect rather than fix it.

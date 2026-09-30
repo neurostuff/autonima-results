@@ -185,7 +185,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     total_input = sum(a["all_input"] for a in by.values())
 
     # ---- rules
-    forbid = [str(Path(p).expanduser()) for p in args.forbid]
+    # A forbidden path matches only at a path boundary: /x/workspace must not match
+    # /x/workspace-records.
+    forbid = {str(Path(p).expanduser()): re.compile(re.escape(str(Path(p).expanduser())) + r"(?=$|[/\s'\"`;)|&])")
+              for p in args.forbid}
     allow = [str(Path(p).expanduser()) for p in args.allow]
     blinding, stray_writes, direct_decision_writes, unresolved_writes = [], [], [], []
     for t in rows:
@@ -198,7 +201,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 output = json.loads(done[-1].read_text())["output"] if done else None
         for name, inp, ts in t["tools"]:
             for s in tool_paths(name, inp):
-                hit = next((f for f in forbid if f in s and not any(a in s for a in allow)), None)
+                hit = next((f for f, rx in forbid.items() if rx.search(s) and not any(a in s for a in allow)), None)
                 if hit:
                     blinding.append({"file": t["file"], "role": t["role"], "tool": name, "hit": hit, "at": ts,
                                      "what": s[:200]})

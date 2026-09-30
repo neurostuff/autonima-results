@@ -73,4 +73,7 @@ def test_audit_roles_tokens_and_writes(tmp_path, capsys):
     assert roles["judge abstract"]["output_tokens"] == 40 and roles["judge abstract"]["effort"] == {"low": 2}
     assert [w["target"] for w in r["judge_writes_outside_output"]] == ["/tmp/scratch/w.py"]   # not "look"
     assert [b["hit"] for b in r["blinding_hits"]] == ["/data/gold"]
+    # a forbidden path matches at a path boundary only
+    assert audit.main([str(tr), "--review", str(review), "--forbid", "/data/go", "--out", str(tmp_path / "b.json")]) == 0
+    assert json.loads((tmp_path / "b.json").read_text())["blinding_hits"] == []
     assert r["ledger_calls"] == {"orchestrator:status": 1, "runner:batches": 1}
