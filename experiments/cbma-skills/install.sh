@@ -12,3 +12,9 @@ for target in "$ws/.claude/skills" "$ws/.agents/skills"; do
   done
   echo "linked $(ls "$here/skills" | wc -l) skills into $target"
 done
+# Claude Code agent definitions: the stage runner and the per-stage judges, with their
+# reasoning effort. Copied, not linked: a session reads them at start, and a copy keeps a
+# running review on the definitions it started with. Re-run install.sh to update them.
+mkdir -p "$ws/.claude/agents"
+cp "$here"/agents/*.md "$ws/.claude/agents/"
+echo "copied $(ls "$here"/agents/*.md | wc -l) agent definitions into $ws/.claude/agents"

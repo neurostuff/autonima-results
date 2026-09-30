@@ -45,7 +45,8 @@ this file's directory). `REVIEW` means the review folder, the one with
    decisions automatically.
 5. **Record who judged.** Pass `--agent "<harness>/<model id>"` to every `ingest`,
    for example `--agent "claude-code/claude-opus-5-5"`. Use your real harness and
-   model identifiers.
+   model identifiers. A stage runner adds the judges' effort, as
+   `claude-code/claude-opus-5-5/effort-low`.
 6. **Keep state on disk, not in your context.** After any interruption or context
    compaction, run `ledger.py status REVIEW` and continue from what it reports.
 
@@ -61,10 +62,50 @@ in `references/review-spec.md`, and `references/example-review.yaml` is a starti
 point. `init` rejects unknown keys, so a typo fails loudly. Show the user the
 numbered criteria that `init` prints before spending any effort on screening.
 
+## Running a judged stage
+
+**Use a stage runner when you can.** Check for `.claude/agents/cbma-stage-runner.md` in
+the workspace (`install.sh` puts it there). If it exists, hand each judged stage to one
+`cbma-stage-runner` subagent, and do not run the loop below yourself. The runner makes
+the batches, dispatches the stage's judge agents, ingests, retries and audits, then
+returns a short report. Your context then grows by one report per stage, not by every
+batch. Give it this prompt, with the values filled in:
+
+> Run the `<stage>` stage. REVIEW=`<abs path>` SKILLS=`<abs path>` PYTHON=`<python>`
+> AGENT=`<harness>/<model id>`. [Batch size `<n>`.] [Pilot: `--limit <N>`.]
+
+The judges' reasoning effort is set per stage in their agent definitions:
+- `cbma-abstract-screener`: low;
+- `cbma-fulltext-screener`: medium;
+- `cbma-extractor`: low;
+- `cbma-selector`: medium.
+
+To change one, edit the `effort:` line of that file before the stage, and record the
+change in the run notes.
+
+When a runner returns, copy its report into the run notes. Then:
+- **verdict OK:** go on to the next stage, if the user asked for an end-to-end run;
+  otherwise report and ask.
+- **verdict PROBLEM:** stop, show the user the report, and decide with them.
+
+**End-to-end runs.** If the user says to run the review end to end, do every stage in
+order without asking between them:
+- search;
+- abstract runner;
+- retrieval;
+- full-text runner;
+- extraction runner;
+- selection runner;
+- export and meta-analysis.
+
+Stop only when a runner reports PROBLEM, when a scripted stage fails, or at a pilot the
+user asked for.
+
 ## The loop for every judged stage
 
-The same five steps run for abstract screening, full-text screening, extraction and
-selection:
+A stage runner follows this loop. Follow it yourself only when there is no stage
+runner, as in harnesses without agent definitions. The same five steps run for
+abstract screening, full-text screening, extraction and selection:
 
 1. **Make batches.**
    `python SKILLS/cbma-review/scripts/ledger.py batches REVIEW --stage <stage> --size <n>`
@@ -105,16 +146,16 @@ selection:
 1. **Search:** follow `pubmed-search`. When it finishes, run `ledger.py status` and
    report the record count. It must equal PubMed's reported count, and the script
    fails if it does not.
-2. **Abstract screening:** run the loop with `--stage abstract`. Records without an
+2. **Abstract screening:** run the `abstract` stage (a runner, or the loop). Records without an
    abstract are screened on title and metadata; the `screen-studies` skill covers
    this.
 3. **Full-text retrieval:** first run
    `python SKILLS/cbma-review/scripts/ledger.py needs-fulltext REVIEW`, then follow
    `fulltext-sources`. Report available, incomplete and unavailable counts by source.
-4. **Full-text screening:** run the loop with `--stage fulltext`. Items whose text is
+4. **Full-text screening:** run the `fulltext` stage. Items whose text is
    unavailable are never batched.
-5. **Extraction:** run the loop with `--stage extraction`, one study per batch.
-6. **Selection:** run the loop with `--stage selection`. Skip it if `review.yaml`
+5. **Extraction:** run the `extraction` stage, one study per batch.
+6. **Selection:** run the `selection` stage. Skip it if `review.yaml`
    defines no targets.
 7. **Export and meta-analysis:**
    `python SKILLS/cbma-review/scripts/ledger.py export REVIEW`, then follow

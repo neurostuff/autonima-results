@@ -38,6 +38,30 @@ decision.
 | [`select-analyses`](skills/select-analyses/SKILL.md) | analysis × target inclusion decisions |
 | [`cbma-nimare`](skills/cbma-nimare/SKILL.md) | NiMADS export and NiMARE meta-analysis |
 
+## Agents (Claude Code)
+
+`agents/` holds Claude Code agent definitions that keep the long-lived session small.
+The orchestrator hands each judged stage to one **stage runner**. The runner makes the
+batches, dispatches a fresh **judge** subagent per batch, ingests, retries and audits,
+then returns a short report. The orchestrator's context grows by one report per stage,
+so a user can say "run it end to end" and the session stays small.
+
+| Agent | Role | Effort |
+|---|---|---|
+| [`cbma-stage-runner`](agents/cbma-stage-runner.md) | runs one judged stage and reports | medium |
+| [`cbma-abstract-screener`](agents/cbma-abstract-screener.md) | one abstract batch | low |
+| [`cbma-fulltext-screener`](agents/cbma-fulltext-screener.md) | one full-text batch | medium |
+| [`cbma-extractor`](agents/cbma-extractor.md) | one study's coordinate tables | low |
+| [`cbma-selector`](agents/cbma-selector.md) | one study's analysis selection | medium |
+
+- **Effort** is the `effort:` line of each definition.
+- **Recording:** the runner records it with every decision, as
+  `claude-code/<model>/effort-<level>`.
+- **Where to change effort:** in the workspace copy, `.claude/agents/`, before the
+  stage. Record the change in the run notes.
+- **Harnesses without agent definitions** (Codex) follow the same loop in the
+  orchestrator, or use `run_batches.sh`.
+
 ## Install
 
 The skills are plain folders, and they are installed as a set because the
@@ -45,7 +69,7 @@ orchestrator refers to the others by relative path.
 
 ```bash
 # Claude Code: project-level (inside the folder where you will run reviews) or user-level
-./install.sh /path/to/reviews-workspace          # links into .claude/skills and .agents/skills
+./install.sh /path/to/reviews-workspace          # skills into .claude/skills and .agents/skills, agents into .claude/agents
 # or by hand:
 mkdir -p ~/.claude/skills && ln -s "$PWD"/skills/* ~/.claude/skills/
 ```
