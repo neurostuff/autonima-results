@@ -52,6 +52,10 @@ string `AGENT/effort-<level>`, for example `claude-code/claude-opus-5-5/effort-l
 
    It stops at a time budget (9 minutes by default) so that it fits one command.
    - **Exit code 3:** work remains. Run the same command again, until it exits 0.
+   - **Exit code 4:** another live process already holds this stage — usually an earlier
+     runner's script, which keeps running after its agent stopped. Do not work around it
+     and do not start a second loop: report the `stage_busy` record (its host and pid) and
+     stop. Two loops on one stage judge the same records twice.
    - **`usage_limited` true:** stop, and report.
    - **The same items `batched_but_pending` twice running:** that is an input problem.
      Report the items; do not keep retrying.

@@ -23,8 +23,12 @@ It prints one JSON summary: accepted, rejected, pending, judge failures, and the
 judges' token usage from their `--output-format json` logs (saved beside each batch as
 `.judge.json`).
 
+Only one live process may work a stage: the call takes a lock in the stage's work folder
+and exits 4 if another process holds it, so a runner stopped by a usage limit (whose script
+keeps running) cannot be joined by a second runner on the same stage.
+
 Exit codes: 0 when nothing the stage can batch is pending; 3 when work remains; 1 on a
-ledger error.
+ledger error; 4 when another live process holds the stage.
 """
 
 from __future__ import annotations
@@ -35,10 +39,12 @@ import json
 import os
 import re
 import shlex
+import socket
 import subprocess
 import sys
 import time
 from pathlib import Path
+from typing import Optional, Tuple
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ledger  # noqa: E402
@@ -119,6 +125,61 @@ def ingest(review: Path, stage: str, agent: str, summary: dict) -> None:
     summary["errors"] += report["errors"][:20]
 
 
+class StageBusy(Exception):
+    """Another live process holds this stage's lock."""
+
+
+def alive(held: dict) -> bool:
+    """Is the process in a lock record still running? A lock from another host cannot be
+    checked, so it counts as live: refusing a call is cheap, judging twice is not."""
+    if held.get("host") and held["host"] != socket.gethostname():
+        return True
+    pid = held.get("pid")
+    if not isinstance(pid, int):
+        return False                                    # an unreadable lock holds nothing
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True                                     # alive, owned by someone else
+    return True
+
+
+def take_lock(work: Path, stage: str) -> Tuple[Path, Optional[dict]]:
+    """Claim the stage for this process. Returns the lock path and, when a dead process left
+    a lock behind, the record it left, so the caller can report the interrupted run.
+
+    A runner stopped by a usage limit leaves its run_stage.py running in the background. A
+    second runner then judged the same stage at the same time (executive_function). The lock
+    names the host and pid, so a stale lock from a crashed run is taken over, while a live
+    one refuses the call.
+    """
+    work.mkdir(parents=True, exist_ok=True)
+    path = work / "run_stage.lock"
+    mine = json.dumps({"host": socket.gethostname(), "pid": os.getpid(), "stage": stage,
+                       "started": time.strftime("%Y-%m-%dT%H:%M:%S")}, indent=1)
+    stale = None
+    for attempt in range(2):
+        try:
+            # O_EXCL, so two processes starting at once cannot both claim the stage.
+            fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            try:
+                held = json.loads(path.read_text())
+            except (json.JSONDecodeError, OSError):
+                held = {}
+            if alive(held) or attempt:
+                raise StageBusy(held or {"unreadable": True})
+            stale = held or {"unreadable": True}
+            path.unlink(missing_ok=True)                    # its process is gone; take it over
+            continue
+        with os.fdopen(fd, "w") as fh:
+            fh.write(mine)
+        return path, stale
+    raise StageBusy(stale)                                  # unreachable: the loop returns or raises
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("review_dir", type=Path)
@@ -144,13 +205,18 @@ def main(argv=None) -> int:
     deadline = time.time() + args.time_budget
     summary = {"stage": args.stage, "judge": judge, "effort": effort, "agent": agent, "rounds": 0,
                "batches_dispatched": 0, "accepted": 0, "rejected": 0, "judge_failures": [], "errors": []}
+    lock = None
     try:
         rv = ledger.Review(review)
         work = rv.work_dir(args.stage)
+        lock, stale = take_lock(work, args.stage)
+        if stale:
+            # An earlier call died holding the stage. Its batches, if any, are picked up below.
+            summary["took_over_lock_from"] = stale
         ingest(review, args.stage, agent, summary)          # outputs left by an earlier call
         first = not any((work / "done").glob("*_batch_*.json")) if (work / "done").exists() else True
         while summary["rounds"] < args.rounds and time.time() < deadline - 60:
-            waiting = sorted(p for p in work.glob("batch_*.json")) if work.exists() else []
+            waiting = ledger.batch_files(work) if work.exists() else []
             if not waiting:
                 if not ledger.Review(review).pending(args.stage):
                     break
@@ -158,7 +224,7 @@ def main(argv=None) -> int:
                     break                                   # a pilot: retry its items, batch no new ones
                 ledger.cmd_batches(ledger.Review(review), args.stage, args.size or SIZE[args.stage],
                                    args.limit if first else None, discard=False)
-                waiting = sorted(work.glob("batch_*.json"))
+                waiting = ledger.batch_files(work)
             first = False
             todo = [b for b in waiting if not ledger._output_path(b, args.stage).exists()]
             summary["rounds"] += 1
@@ -179,13 +245,22 @@ def main(argv=None) -> int:
                 break                                       # out of time; the next call resumes
         rv = ledger.Review(review)
         pending = rv.pending(args.stage)
-        waiting = sorted(work.glob("batch_*.json")) if work.exists() else []
+        waiting = ledger.batch_files(work) if work.exists() else []
         batched_pending = sorted({it["pmid"] for b in waiting for it in json.loads(b.read_text())["items"]})
         summary.update(pending=len(pending), waiting_batches=len(waiting), batched_but_pending=batched_pending[:50],
                        usage=usage_of(work))
+    except StageBusy as exc:
+        held = exc.args[0]
+        print(json.dumps({"stage_busy": held, "stage": args.stage,
+                          "hint": "another run_stage.py process holds this stage; wait for it or "
+                                  "stop that process before running the stage again"}, indent=1))
+        return 4
     except ledger.LedgerError as exc:
         print(json.dumps({"ledger_error": str(exc)}))
         return 1
+    finally:
+        if lock is not None:
+            lock.unlink(missing_ok=True)
     limited = any(re.search(r"limit|429", f.get("error") or "", re.I) for f in summary["judge_failures"])
     summary["usage_limited"] = limited
     summary["done"] = not waiting and (not pending or bool(args.limit))

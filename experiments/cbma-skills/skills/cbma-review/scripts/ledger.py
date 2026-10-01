@@ -426,15 +426,27 @@ ITEM_BUILDERS = {"abstract": _abstract_item, "fulltext": _fulltext_item,
                  "extraction": _extraction_item, "selection": _selection_item}
 
 
+def batch_files(work: Path) -> List[Path]:
+    """The batch files waiting in a work folder: batch_NNNN.json only. A bare batch_*.json glob
+    also matches the judges' batch_NNNN.judge.json logs, which crashed ingest and run_stage.py
+    when a run was interrupted between judging and ingesting (executive_function)."""
+    return sorted(p for p in work.glob("batch_*.json") if re.fullmatch(r"batch_\d+\.json", p.name))
+
+
 def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard: bool) -> List[Path]:
     work = rv.work_dir(stage)
     work.mkdir(parents=True, exist_ok=True)
-    unfinished = [p for p in work.glob("batch_*.json") if _output_path(p, stage).exists()]
+    unfinished = [p for p in batch_files(work) if _output_path(p, stage).exists()]
     if unfinished and not discard:
         raise LedgerError(f"{len(unfinished)} batch outputs in {work} are not ingested yet; "
                           f"run `ingest --stage {stage}` first (or pass --discard)")
+    stamp = dt.datetime.now().strftime("%Y%m%dT%H%M%S")
     for p in work.glob("batch_*"):
-        if p.is_dir():
+        if p.name.endswith(".judge.json"):
+            # A judge's log carries its token usage: archive it, never delete it.
+            (work / "done").mkdir(exist_ok=True)
+            shutil.move(str(p), str(work / "done" / f"{stamp}_{p.name}"))
+        elif p.is_dir():
             shutil.rmtree(p)
         else:
             p.unlink()
@@ -726,7 +738,7 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
     work = rv.work_dir(stage)
     done_dir = work / "done"
     report = {"stage": stage, "batches": 0, "accepted": 0, "rejected": 0, "missing_output": 0, "errors": []}
-    for batch_path in sorted(work.glob("batch_*.json")):
+    for batch_path in batch_files(work):
         batch = json.loads(batch_path.read_text())
         out_path = _output_path(batch_path, stage)
         if not out_path.exists():
