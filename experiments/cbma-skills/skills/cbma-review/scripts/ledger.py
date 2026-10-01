@@ -697,7 +697,12 @@ def validate_extraction(out: dict, item: dict, rv: Review) -> Tuple[List[str], O
     return [], {"pmid": pmid, "tables": tables_summary, "analyses": analyses}
 
 
-def validate_selection(lines: List[dict], item: dict, targets: Dict[str, dict], global_ids: List[str]) -> Tuple[List[str], List[dict]]:
+def _instr_flag(rec: dict) -> dict:
+    return {"excluded_by_instructions": True} if rec.get("excluded_by_instructions") else {}
+
+
+def validate_selection(lines: List[dict], item: dict, targets: Dict[str, dict], global_ids: List[str],
+                       instructions: Optional[str] = None) -> Tuple[List[str], List[dict]]:
     pmid = item["pmid"]
     where = f"pmid {pmid}"
     errs = []
@@ -722,7 +727,12 @@ def validate_selection(lines: List[dict], item: dict, targets: Dict[str, dict], 
         if rec.get("include") is True and (failed or unclear):
             errs.append(f"{where} {key}: include is true but a criterion failed or an inclusion is unclear")
         if rec.get("include") is False and not (failed or unclear):
-            errs.append(f"{where} {key}: include is false but every criterion passed; record which one fails")
+            # Review instructions (global or the target's) may exclude an analysis no criterion fails,
+            # e.g. a subgroup overlapping another analysis's sample. Accept it, flagged, only when some apply.
+            if instructions or targets[key[1]].get("instructions"):
+                rec = dict(rec, excluded_by_instructions=True)
+            else:
+                errs.append(f"{where} {key}: include is false but every criterion passed; record which one fails")
         seen[key] = rec
     missing = needed - set(seen)
     if missing:
@@ -794,14 +804,15 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
                     if decision == "include":
                         lines_sel = [dict(r, pmid=pmid) for r in rec.get("analyses") or [] if isinstance(r, dict)]
                         serrs, recs = validate_selection(lines_sel, items[pmid], batch["targets"],
-                                                         list(batch["selection_criteria"]))
+                                                         list(batch["selection_criteria"]),
+                                                         batch.get("selection_instructions"))
                         if serrs:
                             report["errors"] += [f"{batch['batch_id']}: {e}" for e in serrs]
                             continue
                         sel_rows = [dict(base, stage="selection", pmid=pmid,
                                          input_hash=batch["_analyses_hashes"][pmid], analysis_id=r["analysis_id"],
                                          target=r["target"], include=r["include"], criteria=r["criteria"],
-                                         reason=r["reason"].strip()) for r in recs]
+                                         reason=r["reason"].strip(), **_instr_flag(r)) for r in recs]
                         if not any(r["include"] for r in sel_rows):
                             decision = "exclude"
                             flags["no_eligible_analysis"] = True
@@ -853,7 +864,8 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
                 by_pmid.setdefault(str(rec.get("pmid", "")), []).append(rec)
             global_ids = list(batch["criteria"])
             for pmid, item in items.items():
-                errs, recs = validate_selection(by_pmid.get(pmid, []), item, batch["targets"], global_ids)
+                errs, recs = validate_selection(by_pmid.get(pmid, []), item, batch["targets"], global_ids,
+                                                batch.get("instructions"))
                 if batch["_input_hashes"][pmid] != rv.input_hash(stage, pmid):
                     errs.append(f"pmid {pmid}: analyses changed after the batch was made")
                 if errs:
@@ -862,7 +874,7 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
                     continue
                 rows = [dict(base, pmid=pmid, input_hash=batch["_input_hashes"][pmid], analysis_id=r["analysis_id"],
                              target=r["target"], include=r["include"], criteria=r["criteria"],
-                             reason=r["reason"].strip()) for r in recs]
+                             reason=r["reason"].strip(), **_instr_flag(r)) for r in recs]
                 append_jsonl(rv.decisions_path(stage), rows)
                 accepted_rows.extend(rows)
 

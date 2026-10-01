@@ -452,3 +452,31 @@ def test_stored_verification_is_recomputed_on_load(review):
     a = ledger.Review(review).analyses(pmid)
     assert [p["verification"] for p in a["analyses"][0]["points"]] == ["row", "unverified"]
     assert a["tables"][0]["verified_row"] == 1 and a["tables"][0]["unverified"] == 1
+
+
+SEL_TARGETS = {"patients_gt_controls": {"description": None,
+                                        "criteria": {"I1": "Patients greater than controls"}}}
+SEL_ITEM = {"pmid": "11111111", "analyses": [{"analysis_id": "a1"}]}
+SEL_REC = {"analysis_id": "a1", "target": "patients_gt_controls", "include": False,
+           "criteria": {"I1": "met"}, "reason": "Its sample overlaps the other smoker analysis."}
+
+
+def test_an_analysis_excluded_by_review_instructions_is_flagged_not_rejected():
+    """A review's instructions can exclude an analysis that no criterion fails — e.g. a subgroup
+    whose sample overlaps another analysis's. Only then: with no instructions in play, `include:
+    false` while every criterion passed is a contradiction in the judge's own output."""
+    errs, recs = ledger.validate_selection([SEL_REC], SEL_ITEM, SEL_TARGETS, [],
+                                           instructions="Experiments from one article must not overlap.")
+    assert errs == [] and recs[0]["excluded_by_instructions"] is True
+
+    errs, recs = ledger.validate_selection([SEL_REC], SEL_ITEM, SEL_TARGETS, [])
+    assert len(errs) == 1 and "every criterion passed" in errs[0]
+    assert "excluded_by_instructions" not in recs[0]
+
+    target = dict(SEL_TARGETS["patients_gt_controls"], instructions="No overlapping samples.")
+    errs, recs = ledger.validate_selection([SEL_REC], SEL_ITEM, {"patients_gt_controls": target}, [])
+    assert errs == [] and recs[0]["excluded_by_instructions"] is True     # a target's own do as well
+
+    kept = dict(SEL_REC, include=True, reason="I1 met.")
+    errs, recs = ledger.validate_selection([kept], SEL_ITEM, SEL_TARGETS, [], instructions="No overlap.")
+    assert errs == [] and "excluded_by_instructions" not in recs[0]       # and an include is untouched
