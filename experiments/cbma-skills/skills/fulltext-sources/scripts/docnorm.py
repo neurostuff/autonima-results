@@ -177,10 +177,12 @@ def _jats_table(wrap: ET.Element, index: int) -> dict:
     foot_el = wrap.find("table-wrap-foot")
     footer = _clean(" ".join(foot_el.itertext())) if foot_el is not None else ""
     rows: List[List[dict]] = []
-    markup = ""
-    table = next((n for n in wrap.iter() if _local(n.tag) == "table"), None)
-    if table is not None:
-        markup = ET.tostring(table, encoding="unicode")
+    # A table-wrap can hold several <table> elements: a one-cell label table followed by the
+    # real one, or parts A and B. Read them all, in order, as one grid. Keeping only the first
+    # lost 24090712's coordinate table (vbm_of_substance_use).
+    tables = [n for n in wrap.iter() if _local(n.tag) == "table"]
+    markup = "".join(ET.tostring(t, encoding="unicode") for t in tables)
+    for table in tables:
         for tr in (n for n in table.iter() if _local(n.tag) == "tr"):
             cells = []
             for cell in tr:

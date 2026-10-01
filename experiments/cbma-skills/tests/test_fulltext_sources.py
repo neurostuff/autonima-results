@@ -149,3 +149,16 @@ def test_html_article_inside_an_aspnet_form_is_kept():
     parsed = docnorm.parse_html(page)
     assert parsed["complete"] and "## Methods" in parsed["text_md"] and len(parsed["tables"]) == 1
     assert "All journals" not in parsed["text_md"]                  # form controls are still dropped
+
+
+def test_jats_table_wrap_with_several_tables_keeps_them_all():
+    # 24090712: a one-cell label table, then the real coordinate table, in one table-wrap.
+    xml = f"""<article><front><article-meta><title-group><article-title>T</article-title></title-group></article-meta></front>
+<body><sec><title>Results</title><p>{PARA}</p><p>{PARA}</p>
+<table-wrap id="T2"><label>Table 2</label><caption><p>Group differences (MNI)</p></caption>
+<table><tr><td>A) GM volume</td></tr></table>
+<table><tr><th>Region</th><th>x</th><th>y</th><th>z</th></tr><tr><td>Insula</td><td>-38</td><td>4</td><td>2</td></tr></table>
+</table-wrap></sec></body></article>""".encode()
+    (t,) = docnorm.parse_jats(xml)["tables"]
+    assert t["grid"][-1][:4] == ["Insula", "-38", "4", "2"] and t["coordinate_candidate"]
+    assert ledger.verify_point([-38, 4, 2], t["grid"]) == "row"
