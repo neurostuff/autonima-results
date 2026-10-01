@@ -127,7 +127,7 @@ _ALLOWED = {
     "": {"name", "objective", "search", "screening", "fulltext", "extraction", "selection", "meta", "notes"},
     "search": {"query", "date_from", "date_to", "pmids", "pmids_file", "email"},
     "screening": {"abstract", "fulltext"},
-    "screening.stage": {"inclusion", "exclusion", "instructions", "select_analyses"},
+    "screening.stage": {"inclusion", "exclusion", "instructions", "select_analyses", "objective"},
     "fulltext": {"sources"},
     "extraction": {"drop_unverified", "instructions", "records"},
     "selection": {"global", "targets", "instructions"},
@@ -202,7 +202,10 @@ def stage_criteria(spec: dict, stage: str) -> dict:
     if stage in ("abstract", "fulltext"):
         block = spec["screening"][stage]
         crit = number(block.get("inclusion"), block.get("exclusion"))
-        payload = {"objective": spec["objective"], "criteria": crit, "instructions": block.get("instructions")}
+        # A stage may state its own objective (autonima configs can differ between abstract and
+        # full text). Unset, it is the review's, so existing hashes do not change.
+        payload = {"objective": block.get("objective") or spec["objective"], "criteria": crit,
+                   "instructions": block.get("instructions")}
     elif stage == "extraction":
         crit = {}
         ext = spec.get("extraction") or {}
@@ -449,7 +452,7 @@ def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard
             "stage": stage,
             "batch_id": f"{stage}-{n:04d}",
             "skill": COMBINED_SKILL if combined else STAGE_SKILL[stage],
-            "objective": rv.spec["objective"],
+            "objective": crit["payload"].get("objective") or rv.spec["objective"],
             "criteria": crit["criteria"],
             "instructions": crit["payload"].get("instructions"),
             "output": str(_output_path(path, stage)),

@@ -228,3 +228,14 @@ def test_combined_mode_rejects_an_included_study_missing_pairs(review, capsys):
                          "evidence": [], "analyses": []}])
     assert run_ledger("ingest", review, "--stage", "fulltext", "--agent", "test") == 2   # pairs missing
     assert ledger.Review(review).pending("fulltext") == ["11111111"]
+
+
+def test_a_stage_objective_overrides_the_review_objective_without_moving_other_hashes(review):
+    before = ledger.Review(review).criteria
+    (review / "review.yaml").write_text(REVIEW_YAML.replace(
+        "    inclusion: [Human participants with schizophrenia]\n",
+        "    inclusion: [Human participants with schizophrenia]\n    objective: abstract-stage objective\n"))
+    after = ledger.Review(review).criteria
+    assert after["abstract"]["payload"]["objective"] == "abstract-stage objective"
+    assert after["abstract"]["hash"] != before["abstract"]["hash"]
+    assert all(after[s]["hash"] == before[s]["hash"] for s in ("fulltext", "extraction", "selection"))

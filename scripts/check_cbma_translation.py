@@ -15,7 +15,7 @@ Scopes, autonima -> review.yaml:
         -> selection.global.{inclusion,exclusion}, selection.instructions
     annotation.annotations[i].{inclusion,exclusion}_criteria, additional_instructions
         -> selection.targets[i].{inclusion,exclusion}, instructions (same names, same order)
-    screening.<stage>.objective -> objective (both stages must agree)
+    screening.<stage>.objective -> screening.<stage>.objective, or objective
     search.query / date_from / date_to / email -> the same keys under search
 
 A line autonima lists as a criterion may instead sit in the same scope's
@@ -52,6 +52,20 @@ NOT_MAPPED = {
 }
 
 
+RENDERED: list = []
+
+
+def _as_text(items):
+    """autonima renders each criterion as f"- {criterion}", so a criterion YAML parsed as a mapping
+    (a "key: value" line) reached its model as the mapping's str(). Compare that."""
+    if not isinstance(items, list):
+        return items
+    for x in items:
+        if not isinstance(x, str):
+            RENDERED.append(str(x)[:90])
+    return [x if isinstance(x, str) else str(x) for x in items]
+
+
 def paragraphs(text) -> list[str]:
     return [p for p in (text or "").split("\n") if p.strip()]
 
@@ -72,6 +86,7 @@ class Check:
     def scope(self, label, src: dict, inc: list, exc: list, instructions):
         """One criteria scope: autonima's two lists and instructions against the review's."""
         self.fields += 1
+        src = {k: _as_text(v) if k.endswith("_criteria") else v for k, v in src.items()}
         pars = paragraphs(instructions)
         own = paragraphs(src.get("additional_instructions"))
         for kind, a_list, r_list in (("inclusion", src.get("inclusion_criteria") or [], inc or []),
@@ -104,10 +119,11 @@ def main(argv=None) -> int:
     dst = yaml.safe_load(args.review_yaml.read_text())
     ck, unmapped = Check(), []
 
-    objectives = {s: (src["screening"].get(s) or {}).get("objective") for s in ("abstract", "fulltext")}
-    if len({o for o in objectives.values() if o}) > 1:
-        ck.problems.append(f"autonima's abstract and full-text objectives differ; review.yaml has one: {objectives}")
-    ck.same("objective", objectives["abstract"] or objectives["fulltext"], dst.get("objective"))
+    # Each screening stage's objective: review.yaml's screening.<stage>.objective if set, else its
+    # top-level objective.
+    for stage in ("abstract", "fulltext"):
+        dst_obj = ((dst.get("screening") or {}).get(stage) or {}).get("objective") or dst.get("objective")
+        ck.same(f"objective ({stage})", (src["screening"].get(stage) or {}).get("objective"), dst_obj)
 
     for key in ("query", "date_from", "date_to", "email"):
         ck.same(f"search.{key}", (src.get("search") or {}).get(key), (dst.get("search") or {}).get(key))
@@ -135,6 +151,8 @@ def main(argv=None) -> int:
 
     for line in ck.moved:
         print(f"moved: {line}")
+    for r in RENDERED:
+        print(f"note: a criterion autonima parsed as a mapping is compared as its str(): {r}...")
     for label in unmapped:
         print(f"not mapped (no cbma-skills counterpart): {label}")
     if ck.problems:

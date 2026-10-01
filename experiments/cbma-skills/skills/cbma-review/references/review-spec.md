@@ -23,6 +23,7 @@ screening:
       - Functional neuroimaging (fMRI or PET) of brain activation
     exclusion:                  # optional, becomes E1, E2, ...
       - Review, meta-analysis, commentary or protocol without new data
+    objective: ""                # optional: this stage's own objective (default: the review's)
     instructions: >             # optional, free text appended to the screening skill
       Case reports are excluded under E1.
   fulltext:                     # strict: include only when every inclusion criterion is met
