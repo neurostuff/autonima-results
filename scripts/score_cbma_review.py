@@ -123,7 +123,23 @@ def main(argv=None) -> int:
     merged = NMB / "data" / "nimads" / args.project / "merged"
     manual_maps = NMB / "analysis" / args.project
     targets = [t["name"] for t in __import__("yaml").safe_load((review / "review.yaml").read_text())["selection"]["targets"]]
-    report: dict = {"review": str(review), "autonima_run": str(run), "targets": targets}
+    # Gold columns can be named differently from the review's targets (vbm_of_ptsd's gold calls
+    # decreased_gm "nonptsdgtptsd_merged"): nmb_mappings.json maps gold -> autonima/review names.
+    mapping_path = project / "nmb_mappings.json"
+    to_gold = {v: k for k, v in (json.loads(mapping_path.read_text()).get("annotation_mappings") or {}).items()} \
+        if mapping_path.exists() else {}
+    gold_name = {t: to_gold.get(t, t) for t in targets}
+    from benchmark_exclusions import is_excluded, reason as excluded_reason  # noqa: E402
+    gold_keys = set(json.loads((merged / "nimads_annotation.json").read_text()).get("note_keys") or {})
+    unscored = {}
+    for t in targets:
+        if is_excluded(args.project, gold_name[t]) or is_excluded(args.project, t):
+            unscored[t] = "excluded by the benchmark: " + (excluded_reason(args.project, gold_name[t])
+                                                           or excluded_reason(args.project, t))
+        elif gold_name[t] not in gold_keys:
+            unscored[t] = "no gold column for this target"
+    scored = [t for t in targets if t not in unscored]
+    report: dict = {"review": str(review), "autonima_run": str(run), "unscored_targets": unscored}
 
     # ---- screening
     gold = compare.load_gold(gold_csv)
@@ -151,6 +167,7 @@ def main(argv=None) -> int:
     report["screening"]["gold_with_text_not_included"] = losses
 
     # ---- coordinates
+    report["targets"] = {t: gold_name[t] for t in scored}
     gold_ss = json.loads((merged / "nimads_studyset.json").read_text())
     cbma_ss = json.loads((review / "results" / "nimads" / "studyset.json").read_text())
     aut_ss = json.loads((run / "outputs" / "nimads_studyset.json").read_text())
@@ -164,18 +181,18 @@ def main(argv=None) -> int:
     }
 
     # ---- selection, study level
-    def by_target(notes, analysis_to_study):
+    def by_target(notes, analysis_to_study, key=lambda t: t):
         out = collections.defaultdict(set)
         n = collections.Counter()
         for note in notes:
-            for t in targets:
-                if note["note"].get(t) is True:
+            for t in scored:
+                if note["note"].get(key(t)) is True:
                     out[t].add(analysis_to_study[note["analysis"]])
                     n[t] += 1
         return out, n
     gold_notes = json.loads((merged / "nimads_annotation.json").read_text())["notes"]
     aut_notes = json.loads((run / "outputs" / "nimads_annotation.json").read_text())["notes"]
-    gs, gn = by_target(gold_notes, study_of(gold_ss))
+    gs, gn = by_target(gold_notes, study_of(gold_ss), key=lambda t: gold_name[t])
     as_, an = by_target(aut_notes, study_of(aut_ss))
     cs, cn = collections.defaultdict(set), collections.Counter()
     for r in read_jsonl(review / "decisions" / "selection.jsonl"):
@@ -183,7 +200,7 @@ def main(argv=None) -> int:
             cs[r["target"]].add(r["pmid"])
             cn[r["target"]] += 1
     sel = {}
-    for t in targets:
+    for t in scored:
         row = {"gold_studies": len(gs[t]), "gold_analyses": gn[t]}
         for arm, s, n in (("cbma", cs[t], cn[t]), ("autonima", as_[t], an[t])):
             tp = len(s & gs[t])
@@ -202,8 +219,12 @@ def main(argv=None) -> int:
         s = a.sum() + b.sum()
         return float(2 * (a & b).sum() / s) if s else 0.0
     maps = {}
-    for t in targets:
-        m_dir, a_dir, c_dir = manual_maps / t, run / "outputs" / "meta_analysis_results" / t, review / "results" / "meta" / t
+    for t in scored:
+        m_dir, a_dir, c_dir = manual_maps / gold_name[t], run / "outputs" / "meta_analysis_results" / t, review / "results" / "meta" / t
+        missing = [str(d) for d in (m_dir, a_dir, c_dir) if not (d / "z_corr-FDR_method-indep.nii.gz").exists()]
+        if missing:
+            maps[t] = {"missing_maps": missing}
+            continue
         mz, az = load(m_dir / "z.nii.gz"), load(a_dir / "z.nii.gz")
         cz = z_from_p(load(c_dir / "p.nii.gz"))
         fdr = "z_corr-FDR_method-indep.nii.gz"
@@ -229,11 +250,16 @@ def main(argv=None) -> int:
     c = report["coordinates"]
     print(f"coordinates (gold peak recall, same studies): cbma {c['same_studies']['cbma']['recall']}  "
           f"autonima {c['same_studies']['autonima']['recall']}")
-    for t in targets:
+    for t in scored:
         r, m = sel[t], maps[t]
+        if "missing_maps" in m:
+            print(f"{t:12s} maps missing: {m['missing_maps']}")
+            continue
         print(f"{t:12s} studies P/R cbma {r['cbma']['precision']}/{r['cbma']['recall']}  autonima "
               f"{r['autonima']['precision']}/{r['autonima']['recall']} | dice {m['dice']['cbma']} vs "
               f"{m['dice']['autonima']} | r {m['pearson_r']['cbma']} vs {m['pearson_r']['autonima']}")
+    for t, why in unscored.items():
+        print(f"{t:12s} not scored: {why}")
     print(f"wrote {args.out / 'score.json'}")
     return 0
 
