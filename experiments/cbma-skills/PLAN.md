@@ -192,10 +192,27 @@ normalized full text.
 | E0 | abstract noise floor and low effort | re-screen 200 ER abstracts at low effort in a fresh session | about 2M tokens |
 | E1 | records, two passes (ER, v4 criteria) | full text and selection read records; extraction is `ledger.py import-analyses` | record source, import, export of record points |
 | E2 | records, one pass (ER) | one judge decides study criteria and every analysis × target; no eligible analysis means excluded | a combined ledger stage |
-| E3 | whole-brain criterion (ER) | relax I6/E2 and GE1 together, in the better of E1/E2; reported as gold-tuned | none |
-| E4 | the other four projects with records | "best" config tier; vbm_of_ptsd first, then vbm_of_substance_use, dementia, cue_reactivity | a scorer for projects without annotations |
-| E5 | the four projects without records | decision_making, executive_function, problem_solving, social: build records first, or run in full-text mode (about 1.2B tokens) | records, or budget |
-| E6 | Codex | the winning mode on ER plus one project | Codex install |
+| ~~E3~~ | ~~whole-brain criterion (ER)~~ | dropped (2026-10-01): the scope problem is in the record schema, and is fixed there | |
+| E4 | full text, every project | "best" config tier, full-text mode, all eight remaining projects: vbm_of_ptsd, vbm_of_substance_use, dementia, cue_reactivity, decision_making, executive_function, problem_solving, social (about 1.2B tokens for the last four) | full-text sources per project |
+| E5 | records, every project that has them | the same review.yaml in records mode, for vbm_of_ptsd, vbm_of_substance_use, dementia and cue_reactivity; starts from a copy of the E4 ledger after abstract screening | the E4 abstract decisions |
+| E6 | Codex | the better mode from E4/E5 on ER plus one project | Codex install |
+
+**Revised design (2026-10-01).** Every project runs in full text (E4), and every project
+with Pondie records runs again in records mode (E5). The mode is then compared within
+each project, and each project has four arms when the traditional harness's
+`pondie-text` and `pondie-records` runs are counted. Emotion regulation already has both
+skills arms: the first run (full text) and E1 (records).
+- **Shared abstract decisions.** E5 copies the E4 ledger after abstract screening. The
+  criteria hash is the same, so the ledger keeps those decisions and the two arms
+  differ only from full-text screening onward. Record the source ledger and its commit
+  in the E5 run notes.
+- **Coverage rule.** Records exist only for autonima's abstract passes. Score each E5
+  arm two ways: over all its abstract passes, where a study without a record counts as
+  a miss, and over the studies that have a record. Report cue_reactivity only the
+  second way, because its coverage is biased (79% of gold, 46% of other candidates).
+- **After each run:** score with `scripts/score_cbma_review.py`, audit with
+  `benchmark/audit_transcripts.py`, and record the NiMARE version and per-role effort.
+  The repeatability re-run (protocol step 6) follows per project.
 
 **Deferred.**
 - **Re-gathering ER with the parser fixes:** only if full text stays in production.
@@ -249,8 +266,8 @@ and the user accepted both as judged:
 - **Upstream (Pondie):** fix record completeness (whole-brain analyses reported
   alongside ROI ones, scope labels, stubs, unresolved coordinate links) before
   records mode can match full text.
-- **E3 interacts with this:** relaxing the whole-brain criterion would hide the
-  scope-label defect rather than fix it.
+- **Not a criteria change (2026-10-01):** relaxing the whole-brain criterion (the old E3)
+  is dropped. It would hide the scope-label defect rather than fix it.
 
 ## Notes for future skill development (2026-09-30)
 
