@@ -41,6 +41,9 @@ from collections import Counter
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import trim  # noqa: E402
+
 STAGES = ["abstract", "fulltext", "extraction", "selection"]
 SKILLS_ROOT = Path(__file__).resolve().parents[2]
 STAGE_SKILL = {
@@ -123,11 +126,14 @@ def load_spec(review: Path) -> dict:
     return spec
 
 
+# What a full-text judge reads: the whole normalized text, or the trimmed view (trim.py).
+FULLTEXT_VIEWS = {"full", "trimmed"}
+
 _ALLOWED = {
     "": {"name", "objective", "search", "screening", "fulltext", "extraction", "selection", "meta", "notes"},
     "search": {"query", "date_from", "date_to", "pmids", "pmids_file", "email"},
     "screening": {"abstract", "fulltext"},
-    "screening.stage": {"inclusion", "exclusion", "instructions", "select_analyses", "objective"},
+    "screening.stage": {"inclusion", "exclusion", "instructions", "select_analyses", "objective", "text"},
     "fulltext": {"sources"},
     "extraction": {"drop_unverified", "instructions", "records"},
     "selection": {"global", "targets", "instructions"},
@@ -164,6 +170,10 @@ def validate_spec(spec: dict) -> None:
         _check_keys(block, "screening.stage", f"screening.{stage}")
         if not block.get("inclusion"):
             raise LedgerError(f"screening.{stage}.inclusion needs at least one criterion")
+    if "text" in (screening.get("abstract") or {}):
+        raise LedgerError("text belongs to screening.fulltext, not screening.abstract")
+    if (screening.get("fulltext") or {}).get("text", "full") not in FULLTEXT_VIEWS:
+        raise LedgerError(f"screening.fulltext.text must be one of {sorted(FULLTEXT_VIEWS)}")
     if (screening.get("abstract") or {}).get("select_analyses"):
         raise LedgerError("select_analyses belongs to screening.fulltext, not screening.abstract")
     ft = screening.get("fulltext") or {}
@@ -247,6 +257,7 @@ class Review:
         # target at once. Both stages then share one hash, over both criteria sets and all
         # three skill files, so each decision records that it was made this way.
         self.combined = bool((self.spec["screening"]["fulltext"] or {}).get("select_analyses"))
+        self.fulltext_view = (self.spec["screening"]["fulltext"] or {}).get("text", "full")
         if self.combined:
             path = SKILLS_ROOT / COMBINED_SKILL / "SKILL.md"
             payload = {"combined": True, "fulltext": self.criteria["fulltext"]["payload"],
@@ -278,6 +289,10 @@ class Review:
             tables = sorted(
                 json.loads(p.read_text())["content_sha256"] for p in (self.doc_dir(pmid) / "tables").glob("*.json")
             )
+            if stage == "fulltext" and self.fulltext_view == "trimmed":
+                # The judge reads a different text, so a decision made on the other view is
+                # not current. A full-text review keeps the hash it always had.
+                return sha([meta["text_sha256"], tables, "trimmed", trim.TRIM_VERSION])
             return sha([meta["text_sha256"], tables])
         if stage == "selection":
             path = self.root / "analyses" / f"{pmid}.json"
@@ -389,7 +404,7 @@ def _abstract_item(rv: Review, pmid: str) -> dict:
 def _fulltext_item(rv: Review, pmid: str) -> dict:
     d = rv.doc_dir(pmid)
     meta = json.loads((d / "meta.json").read_text())
-    return {
+    item = {
         "pmid": pmid,
         "title": rv.records.get(pmid, {}).get("title") or meta.get("title"),
         "text_file": str(d / "text.md"),
@@ -398,6 +413,12 @@ def _fulltext_item(rv: Review, pmid: str) -> dict:
         "text_flagged_incomplete": not meta["complete"],
         "incomplete_reason": meta.get("incomplete_reason"),
     }
+    if rv.fulltext_view == "trimmed":
+        path, info = trim.write_trimmed(d)
+        item.update(text_file=str(path), full_text_file=str(d / "text.md"), text_view=info["view"])
+        if info.get("fallback"):
+            item["trim_fallback"] = info["fallback"]
+    return item
 
 
 def _extraction_item(rv: Review, pmid: str) -> dict:
@@ -820,6 +841,7 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
                 row = dict(base, pmid=pmid, input_hash=batch["_input_hashes"][pmid],
                            decision=decision, criteria=rec["criteria"], reason=rec["reason"].strip(),
                            **({"evidence": rec.get("evidence")} if stage == "fulltext" else {}),
+                           **({"text_view": items[pmid]["text_view"]} if items[pmid].get("text_view") else {}),
                            **({"model": rec["model"]} if rec.get("model") else {}), **flags)
                 accepted_rows.append(row)
                 if sel_rows:
@@ -1037,6 +1059,8 @@ def cmd_status(rv: Review) -> dict:
         "fulltext_screening": {"screened": sum(f.values()), "include": f["include"], "exclude": f["exclude"],
                                "text_incomplete": f["incomplete"], "pending": len(rv.pending("fulltext")),
                                "decisions_with_ungrounded_evidence": ungrounded,
+                               **({"text_view": dict(Counter(r.get("text_view", "full") for r in f_dec.values()))}
+                                  if rv.fulltext_view != "full" else {}),
                                **({"excluded_no_eligible_analysis": no_eligible} if rv.combined else {})},
         "extraction": ext,
         "selection": {"pending_studies": len(rv.pending("selection")), "targets": targets},

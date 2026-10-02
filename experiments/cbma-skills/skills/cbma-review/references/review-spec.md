@@ -35,6 +35,7 @@ screening:
       - ROI-only analyses without whole-brain coordinates
       - Sample overlaps with a larger included study from the same group (flag, do not guess)
     instructions: ""
+    text: full                  # full (default) | trimmed: see "Trimmed full text" below
 
 fulltext:
   sources:                      # tried in order; the first complete document wins
@@ -75,6 +76,32 @@ meta:
   estimator_args: {}
   corrector_args: {}
 ```
+
+## Trimmed full text
+
+With `screening.fulltext.text: trimmed`, full-text judges read a shorter view of each
+paper instead of the whole normalized text. `scripts/trim.py` builds it, deterministically,
+from the document's headings:
+- the title and the abstract;
+- every methods section, in full;
+- each results heading with its first paragraph;
+- every table (label, caption, footer and cells), duplicates left out.
+
+A note at the top lists the omitted sections. About half the text survives (a median 49%
+over 1,802 documents from five reviews).
+
+- **Fallback:** when no methods heading is found, or the methods are under 3% or over 70%
+  of the text, the judge reads the full text and the item records `trim_fallback`. This
+  covers about 4% of documents: short reports without sections, landing pages, and
+  abstract-only texts.
+- **Provenance:** each full-text decision records `text_view` (`trimmed` or `full`), and
+  `status` counts them. Evidence quotes are checked against the text the judge read.
+- **Hashes:** the trimmed view and its version are part of the full-text input hash, so
+  switching the setting, or a new trim version, reopens full-text decisions. With the
+  default, `full`, hashes are unchanged.
+- **Scope:** full-text screening only. Extraction and selection still read the whole text.
+- **Preview:** `python scripts/trim.py REVIEW` reports how much each source would be cut;
+  `--pmid PMID` prints one document's trimmed view.
 
 ## Records mode
 

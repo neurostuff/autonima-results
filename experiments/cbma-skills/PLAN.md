@@ -514,7 +514,11 @@ in a recorded protocol revision (the parked draft); package items are code chang
     Sonnet) for abstract and extraction. Haiku judges for every stage are being tested
     end to end on vbm_of_ptsd (2026-10-01: `~/repos/cbma-workspaces/haiku/`, orchestrator
     and runners on Opus).
-16. **Less text per full-text paper (vision; not scheduled).** Full-text judges read two
+16. **Less text per full-text paper.** Implemented 2026-10-01 as
+    `screening.fulltext.text: trimmed` (off by default; see review-spec "Trimmed full
+    text"): abstract, methods in full, results headings with their first paragraph, all
+    tables. A median 49% of the text survives; 4% of documents fall back to full text.
+    Next: an arm that tests it against full-text decisions. Original note: Full-text judges read two
     whole papers each; on Opus that made a 1,291-paper queue (executive_function)
     unaffordable. Most criteria an abstract leaves unclear are about the method (task
     fMRI of the right paradigm, whole-brain VBM), which the methods section alone answers.
