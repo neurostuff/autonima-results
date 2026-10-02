@@ -195,7 +195,7 @@ normalized full text.
 | ~~E3~~ | ~~whole-brain criterion (ER)~~ | dropped (2026-10-01): the scope problem is in the record schema, and is fixed there | |
 | E4 | full text, every project | "best" config tier, full-text mode, all eight remaining projects: vbm_of_ptsd, vbm_of_substance_use, dementia, cue_reactivity, decision_making, executive_function, problem_solving, social (about 1.2B tokens for the last four) | full-text sources per project |
 | E5 | records, every project that has them | the same review.yaml in records mode, for vbm_of_ptsd, vbm_of_substance_use, dementia and cue_reactivity; starts from a copy of the E4 ledger after abstract screening | the E4 abstract decisions |
-| E6 | Codex | the better mode from E4/E5 on ER plus one project | Codex install |
+| E6 | Codex | full-text mode on all nine projects, with screening on GPT-6-Luna and orchestration on GPT-6-Astra | isolated Codex workspace and Codex transcript audit |
 
 **Revised design (2026-10-01).** Every project runs in full text (E4), and every project
 with Pondie records runs again in records mode (E5). The mode is then compared within
@@ -213,6 +213,23 @@ skills arms: the first run (full text) and E1 (records).
 - **After each run:** score with `scripts/score_cbma_review.py`, audit with
   `benchmark/audit_transcripts.py`, and record the NiMARE version and per-role effort.
   The repeatability re-run (protocol step 6) follows per project.
+
+**E6 Codex scope (2026-10-01).** The Codex arm now covers full-text mode for all nine
+projects. Full-text is the manuscript comparison; records mode remains an exploratory
+deployment experiment and is not part of the planned manuscript results. The arm uses
+the same skill files, snapshotted at commit
+`f3a68422262350ee3ddcc36fc89f416695f10d10`, across all projects. GPT-6-Luna judges
+abstract and full-text screening (low and medium effort respectively); GPT-6-Astra
+handles extraction and selection (low and medium effort) and orchestration (high
+effort). Each project has its own workspace under
+`/home/zorro/repos/cbma-workspace-e6-codex/projects/`, with a local copy of the same
+skills snapshot. These separate folders still need an OS/container boundary that hides
+the gold before Codex judgments begin. The Codex CLI was present at version
+`0.155.0-alpha.16.3` during setup. A separate Codex CLI log reader is now available at
+`benchmark/audit_codex_transcripts.py`; it filters session logs by project workspace,
+summarizes recorded model usage, and flags tool calls mentioning forbidden paths. Its
+direct-write checks are preliminary and should be reviewed manually; the Claude audit
+remains the more mature rules audit.
 
 **Deferred.**
 - **Re-gathering ER with the parser fixes:** only if full text stays in production.
@@ -494,7 +511,25 @@ in a recorded protocol revision (the parked draft); package items are code chang
 11. **Skip studies whose record has no analysis with points,** if maps are the goal.
     About 30% of full-text judging in records mode; PRISMA completeness suffers.
 12. **Abstract batches of 50,** shorter reason limits, and smaller models (Haiku or
-    Sonnet) for abstract and extraction.
+    Sonnet) for abstract and extraction. Haiku judges for every stage are being tested
+    end to end on vbm_of_ptsd (2026-10-01: `~/repos/cbma-workspaces/haiku/`, orchestrator
+    and runners on Opus).
+16. **Less text per full-text paper (vision; not scheduled).** Full-text judges read two
+    whole papers each; on Opus that made a 1,291-paper queue (executive_function)
+    unaffordable. Most criteria an abstract leaves unclear are about the method (task
+    fMRI of the right paradigm, whole-brain VBM), which the methods section alone answers.
+    Options: send methods plus tables only, or a cheap check of just the criterion the
+    abstract left unclear. Changes what judges see, so it needs its own E0-style
+    agreement test before use.
+17. **Abstract-uncertain studies are half the full-text work for a tenth of the
+    includes** (2026-10-01, five Opus runs): 811 of 1,736 full-text judgements, 84 of 567
+    includes, 34 of 266 gold kept at full text. Outside dementia only 7 gold came this way;
+    in dementia 27 of 58, because its abstracts omit diagnosis details and whether the
+    analysis was VBM. "Uncertain" is derived from the criteria (an inclusion criterion
+    `unclear`, nothing failed), not from judge confidence, and missing abstracts explain
+    almost none of it (18 of 950, none later included). So a project-wide rule to drop
+    uncertain studies would cost dementia-like projects real recall; route them through a
+    cheaper path instead (Haiku judges, or item 16).
 
 **Guardrails and provenance**
 13. **`ledger.py revise`:** versioned protocol snapshots with reason and author, a
