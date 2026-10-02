@@ -1,0 +1,196 @@
+"""run_stage.py: the scripted judge loop, with a fake claude CLI."""
+
+import importlib.util
+import json
+import os
+import shutil
+import socket
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SKILLS = ROOT / "skills"
+FIX = Path(__file__).parent / "fixtures"
+
+
+def load(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+pubmed = load("pubmed_search", SKILLS / "pubmed-search/scripts/pubmed_search.py")
+ledger = load("ledger", SKILLS / "cbma-review/scripts/ledger.py")
+run_stage = load("run_stage", SKILLS / "cbma-review/scripts/run_stage.py")
+
+FAKE_CLAUDE = r'''
+import json, re, sys
+args = sys.argv[1:]
+prompt = args[args.index("--") + 1]
+agent = args[args.index("--agent") + 1]
+open(sys.argv[0] + ".calls", "a").write(json.dumps({"agent": agent, "prompt": prompt, "argv": args[:args.index("--")]}) + "\n")
+batch = json.load(open(re.search(r"Your batch file is `([^`]+)`", prompt).group(1)))
+open(batch["output"], "w").write("".join(json.dumps({
+    "pmid": it["pmid"], "decision": "uncertain", "reason": "fake",
+    "criteria": {k: "unclear" for k in batch["criteria"]}}) + "\n" for it in batch["items"]))
+print(json.dumps({"result": str(len(batch["items"])), "total_cost_usd": 0.01,
+                  "usage": {"input_tokens": 3, "cache_read_input_tokens": 1000, "output_tokens": 50}}))
+'''
+
+
+def test_run_stage_dispatches_fixed_prompts_to_the_judge_agent(tmp_path, capsys, monkeypatch):
+    ws = tmp_path / "ws"
+    rv = ws / "review"
+    (rv / "search").mkdir(parents=True)
+    (rv / "review.yaml").write_text("""
+objective: test
+search: {query: q}
+screening:
+  abstract: {inclusion: [Human participants]}
+  fulltext: {inclusion: [Whole brain]}
+""")
+    recs = pubmed.parse_pubmed_xml((FIX / "pubmed_efetch.xml").read_bytes())
+    (rv / "search" / "records.jsonl").write_text("".join(json.dumps(r) + "\n" for r in recs))
+    shutil.copytree(ROOT / "agents", ws / ".claude" / "agents")
+    fake = tmp_path / "fake_claude.py"
+    fake.write_text(FAKE_CLAUDE)
+    monkeypatch.chdir(ws)
+    code = run_stage.main([str(rv), "--stage", "abstract", "--model", "m1", "--size", "2",
+                           "--claude", f"{sys.executable} {fake}"])
+    summary = json.loads(capsys.readouterr().out)
+    assert code == 0 and summary["done"] and summary["pending"] == 0
+    assert summary["accepted"] == 3 and summary["agent"] == "claude-code/m1/effort-low"
+    assert summary["usage"]["judges"] == 2 and summary["usage"]["cache_read_input_tokens"] == 2000
+    calls = [json.loads(line) for line in open(f"{fake}.calls")]
+    assert {c["agent"] for c in calls} == {"cbma-abstract-screener"}
+    # frontmatter does not reach a headless --agent session: effort and skill go as flags
+    for c in calls:
+        argv = c["argv"]
+        assert argv[argv.index("--effort") + 1] == "low"
+        assert argv[argv.index("--append-system-prompt-file") + 1].endswith("screen-studies/SKILL.md")
+    assert all(run_stage.PROMPT.split("`{batch}`")[0] in c["prompt"] and "lenient" not in c["prompt"] for c in calls)
+    decisions = [json.loads(line) for line in open(rv / "decisions" / "abstract.jsonl")]
+    assert {d["agent"] for d in decisions} == {"claude-code/m1/effort-low"}
+    assert not list((rv / "work" / "abstract").glob("batch_*.judge.json"))      # logs archived with batches
+    assert len(list((rv / "work" / "abstract" / "done").glob("*.judge.json"))) == 2
+
+
+def test_a_pilot_limit_holds_across_rounds(tmp_path, capsys, monkeypatch):
+    ws = tmp_path / "ws"
+    rv = ws / "review"
+    (rv / "search").mkdir(parents=True)
+    (rv / "review.yaml").write_text("objective: t\nsearch: {query: q}\nscreening:\n  abstract: {inclusion: [H]}\n"
+                                    "  fulltext: {inclusion: [W]}\n")
+    recs = pubmed.parse_pubmed_xml((FIX / "pubmed_efetch.xml").read_bytes())
+    (rv / "search" / "records.jsonl").write_text("".join(json.dumps(r) + "\n" for r in recs))
+    shutil.copytree(ROOT / "agents", ws / ".claude" / "agents")
+    fake = tmp_path / "fake_claude.py"
+    fake.write_text(FAKE_CLAUDE)
+    monkeypatch.chdir(ws)
+    run_stage.main([str(rv), "--stage", "abstract", "--model", "m1", "--size", "1", "--limit", "1",
+                    "--claude", f"{sys.executable} {fake}"])
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["accepted"] == 1 and summary["pending"] == 2 and summary["done"]
+
+
+def workspace(tmp_path):
+    """A workspace with three abstract records pending and a fake claude CLI."""
+    ws = tmp_path / "ws"
+    rv = ws / "review"
+    (rv / "search").mkdir(parents=True)
+    (rv / "review.yaml").write_text("objective: t\nsearch: {query: q}\nscreening:\n  abstract: {inclusion: [H]}\n"
+                                    "  fulltext: {inclusion: [W]}\n")
+    recs = pubmed.parse_pubmed_xml((FIX / "pubmed_efetch.xml").read_bytes())
+    (rv / "search" / "records.jsonl").write_text("".join(json.dumps(r) + "\n" for r in recs))
+    shutil.copytree(ROOT / "agents", ws / ".claude" / "agents")
+    fake = tmp_path / "fake_claude.py"
+    fake.write_text(FAKE_CLAUDE)
+    return ws, rv, fake
+
+
+def test_a_leftover_judge_log_is_not_mistaken_for_a_batch(tmp_path, capsys, monkeypatch):
+    """A judge writes its log before its output. A process that dies in between leaves
+    batch_NNNN.judge.json beside a batch_NNNN.json whose output is still missing, so the log
+    survives ingest's cleanup. A bare batch_*.json glob matched the log, and the next call tried
+    to judge it: KeyError: 'skill' (executive_function)."""
+    ws, rv, fake = workspace(tmp_path)
+    ledger.cmd_batches(ledger.Review(rv), "abstract", 2, None, discard=False)
+    work = rv / "work" / "abstract"
+    batch = sorted(work.glob("batch_*.json"))[0]                     # no log beside it yet
+    log = batch.with_suffix(".judge.json")                           # its own log, output not yet written
+    log.write_text(json.dumps({"usage": {"input_tokens": 7}, "total_cost_usd": 0.5}))
+    monkeypatch.chdir(ws)
+    code = run_stage.main([str(rv), "--stage", "abstract", "--model", "m1", "--size", "2",
+                           "--claude", f"{sys.executable} {fake}"])
+    summary = json.loads(capsys.readouterr().out)
+    assert code == 0 and summary["done"] and summary["accepted"] == 3
+    judged = [json.loads(line)["prompt"] for line in open(f"{fake}.calls")]
+    assert not any(".judge.json" in prompt for prompt in judged)     # no judge was sent a log to judge
+    assert len(list((work / "done").glob("*.judge.json"))) >= 1      # the log is kept, with its usage
+
+
+def test_rebatching_archives_a_leftover_judge_log_rather_than_deleting_it(tmp_path):
+    """`batches` wipes the work folder with a batch_* glob, which deleted the judges' logs and
+    the token usage they record. They belong in done/ with the rest of the run's accounting."""
+    ws, rv, _ = workspace(tmp_path)
+    ledger.cmd_batches(ledger.Review(rv), "abstract", 2, None, discard=False)
+    work = rv / "work" / "abstract"
+    log = work / "batch_0000.judge.json"
+    log.write_text(json.dumps({"usage": {"input_tokens": 7}, "total_cost_usd": 0.5}))
+    ledger.cmd_batches(ledger.Review(rv), "abstract", 2, None, discard=True)
+    assert not log.exists()
+    archived = list((work / "done").glob("*batch_0000.judge.json"))
+    assert len(archived) == 1
+    assert json.loads(archived[0].read_text())["total_cost_usd"] == 0.5
+
+
+def test_a_second_process_will_not_work_a_locked_stage(tmp_path, capsys, monkeypatch):
+    """A runner stopped by a usage limit leaves its run_stage.py running. A second call on the
+    same stage must refuse rather than judge the same records alongside it."""
+    ws, rv, fake = workspace(tmp_path)
+    work = rv / "work" / "abstract"
+    work.mkdir(parents=True)
+    (work / "run_stage.lock").write_text(json.dumps({"host": socket.gethostname(), "pid": os.getpid(),
+                                                     "stage": "abstract", "started": "now"}))
+    monkeypatch.chdir(ws)
+    code = run_stage.main([str(rv), "--stage", "abstract", "--model", "m1", "--size", "2",
+                           "--claude", f"{sys.executable} {fake}"])
+    out = json.loads(capsys.readouterr().out)
+    assert code == 4 and out["stage_busy"]["pid"] == os.getpid()
+    assert not (rv / "decisions" / "abstract.jsonl").exists()        # nothing was judged
+    assert not os.path.exists(f"{fake}.calls")
+    assert (work / "run_stage.lock").exists()                        # the holder's lock is untouched
+
+
+def test_a_lock_left_by_a_dead_process_is_taken_over(tmp_path, capsys, monkeypatch):
+    ws, rv, fake = workspace(tmp_path)
+    work = rv / "work" / "abstract"
+    work.mkdir(parents=True)
+    dead = subprocess.Popen([sys.executable, "-c", ""])
+    dead.wait()                                                      # a pid that is gone and reaped
+    (work / "run_stage.lock").write_text(json.dumps({"host": socket.gethostname(), "pid": dead.pid,
+                                                     "stage": "abstract", "started": "earlier"}))
+    monkeypatch.chdir(ws)
+    code = run_stage.main([str(rv), "--stage", "abstract", "--model", "m1", "--size", "2",
+                           "--claude", f"{sys.executable} {fake}"])
+    summary = json.loads(capsys.readouterr().out)
+    assert code == 0 and summary["accepted"] == 3
+    assert summary["took_over_lock_from"]["pid"] == dead.pid         # and says so, for the run notes
+    assert not (work / "run_stage.lock").exists()                    # released on the way out
+
+
+def test_the_lock_is_claimed_atomically(tmp_path):
+    """Two processes starting at the same moment must not both claim the stage, so the claim is
+    an exclusive create rather than a check followed by a write."""
+    work = tmp_path / "work" / "abstract"
+    path, stale = run_stage.take_lock(work, "abstract")
+    assert stale is None and json.loads(path.read_text())["pid"] == os.getpid()
+    try:
+        run_stage.take_lock(work, "abstract")                        # a second claim, lock still held
+    except run_stage.StageBusy as exc:
+        assert exc.args[0]["pid"] == os.getpid()
+    else:
+        raise AssertionError("the second claim should have been refused")

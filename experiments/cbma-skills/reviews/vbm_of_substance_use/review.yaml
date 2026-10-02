@@ -1,0 +1,133 @@
+# VBM of substance use (Hill-Bowen et al. 2022), cbma-skills arm.
+#
+# Translated from the autonima config for this project's v2 run, the registry's "best"
+# (GPT-reviewed criteria; see run_categories.yaml). The objective, the query, the date limit and
+# every criterion are the same strings after YAML parsing; scripts/check_cbma_translation.py
+# checks that. Three lines that v2 lists as criteria are guidance rather than properties of a
+# study or analysis, so they sit verbatim in instructions:
+#   - full-text I3, a permission (results may be in tables, figures or supplements);
+#   - full-text I4, which says missing reporting details "alone should not exclude";
+#   - global annotation I3, the rule for several experiments from one article (shared control
+#     group, non-overlapping user groups). A judgment call: it governs how a paper's analyses
+#     relate, not a property one analysis has, and as a criterion a single-experiment study
+#     would have to mark it met.
+# Full-text sources are the corpora autonima's run used (PMC, then the Elsevier and ACE corpora).
+# Meta-analysis: MKDA density with FDR. The benchmark excludes the cannabis, opioids and
+# stimulants columns from scoring (scripts/benchmark_exclusions.py); they are still selected.
+
+name: vbm_of_substance_use
+objective: 'identify consistent regions of structurally altered grey matter (GM) between substance users
+  and controls across five pharmacological classes of drugs: alcohol, nicotine, opioids, cannabis, and
+  stimulants.'
+search:
+  query: (("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab] OR "grey matter
+    volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab] OR "cortical thickness"[tiab]
+    OR "gray matter reduc*"[tiab] OR "grey matter reduc*"[tiab] OR "gray matter abnormal*"[tiab] OR "grey
+    matter abnormal*"[tiab] OR "reduced gray matter"[tiab] OR "reduced grey matter"[tiab] OR "tensor-based
+    morphometr*"[tiab] OR "brain volumetric"[tiab] OR "brain morphometr*"[tiab]) AND ("Substance-Related
+    Disorders"[Mesh] OR addiction[tiab] OR addict*[tiab] OR "substance use"[tiab] OR "substance abuse"[tiab]
+    OR alcoholism[tiab] OR "alcohol depend*"[tiab] OR "alcohol use disorder*"[tiab] OR "alcohol abuse"[tiab]
+    OR smoker*[tiab] OR "nicotine depend*"[tiab] OR "cannabis use"[tiab] OR "cannabis depend*"[tiab] OR
+    "marijuana use"[tiab] OR "cocaine depend*"[tiab] OR "cocaine use"[tiab] OR "methamphetamine depend*"[tiab]
+    OR "heroin depend*"[tiab] OR "opioid use disorder*"[tiab] OR "betel quid"[tiab] OR psychedelic*[tiab]
+    OR stimulant*[tiab] OR amphetamine*[tiab])) NOT (Editorial[pt] OR Letter[pt] OR Comment[pt] OR "Case
+    Reports"[pt] OR News[pt])
+  date_to: 2019/7/31
+  email: delavega@utexas.edu
+screening:
+  abstract:
+    inclusion:
+    - Empirical English language MRI studies assessing grey matter (GM) volume differences between substance
+      users and controls
+    exclusion:
+    - Studies using pharmacological manipulations
+    - Brain lesion studies
+    - Studies including participants with reports of mental and/or neurological disorders
+    - Systematic reviews or meta-analyses
+  fulltext:
+    inclusion:
+    - Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume,
+      density, or concentration) between substance users and controls
+    - Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance
+      users vs controls comparing GM volume
+    exclusion:
+    - Studies that report only region-of-interest (ROI) analyses with no qualifying whole-brain results.
+    - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original
+      human structural MRI data.
+    instructions: 'It is acceptable for qualifying voxelwise results to be reported in tables of coordinates,
+      figures, or supplementary materials when the main text clearly indicates those results are available.
+
+      Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical
+      software is preferred; missing one or more of these details alone should not exclude an otherwise
+      qualifying study.'
+fulltext:
+  sources:
+  - type: pmc
+  - type: local
+    name: elsevier_xml
+    path: ../corpora/elsevier_output
+    pattern: '*/article.xml'
+    id_from: parent_dir
+    id_kind: pmid
+    format: elsevier
+  - type: local
+    name: ace_html
+    path: ../corpora/ace_html
+    pattern: '**/*.html'
+    id_from: filename
+    id_kind: pmid
+    format: html
+extraction:
+  drop_unverified: true
+selection:
+  global:
+    inclusion:
+    - Voxelwise whole-brain grey matter comparison between substance users and controls, with a users
+      < controls contrast indicating reduced grey matter in substance users.
+    - Must be a voxelwise whole brain analysis of grey matter volume
+    exclusion:
+    - Region of interest (ROI) or small volume correction (SVC) analyses
+    - Analyses other than substance users < controls (e.g., user > control contrasts)
+    - Analyses of other modalities (e.g., functional MRI, diffusion tensor imaging) or other structural
+      measures
+  instructions: Multiple experiments from the same article may be included only when they share the same
+    control group but involve non-overlapping substance-user groups. For example, moderate smoker<control,
+    and separately severe smoker<control include two different samples of cigarette smokers.
+  targets:
+  - name: all_drug_classes
+    description: convergent lower GM common across all substances
+    inclusion:
+    - Comparison of drug users of any class to controls
+  - name: alcohol
+    description: lower GM in alcohol users relative to controls
+    inclusion:
+    - Comparison of alcohol users to controls
+    exclusion:
+    - Comparison of users of other drug classes to controls
+  - name: nicotine
+    description: lower GM in nicotine users relative to controls
+    inclusion:
+    - Comparison of nicotine users to controls
+    exclusion:
+    - Comparison of users of other drug classes to controls
+  - name: opioids
+    description: lower GM in opioid users relative to controls
+    inclusion:
+    - Comparison of opioid users to controls
+    exclusion:
+    - Comparison of users of other drug classes to controls
+  - name: stimulants
+    description: lower GM in stimulant users relative to controls
+    inclusion:
+    - Comparison of stimulant users to controls
+    exclusion:
+    - Comparison of users of other drug classes to controls
+  - name: cannabis
+    description: lower GM in cannabis users relative to controls
+    inclusion:
+    - Comparison of cannabis users to controls
+    exclusion:
+    - Comparison of users of other drug classes to controls
+meta:
+  estimator: mkdadensity
+  corrector: fdr
