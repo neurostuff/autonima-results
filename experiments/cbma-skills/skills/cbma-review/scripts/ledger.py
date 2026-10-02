@@ -719,7 +719,7 @@ def validate_extraction(out: dict, item: dict, rv: Review) -> Tuple[List[str], O
 
 
 def _instr_flag(rec: dict) -> dict:
-    return {"excluded_by_instructions": True} if rec.get("excluded_by_instructions") else {}
+    return {k: True for k in ("excluded_by_instructions", "target_criteria_omitted") if rec.get(k)}
 
 
 def validate_selection(lines: List[dict], item: dict, targets: Dict[str, dict], global_ids: List[str],
@@ -737,7 +737,21 @@ def validate_selection(lines: List[dict], item: dict, targets: Dict[str, dict], 
         if not isinstance(rec.get("include"), bool):
             errs.append(f"{where} {key}: include must be true or false")
             continue
-        ids = global_ids + list(targets[key[1]]["criteria"])
+        crit = rec.get("criteria") if isinstance(rec.get("criteria"), dict) else {}
+        target_ids = list(targets[key[1]]["criteria"])
+        reported = [g for g in global_ids if g in crit] + [t for t in target_ids if t in crit]
+        clearly_failed = any(crit[k] == "met" for k in reported if re.match(r"G?E\d", k)) or \
+            any(crit[k] == "not_met" for k in reported if re.match(r"G?I\d", k))
+        omitted = [t for t in target_ids if t not in crit]
+        if rec.get("include") is False and clearly_failed and omitted:
+            # A clearly failed criterion (global, or one of the target's) decides the exclusion, so
+            # the target criteria left unstated cannot change it. Haiku judges stop at the first
+            # failure (vbm_of_substance_use, 989 records); accept the omission, flagged, rather than
+            # leave the study pending. Global criteria are still required: they are judged first.
+            ids = global_ids + [t for t in target_ids if t in crit]
+            rec = dict(rec, target_criteria_omitted=True)
+        else:
+            ids = global_ids + target_ids
         errs += _check_criteria(rec, ids, f"{where} {key}")
         if not isinstance(rec.get("reason"), str) or not rec["reason"].strip():
             errs.append(f"{where} {key}: reason is required")

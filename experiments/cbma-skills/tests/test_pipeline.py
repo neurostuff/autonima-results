@@ -480,3 +480,38 @@ def test_an_analysis_excluded_by_review_instructions_is_flagged_not_rejected():
     kept = dict(SEL_REC, include=True, reason="I1 met.")
     errs, recs = ledger.validate_selection([kept], SEL_ITEM, SEL_TARGETS, [], instructions="No overlap.")
     assert errs == [] and "excluded_by_instructions" not in recs[0]       # and an include is untouched
+
+
+def test_target_criteria_may_be_omitted_when_a_global_criterion_already_excludes():
+    """Haiku judges stop at a failed global criterion and leave the target's criteria out
+    (vbm_of_substance_use). The exclusion is decided either way, so accept it, flagged; but
+    only for a clear global failure, and never for an include."""
+    rec = {"analysis_id": "a1", "target": "patients_gt_controls", "include": False,
+           "criteria": {"GI1": "not_met"}, "reason": "Within-group longitudinal contrast (GI1 not met)."}
+    errs, recs = ledger.validate_selection([rec], SEL_ITEM, SEL_TARGETS, ["GI1"])
+    assert errs == [] and recs[0]["target_criteria_omitted"] is True
+
+    excl = dict(rec, criteria={"GI1": "met", "GE1": "met"})                 # a global exclusion met
+    errs, recs = ledger.validate_selection([excl], SEL_ITEM, SEL_TARGETS, ["GI1", "GE1"])
+    assert errs == [] and recs[0]["target_criteria_omitted"] is True
+
+    unclear = dict(rec, criteria={"GI1": "unclear"})                        # not a clear failure
+    errs, _ = ledger.validate_selection([unclear], SEL_ITEM, SEL_TARGETS, ["GI1"])
+    assert len(errs) == 1 and "criteria missing ['I1']" in errs[0]
+
+    include = dict(rec, include=True, criteria={"GI1": "met"}, reason="Patients > controls.")
+    errs, _ = ledger.validate_selection([include], SEL_ITEM, SEL_TARGETS, ["GI1"])
+    assert any("criteria missing ['I1']" in e for e in errs)
+
+    two = {"patients_gt_controls": {"description": None, "criteria": {"I1": "Patients > controls",
+                                                                      "E1": "Medicated patients"}}}
+    tfail = dict(rec, criteria={"GI1": "met", "I1": "not_met"})             # the target's own inclusion fails
+    errs, recs = ledger.validate_selection([tfail], SEL_ITEM, two, ["GI1"])
+    assert errs == [] and recs[0]["target_criteria_omitted"] is True
+    noglobal = dict(rec, criteria={"I1": "not_met"})                        # global IDs stay required
+    errs, _ = ledger.validate_selection([noglobal], SEL_ITEM, two, ["GI1"])
+    assert any("criteria missing ['GI1']" in e for e in errs)
+
+    full = dict(rec, criteria={"GI1": "not_met", "I1": "met"})              # a full record is untouched
+    errs, recs = ledger.validate_selection([full], SEL_ITEM, SEL_TARGETS, ["GI1"])
+    assert errs == [] and "target_criteria_omitted" not in recs[0]
