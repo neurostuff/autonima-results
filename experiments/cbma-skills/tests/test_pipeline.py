@@ -515,3 +515,25 @@ def test_target_criteria_may_be_omitted_when_a_global_criterion_already_excludes
     full = dict(rec, criteria={"GI1": "not_met", "I1": "met"})              # a full record is untouched
     errs, recs = ledger.validate_selection([full], SEL_ITEM, SEL_TARGETS, ["GI1"])
     assert errs == [] and "target_criteria_omitted" not in recs[0]
+
+
+def test_scoring_can_read_decisions_as_recorded_when_docs_did_not_travel(review):
+    """A review imported without docs/ (the Delta runs) cannot recompute input hashes, so
+    valid_decisions() drops every full-text decision and the scorer saw zero includes.
+    as_recorded keeps the latest decision under the current criteria; a criteria change
+    still makes a record stale."""
+    compare = load("compare", SKILLS.parent / "benchmark" / "compare.py")
+    run_ledger("init", review)
+    rv = ledger.Review(review)
+    pmid = next(iter(rv.records))
+    ft = rv.criteria["fulltext"]["hash"]
+    rows = [{"stage": "fulltext", "pmid": pmid, "criteria_hash": ft, "input_hash": "from-another-machine",
+             "decision": "exclude", "criteria": {}, "reason": "first"},
+            {"stage": "fulltext", "pmid": pmid, "criteria_hash": ft, "input_hash": "from-another-machine",
+             "decision": "include", "criteria": {}, "reason": "latest wins"},
+            {"stage": "fulltext", "pmid": "99999999", "criteria_hash": "an-older-protocol",
+             "input_hash": "x", "decision": "include", "criteria": {}, "reason": "stale criteria"}]
+    (review / "decisions" / "fulltext.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+    assert compare.skills_decisions(review)["fulltext_include"] == set()
+    recorded = compare.skills_decisions(review, as_recorded=True)
+    assert recorded["fulltext_include"] == {pmid} and recorded["fulltext_judged"] == {pmid}

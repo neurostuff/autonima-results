@@ -108,12 +108,30 @@ def z_from_p(p: np.ndarray) -> np.ndarray:
     return np.maximum(z, 0.0)
 
 
+def gold_map_dir(root: Path, name: str) -> Path:
+    """The expert map folder for a gold target. neurometabench spells some folders differently
+    from the annotation keys (social: "ALL-Merged" for all_merged), so fall back to a match that
+    ignores case and treats - and _ alike, but only when exactly one folder matches."""
+    exact = root / name
+    if exact.exists() or not root.exists():
+        return exact
+    norm = lambda x: x.lower().replace("-", "_")
+    hits = [d for d in root.iterdir() if d.is_dir() and norm(d.name) == norm(name)]
+    return hits[0] if len(hits) == 1 else exact
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--project", required=True)
     ap.add_argument("--review", type=Path, required=True)
     ap.add_argument("--autonima-run", required=True, help="run folder name under projects/<project>/")
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--meta-dir", action="append",
+                    help="folder under the review holding <target>/ map outputs, searched in the order given "
+                         "(default results/meta); runs that fit a subset copy keep maps elsewhere")
+    ap.add_argument("--decisions-as-recorded", action="store_true",
+                    help="score screening from the latest decision per study under the current criteria, "
+                         "skipping the input-hash check (for reviews imported without docs/)")
     args = ap.parse_args(argv)
 
     review = args.review.expanduser().resolve()
@@ -143,7 +161,10 @@ def main(argv=None) -> int:
 
     # ---- screening
     gold = compare.load_gold(gold_csv)
-    ours, theirs = compare.skills_decisions(review), compare.autonima_decisions(run)
+    ours = compare.skills_decisions(review, as_recorded=args.decisions_as_recorded)
+    theirs = compare.autonima_decisions(run)
+    report["screening_decisions"] = "as recorded (input hashes not checked)" if args.decisions_as_recorded \
+        else "current (criteria and input hashes checked)"
     report["screening"] = {"gold_final_includes": sum(1 for g in gold.values() if g.get("included")),
                            "cbma": compare.score(ours, gold), "autonima": compare.score(theirs, gold),
                            "agreement": {
@@ -220,7 +241,10 @@ def main(argv=None) -> int:
         return float(2 * (a & b).sum() / s) if s else 0.0
     maps = {}
     for t in scored:
-        m_dir, a_dir, c_dir = manual_maps / gold_name[t], run / "outputs" / "meta_analysis_results" / t, review / "results" / "meta" / t
+        # The review's maps: the first --meta-dir that holds this target (default results/meta).
+        c_dirs = [review / d / t for d in (args.meta_dir or ["results/meta"])]
+        c_dir = next((d for d in c_dirs if d.exists()), c_dirs[0])
+        m_dir, a_dir = gold_map_dir(manual_maps, gold_name[t]), run / "outputs" / "meta_analysis_results" / t
         missing = [str(d) for d in (m_dir, a_dir, c_dir) if not (d / "z_corr-FDR_method-indep.nii.gz").exists()]
         if missing:
             maps[t] = {"missing_maps": missing}

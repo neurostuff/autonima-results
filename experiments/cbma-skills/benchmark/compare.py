@@ -61,12 +61,29 @@ def read_jsonl(path: Path) -> List[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()] if path.exists() else []
 
 
-def skills_decisions(review: Path) -> dict:
+def recorded_decisions(rv, stage: str) -> dict:
+    """Latest record per study under the current criteria, without the input-hash check.
+
+    For reviews whose normalized texts (docs/) did not travel with them, such as runs done on
+    another machine: the ledger cannot recompute input hashes there, so valid_decisions() drops
+    every full-text decision. A criteria change still makes a record stale."""
+    import ledger  # noqa: E402  (on sys.path via skills_decisions)
+    current = rv.criteria[stage]["hash"]
+    path = rv.decisions_path(stage)
+    out = {}
+    for rec in (ledger.read_jsonl(path) if path.exists() else []):
+        if rec.get("criteria_hash") == current:
+            out[(rec["pmid"],)] = rec
+    return out
+
+
+def skills_decisions(review: Path, as_recorded: bool = False) -> dict:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "skills" / "cbma-review" / "scripts"))
     import ledger  # noqa: E402
     rv = ledger.Review(review)
-    abstract = {k[0]: r["decision"] for k, r in rv.valid_decisions("abstract").items()}
-    fulltext = {k[0]: r["decision"] for k, r in rv.valid_decisions("fulltext").items()}
+    pick = (lambda st: recorded_decisions(rv, st)) if as_recorded else rv.valid_decisions
+    abstract = {k[0]: r["decision"] for k, r in pick("abstract").items()}
+    fulltext = {k[0]: r["decision"] for k, r in pick("fulltext").items()}
     retrieval = {p: e["status"] for p, e in rv.fulltext_index.items()}
     return {"universe": set(rv.records), "abstract_pass": {p for p, d in abstract.items() if d != "exclude"},
             "abstract_judged": set(abstract), "fulltext_include": {p for p, d in fulltext.items() if d == "include"},
