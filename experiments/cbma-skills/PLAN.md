@@ -608,4 +608,6 @@ Caveats: Sol executive_function ran an amended full-text criterion (a protocol d
 recorded in the bundle); peak recall is over studies shared with gold, so it moves with the
 study set (Astra PTSD's 0.94 is over 12 studies); the Delta runs have no transcripts, so no
 blinding or token audit; most Delta reports note no formal stage audit. Not yet scored: Haiku
-emotion regulation; the Codex `e6-codex` and `e6-codex-luna` runs.
+emotion regulation; the Codex Luna 6 runs (`e6-codex-luna`). The original `e6-codex` runs
+(Luna screening, Astra extraction and selection) match none of the compared arms and were
+archived on 2026-10-05 (`~/repos/cbma-workspaces/_archive/e6-codex`).
