@@ -543,3 +543,69 @@ in a recorded protocol revision (the parked draft); package items are code chang
     in the revision.
 15. **Record the NiMARE version and the per-role effort** in the run notes
     automatically (the audit reports effort already).
+
+## Cross-arm results, full-text mode (2026-10-05)
+
+Every run scored with `scripts/score_cbma_review.py` against the gold standard and the
+autonima run its protocol translates (cue_reactivity v6, problem_solving v2, vbm_of_ptsd v1,
+vbm_of_substance_use v2, emotion_regulation_2022 v4, the others v3). Reports:
+`projects/<p>/reports/cbma_skills_{v1,haiku,delta_astra,delta_sol}/`.
+
+Arms:
+- **Opus** (`cbma-workspaces/main`): Claude Code, orchestrator, runners and judges on
+  claude-opus-5-5 (abstract and extraction low, full text and selection medium).
+- **Haiku** (`cbma-workspaces/haiku`): orchestrator and runners Opus, every judge
+  claude-haiku-4-5 (no effort setting).
+- **Astra** (Delta run of the `e6-codex-frontier-macos` bundle): Codex, gpt-6-astra max for
+  orchestration, screening and selection; gpt-5.6-luna low for extraction.
+- **Sol** (same bundle, `luna/`): gpt-6.1-sol medium orchestrates; every judge gpt-5.6-luna
+  (low, medium, low, medium). Delta runs are scored with `--decisions-as-recorded` (no `docs/`
+  in the package) and `--meta-dir` for their subset-fit maps; see the bundle's `IMPORT_NOTES.md`.
+
+Selection P / R and map r are means over the run's scored targets; the target sets can differ
+between arms (Astra substance use has 2 maps, nicotine fell below 10 studies).
+
+| project | arm | screen P | R | F1 | autonima F1 | peak recall (autonima) | sel P / R | maps | map r | autonima r |
+|---|---|---|---|---|---|---|---|---|---|---|
+| cue_reactivity | Astra | 0.31 | 0.71 | 0.43 | 0.38 | 0.57 (0.56) | 0.34 / 0.61 | 3 | 0.79 | 0.75 |
+| decision_making | Astra | 0.37 | 0.38 | 0.37 | 0.31 | 0.77 (0.77) | 0.17 / 0.19 | 3 | 0.50 | 0.57 |
+| decision_making | Sol | 0.32 | 0.49 | 0.39 | 0.31 | 0.81 (0.81) | 0.22 / 0.29 | 3 | 0.52 | 0.57 |
+| dementia | Astra | 0.47 | 0.76 | 0.58 | 0.55 | 0.57 (0.27) | 0.26 / 0.31 | 4 | 0.56 | 0.54 |
+| dementia | Sol | 0.49 | 0.76 | 0.60 | 0.55 | 0.35 (0.25) | 0.22 / 0.25 | 4 | 0.50 | 0.54 |
+| emotion_regulation_2022 | Astra | 0.42 | 0.72 | 0.53 | 0.37 | 0.56 (0.49) | 0.56 / 0.49 | 4 | 0.76 | 0.79 |
+| emotion_regulation_2022 | Opus | 0.49 | 0.75 | 0.59 | 0.37 | 0.48 (0.42) | 0.58 / 0.46 | 4 | 0.75 | 0.79 |
+| executive_function | Astra | 0.10 | 0.42 | 0.16 | 0.15 | 0.30 (0.23) | 0.15 / 0.28 | 4 | 0.73 | 0.78 |
+| executive_function | Sol | 0.09 | 0.33 | 0.15 | 0.15 | 0.37 (0.33) | 0.19 / 0.25 | 4 | 0.74 | 0.78 |
+| problem_solving | Astra | 0.25 | 0.59 | 0.35 | 0.37 | 0.57 (0.50) | 0.26 / 0.51 | 5 | 0.79 | 0.80 |
+| social | Astra | 0.45 | 0.83 | 0.58 | 0.57 | 0.64 (0.61) | 0.43 / 0.43 | 5 | 0.71 | 0.73 |
+| social | Sol | 0.42 | 0.82 | 0.55 | 0.57 | 0.76 (0.62) | 0.40 / 0.51 | 5 | 0.73 | 0.73 |
+| vbm_of_ptsd | Astra | 0.60 | 0.57 | 0.59 | 0.67 | 0.94 (0.65) | 0.67 / 0.36 | 1 | 0.75 | 0.76 |
+| vbm_of_ptsd | Opus | 0.57 | 0.57 | 0.57 | 0.67 | 0.67 (0.67) | 0.70 / 0.32 | 1 | 0.75 | 0.76 |
+| vbm_of_ptsd | Haiku | 0.52 | 0.71 | 0.60 | 0.67 | 0.60 (0.60) | 0.70 / 0.32 | 1 | 0.75 | 0.76 |
+| vbm_of_substance_use | Astra | 0.48 | 0.75 | 0.59 | 0.56 | 0.75 (0.73) | 0.79 / 0.45 | 2 | 0.75 | 0.69 |
+| vbm_of_substance_use | Opus | 0.52 | 0.73 | 0.61 | 0.56 | 0.73 (0.74) | 0.82 / 0.58 | 3 | 0.73 | 0.64 |
+| vbm_of_substance_use | Haiku | 0.40 | 0.77 | 0.53 | 0.56 | 0.71 (0.73) | 0.74 / 0.54 | 3 | 0.65 | 0.64 |
+
+Findings:
+- **Cheap judges match expensive ones on the Codex side.** Sol (Luna judges) and Astra (Astra
+  max) are within 0.03 screening F1 and 0.06 map r on all four shared projects.
+- **Haiku judges match Opus on a simple selection (PTSD) but not a crowded one (substance use):**
+  Haiku packed overlapping samples and correlation analyses into the targets (alcohol: 29
+  analyses from 18 studies against Opus's 15 from 15), so alcohol map r fell 0.80 to 0.66. Judge
+  cost was about half of Opus's in both (substance use $53 against $108; PTSD $7 against $14).
+  Candidate next arm: Haiku for abstract, full text and extraction, Opus for selection.
+- **Against autonima,** screening F1 is as good or better in 6 of 9 projects (emotion regulation
+  most: 0.53-0.59 against 0.37), and map r is within about ±0.07: higher in cue reactivity and
+  substance use, lower in decision making (0.50 against 0.57) and executive function (0.73
+  against 0.78).
+- **Codex Astra and Claude Opus agree closely** on the three projects both ran.
+- **The hard projects stay hard in every arm:** decision-making selection P/R about 0.2;
+  executive-function screening F1 about 0.15 for autonima and every skills arm.
+- Social maps are scored here for the first time in any arm (the gold folders are spelled
+  `ALL-Merged` and so on; the scorer now matches them).
+
+Caveats: Sol executive_function ran an amended full-text criterion (a protocol deviation,
+recorded in the bundle); peak recall is over studies shared with gold, so it moves with the
+study set (Astra PTSD's 0.94 is over 12 studies); the Delta runs have no transcripts, so no
+blinding or token audit; most Delta reports note no formal stage audit. Not yet scored: Haiku
+emotion regulation; the Codex `e6-codex` and `e6-codex-luna` runs.
