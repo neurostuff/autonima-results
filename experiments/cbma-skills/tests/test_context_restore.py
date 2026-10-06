@@ -87,3 +87,16 @@ def test_other_failures_and_invalid_ids_do_not_request_context(tmp_path):
     request(prepared, needed=False)
     request(prepared, pmid="unknown")
     assert not (path.parent / "context_requests").exists()
+
+
+def test_cli_warnings_are_not_judge_activity():
+    """Codex reports a routed model's missing metadata as an error item. It rejected every
+    API-routed attempt (250 complete answers) as tool use."""
+    warn = lambda m: {"type": "item.completed", "item": {"type": "error", "message": m}}
+    assert transport.cli_warning_event(warn(
+        "Model metadata for `@prefix/gpt-6-luna` not found. Defaulting to fallback metadata; "
+        "this can degrade performance and cause issues."))
+    assert transport.cli_warning_event(warn("Falling back from WebSockets to HTTPS transport. reason"))
+    assert not transport.cli_warning_event(warn("Model metadata for `x` not found. Also ran a command."))
+    assert not transport.cli_warning_event({"type": "item.completed", "item": {"type": "command_execution",
+                                                                               "message": "Falling back from WebSockets to HTTPS transport."}})

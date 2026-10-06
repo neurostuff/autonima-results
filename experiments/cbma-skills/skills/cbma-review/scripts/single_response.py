@@ -42,6 +42,17 @@ context_expansion is present, you already have that expansion: do not request it
 again. Resolve from supplied evidence or retain unsupported fields as unknown
 and unreadable tables as failed under the original skill rules.
 """
+COMPACT_SELECTION = """
+Compact selection format (this batch has selection_format "compact"): instead of one record
+per analysis x target, return one record per analysis: {"pmid", "analysis_id", "global":
+{every global criterion ID: state}, "global_reason", "targets": [...]}. Judge the global
+criteria first, as the skill says. If a global inclusion is not_met or a global exclusion is
+met, the analysis belongs to no target: give the deciding criterion in global_reason and
+return "targets": []. Otherwise return one entry per target, each {"target", "include",
+"criteria": {that target's own criterion IDs only}, "reason"}, judged exactly as the skill's
+per-target rules require; global_reason may then be "". The scientific rules are unchanged;
+only the shape of the reply differs, and Python expands it to the skill's per-target records.
+"""
 EXPECTED = {'abstract': {'screen-studies'}, 'fulltext': {'screen-studies', 'screen-and-select'},
             'extraction': {'extract-coordinates'}, 'selection': {'select-analyses'}}
 
@@ -80,8 +91,20 @@ def response_schema(batch):
             raise ValueError('selection batch has no targets')
         return variants[0] if len(variants) == 1 else {'anyOf': variants}
 
+    def compact_selection():
+        ids = batch.get('selection_criteria', batch['criteria'])
+        entries = [obj({'target': {'type': 'string', 'enum': [t]}, 'include': {'type': 'boolean'},
+                        'criteria': criteria(config['criteria']), 'reason': STRING})
+                   for t, config in batch['targets'].items()]
+        if not entries:
+            raise ValueError('selection batch has no targets')
+        return obj({'pmid': STRING, 'analysis_id': STRING, 'global': criteria(ids), 'global_reason': STRING,
+                    'targets': array(entries[0] if len(entries) == 1 else {'anyOf': entries})})
+
     stage = batch['stage']
-    if stage == 'extraction':
+    if stage == 'selection' and batch.get('selection_format') == 'compact':
+        record = compact_selection()
+    elif stage == 'extraction':
         point = obj({'xyz': {'type': 'array', 'items': {'type': 'number', 'minimum': -200, 'maximum': 200}, 'minItems': 3, 'maxItems': 3},
                      'space': SPACE, 'values': array(obj({
                          'kind': {'type': 'string', 'enum': ['z-statistic', 't-statistic', 'f-statistic',
@@ -108,6 +131,37 @@ def response_schema(batch):
     if stage == 'extraction':
         unresolved['context_needed'] = {'type': 'boolean'}
     return obj({'items': array(record), 'unresolved': array(obj(unresolved))})
+
+
+def cli_schema(batch):
+    """The schema handed to the Claude CLI's --json-schema: the strict schema, made easier to
+    satisfy in one try. The CLI gives the model another turn (and another thinking budget)
+    whenever an answer fails its schema; on the strict schema Haiku selection judges averaged
+    three turns, mostly for an empty "unresolved" list left out and for per-target anyOf
+    alternatives. So "unresolved" is optional, and each selection entry has one shape: the
+    target from an enum and its criteria as a map. save() still validates every answer against
+    the strict schema, and the ledger checks each target's criterion IDs, so a reply that is
+    only lenient-valid is rejected there and retried, never accepted."""
+    strict = response_schema(batch)
+    if batch['stage'] != 'selection':
+        out = copy.deepcopy(strict)
+        out['required'] = ['items']
+        return out
+    targets = list(batch['targets'])
+    target = {'type': 'string', 'enum': targets}
+    crit_map = {'type': 'object', 'additionalProperties': STATE}
+    ids = batch.get('selection_criteria', batch['criteria'])
+    global_ = obj({k: STATE for k in ids})
+    if batch.get('selection_format') == 'compact':
+        entry = obj({'target': target, 'include': {'type': 'boolean'}, 'criteria': crit_map, 'reason': STRING})
+        record = obj({'pmid': STRING, 'analysis_id': STRING, 'global': global_, 'global_reason': STRING,
+                      'targets': array(entry)})
+    else:
+        record = obj({'pmid': STRING, 'analysis_id': STRING, 'target': target, 'include': {'type': 'boolean'},
+                      'criteria': crit_map, 'reason': STRING})
+    return {'type': 'object', 'properties': {'items': array(record),
+                                             'unresolved': strict['properties']['unresolved']},
+            'required': ['items'], 'additionalProperties': False}
 
 
 def context_request_path(batch_path, batch, pmid):
@@ -168,7 +222,8 @@ def prepare(batch_path, skills_root):
         raise ValueError('output must remain inside stage work directory')
     names = [data['skill']] + (['screen-studies', 'select-analyses']
                               if data['skill'] == 'screen-and-select' else [])
-    system = ROLE + '\n\n' + '\n\n'.join(
+    system = ROLE + (COMPACT_SELECTION if stage == 'selection' and data.get('selection_format') == 'compact'
+                     else '') + '\n\n' + '\n\n'.join(
         f'## Scientific skill: {name}\n' + (Path(skills_root) / name / 'SKILL.md').read_text()
         for name in names)
     payload = {k: copy.deepcopy(v) for k, v in data.items()
@@ -264,6 +319,40 @@ def atomic_json(path, text):
         temporary.unlink(missing_ok=True)
 
 
+def _clear_global_failure(states):
+    return any((k.startswith('GI') and v == 'not_met') or (k.startswith('GE') and v == 'met')
+               for k, v in states.items())
+
+
+def expand_compact(batch, records):
+    """One compact record per analysis -> the skill's per-target records, for the ledger.
+
+    A clear global failure excludes the analysis from every target with the global criteria
+    and reason (the ledger accepts target criteria left out after a clear failure). Otherwise
+    each target needs its own entry, exactly once; a missing or repeated target is incomplete,
+    so the study stays pending rather than a decision being made up."""
+    targets = list(batch['targets'])
+    out = []
+    for rec in records:
+        globals_, given = rec['global'], rec['targets']
+        names = [t['target'] for t in given]
+        if _clear_global_failure(globals_) and not given:
+            if not rec['global_reason'].strip():
+                raise ValueError(f"{rec['analysis_id']}: global failure without a global_reason")
+            out += [{'pmid': rec['pmid'], 'analysis_id': rec['analysis_id'], 'target': t, 'include': False,
+                     'criteria': dict(globals_), 'reason': rec['global_reason']} for t in targets]
+            continue
+        if sorted(names) != sorted(targets) or len(set(names)) != len(names):
+            raise ValueError(f"{rec['analysis_id']}: compact record must give every target exactly once "
+                             "unless a global criterion clearly fails")
+        for t in given:
+            reason = t['reason'] if not rec['global_reason'].strip() else \
+                (rec['global_reason'] + ' ' + t['reason']).strip()
+            out.append({'pmid': rec['pmid'], 'analysis_id': rec['analysis_id'], 'target': t['target'],
+                        'include': t['include'], 'criteria': {**globals_, **t['criteria']}, 'reason': reason})
+    return out
+
+
 def save(prepared, response):
     """Recover valid complete studies from syntactically valid partial responses."""
     if not isinstance(response, dict) or set(response) != {'items', 'unresolved'} or not all(
@@ -303,6 +392,13 @@ def save(prepared, response):
         except ValueError as exc:
             invalid.add(pmid)
             issues.append(f'{pmid}: {exc}')
+    if stage == 'selection' and prepared['batch'].get('selection_format') == 'compact':
+        for pmid in list(groups):
+            try:
+                groups[pmid] = expand_compact(prepared['batch'], groups[pmid])
+            except ValueError as exc:
+                invalid.add(pmid)
+                issues.append(f'{pmid}: {exc}')
     rows = []
     inputs = {i['pmid']: i for i in prepared['batch']['items']}
     for pmid, study_rows in groups.items():
@@ -498,6 +594,23 @@ def parse_reply(text):
         return json.loads(fenced.group('body'))
 
 
+CLI_WARNINGS = (
+    # Transport fallback, reported as an error item even when HTTPS then completes.
+    re.compile(r'Falling back from WebSockets to HTTPS transport\..*', re.S),
+    # A routed model name (Portkey prefix) has no bundled metadata; the answer is unaffected.
+    re.compile(r'Model metadata for `[^`]+` not found\. Defaulting to fallback metadata;'
+               r' this can degrade performance and cause issues\.'),
+)
+
+
+def cli_warning_event(event):
+    """A Codex CLI warning item, not something the judge did. Every other non-message item
+    still rejects the attempt as tool use. The metadata warning rejected all 250 API-routed
+    attempts of the local Luna runs before it was listed."""
+    item = event.get('item', {})
+    return item.get('type') == 'error' and any(w.fullmatch(item.get('message', '')) for w in CLI_WARNINGS)
+
+
 def run_process(cmd, prompt, directory, env, timeout=None):
     """Stream CLI output to durable files, so timeouts/crashes retain received usage."""
     output = Path(directory) / ('events.jsonl' if env.get('CBMA_CODEX_BATCH_JUDGE') == '1' else 'cli_result.json')
@@ -535,7 +648,13 @@ def claude(prepared, command, model, effort, timeout, budget=None, directory=Non
     mcp.write_text('{"mcpServers": {}}')
     cmd = list(command) + ['-p', '--model', model, '--output-format', 'json',
         '--system-prompt-file', str(system), '--tools', '', '--strict-mcp-config',
-        '--mcp-config', str(mcp), '--max-turns', '1', '--settings', '{"disableAllHooks":true}']
+        '--mcp-config', str(mcp), '--max-turns', '4', '--settings', '{"disableAllHooks":true}',
+        # The CLI enforces the response schema and returns the answer in structured_output.
+        # It delivers that answer through an internal tool call and gives the model another
+        # turn when the answer fails the schema, so turns beyond the first are schema
+        # corrections; no other tool is available. Free-text replies broke parsing: Haiku fences its JSON,
+        # appends a count after it, or writes bare per-line records without the envelope.
+        '--json-schema', json.dumps(cli_schema(prepared['batch']), separators=(',', ':'))]
     if effort != 'default':
         cmd += ['--effort', effort]
     env = os.environ.copy()
@@ -560,9 +679,15 @@ def claude(prepared, command, model, effort, timeout, budget=None, directory=Non
         atomic_json(prepared['path'].with_suffix('.judge.json'), json.dumps(logged))
         if code or logged.get('is_error'):
             raise ValueError(((directory / 'stderr.txt').read_text() or str(logged.get('result', 'CLI failure')))[-500:])
-        if logged.get('num_turns') != 1:
-            raise ValueError('judge did not complete exactly one assistant turn')
-        response = parse_reply(logged['result'])
+        structured = logged.get('structured_output')
+        if isinstance(structured, dict):
+            # Valid for the lenient CLI schema; save() applies the strict one.
+            response = dict(structured)
+            response.setdefault('unresolved', [])
+        elif logged.get('num_turns') == 1:
+            response = parse_reply(logged['result'])
+        else:
+            raise ValueError('no structured output, and the free-text reply took more than one turn')
         atomic_json(directory / 'response.json', json.dumps(response, ensure_ascii=False))
         recovery = save(prepared, response)
         atomic_json(directory / 'recovery.json', json.dumps(recovery))
@@ -614,16 +739,9 @@ def codex(prepared, command, workspace):
             return code
         events = [json.loads(line) for line in raw.splitlines() if line.startswith('{')]
         allowed = {'agent_message', 'reasoning'}
-        def non_judge_event(event):
-            item = event.get('item', {})
-            # CLI emits a transport fallback warning as an error item even when
-            # HTTPS completes successfully. It is not a model tool invocation.
-            return (item.get('type') == 'error' and
-                    item.get('message', '').startswith(
-                        'Falling back from WebSockets to HTTPS transport.'))
         if sum(e.get('type') == 'turn.completed' for e in events) != 1 or any(
             e.get('type') in ('item.started', 'item.updated', 'item.completed') and
-            e.get('item', {}).get('type') not in allowed and not non_judge_event(e)
+            e.get('item', {}).get('type') not in allowed and not cli_warning_event(e)
             for e in events):
             raise ValueError('judge used a tool or did not finish exactly one turn; output not saved')
         recovery = save(prepared, json.loads(final.read_text()))
