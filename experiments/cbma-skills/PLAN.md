@@ -617,3 +617,48 @@ blinding or token audit; most Delta reports note no formal stage audit. Not yet 
 emotion regulation; the Codex Luna 6 runs (`e6-codex-luna`). The original `e6-codex` runs
 (Luna screening, Astra extraction and selection) match none of the compared arms and were
 archived on 2026-10-05 (`~/repos/cbma-workspaces/_archive/e6-codex`).
+
+### Update (2026-10-06): seven more runs scored
+
+Added Opus/Haiku cue_reactivity, dementia, emotion_regulation_2022 and problem_solving, and the
+archived Codex Astra/Luna 6 runs (emotion_regulation_2022, vbm_of_ptsd, vbm_of_substance_use;
+). Arm labels are orchestrator/judges. Reports:
+. Astra/Luna 6 PTSD fitted no map (decreased GM
+had 9 studies) and its substance-use nicotine target had 8, so their map means cover fewer targets.
+
+| project | arm | screen P | R | F1 | autonima F1 | peak recall (aut) | sel P / R (mean over targets) | maps | map r | autonima r |
+|---|---|---|---|---|---|---|---|---|---|---|
+| cue_reactivity | Opus/Haiku | 0.26 | 0.81 | 0.39 | 0.38 | 0.56 (0.54) | 0.32 / 0.63 | 3 | 0.76 | 0.75 |
+| cue_reactivity | Astra/Astra | 0.31 | 0.71 | 0.43 | 0.38 | 0.57 (0.56) | 0.34 / 0.61 | 3 | 0.79 | 0.75 |
+| decision_making | Astra/Astra | 0.37 | 0.38 | 0.37 | 0.31 | 0.77 (0.77) | 0.17 / 0.19 | 3 | 0.50 | 0.57 |
+| decision_making | Sol/Luna5.6 | 0.32 | 0.49 | 0.39 | 0.31 | 0.81 (0.81) | 0.22 / 0.29 | 3 | 0.52 | 0.57 |
+| dementia | Opus/Haiku | 0.35 | 0.72 | 0.47 | 0.55 | 0.28 (0.19) | 0.17 / 0.18 | 4 | 0.44 | 0.54 |
+| dementia | Astra/Astra | 0.47 | 0.76 | 0.58 | 0.55 | 0.57 (0.27) | 0.26 / 0.31 | 4 | 0.56 | 0.54 |
+| dementia | Sol/Luna5.6 | 0.49 | 0.76 | 0.60 | 0.55 | 0.35 (0.25) | 0.22 / 0.25 | 4 | 0.50 | 0.54 |
+| emotion_regulation_2022 | Opus/Opus | 0.49 | 0.75 | 0.59 | 0.37 | 0.48 (0.42) | 0.58 / 0.46 | 4 | 0.75 | 0.79 |
+| emotion_regulation_2022 | Opus/Haiku | 0.27 | 0.81 | 0.41 | 0.37 | 0.41 (0.42) | 0.47 / 0.48 | 4 | 0.79 | 0.79 |
+| emotion_regulation_2022 | Astra/Astra | 0.42 | 0.72 | 0.53 | 0.37 | 0.56 (0.49) | 0.56 / 0.49 | 4 | 0.76 | 0.79 |
+| emotion_regulation_2022 | Astra/Luna6 | 0.33 | 0.68 | 0.44 | 0.37 | 0.56 (0.52) | 0.50 / 0.42 | 4 | 0.73 | 0.79 |
+| executive_function | Astra/Astra | 0.10 | 0.42 | 0.16 | 0.15 | 0.30 (0.23) | 0.15 / 0.28 | 4 | 0.73 | 0.78 |
+| executive_function | Sol/Luna5.6 | 0.09 | 0.33 | 0.15 | 0.15 | 0.37 (0.33) | 0.19 / 0.25 | 4 | 0.74 | 0.78 |
+| problem_solving | Opus/Haiku | 0.28 | 0.52 | 0.36 | 0.37 | 0.53 (0.54) | 0.29 / 0.40 | 5 | 0.75 | 0.80 |
+| problem_solving | Astra/Astra | 0.25 | 0.59 | 0.35 | 0.37 | 0.57 (0.50) | 0.26 / 0.51 | 5 | 0.79 | 0.80 |
+| social | Astra/Astra | 0.45 | 0.83 | 0.58 | 0.57 | 0.64 (0.61) | 0.43 / 0.43 | 5 | 0.71 | 0.73 |
+| social | Sol/Luna5.6 | 0.42 | 0.82 | 0.55 | 0.57 | 0.76 (0.62) | 0.40 / 0.51 | 5 | 0.73 | 0.73 |
+| vbm_of_ptsd | Opus/Opus | 0.57 | 0.57 | 0.57 | 0.67 | 0.67 (0.67) | 0.70 / 0.32 | 1 | 0.75 | 0.76 |
+| vbm_of_ptsd | Opus/Haiku | 0.52 | 0.71 | 0.60 | 0.67 | 0.60 (0.60) | 0.70 / 0.32 | 1 | 0.75 | 0.76 |
+| vbm_of_ptsd | Astra/Astra | 0.60 | 0.57 | 0.59 | 0.67 | 0.94 (0.65) | 0.67 / 0.36 | 1 | 0.75 | 0.76 |
+| vbm_of_ptsd | Astra/Luna6 | 0.62 | 0.71 | 0.67 | 0.67 | 0.60 (0.60) | 0.67 / 0.27 | 0 | - | - |
+| vbm_of_substance_use | Opus/Opus | 0.52 | 0.73 | 0.61 | 0.56 | 0.73 (0.74) | 0.82 / 0.58 | 3 | 0.73 | 0.64 |
+| vbm_of_substance_use | Opus/Haiku | 0.40 | 0.77 | 0.53 | 0.56 | 0.71 (0.73) | 0.74 / 0.54 | 3 | 0.65 | 0.64 |
+| vbm_of_substance_use | Astra/Astra | 0.48 | 0.75 | 0.59 | 0.56 | 0.75 (0.73) | 0.79 / 0.45 | 2 | 0.75 | 0.69 |
+| vbm_of_substance_use | Astra/Luna6 | 0.50 | 0.70 | 0.59 | 0.56 | 0.70 (0.74) | 0.80 / 0.42 | 2 | 0.70 | 0.69 |
+
+- **Haiku judges keep map quality but lose screening precision where screening is hard.** Map r
+  matches or exceeds autonima on cue reactivity (0.76 vs 0.75) and emotion regulation (0.79 vs
+  0.79), but screening precision drops (emotion regulation 0.27 against Opus 0.49; cue reactivity
+  0.26 against Astra 0.31) as recall rises.
+- **Dementia is Haiku's weak project:** screening F1 0.47 against 0.58-0.60 for the Codex arms and
+  0.55 for autonima, selection P/R 0.17/0.18, and map r 0.44 against 0.50-0.56.
+- **Astra/Luna 6** is close to Astra/Astra on emotion regulation and substance use, and gave the
+  best PTSD screening F1 of any arm (0.67, matching autonima).
