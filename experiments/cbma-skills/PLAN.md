@@ -622,8 +622,8 @@ archived on 2026-10-05 (`~/repos/cbma-workspaces/_archive/e6-codex`).
 
 Added Opus/Haiku cue_reactivity, dementia, emotion_regulation_2022 and problem_solving, and the
 archived Codex Astra/Luna 6 runs (emotion_regulation_2022, vbm_of_ptsd, vbm_of_substance_use;
-). Arm labels are orchestrator/judges. Reports:
-. Astra/Luna 6 PTSD fitted no map (decreased GM
+`_archive/astra-luna6`). Arm labels are orchestrator/judges. Reports:
+`projects/<p>/reports/cbma_skills_{haiku,astra_luna6}/`. Astra/Luna 6 PTSD fitted no map (decreased GM
 had 9 studies) and its substance-use nicotine target had 8, so their map means cover fewer targets.
 
 | project | arm | screen P | R | F1 | autonima F1 | peak recall (aut) | sel P / R (mean over targets) | maps | map r | autonima r |
