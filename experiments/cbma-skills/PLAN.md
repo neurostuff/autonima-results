@@ -546,6 +546,12 @@ in a recorded protocol revision (the parked draft); package items are code chang
 
 ## Cross-arm results, full-text mode (2026-10-05)
 
+Workspace folders were renamed on 2026-10-06 to `~/repos/cbma-workspaces/{orchestrator}-{judges}`:
+Opus = `opus-opus` (frozen, not being finished for cost; results kept), Haiku = `opus-haiku`,
+Astra = `astra-astra`, Sol = `sol-luna5.6`; `sol-luna6` is the Codex Sol / Luna 6 arm, and
+Astra / Luna 6 is archived (`_archive/astra-luna6`, not being finished). Old names are symlinks,
+so the paths below still resolve.
+
 Every run scored with `scripts/score_cbma_review.py` against the gold standard and the
 autonima run its protocol translates (cue_reactivity v6, problem_solving v2, vbm_of_ptsd v1,
 vbm_of_substance_use v2, emotion_regulation_2022 v4, the others v3). Reports:
