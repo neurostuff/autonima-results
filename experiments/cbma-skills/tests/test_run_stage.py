@@ -38,10 +38,18 @@ items = json.loads(prompt.split("\n")[1])["items"]
 reply = json.dumps({"items": [{"pmid": it["pmid"], "decision": "uncertain", "reason": "fake",
                                "criteria": {k: "unclear" for k in batch["criteria"]}} for it in items],
                     "unresolved": []})
+result = {"result": reply, "num_turns": 1, "is_error": False, "total_cost_usd": 0.01,
+          "usage": {"input_tokens": 3, "cache_read_input_tokens": 1000, "output_tokens": 50}}
 if os.environ.get("FAKE_FENCE") == "1":
-    reply = "```json\n" + reply + "\n```"
-print(json.dumps({"result": reply, "num_turns": 1, "is_error": False, "total_cost_usd": 0.01,
-                  "usage": {"input_tokens": 3, "cache_read_input_tokens": 1000, "output_tokens": 50}}))
+    result["result"] = "```json\n" + reply + "\n```"
+if os.environ.get("FAKE_STRUCTURED") == "1":
+    # As the CLI does with --json-schema: the schema-valid answer in structured_output, two
+    # turns, and free text that would not parse on its own.
+    schema = json.loads(args[args.index("--json-schema") + 1])
+    assert schema["required"] == ["items"]           # the lenient CLI schema: "unresolved" optional
+    result.update(structured_output=json.loads(reply), num_turns=3,
+                  result="```json\n" + reply + "\n```\n\n**3 lines written.**")
+print(json.dumps(result))
 '''
 
 
@@ -74,7 +82,8 @@ screening:
         argv = c["argv"]
         # One tool-free turn with the judge's effort as a flag (agent frontmatter does not reach -p).
         assert argv[argv.index("--effort") + 1] == "low"
-        assert argv[argv.index("--tools") + 1] == "" and argv[argv.index("--max-turns") + 1] == "1"
+        assert argv[argv.index("--tools") + 1] == "" and argv[argv.index("--max-turns") + 1] == "4"
+        assert "--json-schema" in argv                              # the CLI enforces the reply shape
         system = Path(argv[argv.index("--system-prompt-file") + 1]).read_text()
         assert "## Scientific skill: screen-studies" in system      # the stage skill is in the system prompt
         # The prompt is the fixed envelope plus inline items: no added guidance.
@@ -219,3 +228,18 @@ def test_a_reply_wrapped_in_a_json_fence_is_accepted(tmp_path, capsys, monkeypat
     summary = json.loads(capsys.readouterr().out)
     assert code == 0 and summary["done"] and summary["accepted"] == 3
     assert summary["usage"]["attempts"] == 2 and not summary["judge_failures"]    # no re-judging
+
+
+def test_the_cli_structured_output_is_used_and_the_schema_is_passed(tmp_path, capsys, monkeypatch):
+    """With --json-schema the CLI returns the schema-valid answer in structured_output, after
+    one internal tool call (two turns). Haiku's free text around it (a fence, then "3 lines
+    written") must not matter."""
+    ws, rv, fake = workspace(tmp_path)
+    monkeypatch.chdir(ws)
+    monkeypatch.setenv("FAKE_STRUCTURED", "1")
+    code = run_stage.main([str(rv), "--stage", "abstract", "--model", "m1", "--size", "2",
+                           "--claude", f"{sys.executable} {fake}"])
+    summary = json.loads(capsys.readouterr().out)
+    assert code == 0 and summary["done"] and summary["accepted"] == 3 and not summary["judge_failures"]
+    argv = json.loads(open(f"{fake}.calls").readline())["argv"]
+    assert argv[argv.index("--max-turns") + 1] == "4" and argv[argv.index("--tools") + 1] == ""

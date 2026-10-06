@@ -470,6 +470,20 @@ def batch_files(work: Path) -> List[Path]:
     return sorted(p for p in work.glob("batch_*.json") if re.fullmatch(r"batch_\d+\.json", p.name))
 
 
+def selection_output_format(review_root: Path) -> str:
+    """Selection replies are one record per analysis x target ("pairs", the default), or, when a
+    workspace opts in with .claude/agents/judge_output_formats.json {"selection": "compact"}, one
+    record per analysis with the global criteria stated once. The judging instructions and the
+    criteria hash are the same either way; the transport expands compact replies into pairs."""
+    config = review_root.resolve().parent / ".claude" / "agents" / "judge_output_formats.json"
+    if not config.exists():
+        return "pairs"
+    fmt = json.loads(config.read_text()).get("selection", "pairs")
+    if fmt not in ("pairs", "compact"):
+        raise LedgerError(f"{config}: selection must be pairs or compact")
+    return fmt
+
+
 def extraction_input_view(review_root: Path) -> str:
     """Extraction defaults to tables plus source-grounded coordinate-space context."""
     config = review_root.resolve().parent / ".claude" / "agents" / "judge_input_views.json"
@@ -524,6 +538,8 @@ def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard
         }
         if stage == "selection":
             batch["targets"] = crit["payload"]["targets"]
+            if selection_output_format(rv.root) == "compact":
+                batch["selection_format"] = "compact"
         if stage == "extraction" and input_view in ("tables_only", "tables_space_context"):
             batch["input_view"] = input_view
             for item in batch["items"]:
@@ -952,7 +968,8 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
                     continue
                 rows = [dict(base, pmid=pmid, input_hash=batch["_input_hashes"][pmid], analysis_id=r["analysis_id"],
                              target=r["target"], include=r["include"], criteria=r["criteria"],
-                             reason=r["reason"].strip(), **_instr_flag(r)) for r in recs]
+                             reason=r["reason"].strip(), **_instr_flag(r),
+                             **({"output_format": "compact"} if batch.get("selection_format") == "compact" else {})) for r in recs]
                 append_jsonl(rv.decisions_path(stage), rows)
                 accepted_rows.extend(rows)
 

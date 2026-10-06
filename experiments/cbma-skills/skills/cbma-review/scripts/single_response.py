@@ -193,7 +193,13 @@ def validate_shape(value, schema, where='response'):
         raise ValueError(f'{where}: nonfinite number')
     if not valid or ('enum' in schema and value not in schema['enum']):
         raise ValueError(f'{where}: invalid type or value')
-    if isinstance(value, dict):
+    if isinstance(value, dict) and 'properties' not in schema and isinstance(schema.get('additionalProperties'), dict):
+        # A map (criterion ID -> state): any keys, every value of one schema.
+        for k, v in value.items():
+            if not isinstance(k, str) or not k:
+                raise ValueError(f'{where}: invalid key')
+            validate_shape(v, schema['additionalProperties'], f'{where}.{k}')
+    elif isinstance(value, dict):
         props = schema['properties']
         if set(value) != set(schema['required']):
             raise ValueError(f'{where}: missing or extra fields')
@@ -381,13 +387,19 @@ def save(prepared, response):
             issues.append(str(exc))
             if isinstance(row, dict) and isinstance(row.get('pmid'), str) and row['pmid'] in known:
                 invalid.add(row['pmid'])
+    # Selection answers are shape-checked against the lenient schema: which criterion IDs each
+    # target needs (including the IDs the ledger lets a clear global failure leave out) is the
+    # ledger's scientific check, not the transport's. The strict schema rejected exactly those
+    # exclusions (34 of 38 rejections in the agreement rerun) and cost a whole new attempt each.
+    shape = (cli_schema(prepared['batch'])['properties']['items']['items'] if stage == 'selection'
+             else prepared['schema']['properties']['items']['items'])
     for row in response['items']:
         pmid = row.get('pmid') if isinstance(row, dict) else None
         if not isinstance(pmid, str) or pmid not in known:
             issues.append('unknown or missing response PMID')
             continue
         try:
-            validate_shape(row, prepared['schema']['properties']['items']['items'])
+            validate_shape(row, shape)
             groups[pmid].append(copy.deepcopy(row))
         except ValueError as exc:
             invalid.add(pmid)
