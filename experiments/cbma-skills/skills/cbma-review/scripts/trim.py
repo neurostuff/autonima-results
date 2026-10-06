@@ -35,6 +35,14 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 TRIM_VERSION = "1"
+SPACE_CONTEXT_VERSION = "2"
+
+# Match coordinate-system evidence, not generic anatomical region names. Keep
+# whole source paragraphs so atlas mentions and conversion direction have context.
+_SPACE_EVIDENCE = re.compile(
+    r"\b(?:MNI|Talairach|Montreal\s+Neurological\s+Institute|ICBM(?:[- ]?\d+)?"
+    r"|stereotaxic|stereotactic|coordinate\s+(?:space|system)|Brett|Lancaster"
+    r"|tal2mni|mni2tal|icbm2tal)\b", re.I)
 
 _NUMBERING = r"(?:\d+(?:\.\d+)*\.?\s+|[IVX]+\.\s+)?"
 METHODS = re.compile(
@@ -211,6 +219,77 @@ def write_trimmed(doc_dir: Path) -> Tuple[Path, dict]:
     if info["view"] == "full":
         return doc_dir / "text.md", info
     path = doc_dir / "text.trimmed.md"
+    path.write_text(out, encoding="utf-8")
+    return path, info
+
+
+def coordinate_space_context(text: str) -> Tuple[str, dict]:
+    """Verbatim Methods plus space-evidence paragraphs outside Methods.
+
+    Reuse screening's heading/span detection, but never use its full-paper
+    fallback. If Methods cannot be identified reliably, preserve matching source
+    paragraphs only. Do not infer a coordinate space or silently truncate spans.
+    Line numbers always refer to the original normalized text, including when
+    bare section names were promoted for detection.
+    """
+    secs = sections(text)
+    if not any(s.level and METHODS.match(s.title) for s in secs):
+        secs = sections(promote_bare_sections(text))
+    lines = text.splitlines()
+    in_results = set()
+    for i, sec in enumerate(secs):
+        if sec.level and RESULTS.match(sec.title):
+            in_results.update(range(i + 1, _span(secs, i)))
+    spans = []
+    used = set()
+    for i, sec in enumerate(secs):
+        if sec.level and METHODS.match(sec.title) and i not in used and i not in in_results:
+            j = _span(secs, i)
+            end = secs[j].start if j < len(secs) else len(lines)
+            spans.append((sec.start, end, sec.title, "methods"))
+            used.update(range(i, j))
+    methods_chars = sum(len("\n".join(lines[a:b])) for a, b, _, _ in spans)
+    fallback = None
+    if not spans:
+        fallback = "no methods heading found; coordinate-space paragraphs only"
+    elif methods_chars / max(len(text), 1) > MAX_METHODS_SHARE:
+        spans = []
+        fallback = "implausible methods span; coordinate-space paragraphs only"
+    for i, sec in enumerate(secs):
+        # References cannot establish this study's output space.
+        if re.match(r"^(?:references|bibliography|literature cited)\b", sec.title, re.I):
+            continue
+        end = secs[i + 1].start if i + 1 < len(secs) else len(lines)
+        start = sec.start + (1 if sec.level else 0)
+        cursor = start
+        while cursor < end:
+            while cursor < end and not lines[cursor].strip():
+                cursor += 1
+            stop = cursor
+            while stop < end and lines[stop].strip():
+                stop += 1
+            body = "\n".join(lines[cursor:stop])
+            if body and _SPACE_EVIDENCE.search(sec.title + "\n" + body) and not any(a <= cursor and stop <= b for a, b, _, _ in spans):
+                spans.append((cursor, stop, sec.title or "preamble", "space_paragraph"))
+            cursor = stop + 1
+    spans.sort()
+    parts = [f"[Source coordinate-space context v{SPACE_CONTEXT_VERSION}; excerpts from normalized text.md. "
+             "Methods plus coordinate-system paragraphs; no space inferred.]"]
+    excerpts = []
+    for a, b, title, kind in spans:
+        parts.append(f"\n[Source section: {title}; lines {a + 1}-{b}; {kind}]\n" + "\n".join(lines[a:b]))
+        excerpts.append({"section": title, "line_start": a + 1, "line_end": b, "kind": kind})
+    if not spans:
+        parts.append("[No Methods or coordinate-space evidence found; leave unsupported space null.]")
+    out = "\n".join(parts) + "\n"
+    return out, {"version": SPACE_CONTEXT_VERSION, "source_chars": len(text),
+                 "context_chars": len(out), "fallback": fallback, "excerpts": excerpts}
+
+
+def write_coordinate_space_context(doc_dir: Path) -> Tuple[Path, dict]:
+    text = (doc_dir / "text.md").read_text(encoding="utf-8")
+    out, info = coordinate_space_context(text)
+    path = doc_dir / "text.coordinate-space.md"
     path.write_text(out, encoding="utf-8")
     return path, info
 

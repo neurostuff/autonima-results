@@ -203,3 +203,53 @@ decisions/<stage>.jsonl     accepted decisions (append-only; the ledger writes t
 analyses/<pmid>.json        accepted, verified coordinate extractions
 results/                    prisma.json, criteria.json, nimads/, meta/
 ```
+
+## Single-response batch transport
+
+Judged stages now use the shared `cbma-review/scripts/single_response.py` transport.
+Python loads complete batch inputs; each judge returns one JSON response with tools
+disabled, and Python writes the existing raw batch output for ledger validation.
+Use the stage runner/optimized launcher rather than dispatching file-reading judges.
+Registered eligibility criteria, models and effort settings are unchanged.
+Extraction receives every parsed table (including captions, headers and footnotes),
+plus source Methods and coordinate-space paragraphs (`tables_space_context`) to
+interpret space and analysis labels/boundaries. An explicit extraction
+`context_needed` response triggers at most one full-paper expansion per study and
+registered input within the existing retry limit;
+selection receives the full article and extracted analysis metadata. Legacy full-input
+extraction batches retain their original input view. Unreadable inputs, malformed
+responses and rejected judgments stay pending for the existing retry mechanism;
+scientific incomplete cases follow the original criteria. Inputs are never silently
+truncated. Input hashes, raw responses and CLI usage logs are retained under each
+stage's `work/STAGE/judge_responses/` directory. New ledger agent strings include
+`single-response-v1`; older decisions remain valid. Already-running stage processes
+keep their loaded code; this path applies to subsequent runner invocations.
+
+## Runner scheduling, recovery and usage — shared update
+
+New stage-runner invocations use `single-response-v2`. Scientific criteria, inputs,
+models and effort/thinking settings are unchanged. Stable criteria and response
+schemas now precede varying items and batch identifiers in judge prompts.
+
+Both harnesses launch only available worker slots, cap judge timeouts to the
+remaining stage budget, and stop submitting new calls after provider-limit or
+authentication failures. `--max-attempts` defaults to 3 and persists for each
+unchanged study/criteria/input combination across invocations. Exhausted studies
+remain pending and do not block healthy batch mates. `retry_exhausted` is an
+execution problem, never a scientific exclusion; repairing scientific inputs gives
+a new identity. Raising `--max-attempts` explicitly permits further attempts.
+Claude pilots now save their scope so retries never expand into unscreened records.
+
+For syntactically valid JSON responses, complete valid studies are saved while
+malformed, duplicate, unresolved or incomplete studies stay pending. Selection
+requires all analysis × target pairs; combined-mode scientific completeness remains
+validated by the original ledger. Truncated/invalid JSON is not guessed or repaired.
+
+Every new attempt has a unique directory under `work/STAGE/judge_responses/`,
+including raw CLI output, input hashes, recovery details and `attempt.json`.
+Failures and timeouts are retained. Stage `usage` is cumulative and counts each
+attempt once, including rejected judgments; unavailable token usage and cost are
+reported explicitly as unknown. Existing legacy logs are retained, but previously
+overwritten attempts cannot be recovered. Codex also reports `usage_this_invocation`.
+Existing processes are not interrupted; use the usual launch commands on the next
+runner invocation. Scientific audits remain required.

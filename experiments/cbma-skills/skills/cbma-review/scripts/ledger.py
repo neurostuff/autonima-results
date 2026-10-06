@@ -266,6 +266,22 @@ class Review:
             for stage in ("fulltext", "selection"):
                 self.criteria[stage]["hash"] = sha(payload)
 
+    def accepted_criteria_hashes(self, stage: str) -> set:
+        """Accept the documented extraction input-view migration, not criterion changes."""
+        accepted = {self.criteria[stage]["hash"]}
+        if stage != "extraction":
+            return accepted
+        registry = SKILLS_ROOT / STAGE_SKILL[stage] / "input_view_migration.json"
+        if not registry.exists():
+            return accepted
+        migration = json.loads(registry.read_text())
+        if migration.get("current_skill_hash") != skill_hash(stage):
+            return accepted
+        for old_skill in migration.get("legacy_skill_hashes", []):
+            payload = dict(self.criteria[stage]["payload"], skill=old_skill)
+            accepted.add(sha(payload))
+        return accepted
+
     # paths
     def decisions_path(self, stage: str) -> Path:
         return self.root / "decisions" / f"{stage}.jsonl"
@@ -301,14 +317,14 @@ class Review:
 
     def valid_decisions(self, stage: str) -> Dict[tuple, dict]:
         """Latest record per key whose criteria and input hashes are both current."""
-        current = self.criteria[stage]["hash"]
+        current = self.accepted_criteria_hashes(stage)
         inputs: Dict[str, Optional[str]] = {}
         out: Dict[tuple, dict] = {}
         for rec in read_jsonl(self.decisions_path(stage)):
             pmid = rec["pmid"]
             if pmid not in inputs:
                 inputs[pmid] = self.input_hash(stage, pmid)
-            if rec.get("criteria_hash") != current or rec.get("input_hash") != inputs[pmid]:
+            if rec.get("criteria_hash") not in current or rec.get("input_hash") != inputs[pmid]:
                 continue
             key = (pmid, rec["analysis_id"], rec["target"]) if stage == "selection" else (pmid,)
             out[key] = rec
@@ -374,7 +390,7 @@ class Review:
             for p in candidates:
                 a = self.analyses(p)
                 if a is None or a.get("input_hash") != self.input_hash("extraction", p) \
-                        or a.get("criteria_hash") != self.criteria["extraction"]["hash"]:
+                        or a.get("criteria_hash") not in self.accepted_criteria_hashes("extraction"):
                     out.append(p)
             return out
         if stage == "selection":
@@ -454,7 +470,19 @@ def batch_files(work: Path) -> List[Path]:
     return sorted(p for p in work.glob("batch_*.json") if re.fullmatch(r"batch_\d+\.json", p.name))
 
 
+def extraction_input_view(review_root: Path) -> str:
+    """Extraction defaults to tables plus source-grounded coordinate-space context."""
+    config = review_root.resolve().parent / ".claude" / "agents" / "judge_input_views.json"
+    if not config.exists():
+        return "tables_space_context"
+    view = json.loads(config.read_text()).get("extraction", "tables_space_context")
+    if view not in ("full", "tables_only", "tables_space_context"):
+        raise LedgerError(f"{config}: extraction must be full, tables_only or tables_space_context")
+    return view
+
+
 def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard: bool) -> List[Path]:
+    input_view = extraction_input_view(rv.root) if stage == "extraction" else "full"
     work = rv.work_dir(stage)
     work.mkdir(parents=True, exist_ok=True)
     unfinished = [p for p in batch_files(work) if _output_path(p, stage).exists()]
@@ -496,9 +524,18 @@ def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard
         }
         if stage == "selection":
             batch["targets"] = crit["payload"]["targets"]
+        if stage == "extraction" and input_view in ("tables_only", "tables_space_context"):
+            batch["input_view"] = input_view
+            for item in batch["items"]:
+                if input_view == "tables_space_context":
+                    context, info = trim.write_coordinate_space_context(rv.doc_dir(item["pmid"]))
+                    item["coordinate_space_context_file"] = str(context)
+                    item["coordinate_space_context_info"] = dict(
+                        info, context_sha256=hashlib.sha256(context.read_bytes()).hexdigest())
+                item.pop("text_file", None)
         if stage in ("fulltext", "extraction", "selection"):
             bundle = path.with_suffix(".texts.md")
-            _write_bundle(bundle, stage, batch["items"])
+            _write_bundle(bundle, stage, batch["items"], input_view=input_view)
             batch["texts_file"] = str(bundle)
         if combined:
             sel = rv.criteria["selection"]
@@ -521,7 +558,7 @@ def _wrap(text: str) -> str:
                      if len(line) > BUNDLE_WIDTH else line for line in text.splitlines())
 
 
-def _write_bundle(path: Path, stage: str, items: List[dict]) -> None:
+def _write_bundle(path: Path, stage: str, items: List[dict], input_view: str = "full") -> None:
     """One file holding every item's text (and, for extraction, its tables as TSV), so a
     judge reads its whole batch in one or two reads instead of one read per file.
 
@@ -531,9 +568,13 @@ def _write_bundle(path: Path, stage: str, items: List[dict]) -> None:
     parts = []
     for it in items:
         parts.append(f"\n\n======== ITEM {it['pmid']}: {it.get('title') or ''} ========\n")
-        tf = Path(it["text_file"])
-        parts.append(_wrap(tf.read_text(encoding="utf-8")) if tf.exists() else "(no text file)")
+        if stage != "extraction" or input_view not in ("tables_only", "tables_space_context"):
+            tf = Path(it["text_file"])
+            parts.append(_wrap(tf.read_text(encoding="utf-8")) if tf.exists() else "(no text file)")
         if stage == "extraction":
+            if it.get("coordinate_space_context_file"):
+                parts.append("\n\n-------- SOURCE COORDINATE-SPACE CONTEXT --------\n" +
+                             _wrap(Path(it["coordinate_space_context_file"]).read_text(encoding="utf-8")))
             for t in it.get("tables", []):
                 grid = json.loads(Path(t["file"]).read_text())
                 parts.append(f"\n\n-------- TABLE {t['table_id']} (file {t['file']}) --------\n"
@@ -790,7 +831,7 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
             report["missing_output"] += 1
             continue
         report["batches"] += 1
-        if batch["_criteria_hash"] != rv.criteria[stage]["hash"]:
+        if batch["_criteria_hash"] not in rv.accepted_criteria_hashes(stage):
             report["errors"].append(f"{batch['batch_id']}: criteria or skill changed since this batch was made; "
                                     "its output is discarded")
             report["rejected"] += len(batch["items"])
@@ -884,6 +925,7 @@ def cmd_ingest(rv: Review, stage: str, agent: str) -> dict:
                     report["errors"] += [f"{batch['batch_id']}: {e}" for e in errs]
                     continue
                 record.update(base, input_hash=batch["_input_hashes"][pmid])
+                record["input_view"] = batch.get("input_view", "full")
                 write_json(rv.root / "analyses" / f"{pmid}.json", record)
                 accepted_rows.append(record)
 

@@ -12,7 +12,11 @@ analyses (maps) they come from, and write one JSON file per study.
 ## Inputs
 
 The batch's `items` each contain:
-- `pmid` and `text_file`: the full text, for context.
+- `pmid`: the study identifier. New extraction batches use `input_view: tables_space_context`: all parsed
+  tables plus `coordinate_space_context_file` (Methods and source paragraphs
+  mentioning coordinate systems/transforms, context v2). Excerpts identify the
+  source section and normalized-text line range. The single-response runner
+  supplies this as `coordinate_space_context`; no full-paper pointer is provided.
 - `tables`: one entry per table, with `table_id`, `file`, `label`, `caption`,
   `coordinate_candidate` and `duplicate_of`.
 - `must_report`: table IDs you must give a status for. These are the coordinate
@@ -27,9 +31,40 @@ Each table `file` is JSON:
 Read `caption` and `footer` too; they often define the contrast, the sign
 convention and the space.
 
-Also check the text for tables that the candidate flag missed. Look for a table
-whose caption mentions peaks or coordinates but whose header was unusual. You may
-report extra tables; you must report every table in `must_report`.
+Inspect all nonduplicate parsed tables, including those the coordinate-candidate
+flag missed. You may report extra tables; you must report every table in
+`must_report`. Read the `texts_file` bundle when present: it contains full table
+grids/headers, labels, captions and footnotes. Open individual table JSON only
+when cell alignment needs clarification. Read the bundled coordinate-space
+context to establish reported peak space and interpret terse table labels: contrast
+direction, participant groups, conditions, sessions and analysis boundaries. Table
+headers/captions/footnotes define the reported blocks; Methods may explain their
+meaning, but must not introduce an unreported contrast or combine separate blocks.
+Quote the supporting Methods sentence in the table's `note` when it resolves an
+otherwise ambiguous label. Coordinate numbers still come exclusively from tables.
+Do not fetch additional article prose.
+Explicit legacy `tables_only` batches have no prose context. Leave unsupported
+fields unknown. Selection separately receives the full paper and extracted analyses.
+
+Legacy batches without `input_view`, or explicitly marked `full`, retain their
+original full-paper input contract; their `text_file` may be read for context.
+
+### Missing context
+
+If missing article context prevents reliable interpretation of table labels,
+analysis boundaries or reported coordinate space, return this study in the
+single-response envelope's `unresolved` array with `context_needed: true` and a
+specific `reason` describing the missing information. Do not also return an
+extraction for that study or guess a label. Python keeps it pending and supplies
+the full normalized paper on one subsequent retry within the existing attempt
+limit. Other completed studies are saved normally.
+
+An item with `context_expansion` already has its one expanded input. Use it to
+resolve the requested issue. If the full paper still does not establish a field,
+leave it unknown; unreadable tables remain `failed`. Do not request another
+expansion or invent an exclusion. Use `context_needed: false` for transport or
+other unresolved failures. This restores source access; it adds no eligibility
+criteria.
 
 Skip tables with a `duplicate_of` value. They repeat an earlier table.
 
@@ -93,8 +128,9 @@ coordinate to the right combination of those axes.
 - An ROI block starts at its header and does not reach back over earlier rows.
 
 **No labels:** with no analysis-defining label, the whole table is one analysis.
-Use only labels that appear in the table, caption or footer. Combine them to make
-analyses distinguishable, and never invent a contrast or a group.
+Use the table, caption and footer to identify the reported blocks. Supplied
+Methods or expanded source context may clarify their terse labels; do not invent
+a contrast or group that the reported table does not establish.
 
 ## Coordinates
 
@@ -118,12 +154,21 @@ analyses distinguishable, and never invent a contrast or a group.
 
 ## Space
 
-- **`"MNI"`:** the table, caption, footer or Methods say MNI (including "Montreal
+- **`"MNI"`:** the table, caption or footer says MNI (including "Montreal
   Neurological Institute", SPM templates stated as MNI, or ICBM152).
 - **`"TAL"`:** they say Talairach.
-- **`null`:** they say neither. Unlike autonima's parser, you may use the Methods
-  text for space, because you have the full paper. Put the sentence that settles
-  it in the table's `note`.
+- **Source context:** when tables do not identify space, the supplied Methods
+  and coordinate-space excerpts may establish it. Quote the supporting sentence
+  verbatim in the table's `note`, with its section/line range. A normalization
+  template is insufficient when the paper subsequently converts reported peaks.
+  Follow the stated final reporting space and conversion direction. Atlas labels,
+  seed definitions, cited papers and software names alone do not establish space.
+- **Conflicts:** use an explicit table-specific reporting-space statement over
+  general preprocessing context. If a conflict remains unresolved, use `null`
+  and explain it in `note`.
+- **`null`:** neither tables nor supplied source context establish the reported
+  peak space. Do not infer it from outside knowledge. Legacy full-input batches
+  may use their Methods too; record the supporting sentence in `note`.
 - **Never infer space from coordinate magnitudes.**
 
 ## Statistics
@@ -156,7 +201,7 @@ For each item, write `<output>/<pmid>.json`, where `<output>` is the batch's
       "table_id": "tbl2",
       "status": "parsed",
       "space": "MNI",
-      "note": "Methods: 'normalized to the MNI template'",
+      "note": "Table caption: 'coordinates in MNI space'",
       "analyses": [
         {
           "name": "Patients > Controls, 2-back > 0-back",

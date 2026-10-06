@@ -15,11 +15,15 @@ file and the skill to follow.
 1. **The skill.** The `extract-coordinates` skill is already loaded in your context. Follow it
    exactly. Read the skill file named in your prompt only if it is a different skill.
 2. **The batch.** Read the batch file.
-3. **The texts.** If the batch has a `texts_file`, it holds every item's text, and for
-   extraction each table as TSV, under `======== ITEM <pmid> ========` headers. Read it
-   instead of opening each `text_file` and table file: it is the same content, with
-   long lines wrapped. Read the individual files only if the bundle leaves something
-   unclear, such as a table grid you must check cell by cell.
+3. **The inputs.** Read the `texts_file` bundle. New extraction batches have
+   `input_view: tables_space_context`: all parsed tables, full grids/headers, labels,
+   captions and footnotes, plus source Methods/coordinate-space paragraphs. Read
+   this context to establish reported peak space and clarify table labels/boundaries;
+   quote supporting Methods text in `note`. Missing context may trigger one
+   full-paper expansion through the shared single-response transport. Inspect every nonduplicate table, including
+   unflagged tables. Open original table JSON only for grid clarification; do not
+   open or fetch article prose for tables-only batches. Legacy batches without
+   `input_view`, or marked `full`, keep their original full-paper input contract.
 4. **The output.** Process every item and write your output, in one write, to the path
    in the batch's `output` field. For extraction, write one file per study in that
    folder. Write nothing else, anywhere.

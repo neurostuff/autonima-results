@@ -537,3 +537,33 @@ def test_scoring_can_read_decisions_as_recorded_when_docs_did_not_travel(review)
     assert compare.skills_decisions(review)["fulltext_include"] == set()
     recorded = compare.skills_decisions(review, as_recorded=True)
     assert recorded["fulltext_include"] == {pmid} and recorded["fulltext_judged"] == {pmid}
+
+
+def test_extractions_under_a_migrated_skill_hash_stay_done(review, monkeypatch):
+    """The tables-only migration accepts legacy extraction hashes in valid_decisions() and
+    ingest, but pending("extraction") compared against the current hash only, so every study
+    extracted before the skill edit came back pending (all five finished runs read 0
+    extracted) and the next runner would have re-extracted all of them."""
+    run_ledger("init", review)
+    rv = ledger.Review(review)
+    legacy = rv.criteria["extraction"]["hash"]
+    pmid = next(iter(rv.records))
+    monkeypatch.setattr(ledger.Review, "fulltext_included", lambda self: [pmid])
+    monkeypatch.setattr(ledger.Review, "input_hash", lambda self, stage, p: "in")
+    (review / "analyses").mkdir(exist_ok=True)
+    (review / "analyses" / f"{pmid}.json").write_text(json.dumps(
+        {"pmid": pmid, "criteria_hash": legacy, "input_hash": "in", "analyses": []}))
+    assert ledger.Review(review).pending("extraction") == []
+    # The skill text changes; the migration registry names the old skill hash as legacy.
+    old_skill = ledger.skill_hash("extraction")
+    monkeypatch.setattr(ledger, "skill_hash", lambda stage: "new-skill" if stage == "extraction" else old_skill)
+    rv = ledger.Review(review)
+    assert rv.criteria["extraction"]["hash"] != legacy
+    assert rv.pending("extraction") == [pmid]                     # no migration: stale, as before
+    registry = {"current_skill_hash": "new-skill", "legacy_skill_hashes": [old_skill]}
+    real_exists, real_read = ledger.Path.exists, ledger.Path.read_text
+    target = ledger.SKILLS_ROOT / ledger.STAGE_SKILL["extraction"] / "input_view_migration.json"
+    monkeypatch.setattr(ledger.Path, "exists", lambda self: True if self == target else real_exists(self))
+    monkeypatch.setattr(ledger.Path, "read_text",
+                        lambda self, *a, **k: json.dumps(registry) if self == target else real_read(self, *a, **k))
+    assert ledger.Review(review).pending("extraction") == []      # migrated: still done

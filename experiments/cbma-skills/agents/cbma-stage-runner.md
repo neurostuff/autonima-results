@@ -25,7 +25,7 @@ an item yourself. Your prompt gives you:
 | extraction | `cbma-extractor` | 1 |
 | selection | `cbma-selector` | 1 |
 
-Each judge's reasoning effort, tools and preloaded skill are set in its definition in
+Each judge's reasoning effort is set in its definition in
 `.claude/agents/<judge>.md`. Every decision records the effort through the ingest agent
 string `AGENT/effort-<level>`, for example `claude-code/claude-opus-5-5/effort-low`.
 `run_stage.py` builds that string itself.
@@ -45,8 +45,9 @@ string `AGENT/effort-<level>`, for example `claude-code/claude-opus-5-5/effort-l
 
    What it does:
    - makes the batches;
-   - starts each judge as a fresh `claude -p --agent <judge>` session with the fixed
-     prompt (the judge's effort, tools and skill come from its definition);
+   - loads the scientific skill and complete inputs in Python, then starts a fresh
+     tool-free `claude -p` judge for one structured response; Python saves its raw
+     output for ledger validation (effort and thinking budgets retain their settings);
    - ingests, and retries rejected items;
    - prints a JSON summary.
 
@@ -126,3 +127,32 @@ The verdict is PROBLEM when an item you batched is still pending, when the audit
 more than one disagreement, when a usage limit stopped the stage, or when a note needs
 a decision. Items left unbatched by a pilot's `--limit` are expected: report their
 count, but they alone do not make a PROBLEM.
+
+## Runner scheduling, recovery and usage — shared update
+
+New stage-runner invocations use `single-response-v2`. Scientific criteria, inputs,
+models and effort/thinking settings are unchanged. Stable criteria and response
+schemas now precede varying items and batch identifiers in judge prompts.
+
+Both harnesses launch only available worker slots, cap judge timeouts to the
+remaining stage budget, and stop submitting new calls after provider-limit or
+authentication failures. `--max-attempts` defaults to 3 and persists for each
+unchanged study/criteria/input combination across invocations. Exhausted studies
+remain pending and do not block healthy batch mates. `retry_exhausted` is an
+execution problem, never a scientific exclusion; repairing scientific inputs gives
+a new identity. Raising `--max-attempts` explicitly permits further attempts.
+Claude pilots now save their scope so retries never expand into unscreened records.
+
+For syntactically valid JSON responses, complete valid studies are saved while
+malformed, duplicate, unresolved or incomplete studies stay pending. Selection
+requires all analysis × target pairs; combined-mode scientific completeness remains
+validated by the original ledger. Truncated/invalid JSON is not guessed or repaired.
+
+Every new attempt has a unique directory under `work/STAGE/judge_responses/`,
+including raw CLI output, input hashes, recovery details and `attempt.json`.
+Failures and timeouts are retained. Stage `usage` is cumulative and counts each
+attempt once, including rejected judgments; unavailable token usage and cost are
+reported explicitly as unknown. Existing legacy logs are retained, but previously
+overwritten attempts cannot be recovered. Codex also reports `usage_this_invocation`.
+Existing processes are not interrupted; use the usual launch commands on the next
+runner invocation. Scientific audits remain required.

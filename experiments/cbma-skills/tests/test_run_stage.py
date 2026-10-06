@@ -27,16 +27,20 @@ ledger = load("ledger", SKILLS / "cbma-review/scripts/ledger.py")
 run_stage = load("run_stage", SKILLS / "cbma-review/scripts/run_stage.py")
 
 FAKE_CLAUDE = r'''
-import json, re, sys
+import json, os, re, sys
+# The single-response transport: the prompt arrives on stdin, tools are disabled, and the
+# judge's whole answer is one JSON object in the CLI result's "result" field.
 args = sys.argv[1:]
-prompt = args[args.index("--") + 1]
-agent = args[args.index("--agent") + 1]
-open(sys.argv[0] + ".calls", "a").write(json.dumps({"agent": agent, "prompt": prompt, "argv": args[:args.index("--")]}) + "\n")
-batch = json.load(open(re.search(r"Your batch file is `([^`]+)`", prompt).group(1)))
-open(batch["output"], "w").write("".join(json.dumps({
-    "pmid": it["pmid"], "decision": "uncertain", "reason": "fake",
-    "criteria": {k: "unclear" for k in batch["criteria"]}}) + "\n" for it in batch["items"]))
-print(json.dumps({"result": str(len(batch["items"])), "total_cost_usd": 0.01,
+prompt = sys.stdin.read()
+open(sys.argv[0] + ".calls", "a").write(json.dumps({"prompt": prompt, "argv": args}) + "\n")
+batch = json.load(open(re.search(r"^CBMA_SINGLE_RESPONSE_V\d batch=(.+)$", prompt, re.M).group(1)))
+items = json.loads(prompt.split("\n")[1])["items"]
+reply = json.dumps({"items": [{"pmid": it["pmid"], "decision": "uncertain", "reason": "fake",
+                               "criteria": {k: "unclear" for k in batch["criteria"]}} for it in items],
+                    "unresolved": []})
+if os.environ.get("FAKE_FENCE") == "1":
+    reply = "```json\n" + reply + "\n```"
+print(json.dumps({"result": reply, "num_turns": 1, "is_error": False, "total_cost_usd": 0.01,
                   "usage": {"input_tokens": 3, "cache_read_input_tokens": 1000, "output_tokens": 50}}))
 '''
 
@@ -62,18 +66,22 @@ screening:
                            "--claude", f"{sys.executable} {fake}"])
     summary = json.loads(capsys.readouterr().out)
     assert code == 0 and summary["done"] and summary["pending"] == 0
-    assert summary["accepted"] == 3 and summary["agent"] == "claude-code/m1/effort-low"
+    assert summary["accepted"] == 3 and summary["agent"] == "claude-code/m1/effort-low/single-response-v2"
     assert summary["usage"]["judges"] == 2 and summary["usage"]["cache_read_input_tokens"] == 2000
+    assert summary["usage"]["attempts_with_unknown_usage"] == 0
     calls = [json.loads(line) for line in open(f"{fake}.calls")]
-    assert {c["agent"] for c in calls} == {"cbma-abstract-screener"}
-    # frontmatter does not reach a headless --agent session: effort and skill go as flags
     for c in calls:
         argv = c["argv"]
+        # One tool-free turn with the judge's effort as a flag (agent frontmatter does not reach -p).
         assert argv[argv.index("--effort") + 1] == "low"
-        assert argv[argv.index("--append-system-prompt-file") + 1].endswith("screen-studies/SKILL.md")
-    assert all(run_stage.PROMPT.split("`{batch}`")[0] in c["prompt"] and "lenient" not in c["prompt"] for c in calls)
+        assert argv[argv.index("--tools") + 1] == "" and argv[argv.index("--max-turns") + 1] == "1"
+        system = Path(argv[argv.index("--system-prompt-file") + 1]).read_text()
+        assert "## Scientific skill: screen-studies" in system      # the stage skill is in the system prompt
+        # The prompt is the fixed envelope plus inline items: no added guidance.
+        assert c["prompt"].startswith("Judge these supplied items using the registered configuration")
+        assert "CBMA_SINGLE_RESPONSE_V2 batch=" in c["prompt"] and "lenient" not in c["prompt"]
     decisions = [json.loads(line) for line in open(rv / "decisions" / "abstract.jsonl")]
-    assert {d["agent"] for d in decisions} == {"claude-code/m1/effort-low"}
+    assert {d["agent"] for d in decisions} == {"claude-code/m1/effort-low/single-response-v2"}
     assert not list((rv / "work" / "abstract").glob("batch_*.judge.json"))      # logs archived with batches
     assert len(list((rv / "work" / "abstract" / "done").glob("*.judge.json"))) == 2
 
@@ -93,7 +101,10 @@ def test_a_pilot_limit_holds_across_rounds(tmp_path, capsys, monkeypatch):
     run_stage.main([str(rv), "--stage", "abstract", "--model", "m1", "--size", "1", "--limit", "1",
                     "--claude", f"{sys.executable} {fake}"])
     summary = json.loads(capsys.readouterr().out)
-    assert summary["accepted"] == 1 and summary["pending"] == 2 and summary["done"]
+    # pending counts the pilot's own scope; the rest of the stage is reported separately and
+    # is never batched by a pilot's retries.
+    assert summary["accepted"] == 1 and summary["pending"] == 0 and summary["done"]
+    assert summary["total_stage_pending"] == 2
 
 
 def workspace(tmp_path):
@@ -194,3 +205,17 @@ def test_the_lock_is_claimed_atomically(tmp_path):
         assert exc.args[0]["pid"] == os.getpid()
     else:
         raise AssertionError("the second claim should have been refused")
+
+
+def test_a_reply_wrapped_in_a_json_fence_is_accepted(tmp_path, capsys, monkeypatch):
+    """Haiku wraps its single-response JSON in a ```json fence despite the instruction not to.
+    Every one of the 156 failed attempts in the Haiku cue_reactivity and problem_solving
+    selection runs was such a reply, complete but rejected at character 0 and judged again."""
+    ws, rv, fake = workspace(tmp_path)
+    monkeypatch.chdir(ws)
+    monkeypatch.setenv("FAKE_FENCE", "1")
+    code = run_stage.main([str(rv), "--stage", "abstract", "--model", "m1", "--size", "2",
+                           "--claude", f"{sys.executable} {fake}"])
+    summary = json.loads(capsys.readouterr().out)
+    assert code == 0 and summary["done"] and summary["accepted"] == 3
+    assert summary["usage"]["attempts"] == 2 and not summary["judge_failures"]    # no re-judging

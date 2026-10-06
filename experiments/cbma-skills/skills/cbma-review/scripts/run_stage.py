@@ -4,10 +4,10 @@
         [--size 2] [--limit N] [--parallel 8] [--time-budget 540] [--add-dir PACKAGE]
 
 Run it from the workspace: the folder whose `.claude/agents/` holds the judge
-definitions. Each batch is judged by a fresh `claude -p --agent <judge>` session, with
-the one dispatch prompt below and nothing else. The judge's effort, tools and preloaded
-skill come from its agent definition, so no coordinating model sits between the ledger
-and the judges, and no one can add guidance to a prompt.
+definitions. Each batch is judged by a fresh tool-free `claude -p` session. Python supplies the
+scientific skills and complete stage inputs; the model returns one JSON response.
+Python saves existing output formats for unchanged ledger validation. Effort and
+thinking budgets retain their workspace configuration.
 
 The script is resumable, and it stops at --time-budget seconds. It stops launching
 judges well before then and waits for those running, so a caller whose commands time
@@ -15,13 +15,18 @@ out (an agent's Bash tool) runs it again until it reports done. Each call:
   1. ingests outputs already written;
   2. if no batch is waiting, batches whatever is pending (at most --limit in the first
      round);
-  3. dispatches judges for batches without output, up to --parallel at once;
+  3. dispatches only available slots, with timeouts capped to the remaining budget;
   4. ingests;
-  5. repeats for retries, up to --rounds rounds per call, while time remains.
+  5. repeats while time remains; --max-attempts persists across calls for unchanged inputs.
 
 It prints one JSON summary: accepted, rejected, pending, judge failures, and the
-judges' token usage from their `--output-format json` logs (saved beside each batch as
-`.judge.json`).
+judges' cumulative reported usage from immutable per-attempt records. Missing CLI
+usage is explicitly counted as unknown; native `.judge.json` logs remain compatible.
+
+Workspaces can opt into model-specific fixed thinking budgets with
+`.claude/agents/judge_thinking_budgets.json` (a `model` ID and `stages` mapping).
+The configured budget sets MAX_THINKING_TOKENS only for judge subprocesses and is
+recorded in their result logs, the stage summary, and the ledger agent string.
 
 Only one live process may work a stage: the call takes a lock in the stage's work folder
 and exits 4 if another process holds it, so a runner stopped by a usage limit (whose script
@@ -48,17 +53,28 @@ from typing import Optional, Tuple
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ledger  # noqa: E402
+import single_response  # noqa: E402
+import stage_bookkeeping as bookkeeping  # noqa: E402
 
 JUDGE = {"abstract": "cbma-abstract-screener", "fulltext": "cbma-fulltext-screener",
          "extraction": "cbma-extractor", "selection": "cbma-selector"}
 SIZE = {"abstract": 25, "fulltext": 2, "extraction": 1, "selection": 1}
-# The skill goes into the judge's system prompt (--append-system-prompt-file), where it is
-# cached and costs no turn. Agent frontmatter does not reach a headless --agent session:
-# its effort and preloaded skills are ignored there, so both are passed as flags.
-PROMPT = ("Your batch file is `{batch}`. Follow the `{skill}` skill, which is already in your "
-          "system prompt (source: `{skills}/{skill}/SKILL.md`). Write your output to the path in "
-          "the batch's `output` field. Reply with only the number of items you wrote.")
 USAGE = ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens")
+
+
+def judge_thinking_budget(agents_dir: Path, model: str, stage: str) -> Optional[int]:
+    """Read an opt-in, workspace-local fixed thinking budget for this judge."""
+    path = agents_dir / "judge_thinking_budgets.json"
+    if not path.exists():
+        return None
+    config = json.loads(path.read_text())
+    configured_model = config["model"]
+    if model != configured_model and not model.startswith(configured_model + "-"):
+        return None
+    budget = config["stages"][stage]
+    if type(budget) is not int or budget < 1024:
+        raise ValueError(f"{path}: {stage} thinking budget must be an integer >= 1024")
+    return budget
 
 
 def agent_effort(agents_dir: Path, judge: str) -> str:
@@ -66,47 +82,32 @@ def agent_effort(agents_dir: Path, judge: str) -> str:
     return m.group(1) if m else "default"
 
 
-def judge_one(batch: Path, stage: str, args, skills: Path) -> dict:
-    data = json.loads(batch.read_text())
-    prompt = PROMPT.format(batch=batch, skills=skills, skill=data["skill"])
+def judge_one(batch: Path, stage: str, args, skills: Path, timeout=None) -> dict:
+    started = time.monotonic()
     effort = agent_effort(args.agents_dir, JUDGE[stage])
-    cmd = shlex.split(args.claude) + ["-p", "--agent", JUDGE[stage], "--model", args.model,
-                                      "--output-format", "json", "--allowedTools", "Read,Write",
-                                      "--append-system-prompt-file", str(skills / data["skill"] / "SKILL.md")]
-    if effort != "default":
-        cmd += ["--effort", effort]
-    for d in args.add_dir:
-        cmd += ["--add-dir", d]
-    cmd += ["--", prompt]
-    log = batch.with_suffix(".judge.json")
-    started = time.time()
+    directory = single_response.new_attempt(batch, 'claude', args.model, effort)
+    recovery = None
     try:
-        run = subprocess.run(cmd, capture_output=True, text=True, timeout=args.judge_timeout, stdin=subprocess.DEVNULL)
-        log.write_text(run.stdout or json.dumps({"stderr": run.stderr[-4000:]}))
-        ok = run.returncode == 0
-        err = None if ok else (run.stderr or run.stdout)[-500:]
+        prepared = single_response.prepare(batch, skills)
+        recovery = single_response.claude(prepared, shlex.split(args.claude), args.model,
+            effort, timeout if timeout is not None else args.judge_timeout,
+            getattr(args, "max_thinking_tokens", None), directory=directory)
+        ok, err = True, None
     except subprocess.TimeoutExpired:
-        ok, err = False, f"timed out after {args.judge_timeout}s"
-    return {"batch": batch.name, "ok": ok, "error": err, "seconds": round(time.time() - started)}
+        ok, err = False, f"timed out after {timeout or args.judge_timeout}s"
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        ok, err = False, str(exc)[-500:]
+    # Includes preparation failures, which occur before the CLI adapter starts.
+    record = json.loads((directory / 'attempt.json').read_text())
+    if record.get('status') == 'started':
+        single_response.finish_attempt(directory, status='failed', error=err)
+    return {"batch": batch.name, "ok": ok, "error": err, "attempt_id": directory.name,
+            "audit": str(directory), "recovery": recovery, "provider_blocked": bookkeeping.provider_blocked(err),
+            "judge_path": single_response.VERSION, "seconds": round(time.monotonic() - started)}
 
 
 def usage_of(work: Path) -> dict:
-    total = {k: 0 for k in USAGE}
-    total["judges"] = total["cost_usd"] = 0
-    for log in list(work.glob("batch_*.judge.json")) + list((work / "done").glob("*.judge.json")):
-        try:
-            r = json.loads(log.read_text())
-        except json.JSONDecodeError:
-            continue
-        u = r.get("usage") or {}
-        if not u:
-            continue
-        total["judges"] += 1
-        total["cost_usd"] += r.get("total_cost_usd") or 0
-        for k in USAGE:
-            total[k] += int(u.get(k) or 0)
-    total["cost_usd"] = round(total["cost_usd"], 2)
-    return total
+    return single_response.usage_of(work, 'claude')
 
 
 def ingest(review: Path, stage: str, agent: str, summary: dict) -> None:
@@ -189,6 +190,7 @@ def main(argv=None) -> int:
     ap.add_argument("--limit", type=int, help="batch at most this many items in the first round (pilots)")
     ap.add_argument("--parallel", type=int, default=8)
     ap.add_argument("--rounds", type=int, default=3, help="dispatch rounds per call: the first, plus retries")
+    ap.add_argument("--max-attempts", type=int, default=3, help="persistent attempts per unchanged item")
     ap.add_argument("--time-budget", type=int, default=540, help="seconds before this call returns")
     ap.add_argument("--judge-timeout", type=int, default=900)
     ap.add_argument("--agents-dir", type=Path, default=Path(".claude/agents"))
@@ -196,15 +198,28 @@ def main(argv=None) -> int:
     ap.add_argument("--claude", default="claude", help="the claude CLI command (tests pass a fake)")
     ap.add_argument("--harness", default="claude-code")
     args = ap.parse_args(argv)
+    if any(n <= 0 for n in (args.size or SIZE[args.stage], args.parallel, args.rounds,
+                            args.max_attempts, args.time_budget, args.judge_timeout)) or (
+                            args.limit is not None and args.limit <= 0):
+        ap.error("numeric controls must be positive")
+    try:
+        args.max_thinking_tokens = judge_thinking_budget(args.agents_dir, args.model, args.stage)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        ap.error(f"invalid judge thinking-budget configuration: {exc}")
 
     review = args.review_dir.resolve()
     skills = Path(ledger.SKILLS_ROOT)
     judge = JUDGE[args.stage]
     effort = agent_effort(args.agents_dir, judge)
     agent = f"{args.harness}/{args.model}/effort-{effort}"
-    deadline = time.time() + args.time_budget
+    if args.max_thinking_tokens is not None:
+        agent += f"/thinking-budget-{args.max_thinking_tokens}"
+    agent += "/" + single_response.VERSION
+    deadline = time.monotonic() + args.time_budget
     summary = {"stage": args.stage, "judge": judge, "effort": effort, "agent": agent, "rounds": 0,
                "batches_dispatched": 0, "accepted": 0, "rejected": 0, "judge_failures": [], "errors": []}
+    if args.max_thinking_tokens is not None:
+        summary["configured_max_thinking_tokens"] = args.max_thinking_tokens
     lock = None
     try:
         rv = ledger.Review(review)
@@ -213,42 +228,98 @@ def main(argv=None) -> int:
         if stale:
             # An earlier call died holding the stage. Its batches, if any, are picked up below.
             summary["took_over_lock_from"] = stale
-        ingest(review, args.stage, agent, summary)          # outputs left by an earlier call
-        first = not any((work / "done").glob("*_batch_*.json")) if (work / "done").exists() else True
-        while summary["rounds"] < args.rounds and time.time() < deadline - 60:
-            waiting = ledger.batch_files(work) if work.exists() else []
-            if not waiting:
-                if not ledger.Review(review).pending(args.stage):
+        state_dir = work / 'claude_runner'
+        state_dir.mkdir(exist_ok=True)
+        state_path = state_dir / 'state.json'
+        state = json.loads(state_path.read_text()) if state_path.exists() else {'attempts': {}, 'pilots': {}}
+        attempts = state['attempts']
+        scope = None
+        if args.limit:
+            key = rv.criteria[args.stage]['hash'] + ':' + str(args.limit)
+            existing = {i['pmid'] for b in ledger.batch_files(work) for i in json.loads(b.read_text())['items']}
+            # Adopt legacy pilot history before ingestion shrinks its batches.
+            # A completed legacy pilot must never silently start the next N records.
+            historical = []
+            for archived in sorted((work / 'done').glob('*_batch_*.json')):
+                if not re.fullmatch(r'.*_batch_\d+\.json', archived.name):
+                    continue
+                old = json.loads(archived.read_text())
+                if old.get('_criteria_hash') == rv.criteria[args.stage]['hash']:
+                    for item in old.get('items', []):
+                        if item['pmid'] not in historical:
+                            historical.append(item['pmid'])
+                        if len(historical) >= args.limit:
+                            break
+                if len(historical) >= args.limit:
                     break
-                if args.limit and not first:
-                    break                                   # a pilot: retry its items, batch no new ones
-                ledger.cmd_batches(ledger.Review(review), args.stage, args.size or SIZE[args.stage],
-                                   args.limit if first else None, discard=False)
+            initial = historical or (sorted(existing) if existing else rv.pending(args.stage)[:args.limit])
+            if historical and len(initial) < args.limit:
+                initial += [p for p in sorted(existing) if p not in initial]
+            if len(initial) > args.limit:
+                raise ledger.LedgerError('existing batches exceed pilot scope')
+            scope = state['pilots'].setdefault(key, initial)
+            if existing - set(scope):
+                raise ledger.LedgerError('existing batches exceed saved pilot scope')
+            bookkeeping.write_state(state_path, state)
+
+        def pending():
+            values = ledger.Review(review).pending(args.stage)
+            return [p for p in values if scope is None or p in scope]
+
+        ingest(review, args.stage, agent, summary)
+        blocked = False
+        exhausted = set()
+        while pending() and summary['rounds'] < args.rounds and time.monotonic() < deadline - 5 and not blocked:
+            waiting = ledger.batch_files(work)
+            if not waiting:
+                scoped = ledger.Review(review)
+                if scope is not None:
+                    original_pending = scoped.pending
+                    scoped.pending = lambda stage: [p for p in original_pending(stage)
+                                                    if stage != args.stage or p in scope]
+                ledger.cmd_batches(scoped, args.stage, args.size or SIZE[args.stage], None, discard=False)
                 waiting = ledger.batch_files(work)
-            first = False
-            todo = [b for b in waiting if not ledger._output_path(b, args.stage).exists()]
-            summary["rounds"] += 1
+            todo, current_exhausted = bookkeeping.eligible_batches(
+                waiting, pending(), attempts, args.max_attempts, state_dir)
+            exhausted.update(current_exhausted)
+            if not todo:
+                break
+            summary['rounds'] += 1
             with cf.ThreadPoolExecutor(max_workers=args.parallel) as pool:
-                futures = {}
-                for b in todo:
-                    # Leave room for a judge to finish: never launch within the last few minutes.
-                    if time.time() > deadline - min(args.judge_timeout, 300):
+                running = {}
+                queue = iter(todo)
+                while True:
+                    while len(running) < args.parallel and time.monotonic() < deadline - 5 and not blocked:
+                        job = next(queue, None)
+                        if job is None:
+                            break
+                        batch, keys = job
+                        timeout = min(args.judge_timeout, max(0.1, deadline - time.monotonic() - 5))
+                        for key in keys:
+                            attempts[key] = attempts.get(key, 0) + 1
+                        bookkeeping.write_state(state_path, state)
+                        running[pool.submit(judge_one, batch, args.stage, args, skills, timeout)] = batch
+                    if not running:
                         break
-                    futures[pool.submit(judge_one, b, args.stage, args, skills)] = b
-                for fut in cf.as_completed(futures):
-                    res = fut.result()
-                    summary["batches_dispatched"] += 1
-                    if not res["ok"]:
-                        summary["judge_failures"].append(res)
+                    done, _ = cf.wait(running, return_when=cf.FIRST_COMPLETED)
+                    for future in done:
+                        running.pop(future)
+                        row = future.result()
+                        summary['batches_dispatched'] += 1
+                        if not row['ok']:
+                            summary['judge_failures'].append(row)
+                        blocked = blocked or row['provider_blocked']
             ingest(review, args.stage, agent, summary)
-            if len(futures) < len(todo):
-                break                                       # out of time; the next call resumes
-        rv = ledger.Review(review)
-        pending = rv.pending(args.stage)
-        waiting = ledger.batch_files(work) if work.exists() else []
-        batched_pending = sorted({it["pmid"] for b in waiting for it in json.loads(b.read_text())["items"]})
-        summary.update(pending=len(pending), waiting_batches=len(waiting), batched_but_pending=batched_pending[:50],
-                       usage=usage_of(work))
+        scoped_pending = pending()
+        waiting = ledger.batch_files(work)
+        summary.update(pending=len(scoped_pending), total_stage_pending=len(ledger.Review(review).pending(args.stage)),
+                       waiting_batches=len(waiting), retry_exhausted=sorted(exhausted),
+                       max_attempts=args.max_attempts, provider_blocked=blocked, usage_limited=blocked,
+                       batched_but_pending=sorted({it['pmid'] for b in waiting
+                           for it in json.loads(b.read_text())['items']})[:50], usage=usage_of(work),
+                       done=not scoped_pending, logs=str(state_dir))
+        bookkeeping.write_state(state_dir / 'last_summary.json', summary)
+
     except StageBusy as exc:
         held = exc.args[0]
         print(json.dumps({"stage_busy": held, "stage": args.stage,
@@ -261,9 +332,7 @@ def main(argv=None) -> int:
     finally:
         if lock is not None:
             lock.unlink(missing_ok=True)
-    limited = any(re.search(r"limit|429", f.get("error") or "", re.I) for f in summary["judge_failures"])
-    summary["usage_limited"] = limited
-    summary["done"] = not waiting and (not pending or bool(args.limit))
+
     print(json.dumps(summary, indent=1))
     return 0 if summary["done"] else 3
 

@@ -8,7 +8,7 @@ The transcript folder is the one Claude Code keeps for the workspace the review 
 is every subagent file under <session>/subagents/.
 
 ROLES. Each transcript is classified by its first prompt:
-    judge <stage>    starts "Your batch file is ..." (a subagent, or a headless session
+    judge <stage>    starts "Your batch file is ..." or "CBMA_SINGLE_RESPONSE_V1" (a headless session
                      started by run_stage.py)
     runner <stage>   asks for a stage ("Run the `<stage>` stage")
     orchestrator     any top-level session
@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 import re
 import sys
@@ -47,8 +48,13 @@ LIMIT = re.compile(r"hit your (session|usage|weekly) limit|rate_limit|\b429\b", 
 
 def classify(first_prompt: str, top_level: bool) -> tuple:
     # A judge may be a subagent, or a top-level headless session started by run_stage.py.
+    marker = re.search(r"(?m)^CBMA_SINGLE_RESPONSE_V[12] batch=(.+)$", first_prompt)
+    if marker:
+        match = re.search(r"work/(abstract|fulltext|extraction|selection)/batch_\d+\.json", marker.group(1))
+        if match:
+            return "judge", match.group(1), match.group(0)
     m = re.search(r"work/(abstract|fulltext|extraction|selection)/batch_\d+\.json", first_prompt)
-    if m and first_prompt.lstrip().startswith("Your batch file is"):
+    if m and first_prompt.lstrip().startswith(("Your batch file is", "CBMA_SINGLE_RESPONSE_V1 batch=")):
         return "judge", m.group(1), m.group(0)
     m = re.search(r"Run the `?(abstract|fulltext|extraction|selection)`? stage", first_prompt)
     if m and not top_level:
@@ -86,6 +92,20 @@ JUDGE_TEMPLATE = [
 
 
 def prompt_additions(prompt: str) -> str:
+    marker = re.search(r"(?m)^CBMA_SINGLE_RESPONSE_V[12] batch=(.+)$", prompt)
+    if marker:
+        # Inline evidence is authorized input, not extra dispatch guidance. Require
+        # the exact saved prompt fingerprint rather than trusting a marker alone.
+        batch = Path(marker.group(1))
+        digest = hashlib.sha256(prompt.encode()).hexdigest()
+        for manifest in (batch.parent / "judge_responses").glob("*/input_manifest.json"):
+            try:
+                record = json.loads(manifest.read_text())
+            except (OSError, ValueError):
+                continue
+            if record.get("judge_path") in ("single-response-v1", "single-response-v2") and record.get("prompt_sha256") == digest:
+                return ""
+        return "single-response prompt has no matching saved input manifest"
     rest = prompt
     for sentence in JUDGE_TEMPLATE:
         rest = re.sub(sentence, " ", rest)
@@ -109,7 +129,9 @@ def same_file(target: str, output: str, review: Path) -> bool:
     target_path = Path(target) if Path(target).is_absolute() else review / target
     out = Path(output)
     try:
-        target_path = target_path.resolve()
+        # Both sides: a workspace renamed after the run is reached through a symlink, so the
+        # judge's recorded output path and the review's real path differ only by that link.
+        target_path, out = target_path.resolve(), out.resolve()
     except OSError:
         pass
     return target_path == out or out in target_path.parents
