@@ -709,3 +709,39 @@ refits, so every row fits unknown spaces as MNI.
   points (about 1,000); excluding them was not why its maps trail autonima.
 - Screening, peak recall and selection columns are unchanged; only the map columns differ from
   the earlier Delta rows.
+
+### Update (2026-10-07, later): refit from each run's fitting copy, not its full export
+
+The Delta fitting copies did not only leave out unknown-space analyses. Six reviews also omitted
+analyses for scientific reasons recorded in their reports (overlapping samples, the same contrast
+reported twice, re-judged eligibility such as mixed grey/white-matter or continuous-association
+analyses) and, in Sol PTSD, three ROI points. Refitting from the full export re-added those too.
+Per analysis x target: Astra PTSD 1 such omission (an overlapping follow-up study); the five Sol /
+Luna 5.6 reviews imported on 2026-10-07: cue reactivity 8, emotion regulation 5, problem solving
+14, PTSD 6, substance use 46. The other twelve Delta reviews omitted only unknown-space analyses,
+so their full-export refits are unaffected.
+
+For those six,  now holds the run's own fitting copy plus only its
+unknown-space analyses, fitted as MNI (the full-export refits are kept in
+, not for comparison). The five new Sol / Luna 5.6
+reviews are added. Effect of the unknown-space analyses on map r: within +/-0.01 everywhere except
+substance-use alcohol (-0.026, one analysis); substance-use nicotine reaches 11 studies and is
+fitted (r 0.64, autonima 0.55). Astra PTSD's earlier drop (0.750 to 0.738) came from the re-added
+overlapping study, not from unknown spaces; with only those added it is 0.751.
+
+Corrected and added rows (every row fits unknown spaces as MNI; the Sol / Luna 6 rows are the
+local Portkey runs, put on hold on 2026-10-07 and confounded with the newer transport and
+extraction input):
+
+| project | arm | screen P | R | F1 | autonima F1 | peak recall (aut) | sel P / R (mean over targets) | maps | map r | autonima r |
+|---|---|---|---|---|---|---|---|---|---|---|
+| cue_reactivity | Sol/Luna5.6 | 0.24 | 0.82 | 0.37 | 0.38 | 0.53 (0.51) | 0.30 / 0.63 | 3 | 0.77 | 0.75 |
+| dementia | Sol/Luna6 | 0.46 | 0.55 | 0.50 | 0.55 | 0.36 (0.23) | 0.19 / 0.15 | 4 | 0.40 | 0.54 |
+| emotion_regulation_2022 | Sol/Luna5.6 | 0.30 | 0.77 | 0.43 | 0.37 | 0.48 (0.44) | 0.46 / 0.46 | 4 | 0.74 | 0.79 |
+| executive_function | Sol/Luna6 | 0.11 | 0.32 | 0.16 | 0.15 | 0.36 (0.29) | 0.21 / 0.25 | 4 | 0.73 | 0.78 |
+| problem_solving | Sol/Luna5.6 | 0.22 | 0.57 | 0.31 | 0.37 | 0.52 (0.51) | 0.24 / 0.43 | 5 | 0.77 | 0.80 |
+| social | Sol/Luna6 | 0.45 | 0.79 | 0.57 | 0.57 | 0.63 (0.60) | 0.42 / 0.36 | 5 | 0.64 | 0.73 |
+| vbm_of_ptsd | Astra/Astra | 0.60 | 0.57 | 0.59 | 0.67 | 0.94 (0.65) | 0.67 / 0.36 | 1 | 0.75 | 0.76 |
+| vbm_of_ptsd | Sol/Luna5.6 | 0.62 | 0.71 | 0.67 | 0.67 | 0.98 (0.60) | 0.71 / 0.55 | 1 | 0.66 | 0.76 |
+| vbm_of_substance_use | Sol/Luna5.6 | 0.47 | 0.77 | 0.58 | 0.56 | 0.75 (0.73) | 0.76 / 0.63 | 3 | 0.69 | 0.64 |
+
