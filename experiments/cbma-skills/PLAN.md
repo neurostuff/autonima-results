@@ -721,9 +721,9 @@ Luna 5.6 reviews imported on 2026-10-07: cue reactivity 8, emotion regulation 5,
 14, PTSD 6, substance use 46. The other twelve Delta reviews omitted only unknown-space analyses,
 so their full-export refits are unaffected.
 
-For those six,  now holds the run's own fitting copy plus only its
+For those six, `results/meta_unknown_mni/` now holds the run's own fitting copy plus only its
 unknown-space analyses, fitted as MNI (the full-export refits are kept in
-, not for comparison). The five new Sol / Luna 5.6
+`results/meta_unknown_mni_full_export/`, not for comparison). The five new Sol / Luna 5.6
 reviews are added. Effect of the unknown-space analyses on map r: within +/-0.01 everywhere except
 substance-use alcohol (-0.026, one analysis); substance-use nicotine reaches 11 studies and is
 fitted (r 0.64, autonima 0.55). Astra PTSD's earlier drop (0.750 to 0.738) came from the re-added
