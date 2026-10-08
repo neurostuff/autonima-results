@@ -533,6 +533,22 @@ def extraction_input_view(review_root: Path) -> str:
     return view
 
 
+def _record_tableless(rv: Review, pmid: str, input_view: str) -> bool:
+    """A study with no parsed tables cannot yield an analysis: points are accepted only when they
+    match a parsed table row. Across eight runs not one such study produced an analysis, yet each
+    cost a full-paper judge call. Record it as extracted, with no tables and no analyses, without
+    calling a judge. The ledger stays the only writer, and the record says why."""
+    if any((rv.doc_dir(pmid) / "tables").glob("*.json")):
+        return False
+    record = {"pmid": pmid, "tables": [], "analyses": [], "stage": "extraction",
+              "batch_id": "no-parsed-tables", "agent": "ledger/no-parsed-tables", "ingested_at": now(),
+              "criteria_hash": rv.criteria["extraction"]["hash"], "input_hash": rv.input_hash("extraction", pmid),
+              "input_view": input_view,
+              "note": "No parsed tables in the normalized source, so no coordinates can be verified; no judge was called."}
+    write_json(rv.root / "analyses" / f"{pmid}.json", record)
+    return True
+
+
 def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard: bool) -> List[Path]:
     input_view = extraction_input_view(rv.root) if stage == "extraction" else "full"
     work = rv.work_dir(stage)
@@ -552,6 +568,8 @@ def cmd_batches(rv: Review, stage: str, size: int, limit: Optional[int], discard
         else:
             p.unlink()
     pending = rv.pending(stage)
+    if stage == "extraction" and not rv.combined:
+        pending = [p for p in pending if not _record_tableless(rv, p, input_view)]
     if limit:
         pending = pending[:limit]
     crit = rv.criteria[stage]

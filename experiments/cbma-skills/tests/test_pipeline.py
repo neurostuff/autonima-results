@@ -611,3 +611,25 @@ def test_evidence_quotes_are_exact_close_or_unmatched():
     _, flags = ledger.validate_screening(rec, "fulltext", ["I1"], text)
     assert flags["inexact_evidence"] == ["I1"] and flags["ungrounded_evidence"] == ["I1"]
     assert flags["evidence_check"] == ledger.EVIDENCE_CHECK
+
+
+def test_a_study_without_parsed_tables_is_recorded_without_a_judge(review, monkeypatch):
+    """Points are accepted only when they match a parsed table row, so a study with no tables
+    can never yield an analysis; across eight runs none did, yet each cost a full-paper judge call.
+    The ledger records it as extracted with no analyses and batches only studies with tables."""
+    run_ledger("init", review)
+    rv = ledger.Review(review)
+    with_tables, without = sorted(rv.records)[:2]
+    monkeypatch.setattr(ledger.Review, "pending", lambda self, stage: [with_tables, without])
+    monkeypatch.setattr(ledger.Review, "input_hash", lambda self, stage, p: "in")
+    (rv.doc_dir(with_tables) / "tables").mkdir(parents=True)
+    (rv.doc_dir(with_tables) / "tables" / "T1.json").write_text(json.dumps(
+        {"table_id": "T1", "label": "Table 1", "caption": "Peaks", "coordinate_candidate": True,
+         "duplicate_of": None, "has_data": True, "grid": [["x", "y", "z"]]}))
+    (rv.doc_dir(with_tables) / "text.md").write_text("# Study\n\nText.")
+    paths = ledger.cmd_batches(rv, "extraction", 1, None, discard=False)
+    batched = [it["pmid"] for p in paths for it in json.loads(p.read_text())["items"]]
+    assert batched == [with_tables]
+    rec = json.loads((review / "analyses" / f"{without}.json").read_text())
+    assert rec["analyses"] == [] and rec["agent"] == "ledger/no-parsed-tables" and rec["input_hash"] == "in"
+    assert rec["criteria_hash"] == rv.criteria["extraction"]["hash"]
