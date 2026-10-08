@@ -176,9 +176,13 @@ abstract screening, full-text screening, extraction and selection:
 - **Abstract screening:** read 10 random excludes and 10 random includes from
   `decisions/abstract.jsonl`. If you disagree with more than one, show the user
   the cases before continuing.
-- **Full-text screening:** check `decisions_with_ungrounded_evidence`, which counts
-  evidence quotes the ledger could not find in the text. A high count means
-  subagents are paraphrasing instead of quoting. Re-batch those studies.
+- **Full-text screening:** quotes are checked against the text in three levels.
+  `decisions_with_inexact_evidence` counts decisions whose quotes are close but not
+  verbatim (ellipses, joined sentences, reformatted tables). That is informational:
+  never stop, re-batch or re-judge for it. `decisions_with_ungrounded_evidence` counts
+  decisions with a quote that has no close match in the paper. Open up to five of
+  those, check the deciding criterion against the paper, and report what you find;
+  stop only if a decision itself is wrong.
 - **Extraction:**
   - `points_unverified` should be near 0. Unverified points are dropped at export.
   - Open two extracted studies and compare them with their tables by eye.

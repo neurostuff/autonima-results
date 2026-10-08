@@ -82,9 +82,12 @@ string `AGENT/effort-<level>`, for example `claude-code/claude-opus-5-5/effort-l
    - **abstract:** read 10 random excludes and 10 random includes from
      `decisions/abstract.jsonl` (title, abstract and reason). Count those you
      disagree with.
-   - **fulltext:** report `decisions_with_ungrounded_evidence` from status. For 5
-     random includes and 5 random excludes, open the text and check the deciding
-     criterion against it. Count disagreements.
+   - **fulltext:** report `decisions_with_ungrounded_evidence` (a quote with no close
+     match in the paper) and `decisions_with_inexact_evidence` (close but not verbatim)
+     from status. Inexact quotes are not a problem and never a reason for a PROBLEM
+     verdict or a retry. For 5 random includes and 5 random excludes, open the text and
+     check the deciding criterion against it. Count disagreements in the decisions, not
+     in the wording of quotes.
    - **extraction:** report `points_unverified` from status. For 2 random studies,
      compare `analyses/<pmid>.json` with their tables.
    - **fulltext in combined mode** (the batch's `skill` is `screen-and-select`): the

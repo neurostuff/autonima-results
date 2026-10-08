@@ -592,3 +592,22 @@ def test_an_explicit_extraction_view_reopens_records_made_from_another_view(revi
     (review / "analyses" / f"{pmid}.json").write_text(json.dumps({k: v for k, v in rec.items() if k != "input_view"}))
     (agents / "judge_input_views.json").write_text('{"extraction": "full"}')
     assert ledger.Review(review).pending("extraction") == []                 # an unlabelled record is full
+
+
+def test_evidence_quotes_are_exact_close_or_unmatched():
+    """Lightly reworded quotes (ellipses, joined sentences, a dropped citation) were counted with
+    invented ones and stopped runs. Only quotes with no close match are flagged as ungrounded."""
+    text = ("Twenty healthy adults took part. Images were acquired on a 3T scanner (Siemens). "
+            "Coordinates are reported in MNI space. Results were corrected for multiple comparisons.")
+    hay, tp = ledger.norm_text(text), ledger._word_pairs(text)
+    assert ledger.evidence_match("Coordinates are reported in MNI space", hay, tp) == "exact"
+    assert ledger.evidence_match("Images were acquired on a 3T scanner... Coordinates are reported in MNI space",
+                                 hay, tp) == "close"
+    assert ledger.evidence_match("Participants were twelve patients with schizophrenia on medication",
+                                 hay, tp) == "none"
+    rec = {"pmid": "1", "decision": "include", "criteria": {"I1": "met"}, "reason": "r",
+           "evidence": [{"criterion": "I1", "quote": "Images were acquired on a 3T scanner... Coordinates are reported"},
+                        {"criterion": "I1", "quote": "a completely invented sentence about something else entirely"}]}
+    _, flags = ledger.validate_screening(rec, "fulltext", ["I1"], text)
+    assert flags["inexact_evidence"] == ["I1"] and flags["ungrounded_evidence"] == ["I1"]
+    assert flags["evidence_check"] == ledger.EVIDENCE_CHECK

@@ -109,6 +109,30 @@ def norm_text(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip().lower()
 
 
+EVIDENCE_CHECK = 2
+CLOSE_MATCH = 0.6
+
+
+def _word_pairs(s: str) -> set:
+    w = re.findall(r"[a-z0-9]+", norm_text(s))
+    return set(zip(w, w[1:]))
+
+
+def evidence_match(quote: str, haystack: str, text_pairs: set) -> str:
+    """How a full-text evidence quote matches the paper: "exact" (its first 200 normalized
+    characters appear verbatim), "close" (at least 60% of its word pairs appear: ellipses,
+    joined sentences, reformatted table rows, a dropped citation), or "none". In the Haiku
+    social run 88% of the quotes the verbatim check missed had 90% or more of their word pairs
+    in the paper; about 5% had under 60%. Only "none" suggests a quote that is not from the paper."""
+    q = norm_text(quote or "")[:200]
+    if q and q in haystack:
+        return "exact"
+    pairs = _word_pairs(quote or "")
+    if len(pairs) >= 3 and len(pairs & text_pairs) / len(pairs) >= CLOSE_MATCH:
+        return "close"
+    return "none"
+
+
 # --------------------------------------------------------------------------- #
 # Review spec and criteria
 # --------------------------------------------------------------------------- #
@@ -674,11 +698,15 @@ def validate_screening(rec: dict, stage: str, ids: List[str], text: Optional[str
         if not isinstance(ev, list):
             errs.append(f"{where}: evidence must be a list of {{criterion, quote}}")
         else:
-            haystack = norm_text(text)
-            ungrounded = [e.get("criterion") for e in ev
-                          if not isinstance(e, dict) or norm_text(e.get("quote", ""))[:200] not in haystack]
+            haystack, text_pairs = norm_text(text), _word_pairs(text)
+            match = [evidence_match(e.get("quote", ""), haystack, text_pairs) if isinstance(e, dict) else "none"
+                     for e in ev]
             flags["n_evidence"] = len(ev)
-            flags["ungrounded_evidence"] = ungrounded
+            # Inexact quotes are informational, never a reason to reject or re-judge a decision.
+            flags["ungrounded_evidence"] = [e.get("criterion") if isinstance(e, dict) else None
+                                            for e, m in zip(ev, match) if m == "none"]
+            flags["inexact_evidence"] = [e.get("criterion") for e, m in zip(ev, match) if m == "close"]
+            flags["evidence_check"] = EVIDENCE_CHECK
     return errs, flags
 
 
@@ -1106,7 +1134,19 @@ def cmd_status(rv: Review) -> dict:
                         if rv.fulltext_index.get(p, {}).get("source"))
     f_dec = rv.valid_decisions("fulltext")
     f = Counter(r["decision"] for r in f_dec.values())
-    ungrounded = sum(1 for r in f_dec.values() if r.get("ungrounded_evidence"))
+    ungrounded = inexact = 0
+    for r in f_dec.values():
+        if r.get("ungrounded_evidence") and r.get("evidence_check") != EVIDENCE_CHECK:
+            # Flagged by the earlier verbatim-only check: re-check against the paper so the counts
+            # mean the same for old and new decisions.
+            text_path = rv.doc_dir(r["pmid"]) / "text.md"
+            if text_path.exists():
+                text = text_path.read_text(encoding="utf-8")
+                hay, tp = norm_text(text), _word_pairs(text)
+                m = [evidence_match(e.get("quote", ""), hay, tp) for e in r.get("evidence") or [] if isinstance(e, dict)]
+                r = dict(r, ungrounded_evidence=[1 for x in m if x == "none"], inexact_evidence=[1 for x in m if x == "close"])
+        ungrounded += bool(r.get("ungrounded_evidence"))
+        inexact += bool(r.get("inexact_evidence"))
     no_eligible = sum(1 for r in f_dec.values() if r.get("no_eligible_analysis"))
     included = rv.fulltext_included()
     ext = {"studies": len(included), "extracted": 0, "with_analyses": 0, "analyses": 0, "points": 0,
@@ -1146,6 +1186,7 @@ def cmd_status(rv: Review) -> dict:
         "fulltext_screening": {"screened": sum(f.values()), "include": f["include"], "exclude": f["exclude"],
                                "text_incomplete": f["incomplete"], "pending": len(rv.pending("fulltext")),
                                "decisions_with_ungrounded_evidence": ungrounded,
+                               "decisions_with_inexact_evidence": inexact,
                                **({"text_view": dict(Counter(r.get("text_view", "full") for r in f_dec.values()))}
                                   if rv.fulltext_view != "full" else {}),
                                **({"excluded_no_eligible_analysis": no_eligible} if rv.combined else {})},
