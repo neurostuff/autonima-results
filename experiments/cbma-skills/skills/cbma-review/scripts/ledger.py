@@ -387,10 +387,16 @@ class Review:
             out = []
             # Combined mode imports analyses before full-text screening, for every study with text.
             candidates = self.with_text() if self.combined else self.fulltext_included()
+            # A workspace that sets its extraction input explicitly wants every study extracted from
+            # that input: a record made from another one is not current. (Three Haiku runs were
+            # pinned to tables_only by mistake and are re-extracted from the full paper this way.)
+            # Without an explicit setting, records of any input view stay valid, as before.
+            view = configured_extraction_view(self.root)
             for p in candidates:
                 a = self.analyses(p)
                 if a is None or a.get("input_hash") != self.input_hash("extraction", p) \
-                        or a.get("criteria_hash") not in self.accepted_criteria_hashes("extraction"):
+                        or a.get("criteria_hash") not in self.accepted_criteria_hashes("extraction") \
+                        or (view is not None and a.get("input_view", "full") != view):
                     out.append(p)
             return out
         if stage == "selection":
@@ -482,6 +488,14 @@ def selection_output_format(review_root: Path) -> str:
     if fmt not in ("pairs", "compact"):
         raise LedgerError(f"{config}: selection must be pairs or compact")
     return fmt
+
+
+def configured_extraction_view(review_root: Path) -> Optional[str]:
+    """The extraction input a workspace sets explicitly in judge_input_views.json, or None."""
+    config = review_root.resolve().parent / ".claude" / "agents" / "judge_input_views.json"
+    if not config.exists():
+        return None
+    return json.loads(config.read_text()).get("extraction")
 
 
 def extraction_input_view(review_root: Path) -> str:

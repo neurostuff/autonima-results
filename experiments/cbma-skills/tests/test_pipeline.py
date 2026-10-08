@@ -567,3 +567,28 @@ def test_extractions_under_a_migrated_skill_hash_stay_done(review, monkeypatch):
     monkeypatch.setattr(ledger.Path, "read_text",
                         lambda self, *a, **k: json.dumps(registry) if self == target else real_read(self, *a, **k))
     assert ledger.Review(review).pending("extraction") == []      # migrated: still done
+
+
+def test_an_explicit_extraction_view_reopens_records_made_from_another_view(review, monkeypatch):
+    """Three Haiku runs extracted from tables_only because their workspace pinned it. Setting the
+    workspace back to full must reopen those records; a workspace without an explicit setting keeps
+    records of any view."""
+    run_ledger("init", review)
+    rv = ledger.Review(review)
+    pmid = next(iter(rv.records))
+    monkeypatch.setattr(ledger.Review, "fulltext_included", lambda self: [pmid])
+    monkeypatch.setattr(ledger.Review, "input_hash", lambda self, stage, p: "in")
+    (review / "analyses").mkdir(exist_ok=True)
+    rec = {"pmid": pmid, "criteria_hash": rv.criteria["extraction"]["hash"], "input_hash": "in",
+           "analyses": [], "input_view": "tables_only"}
+    (review / "analyses" / f"{pmid}.json").write_text(json.dumps(rec))
+    assert ledger.Review(review).pending("extraction") == []                 # no explicit setting
+    agents = review.parent / ".claude" / "agents"
+    agents.mkdir(parents=True, exist_ok=True)
+    (agents / "judge_input_views.json").write_text('{"extraction": "full"}')
+    assert ledger.Review(review).pending("extraction") == [pmid]             # tables_only is not current
+    (agents / "judge_input_views.json").write_text('{"extraction": "tables_only"}')
+    assert ledger.Review(review).pending("extraction") == []
+    (review / "analyses" / f"{pmid}.json").write_text(json.dumps({k: v for k, v in rec.items() if k != "input_view"}))
+    (agents / "judge_input_views.json").write_text('{"extraction": "full"}')
+    assert ledger.Review(review).pending("extraction") == []                 # an unlabelled record is full

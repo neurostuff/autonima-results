@@ -11,6 +11,10 @@ import single_response
 def identity(batch, item):
     payload = [batch['_criteria_hash'], item['pmid'], batch['_input_hashes'][item['pmid']],
                batch.get('_analyses_hashes', {}).get(item['pmid'])]
+    if batch.get('stage') == 'extraction':
+        # Attempts from another extraction input (tables_only, the full paper, ...) are a different
+        # job: re-extracting from the full paper must not inherit a tables-only attempt count.
+        payload.append(batch.get('input_view', 'full'))
     return hashlib.sha256(json.dumps(payload).encode()).hexdigest()
 
 

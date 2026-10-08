@@ -285,3 +285,17 @@ def test_the_runner_finds_the_workspace_agents_from_any_directory(tmp_path, caps
                            "--claude", f"{sys.executable} {fake}"])
     summary = json.loads(capsys.readouterr().out)
     assert code == 0 and summary["accepted"] == 3 and summary["effort"] == "low"
+
+
+def test_attempts_from_another_extraction_input_are_counted_separately():
+    """Studies that used their attempts under tables_only must get fresh ones when re-extracted
+    from the full paper; other stages' attempt keys are unchanged."""
+    import importlib
+    bk = importlib.import_module("stage_bookkeeping")
+    base = {"_criteria_hash": "c", "_input_hashes": {"1": "h"}}
+    item = {"pmid": "1"}
+    tables = bk.identity(dict(base, stage="extraction", input_view="tables_only"), item)
+    full = bk.identity(dict(base, stage="extraction", input_view="full"), item)
+    unlabelled = bk.identity(dict(base, stage="extraction"), item)
+    assert tables != full and full == unlabelled
+    assert bk.identity(dict(base, stage="selection"), item) == bk.identity(dict(base, stage="selection", input_view="x"), item)
