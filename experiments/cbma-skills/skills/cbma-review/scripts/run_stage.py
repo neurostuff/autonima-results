@@ -193,11 +193,18 @@ def main(argv=None) -> int:
     ap.add_argument("--max-attempts", type=int, default=3, help="persistent attempts per unchanged item")
     ap.add_argument("--time-budget", type=int, default=540, help="seconds before this call returns")
     ap.add_argument("--judge-timeout", type=int, default=900)
-    ap.add_argument("--agents-dir", type=Path, default=Path(".claude/agents"))
+    ap.add_argument("--agents-dir", type=Path, default=None,
+                    help="judge definitions (default: the workspace's .claude/agents, beside the review folder)")
     ap.add_argument("--add-dir", action="append", default=[], help="passed to each judge (e.g. the package)")
     ap.add_argument("--claude", default="claude", help="the claude CLI command (tests pass a fake)")
     ap.add_argument("--harness", default="claude-code")
     args = ap.parse_args(argv)
+    if args.agents_dir is None:
+        # The workspace's own settings, wherever the runner is started from. Relative to the current
+        # directory, a call made elsewhere lost the judges' effort and thinking budgets.
+        here = Path(".claude/agents")
+        beside = args.review_dir.resolve().parent / ".claude" / "agents"
+        args.agents_dir = beside if beside.is_dir() or not here.is_dir() else here
     if any(n <= 0 for n in (args.size or SIZE[args.stage], args.parallel, args.rounds,
                             args.max_attempts, args.time_budget, args.judge_timeout)) or (
                             args.limit is not None and args.limit <= 0):
@@ -298,13 +305,19 @@ def main(argv=None) -> int:
                         for key in keys:
                             attempts[key] = attempts.get(key, 0) + 1
                         bookkeeping.write_state(state_path, state)
-                        running[pool.submit(judge_one, batch, args.stage, args, skills, timeout)] = batch
+                        running[pool.submit(judge_one, batch, args.stage, args, skills, timeout)] = (batch, keys)
                     if not running:
                         break
                     done, _ = cf.wait(running, return_when=cf.FIRST_COMPLETED)
                     for future in done:
-                        running.pop(future)
+                        _, keys = running.pop(future)
                         row = future.result()
+                        if row['provider_blocked']:
+                            # A call the provider refused (usage, session or rate limit) never judged
+                            # anything: give its studies their attempt back.
+                            for key in keys:
+                                attempts[key] = max(0, attempts.get(key, 0) - 1)
+                            bookkeeping.write_state(state_path, state)
                         summary['batches_dispatched'] += 1
                         if not row['ok']:
                             summary['judge_failures'].append(row)

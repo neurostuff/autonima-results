@@ -42,6 +42,11 @@ result = {"result": reply, "num_turns": 1, "is_error": False, "total_cost_usd": 
           "usage": {"input_tokens": 3, "cache_read_input_tokens": 1000, "output_tokens": 50}}
 if os.environ.get("FAKE_FENCE") == "1":
     result["result"] = "```json\n" + reply + "\n```"
+if os.environ.get("FAKE_SESSION_LIMIT_ONCE") and not os.path.exists(os.environ["FAKE_SESSION_LIMIT_ONCE"]):
+    open(os.environ["FAKE_SESSION_LIMIT_ONCE"], "w").write("refused once")
+    print(json.dumps({"result": "You've hit your session limit · resets 1:10am (America/Chicago)",
+                      "is_error": True, "num_turns": 1, "usage": {"input_tokens": 0, "output_tokens": 0}}))
+    sys.exit(1)
 if os.environ.get("FAKE_STRUCTURED") == "1":
     # As the CLI does with --json-schema: the schema-valid answer in structured_output, two
     # turns, and free text that would not parse on its own.
@@ -243,3 +248,40 @@ def test_the_cli_structured_output_is_used_and_the_schema_is_passed(tmp_path, ca
     assert code == 0 and summary["done"] and summary["accepted"] == 3 and not summary["judge_failures"]
     argv = json.loads(open(f"{fake}.calls").readline())["argv"]
     assert argv[argv.index("--max-turns") + 1] == "4" and argv[argv.index("--tools") + 1] == ""
+
+
+def test_a_session_limit_stops_dispatch_and_refunds_the_attempt(tmp_path, capsys, monkeypatch):
+    """Claude Code's "You've hit your session limit" was not recognised as a provider limit, so
+    the runner kept dispatching through it and each refused call used one of the study's attempts
+    (Haiku social and decision_making: 216 and 728 refused calls). Now the stage stops at the first
+    one, and the refused call gives its attempt back, so a cap of one still allows the real judgment."""
+    import importlib
+    bookkeeping = importlib.import_module("stage_bookkeeping")
+    assert bookkeeping.provider_blocked("ValueError: You've hit your session limit · resets 1:10am")
+    assert bookkeeping.provider_blocked("You've hit your weekly limit")
+    assert not bookkeeping.provider_blocked("no completed judgments; leave pending")
+    ws, rv, fake = workspace(tmp_path)
+    monkeypatch.chdir(ws)
+    monkeypatch.setenv("FAKE_SESSION_LIMIT_ONCE", str(tmp_path / "refused"))
+    argv = [str(rv), "--stage", "abstract", "--model", "m1", "--size", "3", "--parallel", "1",
+            "--max-attempts", "1", "--claude", f"{sys.executable} {fake}"]
+    run_stage.main(argv)
+    first = json.loads(capsys.readouterr().out)
+    assert first["usage_limited"] and first["accepted"] == 0 and first["usage"]["attempts"] == 1
+    code = run_stage.main(argv)                                   # the limit has reset
+    second = json.loads(capsys.readouterr().out)
+    assert code == 0 and second["accepted"] == 3 and not second["retry_exhausted"]
+
+
+def test_the_runner_finds_the_workspace_agents_from_any_directory(tmp_path, capsys, monkeypatch):
+    """--agents-dir defaulted to .claude/agents under the current directory, so a call started
+    elsewhere lost the judges' effort and thinking budgets. It now defaults to the workspace's own
+    .claude/agents beside the review folder."""
+    ws, rv, fake = workspace(tmp_path)
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+    code = run_stage.main([str(rv), "--stage", "abstract", "--model", "m1", "--size", "3",
+                           "--claude", f"{sys.executable} {fake}"])
+    summary = json.loads(capsys.readouterr().out)
+    assert code == 0 and summary["accepted"] == 3 and summary["effort"] == "low"

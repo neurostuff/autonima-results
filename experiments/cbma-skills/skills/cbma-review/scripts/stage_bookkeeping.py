@@ -50,6 +50,10 @@ def eligible_batches(batches, pending, attempts, maximum, state_dir):
 
 
 def provider_blocked(error):
-    return bool(re.search(r'\b429\b|rate[_ -]?limit|usage limit|weekly limit|quota|'
+    # Claude Code says "You've hit your session limit · resets ..."; it was not matched, so the
+    # runner kept dispatching through two session limits (the Haiku social and decision_making
+    # runs: 216 and 728 refused calls), each counted against the study's attempt cap.
+    return bool(re.search(r'\b429\b|rate[_ -]?limit|usage limit|session limit|weekly limit|'
+                          r'hit your [a-z ]*limit|quota|'
                           r'authentication|unauthorized|HTTP (?:401|403)|insufficient credits',
                           error or '', re.I))
