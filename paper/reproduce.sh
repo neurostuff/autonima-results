@@ -115,7 +115,7 @@ fi
 
 step "5/6  figures  ->  reports/nature_methods_figures/"
 run "${PY[@]}" paper/make_nature_methods_figures.py          # all but S4
-run "$SYSPY" paper/make_brain_map_figure.py --mode all       # figureS4
+run "$SYSPY" paper/make_brain_map_figure.py --mode all --top 10   # figureS4: 10 largest + 10 smallest changes
 run "$SYSPY" paper/make_brain_map_figure.py --mode contrast
 run "$SYSPY" paper/make_er_surface_figure.py                 # paper Figure 5
 
