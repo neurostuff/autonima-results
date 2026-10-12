@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Dot plot of the three cbma-skills arms against autonima, per project.
+"""Supplementary Figure S6: the three cbma-skills arms against autonima, per project.
 
     python scripts/plot_cbma_three_arm.py [--out reports/cbma_skills_three_arm]
 
@@ -111,12 +111,10 @@ def main(argv=None) -> int:
     handles.append(plt.Line2D([], [], color=REF, lw=2, label="autonima (reference)"))
     fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=8.5,
                bbox_to_anchor=(0.55, 0.995), labelcolor=INK)
-    fig.text(0.01, 0.01, "Arms are orchestrator / judges. Maps fit unknown coordinate spaces as MNI (NiMARE 0.21.0, "
-             "MKDA density, FDR). Map r is averaged over each project's scorable targets.", fontsize=7, color=INK2)
-    fig.tight_layout(rect=(0, 0.035, 1, 0.94))
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
     for ext in ("png", "svg"):
-        fig.savefig(args.out / f"three_arm_comparison.{ext}", dpi=200, facecolor=SURFACE)
-    print(args.out / "three_arm_comparison.png")
+        fig.savefig(args.out / f"fig_S6_three_arm_comparison.{ext}", dpi=200, facecolor=SURFACE)
+    print(args.out / "fig_S6_three_arm_comparison.png")
     return 0
 
 
