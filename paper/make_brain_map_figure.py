@@ -268,7 +268,8 @@ def candidates(tier: str, metric: str | None = None) -> list[dict]:
 
 
 def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: float,
-           break_after: int | None = None, group_labels: list[str] | None = None) -> None:
+           break_after: int | None = None, group_labels: list[str] | None = None,
+           break_text: str | None = None) -> None:
     from nilearn import plotting
 
     arms = [("baseline", "Search-only baseline"), ("autonima", "Full pipeline"),
@@ -311,13 +312,19 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
         y = (upper.y0 + lower.y1) / 2
         fig.add_artist(Line2D([0.08, 0.96], [y, y], transform=fig.transFigure,
                               color=RULE, lw=0.7, ls=(0, (3, 3)), zorder=5))
-        fig.text(0.5, y + 0.004, "⋯", ha="center", va="bottom", fontsize=fs(7), color=MUTED)
-        top_mid = (axes[0][0].get_position().y1 + upper.y0) / 2
-        bot_mid = (lower.y1 + axes[n - 1][0].get_position().y0) / 2
-        labels = group_labels or [f"{break_after} largest margins", f"{n - break_after} smallest"]
-        for text, ypos in zip(labels, (top_mid, bot_mid)):
-            fig.text(0.012, ypos, text, rotation=90, va="center", ha="center",
-                     fontsize=fs(5.4), color=MUTED)
+        if break_text:
+            # One note centred on the divider, on white so it never sits over a brain, in place of
+            # the "⋯" and the rotated group labels (which collided with long row labels).
+            fig.text(0.5, y, break_text, ha="center", va="center", fontsize=fs(5.6), color=MUTED,
+                     bbox=dict(boxstyle="round,pad=0.25", facecolor="white", edgecolor="none"), zorder=6)
+        else:
+            fig.text(0.5, y + 0.004, "⋯", ha="center", va="bottom", fontsize=fs(7), color=MUTED)
+            top_mid = (axes[0][0].get_position().y1 + upper.y0) / 2
+            bot_mid = (lower.y1 + axes[n - 1][0].get_position().y0) / 2
+            labels = group_labels or [f"{break_after} largest margins", f"{n - break_after} smallest"]
+            for text, ypos in zip(labels, (top_mid, bot_mid)):
+                fig.text(0.012, ypos, text, rotation=90, va="center", ha="center",
+                         fontsize=fs(5.4), color=MUTED)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     for ext, kw in ((".pdf", {}), (".png", {"dpi": 400})):
@@ -361,6 +368,9 @@ def main() -> int:
     ap.add_argument("--name", default=None, help="output filename stem")
     ap.add_argument("--break-after", type=int, default=None,
                     help="draw the group divider after this many rows (with --columns)")
+    ap.add_argument("--top", type=int, default=None,
+                    help="with --mode all: show only the N largest and N smallest changes, with a "
+                         "break between them (Fig S4 uses 10 of the 28 at each end)")
     ap.add_argument("--font-scale", type=float, default=1.0,
                     help="scale all label sizes; use ~1.5 for slides")
     ap.add_argument("--row-height", type=float, default=0.62,
@@ -420,7 +430,16 @@ def main() -> int:
         return 0
 
     if args.mode == "all":
-        render(rows, args.output_dir, "figureS4_brain_maps_all", args.cut_coords, args.threshold)
+        if args.top and 2 * args.top < len(rows):
+            # rows are sorted by the change (largest first): keep both ends, mark the gap
+            picked = rows[:args.top] + rows[-args.top:]
+            print(f"  showing the {args.top} largest and {args.top} smallest of {len(rows)} "
+                  f"(omitted: {len(rows) - 2 * args.top})")
+            render(picked, args.output_dir, "figureS4_brain_maps_all", args.cut_coords, args.threshold,
+                   break_after=args.top,
+                   break_text=f"⋯   {len(rows) - 2 * args.top} contrasts with intermediate changes not shown   ⋯")
+        else:
+            render(rows, args.output_dir, "figureS4_brain_maps_all", args.cut_coords, args.threshold)
         return 0
 
     # Drop columns where the expert map has nothing above the display threshold. VBM PTSD is the

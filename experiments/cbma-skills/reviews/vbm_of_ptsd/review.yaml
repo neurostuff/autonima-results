@@ -1,0 +1,95 @@
+# VBM of PTSD (Pankey et al. 2022), cbma-skills arm.
+#
+# Translated from the autonima config for this project's v1 run, its only run and the
+# registry's "best" (never iterated, so held out). The objective, the query, the date limits
+# and every criterion are the same strings after YAML parsing; scripts/check_cbma_translation.py
+# checks that. One line that v1 lists as a full-text criterion is a permission rather than a
+# property of a study ("It is acceptable for qualifying results to be reported in tables..."),
+# so it sits verbatim in screening.fulltext.instructions, as the same kind of line does for
+# emotion regulation. Full-text sources are the corpora autonima's run used (PMC, then the
+# Elsevier and ACE corpora), in the same order. Meta-analysis: MKDA density with FDR, as v1's
+# maps used.
+
+name: vbm_of_ptsd
+objective: Meta-analysis of morphometry studies of structural alterations associated with PTSD
+search:
+  query: (((("voxel-based morphometr*"[tiab] OR VBM[tiab] OR "gray matter volum*"[tiab] OR "grey mattr
+    volum*"[tiab] OR "gray matter densit*"[tiab] OR "grey matter densit*"[tiab]) AND ("magnetic resonance
+    imaging"[Mesh] OR MRI[tiab] OR "structural MRI"[tiab])) AND (PTSD[tiab] OR "post-traumatic stress
+    disorder"[tiab]) AND Humans[mh] AND English[lang] NOT (review[pt] OR "systematic review"[tiab] OR
+    meta-analysis[pt]))
+  date_from: 1990/01/01
+  date_to: 2020/12/31
+  email: delavega@utexas.edu
+screening:
+  abstract:
+    inclusion:
+    - Empirical English language MRI studies assessing grey matter (GM) volume differences between PTSD
+      patients and controls
+    - Control populations may be healthy individuals or trauma-exposed individuals without PTSD
+    exclusion:
+    - Studies using pharmacological manipulations
+    - Brain lesion studies
+    - Systematic reviews or meta-analyses
+  fulltext:
+    inclusion:
+    - Empirical English language MRI studies assessing grey matter (GM) volume differences between PTSD
+      patients and controls
+    - Whole-brain evidence- The paper must report at least one whole-brain voxel-wise between-group contrast
+      of PTSD patients vs controls comparing GM volume
+    - Control populations may be healthy individuals or trauma-exposed individuals without PTS
+    exclusion:
+    - Studies that report only region-of-interest (ROI) analyses with no qualifying whole-brain results.
+    - Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original
+      human structural MRI data.
+    - Studies about trauma or stressful life event studies not specifically measuring PTSD
+    - Treatment and longitudinal studies without a qualifying between-group contrast of PTSD patients
+      vs controls
+    - Studies that report only within group results in PTSD patients without a qualifying between-group
+      contrast of PTSD patients vs controls
+    - Studies report only null results (i.e., no significant differences between PTSD patients and controls)
+    instructions: It is acceptable for qualifying results to be reported in tables of coordinates, figures,
+      or supplementary materials when the main text clearly indicates those results are available.
+fulltext:
+  sources:
+  - type: pmc
+  - type: local
+    name: elsevier_xml
+    path: ../corpora/elsevier_output
+    pattern: '*/article.xml'
+    id_from: parent_dir
+    id_kind: pmid
+    format: elsevier
+  - type: local
+    name: ace_html
+    path: ../corpora/ace_html
+    pattern: '**/*.html'
+    id_from: filename
+    id_kind: pmid
+    format: html
+extraction:
+  drop_unverified: true
+selection:
+  global:
+    inclusion:
+    - Must be a voxelwise whole brain analysis of grey matter volume
+    exclusion:
+    - Region of interest (ROI) or small volume correction (SVC) analyses
+    - Analyses of other modalities (e.g., functional MRI, diffusion tensor imaging) or other structural
+      measures
+    - Within group analyses that do not compare PTSD patients to controls
+    - Analyses of treatment effects or longitudinal changes
+  targets:
+  - name: increased_gm
+    description: Increased grey matter volume in PTSD patients relative to controls
+    inclusion:
+    - Voxelwise whole-brain grey matter comparison between PTSD patients and controls, with a patients
+      > controls contrast indicating increased grey matter in PTSD patients.
+  - name: decreased_gm
+    description: Decreased grey matter volume in PTSD patients relative to controls
+    inclusion:
+    - Voxelwise whole-brain grey matter comparison between PTSD patients and controls, with a patients
+      < controls contrast indicating reduced grey matter in PTSD patients.
+meta:
+  estimator: mkdadensity
+  corrector: fdr
