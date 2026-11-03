@@ -21,7 +21,7 @@ Runs are marked `!` where the registered name has no outputs on disk, and `~` wh
 | project | family | `verbatim` | `manual` | `untuned` | `best` | `latest` |
 |---|---|---|---|---|---|---|
 | cue_reactivity | canonical | `v1` | `v4` | `v4` | `v6` | `v6` |
-| cue_reactivity | annotation_only | — | — | `v4-annotation-only` `!` | `v5-annotation-only` | `v5-annotation-only` |
+| cue_reactivity | annotation_only | — | — | `v4-annotation-only` | `v5-annotation-only` | `v5-annotation-only` |
 | decision_making | canonical | `v1` | — | `v2` | `v3` | `v3` |
 | decision_making | annotation_only | — | — | `v2-annotation-only` | `v2-annotation-only` | `v2-annotation-only` |
 | dementia | canonical | `v1` | `v3` | `v3` | `v3` | `v3` |
