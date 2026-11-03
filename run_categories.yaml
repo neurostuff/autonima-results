@@ -126,8 +126,29 @@ projects:
       verbatim: null                  # v2-annotation-only is already an iteration
       manual:   v3-annotation-only
       untuned:  v3-annotation-only
-      # "changed to remove disallowing resting state in annotation (incorrectly added
-      # previously)" -- a correction, no report dependency.
+      # v1/v2/v3-annotation-only share one criteria generation (verified byte-identical);
+      # v4-annotation-only is "TUNED AGAINST THE BENCHMARK" by its own header.
+      #
+      # THE ONE PLACE IN THE CORPUS WHERE `manual` AND `untuned` GENUINELY SEPARATE, which is the
+      # case that shows the two tiers are not redundant. manual is v5-annotation-only and untuned
+      # is BELOW it, at v3-annotation-only.
+      #
+      # v5-annotation-only is the former v3-annotation-only, renamed 2026-08-27 (f412631d) to free
+      # the name; its criteria are from Apr 2026, so no agent wrote them -- it is hand-edited by
+      # the author, which is why it is correctly the `manual` entry. But the edit is
+      # report-informed, and so fails `untuned`. Against the original generation it moves in BOTH
+      # directions at once: carve-outs that recover false negatives (connectivity/resting-state
+      # excluded "unless a separate qualifying univariate task-evoked map is explicitly the
+      # analyzed row"; between-group excluded only "without a qualifying within-group
+      # healthy/control task-evoked map"; sample widened to a "healthy/control subgroup reported
+      # separately"), AND a new exclusion naming particular false positives -- "Contrasts
+      # dominated by task-irrelevant controls/baselines (e.g., rest > task, noise-only controls,
+      # landmark/place-dominant controls)".
+      #
+      # That last phrase is the evidence. Control types that specific are not read off the source
+      # paper's methods; they are written after seeing which analyses were wrongly accepted.
+      # Compare decision_making v2, which added four inclusion criteria and ZERO exclusions -- a
+      # one-directional disambiguation pass, which is why that one does qualify as untuned.
       best:     v3-annotation-only
       # best-reason: best fair dice of 3 (0.470)
       latest:   v3-annotation-only
