@@ -21,8 +21,9 @@ things and can disagree -- F1 scores the labelling decision, dice scores the map
 and where they diverge is informative rather than contradictory.
 
 Annotation-only runs are used because they have no screening, so study selection cannot contribute
-to the difference. The run picked per project is the `best` tier from run_categories.yaml -- the
-curated preferred config, which is not always the highest version number.
+to the difference. The run picked per project is the --tier entry from run_categories.yaml,
+defaulting to `best` -- the curated preferred config, which is not always the highest version
+number. Pass --tier untuned to recompute the table with no benchmark-fitted criteria.
 """
 
 from __future__ import annotations
@@ -36,7 +37,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from run_tiers import resolve_tier  # noqa: E402
+from run_tiers import add_tier_argument, resolve_tier  # noqa: E402
 from nmb_mapping import load_mappings  # noqa: E402
 from benchmark_exclusions import is_excluded  # noqa: E402
 
@@ -67,12 +68,16 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--projects-root", type=Path, default=REPO_ROOT / "projects")
     ap.add_argument("--output", type=Path, default=REPO_ROOT / "reports" / "annotation_value.csv")
+    add_tier_argument(ap)          # default "best", so existing invocations are unchanged
     args = ap.parse_args()
 
     rows = []
     for pdir in sorted(p for p in args.projects_root.iterdir() if p.is_dir() and p.name != "template_"):
-        run = resolve_tier(pdir.name, "annotation_only", "best")
+        run = resolve_tier(pdir.name, "annotation_only", args.tier)
         if not run:
+            # None means the tier is genuinely unregistered for this family. Skip loudly:
+            # falling through to another tier would mix tiers inside one table.
+            print(f"{pdir.name:24}(no {args.tier} annotation_only run registered -- skipped)")
             continue
         M, P, F = matrix(pdir, run, "dice"), matrix(pdir, run, "pearson"), ann_f1(pdir, run)
         if not M or "all_analyses" not in M:
