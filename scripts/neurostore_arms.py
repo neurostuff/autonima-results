@@ -1,0 +1,298 @@
+"""Run a NeuroStore arm against a project's best autonima run.
+
+  python scripts/neurostore_arms.py <project> <coords|search> [--live] [--workers N]
+  python scripts/neurostore_arms.py <project> <coords|search> --write-config
+
+Needs autonima with NeuroStore support (feat/neurostore). The arm's config is the project's
+`best` config (run_categories.yaml) with only NeuroStore keys changed, and the script refuses
+to run if anything else differs:
+
+  coords   parsing.coordinate_source: neurostore. Coordinates come from NeuroStore instead of
+           LLM table parsing. The cohort is pinned to best's PMIDs, so search, abstract,
+           retrieval and full-text decisions are best's; only annotation re-runs, on the new
+           analyses. Output: projects/<project>/<best>-ns-coords
+  search   search.database: neurostore as well, with best's PubMed query translated and
+           searched in NeuroStore titles and abstracts (study metadata still from PubMed).
+           Studies best already screened reuse its decisions; new ones are screened.
+           Seeds its cache from the coords arm when that has run, so shared studies are
+           annotated once. Output: projects/<project>/<best>-ns-search
+
+Both reuse best's cache through --copy-valid-cache-from. Without --live the LLM is stubbed
+(full-text decisions replay best's, annotation returns placeholders, abstract calls on studies
+best never screened return "included"), which checks the whole run for free and counts the
+calls a live run would make. --live needs OPENAI_API_KEY and OPENAI_API_GATEWAY in the
+environment.
+"""
+
+import argparse
+import asyncio
+import json
+import os
+import re
+import sys
+from contextlib import ExitStack
+from copy import deepcopy
+from pathlib import Path
+from unittest.mock import patch
+
+import yaml
+
+REPO = Path(__file__).resolve().parents[1]
+KINDS = ("coords", "search")
+
+
+def best_run(project: str) -> str:
+    categories = yaml.safe_load((REPO / "run_categories.yaml").read_text())
+    return categories["projects"][project]["canonical"]["best"]
+
+
+def _absolute_sources(sources):
+    for source in sources or []:
+        for key in ("root_path", "processed_data_path"):
+            if source.get(key) and not Path(source[key]).is_absolute():
+                source[key] = str(REPO / source[key])
+    return sources
+
+
+def arm_config(project: str, kind: str):
+    best = best_run(project)
+    base = yaml.safe_load((REPO / "projects" / project / f"{best}.yaml").read_text())
+    arm = deepcopy(base)
+    _absolute_sources(arm.get("retrieval", {}).get("full_text_sources"))
+    parsing = arm.setdefault("parsing", {})
+    parsing["parse_coordinates"] = True
+    parsing["coordinate_source"] = "neurostore"
+    if kind == "search":
+        arm["search"]["database"] = "neurostore"
+    name = f"{best}-ns-{kind}"
+    arm.setdefault("output", {})["directory"] = str(REPO / "projects" / project / name)
+    return best, base, arm
+
+
+def assert_equivalent(base: dict, arm: dict, kind: str) -> None:
+    """Fail unless the arm differs from best only in the keys its kind requires."""
+    allowed = {("parsing", "parse_coordinates"), ("parsing", "coordinate_source"), ("output", "directory")}
+    if kind == "search":
+        allowed.add(("search", "database"))
+
+    def flatten(d, prefix=()):
+        for key, value in d.items():
+            path = prefix + (key,)
+            if isinstance(value, dict):
+                yield from flatten(value, path)
+            else:
+                yield path, value
+
+    b, a = dict(flatten(base)), dict(flatten(arm))
+    changed = {p for p in set(a) | set(b) if a.get(p) != b.get(p)}
+    if b.get(("parsing", "parse_coordinates")) is not True:
+        sys.exit("best does not parse coordinates; a coordinate-source arm has nothing to compare")
+    sources = ("retrieval", "full_text_sources")
+    if sources in changed and _absolute_sources(deepcopy(b.get(sources))) == a.get(sources):
+        changed.discard(sources)
+    unexpected = sorted(changed - allowed)
+    if unexpected:
+        sys.exit(f"arm config differs from best outside the allowed keys: {unexpected}")
+
+
+def write_run_config(project: str, kind: str) -> Path:
+    best, base, config = arm_config(project, kind)
+    assert_equivalent(base, config, kind)
+    run = Path(config["output"].pop("directory")).name
+    if not config["output"]:
+        del config["output"]
+    config["retrieval"]["full_text_sources"] = deepcopy(base.get("retrieval", {}).get("full_text_sources"))
+    if config["retrieval"]["full_text_sources"] is None:
+        del config["retrieval"]["full_text_sources"]
+    changes = ["parsing.coordinate_source: neurostore (coordinates from NeuroStore, not LLM table parsing)"]
+    if kind == "search":
+        changes.append("search.database: neurostore (best's PubMed query, translated, in NeuroStore)")
+    header = "\n".join([
+        f"# {run} -- NeuroStore {kind} arm of {best}, the best {project} run.",
+        "#",
+        f"# Generated by scripts/neurostore_arms.py from {best}.yaml; do not edit by hand. The only",
+        "# differences from it:",
+        *[f"#   - {c}" for c in changes],
+        "#",
+        "# Reproduce (reuses best's cache" + (" and pins the cohort to best's PMIDs" if kind == "coords" else "") + "):",
+        f"#   python scripts/neurostore_arms.py {project} {kind} --live",
+        "",
+    ])
+    path = REPO / "projects" / project / f"{run}.yaml"
+    path.write_text(header + yaml.safe_dump(config, sort_keys=False, width=100))
+    return path
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("project")
+    ap.add_argument("kind", choices=KINDS)
+    ap.add_argument("--live", action="store_true")
+    ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--write-config", action="store_true", help="write projects/<project>/<run>.yaml and exit")
+    args = ap.parse_args()
+    if args.write_config:
+        print(write_run_config(args.project, args.kind))
+        return
+
+    best, base, config = arm_config(args.project, args.kind)
+    assert_equivalent(base, config, args.kind)
+    run_dir = Path(config["output"]["directory"])
+    if not args.live:
+        run_dir = run_dir.with_name(run_dir.name + "-stub")
+        config["output"]["directory"] = str(run_dir)
+    run_dir.mkdir(parents=True, exist_ok=True)
+    (run_dir / "arm_config.yaml").write_text(yaml.safe_dump(config, sort_keys=False))
+    if args.live and not (os.environ.get("OPENAI_API_KEY") and os.environ.get("OPENAI_API_GATEWAY")):
+        sys.exit("--live needs OPENAI_API_KEY and OPENAI_API_GATEWAY in the environment")
+
+    from autonima.annotation.prompts import create_study_multi_annotation_prompt
+    from autonima.annotation.schema import AnnotationDecision
+    from autonima.config import ConfigManager
+    from autonima.pipeline import AutonimaPipeline
+    from autonima.screening.schema import AbstractScreeningOutput, FullTextScreeningOutput
+
+    best_out = REPO / "projects" / args.project / best / "outputs"
+    search = json.loads((best_out / "search_results.json").read_text())["studies"]
+    title_to_pmid = {s["title"]: s["pmid"] for s in search}
+    replay = {
+        r["study_id"]: r["decision"]
+        for r in json.loads((best_out / "fulltext_screening_results.json").read_text())["screening_results"]
+    }
+    log = {"abstract": 0, "fulltext": 0, "fulltext_not_in_best": 0, "annotation": 0, "parsing": 0,
+           "pmcid_lookups_live": 0}
+
+    async def best_pmids(self, query):
+        return [s["pmid"] for s in search]
+
+    # PMCIDs as best resolved them. The live ID converter fails transiently (403s observed),
+    # and autonima then treats the study as having no full text; best's own mapping keeps the
+    # arm's retrieval identical to best's. Only PMIDs best never saw go to NCBI.
+    best_pmcids = {}
+    for record in json.loads((best_out / "fulltext_retrieval_results.json").read_text())["studies_with_fulltext"]:
+        if record.get("pmcid") not in (None, "", "None"):
+            best_pmcids[str(record["pmid"])] = int(str(record["pmcid"]).removeprefix("PMC"))
+    email = (config.get("search") or {}).get("email")
+
+    def idconv(pmids):
+        """PMC ID Converter, retried with long backoff; a batch that keeps failing stops the run.
+
+        autonima's own lookup logs a failed batch and carries on, so those studies silently
+        lose their full text. Here a failure is never mistaken for "not in PMC".
+        """
+        # urllib, not requests: NCBI's PMC endpoints answer requests 2.34/urllib3 2.8 on Python
+        # 3.14 with 403 whatever its headers, while the standard library gets 200 (2026-11-03).
+        import time
+        import urllib.error
+        import urllib.parse
+        import urllib.request
+        import xml.etree.ElementTree as ET
+
+        url = "https://pmc.ncbi.nlm.nih.gov/tools/idconv/api/v1/articles/"
+        found = {}
+        for i in range(0, len(pmids), 100):
+            batch = pmids[i:i + 100]
+            params = {"ids": ",".join(batch), "idtype": "pmid", "format": "xml", "tool": "autonima"}
+            if email:
+                params["email"] = email
+            status, body = None, None
+            for attempt in range(7):
+                try:
+                    with urllib.request.urlopen(f"{url}?{urllib.parse.urlencode(params)}", timeout=60) as response:
+                        status, body = response.status, response.read().decode()
+                    break
+                except urllib.error.HTTPError as exc:
+                    status = exc.code
+                time.sleep(10 * 2 ** attempt)
+            if body is None:
+                sys.exit(f"PMC ID converter kept returning {status} for batch {i // 100}; "
+                         "stopping rather than treating those studies as having no full text")
+            for record in ET.fromstring(body).findall(".//record"):
+                if record.get("requested-id") and record.get("pmcid"):
+                    found[record.get("requested-id")] = int(record.get("pmcid").removeprefix("PMC"))
+            time.sleep(0.5)
+        return found
+
+    async def pmcids_from_best(self, pmids):
+        known = {p: best_pmcids[p] for p in pmids if p in best_pmcids}
+        unknown = [p for p in pmids if p not in best_pmcids]
+        log["pmcid_lookups_live"] += len(unknown)
+        live = await asyncio.to_thread(idconv, unknown) if unknown else {}
+        return {**known, **live}
+
+    class StubScreening:
+        def screen_abstract(self, prompt, model, **kwargs):
+            log["abstract"] += 1
+            return AbstractScreeningOutput(decision="INCLUDED", confidence=0.9, reason="stub")
+
+        def screen_fulltext(self, prompt, model, **kwargs):
+            log["fulltext"] += 1
+            pmid = title_to_pmid.get(re.search(r"^Title: (.*)$", prompt, re.M).group(1))
+            if pmid not in replay:
+                log["fulltext_not_in_best"] += 1
+            decision = replay.get(pmid, "excluded_fulltext")
+            return FullTextScreeningOutput(
+                decision="INCLUDED" if decision == "included_fulltext" else "EXCLUDED",
+                confidence=0.9, reason=f"stub replay of {decision}",
+                fulltext_incomplete=decision == "fulltext_incomplete",
+            )
+
+    class StubAnnotation:
+        def __init__(self, *a, **k):
+            pass
+
+        def make_decision(self, group, criteria, fields, model="", model_params=None, prompt_type=""):
+            log["annotation"] += 1
+            create_study_multi_annotation_prompt(group, criteria, fields)
+            return [AnnotationDecision(annotation_name=c.name, analysis_id=a.analysis_id,
+                                       study_id=group.study_id, include=False,
+                                       reasoning="stub", model_used=model)
+                    for a in group.analyses for c in criteria]
+
+    class StubParsing:
+        def __init__(self, *a, **k):
+            pass
+
+        def parse_analyses(self, *a, **k):
+            log["parsing"] += 1
+            raise AssertionError("a NeuroStore arm never parses tables with the LLM")
+
+    with ExitStack() as stack:
+        if args.kind == "coords":
+            stack.enter_context(patch("autonima.search.pubmed.PubMedSearch._execute_search", best_pmids))
+        stack.enter_context(patch("autonima.coordinates.processor.CoordinateParsingClient", StubParsing))
+        stack.enter_context(patch("autonima.search.pubmed.PubMedSearch.fetch_pmcids", pmcids_from_best))
+        if not args.live:
+            stack.enter_context(patch("autonima.screening.screener.GenericLLMClient", StubScreening))
+            stack.enter_context(patch("autonima.annotation.processor.AnnotationClient", StubAnnotation))
+        # The search arm seeds from the live coords arm when there is one: it holds best's
+        # screening plus annotation of NeuroStore analyses, so a study both arms include is
+        # annotated once. Only signature-valid entries are copied, so nothing crosses over
+        # that the search arm would not have produced itself.
+        seed = REPO / "projects" / args.project / best
+        coords_arm = REPO / "projects" / args.project / f"{best}-ns-coords"
+        if args.kind == "search" and (coords_arm / "outputs" / "annotation_results.json").exists():
+            seed = coords_arm
+            # Same analyses for every shared study, even if NeuroStore re-ingests in between.
+            snapshot = run_dir / "outputs" / "neurostore_analyses.json"
+            if not snapshot.exists() and (coords_arm / "outputs" / "neurostore_analyses.json").exists():
+                snapshot.parent.mkdir(parents=True, exist_ok=True)
+                snapshot.write_bytes((coords_arm / "outputs" / "neurostore_analyses.json").read_bytes())
+        print(f"cache seed: {seed.name}", flush=True)
+        pipeline = AutonimaPipeline(
+            ConfigManager().load_from_dict(config),
+            num_workers=args.workers,
+            copy_valid_cache_from=str(seed),
+        )
+        result = asyncio.run(pipeline.run())
+
+    print(json.dumps({
+        "project": args.project, "best": best, "kind": args.kind, "run": str(run_dir),
+        "live": args.live, "calls": log,
+        "coordinate_parsing": result.execution_stats.get("coordinate_parsing"),
+        "prisma": result.execution_stats.get("prisma_stats"),
+    }, indent=1, default=str))
+
+
+if __name__ == "__main__":
+    main()
