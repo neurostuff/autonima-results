@@ -137,13 +137,15 @@ def main(argv=None) -> int:
       "projects. Which ones is not recorded in the repo and is being reconstructed from memory; "
       "until that list exists, this document cannot name them, and any wording in the manuscript "
       "should avoid implying the stronger claim.\n")
-    w("Two projects also have **no strictly verbatim run**: `emotion_regulation_2022` and "
-      "`social`. Their lowest-numbered canonical version stands in for one, because the "
+    w("Two projects have **no verbatim run at all**: `emotion_regulation_2022` and `social`. "
+      "`verbatim` is deliberately left null for them rather than standing in the lowest-numbered "
+      "version, which would read as a transcribe-first run it is not -- in both cases the "
       "researcher read the criteria, saw obvious errors and corrected them on the first attempt "
-      "instead of running the faithful version first. ER's v2 header lists changes vs v1 that "
-      "\"each correct a clear misreading or an outright omission of a stated criterion\". So for "
-      "those two the verbatim->untuned delta is a **lower bound**: their first-attempt "
-      "corrections never appear as a diff.\n")
+      "instead of running the faithful version. ER's v2 header lists changes vs v1 that \"each "
+      "correct a clear misreading or an outright omission of a stated criterion\".\n")
+    w("They are therefore excluded from the denominator, which is why it is **7**, not 9. Note "
+      "this makes the rate below if anything CONSERVATIVE: both excluded projects did need "
+      "corrections, but made them before the first run, so they produce no diff to count.\n")
     w("| project | verbatim | untuned | revised | issue |")
     w("|---|---|---|---|---|")
     for project, v, u in rows:
