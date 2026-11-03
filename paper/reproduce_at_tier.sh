@@ -44,6 +44,11 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+# Absolute, because several scripts print their output path via Path.relative_to(REPO_ROOT),
+# which raises on a relative path. The work succeeds and then the run dies on the log line.
+ROOT="$(cd "$(dirname "$ROOT")" 2>/dev/null && pwd)/$(basename "$ROOT")" || ROOT="$PWD/$ROOT"
+mkdir -p "$ROOT"
+
 PY=(pixi run python)
 step() { printf '\n\033[1m== %s\033[0m\n' "$*"; }
 run()  { echo "   \$ $*"; "$@"; }
@@ -99,6 +104,9 @@ PYEOF
       --output-dir "$RR/cross_project_analysis"
   run "${PY[@]}" scripts/run_cross_project_screening_reports.py --tier "$TIER" \
       --output-dir "$RR/cross_project_screening"
+  # feeds figure S1; reads the registry directly, so it is tier-independent by nature, but its
+  # table must live beside this tier's others for the figure script to find it
+  run "${PY[@]}" scripts/compile_tier_progression.py --output "$RR/tier_progression.csv"
   run "${PY[@]}" scripts/compute_gold_survival.py --projects-root "$RP" \
       --output "$RR/gold_survival_by_stage.csv"
   run "${PY[@]}" scripts/compute_stage_precision_recall.py --projects-root "$RP" \
@@ -113,6 +121,10 @@ step "4/5  mirror the figure scripts (fresh copies, so they cannot drift)"
 mkdir -p "$ROOT/paper"
 run cp paper/make_nature_methods_figures.py paper/make_brain_map_figure.py \
       paper/make_er_surface_figure.py paper/manuscript_numbers.py "$ROOT/paper/"
+# The figure scripts import run_tiers from REPO_ROOT/scripts, which is $ROOT here. Symlink
+# rather than copy: run_tiers resolves __file__ through the link to the real scripts/, so it
+# keeps reading the shared run_categories.yaml instead of needing a copy of the registry.
+run ln -sfn "$PWD/scripts" "$ROOT/scripts"
 
 step "5/5  figures  ->  $RR/nature_methods_figures/"
 run "${PY[@]}" "$ROOT/paper/make_nature_methods_figures.py" || echo "   !! figures failed"
