@@ -21,7 +21,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
-PROJECTS = ["cue_reactivity", "decision_making", "dementia", "emotion_regulation_2022", "executive_function",
+# Dementia is left out, as in the paper's other figures.
+PROJECTS = ["cue_reactivity", "decision_making", "emotion_regulation_2022", "executive_function",
             "problem_solving", "social", "vbm_of_ptsd", "vbm_of_substance_use"]
 LABELS = {"cue_reactivity": "Cue reactivity", "decision_making": "Decision making", "dementia": "Dementia",
           "emotion_regulation_2022": "Emotion regulation", "executive_function": "Executive function",
@@ -78,7 +79,7 @@ def main(argv=None) -> int:
 
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "axes.edgecolor": GRID,
                          "axes.labelcolor": INK2, "xtick.color": INK2, "ytick.color": INK})
-    fig, axes = plt.subplots(1, 2, figsize=(9.2, 5.4), sharey=True, facecolor=SURFACE)
+    fig, axes = plt.subplots(1, 2, figsize=(9.2, 5.0), sharey=True, facecolor=SURFACE)
     offsets = [-0.22, 0.0, 0.22]
     ypos = {p: i for i, p in enumerate(reversed(rows))}
     panels = [("f1", "Screening F1 (final includes vs gold)", (0.0, 0.8)),
@@ -103,7 +104,7 @@ def main(argv=None) -> int:
         ax.tick_params(axis="y", length=0)
         ax.tick_params(axis="x", length=0, labelsize=8)
     axes[0].set_yticks([ypos[p] for p in rows])
-    axes[0].set_yticklabels([LABELS.get(p, "Mean of 9 projects") for p in rows])
+    axes[0].set_yticklabels([LABELS.get(p, f"Mean of {len(PROJECTS)} projects") for p in rows])
     for lab in axes[0].get_yticklabels():
         if lab.get_text().startswith("Mean"):
             lab.set_fontweight("bold")
