@@ -44,6 +44,10 @@ projects:
     canonical:
       verbatim: v1          # no header; earliest, precedes all report feedback
       manual:   v4          # "Modified from v4 to revert correlational analysis exclusion criteria"
+      untuned:  v4
+      # v5 changes authorship AND adds report feedback: "GPT edited this schema ... using
+      # feedback from reports (annotated inspection of false negatives primarily) ...
+      # benchmark-tuned". v6 inherits v5 criteria unchanged.
       best:     v6
       # best-reason: highest screening F1 (0.455) and much the best recall (0.853)
       latest:   v6          # Claude; search-only change carrying v5's GPT-written criteria
@@ -53,6 +57,12 @@ projects:
     annotation_only:
       verbatim: null
       manual:   null
+      untuned:  v4-annotation-only
+      # Created 2026-11-03 by rolling the annotation criteria back from v5 to v4.
+      # v5-annotation-only is genuinely benchmark-fitted: its v4 -> v5 edit adds an "ROI
+      # exception FOR BENCHMARK COMPATIBILITY" (v4 excluded ROI analyses outright) and relaxes
+      # whole-brain to accept small-volume-corrected maps, which is exactly what recovers the
+      # false negatives its header says it was built from.
       best:     v5-annotation-only
       # best-reason: only annotation-only run; fair dice 0.699
       latest:   v5-annotation-only
@@ -65,6 +75,14 @@ projects:
     canonical:
       verbatim: v1
       manual:   null
+      untuned:  v2
+      # v1 -> v2 changes the ANNOTATION BLOCK ONLY (screening byte-identical) and only by
+      # addition: 4 inclusion criteria added, 0 removed, exclusions untouched -- a
+      # parsing-robustness rule, the paper own subtype taxonomy, and study-level subtype
+      # mutual exclusivity. None names a study or an error. RECLASSIFIED 2026-11-03: the old
+      # header "refine annotations using reports" had been read as benchmark fitting; the diff
+      # does not support it. v3 remains disqualified (Claude-written, quotes a specific
+      # wrongly-accepted study).
       best:     v3
       # best-reason: highest screening F1 (0.312)
       latest:   v3          # Claude, full-text screening
@@ -75,6 +93,9 @@ projects:
     annotation_only:
       verbatim: null
       manual:   null
+      untuned:  v2-annotation-only
+      # Shares v2 annotation criteria. RECLASSIFIED 2026-11-03 -- see the canonical note.
+      # Author-edited with ChatGPT as a phrasing tool, not agent-written.
       best:     v2-annotation-only
       # best-reason: only annotation-only run
       latest:   v2-annotation-only    # GPT, "refine annotations using reports"
@@ -83,12 +104,18 @@ projects:
     canonical:
       verbatim: v1
       manual:   v3          # v2 and v3 are both hand-edited; v3 is the highest
+      untuned:  v3
+      # No report dependency anywhere in the v1/v2/v3 headers; v3 is "only changes to
+      # annotation section". Same as the manual tier.
       best:     v3
       # best-reason: highest screening F1 (0.545)
       latest:   v3          # no agent-written plain vN exists; v4/v5 are allstudies only
     allstudies:
       verbatim: v1-allstudies
       manual:   v3-allstudies
+      untuned:  v3-allstudies
+      # v4-allstudies is Claude-improved with precision "measured against this gold";
+      # v5-allstudies is motivated by a false-positive diagnosis against the manual.
       best:     v5-allstudies
       # best-reason: the Claude annotation schema, the family latest
       latest:   v5-allstudies         # Claude, annotation schema
@@ -98,6 +125,9 @@ projects:
     annotation_only:
       verbatim: null                  # v2-annotation-only is already an iteration
       manual:   v3-annotation-only
+      untuned:  v3-annotation-only
+      # "changed to remove disallowing resting state in annotation (incorrectly added
+      # previously)" -- a correction, no report dependency.
       best:     v3-annotation-only
       # best-reason: best fair dice of 3 (0.470)
       latest:   v3-annotation-only
@@ -106,6 +136,11 @@ projects:
     canonical:
       verbatim: null
       manual:   null
+      untuned:  v2
+      # v2: "CRITERIA ARE COPIED, NOT REWRITTEN" -- a faithful transcription of the paper. v4
+      # is driven by "the v2-annotation-only trial criterion attribution (errors vs correct
+      # citations)". NOTE: manual is null here but untuned is NOT -- no hand-edited version
+      # exists, yet v2 was never tuned.
       best:     v4
       # best-reason: v4, per the recall-first rule for canonical runs: recall 0.659 vs v2 0.500,
       # accepting F1 0.420 vs 0.492. USER-RESOLVED 2026-08-27.
@@ -123,6 +158,9 @@ projects:
     annotation_only:
       verbatim: null
       manual:   null
+      untuned:  v2-annotation-only
+      # "trial harness for the draft annotation criteria"; v4-annotation-only is the tuned
+      # successor.
       best:     v4-annotation-only
       # best-reason: best fair dice of 2 (0.650 vs 0.603)
       latest:   v4-annotation-only
@@ -136,6 +174,9 @@ projects:
     allstudies:
       verbatim: v1-allstudies
       manual:   v2-allstudies         # NOT v3 -- v3 regressed and is archived
+      untuned:  v2-allstudies
+      # Corrects clear misreadings of the paper stated criteria; v4-allstudies carries the
+      # tuned v4 criteria.
       best:     v4-allstudies
       # best-reason: v4-allstudies, per the recall-first rule: recall 0.602 vs v2 0.477, accepting
       # F1 0.475 vs 0.519. Also reaches 94.6% of this pool's hard ceiling of 0.636.
@@ -153,6 +194,10 @@ projects:
     canonical:
       verbatim: v1
       manual:   null
+      untuned:  v1
+      # v1 criteria are GPT-DRAFTED from the source paper ("Used GPT to help draft inital
+      # draft"), which this tier permits; its gold-derived 1988-2008 date window is a SEARCH
+      # change, also permitted. v2/v3 are written from "this project own v1 error reports".
       best:     v3
       # best-reason: v3, per the recall-first rule for canonical runs (see run_tiers.py). v1 has
       # the highest F1 (0.163 vs 0.151) but v2/v3 recover more gold (recall 0.386 vs 0.322).
@@ -169,6 +214,9 @@ projects:
     annotation_only:
       verbatim: null
       manual:   v1-annotation-only
+      untuned:  v1-annotation-only
+      # Identical to v1 below the search/screening blocks. v3-annotation-only is "Derived by
+      # reading this project full error reports ... benchmark-tuned".
       best:     v1-annotation-only
       # best-reason: the honest v1 still beats the tuned v3 at map level (0.566 vs 0.556)
       latest:   v3-annotation-only    # Claude
@@ -181,6 +229,10 @@ projects:
     canonical:
       verbatim: v1
       manual:   null
+      untuned:  v1
+      # v1: "MANUAL CRITERIA ... the original human-written ones". Its query is
+      # Claude-optimised against gold-membership counts -- SEARCH only, permitted. v2
+      # annotation is "written by Claude ... from ... this project error reports".
       best:     v2
       # best-reason: v1 and v2 tie on screening F1; v2 carries the repaired annotation
       latest:   v2                    # Claude-revised annotation; identical to v1 otherwise
@@ -198,6 +250,9 @@ projects:
     annotation_only:
       verbatim: v1-annotation-only
       manual:   null
+      untuned:  v1-annotation-only
+      # No header; v2-annotation-only is explicitly "Written by an LLM agent ... Inputs were
+      # ... this project v1-annotation-only error reports".
       best:     v2-annotation-only
       # best-reason: tuning clearly helped: fair dice 0.633 vs v1 0.514
       latest:   v2-annotation-only    # Claude (formerly v3-annotation-only)
@@ -209,6 +264,10 @@ projects:
     canonical:
       verbatim: null
       manual:   v2
+      untuned:  v3
+      # v3 criteria are byte-identical to hand-edited v2 (v3 header: v2 and the v3 family "are
+      # ONE criteria generation"); only the search block differs. So untuned is HIGHER than
+      # manual here.
       best:     v3
       # best-reason: the new canonical search-driven run; v2 lacked study_fulltext
       latest:   v3
@@ -222,6 +281,9 @@ projects:
     annotation_only:
       verbatim: v1-annotation-only
       manual:   v5-annotation-only    # renamed from v3-annotation-only 2026-08-27
+      untuned:  v3-annotation-only
+      # v1/v2/v3-annotation-only share one criteria generation (verified byte-identical);
+      # v4-annotation-only is "TUNED AGAINST THE BENCHMARK" by its own header.
       best:     v4-annotation-only
       # best-reason: v4-annotation-only. v1 leads on fair dice (0.570 vs 0.550), but v4 carries the
       # multi-label fix that the corpus annotation-value analysis depends on, so v1's edge is not
@@ -235,6 +297,8 @@ projects:
     allstudies:
       verbatim: null
       manual:   null
+      untuned:  v3-allstudies
+      # Carries the untuned v3 criteria generation.
       best:     v3-allstudies
       # best-reason: the family latest
       latest:   v3-allstudies    # renamed from v3-all_pmids-multi_analysis-ft 2026-08-27
@@ -259,6 +323,8 @@ projects:
     canonical:
       verbatim: v1
       manual:   v1                    # never iterated; verbatim and manual are the same run
+      untuned:  v1
+      # Only version in the project.
       best:     v1
       # best-reason: only run
       latest:   v1
@@ -266,6 +332,8 @@ projects:
     annotation_only:
       verbatim: v1-annotation-only
       manual:   v1-annotation-only
+      untuned:  v1-annotation-only
+      # Only version in the project.
       best:     v1-annotation-only
       # best-reason: only run; fair dice 0.875, the corpus high
       latest:   v1-annotation-only
@@ -274,6 +342,13 @@ projects:
     canonical:
       verbatim: v1
       manual:   null
+      untuned:  v2
+      # RECLASSIFIED 2026-11-03. The v1 -> v2 diff is wording only at both stages: "fMRI" ->
+      # "structural MRI" (a bug in a VBM project), "cue type" -> "substance use
+      # characteristics" (a cue-reactivity template leftover), and clarifying restatements. No
+      # criterion added or removed. The "Benchmark-tuned" label came from the 2026-08-26
+      # renaming pass, not from the edit, and has been withdrawn from both headers. untuned
+      # therefore equals best here.
       best:     v2
       # best-reason: v2, per the recall-first rule: better recall than v1, accepting F1 0.570 vs
       # 0.585. v2 also carries the GPT-reviewed criteria. USER-RESOLVED 2026-08-27.
@@ -286,6 +361,9 @@ projects:
     annotation_only:
       verbatim: null
       manual:   null
+      untuned:  v2-annotation-only
+      # Byte-identical annotation criteria to v2. RECLASSIFIED 2026-11-03 -- see the canonical
+      # note.
       best:     v2-annotation-only
       # best-reason: only annotation-only run
       latest:   v2-annotation-only    # GPT

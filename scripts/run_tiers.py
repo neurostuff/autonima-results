@@ -7,6 +7,29 @@ conflates three different things, which matters for the overfitting argument:
     verbatim  criteria transcribed from the source paper before any results were seen. The
               honest attempt: no peeking at the benchmark.
     manual    the author revised BY HAND, having glanced at a few report examples. Light peeking.
+    untuned   THE HIGHEST VERSION WHOSE CRITERIA WERE NEVER ITERATED AGAINST BENCHMARK ERROR
+              REPORTS. Added 2026-11-03 in response to reviewer push-back on reporting
+              LLM-refined results.
+
+              The line it draws is narrower than `manual`, and deliberately so. It permits
+              LLM-AUTHORED criteria (executive_function v1 was GPT-drafted from the source
+              paper) and permits LLM- or even gold-tuned SEARCH (decision_making v1's query was
+              ChatGPT-refined in an evaluation loop; problem_solving v1's was Claude-optimised
+              against gold-membership counts). What it forbids is the one thing that makes a
+              result circular: criteria edited after reading which studies or analyses this
+              project got wrong.
+
+              So `untuned` is NOT a synonym for `manual`. `manual` is empty for five projects
+              that nonetheless have a perfectly reportable untuned version, and it is set to a
+              LOWER version than `untuned` for social, whose v3 criteria are byte-identical to
+              its hand-edited v2. Each entry's justification is quoted from the config's own
+              header in run_categories.yaml -- none rests on a judgement of tone.
+
+              Where a family has no untuned run at all the registry states `untuned: null`
+              EXPLICITLY rather than omitting the key. Omitting it would resolve to None, and a
+              caller's auto-pick would then silently substitute the benchmark-tuned run -- the
+              exact error this tier exists to prevent. Callers must treat None as "skip and say
+              so", never as "pick the highest version".
     best      THE PREFERRED CONFIG. Curated, not derived: the run we would put forward as the
               system's best showing, with benchmark-informed tuning fully allowed. Usually the
               highest performer; not necessarily the highest version number.
@@ -54,7 +77,7 @@ __all__ = [
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY = REPO_ROOT / "run_categories.yaml"
-TIERS = ("verbatim", "manual", "best", "latest")
+TIERS = ("verbatim", "manual", "untuned", "best", "latest")
 
 # Families keyed by role rather than by tier. They live in the same registry because they name
 # runs of the same project, but asking them for a tier is a caller error, not a missing entry.
