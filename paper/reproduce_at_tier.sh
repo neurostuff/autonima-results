@@ -98,10 +98,13 @@ PYEOF
   run "${PY[@]}" scripts/decompose_selection_gain.py --tier "$TIER" \
       --baseline-table "$RR/cross_project_best_baseline.csv" \
       --output "$RR/selection_decomposition.csv"
-  run "${PY[@]}" scripts/annotation_value.py --tier "$TIER" \
-      --projects-root "$RP" --output "$RR/annotation_value.csv"
   run "${PY[@]}" scripts/run_cross_project_analysis_reports.py --tier "$TIER" \
       --output-dir "$RR/cross_project_analysis"
+  # MUST follow run_cross_project_analysis_reports: annotation_value reads each run's
+  # reports/annotation_review_reports/annotation_metrics_by_mode.json, which that step writes.
+  # Run earlier it silently emits blank annotation_f1 rather than failing.
+  run "${PY[@]}" scripts/annotation_value.py --tier "$TIER" \
+      --projects-root "$RP" --output "$RR/annotation_value.csv"
   run "${PY[@]}" scripts/run_cross_project_screening_reports.py --tier "$TIER" \
       --output-dir "$RR/cross_project_screening"
   # feeds figure S1; reads the registry directly, so it is tier-independent by nature, but its

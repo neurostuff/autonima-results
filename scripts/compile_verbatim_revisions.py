@@ -68,6 +68,21 @@ ISSUES: dict[str, tuple[str, str]] = {
 }
 
 
+def criteria_differ(project: str, a: str, b: str) -> bool:
+    """True only when the CRITERIA moved, not merely the run name.
+
+    social's v2 -> v3 changes the search block alone and leaves screening and annotation
+    byte-identical, so counting it as a transcription revision would inflate the failure rate
+    with a run that corrected nothing.
+    """
+    ca, cb = cfg(project, a), cfg(project, b)
+    for block, _ in BLOCKS:
+        for key in ("inclusion_criteria", "exclusion_criteria"):
+            if crit(ca, block, key) != crit(cb, block, key):
+                return True
+    return False
+
+
 def crit(c: dict | None, block: str, key: str) -> list[str]:
     if c is None:
         return []
@@ -96,7 +111,7 @@ def main(argv=None) -> int:
             continue
         v, u = fam.get("verbatim"), fam.get("untuned")
         rows.append((project, v, u))
-        if v and u and v != u:
+        if v and u and v != u and criteria_differ(project, v, u):
             revised.append(project)
             if ISSUES.get(project, ("", ""))[0] != "under-specification, not error":
                 errors.append(project)
@@ -109,19 +124,41 @@ def main(argv=None) -> int:
       f"**{len(errors)} of {len(have)}** of those revisions correct an actual defect in the "
       f"transcription rather than adding specificity.\n")
 
+    w("## What the configs cannot tell you\n")
+    w("Disclosed by the author on 2026-11-03, and recorded here because no config captures it.\n")
+    w("In some of the runs registered as `untuned`, the criteria **were** revised after looking "
+      "at reports, at the **screening stage**, typically after reading fewer than five papers. "
+      "Those revisions were manually reviewed and found consistent with the source report -- "
+      "they corrected an **omission** or an **under-specification** in it, rather than fitting "
+      "the benchmark's answers. The benchmark acted as a small set of test cases that exposed "
+      "the defect; it was not the target.\n")
+    w("So the defensible claim is **\"not systematically fitted to benchmark error reports\"**, "
+      "not \"no benchmark output was ever consulted\". The second would be false for several "
+      "projects. Which ones is not recorded in the repo and is being reconstructed from memory; "
+      "until that list exists, this document cannot name them, and any wording in the manuscript "
+      "should avoid implying the stronger claim.\n")
+    w("Two projects also have **no strictly verbatim run**: `emotion_regulation_2022` and "
+      "`social`. Their lowest-numbered canonical version stands in for one, because the "
+      "researcher read the criteria, saw obvious errors and corrected them on the first attempt "
+      "instead of running the faithful version first. ER's v2 header lists changes vs v1 that "
+      "\"each correct a clear misreading or an outright omission of a stated criterion\". So for "
+      "those two the verbatim->untuned delta is a **lower bound**: their first-attempt "
+      "corrections never appear as a diff.\n")
     w("| project | verbatim | untuned | revised | issue |")
     w("|---|---|---|---|---|")
     for project, v, u in rows:
         if not v:
             w(f"| {project} | — | `{u}` | n/a | no verbatim registered |")
-        elif v == u:
-            w(f"| {project} | `{v}` | `{u}` | no | verbatim criteria used unchanged |")
+        elif project not in revised:
+            why = ("verbatim criteria used unchanged" if v == u
+                   else "same criteria; the two runs differ in the search block only")
+            w(f"| {project} | `{v}` | `{u}` | no | {why} |")
         else:
             w(f"| {project} | `{v}` | `{u}` | **yes** | {ISSUES.get(project, ('?',''))[0]} |")
     w("")
 
     for project, v, u in rows:
-        if not v or v == u:
+        if not v or project not in revised:
             continue
         kind, prose = ISSUES.get(project, ("unclassified", ""))
         w(f"## {project}  (`{v}` → `{u}`)\n")

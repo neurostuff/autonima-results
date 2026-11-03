@@ -19,6 +19,20 @@ conflates three different things, which matters for the overfitting argument:
               result circular: criteria edited after reading which studies or analyses this
               project got wrong.
 
+              WHAT `untuned` DOES NOT MEAN -- disclosed by the author 2026-11-03, and not
+              derivable from the configs. In some of these runs the criteria WERE revised after
+              looking at reports, at the screening stage, typically fewer than five papers. Those
+              revisions were reviewed as consistent with the source report -- they corrected an
+              omission or an under-specification in it -- rather than fitting the benchmark's
+              answers. The benchmark served as a small set of test cases that exposed the defect,
+              not as the target.
+
+              That is a real qualification and the honest phrasing has to carry it. `untuned`
+              means "not systematically fitted to benchmark error reports". It does NOT mean "no
+              benchmark output was ever looked at". Claiming the latter would be false for
+              several projects, and the configs do not record which -- the author is reconstructing
+              that list, and it belongs in the per-project notes below when it arrives.
+
               So `untuned` is NOT a synonym for `manual`. `manual` is empty for five projects
               that nonetheless have a perfectly reportable untuned version, and it is set to a
               LOWER version than `untuned` for social, whose v3 criteria are byte-identical to
