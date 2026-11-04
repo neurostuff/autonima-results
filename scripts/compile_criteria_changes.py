@@ -163,6 +163,8 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                 "(delay discounting, moral, social), and an explicit 'any participant group "
                 "qualifies' inclusion naming substance users and neuropsychiatric conditions. "
                 "Excludes implicit-baseline-only contrasts.",
+        verified_how=(
+            "FULL TEXT (PMC7127964 S2.2) + GOLD RETENTION. Paper: 'We excluded PET studies to remove heterogeneity...'; 'Coordinates from studies including healthy controls, substance users, as well as participants with other neuropsychiatric conditions (internet addiction, gambling, ...) were utilized'; 'participants from all age groups (range: 10-69) were also included'. Enforced: recall HELD across the change (0.976 -> 0.977, tp 83 -> 84) while precision rose, so the added restrictions cost no gold."),
         reasoning="CORRECTED from no-source-basis, and the correction is not close. The source "
                   "inclusion says 'We excluded PET studies to remove heterogeneity' -- v3's PET "
                   "exclusion quotes that reasoning back. It also says coordinates from studies "
@@ -178,6 +180,8 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                 "patient groups, a >=6-participant rule, and a modality restriction (excludes "
                 "seed-based FC, DTI, cortical thickness). Extends bvFTD to picks disease. Adds a "
                 "Parkinson's exclusion and a no-neuroimaging exclusion at abstract.",
+        verified_how=(
+            "FULL TEXT (PMC9148620 S2.1) -- PARTIAL. Paper states the modality exclusion verbatim: 'studies using seed-based functional connectivity (FC), diffusion tensor imaging (DTI), and cortical thickness methods were all excluded', which v3 reproduces almost word for word; the control-group requirement matches 'compared bvFTD patients with their matched healthy controls'. NOT TESTED against the gold: this project's gold analyses are merged author-year groups with no contrast semantics in their names, so the enforcement check that worked for problem_solving is not available here. The >=6 deviation stands -- paper says '>=6 in EITHER the patient or healthy group', v3 requires both."),
         reasoning="Most of the 18 changes restore stated criteria v1 omitted: the control-group "
                   "requirement answers the paper's 'No Control' exclusion; the no-pooling rule "
                   "answers 'no other forms of dementia'; the >=6 rule and the VBM/fMRI/FDG-PET "
@@ -241,6 +245,8 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                 "exclusion for between-group and group x condition contrasts, and a 'group-level "
                 "effects in healthy participants' inclusion. ADDS a closed list of five permitted "
                 "contrast types and a source-based definition of problem solving.",
+        verified_how=(
+            "FULL TEXT (PMC6425494 S2.1) + GOLD ANALYSES. Paper: 'we selected only those contrasts reporting either BOLD or rCBF signal increases; results associated with BOLD or rCBF decreases were excluded'; 'Group-level effects in healthy adult individuals were targeted, while disease-, age-, and gender-related group comparisons were excluded'. Enforced: of 603 gold analyses across 129 studies, ZERO are decreases or reverse contrasts and ZERO are genuine between-group comparisons. Screening metrics could not test this (v1 -> v2 changed only the annotation block), so the gold-analysis scan is the evidence."),
         reasoning="CORRECTED from no-source-basis, which I gave you at HIGH confidence last turn. "
                   "I was misled by the config's own wording -- it says 'the BENCHMARK includes "
                   "only BOLD or rCBF signal INCREASES' -- but that is the source paper's "
@@ -280,6 +286,8 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
         summary="ADDS an adult-sample inclusion plus a paediatric exclusion, and an exclusion for "
                 "non-voxel-based morphometry (surface/vertex thickness, FreeSurfer parcellation, "
                 "shape analyses, TBM) where no VBM contrast is reported.",
+        verified_how=(
+            "FULL TEXT (PMC9472396) + GOLD RETENTION. Paper: 'peer-reviewed MRI studies, reporting results among adult humans...'; exclusions include 'other non-voxel-based morphometry methods'. Both verbatim. Enforced: adding them lost ZERO gold (fulltext recall 0.941 unchanged, tp 16 both sides) and all 6 excluded papers are non-gold."),
         reasoning="VERIFIED BY OUTCOME. Both added criteria are in the source's stated criteria "
                   "(pmid 36100907): 'reporting results among adult humans' and 'other non-voxel-"
                   "based morphometry methods'. v1 encodes neither. Exactly 6 papers flip "
@@ -497,6 +505,7 @@ def tier_transitions(project: str) -> list[dict]:
             "change_type": g.get("change_type", "") or "UNLABELLED - see reasoning",
             "provenance": g.get("provenance", ""),
             "confidence": g.get("confidence", ""),
+            "verified_how": g.get("verified_how", ""),
             "reasoning": g.get("reasoning", ""),
             "source_usable": "NO -- see source_criteria sheet" if not src.get("usable") else "yes",
             "target_header": header_quote(project, b),
@@ -508,7 +517,7 @@ def tier_transitions(project: str) -> list[dict]:
 
 COLUMNS = ["project", "from_tier", "to_tier", "from", "to", "intermediate", "n_changes",
            "blocks", "added", "removed", "reworded", "criteria_summary",
-           "change_type", "provenance", "confidence", "reasoning",
+           "change_type", "provenance", "confidence", "verified_how", "reasoning",
            "source_usable", "target_header", "intermediate_headers", "changes"]
 
 # One set of annotation columns, not two. The earlier my_*/your_* split implied my guesses were
@@ -622,6 +631,13 @@ def write_xlsx(path: Path, rows: list[dict], sources: list[dict]) -> bool:
         ("low", "one terse header line; mostly inference. Prompts, not findings."),
     ]:
         key.append(["confidence", v, m])
+    key.append(["verified_how", "",
+                "what the label was actually checked against. Empty means NOT independently "
+                "verified -- the label rests on the config header and the registry summary "
+                "alone. 'FULL TEXT' means the source paper's own methods section was read; "
+                "'GOLD RETENTION' / 'GOLD ANALYSES' means the paper's own included set was "
+                "tested for whether it obeys the stated rule, which is what separates "
+                "source-uncovered from source-unenforced."])
     key.append(["target_header", "", "the target config's own provenance banner -- usually the "
                                      "fastest way to annotate a row"])
     key.append(["changes", "+ / - / ~", "added / removed / reworded, prefixed by the block"])
