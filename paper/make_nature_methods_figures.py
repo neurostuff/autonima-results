@@ -1224,16 +1224,25 @@ def figureS3(out_dir: Path) -> None:
 # -------------------------------------------------------------------- Supplementary S1
 
 def figureS1(out_dir: Path) -> None:
-    """Two different effects live in the tier progression, and only the second one is overfitting.
+    """Two different effects live in the tier progression, and NEITHER is simply overfitting.
 
     run_categories.yaml orders runs by how much benchmark information shaped their criteria. It is
     tempting to read the whole `initial -> best` rise as leakage, and an earlier version of this
     figure did. That is wrong, and the split says why:
 
-      initial -> manual   the project author, having seen reports, fixed MAJOR OVERSIGHTS in the
-                           criteria -- things that were simply mis-specified. n = 2, mean +0.221.
-      manual   -> best     criteria rewritten against the error reports in full. This is the
-                           overfitting estimate. n = 2, mean +0.031.
+      initial -> untuned           manual revision, mostly from re-reading the source publication:
+                                   omissions restored, mis-transcriptions corrected, vague clauses
+                                   operationalised. n = 5, mean +0.101.
+      untuned -> benchmark_tuned   criteria revised against the error reports. n = 9, mean +0.015.
+
+    THE SECOND SEGMENT IS NOT LABELLED "overfitting" ANY MORE, and that is a correction, not a
+    softening. Classifying all 14 tier transitions against the source publications (see
+    reports/criteria_changes.xlsx, 11 of 14 verified against a source full text) found that 6 of
+    the 9 tuning revisions still track the source paper -- restoring criteria it states,
+    clarifying ones it leaves vague, or following criteria it states but does not itself apply.
+    Only 3 have no source argument available. Calling the whole segment overfitting would
+    contradict the repo's own evidence, so it is now "benchmark-guided revision" and the
+    composition is reported separately.
 
     So almost the entire rise is the cost of getting the criteria wrong, not the benefit of having
     seen the answers. That reframes the result from a caveat into a finding: the live risk in
@@ -1253,7 +1262,7 @@ def figureS1(out_dir: Path) -> None:
     # fourth point would double-count the winner and invent a rise that is really a max.
     TIER_ORDER = ["initial", "untuned", "benchmark_tuned"]
     LABEL = {"initial": "initial\n(first pass from\nthe paper, held out)",
-             "untuned": "untuned\n(oversights fixed,\nnot fitted)",
+             "untuned": "manually revised\n(source re-read,\nnot fitted)",
              "benchmark_tuned": "benchmark-tuned\n(criteria iterated on\nerror reports)",
              "best": "best\n(whichever of the\nthree won)"}
 
@@ -1344,7 +1353,7 @@ def figureS1(out_dir: Path) -> None:
     y0, y1 = ax.get_ylim()
     band = y1 - 0.055 * (y1 - y0)
     for (x0, x1), lab, deltas in ((( -0.02, 0.98), "fixing\nmis-specification", vm),
-                                  ((1.02, 1.98), "overfitting", mb)):
+                                  ((1.02, 1.98), "benchmark-guided\nrevision", mb)):
         ax.annotate("", xy=(x1, band), xytext=(x0, band),
                     arrowprops=dict(arrowstyle="<->", lw=0.6, color=MUTED, shrinkA=0, shrinkB=0))
         txt = (f"{lab}\nmean {st.mean(deltas.values()):+.3f} (n={len(deltas)})"
