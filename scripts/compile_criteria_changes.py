@@ -125,6 +125,8 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
         summary="REMOVES an invented healthy-adult restriction (annotation inclusion + fulltext "
                 "exclusion). Loosens 'drug or natural reward-related' to 'reward-related'. Folds "
                 "the between-group exclusion into the whole-brain inclusion criterion.",
+        verified_how=(
+            "FULL TEXT (PMC8511211). Confirms the claim of ABSENCE, which a registry summary could not: Hill-Bowen's three stated criteria are visual cue-reactivity, reported 3D coordinates, and whole-brain or small-volume-corrected within-participant contrasts. There is NO population criterion anywhere in them. So v1's healthy-adult restriction was invented and v2 repaired it."),
         reasoning="Net of three hand edits. The substantive one is v2 removing the healthy-adult "
                   "restriction; the source (pmid 34400176) imposes NO population restriction, so "
                   "v1 invented it. The v2 header reads 'correct error that only healthy adult "
@@ -133,11 +135,13 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                   "they CANCEL and leave no trace in the cumulative diff. One loosening to check: "
                   "dropping 'drug or natural' loses a distinction the paper does make."),
     ("cue_reactivity", "v4", "v6"): dict(
-        change_type="source-underspecified", provenance="llm-reports", confidence="medium",
+        change_type="source-underspecified", provenance="llm-reports", confidence="high",
         summary="Admits ROI analyses THAT REPORT COORDINATES (new explicit exception). Admits "
                 "small-volume-corrected maps alongside whole-brain. Narrows the cue exclusion to "
                 "paradigms with no visual component. Demotes reporting-completeness from a "
                 "requirement to a preference.",
+        verified_how=(
+            "FULL TEXT (PMC8511211). Both halves confirmed verbatim. The ROI exclusion carries its rationale inline -- 'studies involving regions of interest [ROIs] derived from a brain parcellation scheme were excluded GIVEN THE ABSENCE OF COORDINATES' -- so an ROI analysis that does report coordinates meets the source's intent. And the third criterion already admits 'whole-brain OR SMALL-VOLUME CORRECTED analyses', so v6 restoring SVC is a restoration, not a loosening. Confidence medium -> high on content; provenance is still llm-reports off a false-negative report."),
         reasoning="RELABELLED from no-source-basis. The source excludes ROI analyses expressly "
                   "'given the absence of coordinates' -- that is its stated RATIONALE, so an ROI "
                   "analysis that does report coordinates satisfies the source's intent even "
@@ -214,6 +218,8 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                 "'the group is PREDOMINANTLY some other diagnosis'. Tightens ROI to cover "
                 "mask-confined and SVC analyses. ADDS an explicit requirement that peak "
                 "coordinates exist.",
+        verified_how=(
+            "FULL TEXT (PMC9148620) for the stated side only. The paper does state the criterion v4 relaxes -- 'included clinically diagnosed bvFTD patients with no concurrent psychiatric diagnosis (e.g., major depressive disorder and bipolar mood disorder), other forms of dementia or neurological symptoms'. ENFORCEMENT UNTESTED, and untestable from what is available: per-study sample composition is in the supplement, and this project's gold analyses are merged author-year groups with no contrast semantics. Given that the one other row I guessed as source-unenforced without reading the paper (social v3 -> v4) turned out to be wrong, treat this label as unconfirmed."),
         reasoning="MIXED, and relabelled from no-source-basis. The coordinates requirement is "
                   "straight source-uncovered -- the paper's fourth inclusion criterion is "
                   "'reported the coordinates of between-group contrasts'. The comorbidity "
@@ -224,11 +230,13 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                   "Confidence is low until someone does. This run hurt recall and was not "
                   "promoted."),
     ("emotion_regulation_2022", "v2", "v4"): dict(
-        change_type="source-unenforced", provenance="human-reports", confidence="high",
+        change_type="source-unenforced", provenance="human-reports", confidence="medium",
         summary="REMOVES three stated restrictions: healthy-adults-only (now any group at any "
                 "age), static-images-only (now film and video qualify), and reappraisal-narrowly-"
                 "read (now any instructed regulation strategy). Softens the ROI exclusion to "
                 "explicit ROI only.",
+        verified_how=(
+            "GOLD LIST ONLY -- the full text could not be checked. Morawetz 2022 (PMID 35413444) is NOT in PMC, and this project's registry row has empty criteria fields, so there is no independent statement of the paper's criteria anywhere available. WHAT IS VERIFIED: all 10 gold PMIDs the v4 header names as breaching the criteria are in the 88-study gold list -- 25631055, 17888411, 24782800, 17588776, 25698699 (film) and 21686071, 24646887, 28372994, 25439326, 26596970 (child/adolescent/mixed). WHAT IS NOT: that the paper STATES those restrictions. That rests on v2's header claim to be a faithful transcription ('CRITERIA ARE COPIED, NOT REWRITTEN'), which is reasonable but is not the paper. source-unenforced needs both halves, so confidence drops high -> medium until someone reads Morawetz."),
         reasoning="VERIFIED, and relabelled from no-source-basis -- this is the case that forced "
                   "the new category. The v4 header names 10 gold PMIDs the paper included in "
                   "breach of its own stated criteria, and ALL TEN are in the 88-study gold list: "
@@ -288,16 +296,19 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                   "criteria effect -- worth remembering before that delta is read as evidence "
                   "about criteria revision."),
     ("social", "v3", "v4"): dict(
-        change_type="source-unenforced", provenance="llm-reports", confidence="low",
+        change_type="no-source-basis", provenance="llm-reports", confidence="medium",
         summary="RELAXES the 18-65 age restriction to exclude only wholly-child/adolescent or "
                 "wholly-geriatric samples. ADDS an exclusion for multivariate-only whole-brain "
                 "results (searchlight MVPA, classification accuracy, RSA).",
+        verified_how=(
+            "FULL TEXT (PMC9843621) -- AND IT CONTRADICTS MY EARLIER LABEL. Pintos Lobo states: 'only studies with healthy participants (i.e., with no known significant health problems) within the age range of 18-60 years old that were not administered medication were included', and the paper's own summary of its result says the 239 eligible studies covered '6,232 HEALTHY ADULTS'. That is a stated criterion the paper reports having APPLIED, so relaxing it is not following unstated practice. Not verified at the level of individual gold studies' ages, hence medium rather than high."),
         reasoning="Relabelled from no-source-basis, but UNVERIFIED. The source states 'healthy "
                   "participants, age 18-60', and v4 loosens it -- the ER pattern. Whether the "
                   "social gold list actually contains out-of-range samples is the check that "
                   "would settle it, and I have not run it. The MVPA exclusion is separate and "
                   "looks source-underspecified (the paper asks for whole-brain coordinates; a "
-                  "classification-accuracy map is not that). A null result either way."),
+                  "classification-accuracy map is not that). A null result either way."
+                  " CORRECTED 2026-11-04: was source-unenforced. I had assumed the ER pattern -- stated but not applied -- without reading this paper. The full text shows the opposite: the criterion is stated AND the paper reports enforcing it. v3 was already looser than the source on the upper bound (18-65 vs 18-60), and v4 loosens further, so this goes beyond the source rather than tracking it. The separate MVPA exclusion in the same row looks source-grounded (the paper asks for activation coordinates; a classification-accuracy map is not that) -- a mixed row whose dominant change is the age relaxation."),
     ("vbm_of_ptsd", "v1", "v2"): dict(
         change_type="source-uncovered", provenance="llm-reports", confidence="high",
         summary="ADDS an adult-sample inclusion plus a paediatric exclusion, and an exclusion for "
@@ -329,6 +340,8 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                 "measures including cortical thickness. EXPANDS to any substance of abuse. "
                 "RELAXES the psychiatric exclusion to 'patient group is the grouping variable'. "
                 "ADDS an atlas-parcellation exclusion and a significant-foci requirement.",
+        verified_how=(
+            "NOT VERIFIABLE from open sources. Hill-Bowen 2022 (PMID 36115222) is not in PMC, so the label still rests on the benchmark registry's summary ('MRI studies assessing GM VOLUME differences'). If that summary is faithful, admitting cortical thickness and other surface-based measures goes beyond it and no-source-basis holds. Worth noting the registry has already been caught carrying the wrong paper's criteria once (executive_function), so a summary alone is thin evidence."),
         reasoning="The one tuned row I still read as no-source-basis. The source inclusion is "
                   "specific -- 'GM VOLUME differences' -- and v3 admits cortical thickness and "
                   "other surface measures, which is not a vague rule being operationalised but a "
