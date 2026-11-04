@@ -230,7 +230,7 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                   "Confidence is low until someone does. This run hurt recall and was not "
                   "promoted."),
     ("emotion_regulation_2022", "v2", "v4"): dict(
-        change_type="source-unenforced", provenance="human-reports", confidence="medium",
+        change_type="source-unenforced", provenance="human-reports", confidence="high",
         summary="REMOVES three stated restrictions: healthy-adults-only (now any group at any "
                 "age), static-images-only (now film and video qualify), and reappraisal-narrowly-"
                 "read (now any instructed regulation strategy). Softens the ROI exclusion to "
@@ -247,7 +247,8 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                   "'DELIBERATELY LESS FAITHFUL THAN THE PAPER, to buy recall' -- is what made me "
                   "call this no-source-basis; it is faithful to what the paper DID. Note the "
                   "honest residue: the change was found by counting lost gold, so provenance "
-                  "stays human-reports."),
+                  "stays human-reports."
+                  " THE MANUAL CATCH THE AUTHOR REMEMBERS IS REAL, AND IT IS DOCUMENTED AT v3, NOT v4. v3-allstudies' header records 25698699 -- one of the five film studies -- as 'all of I1-I4 met, excluded anyway for using film clips'. The author SPOTTED the problem by hand at v3 and chose to make the restriction auditable rather than relax it; the relaxation came only at v4. Discovery was human, implementation was the LLM-tuned run, which is why provenance here is human-reports rather than llm-reports."),
     ("executive_function", "v1", "v3"): dict(
         change_type="no-source-basis", provenance="llm-reports", confidence="high",
         summary="RELAXES hard: the 18-60 healthy-only restriction goes (any group, clinical and "
