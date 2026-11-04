@@ -175,22 +175,39 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                   "participant criterion reproduces that list almost verbatim. These are the "
                   "paper's own criteria that v2 never encoded."),
     ("dementia", "v1", "v3"): dict(
-        change_type="source-uncovered", provenance="human-reports", confidence="medium",
+        change_type="source-uncovered", provenance="human-reports", confidence="high",
         summary="ADDS the control-group requirement, an exclusion for pooling bvFTD with other "
                 "patient groups, a >=6-participant rule, and a modality restriction (excludes "
                 "seed-based FC, DTI, cortical thickness). Extends bvFTD to picks disease. Adds a "
                 "Parkinson's exclusion and a no-neuroimaging exclusion at abstract.",
         verified_how=(
-            "FULL TEXT (PMC9148620 S2.1) -- PARTIAL. Paper states the modality exclusion verbatim: 'studies using seed-based functional connectivity (FC), diffusion tensor imaging (DTI), and cortical thickness methods were all excluded', which v3 reproduces almost word for word; the control-group requirement matches 'compared bvFTD patients with their matched healthy controls'. NOT TESTED against the gold: this project's gold analyses are merged author-year groups with no contrast semantics in their names, so the enforcement check that worked for problem_solving is not available here. The >=6 deviation stands -- paper says '>=6 in EITHER the patient or healthy group', v3 requires both."),
-        reasoning="Most of the 18 changes restore stated criteria v1 omitted: the control-group "
-                  "requirement answers the paper's 'No Control' exclusion; the no-pooling rule "
-                  "answers 'no other forms of dementia'; the >=6 rule and the VBM/fMRI/FDG-PET "
-                  "modality list are both stated inclusions. TWO EXCEPTIONS: the Parkinson's "
-                  "exclusion has no counterpart in the stated criteria (though the source SEARCH "
-                  "string scopes to bvFTD/picks), and the participant rule is made STRICTER than "
-                  "the source -- the paper says '>=6 in EITHER the patient or healthy group', v3 "
-                  "requires >=6 in the patient group AND >=6 in the control group. That second "
-                  "one is a candidate source-unenforced in reverse and is worth your call."),
+            "FULL TEXT (PMC9148620 S2.1). Three of the four substantive additions are verbatim "
+            "restorations: the modality exclusion is almost word for word ('studies using "
+            "seed-based functional connectivity (FC), diffusion tensor imaging (DTI), and "
+            "cortical thickness methods were all excluded'), the control-group requirement "
+            "matches 'compared bvFTD patients with their matched healthy controls', and the "
+            "no-pooling rule answers 'no... other forms of dementia'. "
+            "ENFORCEMENT NOT TESTED: this project's gold analyses are merged author-year groups "
+            "with no contrast semantics, and the per-study sample sizes live in the paper's "
+            "SUPPLEMENT, which is not in the PMC XML. The one gold study v2 lost at abstract "
+            "(28724588) went to the no-neuroimaging rule, not the >=6 rule -- its abstract "
+            "describes automatic speech/prosody analysis. That is an abstract-stage information "
+            "gap rather than evidence about the paper's criteria."),
+        reasoning="Most of the 18 changes restore stated criteria v1 omitted -- see verified_how. "
+                  "THE >=6 CLAUSE, REVISED 2026-11-04 after the author pointed out that the "
+                  "source is ambiguous rather than merely looser. Kamalian reads 'included at "
+                  "least six participants in EITHER the patient or healthy group'. English "
+                  "'either' carries both a distributive sense ('trees on either side' = both) "
+                  "and a disjunctive one (at least one of the two). The disjunctive reading would "
+                  "admit a study with two patients and fifty controls, which no one designing a "
+                  "between-group CBMA intends, so the distributive reading is almost certainly "
+                  "what was meant. v3's '>=6 in the patient group, and >=6 in the control group "
+                  "if present' is therefore the sensible operationalisation of a vague clause, "
+                  "i.e. source-underspecified -- NOT the deviation I called it. That removes the "
+                  "row's only blemish and is why confidence moved medium -> high. "
+                  "ONE GENUINE EXCEPTION REMAINS: the Parkinson's exclusion has no counterpart "
+                  "in the stated criteria, though the source SEARCH string scopes to "
+                  "bvFTD/picks disease."),
     ("dementia", "v3", "v4"): dict(
         change_type="source-unenforced", provenance="llm-reports", confidence="low",
         summary="RELAXES the psychiatric/comorbidity exclusion from 'no concurrent diagnosis' to "
