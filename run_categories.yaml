@@ -252,9 +252,34 @@ projects:
         numbers as covering roughly half the benchmark: retrieval reaches 63 of 88 texts.
     allstudies:
       initial: v1-allstudies
-      untuned:  v2-allstudies
-      # Corrects clear misreadings of the paper stated criteria; v4-allstudies carries the
-      # tuned v4 criteria.
+      untuned:  v3-allstudies
+      # REGISTERED 2026-11-04 (author's call). Was v2-allstudies, because v3 had been archived
+      # out of the tree in 9fa329f2 and was not a live run. Restored from git for this.
+      #
+      # v3 is hand-authored by the project author and untuned-eligible by profile: its header
+      # describes its own changes as "things with no fidelity cost" and reasons from the paper
+      # throughout. It is the highest such version, which is what `untuned` asks for.
+      #
+      # IT IS ALSO A SEVERE REGRESSION, AND THAT IS WHY IT IS WORTH REGISTERING. v3 kept both of
+      # the paper's stated restrictions and made the film one STRICTER -- promoting it from the
+      # abstract `objective` string into a declared exclusion criterion so it would actually
+      # fire. Full-text recall collapsed 0.840 -> 0.404 (tp 42 -> 19) while precision barely
+      # moved (0.568 -> 0.576). Enforcing this paper's stated criteria faithfully halves recall
+      # against the paper's own gold.
+      #
+      # So this family's initial -> untuned step is NEGATIVE by design. That is the honest shape
+      # of the evidence, not a defect in the registry: it is the direct measurement behind the
+      # `source-unenforced` label on ER v2 -> v4, and the reason the tuned v4 relaxes criteria
+      # rather than adding them.
+      #
+      # v3's header also records 25698699 -- one of the five film studies in the gold list -- as
+      # "all of I1-I4 met, excluded anyway for using film clips". The problem was caught by hand
+      # here; it was only acted on at v4.
+      #
+      # CANONICAL IS UNAFFECTED: no ER v3 canonical run has ever existed, so the main ladder and
+      # every figure built from it are unchanged.
+      # v2-allstudies (the former untuned) corrects clear misreadings of the paper's stated
+      # criteria; v4-allstudies carries the tuned v4 criteria.
       benchmark_tuned: v4-allstudies
       # v4's criteria over the fixed pool.
       best:     v4-allstudies

@@ -29,7 +29,7 @@ Runs are marked `!` where the registered name has no outputs on disk, and `~` wh
 | dementia | allstudies | `v1-allstudies` | `v3-allstudies` | `v5-allstudies` | `v5-allstudies` | `v5-allstudies` |
 | emotion_regulation_2022 | canonical | `v2` | `v2` | `v4` | `v4` | `v4` |
 | emotion_regulation_2022 | annotation_only | — | `v2-annotation-only` | `v4-annotation-only` | `v4-annotation-only` | `v4-annotation-only` |
-| emotion_regulation_2022 | allstudies | `v1-allstudies` | `v2-allstudies` | `v4-allstudies` | `v4-allstudies` | `v4-allstudies` |
+| emotion_regulation_2022 | allstudies | `v1-allstudies` | `v3-allstudies` `~` | `v4-allstudies` | `v4-allstudies` | `v4-allstudies` |
 | executive_function | canonical | `v1` | `v1` | `v3` | `v3` | `v3` |
 | executive_function | annotation_only | — | `v1-annotation-only` | `v3-annotation-only` | `v1-annotation-only` | `v3-annotation-only` |
 | problem_solving | canonical | `v1` | `v1` | `v2` | `v2` | `v2` |
