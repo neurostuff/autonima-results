@@ -110,9 +110,25 @@ Recall is final includes over every gold study, so the arms share a denominator.
 - **Annotation failures remaining** (studies whose LLM output never validated, recorded as
   failures, not exclusions): coords 0–15 per project (decision making 15), search 0–15.
 
-Of the two arms, **coords is the baseline to build on**: same screening as best, more studies,
-maps within 0.03 r², and no table parsing. The search arm adds the screening savings of
-NeuroStore's smaller result sets (8.3k records against 22.6k) for a further small loss.
+**The baseline going forward is the search arm** (decided 2026-11-04). It is what Neurosynth
+Compose mode runs, NeuroStore for both the candidate studies and the coordinates, so a skills run
+compares against it like for like. Against best it costs 0.033 r² (0.505 against 0.538 on the
+paper's eight projects; 0.008 below the coords arm) and gains 0.04 recall at precision within
+0.01, with no table parsing and 8.3k records to screen instead of 22.6k. The coords arm stays
+as the comparison for NeuroStore's coordinates alone.
+
+## Baseline for autonima-skills
+
+`baseline.yaml` here names each project's run (`<best>-ns-search`). The runs are committed like
+every run in this repo, outputs without the meta-analysis maps (`autonima meta` regenerates
+them). Two files in each freeze what NeuroStore returned on 2026-11-03:
+
+- `outputs/neurostore_search_log.json`: the translated query, what the translation dropped or
+  approximated, and every PMID returned.
+- `outputs/neurostore_analyses.json`: the version, analyses and coordinates used for each study.
+
+`study_schema` parses change in place, so a skills run scored against this baseline should read
+these snapshots, or else report how many of its studies' parses differ from them.
 
 
 ## Issues found on the way
