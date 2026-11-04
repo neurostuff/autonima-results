@@ -278,11 +278,16 @@ def main() -> None:
             if not snapshot.exists() and (coords_arm / "outputs" / "neurostore_analyses.json").exists():
                 snapshot.parent.mkdir(parents=True, exist_ok=True)
                 snapshot.write_bytes((coords_arm / "outputs" / "neurostore_analyses.json").read_bytes())
-        print(f"cache seed: {seed.name}", flush=True)
+        # Seed only an arm's first run. autonima copies the seed's stage files over the run's
+        # own, so seeding a later pass replaced the arm's NeuroStore annotations with best's and
+        # re-annotated every study: each "retry" pass was a full re-run (found 2026-11-03).
+        if (run_dir / "outputs" / "execution_manifest.json").exists():
+            seed = None
+        print(f"cache seed: {seed.name if seed else 'none (resuming this arm)'}", flush=True)
         pipeline = AutonimaPipeline(
             ConfigManager().load_from_dict(config),
             num_workers=args.workers,
-            copy_valid_cache_from=str(seed),
+            copy_valid_cache_from=str(seed) if seed else None,
         )
         result = asyncio.run(pipeline.run())
 

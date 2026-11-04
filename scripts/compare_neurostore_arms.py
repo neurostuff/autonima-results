@@ -123,7 +123,9 @@ def main():
                 "project": project, "run": name, "arm": "best" if name == best else name.rsplit("-", 1)[-1],
                 "included": final["counts"]["included_total"],
                 "precision": round(final["metrics"]["precision"], 3),
-                "recall": round(final["metrics"].get("recall_in_search", float("nan")), 3),
+                # Over every gold study, so arms with different searches share a denominator.
+                "recall": round(final["counts"]["true_positives"] / final["counts"]["meta_total"], 3),
+                "recall_in_search": round(final["metrics"].get("recall_in_search", float("nan")), 3),
                 "gold_with_ns_coords": len(subset),
                 "recall_ns_subset": round(len(included & subset) / len(subset), 3) if subset else "",
                 "contrasts": len(r2), "mean_r2": round(sum(r2) / len(r2), 3) if r2 else "",
