@@ -111,10 +111,17 @@ def search(args) -> None:
         translation = translate_pubmed_query(config["query"])
         row = {"best": best, "neurostore_query": translation.query, "dropped": translation.dropped,
                "approximated": translation.approximated}
+        limits = dict(year_min=year(config.get("date_from")), year_max=year(config.get("date_to")),
+                      data_type="coordinate")
         for full_text in (False, True):
-            results = list(client.search_base_studies(
-                translation.query, search_full_text=full_text, year_min=year(config.get("date_from")),
-                year_max=year(config.get("date_to")), data_type="coordinate"))
+            if full_text and translation.exclude:
+                # As autonima does: NOT clauses stay limited to titles and abstracts.
+                results = list(client.search_base_studies(translation.include, search_full_text=True, **limits))
+                excluded = {r["id"] for clause in translation.exclude
+                            for r in client.search_base_studies(clause, search_full_text=False, **limits)}
+                results = [r for r in results if r["id"] not in excluded]
+            else:
+                results = list(client.search_base_studies(translation.query, search_full_text=full_text, **limits))
             key = "fulltext" if full_text else "tiab"
             row[f"{key}_base_studies"] = len(results)
             row[f"{key}_pmids"] = sorted({str(r["pmid"]) for r in results if r.get("pmid")})
