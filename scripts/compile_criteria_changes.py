@@ -332,11 +332,13 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                 "project, and 'cue type' -> 'substance use characteristics' (left over from the "
                 "cue-reactivity config). Tightens 'whole brain analysis' to 'of grey matter "
                 "volume'. Rewrites the multiple-experiments rule for clarity.",
+        verified_how=(
+            "FULL TEXT (Hill-Bowen 2022, Drug Alcohol Depend 240:109625, S2.2; PDF supplied by the author 2026-11-04). Confirms BOTH repairs land on the paper's own wording. The paper opens 'only empirical English language MRI studies assessing GM VOLUME differences between substance users and controls were included' -- so v1's 'fMRI data' was simply wrong for a structural study, as v2 says. And the paper's closing sentence records 'participant age and sex, SUBSTANCE USE CHARACTERISTICS, MRI scanner field strength, and processing software' -- v2's replacement of the leftover 'cue type' with 'substance use characteristics' is verbatim from it. source-misencoded confirmed."),
         reasoning="The header calls it 'wording only', but 'fMRI' in a VBM project is a plain "
                   "mis-encoding, not phrasing. No criterion added or removed. The header also "
                   "explicitly WITHDRAWS an earlier 'Benchmark-tuned' claim as wrong."),
     ("vbm_of_substance_use", "v2", "v3"): dict(
-        change_type="no-source-basis", provenance="llm-reports", confidence="medium",
+        change_type="no-source-basis", provenance="llm-reports", confidence="high",
         summary="EXPANDS the measure beyond GM volume to density, concentration and surface-based "
                 "measures including cortical thickness. EXPANDS to any substance of abuse. "
                 "RELAXES the psychiatric exclusion to 'patient group is the grouping variable'. "
@@ -350,7 +352,8 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                   "the same question, adding an exclusion for exactly those methods because its "
                   "source names them. The psychiatric relaxation is a source-unenforced candidate "
                   "(the paper states that exclusion) and would need a gold check. Hurt recall, "
-                  "not promoted."),
+                  "not promoted."
+                  " MIXED ROW, and the full text makes the split precise. The two EXPANSIONS are no-source-basis and they dominate: measure (volume -> thickness/surface) and substance scope (five classes -> any). But two other items in the same row are source-GROUNDED: the 'significant foci must exist' requirement matches 'studies reporting foci as 3D coordinates', and the atlas-parcellation exclusion follows the paper's ROI rationale. A third, the relaxation of the psychiatric exclusion, contradicts an explicitly stated additional exclusion -- whether that one is source-unenforced would need a gold check I have not run."),
 }
 
 
