@@ -1227,10 +1227,10 @@ def figureS1(out_dir: Path) -> None:
     """Two different effects live in the tier progression, and only the second one is overfitting.
 
     run_categories.yaml orders runs by how much benchmark information shaped their criteria. It is
-    tempting to read the whole `verbatim -> best` rise as leakage, and an earlier version of this
+    tempting to read the whole `initial -> best` rise as leakage, and an earlier version of this
     figure did. That is wrong, and the split says why:
 
-      verbatim -> manual   the project author, having seen reports, fixed MAJOR OVERSIGHTS in the
+      initial -> manual   the project author, having seen reports, fixed MAJOR OVERSIGHTS in the
                            criteria -- things that were simply mis-specified. n = 2, mean +0.221.
       manual   -> best     criteria rewritten against the error reports in full. This is the
                            overfitting estimate. n = 2, mean +0.031.
@@ -1249,8 +1249,8 @@ def figureS1(out_dir: Path) -> None:
         print("  figureS1: run scripts/compile_tier_progression.py first; skipped")
         return
     rows = read(path)
-    TIER_ORDER = ["verbatim", "manual", "best"]
-    LABEL = {"verbatim": "verbatim\n(from the paper,\nheld out)",
+    TIER_ORDER = ["initial", "manual", "best"]
+    LABEL = {"initial": "initial\n(first pass from\nthe paper, held out)",
              "manual": "manual\n(oversights\nfixed by hand)",
              "best": "best\n(tuned on\nerror reports)"}
 
@@ -1267,18 +1267,18 @@ def figureS1(out_dir: Path) -> None:
         """Paired deltas by project, excluding projects where both tiers are the same run.
 
         Keyed by project rather than a bare list so segments can be compared by membership --
-        the verbatim -> best segment below is defined as the projects in neither paired segment.
+        the initial -> best segment below is defined as the projects in neither paired segment.
         """
         return {proj: m[b] - m[a] for proj, m in means.items()
                 if a in m and b in m and runs[proj].get(a) != runs[proj].get(b)}
 
-    vm, mb = seg("verbatim", "manual"), seg("manual", "best")
+    vm, mb = seg("initial", "manual"), seg("manual", "best")
     # Four projects never had a distinct manual stage, so they contribute to neither paired
-    # segment above and their lines run straight from verbatim to best. Quoting only the paired
+    # segment above and their lines run straight from initial to best. Quoting only the paired
     # segments left them invisible in the summary while being visible in the panel, which
     # overstated how general the large mis-specification gain is: end to end they move +0.018
     # against +0.228 for the two that were reworked by hand.
-    vb = seg("verbatim", "best")
+    vb = seg("initial", "best")
     vb_nomanual = {k: v for k, v in vb.items() if k not in (set(vm) | set(mb))}
 
     fig, ax = plt.subplots(figsize=(SINGLE_COL, fh(2.9)))

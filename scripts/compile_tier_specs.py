@@ -29,7 +29,7 @@ from run_tiers import TIERS, load_registry  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PROJECTS = REPO_ROOT / "projects"
-LADDER = ("verbatim", "manual", "untuned", "best")
+LADDER = ("initial", "manual", "untuned", "best")
 
 
 def availability(project: str, run: str) -> str:
@@ -135,7 +135,7 @@ def main(argv=None) -> int:
     w("## The tiers\n")
     w("| tier | definition |")
     w("|---|---|")
-    w("| `verbatim` | Criteria transcribed from the source paper before any results were seen. "
+    w("| `initial` | Criteria transcribed from the source paper before any results were seen. "
       "An LLM or a human helping to DRAFT from the paper does not disqualify a run here; being "
       "revised against error reports does. |")
     w("| `manual` | The highest version whose criteria the author revised BY HAND, having "

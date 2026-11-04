@@ -4,8 +4,23 @@
 The comparison scripts historically auto-picked the highest version number per project. That
 conflates three different things, which matters for the overfitting argument:
 
-    verbatim  criteria transcribed from the source paper before any results were seen. The
-              honest attempt: no peeking at the benchmark.
+    initial   the FIRST manual attempt to transcribe the source paper's stated criteria into a
+              config, made before any results were seen. No peeking at the benchmark.
+
+              Renamed from `verbatim` on 2026-11-04. The old name overclaimed. It read as a
+              guarantee that the config IS the paper's criteria, when all it can honestly assert
+              is that a human sat down with the paper and tried to render them faithfully, once,
+              with no feedback. Transcription error is possible, and has been found: see
+              vbm_of_ptsd v1, which silently omits two criteria the source paper states outright
+              ("reporting results among adult humans"; "other non-voxel-based morphometry
+              methods"). Those omissions cost it six false positives at full text and nobody
+              noticed until an agent diffed the config against the benchmark registry in
+              November. A tier called `verbatim` invites exactly that blind spot -- it sounds
+              audited. `initial` says what it is: first pass, human, unreviewed.
+
+              The tier's ROLE in the argument is unchanged. It is still the held-out end of the
+              ladder, and the gap from here to `best` is still the measure of what peeking
+              bought. Only the claim implied by the label has been corrected.
     manual    the author revised BY HAND, having glanced at a few report examples. Light peeking.
     untuned   THE HIGHEST VERSION WHOSE CRITERIA WERE NEVER ITERATED AGAINST BENCHMARK ERROR
               REPORTS. Added 2026-11-03 in response to reviewer push-back on reporting
@@ -61,7 +76,7 @@ conflates three different things, which matters for the overfitting argument:
 and worse than a lower-numbered one (social's v5-annotation-only is the pre-fix set, v4 is the
 fixed one), and tuning does not always help -- in executive_function and social the honest v1
 still beats every tuned successor at map level. Naming the preferred run explicitly removes both
-traps, and the gap between `verbatim` and `best` is then a direct measure of what peeking bought.
+traps, and the gap between `initial` and `best` is then a direct measure of what peeking bought.
 
 Runs are registered per project AND per family, because the roll-ups select from different
 families: the screening roll-up takes plain `vN` (family "canonical"), while the analysis and
@@ -91,7 +106,13 @@ __all__ = [
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY = REPO_ROOT / "run_categories.yaml"
-TIERS = ("verbatim", "manual", "untuned", "best", "latest")
+TIERS = ("initial", "manual", "untuned", "best", "latest")
+
+# Renamed 2026-11-04. Anything still passing the old name is reaching for a tier whose
+# label made a promise the configs do not keep; it must be read and re-pointed, never
+# silently aliased. `resolve_tier` raises on it by name, and argparse rejects it via
+# `choices=TIERS`, so a stale caller fails loudly instead of resolving to something else.
+RENAMED_TIERS = {"verbatim": "initial"}
 
 # Families keyed by role rather than by tier. They live in the same registry because they name
 # runs of the same project, but asking them for a tier is a caller error, not a missing entry.
@@ -136,6 +157,12 @@ def resolve_tier(
     projects like emotion_regulation_2022 only have `allstudies`, and a caller asking for
     `canonical` should still get the sensible answer rather than nothing.
     """
+    if tier in RENAMED_TIERS:
+        raise ValueError(
+            f"tier {tier!r} was renamed to {RENAMED_TIERS[tier]!r} on 2026-11-04 because the old "
+            f"name asserted a fidelity the configs cannot guarantee. Update the caller rather than "
+            f"aliasing: check that {RENAMED_TIERS[tier]!r} is the tier you actually want."
+        )
     if tier not in TIERS:
         raise ValueError(f"unknown tier {tier!r}; expected one of {TIERS}")
     if family in NON_TIER_FAMILIES:
@@ -171,7 +198,8 @@ def add_tier_argument(parser, default: str = "best") -> None:
         default=default,
         help=(
             "Which registered run to compare, from run_categories.yaml: "
-            "'verbatim' (paper-faithful, no peeking), 'manual' (hand-iterated), "
+            "'initial' (first human transcription of the paper, no peeking), "
+            "'manual' (hand-iterated), "
             "'best' (curated preferred run, tuning allowed), 'latest' (highest version number). "
             f"Default {default}. Falls back to auto-pick when the tier is unregistered."
         ),
