@@ -24,7 +24,7 @@ Runs are marked `!` where the registered name has no outputs on disk, and `~` wh
 | cue_reactivity | annotation_only | — | — | `v4-annotation-only` | `v5-annotation-only` | `v5-annotation-only` |
 | decision_making | canonical | `v1` | — | `v2` | `v3` | `v3` |
 | decision_making | annotation_only | — | — | `v2-annotation-only` | `v2-annotation-only` | `v2-annotation-only` |
-| dementia | canonical | `v1` | `v3` | `v3` | `v3` | `v3` |
+| dementia | canonical | `v1` | `v3` | `v3` | `v3` | `v4` |
 | dementia | annotation_only | — | `v3-annotation-only` | `v3-annotation-only` | `v3-annotation-only` | `v3-annotation-only` |
 | dementia | allstudies | `v1-allstudies` | `v3-allstudies` | `v3-allstudies` | `v5-allstudies` | `v5-allstudies` |
 | emotion_regulation_2022 | canonical | — | — | `v2` | `v4` | `v4` |
@@ -34,12 +34,12 @@ Runs are marked `!` where the registered name has no outputs on disk, and `~` wh
 | executive_function | annotation_only | — | `v1-annotation-only` | `v1-annotation-only` | `v1-annotation-only` | `v3-annotation-only` |
 | problem_solving | canonical | `v1` | — | `v1` | `v2` | `v2` |
 | problem_solving | annotation_only | `v1-annotation-only` | — | `v1-annotation-only` | `v2-annotation-only` | `v2-annotation-only` |
-| social | canonical | — | `v2` | `v3` | `v3` | `v3` |
+| social | canonical | — | `v2` | `v3` | `v3` | `v4` |
 | social | annotation_only | `v1-annotation-only` | `v5-annotation-only` | `v3-annotation-only` | `v4-annotation-only` | `v4-annotation-only` |
 | social | allstudies | — | — | `v3-allstudies` | `v3-allstudies` | `v3-allstudies` |
-| vbm_of_ptsd | canonical | `v1` | `v1` | `v1` | `v1` | `v1` |
+| vbm_of_ptsd | canonical | `v1` | `v1` | `v1` | `v1` | `v2` |
 | vbm_of_ptsd | annotation_only | `v1-annotation-only` | `v1-annotation-only` | `v1-annotation-only` | `v1-annotation-only` | `v1-annotation-only` |
-| vbm_of_substance_use | canonical | `v1` | — | `v2` | `v2` | `v2` |
+| vbm_of_substance_use | canonical | `v1` | — | `v2` | `v2` | `v3` |
 | vbm_of_substance_use | annotation_only | — | — | `v2-annotation-only` | `v2-annotation-only` | `v2-annotation-only` |
 
 ## What changes between tiers, per project

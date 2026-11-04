@@ -109,7 +109,13 @@ projects:
       # annotation section". Same as the manual tier.
       best:     v3
       # best-reason: highest screening F1 (0.545)
-      latest:   v3          # no agent-written plain vN exists; v4/v5 are allstudies only
+      latest:   v4
+      # v4 is the LLM-tuned version (added 2026-11-04) and is NOT promoted to `best`. It raised
+      # full-text precision 0.401 -> 0.562 and every sub-analysis map r2 (all 0.324 -> 0.393),
+      # but bought that with recall 0.955 -> 0.610, which its own header pre-registered as the
+      # failure condition. The cause is not a criteria misjudgement: 30 of 30 gold exclusions
+      # cite absent peak coordinates in papers whose tables live in supplementary files the
+      # pipeline never retrieved. The screener applied a correct rule to incomplete text.
     allstudies:
       verbatim: v1-allstudies
       manual:   v3-allstudies
@@ -291,7 +297,12 @@ projects:
       # manual here.
       best:     v3
       # best-reason: the new canonical search-driven run; v2 lacked study_fulltext
-      latest:   v3
+      latest:   v4
+      # v4 is the LLM-tuned version (added 2026-11-04) and is a NULL RESULT, as its header
+      # pre-registered: full-text 0.406/0.995 -> 0.402/0.981, maps within +-0.02 either way.
+      # Note recall FELL after a criterion was loosened, which cannot happen mechanically --
+      # read it as run-to-run screener variance, and treat deltas of this size in this corpus as
+      # noise.
       review: >-
           v3 (created 2026-08-27) is social's canonical search-driven run: v3-allstudies' criteria
           and annotation mode, with the query from the former v3-search-all_pmids-multi_analysis-ft.
@@ -348,7 +359,14 @@ projects:
       # Only version in the project.
       best:     v1
       # best-reason: only run
-      latest:   v1
+      latest:   v2
+      # v2 is the LLM-tuned version (added 2026-11-04). It encodes the paper's adult-only and
+      # voxel-based-only restrictions, which v1 never did: full-text precision 0.593 -> 0.762
+      # with recall unchanged at 0.941, dropping five paediatric/adolescent studies and one
+      # FreeSurfer cortical-thickness study. The MAP IS UNCHANGED (r2 0.5784, Dice 0.1109, 7
+      # studies) because none of the six contributed coordinates, so the gain is real at
+      # screening and map-neutral. `best` is left at v1 pending a decision: v2 dominates it on
+      # both axes, but moving `best` changes a number the manuscript already reports.
       note: Single-version project. Contributes to no tier contrast.
     annotation_only:
       verbatim: v1-annotation-only
@@ -373,7 +391,12 @@ projects:
       best:     v2
       # best-reason: v2, per the recall-first rule: better recall than v1, accepting F1 0.570 vs
       # 0.585. v2 also carries the GPT-reviewed criteria. USER-RESOLVED 2026-08-27.
-      latest:   v2                    # GPT, "Double checked criteria using GPT 5.4"
+      latest:   v3
+      # v3 is the LLM-tuned version (added 2026-11-04) and is NOT promoted to `best`. Its
+      # abstract change worked as forecast (recall 0.944 -> 0.972, +2 gold), but adding the
+      # paper's coordinate-reporting requirement cost full-text recall 0.969 -> 0.783 for the
+      # same reason as dementia v4: 17 of 19 gold exclusions cite coordinates that sit in
+      # unretrieved supplementary files. Maps flat or down.
       review: >-
         v1's query was "copied from original study and expanded using suggestions by GPT" --
         paper-faithful criteria with a GPT-widened search, so verbatim with a caveat. v2's header
