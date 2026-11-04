@@ -15,7 +15,12 @@ This pulls every change out mechanically and leaves two columns for the author t
                     source-uncovered      paper states it; the config never encoded it
                     source-misencoded     config encoded it wrongly; this corrects it
                     source-underspecified paper is vague; this operationalises it, same scope
-                    no-source-basis       no counterpart in the paper -- tuning
+                    source-unenforced     paper STATES the rule but its own included studies
+                                          violate it; the change matches the paper's PRACTICE
+                                          over its TEXT. Checkable against the gold list, and
+                                          that check is what separates it from no-source-basis
+                    no-source-basis       no counterpart in the paper's criteria OR its realised
+                                          inclusions -- tuning
                     non-criteria          wording/plumbing only; asks nothing new of a study
 
     provenance    who made it and what they had seen:
@@ -117,117 +122,182 @@ SOURCE_DEFECTS = {
 GUESS: dict[tuple[str, str, str], dict[str, str]] = {
     ("cue_reactivity", "v1", "v4"): dict(
         change_type="source-misencoded", provenance="human-paper", confidence="high",
-        reasoning="Net of three hand edits. The substantive one is v2 REMOVING a healthy-adult "
-                  "restriction: 'from the healthy/control group and is generalizable to the "
-                  "healthy adult population' is deleted, and 'without original fMRI data in "
-                  "healthy adults' becomes '...original human fMRI data'. The source paper (pmid "
-                  "34400176) imposes NO population restriction -- its criteria are about visual "
-                  "cue-reactivity, reported coordinates, and whole-brain or SVC within-"
-                  "participant contrasts. So v1 invented the limit and v2 repaired it. NOTE the "
-                  "v2 header reads 'correct error that only healthy adult participants should be "
-                  "included', which sounds like the opposite; the diff settles it. v3 added a "
-                  "correlational-analysis exclusion and v4 reverted it, so they CANCEL and leave "
-                  "no trace in the cumulative diff -- the churn is invisible here by design. One "
-                  "loosening to check: 'drug or natural reward-related cue-reactivity' is "
-                  "shortened to 'reward-related cue-reactivity', dropping a distinction the "
-                  "paper does make."),
+        summary="REMOVES an invented healthy-adult restriction (annotation inclusion + fulltext "
+                "exclusion). Loosens 'drug or natural reward-related' to 'reward-related'. Folds "
+                "the between-group exclusion into the whole-brain inclusion criterion.",
+        reasoning="Net of three hand edits. The substantive one is v2 removing the healthy-adult "
+                  "restriction; the source (pmid 34400176) imposes NO population restriction, so "
+                  "v1 invented it. The v2 header reads 'correct error that only healthy adult "
+                  "participants should be included', which sounds like the opposite -- the diff "
+                  "settles it. v3 added a correlational-analysis exclusion and v4 reverted it, so "
+                  "they CANCEL and leave no trace in the cumulative diff. One loosening to check: "
+                  "dropping 'drug or natural' loses a distinction the paper does make."),
     ("cue_reactivity", "v4", "v6"): dict(
-        change_type="no-source-basis", provenance="llm-reports", confidence="medium",
-        reasoning="v5's header is explicit: 'GPT edited this schema. Modified from v4 using "
-                  "feedback from reports (annotated inspection of false negatives primarily) ... "
-                  "it is benchmark-tuned.' v6 inherits v5's criteria unchanged and changes only "
-                  "the search, itself chosen by reading which gold studies v4 missed. Provenance "
-                  "certain; content inferred -- criteria written to recover named false "
-                  "negatives usually have no counterpart in the paper, but I did not check each "
-                  "against the source text."),
+        change_type="source-underspecified", provenance="llm-reports", confidence="medium",
+        summary="Admits ROI analyses THAT REPORT COORDINATES (new explicit exception). Admits "
+                "small-volume-corrected maps alongside whole-brain. Narrows the cue exclusion to "
+                "paradigms with no visual component. Demotes reporting-completeness from a "
+                "requirement to a preference.",
+        reasoning="RELABELLED from no-source-basis. The source excludes ROI analyses expressly "
+                  "'given the absence of coordinates' -- that is its stated RATIONALE, so an ROI "
+                  "analysis that does report coordinates satisfies the source's intent even "
+                  "though it breaches the literal rule. Same for SVC: the source's third "
+                  "inclusion criterion already admits 'whole-brain OR small-volume corrected' "
+                  "analyses, so v6 is restoring something v4 dropped. Against that, the criterion "
+                  "names itself 'ROI exception for BENCHMARK COMPATIBILITY', and provenance is "
+                  "llm-reports off a false-negative report -- so read the label as the content "
+                  "being defensible, not as the derivation being clean."),
     ("decision_making", "v1", "v2"): dict(
         change_type="source-underspecified", provenance="human-paper", confidence="high",
-        reasoning="The header states it: author-edited with ChatGPT as a phrasing tool, and "
-                  "'NOT BENCHMARK-TUNED'. An earlier header claimed otherwise and the claim was "
-                  "withdrawn because the diff does not support it. An LLM used as an editing "
-                  "tool keeps this human-paper, not llm-paper."),
+        summary="Adds four annotation-side disambiguation rules: how to read a generic analysis "
+                "label, how to resolve subtype overlap by primary uncertainty source, and that "
+                "subtype assignment is per-study and mutually exclusive.",
+        reasoning="The header states it: author-edited with ChatGPT as a phrasing tool, and 'NOT "
+                  "BENCHMARK-TUNED'. An earlier header claimed otherwise and was withdrawn "
+                  "because the diff does not support it. Every addition is about HOW TO APPLY the "
+                  "existing criteria consistently, not about what qualifies -- scope is "
+                  "unchanged. An LLM used as an editing tool keeps this human-paper."),
     ("decision_making", "v2", "v3"): dict(
-        change_type="no-source-basis", provenance="llm-reports", confidence="medium",
-        reasoning="Header: Claude, inputs the source paper AND v2's error reports, 'Tuned "
-                  "against the benchmark'. Provenance certain; content not individually checked."),
+        change_type="source-uncovered", provenance="llm-reports", confidence="high",
+        summary="ADDS a PET exclusion, an exclusion for non-risky/ambiguous/perceptual tasks "
+                "(delay discounting, moral, social), and an explicit 'any participant group "
+                "qualifies' inclusion naming substance users and neuropsychiatric conditions. "
+                "Excludes implicit-baseline-only contrasts.",
+        reasoning="CORRECTED from no-source-basis, and the correction is not close. The source "
+                  "inclusion says 'We excluded PET studies to remove heterogeneity' -- v3's PET "
+                  "exclusion quotes that reasoning back. It also says coordinates from studies "
+                  "'including healthy controls, substance users, as well as participants with "
+                  "other neuropsychiatric conditions (internet addiction, gambling, internet "
+                  "gaming disorder, obesity, depressive disorders...)' were used, and that "
+                  "'participants from all age groups (range 10-69) were also included'. v3's new "
+                  "participant criterion reproduces that list almost verbatim. These are the "
+                  "paper's own criteria that v2 never encoded."),
     ("dementia", "v1", "v3"): dict(
         change_type="source-uncovered", provenance="human-reports", confidence="medium",
-        reasoning="REVISED after reading the cumulative diff against the source (pmid 35664889), "
-                  "which I had not done when I first guessed source-misencoded. Most of the 18 "
-                  "changes RESTORE criteria the paper states and v1 omitted: 'Analysis must "
-                  "compare the target bvFTD group to healthy controls' answers the paper's "
-                  "exclusion 'No Control'; the new exclusion for pooling bvFTD with other "
-                  "patient groups answers its 'no other forms of dementia'; the >=6-participant "
-                  "rule and the VBM/fMRI/FDG-PET modality restriction are both stated inclusion "
-                  "criteria. TWO EXCEPTIONS worth your eye. (1) 'Study should not focus on "
-                  "Parkinson's disease' has no counterpart in the paper -- likely report-driven. "
-                  "(2) The participant rule is made STRICTER than the source: the paper says "
-                  "'at least six participants in EITHER the patient or healthy group', v3 "
-                  "requires >=6 in the patient group AND >=6 in the control group if present. "
-                  "A mixed row; the dominant pattern is restoration."),
+        summary="ADDS the control-group requirement, an exclusion for pooling bvFTD with other "
+                "patient groups, a >=6-participant rule, and a modality restriction (excludes "
+                "seed-based FC, DTI, cortical thickness). Extends bvFTD to picks disease. Adds a "
+                "Parkinson's exclusion and a no-neuroimaging exclusion at abstract.",
+        reasoning="Most of the 18 changes restore stated criteria v1 omitted: the control-group "
+                  "requirement answers the paper's 'No Control' exclusion; the no-pooling rule "
+                  "answers 'no other forms of dementia'; the >=6 rule and the VBM/fMRI/FDG-PET "
+                  "modality list are both stated inclusions. TWO EXCEPTIONS: the Parkinson's "
+                  "exclusion has no counterpart in the stated criteria (though the source SEARCH "
+                  "string scopes to bvFTD/picks), and the participant rule is made STRICTER than "
+                  "the source -- the paper says '>=6 in EITHER the patient or healthy group', v3 "
+                  "requires >=6 in the patient group AND >=6 in the control group. That second "
+                  "one is a candidate source-unenforced in reverse and is worth your call."),
     ("dementia", "v3", "v4"): dict(
-        change_type="no-source-basis", provenance="llm-reports", confidence="medium",
-        reasoning="Header: Claude, 'tuned against the benchmark', inputs included v3's 94-paper "
-                  "false-positive report. Hurt recall and was not promoted to best."),
+        change_type="source-unenforced", provenance="llm-reports", confidence="low",
+        summary="RELAXES the psychiatric/comorbidity exclusion from 'no concurrent diagnosis' to "
+                "'the group is PREDOMINANTLY some other diagnosis'. Tightens ROI to cover "
+                "mask-confined and SVC analyses. ADDS an explicit requirement that peak "
+                "coordinates exist.",
+        reasoning="MIXED, and relabelled from no-source-basis. The coordinates requirement is "
+                  "straight source-uncovered -- the paper's fourth inclusion criterion is "
+                  "'reported the coordinates of between-group contrasts'. The comorbidity "
+                  "relaxation is the interesting one: the paper STATES 'no concurrent psychiatric "
+                  "diagnosis... other forms of dementia', and v4 loosens it to a predominance "
+                  "test, which is the ER pattern. UNVERIFIED: I have not checked whether the "
+                  "dementia gold list actually contains studies with comorbid or mixed samples. "
+                  "Confidence is low until someone does. This run hurt recall and was not "
+                  "promoted."),
     ("emotion_regulation_2022", "v2", "v4"): dict(
-        change_type="no-source-basis", provenance="human-reports", confidence="high",
-        reasoning="The clearest tuning case in the corpus, and the header says so without "
-                  "flinching: 'DELIBERATELY LESS FAITHFUL THAN THE PAPER, to buy recall.' It "
-                  "then enumerates the exact gold PMIDs each faithful restriction was costing "
-                  "(static-visual-stimuli -5, healthy-adults -5) and removes those restrictions. "
-                  "Fitted to the realised gold list by construction, and note it moves AWAY from "
-                  "the paper's stated criteria -- the opposite of vbm_of_ptsd. Judged from the "
-                  "header alone: this project's registry row has no criteria text at all."),
+        change_type="source-unenforced", provenance="human-reports", confidence="high",
+        summary="REMOVES three stated restrictions: healthy-adults-only (now any group at any "
+                "age), static-images-only (now film and video qualify), and reappraisal-narrowly-"
+                "read (now any instructed regulation strategy). Softens the ROI exclusion to "
+                "explicit ROI only.",
+        reasoning="VERIFIED, and relabelled from no-source-basis -- this is the case that forced "
+                  "the new category. The v4 header names 10 gold PMIDs the paper included in "
+                  "breach of its own stated criteria, and ALL TEN are in the 88-study gold list: "
+                  "25631055, 17888411, 24782800, 17588776, 25698699 (film, against 'static visual "
+                  "images'); 21686071, 24646887, 28372994, 25439326, 26596970 (child, adolescent "
+                  "or mixed 10-25 samples, against 'healthy adults'). So the paper did not apply "
+                  "its own text, and v4 follows its practice instead. The header's framing -- "
+                  "'DELIBERATELY LESS FAITHFUL THAN THE PAPER, to buy recall' -- is what made me "
+                  "call this no-source-basis; it is faithful to what the paper DID. Note the "
+                  "honest residue: the change was found by counting lost gold, so provenance "
+                  "stays human-reports."),
     ("executive_function", "v1", "v3"): dict(
-        change_type="no-source-basis", provenance="llm-reports", confidence="low",
-        reasoning="Provenance is certain -- v2 and v3 both carry 'AUTOMATICALLY GENERATED by "
-                  "Claude', 'tuned against the benchmark', inputs including v1's false-negative "
-                  "report. CONTENT CANNOT BE JUDGED FROM THE REGISTRY: row 22282036's criteria "
-                  "fields are contaminated with a nicotine meta-analysis (see SOURCE_DEFECTS), "
-                  "so the reference text is unusable and my label is inference from the shape of "
-                  "the diff, not a reading against the paper. The diff relaxes hard: the 18-60 "
-                  "healthy-only restriction goes, 'any participant group qualifies, including "
-                  "clinical and developmental samples'; the active-control requirement goes, "
-                  "rest or fixation now qualifies. Several additions are annotator INSTRUCTIONS "
-                  "rather than study criteria ('You are judging ONE analysis, not the paper', "
-                  "'How to read the analysis'), which may deserve non-criteria instead. Settle "
-                  "this against the real Niendam 2012 (PMC3660731), not the registry."),
+        change_type="", provenance="llm-reports", confidence="low",
+        summary="RELAXES hard: the 18-60 healthy-only restriction goes (any group, clinical and "
+                "developmental included); the active-control requirement goes (rest or fixation "
+                "qualifies); partial-brain coverage now qualifies. ADDS SVC to the ROI exclusion. "
+                "ADDS several annotator INSTRUCTIONS rather than study criteria ('You are judging "
+                "ONE analysis, not the paper').",
+        reasoning="DELIBERATELY LEFT UNLABELLED. Provenance is certain -- v2 and v3 both carry "
+                  "'AUTOMATICALLY GENERATED by Claude', 'tuned against the benchmark'. Content "
+                  "CANNOT be judged: registry row 22282036's criteria fields are contaminated "
+                  "with a nicotine meta-analysis (see SOURCE_DEFECTS), so there is no usable "
+                  "reference text. Given the ER and decision_making corrections, guessing "
+                  "no-source-basis here would more likely be wrong than right -- the relaxations "
+                  "follow exactly the pattern that turned out to be source-unenforced elsewhere. "
+                  "Settle it against the real Niendam 2012 (PMC3660731). The annotator-"
+                  "instruction additions are probably non-criteria regardless."),
     ("problem_solving", "v1", "v2"): dict(
-        change_type="no-source-basis", provenance="llm-reports", confidence="high",
-        reasoning="The header names the headline fix: 'logical_reasoning maps to the benchmark's "
-                  "Demand_MNI_final set, which is difficulty manipulations (Complex > Simple), "
-                  "not formal logic.' That is a criterion rewritten to match the BENCHMARK'S "
-                  "label semantics rather than the paper's -- no-source-basis almost by "
-                  "definition, whatever its merits as a correction."),
+        change_type="source-uncovered", provenance="llm-reports", confidence="high",
+        summary="ADDS an exclusion for deactivations and reverse contrasts (increases only), an "
+                "exclusion for between-group and group x condition contrasts, and a 'group-level "
+                "effects in healthy participants' inclusion. ADDS a closed list of five permitted "
+                "contrast types and a source-based definition of problem solving.",
+        reasoning="CORRECTED from no-source-basis, which I gave you at HIGH confidence last turn. "
+                  "I was misled by the config's own wording -- it says 'the BENCHMARK includes "
+                  "only BOLD or rCBF signal INCREASES' -- but that is the source paper's "
+                  "inclusion criterion 2, verbatim. Likewise 'group-level effects in healthy "
+                  "participants' is its criterion 3, and the between-group/age/gender exclusion "
+                  "is its stated exclusion 1. Three of the largest additions are the paper's own "
+                  "criteria that v1 never encoded. The one genuinely benchmark-derived item is "
+                  "the logical_reasoning -> Demand_MNI_final mapping and the closed list of five "
+                  "admitted contrast types; those alone would be no-source-basis."),
     ("social", "v3", "v4"): dict(
-        change_type="no-source-basis", provenance="llm-reports", confidence="medium",
-        reasoning="Header: Claude, inputs the source paper plus v3's criterion-level attribution "
-                  "tables, 'tuned against the benchmark'. A null result -- full-text 0.406/0.995 "
-                  "-> 0.402/0.981, maps within +/-0.02."),
+        change_type="source-unenforced", provenance="llm-reports", confidence="low",
+        summary="RELAXES the 18-65 age restriction to exclude only wholly-child/adolescent or "
+                "wholly-geriatric samples. ADDS an exclusion for multivariate-only whole-brain "
+                "results (searchlight MVPA, classification accuracy, RSA).",
+        reasoning="Relabelled from no-source-basis, but UNVERIFIED. The source states 'healthy "
+                  "participants, age 18-60', and v4 loosens it -- the ER pattern. Whether the "
+                  "social gold list actually contains out-of-range samples is the check that "
+                  "would settle it, and I have not run it. The MVPA exclusion is separate and "
+                  "looks source-underspecified (the paper asks for whole-brain coordinates; a "
+                  "classification-accuracy map is not that). A null result either way."),
     ("vbm_of_ptsd", "v1", "v2"): dict(
         change_type="source-uncovered", provenance="llm-reports", confidence="high",
-        reasoning="VERIFIED BY OUTCOME, not just by reading the header. Both added criteria are "
-                  "in the source paper's stated criteria (pmid 36100907): inclusion 'reporting "
-                  "results among adult humans', exclusion 'other non-voxel-based morphometry "
-                  "methods'. v1 encodes neither. Exactly 6 papers flip include->exclude and "
-                  "every one is caught by a plain reading of those two criteria -- 5 paediatric "
-                  "(ages 8-18, 12-21, 8-18, 7-14, 8-19) and 1 FreeSurfer/surface-based with no "
-                  "VBM contrast. Zero gold lost, zero reverse flips, all 4 maps byte-identical. "
-                  "CONFOUND: the agent had the 11-FP report in context, so the error list may be "
-                  "how it NOTICED the omission -- that is provenance, not content. Not promoted "
-                  "(author's decision 2026-11-04) because it is LLM-authored."),
+        summary="ADDS an adult-sample inclusion plus a paediatric exclusion, and an exclusion for "
+                "non-voxel-based morphometry (surface/vertex thickness, FreeSurfer parcellation, "
+                "shape analyses, TBM) where no VBM contrast is reported.",
+        reasoning="VERIFIED BY OUTCOME. Both added criteria are in the source's stated criteria "
+                  "(pmid 36100907): 'reporting results among adult humans' and 'other non-voxel-"
+                  "based morphometry methods'. v1 encodes neither. Exactly 6 papers flip "
+                  "include->exclude and every one is caught by a plain reading of those two -- 5 "
+                  "paediatric (ages 8-18, 12-21, 8-18, 7-14, 8-19) and 1 FreeSurfer/surface-based "
+                  "with no VBM contrast. Zero gold lost, zero reverse flips, all 4 maps "
+                  "byte-identical. CONFOUND: the agent had the 11-FP report in context, so the "
+                  "error list may be how it NOTICED the omission -- provenance, not content. Not "
+                  "promoted (author's decision 2026-11-04) because it is LLM-authored."),
     ("vbm_of_substance_use", "v1", "v2"): dict(
         change_type="source-misencoded", provenance="human-paper", confidence="high",
-        reasoning="The header calls it 'wording only', but the two edits it quotes are "
-                  "substantive mis-encodings being repaired: 'fMRI data' -> 'structural MRI "
-                  "data' (a plain bug in a VBM project) and 'cue type' -> 'substance use "
-                  "characteristics' (a leftover from the cue-reactivity config this one was "
-                  "templated from). No criterion added or removed. The header also explicitly "
-                  "WITHDRAWS an earlier 'Benchmark-tuned' claim as wrong."),
+        summary="Repairs two template bugs: 'fMRI data' -> 'structural MRI data' in a VBM "
+                "project, and 'cue type' -> 'substance use characteristics' (left over from the "
+                "cue-reactivity config). Tightens 'whole brain analysis' to 'of grey matter "
+                "volume'. Rewrites the multiple-experiments rule for clarity.",
+        reasoning="The header calls it 'wording only', but 'fMRI' in a VBM project is a plain "
+                  "mis-encoding, not phrasing. No criterion added or removed. The header also "
+                  "explicitly WITHDRAWS an earlier 'Benchmark-tuned' claim as wrong."),
     ("vbm_of_substance_use", "v2", "v3"): dict(
         change_type="no-source-basis", provenance="llm-reports", confidence="medium",
-        reasoning="Header: Claude, 'tuned against the benchmark', v2's reports in context. Hurt "
-                  "recall and was not promoted to best."),
+        summary="EXPANDS the measure beyond GM volume to density, concentration and surface-based "
+                "measures including cortical thickness. EXPANDS to any substance of abuse. "
+                "RELAXES the psychiatric exclusion to 'patient group is the grouping variable'. "
+                "ADDS an atlas-parcellation exclusion and a significant-foci requirement.",
+        reasoning="The one tuned row I still read as no-source-basis. The source inclusion is "
+                  "specific -- 'GM VOLUME differences' -- and v3 admits cortical thickness and "
+                  "other surface measures, which is not a vague rule being operationalised but a "
+                  "different measure being allowed in. Note vbm_of_ptsd moved the OPPOSITE way on "
+                  "the same question, adding an exclusion for exactly those methods because its "
+                  "source names them. The psychiatric relaxation is a source-unenforced candidate "
+                  "(the paper states that exclusion) and would need a gold check. Hurt recall, "
+                  "not promoted."),
 }
 
 
@@ -269,6 +339,10 @@ def source_criteria(project: str) -> dict:
     `usable` is false for a project in SOURCE_DEFECTS and for any row whose criteria fields are
     empty. Callers must NOT fall back to the raw text when it is false: a wrong reference text
     reads as authoritative, which is strictly worse than having none.
+
+    NOTE what this does and does not give you. These are the paper's STATED criteria. They are
+    not what the paper DID -- see the source-unenforced category, where the two disagree and the
+    gold list is the only way to tell.
     """
     pmid = meta_pmid(project)
     defect = SOURCE_DEFECTS.get(project, "")
@@ -405,7 +479,8 @@ def tier_transitions(project: str) -> list[dict]:
             "added": sum(c["kind"] == "added" for c in changes),
             "removed": sum(c["kind"] == "removed" for c in changes),
             "reworded": sum(c["kind"] == "reworded" for c in changes),
-            "my_change_type": g.get("change_type", ""),
+            "criteria_summary": g.get("summary", ""),
+            "my_change_type": g.get("change_type", "") or "UNLABELLED - see reasoning",
             "my_provenance": g.get("provenance", ""),
             "my_confidence": g.get("confidence", ""),
             "my_reasoning": g.get("reasoning", ""),
@@ -419,7 +494,7 @@ def tier_transitions(project: str) -> list[dict]:
 
 
 COLUMNS = ["project", "from_tier", "to_tier", "from", "to", "intermediate", "n_changes",
-           "blocks", "added", "removed", "reworded",
+           "blocks", "added", "removed", "reworded", "criteria_summary",
            "my_change_type", "my_provenance", "my_confidence", "my_reasoning",
            "your_change_type", "your_provenance", "your_note",
            "source_usable", "target_header", "intermediate_headers", "changes"]
@@ -450,7 +525,7 @@ def write_xlsx(path: Path, rows: list[dict], sources: list[dict]) -> bool:
 
     widths = {"project": 22, "from_tier": 14, "to_tier": 16, "from": 7, "to": 7,
               "intermediate": 14, "n_changes": 11, "blocks": 26, "added": 8, "removed": 9,
-              "reworded": 10, "my_change_type": 20, "my_provenance": 15, "my_confidence": 12,
+              "reworded": 10, "criteria_summary": 85, "my_change_type": 22, "my_provenance": 15, "my_confidence": 12,
               "my_reasoning": 90, "your_change_type": 20, "your_provenance": 15,
               "your_note": 45, "source_usable": 16, "target_header": 70,
               "intermediate_headers": 70, "changes": 100}
@@ -469,7 +544,7 @@ def write_xlsx(path: Path, rows: list[dict], sources: list[dict]) -> bool:
     n = len(rows) + 1
     for col, opts in [
         ("your_change_type", "source-uncovered,source-misencoded,source-underspecified,"
-                             "no-source-basis,non-criteria"),
+                             "source-unenforced,no-source-basis,non-criteria"),
         ("your_provenance", "human-paper,human-reports,llm-paper,llm-reports"),
     ]:
         dv = DataValidation(type="list", allow_blank=True, formula1=f'"{opts}"')
@@ -504,8 +579,15 @@ def write_xlsx(path: Path, rows: list[dict], sources: list[dict]) -> bool:
         ("source-underspecified", "paper is vague; this operationalises it at the SAME scope. "
                                   "Watch this one: an 'operationalisation' that quietly narrows "
                                   "or widens scope is really no-source-basis."),
-        ("no-source-basis", "no counterpart in the paper. This is the category that makes a "
-                            "result circular, and it is tuning whatever its provenance."),
+        ("source-unenforced", "the paper STATES the rule, but its own included studies violate "
+                              "it. The change follows the paper's PRACTICE rather than its TEXT. "
+                              "CHECKABLE: look for gold studies that breach the stated rule. "
+                              "Verified for emotion_regulation_2022 -- all 10 PMIDs its v4 header "
+                              "names as breaching 'static images only' and 'healthy adults only' "
+                              "are in the 88-study gold list."),
+        ("no-source-basis", "no counterpart in the paper's criteria OR in its realised "
+                            "inclusions. This is the category that makes a result circular, and "
+                            "it is tuning whatever its provenance."),
         ("non-criteria", "wording/plumbing only; asks nothing new of a study."),
     ]:
         key.append(["change_type", v, m])
