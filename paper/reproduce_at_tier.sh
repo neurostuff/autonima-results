@@ -33,12 +33,13 @@
 set -euo pipefail
 cd "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-TIER=untuned ROOT=manual-tier FIGURES_ONLY=0
+TIER=untuned ROOT=manual-tier FIGURES_ONLY=0 SKIP_SLOW=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --tier) TIER="$2"; shift 2 ;;
     --root) ROOT="$2"; shift 2 ;;
-    --figures-only) FIGURES_ONLY=1; shift ;;
+    --figures-only) FIGURES_ONLY=1; SKIP_SLOW=1; shift ;;
+    --skip-slow) SKIP_SLOW=1; shift ;;
     -h|--help) sed -n '2,32p' "$0"; exit 0 ;;
     *) echo "unknown flag: $1" >&2; exit 2 ;;
   esac
@@ -118,6 +119,16 @@ PYEOF
       --output "$RR/attainable_recall_by_stage.csv"
   run "${PY[@]}" scripts/false_positive_composition.py --projects-root "$RP" \
       --output "$RR/false_positive_composition.csv"
+fi
+
+if [ "$SKIP_SLOW" = 0 ]; then
+  step "3.5/5  size-matched null (~45 min: 32 contrasts x 500 MKDA refits)  ->  figure 5"
+  # --source, NOT --tier. The run column in the source table wins, so --tier is inert whenever
+  # the source names runs -- which the default source always does. Passing this tier's own
+  # annotation_value.csv is what actually selects the runs; the script now refuses the
+  # combination that silently computed a "untuned" null from the tuned runs.
+  run "${PY[@]}" scripts/bootstrap_annotation_null.py \
+      --source "$RR/annotation_value.csv" --output "$RR/annotation_null.csv" --jobs "${JOBS:-6}"
 fi
 
 step "4/5  mirror the figure scripts (fresh copies, so they cannot drift)"
