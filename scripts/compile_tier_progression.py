@@ -53,7 +53,7 @@ MANUAL_BASE = REPO_ROOT.parent / "neurometabench" / "analysis"
 UNCORRECTED_MAP = "z.nii.gz"
 CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
 DICE_THRESHOLD = 1.96
-TIERS = ("initial", "manual", "best")
+TIERS = ("initial", "untuned", "benchmark_tuned", "best")
 
 
 def auto_column(project: str, key: str) -> str:
@@ -168,7 +168,8 @@ def main(argv: list[str] | None = None) -> int:
     by: dict[tuple[str, str], list[float]] = {}
     for r in rows:
         by.setdefault((r["project"], r["tier"]), []).append(r["r2"])
-    print(f"{'project':26}{'initial':>11}{'manual':>10}{'best':>10}   {'V->B':>8}  n")
+    print(f"{'project':26}" + "".join(f"{t.replace('benchmark_tuned', 'tuned'):>10}"
+                                               for t in TIERS) + f"   {'I->B':>8}  n")
     deltas = []
     for project in sorted({r["project"] for r in rows}):
         cells = []
@@ -185,7 +186,8 @@ def main(argv: list[str] | None = None) -> int:
         else:
             dtxt = "flat" if "yes" in same else "--"
         n = len(by.get((project, "best")) or [])
-        print(f"{project:26}{cells[0]:>11}{cells[1]:>10}{cells[2]:>10}   {dtxt:>8}  {n}")
+        print(f"{project:26}" + "".join(f"{c:>10}" for c in cells)
+              + f"   {dtxt:>8}  {n}")
     if deltas:
         print(f"\n  initial -> best, paired within project: n = {len(deltas)}, "
               f"mean {st.mean(deltas):+.4f}, median {st.median(deltas):+.4f}, "

@@ -93,28 +93,28 @@ def main(argv=None) -> int:
             fam = (reg[project] or {}).get(family)
             if not isinstance(fam, dict):
                 continue
-            # The tuned candidate is `latest`, not `best`. A tuned version can exist and still
-            # not be promoted -- three of the four added 2026-11-04 made their project WORSE and
-            # were deliberately left out of `best`. Keying on `best` would report them as
-            # "never tuned", which is the opposite of what happened.
-            pre, post, manual = fam.get("untuned"), fam.get("latest"), fam.get("manual")
+            # The tuned candidate is `benchmark_tuned`, an explicit curated key as of 2026-11-04.
+            # It is NOT `best`: a tuned version can exist and not be promoted -- three of the four
+            # added 2026-11-04 made their project worse and were deliberately left out of `best`,
+            # and keying on `best` would report them as "never tuned". It is also no longer
+            # `latest`, which was only ever a proxy and a wrong one in four rows (cue_reactivity
+            # v6, ER v4, dementia v5-allstudies, cue_reactivity v5-annotation-only are `latest`
+            # without their headers declaring tuning).
+            pre, post = fam.get("untuned"), fam.get("benchmark_tuned")
             promoted = fam.get("best")
             if not pre or not post:
                 continue
             tuned = pre != post
-            # A manual entry is a genuine alternative only when its CRITERIA differ from the
-            # untuned run's. social/canonical's manual v2 is byte-identical to untuned v3 in
-            # criteria (they differ in search alone), so it adds no candidate.
+            # `manual` was folded into `untuned` on 2026-11-04, so there is no longer a second
+            # pre-tuning candidate to consider: it never resolved to different CRITERIA anywhere.
             alt = ""
-            if manual and manual != pre and manual != post and not same_criteria(project, manual, pre):
-                alt = manual
             rows.append({
                 "project": project,
                 "family": family,
                 "tuning_applied": "yes" if tuned else "no",
                 "pre_run": pre,
                 "pre_alt_run": alt,
-                "pre_alt_tier": "manual" if alt else "",
+                "pre_alt_tier": "",
                 "tuned_run": post if tuned else "",
                 "tuned_is_best": ("yes" if tuned and promoted == post
                                   else "no" if tuned else ""),

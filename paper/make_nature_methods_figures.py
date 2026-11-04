@@ -1249,10 +1249,13 @@ def figureS1(out_dir: Path) -> None:
         print("  figureS1: run scripts/compile_tier_progression.py first; skipped")
         return
     rows = read(path)
-    TIER_ORDER = ["initial", "manual", "best"]
+    # `best` is whichever of the three rungs won, not a further rung: plotting it as a
+    # fourth point would double-count the winner and invent a rise that is really a max.
+    TIER_ORDER = ["initial", "untuned", "benchmark_tuned"]
     LABEL = {"initial": "initial\n(first pass from\nthe paper, held out)",
-             "manual": "manual\n(oversights\nfixed by hand)",
-             "best": "best\n(tuned on\nerror reports)"}
+             "untuned": "untuned\n(oversights fixed,\nnot fitted)",
+             "benchmark_tuned": "benchmark-tuned\n(criteria iterated on\nerror reports)",
+             "best": "best\n(whichever of the\nthree won)"}
 
     by: dict[str, dict[str, list[float]]] = collections.defaultdict(
         lambda: collections.defaultdict(list))
@@ -1272,7 +1275,7 @@ def figureS1(out_dir: Path) -> None:
         return {proj: m[b] - m[a] for proj, m in means.items()
                 if a in m and b in m and runs[proj].get(a) != runs[proj].get(b)}
 
-    vm, mb = seg("initial", "manual"), seg("manual", "best")
+    vm, mb = seg("initial", "untuned"), seg("untuned", "benchmark_tuned")
     # Four projects never had a distinct manual stage, so they contribute to neither paired
     # segment above and their lines run straight from initial to best. Quoting only the paired
     # segments left them invisible in the summary while being visible in the panel, which

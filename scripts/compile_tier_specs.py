@@ -29,7 +29,7 @@ from run_tiers import TIERS, load_registry  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PROJECTS = REPO_ROOT / "projects"
-LADDER = ("initial", "manual", "untuned", "best")
+LADDER = ("initial", "untuned", "benchmark_tuned", "best")
 
 
 def availability(project: str, run: str) -> str:

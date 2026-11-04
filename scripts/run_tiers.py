@@ -21,7 +21,6 @@ conflates three different things, which matters for the overfitting argument:
               The tier's ROLE in the argument is unchanged. It is still the held-out end of the
               ladder, and the gap from here to `best` is still the measure of what peeking
               bought. Only the claim implied by the label has been corrected.
-    manual    the author revised BY HAND, having glanced at a few report examples. Light peeking.
     untuned   THE HIGHEST VERSION WHOSE CRITERIA WERE NEVER ITERATED AGAINST BENCHMARK ERROR
               REPORTS. Added 2026-11-03 in response to reviewer push-back on reporting
               LLM-refined results.
@@ -106,13 +105,26 @@ __all__ = [
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY = REPO_ROOT / "run_categories.yaml"
-TIERS = ("initial", "manual", "untuned", "best", "latest")
+TIERS = ("initial", "untuned", "benchmark_tuned", "best", "latest")
 
 # Renamed 2026-11-04. Anything still passing the old name is reaching for a tier whose
 # label made a promise the configs do not keep; it must be read and re-pointed, never
 # silently aliased. `resolve_tier` raises on it by name, and argparse rejects it via
 # `choices=TIERS`, so a stale caller fails loudly instead of resolving to something else.
 RENAMED_TIERS = {"verbatim": "initial"}
+
+# `manual` was FOLDED INTO `untuned` on 2026-11-04, not renamed. It never carried
+# independent information: it equalled `untuned` in 8 of the 10 rows where it was set,
+# was unset in 12 of 22, and both apparent exceptions were social naming artifacts over
+# byte-identical criteria. `untuned` already means "highest version whose criteria were
+# never fitted to benchmark error reports", which subsumes a hand-revision made from a
+# handful of papers -- which is exactly why the two coincided.
+REMOVED_TIERS = {
+    "manual": (
+        "folded into 'untuned' on 2026-11-04 -- it never resolved to a different run "
+        "except in two social rows that were naming artifacts. Use 'untuned'."
+    ),
+}
 
 # Families keyed by role rather than by tier. They live in the same registry because they name
 # runs of the same project, but asking them for a tier is a caller error, not a missing entry.
@@ -157,6 +169,8 @@ def resolve_tier(
     projects like emotion_regulation_2022 only have `allstudies`, and a caller asking for
     `canonical` should still get the sensible answer rather than nothing.
     """
+    if tier in REMOVED_TIERS:
+        raise ValueError(f"tier {tier!r} no longer exists: {REMOVED_TIERS[tier]}")
     if tier in RENAMED_TIERS:
         raise ValueError(
             f"tier {tier!r} was renamed to {RENAMED_TIERS[tier]!r} on 2026-11-04 because the old "
@@ -199,8 +213,10 @@ def add_tier_argument(parser, default: str = "best") -> None:
         help=(
             "Which registered run to compare, from run_categories.yaml: "
             "'initial' (first human transcription of the paper, no peeking), "
-            "'manual' (hand-iterated), "
-            "'best' (curated preferred run, tuning allowed), 'latest' (highest version number). "
+            "'untuned' (highest run never fitted to error reports; hand-revision "
+            "from a few papers allowed), 'benchmark_tuned' (criteria iterated against the "
+            "error reports), "
+            "'best' (whichever of the three performs best), 'latest' (highest version number). "
             f"Default {default}. Falls back to auto-pick when the tier is unregistered."
         ),
     )
