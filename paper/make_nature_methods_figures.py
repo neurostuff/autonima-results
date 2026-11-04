@@ -1164,13 +1164,13 @@ def figureS3(out_dir: Path) -> None:
     """
     path = REPO_ROOT / "reports" / "annotation_bootstrap_null.csv"
     if not path.exists():
-        print("  figure5: run scripts/bootstrap_annotation_null.py first; skipped")
+        print("  figureS3: run scripts/bootstrap_annotation_null.py first; skipped")
         return
     rows = filter_rows([r for r in read(path) if r.get("status") == "ok"
                         and r["project"] not in MAP_LEVEL_EXCLUDED_PROJECTS],
-                       label="figure 5")
+                       label="figure S3")
     if not rows:
-        print("  figure5: no usable rows; skipped")
+        print("  figureS3: no usable rows; skipped")
         return
 
     for r in rows:

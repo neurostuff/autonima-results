@@ -122,13 +122,13 @@ PYEOF
 fi
 
 if [ "$SKIP_SLOW" = 0 ]; then
-  step "3.5/5  size-matched null (~45 min: 32 contrasts x 500 MKDA refits)  ->  figure 5"
+  step "3.5/5  size-matched null (~45 min: 32 contrasts x 500 MKDA refits)  ->  figure S3"
   # --source, NOT --tier. The run column in the source table wins, so --tier is inert whenever
   # the source names runs -- which the default source always does. Passing this tier's own
   # annotation_value.csv is what actually selects the runs; the script now refuses the
   # combination that silently computed a "untuned" null from the tuned runs.
   run "${PY[@]}" scripts/bootstrap_annotation_null.py \
-      --source "$RR/annotation_value.csv" --output "$RR/annotation_null.csv" --jobs "${JOBS:-6}"
+      --source "$RR/annotation_value.csv" --output "$RR/annotation_bootstrap_null.csv" --jobs "${JOBS:-6}"
 fi
 
 step "4/5  mirror the figure scripts (fresh copies, so they cannot drift)"
