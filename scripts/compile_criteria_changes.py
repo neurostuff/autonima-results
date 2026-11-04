@@ -250,6 +250,20 @@ GUESS: dict[tuple[str, str, str], dict[str, str]] = {
                   "criteria that v1 never encoded. The one genuinely benchmark-derived item is "
                   "the logical_reasoning -> Demand_MNI_final mapping and the closed list of five "
                   "admitted contrast types; those alone would be no-source-basis."),
+    ("social", "v2", "v3"): dict(
+        change_type="non-criteria", provenance="human-paper", confidence="high",
+        summary="NO CRITERIA CHANGE AT ALL. v3's criteria are byte-identical to v2's; the two "
+                "runs differ by their search block alone.",
+        reasoning="A zero-change row, and it should stay visible rather than be dropped. social "
+                  "gained an `initial` on 2026-11-04 under the rule 'earliest run that executed "
+                  "a full pipeline' (its v1 exists only as annotation-only variants), which put "
+                  "v2 at initial while untuned stayed v3. But v3's header states v2 and the v3 "
+                  "family 'are ONE criteria generation', and the diff confirms it: nothing in "
+                  "any of the six criteria lists differs. So social's initial -> untuned step is "
+                  "empty by construction and contributes nothing to any criteria-level tally. "
+                  "Its map-level rise (0.501 -> 0.550) is entirely a search effect, not a "
+                  "criteria effect -- worth remembering before that delta is read as evidence "
+                  "about criteria revision."),
     ("social", "v3", "v4"): dict(
         change_type="source-unenforced", provenance="llm-reports", confidence="low",
         summary="RELAXES the 18-65 age restriction to exclude only wholly-child/adolescent or "

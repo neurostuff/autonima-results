@@ -17,6 +17,14 @@
 #                    IS the paper's criteria. vbm_of_ptsd v1 proves the gap: it silently omits
 #                    two criteria the source paper states outright.
 #
+#                    WHICH RUN QUALIFIES (rule set 2026-11-04): the earliest run that executed a
+#                    FULL pipeline for that family. Variant runs that skip a stage do not count
+#                    -- `-allstudies` screens a fixed PMID pool with no search, `-annotation-only`
+#                    skips screening altogether -- so a project whose v1 exists only as such a
+#                    variant takes its earliest full run instead. That is why ER canonical is v2
+#                    (its v1 is allstudies-only) and social canonical is v2 (its v1 is
+#                    annotation-only). Neither is null any more.
+#
 #   untuned          The highest version whose criteria were NEVER fitted to benchmark error
 #                    reports. Permits LLM-authored criteria and LLM- or gold-tuned SEARCH. What
 #                    it forbids is the one thing that makes a result circular: criteria edited
@@ -199,12 +207,15 @@ projects:
 
   emotion_regulation_2022:
     canonical:
-      initial: null
+      initial: v2
+      # REGISTERED 2026-11-04 under the rule "initial is the earliest run that executed a FULL
+      # pipeline". Was null: ER's v1 exists only as v1-allstudies, which screens a fixed PMID
+      # pool and runs no search, so it is not a full pipeline and cannot hold this tier. v2 is
+      # the earliest that is -- and it reads the part: "CRITERIA ARE COPIED, NOT REWRITTEN", a
+      # faithful transcription of the paper.
       untuned:  v2
-      # v2: "CRITERIA ARE COPIED, NOT REWRITTEN" -- a faithful transcription of the paper. v4
-      # is driven by "the v2-annotation-only trial criterion attribution (errors vs correct
-      # citations)". NOTE: manual is null here but untuned is NOT -- no hand-edited version
-      # exists, yet v2 was never tuned.
+      # Same run as initial: v2 was never revised before tuning began. v4 is driven by "the
+      # v2-annotation-only trial criterion attribution (errors vs correct citations)".
       benchmark_tuned: v4
       # Fitted to the gold list by construction: the header enumerates the exact gold PMIDs each
         # faithful restriction was costing, then removes those restrictions.
@@ -335,11 +346,20 @@ projects:
 
   social:
     canonical:
-      initial: null
+      initial: v2
+      # REGISTERED 2026-11-04 under the rule "initial is the earliest run that executed a FULL
+      # pipeline". Was null: social's v1 exists only as annotation-only variants, which skip
+      # screening entirely. v2 is the earliest full run.
+      #
+      # CAVEAT, and it is the same one the tier rename was for: v2 is described elsewhere as
+      # HAND-EDITED, so it is not a guaranteed-faithful first transcription. `initial` claims
+      # only "first pass that was actually run" -- not fidelity -- so v2 belongs here, with the
+      # caveat recorded rather than hidden.
       untuned:  v3
-      # v3 criteria are byte-identical to hand-edited v2 (v3 header: v2 and the v3 family "are
-      # ONE criteria generation"); only the search block differs. So untuned is HIGHER than
-      # manual here.
+      # v3's criteria are BYTE-IDENTICAL to v2 (v3 header: v2 and the v3 family "are ONE
+      # criteria generation"); only the search block differs. So social's initial -> untuned
+      # step changes no criteria at all -- the two tiers differ by search alone, and any
+      # criteria-level comparison between them is empty by construction.
       benchmark_tuned: v4
       # "tuned against the benchmark". A NULL RESULT -- see the latest note below.
       best:     v3
