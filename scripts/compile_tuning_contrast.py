@@ -93,7 +93,12 @@ def main(argv=None) -> int:
             fam = (reg[project] or {}).get(family)
             if not isinstance(fam, dict):
                 continue
-            pre, post, manual = fam.get("untuned"), fam.get("best"), fam.get("manual")
+            # The tuned candidate is `latest`, not `best`. A tuned version can exist and still
+            # not be promoted -- three of the four added 2026-11-04 made their project WORSE and
+            # were deliberately left out of `best`. Keying on `best` would report them as
+            # "never tuned", which is the opposite of what happened.
+            pre, post, manual = fam.get("untuned"), fam.get("latest"), fam.get("manual")
+            promoted = fam.get("best")
             if not pre or not post:
                 continue
             tuned = pre != post
@@ -111,6 +116,8 @@ def main(argv=None) -> int:
                 "pre_alt_run": alt,
                 "pre_alt_tier": "manual" if alt else "",
                 "tuned_run": post if tuned else "",
+                "tuned_is_best": ("yes" if tuned and promoted == post
+                                  else "no" if tuned else ""),
                 "blocks_changed": changed_blocks(project, pre, post) if tuned else "",
                 "pre_outputs": availability(project, pre),
                 "tuned_outputs": availability(project, post) if tuned else "",
@@ -131,6 +138,11 @@ def main(argv=None) -> int:
         t = [r for r in sub if r["tuning_applied"] == "yes"]
         print(f"  {family:<17} tuned {len(t)}/{len(sub)}   "
               f"({', '.join(r['project'] for r in t) or 'none'})")
+    for family in FAMILIES:
+        sub=[r for r in rows if r["family"]==family and r["tuning_applied"]=="yes"]
+        kept=[r for r in sub if r["tuned_is_best"]=="yes"]
+        if sub:
+            print(f"  {family:<17} of those tuned, promoted to best: {len(kept)}/{len(sub)}")
     alt = [r for r in rows if r["pre_alt_run"]]
     print(f"\n  rows where collapsing manual+untuned is NOT a no-op: {len(alt)}")
     for r in alt:
