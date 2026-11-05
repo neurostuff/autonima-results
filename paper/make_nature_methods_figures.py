@@ -1261,10 +1261,13 @@ def figureS1(out_dir: Path) -> None:
     # `best` is whichever of the three rungs won, not a further rung: plotting it as a
     # fourth point would double-count the winner and invent a rise that is really a max.
     TIER_ORDER = ["initial", "untuned", "benchmark_tuned"]
-    LABEL = {"initial": "initial\n(first pass from\nthe paper, held out)",
-             "untuned": "manually revised\n(source re-read,\nnot fitted)",
-             "benchmark_tuned": "benchmark-tuned\n(criteria iterated on\nerror reports)",
-             "best": "best\n(whichever of the\nthree won)"}
+    # Bare tier names only. The parentheticals that used to sit under each tick moved into the
+    # caption on 2026-11-05: they defined the tiers twice, and the caption is where a reader
+    # looks for a definition.
+    LABEL = {"initial": "initial",
+             "untuned": "manually revised",
+             "benchmark_tuned": "benchmark-tuned",
+             "best": "best"}
 
     by: dict[str, dict[str, list[float]]] = collections.defaultdict(
         lambda: collections.defaultdict(list))
