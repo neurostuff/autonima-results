@@ -44,6 +44,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import collections
 import subprocess
 import csv
@@ -1531,12 +1532,18 @@ def figureS4(out_dir: Path) -> None:
     this was wired up the figure was outside the registry entirely, which meant a full rebuild
     silently left it stale -- it sat at the pre-exclusion 32-column version for a week.
     """
-    cmd = ["python3", str(BRAIN_MAP_SCRIPT), "--mode", "all",
+    # FORWARD THE TIER. make_brain_map_figure.py defaults --tier to "best", and this call used
+    # not to pass one at all -- so building S4 inside a non-best shadow tree silently produced a
+    # BEST-tier figure sitting in an untuned tree. That happened once already (it showed 9 of 35
+    # columns before anyone noticed). reproduce_at_tier.sh exports AUTONIMA_TIER; honour it, and
+    # fall back to "best" only when nothing set it, which is the plain in-place run.
+    tier = os.environ.get("AUTONIMA_TIER", "best")
+    cmd = ["python3", str(BRAIN_MAP_SCRIPT), "--mode", "all", "--tier", tier,
            "--output-dir", str(out_dir), "--name", "figureS4_brain_maps_all"]
     if FONT_SCALE != 1.0:
         cmd += ["--font-scale", f"{FONT_SCALE}"]
     print(f"  figureS4: rendering via {BRAIN_MAP_SCRIPT.name} under system python3 "
-          f"(~2 min)...")
+          f"at tier={tier} (~2 min)...")
     try:
         subprocess.run(cmd, check=True, cwd=REPO_ROOT)
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:

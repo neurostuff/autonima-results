@@ -51,6 +51,9 @@ ROOT="$(cd "$(dirname "$ROOT")" 2>/dev/null && pwd)/$(basename "$ROOT")" || ROOT
 mkdir -p "$ROOT"
 
 PY=(pixi run python)
+# figureS4 shells out to make_brain_map_figure.py, whose --tier defaults to "best".
+# Export the tier so that call cannot silently render a best-tier figure into this tree.
+export AUTONIMA_TIER="$TIER"
 step() { printf '\n\033[1m== %s\033[0m\n' "$*"; }
 run()  { echo "   \$ $*"; "$@"; }
 
