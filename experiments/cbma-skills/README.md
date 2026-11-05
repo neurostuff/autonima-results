@@ -19,9 +19,11 @@ from memory:
 - checking extracted coordinates against their tables
 - exporting NiMADS
 
-This package does not import or wrap autonima. It now lives in autonima-results,
-next to the benchmark data and autonima's runs that it is scored against, and it is
-meant to move to its own repository.
+This package does not import or wrap autonima.
+
+**The user-facing package has moved to `autonima-skills`** (imported from bcfdf1cf,
+2026-11-05). This copy stays frozen as the version the benchmark runs used, beside the
+benchmark harness, the Codex arm packaging and the review folders, which did not move.
 
 See [PLAN.md](PLAN.md) for the hypothesis, the benchmark protocol and the MCP
 decision.
