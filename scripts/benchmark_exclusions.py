@@ -52,6 +52,28 @@ An earlier note in the ER project claimed Decrease.txt was a corrupted file hold
 reappraisal union. That was wrong and is corrected in projects/emotion_regulation_2022/
 nmb_mappings.json: the overlap is nested labelling, not a bad file.
 
+ONE FIGURE IS EXEMPT, BY DECISION (2026-11-06)
+
+Figure S6 -- the cbma-skills interim comparison in reports/cbma_interim_20261005/ -- KEEPS
+emotion_regulation_2022/reappraisal. The author chose to freeze that figure at its 2026-10-05
+state rather than regenerate it, so its emotion-regulation set is the original four contrasts
+while every other analysis in the paper uses three.
+
+That asymmetry is deliberate and needs stating wherever the figure is described. Two practical
+consequences:
+
+  * compare_cbma_interim.py DOES consult this module (it filters on is_excluded for both the
+    manual key and its mapped auto column), so regenerating it would silently drop reappraisal
+    and desynchronise the figure from its caption. Do not regenerate S6 without revisiting this
+    decision.
+  * regenerating it would change more than reappraisal anyway. A trial rerun on 2026-11-06 took
+    map_targets.csv from 97 rows to 108: the workspaces under ../cbma-workspaces hold a
+    different run inventory than they did in October, so the figure is a snapshot of that date
+    and is not reproducible from today's inputs.
+
+The exclusion below still governs every other analysis -- the pooled map-level statistics, the
+decomposition, annotation value and the size-matched null.
+
 NOT EXCLUDED, DELIBERATELY
 
 `nicotine` stays. The paper found significant PCC clusters and the gold inputs match it exactly
