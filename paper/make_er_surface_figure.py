@@ -247,7 +247,9 @@ def draw_rows_layout(fig, args, surfaces, maps, baseline, panels, draw, fs_, INK
     ncol, nview = len(args.columns), len(panels)
     # The gutter has to hold the deeper arc AND its label, so it is sized from those two
     # numbers rather than guessed. BULGE/LABEL_PAD are in FIGURE coordinates.
-    BULGE_IN, BULGE_OUT, LABEL_PAD = 0.016, 0.030, 0.005
+    # Both arcs now span ONE row (reference sits between the two things compared to it), so a
+    # single bulge serves both and they mirror rather than nest.
+    BULGE, LABEL_PAD = 0.020, 0.005
     GUT = 0.95
     width_ratios = []
     for _ in range(ncol):
@@ -260,7 +262,10 @@ def draw_rows_layout(fig, args, surfaces, maps, baseline, panels, draw, fs_, INK
                           wspace=0.0, hspace=0.0, left=0.075, right=0.995,
                           top=0.885, bottom=0.075)
 
-    ARMS = ("expert", "pipeline", "baseline")
+    # AutoNIMA / reference / baseline. The reference goes in the MIDDLE so that each comparison
+    # it anchors is one row away: the two arcs are then the same length and mirror each other,
+    # instead of one being twice the span of the other and having to nest around it.
+    ARMS = ("pipeline", "expert", "baseline")
     ROW_LABEL = {"expert": "Reference", "pipeline": "AutoNIMA",
                  "baseline": "Search-only\nbaseline"}
     for r, arm in enumerate(ARMS):
@@ -314,10 +319,11 @@ def draw_rows_layout(fig, args, surfaces, maps, baseline, panels, draw, fs_, INK
         print(f"    {key:12} pipeline {rp:.3f}   baseline {rb:.3f}")
 
         gx = x + w + unit * GUT * 0.10
-        for (y0, y1), val, bulge, col, weight in (
-                ((y[0], y[1]), rp, BULGE_IN, INK_, "bold"),
-                ((y[0], y[2]), rb, BULGE_OUT, MUTED_, "normal")):
-            apex = arc(gx, y0, y1, bulge, col)
+        # Both arcs start at the reference row (y[1]): up to AutoNIMA, down to the baseline.
+        for (y0, y1), val, col, weight in (
+                ((y[1], y[0]), rp, INK_, "bold"),
+                ((y[1], y[2]), rb, MUTED_, "normal")):
+            apex = arc(gx, y0, y1, BULGE, col)
             over.text(apex + LABEL_PAD, (y0 + y1) / 2, f"{val:.2f}", ha="left", va="center",
                       fontsize=fs_(5.6), color=col, fontweight=weight, zorder=7)
         x += w + unit * GUT
