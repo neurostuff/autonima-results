@@ -135,6 +135,13 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     review = args.review.expanduser().resolve()
+    # A review run by autonima-skills is read with that package's own ledger, which its workspace
+    # lock names: the frozen benchmark copy computes decision hashes differently and does not know
+    # the newer review.yaml settings. compare.py's `import ledger` then finds this one.
+    lock = review.parent / ".autonima-skills.lock"
+    if lock.exists():
+        sys.path.insert(0, str(Path(json.loads(lock.read_text())["package"]) / "skills" / "cbma-review" / "scripts"))
+        import ledger  # noqa: F401,E402
     project = REPO_ROOT / "projects" / args.project
     run = project / args.autonima_run
     gold_csv = project / "cbma_skills_gold" / "gold.csv"

@@ -6,8 +6,9 @@ The baseline (reports/neurostore_arms/baseline.yaml) is each project's best conf
 on NeuroStore: title-and-abstract search, NeuroStore coordinates. Each review here gets:
 - the criteria: the registered cbma-skills protocol, experiments/cbma-skills/reviews/<p>/review.yaml,
   which carries best's criteria verbatim;
-- the search: the baseline's NeuroStore search, frozen. search.neurostore.query is the query the
-  baseline sent, and frozen/neurostore_search_log.json holds its PMIDs (the arm's search records);
+- the search: the baseline's NeuroStore search, frozen. search.query is best's PubMed query, which the
+  skill translates exactly as autonima did (checked: the same NeuroStore query in all nine projects),
+  and frozen/neurostore_search_log.json holds its PMIDs (the arm's search records);
 - the full text: what the baseline read, from disk. The arm's pubget cache (PMC JATS), the Elsevier
   XML corpus and the ACE HTML corpus;
 - the coordinates: the baseline's frozen NeuroStore snapshot, frozen/neurostore_analyses.json.
@@ -55,8 +56,8 @@ def setup(project: str, run: str, best: str, workspace: Path) -> Path:
     records = records["studies"] if isinstance(records, dict) else records
     spec = yaml.safe_load((REPO / "experiments" / "cbma-skills" / "reviews" / project / "review.yaml").read_text())
 
-    search = {k: v for k, v in spec["search"].items() if k != "query"}
-    search["neurostore"] = {"query": log["neurostore_query"], "snapshot": "frozen/neurostore_search_log.json"}
+    search = dict(spec["search"])
+    search["neurostore"] = {"snapshot": "frozen/neurostore_search_log.json"}
     params = {"query": log["neurostore_query"], "search_full_text": bool(log["search_full_text"]),
               "data_type": log["data_type"], "year_min": year(search.get("date_from")),
               "year_max": year(search.get("date_to"))}
