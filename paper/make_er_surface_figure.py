@@ -14,34 +14,32 @@ So the layout is the argument. Three columns, one per contrast, expert above and
 One brain to the right: the fixed-pool arm, which is a single map shared by all three columns
 because nothing in it is contrast-specific.
 
-WHICH THREE CONTRASTS, AND WHY NOT `decrease`
+WHICH THREE CONTRASTS, AND WHY NOT `reappraisal`
 
-The project has four annotated contrasts and `decrease` is deliberately excluded. Its gold map
-correlates r = 0.970 with `reappraisal`'s -- they are effectively the same map.
+The project has four annotated contrasts and `reappraisal` is deliberately excluded, leaving the
+three regulation GOALS: increase, decrease, maintain. Reappraisal is a STRATEGY -- a different
+axis -- and it is not independent of decrease: in neurometabench's committed annotation
+`decrease` holds 128 experiments and `reappraisal` 154, with ALL 128 shared. decrease is a
+perfect subset, Jaccard 0.831, and the two gold maps correlate r = 0.970. Showing both would
+present those 128 experiments twice as if they were two independent successes.
 
-WHY THEY ARE THE SAME MAP (corrected 2026-11-06). An earlier version of this note, and the
-_note key in nmb_mappings.json, said Decrease.txt "holds the reappraisal union rather than the
-decrease contrast" -- i.e. a corrupted file. Checked against the committed annotation
-(data/nimads/emotion_regulation_2022/merged/nimads_annotation.json), that is not what is
-happening. `decrease` is a PERFECT SUBSET of `reappraisal`: 128 decrease experiments, 154
-reappraisal, all 128 shared, zero decrease-only, Jaccard 0.831. The maps correlate because the
-sets are nested, not because the wrong file was read, and there is no file to rebuild.
+THIS REVERSES AN EARLIER CHOICE (2026-11-06). The figure previously dropped `decrease` and kept
+`reappraisal`, on the stated grounds that neurometabench's Decrease.txt was a corrupted file
+"holding the reappraisal union". That was wrong -- see projects/emotion_regulation_2022/
+nmb_mappings.json, corrected the same day. The overlap is nested labelling, not a bad file, so
+the question was never which file to trust but which axis to report. Keeping the three goals is
+the coherent set.
 
-Whether the nesting is itself a defect cannot be settled here. In Morawetz's design reappraisal
-is a STRATEGY and decrease is a regulation GOAL, so decrease being a subset of reappraisal may
-simply be correct -- in which case it is not an independent contrast at all.
+The exclusion now lives in scripts/benchmark_exclusions.py so it reaches the pooled statistics
+too, not just this figure. Before that it did not: all FOUR ER columns were entering
+cross_project_best_baseline.csv and therefore the 28-column denominator, double-counting those
+128 experiments in every aggregate.
 
-Either way the exclusion stands: showing both columns would present 128 shared experiments
-twice, as if the pipeline had matched two independent expert maps. `decrease` carries the single
-largest advantage in Figure 4, so including it would inflate the paper's strongest claim with
-evidence already counted.
-
-`maintain` is included and is the weakest of the three, though by less than the old note
-claimed. That note said Maintain.txt was "missing ~97 of 104 Look experiments"; the committed
-annotation holds 94 maintain experiments, so roughly 10 are unaccounted for, not 97. Its expert
-map correlates 0.03-0.09 with every other ER contrast, which is consistent with a genuinely
-distinct contrast and equally consistent with a lossy one, so that part cannot be settled from
-the maps alone. Use --columns to drop it.
+`maintain` is the weakest of the three. The committed annotation holds 94 maintain experiments
+against an expected 104, so ~10 are unaccounted for -- not the ~97 an earlier note claimed. Its
+expert map correlates 0.03-0.09 with every other ER contrast, which is consistent with a
+genuinely distinct contrast and equally consistent with a lossy one, so that cannot be settled
+from the maps alone. Use --columns to drop it.
 
 Surfaces are fsaverage5, projected with vol_to_surf. Every panel shares one colour scale, computed
 across all displayed maps, so panel-to-panel brightness is comparable rather than per-panel
@@ -86,7 +84,7 @@ def fs(size: float) -> float:
     return size * FONT_SCALE
 
 
-DEFAULT_COLUMNS = ["increase", "maintain", "reappraisal"]
+DEFAULT_COLUMNS = ["increase", "decrease", "maintain"]
 PRETTY = {
     "increase": "Increase\nemotion",
     "maintain": "Maintain\n(look)",

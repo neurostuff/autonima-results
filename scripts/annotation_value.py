@@ -39,6 +39,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_tiers import add_tier_argument, resolve_tier  # noqa: E402
 from nmb_mapping import load_mappings  # noqa: E402
+import benchmark_exclusions
 from benchmark_exclusions import is_excluded  # noqa: E402
 
 
@@ -89,7 +90,12 @@ def main() -> int:
         auto_for = load_mappings(mp) if mp.exists() else {}
         for col in M["all_analyses"]:
             if is_excluded(pdir.name, col):
-                print(f"  excluded {pdir.name}/{col} (no reference result in the source paper)")
+                # Quote the registry's own reason rather than a hardcoded one: the exclusions
+                # are no longer all "no reference result" -- ER/reappraisal is dropped for
+                # overlapping `decrease`, and a wrong reason in a log is how a wrong reason
+                # reaches a caption.
+                print(f"  excluded {pdir.name}/{col} "
+                      f"({benchmark_exclusions.reason(pdir.name, col)})")
                 continue
             auto_row = auto_for.get(col, col)
             ann, alla = M.get(auto_row, {}).get(col), M["all_analyses"].get(col)

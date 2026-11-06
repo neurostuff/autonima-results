@@ -28,6 +28,30 @@ The expert maps agree: all three have zero voxels above the corrected q <= 0.05 
 So the exclusion is a benchmark SCOPE decision, not a metric choice, and it does not depend on
 which metric a figure reports.
 
+THE SECOND EXCLUSION (added 2026-11-06)
+
+`emotion_regulation_2022/reappraisal` is dropped because it is not independent of
+`emotion_regulation_2022/decrease`. In neurometabench's committed annotation
+(data/nimads/emotion_regulation_2022/merged/nimads_annotation.json) `decrease` holds 128
+experiments and `reappraisal` 154, and ALL 128 are shared -- decrease is a perfect subset,
+Jaccard 0.831, and the two gold maps correlate r = 0.970. Scoring both counts those 128
+experiments twice in every pooled statistic.
+
+WHY REAPPRAISAL IS THE ONE DROPPED, not decrease. Increase / decrease / maintain are three
+parallel regulation GOALS and make a coherent set; reappraisal is a STRATEGY, which is a
+different axis, and it is the superset that swallows decrease. Keeping the three goals keeps the
+contrast structure the source paper is organised around.
+
+It is worth stating plainly that this does NOT flatter the result. Dropping reappraisal lowers
+the pooled margin from +0.1288 to +0.1222 over 27 columns; dropping decrease instead would have
+given +0.1151. The larger of the two available margins belongs to decrease, so if the aim were a
+better number the choice would be the same -- which is exactly why the reason given above is a
+design argument and not a performance one.
+
+An earlier note in the ER project claimed Decrease.txt was a corrupted file holding the
+reappraisal union. That was wrong and is corrected in projects/emotion_regulation_2022/
+nmb_mappings.json: the overlap is nested labelling, not a bad file.
+
 NOT EXCLUDED, DELIBERATELY
 
 `nicotine` stays. The paper found significant PCC clusters and the gold inputs match it exactly
@@ -47,6 +71,9 @@ EXCLUDED: dict[tuple[str, str], str] = {
         "no significant result in the source paper (Hill-Bowen 2022); expert map empty",
     ("vbm_of_substance_use", "stimulants"):
         "no significant result in the source paper (Hill-Bowen 2022); expert map empty",
+    ("emotion_regulation_2022", "reappraisal"):
+        "not independent of `decrease`: all 128 decrease experiments are among reappraisal's "
+        "154 (gold maps r = 0.970), so scoring both double-counts them",
 }
 
 # Files disagree on what the column field is called.
