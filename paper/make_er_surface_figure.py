@@ -17,16 +17,31 @@ because nothing in it is contrast-specific.
 WHICH THREE CONTRASTS, AND WHY NOT `decrease`
 
 The project has four annotated contrasts and `decrease` is deliberately excluded. Its gold map
-correlates r = 0.972 with `reappraisal`'s -- they are effectively the same map, because
-neurometabench's Decrease.txt holds the reappraisal union rather than the decrease contrast (a
-defect recorded in the project's nmb_mappings.json and confirmed here by direct comparison).
-Showing both would present one expert map twice as if it were two independent successes, and
-`decrease` happens to carry the single largest advantage in Figure 4, so the temptation is real.
+correlates r = 0.970 with `reappraisal`'s -- they are effectively the same map.
 
-`maintain` is included but is the weakest of the three: the same note reports its gold file is
-missing most of the Look experiments. Its expert map correlates 0.03-0.09 with every other ER
-contrast, which is consistent with a genuinely distinct contrast and equally consistent with a
-broken one, so this cannot be settled from the maps alone. Use --columns to drop it.
+WHY THEY ARE THE SAME MAP (corrected 2026-11-06). An earlier version of this note, and the
+_note key in nmb_mappings.json, said Decrease.txt "holds the reappraisal union rather than the
+decrease contrast" -- i.e. a corrupted file. Checked against the committed annotation
+(data/nimads/emotion_regulation_2022/merged/nimads_annotation.json), that is not what is
+happening. `decrease` is a PERFECT SUBSET of `reappraisal`: 128 decrease experiments, 154
+reappraisal, all 128 shared, zero decrease-only, Jaccard 0.831. The maps correlate because the
+sets are nested, not because the wrong file was read, and there is no file to rebuild.
+
+Whether the nesting is itself a defect cannot be settled here. In Morawetz's design reappraisal
+is a STRATEGY and decrease is a regulation GOAL, so decrease being a subset of reappraisal may
+simply be correct -- in which case it is not an independent contrast at all.
+
+Either way the exclusion stands: showing both columns would present 128 shared experiments
+twice, as if the pipeline had matched two independent expert maps. `decrease` carries the single
+largest advantage in Figure 4, so including it would inflate the paper's strongest claim with
+evidence already counted.
+
+`maintain` is included and is the weakest of the three, though by less than the old note
+claimed. That note said Maintain.txt was "missing ~97 of 104 Look experiments"; the committed
+annotation holds 94 maintain experiments, so roughly 10 are unaccounted for, not 97. Its expert
+map correlates 0.03-0.09 with every other ER contrast, which is consistent with a genuinely
+distinct contrast and equally consistent with a lossy one, so that part cannot be settled from
+the maps alone. Use --columns to drop it.
 
 Surfaces are fsaverage5, projected with vol_to_surf. Every panel shares one colour scale, computed
 across all displayed maps, so panel-to-panel brightness is comparable rather than per-panel
