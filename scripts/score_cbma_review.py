@@ -129,6 +129,9 @@ def main(argv=None) -> int:
     ap.add_argument("--meta-dir", action="append",
                     help="folder under the review holding <target>/ map outputs, searched in the order given "
                          "(default results/meta); runs that fit a subset copy keep maps elsewhere")
+    ap.add_argument("--target-map", action="append", default=[], metavar="REVIEW=GOLD",
+                    help="score the review's target REVIEW against gold column GOLD, for reviews whose user "
+                         "named targets their own way (overrides nmb_mappings.json)")
     ap.add_argument("--decisions-as-recorded", action="store_true",
                     help="score screening from the latest decision per study under the current criteria, "
                          "skipping the input-hash check (for reviews imported without docs/)")
@@ -151,9 +154,15 @@ def main(argv=None) -> int:
     # Gold columns can be named differently from the review's targets (vbm_of_ptsd's gold calls
     # decreased_gm "nonptsdgtptsd_merged"): nmb_mappings.json maps gold -> autonima/review names.
     mapping_path = project / "nmb_mappings.json"
-    to_gold = {v: k for k, v in (json.loads(mapping_path.read_text()).get("annotation_mappings") or {}).items()} \
-        if mapping_path.exists() else {}
+    gold_to_auto = (json.loads(mapping_path.read_text()).get("annotation_mappings") or {}) if mapping_path.exists() else {}
+    to_gold = {v: k for k, v in gold_to_auto.items()}
+    to_gold.update(dict(m.split("=", 1) for m in args.target_map))
+    unknown = set(dict(m.split("=", 1) for m in args.target_map)) - set(targets)
+    if unknown:
+        ap.error(f"--target-map names targets the review does not have: {sorted(unknown)}")
     gold_name = {t: to_gold.get(t, t) for t in targets}
+    # The autonima run's column for the same gold target (its own name, not the review's).
+    auto_name = {t: gold_to_auto.get(gold_name[t], t) for t in targets}
     from benchmark_exclusions import is_excluded, reason as excluded_reason  # noqa: E402
     gold_keys = set(json.loads((merged / "nimads_annotation.json").read_text()).get("note_keys") or {})
     unscored = {}
@@ -196,6 +205,7 @@ def main(argv=None) -> int:
 
     # ---- coordinates
     report["targets"] = {t: gold_name[t] for t in scored}
+    report["autonima_targets"] = {t: auto_name[t] for t in scored}
     gold_ss = json.loads((merged / "nimads_studyset.json").read_text())
     cbma_ss = json.loads((review / "results" / "nimads" / "studyset.json").read_text())
     aut_ss = json.loads((run / "outputs" / "nimads_studyset.json").read_text())
@@ -221,7 +231,7 @@ def main(argv=None) -> int:
     gold_notes = json.loads((merged / "nimads_annotation.json").read_text())["notes"]
     aut_notes = json.loads((run / "outputs" / "nimads_annotation.json").read_text())["notes"]
     gs, gn = by_target(gold_notes, study_of(gold_ss), key=lambda t: gold_name[t])
-    as_, an = by_target(aut_notes, study_of(aut_ss))
+    as_, an = by_target(aut_notes, study_of(aut_ss), key=lambda t: auto_name[t])
     cs, cn = collections.defaultdict(set), collections.Counter()
     for r in read_jsonl(review / "decisions" / "selection.jsonl"):
         if r["include"]:
@@ -251,7 +261,7 @@ def main(argv=None) -> int:
         # The review's maps: the first --meta-dir that holds this target (default results/meta).
         c_dirs = [review / d / t for d in (args.meta_dir or ["results/meta"])]
         c_dir = next((d for d in c_dirs if d.exists()), c_dirs[0])
-        m_dir, a_dir = gold_map_dir(manual_maps, gold_name[t]), run / "outputs" / "meta_analysis_results" / t
+        m_dir, a_dir = gold_map_dir(manual_maps, gold_name[t]), run / "outputs" / "meta_analysis_results" / auto_name[t]
         missing = [str(d) for d in (m_dir, a_dir, c_dir) if not (d / "z_corr-FDR_method-indep.nii.gz").exists()]
         if missing:
             maps[t] = {"missing_maps": missing}
