@@ -108,3 +108,32 @@ analyses is selected for any target, for every arm alike.
 brain or region of interest. Inference settings are labelled Thresholding, and the record says
 a correction listed there does not make a whole-brain analysis an ROI one. The extraction is
 unchanged. The results above are v2; the pilots have not been re-run on v3.
+
+## Change after the pilots, corrected: record format v4
+
+v3 was wrong. James's definitions: spatial scope is where the model was fit (an estimate at
+every voxel), and the inference settings' correction scope is where significance was tested,
+which can be a subset. Whole-brain estimation with inference only within ROIs (small-volume
+correction) is a common case, not a contradiction. v4 (autonima 09dc8e0) shows "Model fit over"
+and "Inference over" / "Inference restricted to", explains both neutrally, and leaves it to each
+review's criteria which one a "whole-brain" criterion means. The PTSD losses traced to this were
+therefore the judge applying GLOBAL_E1 as written; the gold includes some SVC studies its own
+criteria exclude.
+
+## dementia (2026-11-11, record format v4; rec, rec-comb, rec-global)
+
+74 gold studies; 4 contrasts. No rate limits, no failed decisions.
+
+| | baseline (full text) | rec | rec-comb | rec-global |
+|---|---|---|---|---|
+| gold studies selected | 32 | 26 | 29 | 30 |
+| selected precision | 0.63 | 0.60 | 0.62 | 0.60 |
+| mean r² of maps | 0.26 | 0.24 | 0.31 | 0.30 |
+| mean Dice | 0.18 | 0.21 | 0.29 | 0.25 |
+| calls | 252 | 201 | 154 | 155 |
+| cost | not recorded | $1.07 | $1.03 | $1.27 |
+
+Per contrast, r against the expert map: combined beats the baseline on all (0.62 vs 0.55),
+decrease (0.59 vs 0.56) and structural (0.59 vs 0.47), and trails it on functional (0.38 vs
+0.44, from 18-19 studies). The combined arm's 4 lost gold studies were all excluded at full
+text; none is a coverage loss here.
