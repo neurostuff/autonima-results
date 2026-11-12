@@ -69,3 +69,71 @@ setsid nohup scripts/run_neurostore_feature_arms.sh rec-comb vbm_of_ptsd emotion
 - **Cost:** tokens and cost per stage, from the run's usage.
 
 **`rec-global` has no full-text decisions.** Its study-level inclusion has to be read as "any analysis selected for any target".
+
+## Pilot results (2026-11-11, record format v2)
+
+vbm_of_ptsd and emotion_regulation_2022, all four arms, live (gpt-5-mini via Portkey), no
+rate limits and no failed decisions. Scored by `scripts/compare_neurostore_feature_arms.py`
+into `summary.csv` and `maps.csv`. "Selected" counts a study as included when any of its
+analyses is selected for any target, for every arm alike.
+
+**emotion_regulation_2022** (88 gold studies; 4 contrasts):
+
+| | baseline (full text) | rec | rec-comb | rec-comb-noabs | rec-global |
+|---|---|---|---|---|---|
+| gold studies selected | 59 | 41 | 45 | 43 | 44 |
+| selected precision | 0.34 | 0.33 | 0.34 | 0.33 | 0.27 |
+| mean r² of maps | 0.60 | 0.62 | 0.60 | 0.62 | 0.63 |
+| mean Dice | 0.58 | 0.61 | 0.59 | 0.61 | 0.61 |
+| calls | 683 | 554 | 395 | 705 | 384 |
+| cost | not recorded | $3.04 | $2.83 | $4.10 | $3.23 |
+
+**vbm_of_ptsd** (21 gold studies; 1 contrast):
+
+| | baseline (full text) | rec | rec-comb | rec-comb-noabs | rec-global |
+|---|---|---|---|---|---|
+| gold studies selected | 13 | 10 | 10 | 11 | 10 |
+| r² of map | 0.69 | 0.68 | 0.68 | 0.71 | 0.68 |
+| cost | not recorded | $0.18 | $0.15 | $0.20 | $0.15 |
+
+**Findings:**
+- **Maps match the full-text baseline or beat it** with fewer studies.
+- **Study recall is lower.** In emotion regulation, 9 of the combined arm's 17 lost gold studies have no features, or have them only for another version of the study.
+- **The PTSD losses were largely a misreading of the record.** Analyses NeuroStore labels whole-brain also listed "corrected within roi" in their inference settings, and the judge applied the protocol's ROI/SVC exclusion to them.
+- **Combining the two judgments saves calls, not much money.** Output tokens (the model's reasoning) are about as large as input.
+- **Skipping the abstract pass costs about 45% more** with no clear gain, so it is dropped from further runs.
+- **The baselines' cost is not recorded:** their progress files hold only the last pass.
+
+**Change after the pilots: record format v3** (autonima e8068f9). Spatial scope decides whole
+brain or region of interest. Inference settings are labelled Thresholding, and the record says
+a correction listed there does not make a whole-brain analysis an ROI one. The extraction is
+unchanged. The results above are v2; the pilots have not been re-run on v3.
+
+## Change after the pilots, corrected: record format v4
+
+v3 was wrong. James's definitions: spatial scope is where the model was fit (an estimate at
+every voxel), and the inference settings' correction scope is where significance was tested,
+which can be a subset. Whole-brain estimation with inference only within ROIs (small-volume
+correction) is a common case, not a contradiction. v4 (autonima 09dc8e0) shows "Model fit over"
+and "Inference over" / "Inference restricted to", explains both neutrally, and leaves it to each
+review's criteria which one a "whole-brain" criterion means. The PTSD losses traced to this were
+therefore the judge applying GLOBAL_E1 as written; the gold includes some SVC studies its own
+criteria exclude.
+
+## dementia (2026-11-11, record format v4; rec, rec-comb, rec-global)
+
+74 gold studies; 4 contrasts. No rate limits, no failed decisions.
+
+| | baseline (full text) | rec | rec-comb | rec-global |
+|---|---|---|---|---|
+| gold studies selected | 32 | 26 | 29 | 30 |
+| selected precision | 0.63 | 0.60 | 0.62 | 0.60 |
+| mean r² of maps | 0.26 | 0.24 | 0.31 | 0.30 |
+| mean Dice | 0.18 | 0.21 | 0.29 | 0.25 |
+| calls | 252 | 201 | 154 | 155 |
+| cost | not recorded | $1.07 | $1.03 | $1.27 |
+
+Per contrast, r against the expert map: combined beats the baseline on all (0.62 vs 0.55),
+decrease (0.59 vs 0.56) and structural (0.59 vs 0.47), and trails it on functional (0.38 vs
+0.44, from 18-19 studies). The combined arm's 4 lost gold studies were all excluded at full
+text; none is a coverage loss here.

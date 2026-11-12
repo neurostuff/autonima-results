@@ -35,6 +35,8 @@ import argparse
 import asyncio
 import json
 import os
+import re
+from datetime import datetime
 import sys
 from contextlib import ExitStack
 from copy import deepcopy
@@ -186,6 +188,22 @@ def check_all() -> int:
     return failures
 
 
+def archive_usage(run_dir: Path) -> None:
+    """Keep each pass's usage. autonima rewrites execution_progress.json on every run, and its
+    usage_total covers that invocation only, so a retry pass would erase the first pass's cost.
+    Each pass's progress file is kept in outputs/usage_history/, named by when it was written;
+    an arm's cost is the sum over that folder."""
+    progress = run_dir / "outputs" / "execution_progress.json"
+    if not progress.exists():
+        return
+    history = run_dir / "outputs" / "usage_history"
+    history.mkdir(exist_ok=True)
+    stamp = datetime.fromtimestamp(progress.stat().st_mtime).strftime("%Y%m%dT%H%M%S")
+    target = history / f"{stamp}.json"
+    if not target.exists():
+        target.write_bytes(progress.read_bytes())
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("project", nargs="?")
@@ -211,6 +229,7 @@ def main() -> None:
         config["output"]["directory"] = str(run_dir)
     run_dir.mkdir(parents=True, exist_ok=True)
     (run_dir / "arm_config.yaml").write_text(yaml.safe_dump(config, sort_keys=False))
+    archive_usage(run_dir)
     if args.live and not (os.environ.get("OPENAI_API_KEY") and os.environ.get("OPENAI_API_GATEWAY")):
         sys.exit("--live needs OPENAI_API_KEY and OPENAI_API_GATEWAY in the environment")
 
@@ -221,7 +240,9 @@ def main() -> None:
 
     baseline_dir = REPO / "projects" / args.project / baseline_run(args.project)
     baseline_out = baseline_dir / "outputs"
-    cohort = [s["pmid"] for s in json.loads((baseline_out / "search_results.json").read_text())["studies"]]
+    searched = json.loads((baseline_out / "search_results.json").read_text())["studies"]
+    cohort = [s["pmid"] for s in searched]
+    title_to_pmid = {s["title"]: s["pmid"] for s in searched}
     replay = {
         r["study_id"]: r["decision"]
         for r in json.loads((baseline_out / "fulltext_screening_results.json").read_text())["screening_results"]
@@ -242,7 +263,9 @@ def main() -> None:
 
         def screen_fulltext(self, prompt, model, **kwargs):
             log["fulltext"] += 1
-            return FullTextScreeningOutput(decision="EXCLUDED", confidence=0.9, reason="stub")
+            title = re.search(r"^Title: (.*)$", prompt, re.M)
+            decision, replayed_as = replayed(title_to_pmid.get(title.group(1)) if title else None)
+            return FullTextScreeningOutput(decision=decision, confidence=0.9, reason=f"stub replay of {replayed_as}")
 
     class StubAnnotation:
         def __init__(self, *a, **k):
@@ -283,6 +306,8 @@ def main() -> None:
             copy_valid_cache_from=str(seed) if seed else None,
         )
         result = asyncio.run(pipeline.run())
+    if args.live:
+        archive_usage(run_dir)
 
     print(json.dumps({
         "project": args.project, "arm": args.arm, "baseline": baseline_dir.name, "run": str(run_dir),
