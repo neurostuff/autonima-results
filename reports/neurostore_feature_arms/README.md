@@ -1,8 +1,9 @@
 # NeuroStore feature arms
 
-*Prepared 2026-11-10; not run yet. autonima branch `feat/neurostore-features`, stacked on
-`feat/neurostore` (neurostuff/autonima#91). Waiting on neurostuff/neurostore#1946, which lets
-the analysis query be restricted to a list of papers.*
+*Prepared 2026-11-10; run on all nine projects 2026-11-11 to 12 (results at the end). autonima
+branch `feat/neurostore-features`, stacked on `feat/neurostore` (neurostuff/autonima#91). Needs
+neurostuff/neurostore#1946 (merged and deployed 2026-11-11), which lets the analysis query be
+restricted to a list of papers.*
 
 **Question.** Can autonima judge NeuroStore's extracted values instead of each article's full
 text, at little loss against NeuroMetaBench and at far fewer tokens? Can the full-text and
@@ -50,16 +51,25 @@ and refuses to run one that differs anywhere else.
 ## Running
 
 ```bash
-setsid nohup scripts/run_neurostore_feature_arms.sh rec-comb vbm_of_ptsd emotion_regulation_2022 > /tmp/arms.log 2>&1 &
+systemd-run --user --unit nsarms-rec-comb --collect --working-directory="$PWD" \
+  --setenv=PATH="$PATH" --setenv=HOME="$HOME" \
+  bash -c 'scripts/run_neurostore_feature_arms.sh rec-comb vbm_of_ptsd emotion_regulation_2022 > /tmp/arms.log 2>&1'
 ```
+
+Run it in a systemd unit of its own, not with `setsid nohup` from an app's terminal. On
+2026-11-11 systemd-oomd killed the Claude app's cgroup, and two runs started inside it died with
+it. annotation saves only when its stage ends, so the whole stage was lost.
 
 1. **Dry run:** without `--live`, `scripts/neurostore_feature_arms.py <project> <arm>` stubs the LLM, writes to `<run>-stub`, and counts the calls a live run would make. It still reads NeuroStore, so it needs #1946 deployed too.
 2. **Pilot:** vbm_of_ptsd (50 candidates), then emotion_regulation_2022, then all nine.
 3. **After each run:** check the logs for 429s, since autonima exits 0 on quota errors. Then regenerate the reports before reading any metric.
 
-## Scoring (to do once runs exist)
+## Scoring
 
-**The existing scripts** (`scripts/compare_neurostore_arms.py`, `scripts/neurostore_same_studies.py`) know only the `coords` and `search` arms. They need the new arm names added.
+`scripts/compare_neurostore_feature_arms.py` scores every arm present, and the baseline, into
+`summary.csv` (one row per run) and `maps.csv` (one row per contrast). Per-run evaluations go
+to `<project>/<run>/`. Below is what it was planned to measure; the covered-subset split is
+computed by hand in the results.
 
 **Per arm, against gold and against the baseline:**
 - **Screening:** precision, recall and F1. Split recall lost to coverage (no features) from recall lost to judging.
@@ -137,3 +147,57 @@ Per contrast, r against the expert map: combined beats the baseline on all (0.62
 decrease (0.59 vs 0.56) and structural (0.59 vs 0.47), and trails it on functional (0.38 vs
 0.44, from 18-19 studies). The combined arm's 4 lost gold studies were all excluded at full
 text; none is a coverage loss here.
+
+## All nine projects (2026-11-12)
+
+`rec`, `rec-comb` and `rec-global`, live (gpt-5-mini via Portkey), no rate limits. Record format
+v4 everywhere except vbm_of_ptsd and emotion_regulation_2022, which are the v2 pilots above and
+were not re-run. decision_making is scored against the corrected gold (NeuroMetaBench branch
+`fix-decision-making-gold`, ae1ad87: 146 included studies, rebuilt risky coordinates), and so is
+its baseline. "Gold selected" counts a gold study when any of its analyses is selected for any
+target, for every arm alike.
+
+| Project | Gold | Gold selected: baseline / rec / rec-comb / rec-global | Mean r² of maps: same order | Calls: baseline / rec-comb | rec-comb cost |
+|---|---|---|---|---|---|
+| cue_reactivity | 191 | 149 / 106 / 117 / 128 | 0.52 / 0.52 / 0.50 / 0.49 | 1317 / 731 | $5.82 |
+| decision_making | 146 | 83 / 69 / 70 / 72 | 0.51 / 0.47 / 0.49 / 0.47 | 877 / 677 | $7.23 |
+| dementia | 74 | 32 / 26 / 29 / 30 | 0.26 / 0.24 / 0.31 / 0.30 | 252 / 154 | $1.03 |
+| emotion_regulation_2022 (v2) | 88 | 59 / 41 / 45 / 44 | 0.60 / 0.62 / 0.60 / 0.63 | 683 / 395 | $2.83 |
+| executive_function | 171 | 59 / 49 / 53 / 52 | 0.60 / 0.59 / 0.60 / 0.60 | 1334 / 796 | $7.90 |
+| problem_solving | 127 | 65 / 71 / 68 / 71 | 0.60 / 0.59 / 0.59 / 0.61 | 729 / 573 | $5.22 |
+| social | 238 | 168 / 150 / 153 / 151 | 0.54 / 0.54 / 0.55 / 0.54 | 1249 / 770 | $6.98 |
+| vbm_of_ptsd (v2) | 21 | 13 / 10 / 10 / 10 | 0.69 / 0.68 / 0.68 / 0.68 | 62 / 31 | $0.15 |
+| vbm_of_substance_use | 79 | 48 / 45 / 48 / 45 | 0.30 / 0.35 / 0.34 / 0.34 | 231 / 123 | $0.98 |
+| **all nine** | 1135 | **676 / 567 / 593 / 603** | **0.51 / 0.51 / 0.52 / 0.52** (mean of projects) | **6734 / 4250** | **$38.12** |
+
+Total cost: `rec` $41.17, `rec-comb` $38.12, `rec-global` $46.24. The baseline's cost is not
+recorded, and its calls are counted one per study and stage from its decisions, so they exclude
+retries; the arms' calls include them.
+
+**Findings:**
+- **Maps are on par with the full-text baseline.** Across the 35 contrasts, the combined arm's r
+  is within 0.02 of the baseline's on 19, higher on 9 and lower on 7; the mean difference is
+  +0.01. The largest moves: decision making ambiguous 0.50 → 0.42 (lower), dementia structural
+  0.47 → 0.59 and substance use cannabis 0.17 → 0.43 (4 studies), both higher.
+- **About 12% fewer gold studies are selected** (combined 593 vs 676), at the same precision (2313
+  studies selected vs 2316). Of the 125 gold studies the baseline selected and the combined arm
+  did not, 51 have no NeuroStore record (no features, or features only for another version of
+  the study): a coverage loss. The other 74 were judged out. The combined arm also selected 42
+  gold studies the baseline missed. Problem solving and substance use lose nothing overall.
+- **The combined arm is the cheapest:** $38 for all nine projects, with 63% of the baseline's
+  calls. `rec-global` (annotation alone, the full-text criteria as global ones) selects the
+  most gold studies (603) but costs the most, because its one call per study carries every
+  criterion and fails validation more often.
+- **Validation failures, decision making only.** The model lists an unmet inclusion criterion's
+  ID (e.g. `GLOBAL_I5`) under `exclusion_criteria_applied`, which annotation's schema rejects;
+  after three attempts the study's annotations are left undecided and retried on the next pass.
+  First pass: `rec-global` 82 studies, `rec` 45, combined 22. `rec` and `rec-global` got a
+  second retry pass; 6 and 16 studies stay undecided and export as null, which lowers their
+  recall. The combined arm decided all of them on its retry. Every other project ended with
+  none undecided.
+
+**Caveats:**
+- **Executive function's `rec` and `rec-global` costs are undercounts.** Their first annotation
+  pass (470 and 616 studies) was killed by systemd-oomd at 20:04 on 2026-11-11 and redone; the
+  killed pass's spend was never written to `usage_history`.
+- **decision_making's `rec` and `rec-global` include a third pass** in their calls and cost.
