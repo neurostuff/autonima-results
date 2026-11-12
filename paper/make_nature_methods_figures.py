@@ -44,6 +44,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import collections
 import subprocess
 import csv
@@ -1164,13 +1165,13 @@ def figureS3(out_dir: Path) -> None:
     """
     path = REPO_ROOT / "reports" / "annotation_bootstrap_null.csv"
     if not path.exists():
-        print("  figure5: run scripts/bootstrap_annotation_null.py first; skipped")
+        print("  figureS3: run scripts/bootstrap_annotation_null.py first; skipped")
         return
     rows = filter_rows([r for r in read(path) if r.get("status") == "ok"
                         and r["project"] not in MAP_LEVEL_EXCLUDED_PROJECTS],
-                       label="figure 5")
+                       label="figure S3")
     if not rows:
-        print("  figure5: no usable rows; skipped")
+        print("  figureS3: no usable rows; skipped")
         return
 
     for r in rows:
@@ -1224,16 +1225,25 @@ def figureS3(out_dir: Path) -> None:
 # -------------------------------------------------------------------- Supplementary S1
 
 def figureS1(out_dir: Path) -> None:
-    """Two different effects live in the tier progression, and only the second one is overfitting.
+    """Two different effects live in the tier progression, and NEITHER is simply overfitting.
 
     run_categories.yaml orders runs by how much benchmark information shaped their criteria. It is
-    tempting to read the whole `verbatim -> best` rise as leakage, and an earlier version of this
+    tempting to read the whole `initial -> best` rise as leakage, and an earlier version of this
     figure did. That is wrong, and the split says why:
 
-      verbatim -> manual   the project author, having seen reports, fixed MAJOR OVERSIGHTS in the
-                           criteria -- things that were simply mis-specified. n = 2, mean +0.221.
-      manual   -> best     criteria rewritten against the error reports in full. This is the
-                           overfitting estimate. n = 2, mean +0.031.
+      initial -> untuned           manual revision, mostly from re-reading the source publication:
+                                   omissions restored, mis-transcriptions corrected, vague clauses
+                                   operationalised. n = 5, mean +0.101.
+      untuned -> benchmark_tuned   criteria revised against the error reports. n = 9, mean +0.015.
+
+    THE SECOND SEGMENT IS NOT LABELLED "overfitting" ANY MORE, and that is a correction, not a
+    softening. Classifying all 14 tier transitions against the source publications (see
+    reports/criteria_changes.xlsx, 11 of 14 verified against a source full text) found that 6 of
+    the 9 tuning revisions still track the source paper -- restoring criteria it states,
+    clarifying ones it leaves vague, or following criteria it states but does not itself apply.
+    Only 3 have no source argument available. Calling the whole segment overfitting would
+    contradict the repo's own evidence, so it is now "benchmark-guided revision" and the
+    composition is reported separately.
 
     So almost the entire rise is the cost of getting the criteria wrong, not the benefit of having
     seen the answers. That reframes the result from a caveat into a finding: the live risk in
@@ -1249,10 +1259,16 @@ def figureS1(out_dir: Path) -> None:
         print("  figureS1: run scripts/compile_tier_progression.py first; skipped")
         return
     rows = read(path)
-    TIER_ORDER = ["verbatim", "manual", "best"]
-    LABEL = {"verbatim": "verbatim\n(from the paper,\nheld out)",
-             "manual": "manual\n(oversights\nfixed by hand)",
-             "best": "best\n(tuned on\nerror reports)"}
+    # `best` is whichever of the three rungs won, not a further rung: plotting it as a
+    # fourth point would double-count the winner and invent a rise that is really a max.
+    TIER_ORDER = ["initial", "untuned", "benchmark_tuned"]
+    # Bare tier names only. The parentheticals that used to sit under each tick moved into the
+    # caption on 2026-11-05: they defined the tiers twice, and the caption is where a reader
+    # looks for a definition.
+    LABEL = {"initial": "initial",
+             "untuned": "manually revised",
+             "benchmark_tuned": "benchmark-tuned",
+             "best": "best"}
 
     by: dict[str, dict[str, list[float]]] = collections.defaultdict(
         lambda: collections.defaultdict(list))
@@ -1267,18 +1283,18 @@ def figureS1(out_dir: Path) -> None:
         """Paired deltas by project, excluding projects where both tiers are the same run.
 
         Keyed by project rather than a bare list so segments can be compared by membership --
-        the verbatim -> best segment below is defined as the projects in neither paired segment.
+        the initial -> best segment below is defined as the projects in neither paired segment.
         """
         return {proj: m[b] - m[a] for proj, m in means.items()
                 if a in m and b in m and runs[proj].get(a) != runs[proj].get(b)}
 
-    vm, mb = seg("verbatim", "manual"), seg("manual", "best")
+    vm, mb = seg("initial", "untuned"), seg("untuned", "benchmark_tuned")
     # Four projects never had a distinct manual stage, so they contribute to neither paired
-    # segment above and their lines run straight from verbatim to best. Quoting only the paired
+    # segment above and their lines run straight from initial to best. Quoting only the paired
     # segments left them invisible in the summary while being visible in the panel, which
     # overstated how general the large mis-specification gain is: end to end they move +0.018
     # against +0.228 for the two that were reworked by hand.
-    vb = seg("verbatim", "best")
+    vb = seg("initial", "best")
     vb_nomanual = {k: v for k, v in vb.items() if k not in (set(vm) | set(mb))}
 
     fig, ax = plt.subplots(figsize=(SINGLE_COL, fh(2.9)))
@@ -1341,7 +1357,7 @@ def figureS1(out_dir: Path) -> None:
     y0, y1 = ax.get_ylim()
     band = y1 - 0.055 * (y1 - y0)
     for (x0, x1), lab, deltas in ((( -0.02, 0.98), "fixing\nmis-specification", vm),
-                                  ((1.02, 1.98), "overfitting", mb)):
+                                  ((1.02, 1.98), "benchmark-guided\nrevision", mb)):
         ax.annotate("", xy=(x1, band), xytext=(x0, band),
                     arrowprops=dict(arrowstyle="<->", lw=0.6, color=MUTED, shrinkA=0, shrinkB=0))
         txt = (f"{lab}\nmean {st.mean(deltas.values()):+.3f} (n={len(deltas)})"
@@ -1516,12 +1532,18 @@ def figureS4(out_dir: Path) -> None:
     this was wired up the figure was outside the registry entirely, which meant a full rebuild
     silently left it stale -- it sat at the pre-exclusion 32-column version for a week.
     """
-    cmd = ["python3", str(BRAIN_MAP_SCRIPT), "--mode", "all",
+    # FORWARD THE TIER. make_brain_map_figure.py defaults --tier to "best", and this call used
+    # not to pass one at all -- so building S4 inside a non-best shadow tree silently produced a
+    # BEST-tier figure sitting in an untuned tree. That happened once already (it showed 9 of 35
+    # columns before anyone noticed). reproduce_at_tier.sh exports AUTONIMA_TIER; honour it, and
+    # fall back to "best" only when nothing set it, which is the plain in-place run.
+    tier = os.environ.get("AUTONIMA_TIER", "best")
+    cmd = ["python3", str(BRAIN_MAP_SCRIPT), "--mode", "all", "--tier", tier,
            "--output-dir", str(out_dir), "--name", "figureS4_brain_maps_all"]
     if FONT_SCALE != 1.0:
         cmd += ["--font-scale", f"{FONT_SCALE}"]
     print(f"  figureS4: rendering via {BRAIN_MAP_SCRIPT.name} under system python3 "
-          f"(~2 min)...")
+          f"at tier={tier} (~2 min)...")
     try:
         subprocess.run(cmd, check=True, cwd=REPO_ROOT)
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:

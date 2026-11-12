@@ -1,0 +1,123 @@
+# v4 annotation-only -- cue_reactivity's UNTUNED annotation arm.
+#
+# Created 2026-11-03 by rolling the annotation block back from v5 to v4. It exists because
+# cue_reactivity was the one project in the corpus with no annotation-only run whose criteria had
+# escaped benchmark fitting, which would otherwise have dropped it out of every map-level
+# comparison reported at the untuned tier.
+#
+# WHY v5-annotation-only DOES NOT QUALIFY. Its criteria are v5's, and the v4 -> v5 edit fits the
+# benchmark in its own wording. Two scope relaxations:
+#
+#   * an "ROI exception FOR BENCHMARK COMPATIBILITY" -- v4 excluded ROI analyses outright; v5
+#     admits them when they carry stereotactic coordinates for a qualifying contrast
+#   * whole-brain relaxed to "typically whole-brain; small-volume-corrected maps are acceptable"
+#
+# and, in the per-column `annotations`, added exclusions for analyses that are "not separable at
+# the reported contrast/map level", a widened comparator ("low-level baseline, or matched control
+# cues") and monetary/gaming cues folded into natural reward. v5's own header states it was
+# "Modified from v4 using feedback from reports (annotated inspection of false negatives
+# primarily)" -- and relaxations of exactly this shape are what recovers false negatives. So the
+# whole annotation block is rolled back, `annotations` included, not just the global criteria.
+#
+# WHAT THIS FILE IS, EXACTLY
+#
+#   annotation                  v4.yaml's block verbatim (global criteria AND the three
+#                               sub-annotation definitions). The non-criteria keys -- model,
+#                               prompt_type, metadata_fields, create_all_included_annotations,
+#                               enabled -- were already identical between v4 and v5-annotation-only,
+#                               so nothing else moves with it.
+#   search/screening/
+#   retrieval/parsing/output    byte-identical to v5-annotation-only.yaml
+#
+# v5-annotation-only -> this file therefore isolates the annotation criteria exactly, over the same
+# fixed 191-PMID official list with screening skipped. Retrieval and parsing config is unchanged,
+# so those stages should come from cache and only annotation re-runs.
+#
+# This is a ROLLBACK, not a new schema: no criterion here was written for this run, and none was
+# informed by any result. It is v4's annotation block, which predates the GPT pass entirely.
+
+search:
+  database: pubmed
+  pmids_file: projects/cue_reactivity/official_pmids.txt
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+retrieval:
+  full_text_sources:
+  - coordinates_path_templates:
+    - coordinates.json
+    pmid_source: folder_name
+    root_path: articles/elsevier_output/
+    text_path_templates:
+    - text.txt
+  - allowed_extensions:
+    - .html
+    pmid_source: file_name
+    processed_data_path: articles/ace_outputs/processed/
+    root_path: articles/ace_outputs
+  load_excluded: true
+  sources:
+  - pubget
+parsing:
+  coordinate_model: gpt-5-mini-2025-08-07
+  parse_coordinates: true
+annotation:
+  annotations:
+  - description: Appetitive cue reactivity across reward-related cues
+    inclusion_criteria:
+    - 'Analyses must be on a task measuring drug OR natural reward-related cue-reactivity using visual
+      stimuli (example tasks: Drug cue reactivity; Food cue reactivity; Sexual cue reactivity)'
+    - 'The analysis/contrast must measure drug or natural reward-related cue reactivity compared to
+      control stimuli (example contrast: Drug cues>neutral cues; Food cues>neutral cues; Sexual cues>neutral
+      cues)'
+    name: pooled_cue_reactivity
+  - description: Natural reward cue reactivity is characterized by the detection of and attention to
+      natural reward-related cues, such as food or social stimuli.
+    exclusion_criteria:
+    - Drug cue contrasts (e.g., Drug cues>neutral cues) should not be included in this annotation
+    inclusion_criteria:
+    - 'Analyses must be on a task measuring NATURAL reward-related cue-reactivity (example tasks: Food
+      cue reactivity; Social cue reactivity, Sexual cue reactivity)'
+    - 'The analysis/contrast must measure natural reward-related cue reactivity compared to control
+      stimuli (example contrast: Food cues>neutral cues; Social cues>neutral cues; Sexual cues>neutral
+      cues)'
+    name: natural_reward_cue_reactivity
+  - description: Drug cue reactivity as characterized by the detection of and attention to drug-related
+      cues.
+    exclusion_criteria:
+    - Analyses on natural reward-related cue contrasts (e.g., Food cues>neutral cues) should not be
+      included in this annotation
+    inclusion_criteria:
+    - 'Analyses must be on a task measuring drug-related cue-reactivity (example tasks: Drug cue reactivity)'
+    - 'The analysis/contrast must measure drug-related cue reactivity compared to control stimuli (example
+      contrast: Drug cues>neutral cues)'
+    name: drug_cue_reactivity
+  create_all_included_annotations: true
+  enabled: true
+  exclusion_criteria:
+  - Region-of-interest (ROI) analyses
+  - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g.,
+    ICA, PLE, Hurst exponents)
+  - Analyses on non-appetitive cue contrasts
+  inclusion_criteria:
+  - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain (voxelwise)
+    task-evoked statistical map (e.g., main effect or within-group contrast). Between-group contrasts
+    or interactions (e.g., subgroup vs subgroup, patient vs control) are acceptable if they compare
+    the target within group contrast to another group (e.g., patient drug cues>neutral cues vs control
+    drug cues>neutral cues).
+  - Contrast or analysis must be relevant to reward-related cue-reactivity using visual stimuli.
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  model: gpt-5-mini-2025-08-07
+  prompt_type: multi_analysis
+output:
+  export_excluded_studies: true
+  formats:
+  - csv
+  nimads: true

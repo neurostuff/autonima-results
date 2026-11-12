@@ -14,19 +14,32 @@ So the layout is the argument. Three columns, one per contrast, expert above and
 One brain to the right: the fixed-pool arm, which is a single map shared by all three columns
 because nothing in it is contrast-specific.
 
-WHICH THREE CONTRASTS, AND WHY NOT `decrease`
+WHICH THREE CONTRASTS, AND WHY NOT `reappraisal`
 
-The project has four annotated contrasts and `decrease` is deliberately excluded. Its gold map
-correlates r = 0.972 with `reappraisal`'s -- they are effectively the same map, because
-neurometabench's Decrease.txt holds the reappraisal union rather than the decrease contrast (a
-defect recorded in the project's nmb_mappings.json and confirmed here by direct comparison).
-Showing both would present one expert map twice as if it were two independent successes, and
-`decrease` happens to carry the single largest advantage in Figure 4, so the temptation is real.
+The project has four annotated contrasts and `reappraisal` is deliberately excluded, leaving the
+three regulation GOALS: increase, decrease, maintain. Reappraisal is a STRATEGY -- a different
+axis -- and it is not independent of decrease: in neurometabench's committed annotation
+`decrease` holds 128 experiments and `reappraisal` 154, with ALL 128 shared. decrease is a
+perfect subset, Jaccard 0.831, and the two gold maps correlate r = 0.970. Showing both would
+present those 128 experiments twice as if they were two independent successes.
 
-`maintain` is included but is the weakest of the three: the same note reports its gold file is
-missing most of the Look experiments. Its expert map correlates 0.03-0.09 with every other ER
-contrast, which is consistent with a genuinely distinct contrast and equally consistent with a
-broken one, so this cannot be settled from the maps alone. Use --columns to drop it.
+THIS REVERSES AN EARLIER CHOICE (2026-11-06). The figure previously dropped `decrease` and kept
+`reappraisal`, on the stated grounds that neurometabench's Decrease.txt was a corrupted file
+"holding the reappraisal union". That was wrong -- see projects/emotion_regulation_2022/
+nmb_mappings.json, corrected the same day. The overlap is nested labelling, not a bad file, so
+the question was never which file to trust but which axis to report. Keeping the three goals is
+the coherent set.
+
+The exclusion now lives in scripts/benchmark_exclusions.py so it reaches the pooled statistics
+too, not just this figure. Before that it did not: all FOUR ER columns were entering
+cross_project_best_baseline.csv and therefore the 28-column denominator, double-counting those
+128 experiments in every aggregate.
+
+`maintain` is the weakest of the three. The committed annotation holds 94 maintain experiments
+against an expected 104, so ~10 are unaccounted for -- not the ~97 an earlier note claimed. Its
+expert map correlates 0.03-0.09 with every other ER contrast, which is consistent with a
+genuinely distinct contrast and equally consistent with a lossy one, so that cannot be settled
+from the maps alone. Use --columns to drop it.
 
 Surfaces are fsaverage5, projected with vol_to_surf. Every panel shares one colour scale, computed
 across all displayed maps, so panel-to-panel brightness is comparable rather than per-panel
@@ -71,7 +84,7 @@ def fs(size: float) -> float:
     return size * FONT_SCALE
 
 
-DEFAULT_COLUMNS = ["increase", "maintain", "reappraisal"]
+DEFAULT_COLUMNS = ["increase", "decrease", "maintain"]
 PRETTY = {
     "increase": "Increase\nemotion",
     "maintain": "Maintain\n(look)",
@@ -225,6 +238,116 @@ def project_to_surface(path: Path, fsavg, mesh_kind: str):
     return out
 
 
+
+def draw_rows_layout(fig, args, surfaces, maps, baseline, panels, draw, fs_, INK_, MUTED_):
+    """Reference / pipeline / baseline as three stacked rows, one column per contrast.
+
+    WHY THIS EXISTS alongside the columns layout. In the columns layout the search-only baseline
+    sits as a single brain off to the right, spanning both rows. That placement is logically
+    right -- it is one map shared by every contrast -- but it reads as a fourth contrast, which
+    is the opposite of the point. Stacking it as its own ROW makes the repetition visible: the
+    reference and pipeline rows change across columns, the baseline row does not.
+
+    The arcs carry the comparison the figure is actually about. Each contrast gets a gutter
+    holding two curved connectors from the reference row: one to the pipeline row, one to the
+    baseline row, each labelled with that pair's similarity. Both start at the reference because
+    that is the only comparison that matters here -- pipeline-to-baseline is not a claim the
+    figure makes.
+    """
+    from matplotlib.path import Path as MPath
+    from matplotlib.patches import PathPatch
+
+    ncol, nview = len(args.columns), len(panels)
+    # The gutter has to hold the deeper arc AND its label, so it is sized from those two
+    # numbers rather than guessed. BULGE/LABEL_PAD are in FIGURE coordinates.
+    # Both arcs now span ONE row (reference sits between the two things compared to it), so a
+    # single bulge serves both and they mirror rather than nest.
+    BULGE, LABEL_PAD = 0.020, 0.005
+    GUT = 0.95
+    width_ratios = []
+    for _ in range(ncol):
+        width_ratios += [1.0] * nview + [GUT]
+    # 2.95in, not 3.45: three rows of 3D axes leave a lot of internal padding, so the
+    # rows drifted apart and the brains read small. Shortening the canvas closes the
+    # gaps without touching the per-axes zoom, which clips if pushed.
+    fig.set_size_inches(DOUBLE_COL, 2.95)
+    gs = fig.add_gridspec(3, len(width_ratios), width_ratios=width_ratios,
+                          wspace=0.0, hspace=0.0, left=0.075, right=0.995,
+                          top=0.885, bottom=0.075)
+
+    # AutoNIMA / reference / baseline. The reference goes in the MIDDLE so that each comparison
+    # it anchors is one row away: the two arcs are then the same length and mirror each other,
+    # instead of one being twice the span of the other and having to nest around it.
+    ARMS = ("pipeline", "expert", "baseline")
+    ROW_LABEL = {"expert": "Reference", "pipeline": "AutoNIMA",
+                 "baseline": "Search-only\nbaseline"}
+    for r, arm in enumerate(ARMS):
+        for c, key in enumerate(args.columns):
+            # The baseline is ONE map; drawing it in every column is the point, not an error.
+            surf = surfaces[("baseline", "all_studies")] if arm == "baseline" \
+                else surfaces[(arm, key)]
+            for v, (hemi, view) in enumerate(panels):
+                ax = fig.add_subplot(gs[r, c * (nview + 1) + v], projection="3d")
+                draw(ax, surf, hemi, view)
+        fig.text(0.018, 0.80 - 0.272 * r, ROW_LABEL[arm], rotation=90, va="center",
+                 ha="center", fontsize=fs_(6.2), color=INK_, linespacing=1.15)
+
+    span = 0.995 - 0.075
+    unit = span / sum(width_ratios)
+    label = "Dice" if args.metric == "dice" else "$R^2$"
+
+    top, bottom = 0.885, 0.075
+    rowh = (top - bottom) / 3
+    y = [top - rowh * (i + 0.5) for i in range(3)]
+
+    over = fig.add_axes([0, 0, 1, 1], zorder=5)
+    over.set_axis_off()
+    over.set_xlim(0, 1)
+    over.set_ylim(0, 1)
+    over.patch.set_alpha(0)
+
+    def arc(x0, y0, y1, bulge, color):
+        """A quadratic Bezier bulging right by `bulge` figure-units at its apex.
+
+        arc3's `rad` is a fraction of the CHORD, so the reference->baseline connector (twice the
+        span of reference->pipeline) bulged twice as far and ran clean into the next column. An
+        explicit control point fixes the apex where the gutter can hold it, whatever the span.
+        """
+        ctrl = x0 + 2 * bulge          # apex of a quadratic Bezier sits at half the control offset
+        pth = MPath([(x0, y0), (ctrl, (y0 + y1) / 2), (x0, y1)],
+                    [MPath.MOVETO, MPath.CURVE3, MPath.CURVE3])
+        over.add_patch(PathPatch(pth, fill=False, lw=0.9, edgecolor=color, zorder=6))
+        return x0 + bulge              # where the apex actually is, for the label
+
+    x = 0.075
+    print(f"  {args.metric} vs reference (maps as drawn, z > {args.threshold}):")
+    pipeline_vals = {}
+    for c, key in enumerate(args.columns):
+        w = unit * nview
+        fig.text(x + w / 2, 0.905, PRETTY.get(key, key), ha="center", va="bottom",
+                 fontsize=fs_(6.5), color=INK_, linespacing=1.25)
+        rp = similarity(maps[key]["expert"], maps[key]["pipeline"], args.metric, args.threshold)
+        rb = similarity(maps[key]["expert"], baseline, args.metric, args.threshold)
+        pipeline_vals[key] = rp
+        print(f"    {key:12} pipeline {rp:.3f}   baseline {rb:.3f}")
+
+        gx = x + w + unit * GUT * 0.10
+        # Both arcs start at the reference row (y[1]): up to AutoNIMA, down to the baseline.
+        for (y0, y1), val, col, weight in (
+                ((y[1], y[0]), rp, INK_, "bold"),
+                ((y[1], y[2]), rb, MUTED_, "normal")):
+            apex = arc(gx, y0, y1, BULGE, col)
+            over.text(apex + LABEL_PAD, (y0 + y1) / 2, f"{val:.2f}", ha="left", va="center",
+                      fontsize=fs_(5.6), color=col, fontweight=weight, zorder=7)
+        x += w + unit * GUT
+
+    fig.text(0.075 + (span) / 2, 0.012,
+             f"arcs: {label} against the reference map "
+             f"(upper = AutoNIMA, lower = search-only baseline)",
+             ha="center", va="bottom", fontsize=fs_(5.4), color=MUTED_)
+    return pipeline_vals
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -253,6 +376,11 @@ def main(argv: list[str] | None = None) -> int:
                     help="scale all label sizes; use ~1.5 for slides")
     ap.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
     ap.add_argument("--name", default="figure5_er_surface_contrasts")
+    ap.add_argument("--layout", choices=("columns", "rows"), default="columns",
+                    help="columns (default): expert over pipeline, baseline as a separate brain "
+                         "to the right. rows: reference / pipeline / baseline stacked as three "
+                         "rows, with arcs in a gutter beside each contrast giving that "
+                         "contrast's similarity to the reference.")
     args = ap.parse_args(argv)
 
     from nilearn import datasets
@@ -284,12 +412,6 @@ def main(argv: list[str] | None = None) -> int:
               f"{'  (saturated)' if peak > vmax else ''}")
 
     ncol, nview = len(args.columns), len(panels)
-    # Contrast columns, a spacer, then the single baseline column.
-    width_ratios = [1.0] * (ncol * nview) + [0.30] + [1.0] * nview
-    fig = plt.figure(figsize=(DOUBLE_COL, 2.35))
-    gs = fig.add_gridspec(2, len(width_ratios), width_ratios=width_ratios,
-                          wspace=0.0, hspace=0.0, left=0.055, right=0.995,
-                          top=0.87, bottom=0.155)
 
     def draw(ax, data, hemi, view):
         plot_surf_stat_map(
@@ -299,10 +421,22 @@ def main(argv: list[str] | None = None) -> int:
             colorbar=False, axes=ax, figure=fig, engine="matplotlib",
         )
         ax.set_axis_off()
-        # Zoom the 3D content inside its own axes rather than enlarging the axes box. Expanding
-        # the box overlaps neighbours, and a 3D axes clips against its own bounds -- which is what
-        # sliced a vertical edge off the baseline brain in the first draft.
         ax.set_box_aspect(None, zoom=1.45)
+
+    if args.layout == "rows":
+        fig = plt.figure(figsize=(DOUBLE_COL, 2.95))
+        pipeline_vals = draw_rows_layout(fig, args, surfaces, maps, baseline, panels,
+                                         draw, fs, INK, MUTED)
+        verify_pipeline(args.columns, pipeline_vals, args.metric, args.threshold)
+        add_colorbar(fig, args, vmax, rect=[0.845, 0.028, 0.105, 0.020])
+        return save(fig, args)
+
+    # Contrast columns, a spacer, then the single baseline column.
+    width_ratios = [1.0] * (ncol * nview) + [0.30] + [1.0] * nview
+    fig = plt.figure(figsize=(DOUBLE_COL, 2.35))
+    gs = fig.add_gridspec(2, len(width_ratios), width_ratios=width_ratios,
+                          wspace=0.0, hspace=0.0, left=0.055, right=0.995,
+                          top=0.87, bottom=0.155)
 
     for r, arm in enumerate(("expert", "pipeline")):
         for c, key in enumerate(args.columns):
@@ -351,9 +485,14 @@ def main(argv: list[str] | None = None) -> int:
         x += w
     verify_pipeline(args.columns, pipeline_vals, args.metric, args.threshold)
 
-    # Shared colour bar, small and out of the way.
+    add_colorbar(fig, args, vmax, rect=[0.845, 0.075, 0.105, 0.024])
+    return save(fig, args)
+
+
+def add_colorbar(fig, args, vmax, rect) -> None:
+    """The shared colour bar. Both layouts use it; only its rectangle differs."""
     import matplotlib as mpl
-    cax = fig.add_axes([0.845, 0.075, 0.105, 0.024])
+    cax = fig.add_axes(rect)
     cb = mpl.colorbar.ColorbarBase(
         cax, cmap=plt.get_cmap(args.cmap), orientation="horizontal",
         norm=mpl.colors.Normalize(vmin=args.threshold, vmax=vmax))
@@ -363,6 +502,8 @@ def main(argv: list[str] | None = None) -> int:
     cax.tick_params(labelsize=5.2, length=1.6, width=0.4, colors=MUTED, pad=1.5)
     cax.set_title("z (FDR)", fontsize=fs(5.2), color=MUTED, pad=2)
 
+
+def save(fig, args) -> int:
     out = args.output_dir
     out.mkdir(parents=True, exist_ok=True)
     for ext, kw in ((".pdf", {}), (".png", {"dpi": 400})):

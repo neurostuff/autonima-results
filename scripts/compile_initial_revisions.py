@@ -1,0 +1,192 @@
+#!/usr/bin/env python3
+"""What went wrong in the initial transcriptions, and what had to be fixed before `untuned`.
+
+WHY THIS IS A SEPARATE QUESTION FROM TUNING
+
+`initial` is the criteria transcribed from the source paper before any results were seen.
+`untuned` is the highest version whose criteria were never revised against benchmark error
+reports. Where the two differ, something was wrong with the transcription itself -- a criterion
+the paper does not state, a patient group omitted, a logical connective inverted -- and fixing it
+required no information from the benchmark at all.
+
+That makes it an independent finding from LLM tuning, and a cheaper one to defend: it says
+faithful transcription of a published methods section is harder than it looks, which is an
+argument for tooling rather than a claim about tuning.
+
+The diffs below are computed. The ISSUE classification is a reading of them and is marked as
+such; it is the one part a reader should check rather than take on trust.
+
+    scripts/compile_initial_revisions.py [--output reports/initial_revisions.md]
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from run_tiers import load_registry  # noqa: E402
+from compile_tier_specs import cfg  # noqa: E402
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+BLOCKS = (("abstract", "abstract screening"),
+          ("fulltext", "full-text screening"),
+          ("annotation", "annotation"))
+
+# Curated: what KIND of defect each revision corrects. Keyed by project. Every claim here is
+# checkable against the diff printed beneath it.
+ISSUES: dict[str, tuple[str, str]] = {
+    "dementia": (
+        "transcription error",
+        "Three distinct defects. (1) A LOGICAL CONNECTIVE INVERTED: the sample rule read "
+        "\"at least 6 participants in EITHER the patient or healthy group\", where the paper "
+        "requires 6 in each -- corrected to \"at least 6 in the patient group, and if there is a "
+        "healthy/control group, at least 6 in the control group\". (2) A PATIENT GROUP OMITTED: "
+        "the paper includes Pick's disease; v1 admitted bvFTD only. (3) A CRITERION THAT "
+        "CONTRADICTS THE DESIGN: v1 excluded \"between-group contrasts or interactions\", which "
+        "is the contrast type this meta-analysis is built on."),
+    "cue_reactivity": (
+        "invented restriction",
+        "v1 excluded non-empirical papers \"without original fMRI data IN HEALTHY ADULTS\", a "
+        "restriction the source paper never states. v2's own header records it as an error "
+        "present in two places (full-text exclusion and annotation inclusion). The annotation "
+        "scope was also narrowed to \"drug or natural reward\" where the paper's construct is "
+        "reward-related cue reactivity generally."),
+    "vbm_of_substance_use": (
+        "wrong modality encoded",
+        "v1 required \"original human fMRI data\" in a VOXEL-BASED MORPHOMETRY meta-analysis, "
+        "which is structural MRI. Also \"cue type\" as a reported variable, a leftover from the "
+        "cue-reactivity config this one was templated from."),
+    "decision_making": (
+        "under-specification, not error",
+        "The only revision that is NOT a correction. v1's criteria were not wrong; they were "
+        "silent on how to resolve ambiguity, so four inclusion criteria were ADDED and none "
+        "removed: how to read a truncated analysis label, the paper's own subtype taxonomy, and "
+        "study-level subtype mutual exclusivity. Counting this with the others would overstate "
+        "the transcription-failure rate."),
+}
+
+
+def criteria_differ(project: str, a: str, b: str) -> bool:
+    """True only when the CRITERIA moved, not merely the run name.
+
+    social's v2 -> v3 changes the search block alone and leaves screening and annotation
+    byte-identical, so counting it as a transcription revision would inflate the failure rate
+    with a run that corrected nothing.
+    """
+    ca, cb = cfg(project, a), cfg(project, b)
+    for block, _ in BLOCKS:
+        for key in ("inclusion_criteria", "exclusion_criteria"):
+            if crit(ca, block, key) != crit(cb, block, key):
+                return True
+    return False
+
+
+def crit(c: dict | None, block: str, key: str) -> list[str]:
+    if c is None:
+        return []
+    b = c.get("annotation") if block == "annotation" else (c.get("screening") or {}).get(block)
+    return list((b or {}).get(key) or [])
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--output", default=str(REPO_ROOT / "reports" / "initial_revisions.md"))
+    args = ap.parse_args(argv)
+
+    reg = load_registry()
+    L: list[str] = []
+    w = L.append
+    w("# Initial transcription: what had to be corrected\n")
+    w("Generated by `scripts/compile_initial_revisions.py`. Diffs are computed from the configs; "
+      "the **issue** classification on each project is a reading of those diffs, not a field in "
+      "the registry.\n")
+
+    rows, revised, errors = [], [], []
+    for project in sorted(reg):
+        fam = (reg[project] or {}).get("canonical")
+        if not isinstance(fam, dict):
+            continue
+        v, u = fam.get("initial"), fam.get("untuned")
+        rows.append((project, v, u))
+        if v and u and v != u and criteria_differ(project, v, u):
+            revised.append(project)
+            if ISSUES.get(project, ("", ""))[0] != "under-specification, not error":
+                errors.append(project)
+
+    have = [r for r in rows if r[1]]
+    w(f"**{len(have)} of {len(rows)}** canonical projects have a initial run at all "
+      f"(`emotion_regulation_2022` and `social` do not: ER's canonical family starts at v2, and "
+      f"social's initial is registered only for `annotation_only`).\n")
+    w(f"**{len(revised)} of {len(have)}** required revision before reaching `untuned`, and "
+      f"**{len(errors)} of {len(have)}** of those revisions correct an actual defect in the "
+      f"transcription rather than adding specificity.\n")
+
+    w("## What the configs cannot tell you\n")
+    w("Disclosed by the author on 2026-11-03, and recorded here because no config captures it.\n")
+    w("In some of the runs registered as `untuned`, the criteria **were** revised after looking "
+      "at reports, at the **screening stage**, typically after reading fewer than five papers. "
+      "Those revisions were manually reviewed and found consistent with the source report -- "
+      "they corrected an **omission** or an **under-specification** in it, rather than fitting "
+      "the benchmark's answers. The benchmark acted as a small set of test cases that exposed "
+      "the defect; it was not the target.\n")
+    w("So the defensible claim is **\"not systematically fitted to benchmark error reports\"**, "
+      "not \"no benchmark output was ever consulted\". The second would be false for several "
+      "projects. Which ones is not recorded in the repo and is being reconstructed from memory; "
+      "until that list exists, this document cannot name them, and any wording in the manuscript "
+      "should avoid implying the stronger claim.\n")
+    w("Two projects have **no initial run at all**: `emotion_regulation_2022` and `social`. "
+      "`initial` is deliberately left null for them rather than standing in the lowest-numbered "
+      "version, which would read as a transcribe-first run it is not -- in both cases the "
+      "researcher read the criteria, saw obvious errors and corrected them on the first attempt "
+      "instead of running the faithful version. ER's v2 header lists changes vs v1 that \"each "
+      "correct a clear misreading or an outright omission of a stated criterion\".\n")
+    w("They are therefore excluded from the denominator, which is why it is **7**, not 9. Note "
+      "this makes the rate below if anything CONSERVATIVE: both excluded projects did need "
+      "corrections, but made them before the first run, so they produce no diff to count.\n")
+    w("| project | initial | untuned | revised | issue |")
+    w("|---|---|---|---|---|")
+    for project, v, u in rows:
+        if not v:
+            w(f"| {project} | — | `{u}` | n/a | no initial registered |")
+        elif project not in revised:
+            why = ("initial criteria used unchanged" if v == u
+                   else "same criteria; the two runs differ in the search block only")
+            w(f"| {project} | `{v}` | `{u}` | no | {why} |")
+        else:
+            w(f"| {project} | `{v}` | `{u}` | **yes** | {ISSUES.get(project, ('?',''))[0]} |")
+    w("")
+
+    for project, v, u in rows:
+        if not v or project not in revised:
+            continue
+        kind, prose = ISSUES.get(project, ("unclassified", ""))
+        w(f"## {project}  (`{v}` → `{u}`)\n")
+        w(f"**Issue: {kind}.** {prose}\n")
+        a, b = cfg(project, v), cfg(project, u)
+        for block, label in BLOCKS:
+            for key, sign in (("inclusion_criteria", "incl"), ("exclusion_criteria", "excl")):
+                x, y = crit(a, block, key), crit(b, block, key)
+                added = [i for i in y if i not in x]
+                removed = [i for i in x if i not in y]
+                if not added and not removed:
+                    continue
+                w(f"*{label} — {sign}*\n")
+                for r in removed:
+                    w(f"- `REMOVED` {r}")
+                for n in added:
+                    w(f"- `ADDED` {n}")
+                w("")
+    out = Path(args.output)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(L) + "\n")
+    print(f"wrote {out.relative_to(REPO_ROOT)}")
+    print(f"  initial present {len(have)}/{len(rows)}; revised {len(revised)}; "
+          f"genuine defects {len(errors)} ({', '.join(errors)})")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

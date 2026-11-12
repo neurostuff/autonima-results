@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Negatives at Fulltext Stage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .study {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .metadata, .screening, .content {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+        .criteria-summary, .criteria-details {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #8e44ad;
+            background: #fcfcff;
+        }
+        .metadata {
+            border-left-color: #3498db;
+        }
+        .screening {
+            border-left-color: #e74c3c;
+        }
+        .content {
+            border-left-color: #2ecc71;
+        }
+        .criteria-summary {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #8e44ad;
+            border-radius: 5px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .criterion-list {
+            margin: 8px 0;
+            padding-left: 18px;
+        }
+        .criterion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            color: #fff;
+        }
+        .criterion-red {
+            background: #c0392b;
+        }
+        .criterion-green {
+            background: #1e8449;
+        }
+        .criterion-neutral {
+            background: #34495e;
+        }
+        .criterion-count {
+            color: #555;
+            font-size: 12px;
+        }
+        .annotation {
+            border-left: 3px solid #f39c12;
+            background-color: #fff8e1;
+            padding: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .study-list {
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .accordion {
+            background-color: #f1f1f1;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .accordion:hover {
+            background-color: #ddd;
+        }
+        .accordion:after {
+            content: ' \25BC';
+            font-size: 10px;
+            color: #777;
+            float: right;
+        }
+        .accordion.active:after {
+            content: ' \25B2';
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .panel-content {
+            padding: 15px;
+        }
+        .fulltext-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        @media (max-width: 900px) {
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button id="saveButton" onclick="saveAnnotations()" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Annotations</button>
+<script>
+    function toggleAccordion(btn) {
+        btn.classList.toggle("active");
+        var panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+
+    function getAnnotationsFilename() {
+        var pathname = window.location.pathname || '';
+        var reportName = pathname.split('/').pop() || '';
+        if (!reportName) {
+            return "annotations.json";
+        }
+        var base = reportName.replace(/\.[^.]*$/, '');
+        if (!base) {
+            return "annotations.json";
+        }
+        return base + ".json";
+    }
+
+    async function saveAnnotations() {
+        var annotations = [];
+        var studies = document.getElementsByClassName('study');
+
+        for (var i = 0; i < studies.length; i++) {
+            var study = studies[i];
+            var pmid = study.getAttribute('data-pmid') || '';
+
+            var agreeRadio = document.getElementById('agree-' + (i+1));
+            var disagreeRadio = document.getElementById('disagree-' + (i+1));
+            var judgment = '';
+            if (agreeRadio && agreeRadio.checked) {
+                judgment = 'agree';
+            } else if (disagreeRadio && disagreeRadio.checked) {
+                judgment = 'disagree';
+            }
+
+            var commentElement = document.getElementById('comment-' + (i+1));
+            var comment = commentElement ? commentElement.value : '';
+
+            annotations.push({
+                'pmid': pmid,
+                'judgment': judgment,
+                'comment': comment
+            });
+        }
+
+        var jsonText = JSON.stringify(annotations, null, 2);
+        var outputFilename = getAnnotationsFilename();
+
+        if (window.showSaveFilePicker) {
+            try {
+                var fileHandle = await window.showSaveFilePicker({
+                    suggestedName: outputFilename,
+                    types: [{
+                        description: "JSON Files",
+                        accept: { "application/json": [".json"] }
+                    }]
+                });
+                var writable = await fileHandle.createWritable();
+                await writable.write(jsonText);
+                await writable.close();
+                alert('Annotations saved successfully!');
+                return;
+            } catch (error) {
+                if (error && error.name === "AbortError") {
+                    return;
+                }
+                console.warn("Falling back to browser download.", error);
+            }
+        }
+
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", outputFilename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        alert('Annotations saved successfully!');
+    }
+</script>
+<h1>False Negatives Papers at Fulltext Stage</h1>
+<p>Total papers: 13</p>
+<div class='criteria-summary'>
+<h2>Stage Criteria Summary</h2>
+<p>Stage: <strong>Fulltext</strong>. Counts show criterion usage across all stage decisions and within this report subset.</p>
+<div class='criteria-grid'>
+<div>
+<h3>Inclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls <span class='criterion-count'>(all stage: 257/285, this report: 12/13)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume. <span class='criterion-count'>(all stage: 276/285, this report: 12/13)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates. <span class='criterion-count'>(all stage: 168/285, this report: 12/13)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none. <span class='criterion-count'>(all stage: 98/285, this report: 2/13)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available. <span class='criterion-count'>(all stage: 116/285, this report: 4/13)</span></li>
+<li><span class='criterion-tag criterion-neutral'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study. <span class='criterion-count'>(all stage: 209/285, this report: 11/13)</span></li>
+</ul>
+</div>
+<div>
+<h3>Exclusion Criteria</h3>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-neutral'>E5</span> Studies that report only region-of-interest (ROI) analyses with no qualifying whole-brain results. <span class='criterion-count'>(all stage: 94/285, this report: 1/13)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E6</span> Studies whose only between-group result is derived from a predefined ATLAS PARCELLATION (per-region average volumes or thicknesses over atlas labels, e.g. AAL or FreeSurfer Desikan-Killiany regions) or from a MULTIVARIATE CLASSIFIER, rather than from a voxelwise or vertexwise statistical map. Whole-brain coverage by an atlas does not make a parcellation analysis a whole-brain voxelwise analysis; the source meta-analysis excludes region-of-interest analyses because they violate the ALE null hypothesis. <span class='criterion-count'>(all stage: 64/285, this report: 0/13)</span></li>
+<li><span class='criterion-tag criterion-neutral'>E7</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human structural MRI data. <span class='criterion-count'>(all stage: 0/285, this report: 0/13)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class='study-list'>
+<div class='study' id='study-1' data-pmid='11822992'>
+<h2>1. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/11822992/' target='_blank'>11822992</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> The study is an empirical, English-language structural MRI study using voxel-based morphometry and reports significant gray-matter concentration decreases in cocaine users vs controls (meets I4, I5, I6, I9). However, the provided full text does not report peak coordinates (x,y,z) for the significant clusters from the whole-brain voxelwise contrasts, and inclusion criterion I7 requires at least one significant cluster with reported peak coordinates. Because I7 is not satisfied, the study cannot be included in the coordinate-based meta-analysis. No exclusion criteria (E5–E7) are met. Full text appears complete (introduction, methods, results, discussion).</p>
+<p><strong>Fulltext Confidence:</strong> 0.8</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+<li><span class='criterion-tag criterion-green'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+<li><span class='criterion-tag criterion-red'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-1' name='judgment-1' value='agree'>
+<label for='agree-1'>Agree</label>
+<input type='radio' id='disagree-1' name='judgment-1' value='disagree'>
+<label for='disagree-1'>Disagree</label>
+<br><br>
+<label for='comment-1'><strong>Comments:</strong></label>
+<textarea id='comment-1' name='comment-1' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-2' data-pmid='22270405'>
+<h2>2. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/22270405/' target='_blank'>22270405</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This study reports whole-brain voxel-based morphometry comparing alcohol use disorder (AUD) subjects to healthy controls and problem gamblers and finds significant regional GM reductions. However, the provided full text does not include reported peak coordinates (x,y,z) for the significant clusters (no coordinate tables or values are present in the supplied content). Inclusion criterion I7 requires that at least one whole-brain contrast yields significant clusters with reported peak coordinates. Therefore the study cannot be included. Inclusion criteria met: I4 (empirical English MRI study of GM differences), I5 (GM volume/density measure via VBM), I6 (whole-brain voxelwise analysis), I9 (reporting of sample and MRI/preprocessing details). Inclusion criteria not met: I7 (no reported peak coordinates in supplied text). No exclusion criteria (E5-E7) apply based on the provided content. Full text appears complete for core sections, but coordinate reporting is absent in the provided material.</p>
+<p><strong>Fulltext Confidence:</strong> 0.8</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+<li><span class='criterion-tag criterion-green'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+<li><span class='criterion-tag criterion-red'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-2' name='judgment-2' value='agree'>
+<label for='agree-2'>Agree</label>
+<input type='radio' id='disagree-2' name='judgment-2' value='disagree'>
+<label for='disagree-2'>Disagree</label>
+<br><br>
+<label for='comment-2'><strong>Comments:</strong></label>
+<textarea id='comment-2' name='comment-2' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-3' data-pmid='18165464'>
+<h2>3. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/18165464/' target='_blank'>18165464</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This study is an empirical voxel-based morphometry MRI study comparing older smokers and never-smokers and reports gray-matter density differences and detailed participant/method data (satisfies I4, I5, I6, and I9). However, the provided full text does not include reported peak coordinates (x,y,z in MNI or Talairach) for the significant whole-brain clusters; inclusion criterion I7 explicitly requires reported peak coordinates for at least one significant whole-brain contrast. No exclusion criteria (E5–E7) are met. Therefore the paper must be excluded because it fails to meet I7 (significant foci with reported peak coordinates) based on the provided full text.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+<li><span class='criterion-tag criterion-green'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+<li><span class='criterion-tag criterion-red'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-3' name='judgment-3' value='agree'>
+<label for='agree-3'>Agree</label>
+<input type='radio' id='disagree-3' name='judgment-3' value='disagree'>
+<label for='disagree-3'>Disagree</label>
+<br><br>
+<label for='comment-3'><strong>Comments:</strong></label>
+<textarea id='comment-3' name='comment-3' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-4' data-pmid='17088334'>
+<h2>4. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/17088334/' target='_blank'>17088334</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> The study is excluded because it does not satisfy inclusion criterion I7: the provided full text describes significant whole-brain voxelwise VBM results but does not report peak coordinates (x,y,z in MNI or Talairach) for the significant clusters in the material provided. The paper does satisfy I4 (empirical English MRI study comparing substance users and controls), I5 (reports GM volume/density measures), I6 (whole-brain voxelwise VBM contrasts with significant clusters), I8 (results presented in tables/figures), and I9 (reports participant age/sex, MRI field strength, and preprocessing/statistical software). No exclusion criteria (E5,E6,E7) apply. Full text appears complete for intro/methods/results/discussion, but because coordinates are not present in the provided content, it cannot contribute coordinate foci to the meta-analysis.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+<li><span class='criterion-tag criterion-green'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+<li><span class='criterion-tag criterion-green'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-4' name='judgment-4' value='agree'>
+<label for='agree-4'>Agree</label>
+<input type='radio' id='disagree-4' name='judgment-4' value='disagree'>
+<label for='disagree-4'>Disagree</label>
+<br><br>
+<label for='comment-4'><strong>Comments:</strong></label>
+<textarea id='comment-4' name='comment-4' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-5' data-pmid='24961260'>
+<h2>5. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24961260/' target='_blank'>24961260</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Striatal Volume Increases in Active Methamphetamine-Dependent Individuals and Correlation with Cognitive Performance</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Brain Sci</p>
+<p><strong>Publication Year:</strong> 2012</p>
+<p><strong>DOI:</strong> 10.3390/brainsci2040553</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/4061811/' target='_blank'>4061811</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical English-language structural MRI study of methamphetamine (a stimulant) users vs controls that reports grey-matter measures (VBM GMD and ROI subcortical volumes) and performs whole-brain voxelwise analyses (FSL-VBM). However, although voxelwise between-group VBM contrasts are described and significant clusters are reported in the text, the provided full text does not report peak coordinates (x,y,z in MNI or Talairach space) for any significant whole-brain cluster. Inclusion criterion I7 requires at least one whole-brain contrast to yield a significant cluster with reported peak coordinates. Because those coordinates are not present in the supplied full text (and cannot be verified in figures/tables/supplementary materials here), the study does not meet I7 and therefore cannot be included for coordinate-based meta-analysis. No exclusion criteria (E5–E7) are met. Full text appears complete.</p>
+<p><strong>Fulltext Confidence:</strong> 0.8</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+<li><span class='criterion-tag criterion-green'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+<li><span class='criterion-tag criterion-red'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+The effect of methamphetamine (MA) dependence on the structure of the human brain has not been extensively studied, especially in active users. Previous studies reported cortical deficits and striatal gains in grey matter (GM) volume of abstinent MA abusers compared with control participants. This study aimed to investigate structural GM changes in the brains of 17 active MA-dependent participants compared with 20 control participants aged 18–46 years using voxel-based morphometry and region of interest volumetric analysis of structural magnetic resonance imaging data, and whether these changes might be associated with cognitive performance. Significant volume increases were observed in the right and left putamen and left nucleus accumbens of MA-dependent compared to control participants. The volumetric gain in the right putamen remained significant after Bonferroni correction, and was inversely correlated with the number of errors (standardised z-scores) on the Go/No-go task. MA-dependent participants exhibited cortical GM deficits in the left superior frontal and precentral gyri in comparison to control participants, although these findings did not survive correction for multiple comparisons. In conclusion, consistent with findings from previous studies of abstinent users, active chronic MA-dependent participants showed significant striatal enlargement which was associated with improved performance on the Go/No-go, a cognitive task of response inhibition and impulsivity. Striatal enlargement may reflect the involvement of neurotrophic effects, inflammation or microgliosis. However, since it was associated with improved cognitive function, it is likely to reflect a compensatory response to MA-induced neurotoxicity in the striatum, in order to maintain cognitive function. Follow-up studies are recommended to ascertain whether this effect continues to be present following abstinence. Several factors may have contributed to the lack of more substantial cortical and subcortical GM changes amongst MA-dependent participants, including variability in MA exposure variables and difference in abstinence status from previous studies.  
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (36798 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## 1. Introduction 
+  
+Methamphetamine (MA) is a potent psychostimulant drug that has long lasting and harmful effects on the central nervous system when abused. MA and other amphetamines are abused worldwide and constitute the second most used illicit drugs after cannabis, followed by cocaine and opiates [ ]. Abuse of MA is associated with major public health consequences including an increasing number of users requiring treatment (10%, 21% and 20% of all drug-related treatment demand in Europe, the Americas and Oceania, respectively) [ ]. Additionally, manufacture of MA through the diversion of precursor substances in clandestine laboratories often involves organised crime and is detrimental to the environment [ ]. 
+
+MA is a potent releaser of the monoamines dopamine (DA), serotonin (5-HT) and noradrenaline (NA) [ ]. The effects of MA on noradrenergic transmission are thought to be responsible for the cardiovascular effects experienced following MA intake, such as cardiac arrhythmias and raised blood pressure [ , ], whereas the effects of MA on the dopaminergic system are thought to potentiate its addictive effects [ ]. MA has been shown to have toxic effects on DA and 5-HT neurons in animal models of MA addiction, causing both terminal degeneration and cell death [ , , , , , ]. Post-mortem studies have not reported cell death, yet chronic MA users were shown to have reduced striatal levels of tyrosine hydroxylase and DA transporters (DAT), which are markers of DA nerve terminal integrity and function [ ]. However, vesicular monoamine transporter and DOPA decarboxylase levels were unaltered, suggesting long-term striatal neuronal damage that is not permanent [ ]. In contrast, a more recent positron emission tomography (PET) study of live recently-abstinent MA abusers found that vesicular DA depletion was increased in comparison to healthy matched control subjects [ ].  
+
+There have been few studies investigating structural differences in the brains of MA users in comparison with healthy controls. Although no differences have been found in total brain volumes of MA abusers [ , , , ], a number of structural magnetic resonance imaging (MRI) studies have suggested that MA dependence leads to localised structural changes in both cortical and subcortical brain regions.  
+
+Cortical grey matter (GM) deficits have been reported by most structural MRI studies of MA addiction [ , , , ], except one study of abstinent MA abusers which reported increased GM volume in the parietal cortex [ ]. Schwartz and colleagues [ ] reported GM reductions in the bilateral insula and left middle frontal gyrus of abstinent MA users. The GM deficits in the middle frontal gyrus were thought to be associated with cognitive control deficits [ ], whereas deficits in the insula were thought to be related to the behavioural biases associated with drug craving, seeking and addiction [ , ]. Another study compared GM density (GMD) between short-term abstinent (mean abstinence 2.6 ± 1.6 months), long-term abstinent (mean abstinence 30.6 ± 39.2 months) and non-drug using control participants using voxel-based morphometry (VBM) [ ]. Short-term abstinent MA abusers had the most extensive decrease in GMD in the right middle frontal gyrus [ ]. Long-term abstinent abusers had lower GMD than control participants but were less significantly impaired than short-term abstinent abusers [ ]. Therefore, deficits in frontal GM were thought to partially recover following prolonged (six months or longer) abstinence from MA [ ]. Nakama and colleagues [ ] used region of interest (ROI)-based methods to investigate differences in cortical GM volume between abstinent MA abusers and control participants. They reported decreased cortical GM volumes in six main lobes and 17 cortical sub-regions in MA abusers relative to controls [ ].  
+
+Structural volumetric studies investigating subcortical changes have also been conducted in abstinent MA abusers [ , ]. Larger bilateral volumes of the caudate, nucleus accumbens [ ], putamen and globus pallidus were found in MA abusers who had been abstinent for an average of 3–4 months in comparison with healthy control participants [ , ]. MA abusers with larger putamen volumes were found to have a lower lifetime cumulative MA dose and better performance on verbal fluency and speeded motor tasks [ ]. It was speculated that striatal structures may undergo an increase in volume as a compensatory response to the neuronal injury caused by chronic MA use, in order to maintain cognitive function [ , ].  
+
+Regional GM differences have been reported in most structural MRI studies comparing MA abusers with healthy controls. However, most of these studies were conducted in abstinent individuals following variable periods of abstinence. Only one structural brain imaging study of active MA users has previously been performed, although participants were detoxified for 6.64 ± 5.2 days prior to MRI [ ]. This study employed cortical and hippocampal pattern matching and found severe GM deficits in MA abusers in the right cingulate, limbic, paralimbic cortices (11.3% below control levels), and hippocampal volumes (7.8% below control levels) [ ], but did not investigate volume changes in the striatum. Therefore, the current study aimed to evaluate structural GM changes in active MA-dependent participants in comparison with non-drug using control participants, and whether these changes might be associated with performance on the Go/No-go task, a cognitive task related to impulsivity and response inhibition [ , ]. The Go/No-go task has been used to study dopaminergic modulation of the striatum in nonhuman primates [ , , ]. Moreover, human studies using functional MRI in conjunction with the Go/No-go task have implicated striatal structures in response inhibition-related neural activity [ , , ]. Based on prior imaging studies of abstinent users, we hypothesised that active MA-dependent participants would have decreased GMD in the frontal regions and increased GM volume in subcortical structures, specifically the putamen, caudate, globus pallidus and nucleus accumbens. We also hypothesised that increased GM volume in the striatum would correlate with improved performance on the Go/No-go task.  
+
+
+## 2. Results 
+  
+### 2.1. Demographics 
+  
+MA-dependent participants and control participants did not differ significantly in mean age (  t   = −1.72,   p   = 0.095). Chi-square tests were used to test differences in categorical variables; where one or more cells had a count of 5 or less, the Fisher’s Exact Test (FET) statistic was reported. MA-dependent participants and control participants did not differ by gender (FET   p   = 1.000) or alcohol use (  χ   = 0.23, df = 1,   p   = 0.630). However, tobacco smoking status and cannabis use status differed significantly between groups (FET   p   = 0.000), ( ). 
+  
+Mean ± SD (range) for demographic characteristics of participants. 
+  
+
+### 2.2. Whole Brain Volumetric Analysis 
+  
+There were no significant differences in whole brain, GM, white matter or cerebrospinal fluid volumes between groups.  
+
+
+### 2.3. Subcortical Volumetric Analysis 
+  
+#### 2.3.1. Between-Group Analysis 
+  
+After controlling for the effect of volumetric scaling factor (VSF), MA-dependent participants had higher volumes than controls in the right putamen (+7.52%;   F  (1,36) = 8.91,   p   = 0.005), left putamen (+7.34%;   F  (1,36) = 5.83,   p   = 0.021) and left nucleus accumbens (+9.85%;   F  (1,36) = 6.63,   p   = 0.015) ( ). However, the only group difference that remained significant after Bonferroni correction was the volume increase in the right putamen of MA-dependent participants. Relative to the control group, MA-dependent participants had greater volumes in the bilateral globus pallidus, and lower volumes in the bilateral caudate, however these results were not statistically significant ( ). 
+  
+Mean ± standard error subcortical volumes in control participants (  n   = 20) and MA-dependent participants (  n   = 17), *   p   &lt; 0.05 before Bonferroni correction, ** significant after Bonferroni correction. 
+  
+
+#### 2.3.2. Within-Group Analyses: MA-Dependent Participants 
+  
+No significant correlations were found between volumes of any of the subcortical structures and duration of MA use or lifetime cumulative MA use.  
+
+Correlational analysis between the right putamen volume and standardised measures (z-scores) of cognitive performance on the Go/No-go task revealed significant inverse correlations between the right putamen volume and the number of omission errors/false misses (Pearson’s   r   = −0.71,   p   = 0.002) as well as total errors (Pearson’s   r   = −0.73,   p   = 0.001) ( ) on the Go/No-go task. 
+  
+Inverse correlation between right putamen volume and total errors on the Go/No-go task (standardised z-scores) in MA-dependent participants (  n   = 17, Pearson’s   r   = −0.73,   p   = 0.001). 
+  
+
+
+### 2.4. Voxel-Wise Voxel-Based Morphometry 
+  
+#### 2.4.1. Between-Group Analysis 
+  
+After controlling for the effect of VSF, MA-dependent participants had decreased GMD in two clusters within the left superior frontal gyrus (L SFG; −23.4% and −26.9%;   t   = 5.25 and   t   = 3.74, respectively,   p   = 0.001) relative to control participants ( ,  ). The MA-dependent group also showed decreased GMD in a cluster within the left precentral gyrus (−20.3%;   t   = 3.08,   p   = 0.001) ( ,  ). In contrast, MA-dependent participants had increased GMD within the right putamen (+14.1%;   t   = 3.81,   p   = 0.001), the right superior lateral occipital cortex (+24.4%;   t   = 3.37,   p   = 0.001) and the left putamen (+18.9%;   t   = 3.74,   p   = 0.001) ( ,  ). However, these results did not survive correction for multiple comparisons. 
+  
+Regions of significance (  p   &lt; 0.001) for voxel-wise regressions from FSL-VBM results. 
+    
+FSL-VBM results from the contrast “Control &gt; MA”, where GMD is decreased for MA-dependent in comparison to control participants within the L SFG (left) and left precentral gyrus (right),   p   &lt; 0.001. 
+    
+FSL-VBM results from the contrast “MA &gt; Control”, where GMD is greater for MA-dependent in comparison to control participants within the right and left putamen (left) and right superior lateral occipital cortex (right),   p   &lt; 0.001. 
+  
+
+#### 2.4.2. Within-Group Analysis: MA-Dependent Participants 
+  
+No significant correlations between GMD and lifetime cumulative MA use were found in the MA-dependent group.  
+
+
+
+
+## 3. Discussion 
+  
+To the best of our knowledge, this is the first structural MRI study of MA-dependent individuals who are active users using VBM and semi-automated subcortical segmentation ROI methods. In accordance with previous volumetric studies of MA abuse [ , , , , ], we found no differences in the whole brain, GM, white matter or cerebrospinal fluid volumes of those with MA dependence in comparison to healthy control participants.  
+
+We report a volume increase within the striatum of individuals with chronic MA dependence who are actively using the drug. Results from the ROI subcortical volumetric analysis showed greater volume in the right putamen of the MA-dependent group, maintaining significance after Bonferroni correction. The MA-dependent group also exhibited enlargement in the left putamen and nucleus accumbens, however these results did not survive Bonferroni correction. Enlargement of the putamen in the MA-dependent group was corroborated by results from the VBM analysis which showed increases in GMD within the bilateral putamen, although these were treated as suggestive rather than absolute due to being uncorrected for multiple comparisons. Enlargement of the putamen [ , ] and nucleus accumbens [ ] have been previously reported in those with MA addiction who had been abstinent for an average of 3–4 months. The causative mechanisms for striatal enlargement remain unknown, although neurotrophic effects, inflammatory processes and reactive gliosis have been suggested [ , ]. The hypothesis that neurotrophic effects induce striatal enlargement by increasing neuronal sprouting is limited by findings of a reduction in   N  -acetylaspartate levels in the striatum of those with MA dependence suggesting striatal neuronal loss [ ]. 
+
+The striatum has a high density of dopaminergic terminals and animal studies have shown striatal regions to be most affected by MA-induced DA neurotoxicity [ , , , ]. PET studies of the   in vivo   effect of MA on monoaminergic transmission have reported decreased presynaptic DAT and postsynaptic D2 receptor availability in the striatum of people with MA dependence [ , , , , ]. Striatal enlargement has been observed in other conditions which are associated with depletions in DA neurotransmission including cocaine dependence [ , ] and schizophrenia treated with typical anti-dopaminergic neuroleptics [ , , ]. The neuropathology underlying the striatal enlargement observed in these studies is not fully understood and specific mechanisms by which DA deficiencies may lead to striatal enlargement remain largely unknown. However, a recent study using a combination of VBM and PET has shown correlations between DA D2/D3 receptor distribution and GM volumes in several brain regions including the striatum [ ]. Studies in both schizophrenia treated with typical antipsychotics and cocaine dependence have shown neuroleptic-related and cocaine-induced DA depletion and reductions in dopaminergic transmission [ , , ], which were thought to be mediating factors in the enlargement of striatal structures [ , , , , ]. This theory is further validated by the observation that striatal volumes normalise after patients with schizophrenia are switched to atypical antipsychotics, which have lower affinity for D2 receptors [ , ]. Therefore, it is possible that the putamen enlargement observed in our study occurred as a compensatory response to MA-induced dopaminergic neurotoxicity within the striatum.  
+
+Jernigan and colleagues observed striatal enlargement in MA-dependent participants and speculated the possibility that the effects of MA on brain volumes may be biphasic, whereby enlargement/trophic effects may occur during early stages of dependence and neurodegenerative effects/volume decreases may occur with longer duration of dependence [ ]. However, neither this study nor our own study found correlations between MA exposure duration and brain volumes. Nonetheless, this idea is supported by a previous study which reported striatal enlargement in abstinent MA abusers which reversed in individuals with greater lifetime cumulative MA use [ ]. This study also reported an association between putamen enlargement and improved performance on neurocognitive tests amongst abstinent MA-dependent participants [ ]. Hence, it was suggested that compensatory striatal volume increases in response to MA-induced damage only occurred during early stages of drug dependence, possibly to maintain cognitive function [ ]. In the current study, MA-dependent participants with larger right putamen volumes made fewer errors on the Go/No-go task. In particular, MA-dependent participants made fewer omission errors, which may reflect improved selective attention and faster responding, supporting the hypothesis that putamen enlargement may have occurred in response to MA-induced dopaminergic neurotoxicity as a compensatory response to maintain cognitive function. Active drug use in our study may be considered an early phase of drug dependence, and the effect of abstinence on GM volume in our sample of MA-dependent participants remains unknown.  
+
+Using VBM, we found a bilateral GMD gain in the putamen which did not survive correction for multiple comparisons. However, the ROI subcortical volumetric analysis revealed a significant increase in the right putamen volume which survived Bonferroni correction. Although previous studies which measured subcortical volumes in MA dependence reported bilateral gains in striatal volume, these studies were conducted in abstinent users and the results may not be directly comparable with those in active users [ , ]. Alternatively, there may be a real rightward asymmetry in volumetric abnormality in active MA-dependent participants. For example, Thompson and colleagues reported GM deficits in limbic and paralimbic brain regions of MA-dependent participants which were lateralised to the right hemisphere [ ]. Other studies conducted in healthy volunteers and patients with negative radiological findings presenting with neurological complaints have reported hemispheric asymmetries in striatal volumes [ ]. A pre-existing rightward hemispheric asymmetry cannot be ruled out in our sample of MA-dependent participants and longitudinal follow-up studies are recommended to ascertain this. 
+
+The possibility that the enlarged putamen found in this study may reflect other processes including inflammation, microgliosis [ , , ] and drug-induced increases in striatal perfusion cannot be completely ruled out. The latter is argued against by evidence that MA dependence in humans has been associated with lower cerebral blood flow [ ], including to the anterior cingulate cortex (ACC) [ ], insula and putamen [ ]. Moreover, DA released by MA has been shown to constrict vessels and reduce blood flow in the rat caudate and putamen [ ]. 
+
+Although not statistically significant, the trend towards volumetric enlargement of the globus pallidus has been previously reported in those abstinent from MA [ , ]. However, the trend towards lower caudate volumes in MA-dependent participants is contrary to previously reported volume increases in the caudate [ ], especially given that the caudate has been reported to be more adversely affected by MA addiction than the putamen. For example, in a post-mortem analysis, greater depletion of DA content has been found in the caudate than the putamen of people with chronic MA addiction [ ]. Nonetheless, absence of volumetric increases within the caudate of MA-dependent individuals has been previously reported by Chang and colleagues who found an enlarged putamen and globus pallidus in their group of abstinent MA abusers, but not in the caudate [ ]. Moreover, active cocaine users were reported to have larger volumetric increases in the putamen than the caudate (9.2%   vs.   3.4%, respectively) [ ].  
+
+This study found decreased frontal cortical GMD in the LSFG and left precentral gyrus and increased GMD in the right superior lateral occipital cortex of active MA-dependent in comparison to control participants; however, these results did not survive correction for multiple comparisons. Reductions in GMD within the LSFG and left precentral gyrus may be functionally significant. For example, Schwartz and colleagues reported an association between GMD reductions in the LSFG and increased impulsivity, as measured by the delay discounting task in abstinent MA-dependent individuals [ ]. Moreover, in a functional MRI study using the Stroop colour-word task, recently abstinent MA-dependent subjects exhibited lower activation of the precentral gyrus in response to the incongruent (conflict) condition compared to control subjects [ ].  
+
+The discrepancy between our study and previous studies in the lack of more substantial cortical and subcortical GM changes may be due to the difference in MA use status of our group in contrast to study participants in other research   i.e.  , active   vs.   abstinent users. It is possible that some volumetric changes may occur during the active use of MA, whilst others may only become apparent following drug abstinence. There has only been one other structural study by Thompson and colleagues in active MA-dependent individuals that reported GM deficits in limbic and paralimbic regions in comparison to controls, and we did not replicate this finding [ ]. Although the MA-dependent group in Thompson’s study was reported to have used MA on most of the 30 days prior to entering the study, they were also abstinent from MA for 6.64 ± 5.2 days prior to the scan day [ ]. Therefore this group of MA-dependent individuals may not be directly comparable with our sample of active users, whose current active use status was confirmed by a qualitative urine drug test on the scan day. Furthermore, different data acquisition and analytical techniques may have affected the results. For example, Thompson and colleagues employed surface-based cortical GM mapping techniques with high resolution anatomical scans using a 3 T MRI system [ ]. In comparison, our images were obtained at 1.5 T and analysed using semi-automated methods including VBM, SIENAX and FIRST within FSL (see Experimental Procedure for details). Lastly, the study by Thompson and colleagues did not examine striatal volumes [ ]. Therefore, to the best of our knowledge, the current study is the first structural MRI study to report striatal changes in active MA-dependent individuals. 
+
+There are several limitations to the current study. Firstly, the sample size was modest (17 MA-dependent participants, 20 control participants). Secondly, tobacco smoking and cannabis use were significantly more prevalent amongst MA-dependent than control participants. The majority of MA users in New Zealand also use cannabis and smoke tobacco. For example, a New Zealand epidemiological study found that within a six month period during 2010, 87% of frequent MA users also used cannabis and 86% used tobacco [ ]. Tobacco smoking has been associated with decreased cortical GMD in the bilateral prefrontal cortex and left dorsal ACC [ ]. The effects of tobacco smoking and cannabis use could not be completely separated from those of MA in the statistical analysis and may confound the results. However, studies on the effects of cannabis use on brain structure are sparse and the results are inconsistent. Most studies suggest that cannabis use is not associated with structural brain changes [ , ]. For example, a recent study of amphetamine-type stimulant users using VBM and tract based spatial statistics showed no association between GM volume and cannabis-related parameters [ ]. Although a recent VBM study reported larger GM volume in the anterior cerebellum of heavy cannabis users in comparison to controls [ ], GM volumes in other regions such as the orbitofrontal cortex, ACC, striatum, amygdala and hippocampus did not significantly differ between groups. Within the heavy cannabis user group, the amount of cannabis use was inversely correlated with GM volume in the amygdala and hippocampus, and the authors suggested that associations between heavy cannabis use and brain structure are complex [ ]. This study suffered from several limitations, whereby significant group differences in several potential confounding variables were present. For example, the cannabis users in this study were also nicotine dependent and scored significantly higher than the control group for depression and attention deficit hyperactivity disorder symptoms [ ]. Thirdly, our VBM results failed to show statistically significant group differences following correction for multiple comparisons. There may be several reasons for this including the modest sample size and the range of MA exposure variables. For example, the average duration of MA use was 10.2 years but it ranged from 2 to 25 years. Similarly, the average lifetime cumulative MA dose was 1442.6 g with a wide range of 23–5400 g. It is possible that this caused a wash out of effects whereby group differences in GMD may have been diluted. To further investigate this, an exploratory within-group analysis was carried out to assess the relationship between GMD and lifetime cumulative MA dose, however no significant correlations were observed. The lack of a relationship between MA exposure variables and GM volumes may reflect the relative inaccuracy of self-report drug use data, or may suggest that a threshold effect exists for MA-induced neurotoxicity and resulting changes in regional brain volumes [ ]. Nonetheless, failure to observe a relationship between amount and recency of drug use and GM volumes has been previously reported in structural MRI studies of stimulant dependence [ , ]. Finally, because this study was cross-sectional, it is impossible to ascertain the causality of GM volume changes and the possibility that putamen enlargement predated MA dependence cannot be ruled out. Prospective studies of human subjects at-risk of developing MA dependence and who have not initiated use would be extremely useful, albeit challenging. Alternatively, longitudinal studies of actively using MA-dependent individuals followed into abstinence would be feasible.  
+
+
+## 4. Experimental Procedure 
+  
+### 4.1. Participants 
+  
+Seventeen adult participants with a history of MA dependence and still actively using MA (five female; age 35.1 ± 6.6 years) were recruited from Community Alcohol and Drug Services in Point Chevalier, Auckland, New Zealand and 20 matched control participants with no previous history of drug addiction (seven female; age 30.9 ± 8.2 years) were recruited by word of mouth and advertisements ( ). MA-dependent participants were screened and diagnosed by a consultant psychiatrist using a structured clinical interview (SCID-I, Clinical Trials Version) [ ]. Data collected also included detailed questions regarding age at first use, route of administration, average amount of MA use per day, number of days used per week and duration of regular use as well as self-rated level of use (light, regular, heavy) ( ). This was used to estimate the lifetime cumulative amount of MA used ( ). MA-dependent participants also underwent physical examinations, and blood and urine testing to ensure health. They fulfilled the following inclusion criteria: (1) age between 18 and 45 years and of any ethnicity; (2) diagnosis of MA dependence according to DSM-IV criteria; current MA use was confirmed by qualitative urine drug tests (cut-off 300 μg/L); (3) negative urine toxicology screen (except for MA, cannabis, nicotine and caffeine) and no current or past history of other drug dependence, such as alcohol, cannabis, cocaine, opioids or benzodiazepines; (4) taking no other prescribed medications, except for oral contraceptives and mild analgesics when required. 
+
+Control participants fulfilled the same inclusion/exclusion criteria as those with MA dependence but were excluded if they had a history of drug use including MA. Exclusion criteria were: (1) past or present Axis I psychiatric diagnosis (other than MA dependence, but including schizophrenia and major depression); (2) neurological, thyroid, renal, gastrointestinal or cardiovascular disease; (3) clinically significant hepatic disease; (4) past or present illnesses known to affect cognition (e.g., stroke, traumatic brain injury, epilepsy, Parkinson’s disease, neurodegenerative disorders); (5) risk of suicide or violent behaviour; (6) glaucoma; (7) Tourette’s disorder or tics; (8) in females, current pregnancy or lactation; (9) any contraindications for MRI (e.g., claustrophobia and implanted ferromagnetic objects). All procedures were approved by the Northern X Regional Ethics Committee of New Zealand and participants gave written informed consent prior to taking part in this study. 
+
+
+### 4.2. Magnetic Resonance Image Acquisition 
+  
+All participants underwent structural MRI using a 1.5 T Siemens Magnetom Avanto scanner (Siemens Medical Solutions, Erlangen, Germany). A high resolution T -weighted anatomical magnetically prepared rapid acquisition gradient echo (MPRAGE) sequence was used (144 slices 1.25 mm thick, TR = 2400 ms, TE = 3.61 ms, TI = 1000 ms, flip angle = 8°, FOV = 180 × 240 mm, imaging matrix = 180 × 240), yielding 1.25 mm  isotropic voxel resolution. Two T -weighted MPRAGE sequences were acquired for each participant during the same scanning session.  
+
+
+### 4.3. Neuropsychological Testing 
+  
+An automated battery of neuropsychological tests, IntegNeuro (The Brain Resource Company, NSW, Australia), was administered to MA-dependent participants prior to MRI scanning, on the same day. Testing took approximately one hour to complete and was run on a touchscreen platform with task instructions delivered through a headset and verbal responses recorded via a microphone. The IntegNeuro test battery consisted of 13 tests spanning six core general cognition domains. Behavioural measures from the neuropsychological tests were available as “standardised scores” which were normalised for age, gender and years of education and presented as “z-scores”. Standardised norms were pre-established in 1000 healthy participants (data are part of the Brain Resource International Database) [ ]. Performance on the Go/No-go task was correlated with volumes which showed group differences following correction for multiple comparisons. Control subjects did not undergo neuropsychological testing; hence z-scores, which take into account standardised norms, were used instead of raw scores for the correlation analysis with significant volumes. The Go/No-go task has been widely used in cognitive psychology research, including drug addiction studies, as a measure of impulsivity and inhibitory control [ , ]. The task had two conditions: Go (“PRESS” written in green), where the subject was asked to respond using the index finger of each hand, and No-go (“PRESS” written in red), where the subject was instructed to make no response. Stimuli were presented for 500 ms and had an inter-stimulus interval of 1 s. Speed and accuracy of response were equally stressed in the instructions. The task was approximately five minutes long and consisted of 28 sequences where the word “PRESS” was presented in the same colour six times in a row. Seven of these sequences were presented in red in a pseudo-random order. Four measures were recorded for each subject, including reaction time, number of false alarms/commission errors (responses to red “PRESS” stimuli which indicate failure to inhibit an anticipated response), number of false misses/omission errors (non-responses to green “PRESS” stimuli which indicate inattention or slow responding) and total errors (sum of commission and omission errors). One subject was excluded from the correlational analysis due to incompletion of neuropsychological testing. 
+
+
+### 4.4. Analysis 
+  
+Structural data analysis was carried out with Functional Magnetic Resonance Imaging of the Brain (FMRIB) Software Library (FSL, v4.1.8) tools [ ]. Images were compiled into standard NIfTI-1 (Neuroimaging Informatics Technology Initiative) format and reoriented to a right-to-left, posterior-to-anterior, inferior-to-superior co-ordinate system. For each participant, one of the acquired T -weighted structural images was linearly registered to the second image using the FMRIB’s Linear Image Registration Tool (FLIRT, v5.5) [ , ]. The two images were then combined, intensity normalised and averaged to produce one average structural image per participant. This process aimed to achieve accurate tissue class probability assignments; the resulting average structural images were used for volumetric analyses. Anatomical labeling was carried out using the Harvard-Oxford cortical and subcortical structural atlases [ ]. 
+
+#### 4.4.1. Whole Brain Volumetric Analysis 
+  
+Total brain tissue volume, normalised for subject head size, was estimated with Structural Image Evaluation, using Normalisation, of Atrophy (SIENAX), v2.6 [ ], part of FSL, v4.1.8 [ ]. Brain and skull images were extracted from the single anatomical images [ ], then linearly registered to the Montreal Neurological Institute (MNI) 152 subject atlas space [ , ], to obtain a volumetric scaling factor (VSF), used as a normalisation for head size. Next, tissue-type segmentation with partial volume estimation was carried out [ ] to calculate total volume of brain tissue, including separate estimates of volumes of GM, peripheral (cortical) GM, white matter and ventricular cerebrospinal fluid. Between-group comparisons in whole brain volumetric measures were performed in SPSS v19 using one-way univariate analysis of variance (ANOVA) analyses, controlling for VSF. 
+
+
+#### 4.4.2. Subcortical Volumetric Analysis 
+  
+Volumetric analysis of subcortical structures was carried out using FMRIB’s Integrated Registration and Segmentation Tool (FIRST, v1.2) [ ]. FIRST is a model-based segmentation/registration tool which uses shape/appearance models constructed from manually segmented images provided by the Center for Morphometric Analysis, Massachusetts General Hospital, Boston. All structural images underwent a two-stage linear registration in order to achieve an accurate and robust pre-alignment of subcortical structures. The first stage was a linear registration of the whole head in each structural image to the non-linear MNI152 template with a 1 × 1 × 1 mm resolution [ ]. A subcortical mask which excluded regions outside of the subcortical structures, along with the first stage linear registration alignments were used in the second stage to achieve robust and accurate registration of subcortical structures to the MNI152 template. Following this, the images were transformed back to the native space using the inverse transformation, to allow the subsequent segmentation steps to be performed in the native space with the original voxel intensities. Segmentation of subcortical structures was performed and volumetric masks that represented the structure segmentation were created and a FMRIB’s Automated Segmentation Tool (FAST, v4.1)-based boundary correction method was applied [ ], with exceptions including the putamen and globus pallidus where a slightly different surface model was fit. Since MA users were previously reported to have larger volumes of the putamen, globus pallidus [ , ], caudate and nucleus accumbens [ ], the subcortical volumetric analysis was confined to these four structures bilaterally. Hence, one-way univariate ANOVA analyses were conducted in SPSS v19, controlling for VSF, to investigate the main effect of group on subcortical volumes. Bonferroni correction was applied and both corrected and uncorrected significant results were reported. Within the MA-dependent group, two correlational analyses were conducted. The first analysis was performed to examine the association between subcortical volume and MA exposure variables such as duration of MA use and lifetime cumulative MA use. The second analysis investigated the relationship between brain volumes that showed significant group differences after Bonferroni correction and cognitive performance on the Go/No-go task.  
+
+
+#### 4.4.3. Voxel-Wise Voxel-Based Morphometry Analysis 
+  
+The FSL-VBM tool, v1.1, was used to carry out a VBM style analysis [ , ]. First, structural images were brain-extracted using the Brain Extraction Tool (BET, v2.1) [ ]. Tissue-type segmentation was carried out using FAST [ ] and produced GM partial volume images, which were then aligned to the MNI152 subject atlas space using the affine registration tool, FLIRT [ , ], followed by non-linear registration using FMRIB’s Non-linear Image Registration Tool (FNIRT, v1.0) [ , ]. The resulting images were averaged to create a study-specific template, to which each participant’s GM image was then non-linearly re-registered. The registered GM partial volume images were then modulated by dividing each voxel of each registered GM image by the Jacobian of the warp field, in order to correct for local expansion or contraction which may have occurred due to the non-linear component of the transformation. The modulated segmented images were then smoothed with an isotropic Gaussian kernel with a full-width at half-maximum of 3 mm. In order to examine the relationship of GMD to group membership and clinical variables, a voxel-wise general linear model was applied using permutation-based non-parametric testing [ ], as implemented by the Randomise v2.1 toolbox within FSL. Non-parametric two-sample unpaired   t  -tests were used to analyse regional GMD after controlling for the effect of VSF. Within the MA-dependent group, a separate voxel-wise regression was performed to examine the association between GMD and lifetime cumulative MA use.  
+
+
+
+
+## 5. Conclusions 
+  
+To the best of our knowledge this is the first study to report striatal enlargement associated with improved cognitive function in MA-dependent individuals who are active users. Future studies comparing structural GM changes and cognitive function in active versus short- and long-term abstinent MA users with matched controls should shed more light on the progression of these changes and the extent of reversibility, if any, following abstinence.  
+
+ </div>
+</div>
+</div>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-5' name='judgment-5' value='agree'>
+<label for='agree-5'>Agree</label>
+<input type='radio' id='disagree-5' name='judgment-5' value='disagree'>
+<label for='disagree-5'>Disagree</label>
+<br><br>
+<label for='comment-5'><strong>Comments:</strong></label>
+<textarea id='comment-5' name='comment-5' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-6' data-pmid='28824470'>
+<h2>6. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/28824470/' target='_blank'>28824470</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Altered Gray-Matter Volumes Associated With Betel Quid Dependence</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Front Psychiatry</p>
+<p><strong>Publication Year:</strong> 2017</p>
+<p><strong>DOI:</strong> 10.3389/fpsyt.2017.00139</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/5540953/' target='_blank'>5540953</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> Although this is an empirical, English-language VBM study reporting whole-brain voxelwise GM volume differences with significant peak coordinates (meets I4, I5, I6, I7, I8, I9), it does NOT address the meta-analysis objective which is restricted to five pharmacological classes (alcohol, nicotine, opioids, cannabis, stimulants). The current study examines betel quid (areca nut) users, a psychoactive but non-target substance class for this review. Therefore it is ineligible for inclusion despite satisfying the methodological inclusion criteria. Exclusion IDs met: none of E5–E7. Inclusion IDs met: I4, I5, I6, I7, I8, I9. Inclusion IDs not met: the study does not address the review’s target substance classes (alcohol, nicotine, opioids, cannabis, stimulants).</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+Betel quid (BQ) is one of the most commonly consumed psychoactive substances. It has been suggested to be associated with various health issues, especially oral cancer. Evidence also points to possible decreased cognitive functions after long-term BQ chewing, such as attention and inhibition control. The present study aims to investigate the brain structure basis of BQ chewing in Hunan province of China. Twenty-five BQ chewers and 25 controls were recruited to participate in this study. Voxel-based morphormetry analysis revealed that there were three key regions showing structural differences between BQ chewers and controls, including bilateral dorsolateral prefrontal cortex (DLPFC)/insula, ventral medial prefrontal cortex, and left orbitofrontal cortex. Moreover, the GMV in the DLPFC could potentially predict BQ dependence scores, level of daily BQ chewing, and history of BQ chewing. These results suggested that participants who showed BQ chewing dependence may have deficit in inhibition control and affective decision-making, and the level of deficit was dependent on the level of daily BQ chewing, and history of BQ chewing. Understanding the neurobiology features of BQ chewing would help us develop novel ways to diagnose and prevent BQ dependence. 
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (14383 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## Introduction 
+  
+Betel quid (BQ, also called betel nut or areca nut) is one of most commonly consumed psychoactive substances ( ). Consequently, the International Agency for Research on Cancer ( ) has categorized BQ as a Group 1 carcinogen. Long-term BQ chewing was associated with various health issues, especially oral cancer and precancerous conditions ( – ). Studies also suggested that there were decreased cognitive functions after long-term BQ chewing, such as attention and inhibition control ( ). Recently, neuroimaging studies compared frequent BQ chewers and controls and found that frequent chewers have altered brain structure ( ,  ) and resting-state functional connectivity ( – ). Specifically, BQ chewers have decreased functional connectivity in the DMN including ventral medial prefrontal cortex (VMPFC), and orbitofrontal cortex (OFC)/anterior cingulate cortex (ACC) ( ). 
+
+However, there is little evidence showing there are structural difference between BQ chewers and controls. One pioneer studies examined 33 BQ chewers and 32 controls and found that BQ chewers have less gray-matter volumes (GMV) in the midbrain, right ACC, bilateral dorsolateral prefrontal cortex (DLPFC) and right superior temporal gyrus, and more GMV in the right hippocampal and right precuneus ( ). They also found that the GMV in the left DLPFC and right ACC was correlated with the history of BQ chewing ( ). Consequently, researchers suggested that BQ chewing should be treated as substance dependence and they can meet the DSM criteria of substance dependence ( ,  ). Volkow and colleagues ( – ) argued that addiction is a brain disease, and different addictions showed similar brain alterations, especially for drug-non-dependent frontal regions. Thus, we could also learn from the structural alterations of other addictive behaviors. For example, Ersche and colleagues ( ) found that cocaine-dependent individuals had decreased GMV in orbitofrontal, cingulate, insular, temporoparietal, and cerebellar cortex, increased GMV in the basal ganglia. Similarly, Romero and colleagues ( ) found that cocaine-dependent subjects presented higher fractional anisotropy values in the anterior cingulate and lower fractional anisotropy values in the anterior-posterior commissure plane. 
+
+The present study aimed to investigate the brain structure basis of BQ chewing in Hunan province of China. In this area, people chew dried areca nut while people in other parts of China (especially Hainan and Taiwan) chew fresh areca nuts ( ). We also tried to explore if the GMV in certain brain regions could potentially predict the history of BQ chewing. Understanding the neurobiology feature of BQ chewing would help us develop novel ways to diagnose and prevent BQ dependence. 
+
+
+## Materials and Methods 
+  
+### Participants 
+  
+Fifty participants in Hunan area were recruited to participate in this study. All research protocols were explained to the participants and approved by the local IRB (Xiangya Hospital of Central South University of Hunan Province, Changsha, China). All participants signed the written consent form before any examinations. BQ chewers (  N   = 25) were recruited from the outpatient department in Xiangya Hospital of Central South University in Changsha, Hunan, China. As reported before ( ), these participants meet the DSM-IV criteria for substance use disorders as determined by the Structured Clinical Interview. Controls (  N   = 25) with matched age and education level were recruited from the same area. Participants were excluded if they (i) met criteria for other substance dependence; (ii) have a medical history of any neurological or psychiatric disorder; and (iii) claustrophobia or other disease prevent them from MRI scanning, e.g., any metal implants. All participants have normal or corrected to normal vision. The demographic and clinical characteristics of the participants can be found in Table  . 
+  
+Demographic and clinical characteristics of participants (M ± SD). 
+  
+
+### Procedures 
+  
+Participants were asked to come to the Xiangya Hospital to finish the behavior interview and MRI scan. They were asked to read and sign the consent form first and then complete the behavioral interview. The MRI scan took about 20 min to finish. During the scan, images for one high-resolution structural scan were acquired. 
+
+
+### Behavior Interviews 
+  
+The severity of BQ dependence was assessed by the Betel Quid Dependence Scale (BQDS), which follows DSM-IV criteria ( ). It is a 16-item self-report instrument with three factors: physical and psychological urge, increasing dosage, and maladaptive use. 
+
+
+### MRI Protocol 
+  
+All MRI images were acquired using a Siemens Skyra 3T scanner at Xiangya Hospital. Participants lay in the supine position on the scanner bed. They were instructed to have a rest but keep their head very still during the structural scan. The scan was performed using T1-weighted 3D-Magnetization Prepared Rapid Gradient Echo sequence, covering the whole brain with the following scanning parameters: TR/TE = 1900/2.01 ms, flip angel = 9°, matrix = 256 × 256, number of slices = 176, FOV = 256 mm × 256 mm, and slice thickness = 1 mm. 
+
+
+### VBM Analysis 
+  
+We used FSL-VBM implemented in FSL ( ) to analyze the structural MRI data ( – ). Brains were extracted using BET ( ) and segmented into gray matter, white matter and CSF using FAST4 ( ). Two steps of registration (linear and non-linear) were performed to register the gray-matter partial volume images to the standard space (MNI152). A study specific template was created by averaging all normalized images. Last, the resulting GMV images were smoothed with an isotropic Gaussian kernel (3 mm). Statistics were performed with FSL non-non-parametric permutation methods (Randomise v2.1) ( ). Voxel-wise GLM models were used to test the group difference and correlation between GMV data and BQ chewing. The null distribution at each voxel was constructed using 10,000 random permutations. Multiple comparisons were corrected across the whole brain using the threshold-free cluster enhancement. The mean GMV in each cluster was then extracted for each individual following region of interests analysis standard. 
+
+
+
+## Results 
+  
+### Demographics and Clinical Characteristics 
+  
+The demographic and clinical characteristics for BQ chewers and controls are given in Table  . The BQ chewers exhibited a mean of 10.87 ± 1.71 BQDS score, a mean duration of BQ chewing of 12.96 ± 5.05 years, and average daily dosage of BQ of 48.48 ± 17.54 g. The two groups did not differ in terms of age (  t  (48) = 1.06,   p   = 0.29), but the control group was educated for longer time (  t  (48) = −2.47,   p   = 0.017). In later analysis, years of education was used as a co-variate in the model. 
+
+
+### Statistical Comparison of VBM Analysis 
+  
+VBM results showed that, after controlling for education, several brain regions had reduced GMV in BQ chewers compared to controls, including bilateral VMPFC, bilateral DLPFC extending to IFG and insula, and left OFC (Table  ; Figure  ). No brain regions showed higher GMV for BQ chewers than controls. 
+  
+Summary of VBM results (Controls &gt; Betel quid chewers). 
+  
+ L, left; R, right; MNI, Montreal Neurological Institute, TFCE, threshold-free cluster enhancement; VMPFC, ventromedial prefrontal cortex; DLPFC, dorsolateral prefrontal cortex; IFG, inferior frontal gyrus; OFC, orbitofrontal cortex  . 
+
+ The voxel size in VBM analysis is 2 mm × 2 mm × 2 mm  . 
+    
+Brain regions showed gray-matter volume difference between betel quid chewers and controls. Figures are displayed in canonical (upper panel) and sagittal (lower panel) view. Numbers below each brain slices were the corresponding   z   (upper panel) or   x   (lower panel) value in the MNI space. Color bar represented the significance of the difference (  t   values). 
+  
+Region of interest analysis showed that, in the BQ chewers group, the GMV in left and right DLPFC/insula could predict the BQDS score [left:   r  (25) = 0.536,   p   = 0.006, right:   r  (25) = 0.587,   p   = 0.002], years of BQ chewing [left:   r  (25) = 0.492,   p   = 0.01, right:   r  (25) = 0.615,   p   = 0.001], and daily BQ use [left:   r  (25) = 0.394,   p   = 0.05, right:   r  (25) = 0.413,   p   = 0.04]. It should be noted that, the correlations between DLPFC and daily BQ use were not significant after Bonferroni correction for multiple comparison. 
+
+
+
+## Discussion 
+  
+The present study recruited 25 BQ chewers and 25 controls to examine the altered brain structures associated with BQ chewing. Results suggested that there are three key regions presenting structural difference between BQ chewers and controls, including the DLPFC/IFG/insula, VMPFC, and OFC. Especially, the GMV in the DLPFC could potentially predict the BQ dependence score, level of daily BQ chewing, and years of chewing BQ. 
+
+These results emphasize that BQ chewers showed similar brain structural alternations as observed in other addictive behaviors. The gray-matter morphology deficit in these regions have been shown to be related to different types of substance and/or behavioral addiction, including cocaine ( – ), heroin ( – ), opiates ( ), cannabis ( ), nicotine ( ,  ), alcohol ( ,  ), ketamine ( ), MDMA ( ), methamphetamine ( ), internet ( ), and online games ( ,  ). For example, Tanabe et al. ( ) investigated participants who showed dependence on two or more substances, and results suggested lower GMV in bilateral medial OFC in patients and the neural marker was correlated with decision-making performance in a modified gambling task. It should be noted that, our results were also consistent with a previous reports who suggested similar brain systems’ GMV alternation in BQ chewers ( ), especially the DLPFC. Moreover, we also suggested that the GMV reduction in DLPFC was correlated with history of BQ chewing as well as BQ dependence score, which is also consistent with previous reports ( ). 
+
+These results also implied deficits of two neural systems in BQ chewing, namely the inhibition control system (DLPFC/insula) and affective decision-making system (VMPFC and OFC) ( – ). This idea is also consistent with other types of drug addiction showing that these two systems were altered. For example, drug addiction literature suggested that DLPFC activity reduction in heavy smokers, cocaine users, etc. ( ,  – ). These two systems typically showed hypo-activity in drug addicts, suggesting their impaired ability to resist stimuli that are rewarding in the short term, but lead to negative consequences in the long term ( – ). These two systems, which depend primarily on the functions of the prefrontal cortex, are necessary to control the basic impulses and allow more flexible pursuit of long-term goals ( – ). 
+
+Several studies suggest that the cognitive or regulatory control of tempting choices is in part dependent on brain regions that we have hypothesized to be components of the so-called “reflective system” ( – ,  – ). For example, one study shows that word-level cognitive labels can change the subjective ratings of the affective value of the taste and flavor of a food when the taste or flavor stimulus is identical; this cognitive modulation is expressed in the OFC and ACC ( ). This is consistent with the idea that BQ chewers have higher GMV in these two systems, as demonstrated in a previous study ( ). In fMRI studies of food consumption, obese men and women had less activation in the left DLPFC in response to a meal than did their lean counterparts ( ). While many researchers still clump all mechanisms of decision-making and inhibitory control under one umbrella, the rubric of “Executive Functions,” Bechara et al. ( ,  ) have argued that the two are separable neuropsychological mechanisms. More specifically, there is a distinction in functionality between (1) simple inhibitory and impulse control processes mediated by the lateral orbitofrontal and inferior frontal gyrus regions and (2) affective decision-making mediated by VMPFC and OFC, including the frontal pole, which are highly relevant to behavioral control ability and to the decisions individuals make frequently on a daily basis ( ). Both inhibitory/impulse control function and affective decision-making are important, specific aspects of higher order executive control functioning ( ,  ). Good inhibitory functioning reflects the ability to actively stop a pre-potent behavioral response after it has been triggered. Individuals with deficits or failures in these systems have a tendency to act more impulsively. Adequate affective decision-making reflects an integration of cognitive and affective systems (hence, considered “hot”—emotionally linked—cognition, and the ability to more optimally weigh short-term gains against long-term losses or probable outcomes of an action). Excessive BQ chewing has been known to have short-term “reinforcing effects” but long-term negative consequences should be less likely or problematic for individuals with higher affective decision-making ability. 
+
+There are three noteworthy limitations of this study. First, the sample size is relatively small and the participants are all males. Second, the two groups showed significant difference in years of education which could contribute to the GMV difference even though we tried to minimize this effect by adding education as a co-variate. Third, this is a cross-sectional and correlational study, which limits our inference on the causality. Further longitudinal study should be done to replicate and extend the conclusion from this study. 
+
+
+## Ethics Statement 
+  
+All research protocols were explained to the participants and approved by the local IRB (Xiangya Hospital of Central South University of Hunan Province, Changsha, China.). All participants signed the written consent form before any examinations. 
+
+
+## Author Contributions 
+  
+FY and WL conceived and designed the experiments. XZ, CJ, and CF conducted the experiments and collected data. XZ and LK analyzed the results. FY, CJ, and CF wrote the main manuscript text. All authors reviewed the manuscript. 
+
+
+## Conflict of Interest Statement 
+  
+The authors declare that the research was conducted in the absence of any commercial or financial relationships that could be construed as a potential conflict of interest. 
+
+ </div>
+</div>
+</div>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-6' name='judgment-6' value='agree'>
+<label for='agree-6'>Agree</label>
+<input type='radio' id='disagree-6' name='judgment-6' value='disagree'>
+<label for='disagree-6'>Disagree</label>
+<br><br>
+<label for='comment-6'><strong>Comments:</strong></label>
+<textarea id='comment-6' name='comment-6' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-7' data-pmid='22445480'>
+<h2>7. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/22445480/' target='_blank'>22445480</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This study is an empirical, English-language structural MRI study using voxel-based morphometry comparing methamphetamine-dependent smokers and controls, and reports whole-brain voxelwise analyses with significant clusters. However, the provided full text does not report peak coordinates (x,y,z in MNI or Talairach space) for the significant whole-brain clusters. Inclusion criterion I7 requires that at least one significant whole-brain contrast yields reported peak coordinates; because those coordinates are not present in the provided full text (and not verifiable in supplement), the study fails I7 and must be excluded. (a) Exclusion IDs met: none. (b) Inclusion IDs met: I4, I5, I6, I9. (c) Inclusion IDs not met: I7 (no reported peak coordinates for whole-brain significant foci).</p>
+<p><strong>Fulltext Confidence:</strong> 0.8</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+<li><span class='criterion-tag criterion-green'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+<li><span class='criterion-tag criterion-red'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-7' name='judgment-7' value='agree'>
+<label for='agree-7'>Agree</label>
+<input type='radio' id='disagree-7' name='judgment-7' value='disagree'>
+<label for='disagree-7'>Disagree</label>
+<br><br>
+<label for='comment-7'><strong>Comments:</strong></label>
+<textarea id='comment-7' name='comment-7' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-8' data-pmid='21310189'>
+<h2>8. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/21310189/' target='_blank'>21310189</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This study is an empirical English-language MRI study of adolescent cannabis users vs controls and uses cortical thickness (surface-based) vertexwise analyses, meeting I4, I5 and I6. It also reports participant age/sex, substance-use details, MRI field strength (3T) and preprocessing/software (FreeSurfer), satisfying I9. However, the provided full text does not include reported peak coordinates (x,y,z in MNI or Talairach space) for the significant whole-brain/vertexwise clusters; I7 (requirement that at least one significant whole-brain contrast yields reported peak coordinates) is not satisfied in the supplied content. No exclusion criteria (E5–E7) are met. Because I7 is unmet, the study cannot contribute coordinates to the coordinate-based meta-analysis and must be excluded. Full text appears otherwise complete (methods/results/discussion present).</p>
+<p><strong>Fulltext Confidence:</strong> 0.75</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+<li><span class='criterion-tag criterion-green'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+<li><span class='criterion-tag criterion-red'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-8' name='judgment-8' value='agree'>
+<label for='agree-8'>Agree</label>
+<input type='radio' id='disagree-8' name='judgment-8' value='disagree'>
+<label for='disagree-8'>Disagree</label>
+<br><br>
+<label for='comment-8'><strong>Comments:</strong></label>
+<textarea id='comment-8' name='comment-8' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-9' data-pmid='25637267'>
+<h2>9. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/25637267/' target='_blank'>25637267</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical, whole-brain vertexwise cortical thickness MRI study comparing ayahuasca (psychedelic) users to controls and reports significant clusters with coordinates. Inclusion criteria met: I4 (empirical MRI study of GM differences), I5 (uses cortical thickness as GM measure), I6 (vertexwise whole-brain analysis using FreeSurfer), I7 (reports significant clusters with coordinates), I8 (results reported in tables/figures), I9 (participant and MRI details reported). However, the study does NOT address the review objective drug classes (alcohol, nicotine, opioids, cannabis, stimulants): it examines psychedelic/ayahuasca users (DMT). Therefore it does not meet the review’s topical requirement and must be excluded. No exclusion criteria E5–E7 are triggered by the methods. Full text appears complete.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all inclusion criteria met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-9' name='judgment-9' value='agree'>
+<label for='agree-9'>Agree</label>
+<input type='radio' id='disagree-9' name='judgment-9' value='disagree'>
+<label for='disagree-9'>Disagree</label>
+<br><br>
+<label for='comment-9'><strong>Comments:</strong></label>
+<textarea id='comment-9' name='comment-9' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-10' data-pmid='23726981'>
+<h2>10. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23726981/' target='_blank'>23726981</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> (a) Exclusion IDs met: none. (b) Inclusion IDs met: I4 (empirical MRI VBM study comparing substance-using group [ADHD + cocaine dependence] and controls), I5 (grey-matter measure: voxel-based grey matter volume), I6 (performed whole-brain voxelwise VBM contrasts). (c) Inclusion IDs not met: I7 — the provided full text reports significant whole-brain clusters (e.g., reduced putamen and cerebellum) but does NOT provide reported peak coordinates (x,y,z in MNI or Talairach) for those whole-brain contrasts in the supplied content. Because I7 requires at least one significant cluster with reported peak coordinates for inclusion and those coordinates are not present in the provided full text, the study cannot be included. Note: the study also reports ROI analyses with coordinates/sizes for ROIs, but ROI results alone do not satisfy the meta-analysis requirement. Full text appears complete for core sections (methods, results, discussion), so fulltext_incomplete=false.</p>
+<p><strong>Fulltext Confidence:</strong> 0.65</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>all inclusion criteria not met</span></li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-10' name='judgment-10' value='agree'>
+<label for='agree-10'>Agree</label>
+<input type='radio' id='disagree-10' name='judgment-10' value='disagree'>
+<label for='disagree-10'>Disagree</label>
+<br><br>
+<label for='comment-10'><strong>Comments:</strong></label>
+<textarea id='comment-10' name='comment-10' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-11' data-pmid='24179800'>
+<h2>11. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/24179800/' target='_blank'>24179800</a></h2>
+<div class='metadata'>
+<h3>Metadata</h3>
+<p><strong>Title:</strong> Deficits in cortical, diencephalic and midbrain gray matter in alcoholism measured by VBM: Effects of co-morbid substance abuse☆☆☆★</p>
+<p><strong>Authors:</strong> N/A</p>
+<p><strong>Journal:</strong> Neuroimage Clin</p>
+<p><strong>Publication Year:</strong> 2013</p>
+<p><strong>DOI:</strong> 10.1016/j.nicl.2013.03.013</p>
+<p><strong>PMCID:</strong> <a href='https://www.ncbi.nlm.nih.gov/pmc/articles/3777684/' target='_blank'>3777684</a></p>
+</div>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> Although this is an empirical, English-language VBM study of alcohol-dependent patients vs. controls and reports whole-brain voxelwise gray-matter volume contrasts with significant clusters, the provided full text does not report peak coordinates (x,y,z in MNI or Talairach) for any significant clusters. Inclusion criteria I4 (empirical MRI GM comparison), I5 (GM volume/density measure), and I6 (whole-brain voxelwise analysis) are satisfied. Inclusion criterion I7 (at least one whole-brain contrast yielding ≥1 significant cluster with reported peak coordinates) is NOT satisfied in the provided full text. No exclusion criteria (E5–E7) are met. Because I7 is unmet, the study cannot be included for coordinate-based meta-analysis based on the supplied manuscript.</p>
+<p><strong>Fulltext Confidence:</strong> 0.85</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+<li><span class='criterion-tag criterion-red'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+<li><span class='criterion-tag criterion-red'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p><strong>Abstract:</strong>  
+## Objective 
+  
+Alcoholism has been associated with a widespread pattern of gray matter atrophy. This study sought to investigate the spectrum of volume alterations in a population of alcoholics with only alcohol dependence, polysubstance abusing alcoholics, and a comparison population of healthy controls. 
+
+
+## Method 
+  
+Thirty-seven ‘pure’ alcoholics, 93 polysubstance abusing alcoholics, and 69 healthy controls underwent structural T1 MRI scans. Voxel-based morphometry was performed to investigate gray matter alterations. 
+
+
+## Results 
+  
+Alcoholic dependent inpatients (both with and without a history of DSM-IV substance abuse/dependence diagnosis) displayed significant gray matter differences in the mesial region of the frontal lobe and right temporal lobe. ‘Pure’ alcoholics exhibited a pattern of subcortical changes similar to that seen in Wernicke–Korsakoff Syndrome when compared to polysubstance abusing alcoholics. ‘Pure’ alcoholics and polysubstance abusing alcoholics did not differ significantly in measures of cortical gray matter, liver function, or nutrition. 
+
+
+## Conclusions 
+  
+These findings reinforce the accepted literature in regards to frontal lobe gray matter atrophy in alcohol dependence. This study calls for additional research in order to investigate the spectrum from uncomplicated alcoholism to Wernicke–Korsakoff Syndrome. Further research is needed to elucidate the exact cause of this pattern of differences and to determine what factors are responsible for the patterns of gray matter reduction or difference in ‘pure’ and polysubstance abusing alcoholics. 
+
+   Highlights  
+  
+Large scale voxel-based morphometry study on alcoholics and healthy controls. 
+  
+Alcoholics display less gray matter in the mesial frontal lobe and the temporal lobe. 
+  
+“Pure” alcoholics show a pattern of deficit similar to that of Wernicke&#x27;s Encephalopathy. 
+  
+ </p>
+<button class='accordion' onclick='toggleAccordion(this)'>Full Text Content (29230 characters)</button>
+<div class='panel'>
+<div class='panel-content'>
+<div class='fulltext-content'> 
+## Introduction 
+  
+It has been established that the heavy consumption of alcohol due to alcohol dependence causes gray matter loss ( ,  ,  ). Postmortem studies have demonstrated a lower mean weight in the brains of alcoholics without any other neurological disease ( ), as well as brain tissue loss in chronic alcoholics ( ). Several studies have found that alcohol dependent individuals have specific regional volume loss, particularly in the frontal lobe ( ,  ,  ). 
+
+Many magnetic resonance imaging studies of alcoholism have focused primarily on the cerebrum and to a lesser extent, the cerebellum. Recently investigators have begun using voxel-based morphometry (VBM) ( ) to evaluate gray matter differences. This procedure also allows for the global analysis of brain structures, including the diencephalon and midbrain, as well as the cerebrum. VBM has been used successfully in the investigation of schizophrenia ( ), aging ( ), and Alzheimer&#x27;s disease ( ). 
+
+VBM has also been used to investigate brain morphometrical differences in alcoholics relative to healthy controls. ( ,  ). One study investigated both white and gray matter loss in 22 alcohol dependent patients and in age and sex matched healthy controls. The alcoholic patients displayed an overall decrease in the gray matter volume in the thalamus, posterior hippocampus, and frontal cortical areas, as well as white matter atrophy in the pons and the cerebellum. The other study compared the gray matter volumes of 45 abstinent alcohol-dependent patients and 50 healthy control subjects. The alcohol dependent patients displayed gray matter volume loss in the lateral prefrontal cortex, the medial frontal cortex, and the posterior cingulate gyrus. 
+
+Gray matter alterations have also been investigated in other populations of substance abusers, including cocaine dependent patients ( ), heavy cannabis users ( ), methamphetamine abusers ( ), and heroin dependent subjects ( ). Very few studies have examined morphometrical alterations in polysubstance abusers ( ,  ,  ). Liu and colleagues found that polysubstance abusers had smaller prefrontal lobes bilaterally relative to healthy controls. This volume loss was found only in gray matter. Tanabe and colleagues also found reduced gray matter volume in the frontal lobe of substance dependent individuals, specifically in the medial orbital frontal cortex. 
+
+Several years ago we compared forebrain volumes among inpatients at the National Institutes of Health (NIH) Clinical Center alcoholism treatment unit with or without co-morbid abuse of substances in addition to alcohol ( ). We found very little difference in brain volume between alcoholic subjects with or without co-morbid substance abuse. However, this study only measured overall forebrain volumes of gray and white matter and did not investigate diencephalon or midbrain alterations, regions which have been noted to be affected in alcoholism ( ). In addition, regional differences in brain volume were not examined in our earlier study. 
+
+In this report we used a VBM approach to compare regional brain volume differences between individuals with alcohol dependence and controls. We hypothesized that the alcohol dependent population would display less gray matter in the frontal lobes, as well as in the cerebellar cortex. Additionally we sought to investigate, we believe for the first time, regional differences between polysubstance abusing alcoholics and alcoholics with only alcohol dependence. Since our previous work comparing overall gray matter forebrain volumes in these groups did not find a significant difference ( ), we tested the hypothesis that the groups would differ in regional gray matter volume, but made no specific hypothesis about the direction of the difference. 
+
+
+## Method 
+  
+All recruitment and testing procedures were reviewed and approved by the National Institute on Alcohol Abuse and Alcoholism (NIAAA) Institutional Review Board. After complete detoxification and withdrawal, experimental procedures (psychometric interviews and magnetic resonance imaging) were explained, and all patients provided written informed consent to participate. 
+
+### Subjects 
+  
+Subjects with alcohol dependence (N = 130: 93 Caucasian, 34 African American, 1 Hispanic, 1 Asian, 1 Other; 47 Female), ages 20–64, were admitted for an inpatient alcoholism treatment program. Community-recruited subjects (N = 69: 47 Caucasian, 12 African American, 4 Hispanic, 4 Asian, 2 East Indian; 22 Female), ages 19–63, with no history of significant medical illness or psychiatric disorders were also included for comparison. Alcohol-dependent patients whose estimated IQ was below 80, who had neurological abnormalities, who had a history of psychotic symptoms, or who were not eligible for an MRI scan were not included in the sample. All subjects were assessed with the Structured Clinical Interview for DSM-IV, which determined that each inpatient met criteria for alcohol dependence and that the comparison subjects did not meet DSM-IV criteria for current axis I disorders. A urine sample was collected to verify drug abstinence. All participants received a physical examination to ensure good general physical and neurological health. A social worker administered a semi-structured lifetime drinking history interview to each subject. Alcohol use history was divided into epochs of various use patterns according to each respondent&#x27;s history, and from these epochs we calculated three drinking history parameters: 1) age at onset of heavy drinking, defined a priori as the age at which the subject reported first consuming the equivalent of 90 drinks in a 1-month period; 2) years of heavy drinking, defined as the cumulative total contiguous or noncontiguous months during which the subject drank 90 drinks per month (note: since subjects often maintain this high a level of alcohol use for at least 12 consecutive months, months are summed into years); and 3) estimated lifetime alcohol consumption (in kg), which is a summation of all alcohol ingestion, including during periods where ingestion did not reach 90 drinks per month. Age, average years of heavy drinking, years of education, lifetime alcohol consumption, age of onset of alcoholism, past Axis I diagnoses, BMI, gray matter, and intracranial volumes can be found in  .   
+Demographics. 
+      
+
+
+### Cognitive tests 
+  
+A selective reminding task used in the current study has been described previously ( ). In short, a list of 12 words is read to the patient and the patient is asked to recall as much as possible. Then the patient is reminded of the words they did not remember. This procedure is repeated 8 times. This procedure, the Buschke selective reminding task ( ), has been widely used to measure memory impairments in dementia, head injury, aging, child development, drugs and therapies (for a review, see ( )). We used total trials required to learn the word list as a measure of episodic memory function. 
+
+Intelligence was estimated by two subtests of the Wechsler Adult Intelligence Scale—Revised (WAIS-R; ( )), Vocabulary and Block Design (see  ). These two subtests have previously been used as a “short-form” of the WAIS-R to estimate IQ, with reasonably good results ( ,  ). Separately, they provide rough estimates of verbal or “crystallized” intelligence, and nonverbal or “fluid” intelligence, respectively. In the standardization sample, Vocabulary highly correlated with Verbal IQ, while Block Design highly correlated with Performance IQ ( ). 
+
+
+### MRI acquisition 
+  
+All subjects were scanned using a 1.5 T General Electric MRI scanner (General Electric, Milwaukee, WI) and a standard head coil. Whole-brain high-resolution coronal structural scans were collected using a T1-weighted magnetization-prepared rapid gradient echo (MPRAGE) pulse sequence with matrix 256 × 256 × 124, repetition time (TR) = 100 ms, echo time (TE) = 12 ms, field of view (FOV) = 24 cm, and voxel size of (0.9375 × 0.9375 × 2.0) mm . Alcoholic subjects were scanned 21.5 ± 5.3 days from admission date and thus had been free of alcohol or other substance use for at least that duration. 
+
+
+### Voxel-based morphometry 
+  
+Structural data was analyzed with FSL-VBM, version 1.1, a gray matter voxel-based morphometry analysis ( ) software carried out with FSL tools ( ). First, structural images were brain-extracted using BET ( ). Next, tissue-type segmentation was carried out using FAST4 ( ).The resulting gray matter partial volume images were then aligned to MNI152 standard space using the affine registration tool FLIRT ( ), followed by nonlinear registration using FNIRT ( ,  ), which uses a b-spline representation of the registration warp field ( ). The resulting images were averaged to create a study-specific template (with equal number of patient and control subjects to avoid bias), to which the native gray matter images were then non-linearly re-registered. The registered partial volume images were then modulated (to correct for local expansion or contraction) by dividing by the Jacobian of the warp field. The modulated segmented images were then smoothed with an isotropic Gaussian kernel with a sigma of 3 mm. Finally, voxelwise GLM was applied using permutation-based non-parametric testing, correcting for multiple comparisons across space. Ten thousand permutations were run for each comparison. In all of the comparisons age and years of education were included as covariates. This approach is unbiased, in that it requires no a priori information about the location of these possible differences in the gray matter, and is not operator-dependent. It follows the optimized VBM protocol developed by  ). Therefore, no additional corrections are needed. All using this method are reported for at a significance level p &lt; 0.01. 
+
+
+
+## Results 
+  
+The following comparisons were made using the above VBM procedure: alcoholic inpatients vs. healthy controls, alcoholics with only alcohol dependence vs. alcoholic polysubstance abusers, alcoholics with only alcohol dependence vs. healthy controls, and alcoholic polysubstance abusers vs. healthy controls. The polysubstance users included all inpatient alcoholics who reported past or present substance abuse or substance dependence and met DSM IV criteria for past or current substance abuse or dependence. Only 28.5% of the inpatient alcoholics did not meet DSM IV criteria for a substance abuse disorder other than alcoholism at some time in their life. In addition, most of the alcoholics who met criteria for substance abuse other than alcohol abuse, abused more than one other substance. Thirty-four inpatients met criteria for alcohol dependence and one additional substance use disorder. Out of those 34, 14 alcohol dependent subjects met criteria for cannabis abuse or dependence, 16 alcohol dependent subjects met criteria for cocaine abuse or dependence, 3 alcohol dependent subjects met criteria for hallucinogen/PCP abuse or dependence, and 1 alcoholic dependent subject met criteria for sedative dependence. The breakdown of substance use diagnoses can be found in  . Because of the small number of subjects in each individual substance abuse category, all polysubstance abusing and dependent alcoholics were grouped together. In all of the comparisons age and years of education were included as covariates. In the alcoholics with only alcohol dependence (‘pure’ alcoholics) vs. polysubstance abusers comparison, years of heavy drinking was also included as a covariate. Due to a large number of alcoholics who were also smokers (N = 107), an alcoholic smoker vs. non-smoker comparison (N = 23) was run to ensure that smoking was not acting as a confounding variable in the previous analyses. 
+
+### All alcoholic inpatients vs. healthy controls 
+  
+Alcoholics had significant gray matter differences in many frontal regions, such as the medial surface of the superior frontal gyrus, right and left middle frontal gyri, right and left inferior frontal gyri, and left frontal pole, as well as in the right temporal lobe, right thalamus, and right hippocampus (see  ,  A).   
+VBM results. 
+      
+All healthy control comparisons. 
+
+The color bar represents the t-value from 2.3 to 4 for significantly different clusters. Panel A displays the gray matter alterations that the full alcoholic group exhibits relative to healthy controls. Panel B shows the differences that the ‘pure’ alcoholics display relative to healthy controls. Panel C displays the alterations that the polysubstance abusing alcoholics display relative to healthy controls. 
+  
+
+
+### ‘Pure’ alcoholics vs. healthy controls 
+  
+Alcoholics who were diagnosed with only alcohol dependence displayed similar gray matter alterations as the entire alcoholic inpatient sample relative to healthy control comparison. Areas that displayed gray matter volume differences included: the superior, middle, and inferior frontal gyri, frontal pole, bilateral thalamus, bilateral putamen, right inferior temporal gyrus, and the cingulate gyrus (see  ,  B). 
+
+
+### Alcoholics with polysubstance abuse vs. healthy controls 
+  
+Polysubstance abusing alcoholics displayed significant gray matter alterations in the mesial region of the frontal lobe, including superior frontal, cingulate and para-cingulate gyri. On the lateral surface of the brain the middle and superior frontal gyri and the right inferior temporal gyrus were affected. No regions of significant gray matter volume difference were found in the diencephalon or below (see  ,  C). 
+
+
+### ‘Pure’ alcoholics vs. alcoholics with comorbid substance abuse/dependence 
+  
+‘Pure’ alcoholics showed significant gray matter differences relative to alcoholics who were diagnosed with additional comorbid substance abuse or dependence in the following areas: thalamus, brain stem, mammillary bodies, and cerebellum (see  ,  ).   
+Polysubstance abusing alcoholics vs. ‘pure’ alcoholics. 
+
+The color bar represents the t-value from 2.3 to 4. Significant clusters of neurodegeneration in ‘pure’ alcoholics relative to polysubstance abusing alcoholics. 
+  
+
+In order to rule out the potential compensatory effect of pro-inflammation due to stimulant abuse in gray matter differences, we conducted three additional VBM analyses among polysubstance abusing alcoholics with stimulant abuse and dependence and those without. First, in an overall comparison of subjects with cocaine (and other comorbid uses) (n = 66) with those polysubstance abusing alcoholics without cocaine use (n = 27), no significant VBM differences were observed. Second, we compared cocaine-only users (n = 16) relative to all other polysubstance users (n = 77), and found the latter group to have greater gray matter volume in the right thalamus, right brainstem, and cerebellum — similar areas to those found in the comparison between polysubstance abusers and ‘pure’ alcoholics. Third, in a follow-up analysis we removed the amphetamine/stimulant users from the other polysubstance group (n = 22) and no group differences were observed between this group and cocaine-only users. 
+
+In an effort to rule out the effect of past psychological disorders as the cause of the differences between ‘pure’ alcoholics and the alcoholics with polysubstance abuse, we ran similar VBM analysis on alcoholic subjects with comorbid Axis I diagnoses. In doing so, we performed VBM analyses between all alcoholic subjects with anxiety vs. those without anxiety; all alcoholic subjects with depression vs. all alcoholic subjects without depression; and all alcoholic subjects with PTSD vs. all alcoholic subjects without PTSD. If any of these comorbidities was the cause of above results between ‘pure’ and poly substance abuser alcoholics, we should have detected overlapping regions of difference. This overlap did not occur in any of the comparisons (see  ).   
+Psych results. 
+    
+
+
+### Alcoholic smokers vs. alcoholic non-smokers 
+  
+The only area of possible significant gray matter volume difference in alcoholic smokers compared to alcoholic non-smokers was found in the left parietal lobe and this was only noted when the threshold for significance was lowered to p &lt; 0.05, for all other comparisons significance was set at p &lt; 0.01. 
+
+
+### Cognitive and clinical laboratory results 
+  
+There were no differences in age or BMI in the ‘pure’ alcoholics and polysubstance abusing alcoholics and healthy controls. Healthy controls had significantly more years of education than either alcoholic group. ‘Pure’ alcoholics displayed higher transferrin values than polysubstance abusing alcoholics. Healthy controls had significantly lower liver enzyme functions: alanine aminotransferase (ALT), aspartate aminotransferase (AST), Gamma-glutamyl transpeptidase (GGT), and mean corpuscular volume (MCV). The groups did not differ on albumin or vitamin B12 values. Healthy controls scored significantly higher on scaled vocabulary, scaled block design, and Trails B performance than either alcoholic group. Controls also had significantly better performance on the Buschke total trials, Stroop color word score, and Trails A score than the polysubstance abusing alcoholic population. ‘Pure’ alcoholics had a higher scaled vocabulary score than the polysubstance abusing alcoholics ( ).   
+Cognitive and laboratory results. 
+        
+
+
+
+## Discussion 
+  
+Although under this study we cannot rule out preexisting reduced gray matter volume for our alcoholic subjects, consistent with the literature we found large reduced gray matter volume in mesial region of the frontal lobes among alcoholic inpatients compared to healthy non-alcoholics. We also found regions of gray matter alterations present in alcoholics who did not meet lifetime diagnostic criteria for any substance abuse or dependence other than alcohol (‘pure’ alcoholics) that were not present in alcoholics who met DSM IV criteria for other substance abuse or dependence. This alcohol specific gray matter alteration was similar in location to the pattern characteristic of Wernicke–Korsakoff Syndrome. 
+
+When we compared polysubstance abusing alcoholics with controls we found that polysubstance abusing alcoholics on the average had 45.71 ml less cortical volume. This was similar to the average of 51.51 ml of significant cortical volume deficit observed in the ‘pure’ alcoholics. However, this similarity in the magnitude of cortical volume differences contrasted dramatically with the difference between alcoholic groups in terms of subcortical volume; the ‘pure’ alcoholics had 8.49 ml of significant subcortical gray matter volume reduction compared to the controls (see  ), while the polysubstance abusing alcoholics had no significant subcortical volume difference. 
+
+The differences we found between ‘pure’ and polysubstance abusing alcoholics match the pattern of gray matter damage classically described in Wernicke&#x27;s Encephalopathy (WE). Acute WE is characterized by damage to the gray matter of the mammillary bodies, bilateral thalamus, periaqueductal, and periventricular gray matter, and inferior and superior colliculi ( ). The gray matter alterations found in alcoholics with only alcohol dependence relative to polysubstance abusers was in the mammillary bodies, bilateral thalamus, and dorsal midbrain ( ). WE has been considered secondary to a deficit of thiamine believed to occur episodically or chronically among alcoholics. Although we did not measure thiamine in our sample, the alcohol only dependent subjects did not display a significant difference in Body Mass Index (BMI), alanine transaminase (ALT), aspartate transaminase (AST), albumin, or Vitamin B12, compared to alcoholic polysubstance abusers. ‘Pure’ alcoholics displayed significantly higher transferrin values, consistent with a slightly better diet than that of the polysubstance abusing alcoholics. This suggests that nutrition deficits and hepatic function (at least at time of admission) do not explain the difference in subcortical volume between the two groups. However, it is possible that some of the alcoholic subjects had episodes of thiamine deficiency in the past. 
+
+In addition, WE is characterized by changes in mental status and a deficit in episodic memory, and our ‘pure’ alcoholics did not perform worse than the alcoholics with polysubstance abuse on the Buchske selective reminding memory task, a Trail Making Test (TMT), or block design IQ estimates. ‘Pure’ alcoholics displayed a significantly higher verbal IQ and a higher Stroop color-word score. 
+
+Obviously our alcohol only alcoholics did not suffer from classic Wernicke–Korsakoff&#x27;s syndrome. However, recently  ) presented evidence that a neuropathological continuum exists from uncomplicated, cognitively intact alcoholism, to Korsakoff&#x27;s Syndrome (KS). The KS patients and uncomplicated alcoholics showed similar gray matter alterations bilaterally in the orbitofrontal cortex, the insula, medial temporal lobe, thalami, hypothalamus, and the cerebellum. The thalami, mammillary bodies, and corpus callosum all showed graded volume loss, with KS having the most extensive volume loss, followed by uncomplicated alcoholics. The left thalamic radiation was the only brain region to show exclusive volume loss in KS patients. ( ). Other investigators have also suggested that there is a continuum of the neurotoxic effects of alcohol from uncomplicated alcoholism to KS ( ,  ). 
+
+There are several possible reasons that the alcoholics with polysubstance abuse display more gray matter volume than the alcoholics with only alcohol dependence. Although both groups of alcoholics reported similar history of alcohol use, it is possible that the polysubstance abusing alcoholics actually consumed less alcohol (despite their self report that they consumed similar amounts compared to the ‘pure’ alcoholics), perhaps because they had other ways of achieving an intoxicated state. In addition, it is possible that the pattern of alcohol use and diet in general differs between ‘pure’ and polysubstance abusing alcoholics. Another possibility involves a neuroprotective action mediated through the anti-inflammatory effects of cannabinoids. Several studies have posited a role for pro-inflammatory cytokines in alcohol related brain atrophy ( ,  ). Cannabinoids acting at the CB  receptor have been shown to possess anti-inflammatory effects, through the suppression of pro-inflammatory cytokines and chemokines ( ). If a neuroprotective effect of cannabinoids is in part responsible for the absence of thalamic and midbrain volume loss among the polysubstance abusing alcoholics, then future studies might test this hypothesis by specifically comparing cannabis with non-cannabis abusing alcoholics. There is a final possibility that polysubstance abusers who use stimulants may have gray matter differences that are masked by inflammation caused by stimulant use. Striatal enlargements have been seen in methamphetamine and cocaine users ( ,  ). It is possible that these users have decreased gray matter caused by alcohol use and concurrent increases in gray matter caused by stimulant use. However, volume decreases have also been found in stimulant users and the enlargements seem to be limited to the striatum ( ). The differences seen in the ‘pure’ alcoholics relative to the polysubstance abusing alcoholics are located in the diencephalon and midbrain and therefore it is less likely that stimulant enlargement is masking alcohol induced gray matter differences in the polysubstance stimulant abusing population. 
+
+The smaller gray matter volume in cocaine-only polysubstance alcoholics may be explained by the large number of cannabis users in the comparison polysubstance group (n = 64). The cannabinoids may be acting in an anti-inflammatory manner and protecting that group from this gray matter deficit. Additionally, comparisons of cocaine-only polysubstance abusers with polysubstance abusing groups (one comparison including and the other comparison excluding amphetamine/stimulant abusers) indicate that the stimulants do not play any compensatory role, hiding gray matter loss associated with alcohol use in the polysubstance abusing group. In the comparison excluding amphetamine/stimulant users, the number of alcoholics with polysubstance abuse who did not use cocaine or amphetamine/stimulant was too small to make any statistically meaningful conclusions. However, it did indicate no differences between polysubstance abusing alcoholics with cocaine-only use and those without any stimulants. The number of polysubstance abusing alcoholics without stimulant use is a limitation and prevents us from conclusively determining effects of such a condition. Further studies are required to investigate the role of stimulants directly. 
+
+Although the ‘pure’ and polysubstance abusing alcoholics differed in gray matter damage in the diencephalon and midbrain they had similar gray matter difference compared to controls in the frontal and temporal cerebral cortex. Does this mean that the ‘pure’ alcoholics had more frequent and/or severe episodes of subclinical thiamine deficiency, as has been suggested as an explanation for the subcortical damage observed in non-Wernicke–Korsakoff Syndrome alcoholics ( ), but the putative episodes of thiamine deficit do not affect cortex? Or does the similarity between the two groups of alcoholics suggest that their cortical damage precedes substance abuse and is not directly related to any specific drug related neurotoxicity? The limitations of a cross-sectional study make it difficult to determine if the cortical differences we have found between all alcoholics and healthy controls are the consequence of an effective reduced thickness or atrophy in the gray matter, or an indirect reflection of a different gyrification pattern that could have preceded substance abuse. Additionally VBM has inherent limitations, specifically regarding the spatial normalization step ( ). Smoothing and blurring may also influence the gray matter differences found in very small structures such as the hippocampus. This area should be further investigated in comparisons of alcoholics and healthy controls, as it was not found to be a significant area in our pure vs. poly comparison. 
+
+The polysubstance abusing alcoholics displayed a slightly worse performance on cognitive tasks relative to healthy controls. Polysubstance abusers had increased total trials of the Buschke memory test, lower Stroop color word scores, and longer Trails A and B trials all relative to healthy controls. ‘Pure’ alcoholics did not differ significantly from healthy controls on these measures. The slight cognitive deficits that the polysubstance abusing alcoholics exhibit may be a result of the somewhat greater fronto-cortical gray matter alterations they display. Both alcohol dependent groups show cortical differences, however, the gray matter alterations in the polysubstance group is more concentrated in the mesial frontal lobe, while the ‘pure’ alcoholics display a slightly more diffuse pattern. 
+
+Another limiting factor of our study is an inability to fully account for potential effect of individual past Axis I disorders. A good number of alcoholic subjects did have some (in most cases multiple) form of past diagnoses. We performed VBM analysis between all alcoholic subjects with anxiety vs. all alcoholics without anxiety and similarly for cases with depression and PTSD. If any of these psychological conditions were the cause of VBM differences between ‘pure’ alcoholics and those with polysubstance abuse, we would expect to see overlapping regions between these comparisons and the ‘pure’ vs. polysubstance abusing alcoholics comparison. The fact that we did not observe such regions at least partially rules out such interaction. We did observe more gray matter in the three psychiatric populations relative to the non-comorbid alcoholics. Enlarged gray matter in anxiety patients is consistent with recent literature ( ,  ). The literature on brain volume in major depressive disorder largely supports a reduction in gray matter, although results have been mixed ( ,  ,  ). Some volumetric studies in PTSD have shown reductions in gray matter ( ,  ), while others have shown no result ( ,  ). Because of the mixed results in the literature and the large overlap in patient groups due to comorbidities, more research on this subject is required. To fully rule out the role of psychiatric comorbidity, new populations of alcoholics without psychiatric diagnoses will need to be studied. 
+
+The Wernicke–Korsakoff Syndrome-like results of this study call for further research. It is important to investigate the spectrum from the uncomplicated alcoholic to those with Wernicke–Korsakoff Syndrome and elucidate if and how nutrition deficits are involved in the specific pattern of neurodegeneration. Longitudinal studies following a population of alcoholics, both relapsing and abstinent, might help to illustrate this spectrum of gray matter volume differences. Additional cognitive and memory tests should be performed in order to clarify the effect of the gray matter differences present in the alcoholics with only alcohol dependence. 
+
+ </div>
+</div>
+</div>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-11' name='judgment-11' value='agree'>
+<label for='agree-11'>Agree</label>
+<input type='radio' id='disagree-11' name='judgment-11' value='disagree'>
+<label for='disagree-11'>Disagree</label>
+<br><br>
+<label for='comment-11'><strong>Comments:</strong></label>
+<textarea id='comment-11' name='comment-11' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-12' data-pmid='22717339'>
+<h2>12. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/22717339/' target='_blank'>22717339</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This is an empirical, English-language VBM MRI study of heroin users vs controls that reports whole-brain voxelwise analyses and significant gray matter density (GMD) differences. However, the provided full text does not report peak coordinates (x,y,z in MNI or Talairach space) for any significant clusters. Inclusion criterion I7 requires at least one significant whole-brain contrast with reported peak coordinates. Because no coordinates are present in the supplied full text, the study cannot contribute coordinates for coordinate-based meta-analysis and therefore fails I7. The full text appears otherwise complete (introduction, methods, results, discussion), so fulltext_incomplete is false. Inclusion criteria met: I4, I5, I6, I9. Inclusion criteria NOT met: I7. No exclusion criteria (E5–E7) are triggered.</p>
+<p><strong>Fulltext Confidence:</strong> 0.9</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+<li><span class='criterion-tag criterion-green'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+<li><span class='criterion-tag criterion-red'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>all exclusion criteria not met</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-12' name='judgment-12' value='agree'>
+<label for='agree-12'>Agree</label>
+<input type='radio' id='disagree-12' name='judgment-12' value='disagree'>
+<label for='disagree-12'>Disagree</label>
+<br><br>
+<label for='comment-12'><strong>Comments:</strong></label>
+<textarea id='comment-12' name='comment-12' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+<div class='study' id='study-13' data-pmid='23190458'>
+<h2>13. PMID: <a href='https://pubmed.ncbi.nlm.nih.gov/23190458/' target='_blank'>23190458</a></h2>
+<div class='screening'>
+<h3>Screening Results</h3>
+<p><strong>Fulltext Decision:</strong> excluded_fulltext</p>
+<p><strong>Fulltext Reasoning:</strong> This study used longitudinal, voxelwise TBM analyses (SPM) to compare cannabis users vs non-users and reports significant peak coordinates only after applying small-volume corrections (SVC) to a priori masks (AHC and frontal lobes). The authors explicitly state that the initial whole-brain voxelwise analysis produced no significant clusters. Per the meta-analysis criteria, a qualifying whole-brain contrast must yield at least one significant cluster with reported peak coordinates (I7). Because the whole-brain contrast was null and significant results are reported only after SVC/region-restricted correction, the study does not provide qualifying whole-brain significant coordinates and must be excluded. Inclusion criteria met: I4 (empirical MRI GM comparison), I5 (GM measure), I6 (voxelwise analyses / whole-brain analysis was performed), I8 (coordinates reported), I9 (participant and MRI details reported). Inclusion criterion not met: I7 (whole-brain contrast yielded no surviving significant clusters). Exclusion criterion met: E5 (no qualifying whole-brain results; only small-volume-corrected significant findings). fulltext_incomplete=false.</p>
+<p><strong>Fulltext Confidence:</strong> 0.86</p>
+<div class='criteria-details'>
+<h3>Criteria Assessment</h3>
+<div class='criteria-grid'>
+<div>
+<h4>Inclusion</h4>
+<p><strong>Met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>I4</span> Empirical English language MRI studies assessing grey matter (GM) volume differences (e.g., volume, density, or concentration) between substance users and controls</li>
+<li><span class='criterion-tag criterion-green'>I5</span> Grey-matter measure- GM volume, density or concentration, and also surface-based measures such as cortical thickness or cortical volume. Do not exclude a study because its grey-matter measure is cortical thickness rather than voxel-based volume.</li>
+<li><span class='criterion-tag criterion-green'>I6</span> Whole-brain evidence- The paper must report at least one whole-brain between-group contrast of substance users vs controls comparing a grey-matter measure, computed as a voxelwise or vertexwise statistical map. A voxelwise map confined to a single anatomical sub-volume (e.g. a cerebellum-restricted SUIT analysis) still qualifies, provided it reports voxel coordinates.</li>
+<li><span class='criterion-tag criterion-green'>I8</span> It is acceptable for qualifying voxelwise results to be reported in tables of coordinates, figures, or supplementary materials when the main text clearly indicates those results are available.</li>
+<li><span class='criterion-tag criterion-green'>I9</span> Reporting of participant age/sex, substance use characteristics, MRI field strength, and preprocessing/statistical software is preferred; missing one or more of these details alone should not exclude an otherwise qualifying study.</li>
+</ul>
+<p><strong>Not met</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>I7</span> Significant foci must exist- that whole-brain contrast must yield at least one SIGNIFICANT cluster with reported peak coordinates (x, y, z in MNI or Talairach space). A whole-brain contrast that the paper describes as null, non-significant, or yielding no surviving clusters does NOT satisfy this criterion, even though it was performed and reported, and even if significant findings are reported elsewhere from an ROI or small-volume-corrected analysis. This meta-analysis pools coordinates and a null contrast contributes none.</li>
+</ul>
+</div>
+<div>
+<h4>Exclusion</h4>
+<p><strong>Met / triggered</strong> (red)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-red'>E5</span> Studies that report only region-of-interest (ROI) analyses with no qualifying whole-brain results.</li>
+</ul>
+<p><strong>Not met</strong> (green)</p>
+<ul class='criterion-list'>
+<li><span class='criterion-tag criterion-green'>E6</span> Studies whose only between-group result is derived from a predefined ATLAS PARCELLATION (per-region average volumes or thicknesses over atlas labels, e.g. AAL or FreeSurfer Desikan-Killiany regions) or from a MULTIVARIATE CLASSIFIER, rather than from a voxelwise or vertexwise statistical map. Whole-brain coverage by an atlas does not make a parcellation analysis a whole-brain voxelwise analysis; the source meta-analysis excludes region-of-interest analyses because they violate the ALE null hypothesis.</li>
+<li><span class='criterion-tag criterion-green'>E7</span> Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original human structural MRI data.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='content'>
+<h3>Fulltext Content</h3>
+<p>Fulltext not available</p>
+</div>
+<div class='annotation'>
+<h3>Annotation</h3>
+<p><strong>Do you agree with the LLM's judgment?</strong></p>
+<input type='radio' id='agree-13' name='judgment-13' value='agree'>
+<label for='agree-13'>Agree</label>
+<input type='radio' id='disagree-13' name='judgment-13' value='disagree'>
+<label for='disagree-13'>Disagree</label>
+<br><br>
+<label for='comment-13'><strong>Comments:</strong></label>
+<textarea id='comment-13' name='comment-13' rows='4' cols='50' placeholder='Add your comments here...'></textarea>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>Generated by Qualitative Review Tool for Meta-Analysis Pipeline</p>
+</footer>
+</body>
+</html>

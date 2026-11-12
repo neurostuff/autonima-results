@@ -82,12 +82,26 @@ def load_gold() -> dict[str, set[str]]:
     return out
 
 
-def canonical_run(project_dir: Path, suffix: str = "") -> Path | None:
-    """Highest-versioned run in one family.
+def canonical_run(project_dir: Path, suffix: str = "", tier: str = "best") -> Path | None:
+    """The run to report for one family: the REGISTERED tier if it is on disk, else the
+    highest-versioned run present.
 
-    suffix="" gives the canonical family (bare vN). suffix="-allstudies" gives the fixed-pool
-    family, which runs the same screening and annotation over a pool assembled without a
-    search-driven narrowing -- so comparing the two isolates what the pool contributes.
+    WHY THE REGISTRY COMES FIRST (fixed 2026-11-06). This used to take max(version)
+    unconditionally, which silently reports whatever run happens to be numbered highest
+    regardless of whether it was any good. That broke the moment dementia v4 was created: v4 is
+    the benchmark-tuned attempt that was DELIBERATELY not promoted -- it cut full-text recall
+    from 0.94 to 0.60 -- and `best` stayed v3. Four tables (gold survival, stage
+    precision/recall, attainable recall, false-positive composition) switched to v4 without
+    saying so, so the paper's screening numbers for dementia came from a rejected run.
+
+    The tier-tree mechanism in build_tier_tree.py does not help here. It works by VISIBILITY --
+    hiding every run but one -- which is correct for reproduce_at_tier.sh, but reproduce.sh runs
+    in place against the real projects/ directory where every version is visible.
+
+    Falling back to max() keeps the tier tree working: inside a shadow tree the registered run
+    for that tier is the only one present, so the registry and the directory agree; if a caller
+    points this at a tree holding something else, it still returns what is actually there rather
+    than None.
     """
     pattern = re.compile(rf"^v(\d+){re.escape(suffix)}$")
     versions = [
@@ -95,7 +109,19 @@ def canonical_run(project_dir: Path, suffix: str = "") -> Path | None:
         for p in project_dir.iterdir()
         if p.is_dir() and pattern.match(p.name) and (p / "outputs").is_dir()
     ]
-    return max(versions)[1] if versions else None
+    if not versions:
+        return None
+    try:
+        from run_tiers import resolve_tier
+        family = "allstudies" if suffix == "-allstudies" else "canonical"
+        registered = resolve_tier(project_dir.name, family, tier)
+    except Exception:
+        registered = None
+    if registered:
+        for _, path in versions:
+            if path.name == registered:
+                return path
+    return max(versions)[1]
 
 
 def _read(path: Path) -> dict:

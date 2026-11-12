@@ -5,7 +5,7 @@ WHY THIS EXISTS
 
 `run_categories.yaml` separates runs by how much benchmark information shaped their criteria:
 
-    verbatim   transcribed from the source paper before any results were seen -- held out by
+    initial   transcribed from the source paper before any results were seen -- held out by
                construction
     manual     the project author revised the criteria by hand, lightly, after seeing reports
     best       the version chosen on performance; in practice agent-written from the error
@@ -13,7 +13,7 @@ WHY THIS EXISTS
 
 That ordering is a gradient of leakage, and the paper leans on it for the overfitting argument
 without ever having measured it. This measures it: the same metric as Figure 4, computed for each
-tier's run, so the rise from `verbatim` to `best` is an estimate of how much of the headline could
+tier's run, so the rise from `initial` to `best` is an estimate of how much of the headline could
 be attributable to criteria having seen the answers.
 
 WHAT THE GAPS MEAN
@@ -21,7 +21,7 @@ WHAT THE GAPS MEAN
 Not every project has every tier, and the absences are informative rather than missing data. Only
 four projects were ever hand-revised, so `manual` has a smaller n by construction. `vbm_of_ptsd`
 registers the same run at all four tiers, so it contributes no progression and is reported as flat
-rather than dropped. Two projects have no `verbatim` maps at all. The honest summary is therefore
+rather than dropped. Two projects have no `initial` maps at all. The honest summary is therefore
 paired within project, never a cross-tier mean over different project sets.
 
 METRICS
@@ -53,7 +53,7 @@ MANUAL_BASE = REPO_ROOT.parent / "neurometabench" / "analysis"
 UNCORRECTED_MAP = "z.nii.gz"
 CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
 DICE_THRESHOLD = 1.96
-TIERS = ("verbatim", "manual", "best")
+TIERS = ("initial", "untuned", "benchmark_tuned", "best")
 
 
 def auto_column(project: str, key: str) -> str:
@@ -168,16 +168,17 @@ def main(argv: list[str] | None = None) -> int:
     by: dict[tuple[str, str], list[float]] = {}
     for r in rows:
         by.setdefault((r["project"], r["tier"]), []).append(r["r2"])
-    print(f"{'project':26}{'verbatim':>11}{'manual':>10}{'best':>10}   {'V->B':>8}  n")
+    print(f"{'project':26}" + "".join(f"{t.replace('benchmark_tuned', 'tuned'):>10}"
+                                               for t in TIERS) + f"   {'I->B':>8}  n")
     deltas = []
     for project in sorted({r["project"] for r in rows}):
         cells = []
         for tier in TIERS:
             v = by.get((project, tier))
             cells.append(f"{st.mean(v):.3f}" if v else "--")
-        vb = by.get((project, "verbatim")), by.get((project, "best"))
+        vb = by.get((project, "initial")), by.get((project, "best"))
         same = {r["same_run_as_best"] for r in rows
-                if r["project"] == project and r["tier"] == "verbatim"}
+                if r["project"] == project and r["tier"] == "initial"}
         if vb[0] and vb[1] and "yes" not in same:
             d = st.mean(vb[1]) - st.mean(vb[0])
             deltas.append(d)
@@ -185,9 +186,10 @@ def main(argv: list[str] | None = None) -> int:
         else:
             dtxt = "flat" if "yes" in same else "--"
         n = len(by.get((project, "best")) or [])
-        print(f"{project:26}{cells[0]:>11}{cells[1]:>10}{cells[2]:>10}   {dtxt:>8}  {n}")
+        print(f"{project:26}" + "".join(f"{c:>10}" for c in cells)
+              + f"   {dtxt:>8}  {n}")
     if deltas:
-        print(f"\n  verbatim -> best, paired within project: n = {len(deltas)}, "
+        print(f"\n  initial -> best, paired within project: n = {len(deltas)}, "
               f"mean {st.mean(deltas):+.4f}, median {st.median(deltas):+.4f}, "
               f"rises in {sum(1 for d in deltas if d > 0)}/{len(deltas)}")
     print(f"  wrote {args.output.relative_to(REPO_ROOT)}")

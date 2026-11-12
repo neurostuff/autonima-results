@@ -1,0 +1,104 @@
+search:
+  database: pubmed
+  query: ''
+  max_results: null
+  date_from: null
+  date_to: null
+  email: null
+  pmids_file: projects/cue_reactivity/official_pmids.txt
+  pmids_list: null
+screening:
+  abstract:
+    skip_stage: true
+  fulltext:
+    skip_stage: true
+retrieval:
+  sources:
+  - pubget
+  timeout: 30
+  max_retries: 3
+  download_directory: downloads
+  n_jobs: 1
+  load_excluded: true
+  full_text_sources:
+  - coordinates_path_templates:
+    - coordinates.json
+    pmid_source: folder_name
+    root_path: articles/elsevier_output/
+    text_path_templates:
+    - text.txt
+  - allowed_extensions:
+    - .html
+    pmid_source: file_name
+    processed_data_path: articles/ace_outputs/processed/
+    root_path: articles/ace_outputs
+  parse_coordinates: false
+  coordinate_model: gpt-4o-mini
+parsing:
+  parse_coordinates: true
+  coordinate_model: gpt-5-mini-2025-08-07
+annotation:
+  model: gpt-5-mini-2025-08-07
+  create_all_included_annotations: true
+  metadata_fields:
+  - analysis_name
+  - analysis_description
+  - table_caption
+  - study_title
+  - study_fulltext
+  prompt_type: multi_analysis
+  inclusion_criteria:
+  - Whole-brain evidence- The analysis must be from a group-level, univariate whole-brain
+    (voxelwise) task-evoked statistical map (e.g., main effect or within-group contrast).
+    Between-group contrasts or interactions (e.g., subgroup vs subgroup, patient vs
+    control) are acceptable if they compare the target within group contrast to another
+    group (e.g., patient drug cues>neutral cues vs control drug cues>neutral cues).
+  - Contrast or analysis must be relevant to reward-related cue-reactivity using visual
+    stimuli.
+  exclusion_criteria:
+  - Region-of-interest (ROI) analyses
+  - Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state
+    analyses (e.g., ICA, PLE, Hurst exponents)
+  - Analyses on non-appetitive cue contrasts
+  annotations:
+  - name: pooled_cue_reactivity
+    description: Appetitive cue reactivity across reward-related cues
+    inclusion_criteria:
+    - 'Analyses must be on a task measuring drug OR natural reward-related cue-reactivity
+      using visual stimuli (example tasks: Drug cue reactivity; Food cue reactivity;
+      Sexual cue reactivity)'
+    - 'The analysis/contrast must measure drug or natural reward-related cue reactivity
+      compared to control stimuli (example contrast: Drug cues>neutral cues; Food
+      cues>neutral cues; Sexual cues>neutral cues)'
+    exclusion_criteria: []
+  - name: natural_reward_cue_reactivity
+    description: Natural reward cue reactivity is characterized by the detection of
+      and attention to natural reward-related cues, such as food or social stimuli.
+    inclusion_criteria:
+    - 'Analyses must be on a task measuring NATURAL reward-related cue-reactivity
+      (example tasks: Food cue reactivity; Social cue reactivity, Sexual cue reactivity)'
+    - 'The analysis/contrast must measure natural reward-related cue reactivity compared
+      to control stimuli (example contrast: Food cues>neutral cues; Social cues>neutral
+      cues; Sexual cues>neutral cues)'
+    exclusion_criteria:
+    - Drug cue contrasts (e.g., Drug cues>neutral cues) should not be included in
+      this annotation
+  - name: drug_cue_reactivity
+    description: Drug cue reactivity as characterized by the detection of and attention
+      to drug-related cues.
+    inclusion_criteria:
+    - 'Analyses must be on a task measuring drug-related cue-reactivity (example tasks:
+      Drug cue reactivity)'
+    - 'The analysis/contrast must measure drug-related cue reactivity compared to
+      control stimuli (example contrast: Drug cues>neutral cues)'
+    exclusion_criteria:
+    - Analyses on natural reward-related cue contrasts (e.g., Food cues>neutral cues)
+      should not be included in this annotation
+  enabled: true
+output:
+  directory: projects/cue_reactivity/v4-annotation-only
+  prisma_diagram: true
+  formats:
+  - csv
+  nimads: true
+  export_excluded_studies: true

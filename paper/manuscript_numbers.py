@@ -325,10 +325,10 @@ def supplementary() -> None:
         return {p: m[b] - m[a] for p, m in means.items()
                 if a in m and b in m and runs[p].get(a) != runs[p].get(b)}
 
-    vm, mb = seg("verbatim", "manual"), seg("manual", "best")
-    print(f"  verbatim -> manual   mean {st.mean(vm.values()):+.3f}  "
+    vm, mb = seg("initial", "untuned"), seg("untuned", "benchmark_tuned")
+    print(f"  initial -> untuned         mean {st.mean(vm.values()):+.3f}  "
           f"(n={len(vm)} projects: {', '.join(sorted(vm))})")
-    print(f"  manual   -> best     mean {st.mean(mb.values()):+.3f}  "
+    print(f"  untuned -> benchmark_tuned mean {st.mean(mb.values()):+.3f}  "
           f"(n={len(mb)} projects: {', '.join(sorted(mb))})")
     if st.mean(mb.values()):
         print(f"  ratio                {st.mean(vm.values())/st.mean(mb.values()):.1f}x")

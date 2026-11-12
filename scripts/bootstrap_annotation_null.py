@@ -246,6 +246,23 @@ def main(argv: list[str] | None = None) -> int:
     if args.only_project:
         wanted = [w for w in wanted if w[0] in args.only_project]
 
+    # --tier is INERT whenever --source already names a run per row, which the default source
+    # always does. Silently honouring the source produced a "tier=untuned" null computed entirely
+    # from the tuned runs (2026-11-04); nothing in the output said so. Fail loudly instead: the
+    # two must agree, and the fix is to point --source at that tier's annotation_value.csv.
+    conflicts = sorted({
+        (project, run, resolve_tier(project, "annotation_only", args.tier))
+        for project, _key, run in wanted
+        if run and resolve_tier(project, "annotation_only", args.tier) not in (None, run)
+    })
+    if conflicts:
+        lines = "\n".join(f"    {p}: --source says {a!r}, --tier {args.tier} resolves to {b!r}"
+                           for p, a, b in conflicts)
+        raise SystemExit(
+            f"--source and --tier disagree for {len(conflicts)} project(s):\n{lines}\n"
+            f"  The run column in --source wins, so --tier would be ignored.\n"
+            f"  Pass --source <that tier's annotation_value.csv>, or drop --tier.")
+
     tasks = []
     for i, (project, key, run) in enumerate(wanted):
         run = run or resolve_tier(project, "annotation_only", args.tier)
