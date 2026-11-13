@@ -91,27 +91,16 @@ def gold_dir(project: str, key: str) -> Path | None:
     return None
 
 
-def _fit(studyset, analysis_ids):
-    """MKDA + FDR over one set of analyses.
+def _fit(studyset_data, analysis_ids):
+    """MKDA + FDR over one set of analyses, on the NiMADS studyset dict.
 
     Returns BOTH maps from the single fit -- raw z for r-squared and FDR-corrected z for dice --
     because the two metrics require different maps and refitting to get the second would double
-    the bootstrap's cost for nothing.
+    the bootstrap's cost for nothing. Selection and fitting live in mkda_fit (NiMARE 0.21: its
+    Studyset.slice keeps whole studies, so subsets are built on the dict instead).
     """
-    from nimare.meta.cbma import MKDADensity
-    from nimare.correct import FDRCorrector
-
-    sub = studyset.slice(analyses=list(analysis_ids))
-    for s in sub.studies:
-        s.name = s.id
-        for a in s.analyses:
-            a.name = a.id
-    ds = sub.to_dataset()
-    res = MKDADensity().fit(ds)
-    corrected = FDRCorrector(method="indep").transform(res)
-    return (np.asarray(res.get_map("z").dataobj),
-            np.asarray(corrected.get_map("z_corr-FDR_method-indep").dataobj),
-            len(ds.ids))
+    from mkda_fit import fit
+    return fit(studyset_data, analysis_ids)
 
 
 def _r2(a: np.ndarray, gold: np.ndarray) -> float:
@@ -133,8 +122,7 @@ def run_column(task: dict) -> dict:
     """One column: recompute the observed value, then the size-matched null."""
     warnings.filterwarnings("ignore")
     import nibabel as nib
-    from nimare.nimads import Studyset
-    from autonima.meta import _analysis_ids_for_column, _analysis_has_valid_coordinates
+    from mkda_fit import selected_ids, valid_ids as fit_ids
 
     project, key, run, n_boot, seed = (
         task["project"], task["key"], task["run"], task["n_boot"], task["seed"])
@@ -150,7 +138,7 @@ def run_column(task: dict) -> dict:
     gold_raw = nib.load(str(gdir / UNCORRECTED_MAP)).get_fdata()
     gold_cor = nib.load(str(gdir / CORRECTED_MAP)).get_fdata()
 
-    studyset = Studyset(json.loads((out / "nimads_studyset.json").read_text()))
+    studyset = json.loads((out / "nimads_studyset.json").read_text())
     ann = json.loads((out / "nimads_annotation.json").read_text())
     if isinstance(ann, list):
         ann = ann[0] if ann else {}
@@ -161,10 +149,7 @@ def run_column(task: dict) -> dict:
         return row
 
     def valid_ids(column):
-        ids = _analysis_ids_for_column(ann, column)
-        sub = studyset.slice(analyses=ids)
-        return [a.id for s in sub.studies for a in s.analyses
-                if _analysis_has_valid_coordinates(a)]
+        return fit_ids(studyset, selected_ids(ann, column))
 
     selected, pool = valid_ids(col), valid_ids(POOL_COLUMN)
     # The annotated set should be a subset of the pool; where it is not (an analysis annotated

@@ -21,10 +21,10 @@
 #
 # TWO INTERPRETERS, ON PURPOSE
 #
-# Three figure scripts need nilearn >= 0.13 for surface and glass-brain
-# rendering; the pixi environment pins nilearn 0.10.1 because NiMARE 0.2.1 does.
-# Those three run under the system python3. This is a real constraint, not an
-# accident -- see paper/README.md.
+# Three figure scripts run under the system python3, for nilearn >= 0.13 surface and
+# glass-brain rendering. That split dates from the NiMARE 0.2.1 environment, which pinned
+# nilearn 0.10.1. Since the move to NiMARE 0.21.0 the pixi environment has nilearn 0.13 too,
+# so the split is no longer required, only kept -- see paper/README.md.
 
 set -euo pipefail
 
