@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""Refit every paper map on NiMARE 0.21.0, in place.
+"""Refit every paper map with autonima v0.1.1 on NiMARE 0.21.0, in place.
 
 Each map directory listed in reports/maps_manifest.json is <run>/outputs/meta_analysis_results/
 <column>; its analyses are the column's selection in that run's nimads_annotation.json, fitted
-by mkda_fit (autonima v0.1.0's selection rules, MKDA + FDR, CBMAWorkflow with FocusCounter --
-the file set `autonima meta` wrote). Each new fit is written to a staging directory, compared
+by autonima.meta.run_meta_analysis_for_column (the code behind `autonima meta`) via mkda_fit. Each new fit is written to a staging directory, compared
 with the map it replaces, then swapped in: NiMARE's outputs in the target directory are removed
 and the new ones moved over. Old maps are not kept here; maps.tar.gz holds the 0.2.1 set.
 
-    pixi run python scripts/refit_maps.py --jobs 8 --log reports/refit_maps_nimare021.csv
+    pixi run python scripts/refit_maps.py --jobs 6 --log reports/refit_maps_autonima_v011.csv
 
 Resumable: directories already in the log are skipped.
 """
@@ -90,15 +89,13 @@ def refit(rel: str, staging_root: str) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--jobs", type=int, default=4)
-    ap.add_argument("--log", type=Path, default=REPO_ROOT / "reports" / "refit_maps_nimare021.csv")
+    ap.add_argument("--log", type=Path, default=REPO_ROOT / "reports" / "refit_maps_autonima_v011.csv")
     ap.add_argument("--staging", type=Path, default=None, help="scratch dir for fits (default: system temp)")
     ap.add_argument("--only", nargs="*", default=None, help="substring filters on map_dir")
     args = ap.parse_args()
 
-    import nimare
-    from mkda_fit import NIMARE_VERSION
-    if nimare.__version__ != NIMARE_VERSION:
-        raise SystemExit(f"NiMARE {nimare.__version__} installed; the paper maps use {NIMARE_VERSION}")
+    from mkda_fit import _check_versions
+    _check_versions()
 
     done = set()
     if args.log.exists():
