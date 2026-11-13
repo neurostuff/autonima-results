@@ -221,17 +221,20 @@ No rate limits, no undecided studies.
 | **three projects** | 260 | **376 / 323 / 358** | | 184 | $3.81 |
 
 **Findings:**
-- **The fallback recovers two thirds of the recall the records lose.** Against the baseline,
-  the shortfall falls from 53 gold studies (14%) to 18 (5%); executive function now selects
-  one more gold study than the baseline. The fallback added 35 gold studies and lost none.
-- **Precision holds** (cue 0.23 → 0.24, social 0.33, executive function 0.105 → 0.112): it
-  also added 82 non-gold studies.
+- **The fallback recovers all of the coverage loss.** All 32 gold studies the baseline
+  selected and `rec-comb` lost for want of a record (16, 10, 6) are selected with the fallback.
+  In all it added 35 gold studies and lost none. Against the baseline, the shortfall falls from
+  53 gold studies (14%) to 18 (5%); executive function now selects one more than the baseline.
+- **Precision and Dice hold.** It also added 82 non-gold studies. Selected precision
+  (baseline / rec-comb / rec-comb-ft): cue 0.28 / 0.23 / 0.24, social 0.39 / 0.33 / 0.33,
+  executive function 0.117 / 0.105 / 0.112. Mean Dice: cue 0.53 / 0.54 / 0.53, social
+  0.54 / 0.54 / 0.54, executive function 0.57 / 0.57 / 0.57.
 - **Maps are unchanged or slightly better**, the largest move cue's drug contrast r 0.752 →
   0.763 (159 → 198 studies).
 - **The added cost is about 18%** of the combined arm's ($3.81 on $20.70). A fallback call
   reads an article, so it costs about 2.3 times a record call.
-- **Still missing:** 35 gold studies the baseline selected, across the three projects. They
-  were either judged out or are fallback studies with no retrievable article; not yet split.
+- **What is still missing is judging, not coverage.** 35 gold studies the baseline selected
+  (20, 10, 5) are not selected; every one has a record, from features or from the article.
 
 **Setup notes.** The first attempt (2026-11-12) failed on a revoked Portkey key, and the venv
 lacked ACE's dependencies, so the local HTML article folders failed silently (executive
