@@ -201,3 +201,43 @@ retries; the arms' calls include them.
   pass (470 and 616 studies) was killed by systemd-oomd at 20:04 on 2026-11-11 and redone; the
   killed pass's spend was never written to `usage_history`.
 - **decision_making's `rec` and `rec-global` include a third pass** in their calls and cost.
+
+## Full-text fallback (2026-11-13)
+
+`rec-comb-ft` is `rec-comb` with `retrieval.records.fallback: fulltext`
+(autonima 0ebfc01). A study NeuroStore has coordinates for but no features is reviewed from
+its article instead of being left unavailable; the record is NeuroStore's list of its analyses
+followed by the article's text. Each run seeded from the project's `rec-comb` run and read its
+frozen NeuroStore snapshots, so the two arms differ only in the fallback studies: every
+feature-record decision is reused, and only fallback studies were called. Run on the three v4
+projects with the largest coverage losses (emotion regulation is still v2 and was left out).
+No rate limits, no undecided studies.
+
+| Project | Fallback studies with an article | Gold selected: baseline / rec-comb / rec-comb-ft | Mean r²: same order | Added calls | Added cost |
+|---|---|---|---|---|---|
+| cue_reactivity | 94 | 149 / 117 / **135** of 191 | 0.52 / 0.50 / 0.50 | 79 | $1.42 |
+| social | 84 | 168 / 153 / **163** of 238 | 0.54 / 0.55 / 0.56 | 54 | $1.15 |
+| executive_function | 82 | 59 / 53 / **60** of 171 | 0.60 / 0.60 / 0.61 | 51 | $1.24 |
+| **three projects** | 260 | **376 / 323 / 358** | | 184 | $3.81 |
+
+**Findings:**
+- **The fallback recovers all of the coverage loss.** All 32 gold studies the baseline
+  selected and `rec-comb` lost for want of a record (16, 10, 6) are selected with the fallback.
+  In all it added 35 gold studies and lost none. Against the baseline, the shortfall falls from
+  53 gold studies (14%) to 18 (5%); executive function now selects one more than the baseline.
+- **Precision and Dice hold.** It also added 82 non-gold studies. Selected precision
+  (baseline / rec-comb / rec-comb-ft): cue 0.28 / 0.23 / 0.24, social 0.39 / 0.33 / 0.33,
+  executive function 0.117 / 0.105 / 0.112. Mean Dice: cue 0.53 / 0.54 / 0.53, social
+  0.54 / 0.54 / 0.54, executive function 0.57 / 0.57 / 0.57.
+- **Maps are unchanged or slightly better**, the largest move cue's drug contrast r 0.752 →
+  0.763 (159 → 198 studies).
+- **The added cost is about 18%** of the combined arm's ($3.81 on $20.70). A fallback call
+  reads an article, so it costs about 2.3 times a record call.
+- **What is still missing is judging, not coverage.** 35 gold studies the baseline selected
+  (20, 10, 5) are not selected; every one has a record, from features or from the article.
+
+**Setup notes.** The first attempt (2026-11-12) failed on a revoked Portkey key, and the venv
+lacked ACE's dependencies, so the local HTML article folders failed silently (executive
+function got 2 of 164 articles). Both fixed; the runs above are clean re-runs from scratch.
+autonima also needed the PMCID lookup fix (74663ee, cherry-picked from
+`fix/pmcid-lookup-403`), without which Python 3.14 silently loses PMC articles.

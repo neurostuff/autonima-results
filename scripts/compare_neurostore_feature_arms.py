@@ -36,7 +36,7 @@ sys.path.insert(0, str(REPO / "scripts"))
 from compare_neurostore_arms import GOLD, PROJECTS, ensure_meta, maps, screening  # noqa: E402
 
 OUT = REPO / "reports" / "neurostore_feature_arms"
-ARMS = ["rec", "rec-comb", "rec-comb-noabs", "rec-global"]
+ARMS = ["rec", "rec-comb", "rec-comb-noabs", "rec-global", "rec-comb-ft"]
 SYSTEM_NOTES = {"all_studies", "all_abstract", "all_analyses"}
 
 
