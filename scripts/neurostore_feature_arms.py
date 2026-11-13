@@ -19,6 +19,10 @@ to run if anything else differs:
                   call.
   rec-global      rec with full-text screening skipped and its criteria added to the annotation
                   stage's global criteria: annotation alone decides, per analysis.
+  rec-comb-ft     rec-comb with retrieval.records.fallback: fulltext. A study NeuroStore has
+                  coordinates for but no features is reviewed from its article. Its first run
+                  seeds from the rec-comb run, not the baseline, and reads rec-comb's frozen
+                  NeuroStore snapshots, so the arms differ only in the fallback studies.
 
 All arms also add study_fulltext to annotation.metadata_fields where the baseline lacks it
 (the records reach annotation only through it).
@@ -52,7 +56,11 @@ ARMS = {
     "rec-comb": "screening.fulltext.mode: combined (one call screens each study and selects its analyses)",
     "rec-comb-noabs": "screening.abstract.skip_stage: true (every candidate gets the combined call)",
     "rec-global": "screening.fulltext.skip_stage: true, its criteria added to annotation's global criteria",
+    "rec-comb-ft": "retrieval.records.fallback: fulltext (studies without features are reviewed from their article)",
 }
+# An arm whose first run seeds from another arm's run instead of the baseline, and reads that
+# run's NeuroStore snapshots: only what the arm adds is decided anew.
+SEEDED_FROM = {"rec-comb-ft": "rec-comb"}
 
 
 def baseline_run(project: str) -> str:
@@ -86,8 +94,10 @@ def arm_config(project: str, arm: str):
     fields = annotation.setdefault("metadata_fields", [])
     if "study_fulltext" not in fields:
         fields.append("study_fulltext")
-    if arm in ("rec-comb", "rec-comb-noabs"):
+    if arm in ("rec-comb", "rec-comb-noabs", "rec-comb-ft"):
         config["screening"]["fulltext"]["mode"] = "combined"
+    if arm == "rec-comb-ft":
+        config["retrieval"]["records"]["fallback"] = "fulltext"
     if arm == "rec-comb-noabs":
         config["screening"]["abstract"] = {"skip_stage": True}
     if arm == "rec-global":
@@ -114,7 +124,7 @@ def assert_equivalent(base: dict, arm_cfg: dict, arm: str) -> None:
     """Fail unless the arm differs from the baseline only where the arm says it does."""
     allowed_prefixes = [("parsing",), ("retrieval", "records"), ("annotation", "metadata_fields"),
                         ("output", "directory")]
-    if arm in ("rec-comb", "rec-comb-noabs"):
+    if arm in ("rec-comb", "rec-comb-noabs", "rec-comb-ft"):
         allowed_prefixes.append(("screening", "fulltext", "mode"))
     if arm == "rec-comb-noabs":
         allowed_prefixes.append(("screening", "abstract"))
@@ -142,9 +152,9 @@ def write_run_config(project: str, arm: str) -> Path:
                 source[key] = str(Path(source[key]).relative_to(REPO))
     changes = [ARMS["rec"], "parsing.parse_coordinates: false (the analyses come with the records)"]
     if arm != "rec":
-        changes.append(ARMS[arm] if arm != "rec-comb-noabs" else ARMS["rec-comb"])
-    if arm == "rec-comb-noabs":
-        changes.append(ARMS["rec-comb-noabs"])
+        changes.append(ARMS[arm] if arm not in ("rec-comb-noabs", "rec-comb-ft") else ARMS["rec-comb"])
+    if arm in ("rec-comb-noabs", "rec-comb-ft"):
+        changes.append(ARMS[arm])
     if arm == "rec-global" and any(
         not isinstance(c, str)
         for key in ("inclusion_criteria", "exclusion_criteria")
@@ -161,7 +171,9 @@ def write_run_config(project: str, arm: str) -> Path:
         "# The only differences from it:",
         *[f"#   - {c}" for c in changes],
         "#",
-        f"# Reproduce (pins the cohort to {baseline}'s search and seeds from its cache):",
+        (f"# Reproduce (pins the cohort to {baseline}'s search; seeds from {best}-ns-{SEEDED_FROM[arm]}'s "
+         "cache and NeuroStore snapshots):" if arm in SEEDED_FROM else
+         f"# Reproduce (pins the cohort to {baseline}'s search and seeds from its cache):"),
         f"#   python scripts/neurostore_feature_arms.py {project} {arm} --live",
         "",
     ])
@@ -296,9 +308,29 @@ def main() -> None:
             stack.enter_context(patch("autonima.screening.screener.GenericLLMClient", StubScreening))
             stack.enter_context(patch("autonima.annotation.processor.AnnotationClient", StubAnnotation))
             stack.enter_context(patch("autonima.screening.combined.AnnotationClient", StubAnnotation))
+        if args.arm in SEEDED_FROM:
+            # The fallback clears the retrieval stage, and with it the NeuroStore snapshots;
+            # refetched, they would carry a day's changes to NeuroStore into feature records
+            # the arm is meant to share with its source arm. Read the source arm's instead.
+            from autonima.documents.neurostore import RECORD_ANALYSES_FILENAME, NeuroStoreRecordSource
+            from autonima.neurostore.features import FEATURES_FILENAME
+
+            source_out = REPO / "projects" / args.project / f"{best}-ns-{SEEDED_FROM[args.arm]}" / "outputs"
+            original = NeuroStoreRecordSource._snapshots
+
+            def pinned_snapshots(self, requested):
+                for name in (RECORD_ANALYSES_FILENAME, FEATURES_FILENAME):
+                    if not (self.outputs / name).exists():
+                        self.outputs.mkdir(parents=True, exist_ok=True)
+                        (self.outputs / name).write_bytes((source_out / name).read_bytes())
+                return original(self, requested)
+
+            stack.enter_context(patch.object(NeuroStoreRecordSource, "_snapshots", pinned_snapshots))
         # Seed only an arm's first run: a later pass would have its own stage files replaced
         # by the baseline's, and re-decide every study (found in neurostore_arms.py, 2026-11-03).
-        seed = None if (run_dir / "outputs" / "execution_manifest.json").exists() else baseline_dir
+        first_seed = (REPO / "projects" / args.project / f"{best}-ns-{SEEDED_FROM[args.arm]}"
+                      if args.arm in SEEDED_FROM else baseline_dir)
+        seed = None if (run_dir / "outputs" / "execution_manifest.json").exists() else first_seed
         print(f"cache seed: {seed.name if seed else 'none (resuming this arm)'}", flush=True)
         pipeline = AutonimaPipeline(
             ConfigManager().load_from_dict(config),
