@@ -1,0 +1,111 @@
+{
+  "screening": {
+    "abstract": {
+      "inclusion": {
+        "I1": "English language empirical studies with original data",
+        "I2": "Functional MRI scan conducted while human participants performed a risky, ambiguous, or perceptual decision-making task",
+        "I3": "Sample- humans of any age that were either healthy participants, substance users, as well as groups with other neuropsychiatric conditions"
+      },
+      "exclusion": {
+        "E1": "Studies using only PET or other non-fMRI neuroimaging methods",
+        "E2": "Systematic reviews or meta-analyses"
+      }
+    },
+    "fulltext": {
+      "inclusion": {
+        "I4": "Functional MRI (fMRI) scan conducted while human participants performed a risky, ambiguous, or perceptual decision-making task",
+        "I5": "At least one contrast comparing two decision-making conditions, or a decision-making task against an active CONTROL TASK. The admitted forms are- for risky-DM \"risky > safe\", \"high-risk > low-risk\", \"risk > certainty\", \"riskier > surer\", or \"experimental task (risk) > control task\"; for ambiguous-DM \"high uncertainty > low uncertainty\", \"ambiguity > ignorance\", \"ambiguous > non-ambiguous\", or \"ambiguous task > control task\"; for perceptual-DM \"hard > easy\", \"low coherence > high coherence\", or \"perceptual task > control task\". Both within-task and between-task comparisons qualify.",
+        "I6": "Whole-brain evidence- The target analysis must be a group-level, whole-brain (voxelwise) task-evoked statistical map",
+        "I7": "Any participant group qualifies- healthy participants, substance users, and participants with other neuropsychiatric conditions (internet addiction, gambling disorder, internet gaming disorder, obesity, depressive, anxiety or conduct disorders, antisocial personality disorder, schizophrenia). All age groups from roughly 10 to 69 years qualify. Do not exclude a study because of who its participants were.",
+        "I8": "It is acceptable for qualifying whole-brain results to be reported in tables of coordinates, figures, or supplementary materials, as long as they are clearly described in the text."
+      },
+      "exclusion": {
+        "E3": "Studies whose only decision-making contrasts are against an implicit baseline, rest or fixation (e.g. \"50% probability condition > implicit baseline\", \"task > rest\"). This benchmark admits only condition-versus-condition and task-versus-control-task contrasts.",
+        "E4": "Positron emission tomography (PET) studies. The source meta-analysis excluded PET deliberately, to remove heterogeneity across imaging modalities.",
+        "E5": "Studies whose decision-making task is not risky, ambiguous or perceptual DM- for example delay discounting or intertemporal choice, moral or social decision-making, reward receipt or consumption without an uncertainty manipulation, and effort-based choice.",
+        "E6": "Studies that report only region-of-interest (ROI) analyses with no whole-brain results.",
+        "E7": "Studies that report only seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents) without also reporting a whole-brain task activation map.",
+        "E8": "Studies that report ONLY between-group contrasts or interactions (e.g. substance users vs non-users, patient vs control) with no accompanying unmasked, whole-brain within-group task effect. Note this is about the contrast, not the sample- a within-group contrast in a patient or substance-using sample qualifies.",
+        "E9": "Non-empirical papers (e.g., reviews, meta-analyses, methods-only, simulations) without original fMRI data."
+      }
+    }
+  },
+  "annotation": {
+    "global": {
+      "inclusion": {
+        "GLOBAL_I1": "Task-evoked contrasts related to decision-making",
+        "GLOBAL_I2": "Whole-brain evidence- Must be a group-level, whole-brain (voxelwise) task-evoked statistical map",
+        "GLOBAL_I3": "If an analysis label is generic/truncated (e.g., analysis_0), use table caption, neighboring contrasts, and study_fulltext to infer eligibility; do not fail only because the label text is sparse.",
+        "GLOBAL_I4": "Assign the subtype from the task's outcome probabilities, as the source meta-analysis does. risky_dm- outcome probabilities are known or easily inferred and differ between options (an explicit risky vs safe choice). ambiguous_dm- outcome probabilities are not known, are hidden or occluded, cannot be inferred from the information given, change during the task (e.g. reversals), or are the same for every choice option (e.g. 50/50 guesses, two-choice prediction tasks with fixed error rates, slot or bandit choices with equal payoffs). perceptual_dm- the choice is made on the basis of available sensory evidence.",
+        "GLOBAL_I5": "Subtypes are mutually exclusive per contrast. A study normally has one subtype and all its included analyses follow it. The exception is a study that manipulates both known and unknown (or equal) probabilities, such as a risk-versus-ambiguity design- its risk contrasts go to risky_dm and its ambiguity contrasts to ambiguous_dm."
+      },
+      "exclusion": {
+        "GLOBAL_E1": "Region-of-interest (ROI) analyses",
+        "GLOBAL_E2": "Seed-based connectivity, effective connectivity (e.g., PPI, DCM), or resting-state analyses (e.g., ICA, PLE, Hurst exponents)",
+        "GLOBAL_E3": "For ambiguous_dm, risky_dm and perceptual_dm only (not common_dm)- a secondary contrast of the study. Each study contributes its main contrast for the subtype, normally ONE- the decision-phase effect of the subtype's manipulation in the whole sample (e.g. ambiguous > non-ambiguous, high > low uncertainty, risky > safe, hard > easy, task > control). Keep a second or third only when the study reports that same main effect separately for distinct groups, samples or tasks. Exclude the rest of the study's contrasts- reversed directions, parametric or brain-behaviour correlation maps, group differences and interactions, sub-condition or single-condition maps, outcome/feedback-phase maps, and duplicates of the main effect at another threshold or model. If the study's main effect is not reported as its own map, keep the single contrast closest to it."
+      }
+    },
+    "annotations": {
+      "common_dm": {
+        "inclusion": {
+          "COMMON_DM_I1": "contrasts related to risky, ambiguous, or perceptual decision-making",
+          "COMMON_DM_I2": "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {}
+      },
+      "ambiguous_dm": {
+        "inclusion": {
+          "AMBIGUOUS_DM_I1": "assign this annotation only to contrasts whose subtype is ambiguous_dm under the subtype rule.",
+          "AMBIGUOUS_DM_I2": "contrasts from tasks whose outcome probabilities are not known, hidden or not inferable, change during the task, or are equal for every option (e.g. ambiguous lottery or wheel tasks, two-choice prediction or guessing tasks, card or casino tasks with equal odds, bandit tasks).",
+          "AMBIGUOUS_DM_I3": "the more uncertain or ambiguous condition, or the ambiguous task, is on the positive side of the contrast- e.g. \u201chigh uncertainty > low uncertainty\u201d, \u201cambiguous > non-ambiguous\u201d, \u201cambiguity > risk\u201d, \u201cambiguity > ignorance\u201d, \u201cuncertain > certain decisions\u201d, \u201cambiguous task > control task\u201d, task by error-rate (uncertainty level) effects.",
+          "AMBIGUOUS_DM_I4": "include uncertainty-based choice contrasts even when labels are generic (analysis_0/analysis_1) if study/table context shows they are uncertainty decision maps.",
+          "AMBIGUOUS_DM_I5": "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {
+          "AMBIGUOUS_DM_E1": "exclude reversed contrasts whose positive side is the less uncertain condition (e.g. certain > uncertain, risk > ambiguity, non-ambiguous > ambiguous, low > high uncertainty).",
+          "AMBIGUOUS_DM_E2": "exclude sensory-perceptual difficulty contrasts (e.g., low coherence > high coherence, noisy > clear, hard > easy perceptual discrimination); those belong in perceptual_dm.",
+          "AMBIGUOUS_DM_E3": "exclude purely outcome/feedback contrasts unless the contrast directly indexes uncertainty during the decision phase."
+        }
+      },
+      "perceptual_dm": {
+        "inclusion": {
+          "PERCEPTUAL_DM_I1": "assign this annotation only to contrasts whose subtype is perceptual_dm under the subtype rule.",
+          "PERCEPTUAL_DM_I2": "contrasts where decisions are based on sensory/perceptual evidence (e.g., coherence/noise/category discrimination, hard > easy perceptual judgments, perceptual task > control).",
+          "PERCEPTUAL_DM_I3": "include low-coherence/noisy > high-coherence/clear contrasts as perceptual_dm, not ambiguous_dm.",
+          "PERCEPTUAL_DM_I4": "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {
+          "PERCEPTUAL_DM_E1": "exclude economic/probability uncertainty, reward prediction, or gambling ambiguity/risk contrasts even if stimuli are visual."
+        }
+      },
+      "risky_dm": {
+        "inclusion": {
+          "RISKY_DM_I1": "assign this annotation only to contrasts whose subtype is risky_dm under the subtype rule.",
+          "RISKY_DM_I2": "contrasts with explicit known-risk manipulation focused on risky vs safe/certain choice (e.g., risky > safe, high-risk > low-risk, risk > certainty, riskier > surer, risk task > control).",
+          "RISKY_DM_I3": "all populations (e.g., healthy controls, non-users, drug users, patients with substance use disorders, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {
+          "RISKY_DM_E1": "exclude ambiguity-dominant contrasts (e.g., ambiguity > risk, mixed risk-vs-ambiguity contrasts where ambiguity is the target); route these to ambiguous_dm.",
+          "RISKY_DM_E2": "exclude choices whose options all have the same outcome probability (e.g. 50/50 guesses, two-choice prediction tasks); route these to ambiguous_dm.",
+          "RISKY_DM_E3": "exclude generic uncertainty/prediction contrasts without a clear risky-vs-safe decision manipulation."
+        }
+      },
+      "non_using_risky": {
+        "inclusion": {
+          "NON_USING_RISKY_I1": "only apply when the study-level subtype for that PMID is risky_dm.",
+          "NON_USING_RISKY_I2": "same risky_dm contrast rules: explicit known-risk vs safe/certain choice contrasts; exclude ambiguity-dominant or generic uncertainty-only contrasts.",
+          "NON_USING_RISKY_I3": "non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions) compared to substance using populations (e.g., drug users, patients with substance use disorders)"
+        },
+        "exclusion": {}
+      },
+      "using_risky": {
+        "inclusion": {
+          "USING_RISKY_I1": "only apply when the study-level subtype for that PMID is risky_dm.",
+          "USING_RISKY_I2": "same risky_dm contrast rules: explicit known-risk vs safe/certain choice contrasts; exclude ambiguity-dominant or generic uncertainty-only contrasts.",
+          "USING_RISKY_I3": "substance using populations (e.g., drug users, patients with substance use disorders) compared to non-substance using populations (e.g., healthy controls, non-users, or other neuropsychiatric conditions)"
+        },
+        "exclusion": {}
+      }
+    }
+  }
+}
