@@ -8,7 +8,7 @@
 # The chain from run outputs to figures is real but was never written down: it
 # lives in the import graph of ~27 scripts and in whoever last ran them. That is
 # how reports/annotation_bootstrap_null.csv came to hold 35 rows after three of
-# its columns were excluded, and how figureS4 sat a week stale at a superseded
+# its columns were excluded, and how the brain-map supplement (then figureS4) sat a week stale at a superseded
 # column count. A file
 # that states the order, and fails loudly when a step does, is the difference
 # between "the figures are in git" and "the figures can be rebuilt".
@@ -21,10 +21,10 @@
 #
 # TWO INTERPRETERS, ON PURPOSE
 #
-# Three figure scripts need nilearn >= 0.13 for surface and glass-brain
-# rendering; the pixi environment pins nilearn 0.10.1 because NiMARE 0.2.1 does.
-# Those three run under the system python3. This is a real constraint, not an
-# accident -- see paper/README.md.
+# Three figure scripts run under the system python3, for nilearn >= 0.13 surface and
+# glass-brain rendering. That split dates from the NiMARE 0.2.1 environment, which pinned
+# nilearn 0.10.1. Since the move to NiMARE 0.21.0 the pixi environment has nilearn 0.13 too,
+# so the split is no longer required, only kept -- see paper/README.md.
 
 set -euo pipefail
 
@@ -114,8 +114,8 @@ if [ "$DO_SLOW" = 1 ]; then
 fi
 
 step "5/6  figures  ->  reports/nature_methods_figures/"
-run "${PY[@]}" paper/make_nature_methods_figures.py          # all but S4
-run "$SYSPY" paper/make_brain_map_figure.py --mode all --top 8   # figureS4: 8 largest + 8 smallest changes
+run "${PY[@]}" paper/make_nature_methods_figures.py          # all but S3
+run "$SYSPY" paper/make_brain_map_figure.py --mode all --top 8   # figureS3: 8 largest + 8 smallest changes
 run "$SYSPY" paper/make_brain_map_figure.py --mode contrast
 run "$SYSPY" paper/make_er_surface_figure.py                 # paper Figure 5
 
@@ -125,8 +125,8 @@ run "${PY[@]}" paper/manuscript_numbers.py
 step "verifying every expected display item was written"
 FIGS=(figure2_precision_and_attainable_recall figure3_recover_and_select_analyses
       figure4_pipeline_vs_baseline figure6_selection_decomposition
-      figureS1_tier_progression figureS2_pool_mismatch figureS3_size_matched_null
-      figureS4_brain_maps_all figureS5_measured_cost
+      figureS1_tier_progression figureS2_pool_mismatch figureS3_brain_maps_all
+      figureS4_size_matched_null figureS5_measured_cost
       figure5_er_surface_contrasts figure_brain_maps_contrast
       figure_annotation_precision_recall figure_gold_retention_raw)
 missing=0 stale=0

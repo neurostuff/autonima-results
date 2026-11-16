@@ -283,7 +283,7 @@ def result5() -> None:
         print(f"    {pr:<24}{len(fixed[pr]):>3}{st.mean(chain[pr]):>+9.3f}"
               f"{st.mean(fixed[pr]):>+12.3f}")
 
-    head("SUPPLEMENTARY S3 — every column against its own size-matched null",
+    head("SUPPLEMENTARY S4 — every column against its own size-matched null",
          "reports/annotation_bootstrap_null.csv")
     nr = [r for r in read(REPORTS / "annotation_bootstrap_null.csv")
           if r.get("status") == "ok" and r["project"] not in MAP_LEVEL_EXCLUDED]
