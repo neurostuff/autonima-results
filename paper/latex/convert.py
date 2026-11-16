@@ -92,8 +92,8 @@ FIGURES = {
     "6":  ("fig:decomposition",  "figure6_selection_decomposition"),
     "S1": ("fig:tiers",          "figureS1_tier_progression"),
     "S2": ("fig:pools",          "figureS2_pool_mismatch"),
-    "S3": ("fig:null",           "figureS3_size_matched_null"),
-    "S4": ("fig:maps",           "figureS4_brain_maps_all"),
+    "S3": ("fig:maps",           "figureS3_brain_maps_all"),
+    "S4": ("fig:null",           "figureS4_size_matched_null"),
     "S5": ("fig:cost",           "figureS5_measured_cost"),
 }
 FIGDIR = "../../reports/nature_methods_figures"
@@ -282,7 +282,7 @@ def markdown_to_latex(md: str) -> str:
         input=md, check=True, capture_output=True, text=True).stdout
 
 
-# Supplementary Fig. S4 is a 1:2.3 portrait montage; width=\linewidth would run it
+# Supplementary Fig. S3 is a 1:2.3 portrait montage; width=\linewidth would run it
 # well past the bottom of the page.
 # inputenc/T1 cannot set these; map them to LaTeX so the .tex stays portable.
 # Longest keys first -- the 10^-6 pair must resolve before the lone superscripts.
@@ -299,7 +299,7 @@ UNICODE_MAP = [
     ("\u00b1", r"$\pm$"),
 ]
 
-GRAPHICS_OPTS = {"S4": r"height=0.92\textheight,keepaspectratio"}
+GRAPHICS_OPTS = {"S3": r"height=0.92\textheight,keepaspectratio"}
 
 
 def postprocess(tex: str) -> tuple:

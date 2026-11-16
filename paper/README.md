@@ -18,7 +18,7 @@ items were written this run, so a silent half-rebuild is not possible.
 maps curated in neurometabench, which is a separate repository and a separate
 artifact with its own manuscript and DOI. The scripts default to finding it as a
 sibling directory (`../neurometabench/analysis`), overridable with
-`--manual-analysis-base`. Without it, Figures 4, 5, 6 and S3 cannot be computed.
+`--manual-analysis-base`. Without it, Figures 4, 5, 6 and S4 cannot be computed.
 
 **The article full texts.** Third-party full texts cannot be redistributed. They
 are needed only for the upstream stages -- screening and coordinate parsing --
@@ -124,8 +124,8 @@ generating scripts and `reproduce.sh` were updated with them.
 | Figure 6 | `figure6_selection_decomposition` |
 | Supplementary S1 | `figureS1_tier_progression` |
 | Supplementary S2 | `figureS2_pool_mismatch` |
-| Supplementary S3 | `figureS3_size_matched_null` |
-| Supplementary S4 | `figureS4_brain_maps_all` |
+| Supplementary S3 | `figureS3_brain_maps_all` |
+| Supplementary S4 | `figureS4_size_matched_null` |
 | Supplementary S5 | `figureS5_measured_cost` |
 
 Two further items are built but not cited:
@@ -138,7 +138,7 @@ Two further items are built but not cited:
 glass-brain rendering; the pixi environment pins nilearn 0.10.1 because NiMARE
 0.2.1 requires it. Everything else runs under pixi.
 
-This split is why `figureS4` once sat a week stale at a superseded column count:
+This split is why the brain-map supplement (then `figureS4`, now `figureS3`) once sat a week stale at a superseded column count:
 it was outside the figure registry and nothing rebuilt it. `reproduce.sh` now
 invokes both interpreters explicitly and verifies the outputs.
 

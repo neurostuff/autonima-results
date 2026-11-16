@@ -370,7 +370,7 @@ def main() -> int:
                     help="draw the group divider after this many rows (with --columns)")
     ap.add_argument("--top", type=int, default=None,
                     help="with --mode all: show only the N largest and N smallest changes, with a "
-                         "break between them (Fig S4 uses 10 of the 28 at each end)")
+                         "break between them (Fig S3 uses 10 of the 28 at each end)")
     ap.add_argument("--font-scale", type=float, default=1.0,
                     help="scale all label sizes; use ~1.5 for slides")
     ap.add_argument("--row-height", type=float, default=0.62,
@@ -435,11 +435,11 @@ def main() -> int:
             picked = rows[:args.top] + rows[-args.top:]
             print(f"  showing the {args.top} largest and {args.top} smallest of {len(rows)} "
                   f"(omitted: {len(rows) - 2 * args.top})")
-            render(picked, args.output_dir, "figureS4_brain_maps_all", args.cut_coords, args.threshold,
+            render(picked, args.output_dir, "figureS3_brain_maps_all", args.cut_coords, args.threshold,
                    break_after=args.top,
                    break_text=f"⋯   {len(rows) - 2 * args.top} contrasts with intermediate changes not shown   ⋯")
         else:
-            render(rows, args.output_dir, "figureS4_brain_maps_all", args.cut_coords, args.threshold)
+            render(rows, args.output_dir, "figureS3_brain_maps_all", args.cut_coords, args.threshold)
         return 0
 
     # Drop columns where the expert map has nothing above the display threshold. VBM PTSD is the

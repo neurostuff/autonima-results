@@ -4,8 +4,8 @@
 THE QUESTION
 
 Precision against the expert inclusion list is the paper's weakest headline number, and
-Supplementary S3 shows a large part of it is a pool mismatch: our PubMed query returns a corpus
-the published review never screened. S3 demonstrates that by swapping the pool. This asks the
+Supplementary S2 shows a large part of it is a pool mismatch: our PubMed query returns a corpus
+the published review never screened. S2 demonstrates that by swapping the pool. This asks the
 same thing directly, at the level of individual false positives:
 
     considered and rejected   the study IS in the researchers' own candidate pool, so they saw it

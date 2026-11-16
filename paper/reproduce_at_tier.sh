@@ -51,7 +51,7 @@ ROOT="$(cd "$(dirname "$ROOT")" 2>/dev/null && pwd)/$(basename "$ROOT")" || ROOT
 mkdir -p "$ROOT"
 
 PY=(pixi run python)
-# figureS4 shells out to make_brain_map_figure.py, whose --tier defaults to "best".
+# figureS3 shells out to make_brain_map_figure.py, whose --tier defaults to "best".
 # Export the tier so that call cannot silently render a best-tier figure into this tree.
 export AUTONIMA_TIER="$TIER"
 step() { printf '\n\033[1m== %s\033[0m\n' "$*"; }
@@ -125,7 +125,7 @@ PYEOF
 fi
 
 if [ "$SKIP_SLOW" = 0 ]; then
-  step "3.5/5  size-matched null (~45 min: 32 contrasts x 500 MKDA refits)  ->  figure S3"
+  step "3.5/5  size-matched null (~45 min: 32 contrasts x 500 MKDA refits)  ->  figure S4"
   # --source, NOT --tier. The run column in the source table wins, so --tier is inert whenever
   # the source names runs -- which the default source always does. Passing this tier's own
   # annotation_value.csv is what actually selects the runs; the script now refuses the

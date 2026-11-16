@@ -15,8 +15,8 @@ Figures map onto NATURE_METHODS_SKELETON.md:
     Figure 5   gain from analysis selection           Result 5  (§6)  <- the thesis
     Figure S1  criteria tier progression              --only S1
     Figure S2  pool mismatch                          --only S2
-    Figure S3  size-matched null                      --only S3
-    Figure S4  brain maps, all columns                --only S4  (~2 min, shells out)
+    Figure S3  brain maps, all columns                --only S3  (~2 min, shells out)
+    Figure S4  size-matched null                      --only S4
     Figure S5  measured cost per stage                --only S5
 
 Supplementary figures were renumbered 2026-09-16. Two that previously carried S-numbers are
@@ -1049,7 +1049,7 @@ def figure5(out_dir: Path) -> None:
     """Which selection step earns the advantage: choosing papers, or choosing analyses?
 
     Promoted to the main text 2026-09-09, replacing the size-matched-null forest that was Figure 5
-    (now Supplementary S3). It makes the same claim more directly -- two scatters that look
+    (now Supplementary S4). It makes the same claim more directly -- two scatters that look
     different, no null model needed to read them -- and it decomposes the Figure 4 margin rather
     than opening a separate comparison.
 
@@ -1147,9 +1147,9 @@ def figure5(out_dir: Path) -> None:
     save(fig, out_dir, "figure6_selection_decomposition")
 
 
-# -------------------------------------------------------------------- Supplementary S3
+# -------------------------------------------------------------------- Supplementary S4
 
-def figureS3(out_dir: Path) -> None:
+def figureS4(out_dir: Path) -> None:
     """Every column against its own size-matched null.
 
     Promoted out of the main text 2026-09-09. This was Figure 5a; the decomposition that is now
@@ -1165,13 +1165,13 @@ def figureS3(out_dir: Path) -> None:
     """
     path = REPO_ROOT / "reports" / "annotation_bootstrap_null.csv"
     if not path.exists():
-        print("  figureS3: run scripts/bootstrap_annotation_null.py first; skipped")
+        print("  figureS4: run scripts/bootstrap_annotation_null.py first; skipped")
         return
     rows = filter_rows([r for r in read(path) if r.get("status") == "ok"
                         and r["project"] not in MAP_LEVEL_EXCLUDED_PROJECTS],
-                       label="figure S3")
+                       label="figure S4")
     if not rows:
-        print("  figureS3: no usable rows; skipped")
+        print("  figureS4: no usable rows; skipped")
         return
 
     for r in rows:
@@ -1219,7 +1219,7 @@ def figureS3(out_dir: Path) -> None:
             f"columns $P$ < 0.05   \u00b7   {floor} outside all {n_boot} draws",
             transform=ax.transAxes, ha="right", va="bottom", fontsize=fs(5.6), color=INK,
             linespacing=1.5)
-    save(fig, out_dir, "figureS3_size_matched_null")
+    save(fig, out_dir, "figureS4_size_matched_null")
 
 
 # -------------------------------------------------------------------- Supplementary S1
@@ -1513,41 +1513,41 @@ def figureS2(out_dir: Path) -> None:
     save(fig, out_dir, "figureS2_pool_mismatch")
 
 
-# -------------------------------------------------------------------- Supplementary S4
+# -------------------------------------------------------------------- Supplementary S3
 
 BRAIN_MAP_SCRIPT = Path(__file__).resolve().parent / "make_brain_map_figure.py"
 
 
-def figureS4(out_dir: Path) -> None:
+def figureS3(out_dir: Path) -> None:
     """Axial slices for every scored column, all three arms side by side.
 
     Shelled out rather than drawn here, for two reasons worth stating so nobody "tidies" it
     into this module. It needs nilearn 0.13 for the current plot_stat_map API and the pixi
     environment pins 0.10.1, so it runs under the system interpreter. And it takes about two
     minutes against a couple of seconds for every other figure, so main() reports and skips it
-    on a full run; `--only S4` builds it.
+    on a full run; `--only S3` builds it.
 
     Its column set is read from cross_project_best_baseline.csv, so it inherits the dementia
-    exclusion automatically and stays at 28 rows, consistent with Figures 4, 5 and S3. Before
+    exclusion automatically and stays at 28 rows, consistent with Figures 4, 5 and S4. Before
     this was wired up the figure was outside the registry entirely, which meant a full rebuild
     silently left it stale -- it sat at the pre-exclusion 32-column version for a week.
     """
     # FORWARD THE TIER. make_brain_map_figure.py defaults --tier to "best", and this call used
-    # not to pass one at all -- so building S4 inside a non-best shadow tree silently produced a
+    # not to pass one at all -- so building S3 inside a non-best shadow tree silently produced a
     # BEST-tier figure sitting in an untuned tree. That happened once already (it showed 9 of 35
     # columns before anyone noticed). reproduce_at_tier.sh exports AUTONIMA_TIER; honour it, and
     # fall back to "best" only when nothing set it, which is the plain in-place run.
     tier = os.environ.get("AUTONIMA_TIER", "best")
     cmd = ["python3", str(BRAIN_MAP_SCRIPT), "--mode", "all", "--tier", tier,
-           "--output-dir", str(out_dir), "--name", "figureS4_brain_maps_all"]
+           "--output-dir", str(out_dir), "--name", "figureS3_brain_maps_all"]
     if FONT_SCALE != 1.0:
         cmd += ["--font-scale", f"{FONT_SCALE}"]
-    print(f"  figureS4: rendering via {BRAIN_MAP_SCRIPT.name} under system python3 "
+    print(f"  figureS3: rendering via {BRAIN_MAP_SCRIPT.name} under system python3 "
           f"at tier={tier} (~2 min)...")
     try:
         subprocess.run(cmd, check=True, cwd=REPO_ROOT)
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:
-        print(f"  figureS4: FAILED ({exc}). Build it directly with:")
+        print(f"  figureS3: FAILED ({exc}). Build it directly with:")
         print("    python3 paper/make_brain_map_figure.py --mode all")
 
 
@@ -1599,7 +1599,7 @@ def figureS5(out_dir: Path) -> None:
 
 # Keys are strings because the cost figure moved to the supplement: it is "S1", not 6. Nature
 # allows six display items and the brain-surface figure is a stronger use of the slot.
-# S4 shells out to make_brain_map_figure.py and is SKIPPED on a full run -- see SLOW_FIGURES.
+# S3 shells out to make_brain_map_figure.py and is SKIPPED on a full run -- see SLOW_FIGURES.
 # The three figures with descriptive keys lost their S-numbers on 2026-09-16; they are
 # still built and still correct, just no longer cited.
 FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
@@ -1609,7 +1609,7 @@ FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
            "annotationpr": figure_annotation_pr}
 
 
-SLOW_FIGURES = {"S4": "~2 min, shells out to make_brain_map_figure.py "
+SLOW_FIGURES = {"S3": "~2 min, shells out to make_brain_map_figure.py "
                       "under system python3 for nilearn 0.13"}
 
 
@@ -1635,7 +1635,7 @@ def main() -> int:
     wanted = args.only or sorted(FIGURES)
     print(f"writing to {args.output_dir.relative_to(REPO_ROOT)}")
     for n in wanted:
-        # Reported rather than silently omitted: the whole reason S4 is in the registry is that
+        # Reported rather than silently omitted: the whole reason S3 is in the registry is that
         # being outside it let a full rebuild leave the figure stale without saying so.
         if n in SLOW_FIGURES and not args.only:
             print(f"  figure {n}: {SLOW_FIGURES[n]} -- skipped on a full run, "
