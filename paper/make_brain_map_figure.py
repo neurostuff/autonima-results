@@ -272,8 +272,8 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
            break_text: str | None = None) -> None:
     from nilearn import plotting
 
-    arms = [("baseline", "Search-only baseline"), ("autonima", "Full pipeline"),
-            ("gold", "Expert meta-analysis")]
+    arms = [("baseline", "Search-only baseline"), ("autonima", "AutoNIMA"),
+            ("gold", "Expert reference")]
     n = len(rows)
     # nilearn leaves generous margins inside each axes, so rows need to be pulled together
     # explicitly or the figure is mostly whitespace.
@@ -296,7 +296,7 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
                f"{pretty_column(row['project'], row['manual_annotation'])}")
         axes[i][0].text(-0.04, 0.5, lbl, transform=axes[i][0].transAxes,
                         ha="right", va="center", fontsize=fs(5.6), color=INK, linespacing=1.5)
-        axes[i][2].text(1.01, 0.5, f"$\\Delta$ {row.get('metric', 'dice')}\n{row['delta']:+.3f}",
+        axes[i][2].text(1.01, 0.5, f"$\\Delta$ {row.get('metric', 'dice').replace('dice', 'Dice')}\n{row['delta']:+.3f}",
                         transform=axes[i][2].transAxes, ha="left", va="center",
                         fontsize=fs(5.6), color=MUTED, linespacing=1.4)
     fig.text(0.5, 0.005, f"axial slices at z = {list(cut_coords)}, "
@@ -437,7 +437,7 @@ def main() -> int:
                   f"(omitted: {len(rows) - 2 * args.top})")
             render(picked, args.output_dir, "figureS3_brain_maps_all", args.cut_coords, args.threshold,
                    break_after=args.top,
-                   break_text=f"⋯   {len(rows) - 2 * args.top} contrasts with intermediate changes not shown   ⋯")
+                   break_text=f"⋯   {len(rows) - 2 * args.top} meta-analyses with intermediate changes not shown   ⋯")
         else:
             render(rows, args.output_dir, "figureS3_brain_maps_all", args.cut_coords, args.threshold)
         return 0
