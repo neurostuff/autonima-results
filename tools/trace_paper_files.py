@@ -75,6 +75,11 @@ def main() -> int:
         rel = os.path.normpath(rel)
         if rel.startswith(".."):
             continue
+        # A module imported from cached bytecode is never opened as source: Python stats the
+        # .py and opens only __pycache__/<name>.cpython-XY.pyc. Map those back to the source.
+        pyc = re.match(r"^(.*?)/?__pycache__/([^/.]+)\.[^/]*\.pyc$", rel)
+        if pyc:
+            rel = f"{pyc.group(1)}/{pyc.group(2)}.py" if pyc.group(1) else f"{pyc.group(2)}.py"
         if MAPS in "/" + rel:
             head, tail = rel.split("/meta_analysis_results/", 1)
             if "/" in tail:
@@ -130,8 +135,10 @@ def main() -> int:
         else:
             project, version = run.split("/")[1], run.split("/")[2]
             extra.add(f"projects/{project}/{version}.yaml")      # the run's configuration
+    # paper/reproduce.sh is listed explicitly: the trace runs a copy of it (pointed at the
+    # traced checkout), so the original is never opened.
     extra |= {"LICENSE", "pyproject.toml", "pixi.lock", "run_categories.yaml", ".gitattributes",
-              "paper/README.md", "tools/bundle_maps.py", "scripts/refit_maps.py",
+              "paper/README.md", "paper/reproduce.sh", "tools/bundle_maps.py", "scripts/refit_maps.py",
               "scripts/mkda_fit.py", "scripts/compile_table_s1.py", "scripts/plot_cbma_three_arm.py",
               "reports/criteria_changes.csv", "reports/refit_maps_autonima_v011.csv"}
     extra |= {f for f in tracked if f.startswith("projects/") and f.count("/") == 2
