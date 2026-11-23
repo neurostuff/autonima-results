@@ -137,16 +137,18 @@ generating scripts and `reproduce.sh` were updated with them.
 Two further items are built but not cited:
 `figure_annotation_precision_recall` and `figure_brain_maps_contrast`.
 
-## Two interpreters, on purpose
+## One interpreter
 
-`make_er_surface_figure.py` and `make_brain_map_figure.py` run under the system
-`python3`, not the pixi environment. They need nilearn >= 0.13 for surface and
-glass-brain rendering; the pixi environment pins nilearn 0.10.1 because NiMARE
-0.2.1 requires it. Everything else runs under pixi.
+Every script runs in the pixi environment. `make_er_surface_figure.py` and
+`make_brain_map_figure.py` need nilearn >= 0.13 for surface and glass-brain
+rendering; they used to run under the system `python3` because the NiMARE 0.2.1
+environment pinned nilearn 0.10.1. The NiMARE 0.21.0 environment ships nilearn
+0.13, so the split is gone.
 
-This split is why the brain-map supplement (then `figureS4`, now `figureS3`) once sat a week stale at a superseded column count:
-it was outside the figure registry and nothing rebuilt it. `reproduce.sh` now
-invokes both interpreters explicitly and verifies the outputs.
+That split is why the brain-map supplement (then `figureS4`, now `figureS3`) once
+sat a week stale at a superseded column count: it was outside the figure registry
+and nothing rebuilt it. `reproduce.sh` invokes those scripts explicitly and
+verifies the outputs.
 
 ## Two environments
 

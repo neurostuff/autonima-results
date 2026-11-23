@@ -1541,11 +1541,11 @@ def figureS3(out_dir: Path) -> None:
     # columns before anyone noticed). reproduce_at_tier.sh exports AUTONIMA_TIER; honour it, and
     # fall back to "best" only when nothing set it, which is the plain in-place run.
     tier = os.environ.get("AUTONIMA_TIER", "best")
-    cmd = ["python3", str(BRAIN_MAP_SCRIPT), "--mode", "all", "--tier", tier,
+    cmd = [sys.executable, str(BRAIN_MAP_SCRIPT), "--mode", "all", "--tier", tier,
            "--output-dir", str(out_dir), "--name", "figureS3_brain_maps_all"]
     if FONT_SCALE != 1.0:
         cmd += ["--font-scale", f"{FONT_SCALE}"]
-    print(f"  figureS3: rendering via {BRAIN_MAP_SCRIPT.name} under system python3 "
+    print(f"  figureS3: rendering via {BRAIN_MAP_SCRIPT.name} "
           f"at tier={tier} (~2 min)...")
     try:
         subprocess.run(cmd, check=True, cwd=REPO_ROOT)
@@ -1613,7 +1613,7 @@ FIGURES = {"2": figure2, "3": figure3, "4": figure4, "5": figure5,
 
 
 SLOW_FIGURES = {"S3": "~2 min, shells out to make_brain_map_figure.py "
-                      "under system python3 for nilearn 0.13"}
+                      "in the same interpreter"}
 
 
 def main() -> int:

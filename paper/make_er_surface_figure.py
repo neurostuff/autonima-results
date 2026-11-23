@@ -376,9 +376,12 @@ def main(argv: list[str] | None = None) -> int:
                     help="scale all label sizes; use ~1.5 for slides")
     ap.add_argument("--output-dir", type=Path, default=DEFAULT_OUT)
     ap.add_argument("--name", default="figure5_er_surface_contrasts")
-    ap.add_argument("--layout", choices=("columns", "rows"), default="columns",
-                    help="columns (default): expert over pipeline, baseline as a separate brain "
-                         "to the right. rows: reference / pipeline / baseline stacked as three "
+    # rows is the manuscript's Figure 5 (since 2026-11-06); it was built by hand with --layout
+    # rows while reproduce.sh kept regenerating the unused columns layout under this name.
+    ap.add_argument("--layout", choices=("columns", "rows"), default="rows",
+                    help="rows (default, the manuscript's Figure 5): reference / AutoNIMA / "
+                         "baseline stacked as three rows. columns: expert over pipeline, baseline "
+                         "as a separate brain to the right. rows: reference / pipeline / baseline stacked as three "
                          "rows, with arcs in a gutter beside each contrast giving that "
                          "contrast's similarity to the reference.")
     args = ap.parse_args(argv)
