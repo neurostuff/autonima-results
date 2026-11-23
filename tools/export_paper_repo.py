@@ -83,6 +83,11 @@ def main() -> int:
         raise SystemExit(f"{len(missing)} listed files are not tracked here, e.g. {missing[:3]}")
     map_dirs = read_list(EXPORT / "map_dirs.txt")
 
+    # The maps manifest is written from the maps themselves, so an export without --maps-out
+    # keeps the target's existing manifest rather than silently dropping it.
+    kept_manifest = None
+    if args.maps_out is None and (target / "reports" / "maps_manifest.json").exists():
+        kept_manifest = (target / "reports" / "maps_manifest.json").read_text()
     clear_target(target)
     for rel in files:
         dst = target / rel
@@ -146,6 +151,11 @@ def main() -> int:
             for rel in mfiles:
                 tar.add(REPO_ROOT / rel, arcname=str(rel))
         print(f"wrote {out} ({out.stat().st_size / 2**20:.0f} MB, {len(mfiles)} files, {len(keep)} dirs)")
+
+    elif kept_manifest is not None:
+        (target / "reports" / "maps_manifest.json").write_text(kept_manifest)
+    else:
+        raise SystemExit("no --maps-out and no existing reports/maps_manifest.json in the target")
 
     commit = git("rev-parse", "HEAD")
     prov = (EXPORT / "PROVENANCE.template.md").read_text().format(
