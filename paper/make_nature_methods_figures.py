@@ -1011,23 +1011,26 @@ def figure4(out_dir: Path) -> None:
             t.set_color(MUTED)
     panel_label(ax, "a", dx=-0.20)
 
-    # b: per-column delta, sorted, with the pooled cluster-bootstrap CI behind it
+    # b: per-meta-analysis delta, sorted. The pooled mean and its cluster-bootstrap CI are
+    # reported in the inset only. Drawn as a line and band behind the bars they read as a
+    # threshold each bar does or does not clear, an inference the CI of the mean does not
+    # support (comparing one result with the rest needs x_i - mean_{-i}(x), whose interval is
+    # far wider). Dropped 2026-11-23 on co-author review.
     ax = axes[1]
+    dlab = f"$\\Delta {axis.strip('$')}$" if axis.startswith("$") else f"$\\Delta$ {axis}"
     if s:
         lo, hi, mean = float(s["ci_low"]), float(s["ci_high"]), float(s["mean_delta"])
-        ax.axhspan(lo, hi, color="#0072B2", alpha=0.10, lw=0, zorder=0)
-        ax.axhline(mean, color="#0072B2", lw=0.8, zorder=2)
     ax.axhline(0, color=INK, lw=0.6, zorder=2)
     for i, (proj, _, _, dl, _n) in enumerate(pts):
         ax.bar(i, dl, width=0.78, color=COLORS.get(proj, "#7F7F7F"), lw=0, zorder=3)
     ax.set_xlim(-1, len(pts))
     ax.set_xticks([])
-    ax.set_xlabel(f"{len(pts)} meta-analyses, ordered by $\\Delta$")
-    ax.set_ylabel(f"$\\Delta$ {axis} (AutoNIMA $-$ search-only)")
+    ax.set_xlabel(f"{len(pts)} meta-analyses, ordered by {dlab}")
+    ax.set_ylabel(f"{dlab} (AutoNIMA $-$ search-only)")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     if s:
         ax.text(0.03, 0.96,
-                f"$\\Delta$ = {mean:+.3f}\n95% CI [{lo:+.3f}, {hi:+.3f}]\n"
+                f"mean {dlab} = {mean:+.3f}\n95% CI [{lo:+.3f}, {hi:+.3f}]\n"
                 f"sign test $P$ = {float(s['sign_test_p']):.1e}",
                 transform=ax.transAxes, va="top", fontsize=fs(5.5), color=INK, linespacing=1.5)
     panel_label(ax, "b", dx=-0.18)
