@@ -97,9 +97,24 @@ def main() -> int:
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
 
-    # Same environment, the paper repository's own name.
+    # Same environment, the paper repository's own name, and only the pinned environment: the
+    # `dev` environment points at editable sibling checkouts (../autonima, ../ACE, ../pubget),
+    # which a clean machine does not have, and pixi refuses `install --locked` when it cannot
+    # resolve them. The default environment's locked package set is unchanged by dropping it.
     py = target / "pyproject.toml"
-    py.write_text(py.read_text().replace('name = "autonima-results"', 'name = "autonima-paper"', 1))
+    text = py.read_text().replace('name = "autonima-results"', 'name = "autonima-paper"', 1)
+    a = text.index("# TWO ENVIRONMENTS")
+    b = text.index("[tool.pixi.feature.pinned.pypi-dependencies]")
+    text = text[:a] + (
+        "# ONE ENVIRONMENT. autonima, ACE and pubget are pinned to public tags and commits, so the\n"
+        "# environment builds from a clone with `pixi install --locked`. (autonima-results also has a\n"
+        "# `dev` environment with editable sibling checkouts; it is development-only and not exported.)\n\n"
+    ) + text[b:]
+    a = text.index("[tool.pixi.feature.dev.pypi-dependencies]")
+    b = text.index("[tool.pixi.environments]")
+    text = text[:a] + text[b:]
+    text = text.replace('dev = { features = ["dev"], solve-group = "dev" }\n', "", 1)
+    py.write_text(text)
 
     # The refit log (bundle_maps.py's list of paper maps) restricted to the exported map dirs.
     log_src = REPO_ROOT / "reports" / "refit_maps_autonima_v011.csv"
