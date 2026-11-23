@@ -49,9 +49,13 @@ def scores(project: str, key: str):
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--out", type=Path, default=ROOT / "reports" / "cbma_skills_three_arm")
+    ap.add_argument("--out", type=Path, default=ROOT / "reports" / "cbma_skills_three_arm",
+                    help="where three_arm_scores.csv goes")
+    ap.add_argument("--fig-out", type=Path, default=ROOT / "paper" / "figures",
+                    help="where the Fig. S6 figure goes (with the other manuscript figures)")
     args = ap.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)
+    args.fig_out.mkdir(parents=True, exist_ok=True)
 
     data = {p: {key: scores(p, key) for _, key, _, _ in ARMS} for p in PROJECTS}
     # The autonima reference is the same run for every arm; take it from the first arm's report.
@@ -114,8 +118,8 @@ def main(argv=None) -> int:
                bbox_to_anchor=(0.55, 0.995), labelcolor=INK)
     fig.tight_layout(rect=(0, 0, 1, 0.94))
     for ext in ("png", "svg"):
-        fig.savefig(args.out / f"fig_S6_three_arm_comparison.{ext}", dpi=200, facecolor=SURFACE)
-    print(args.out / "fig_S6_three_arm_comparison.png")
+        fig.savefig(args.fig_out / f"figureS6_skills_comparison.{ext}", dpi=200, facecolor=SURFACE)
+    print(args.fig_out / "figureS6_skills_comparison.png")
     return 0
 
 

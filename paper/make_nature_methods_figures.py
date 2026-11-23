@@ -67,7 +67,7 @@ from make_brain_map_figure import pretty_column  # noqa: E402
 from benchmark_exclusions import filter_rows  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
+DEFAULT_OUT = REPO_ROOT / "paper" / "figures"
 DECK_OUT = REPO_ROOT / "reports" / "deck_figures"
 
 # Nature: single column 89mm, double column 183mm, max height 247mm.
@@ -1134,7 +1134,7 @@ def figure5(out_dir: Path) -> None:
         ax.set_title(what, fontsize=fs(7.0), color=INK, pad=4)
         # in-panel explainer removed 2026-09-18; the caption defines the geometry.
         ax.text(0.97, 0.05,
-                f"mean $\\Delta$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}",
+                f"mean $\\Delta r^2$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}",
                 transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(5.6),
                 color=INK, linespacing=1.5)
         panel_label(ax, letter, dx=-0.24)

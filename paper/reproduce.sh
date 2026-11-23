@@ -113,7 +113,7 @@ if [ "$DO_SLOW" = 1 ]; then
   run "${PY[@]}" scripts/bootstrap_annotation_null.py --jobs "$JOBS"
 fi
 
-step "5/6  figures  ->  reports/nature_methods_figures/"
+step "5/6  figures  ->  paper/figures/"
 run "${PY[@]}" paper/make_nature_methods_figures.py          # all but S3
 run "$SYSPY" paper/make_brain_map_figure.py --mode all --top 8   # figureS3: 8 largest + 8 smallest changes
 run "$SYSPY" paper/make_brain_map_figure.py --mode contrast
@@ -132,7 +132,7 @@ FIGS=(figure2_precision_and_attainable_recall figure3_recover_and_select_analyse
 missing=0 stale=0
 for f in "${FIGS[@]}"; do
   for ext in pdf png; do
-    p="reports/nature_methods_figures/$f.$ext"
+    p="paper/figures/$f.$ext"
     if [ ! -f "$p" ]; then echo "   MISSING $p"; missing=$((missing+1))
     elif [ "$(stat -c %Y "$p")" -lt "$START" ]; then echo "   STALE   $p"; stale=$((stale+1))
     fi

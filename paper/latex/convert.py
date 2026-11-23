@@ -80,7 +80,7 @@ def resolve_citations(md: str, bib: dict) -> dict:
     return id2key, [pid for _n, _t, pid in refs]
 
 
-# Manuscript figure number -> (label, file stem in reports/nature_methods_figures).
+# Manuscript figure number -> (label, file stem in paper/figures).
 # The stems were renamed to match these numbers during the LaTeX conversion; see
 # paper/README.md. Figure 1 is a hand-drawn schematic and is still in progress.
 FIGURES = {
@@ -96,7 +96,7 @@ FIGURES = {
     "S4": ("fig:null",           "figureS4_size_matched_null"),
     "S5": ("fig:cost",           "figureS5_measured_cost"),
 }
-FIGDIR = "../../reports/nature_methods_figures"
+FIGDIR = "../figures"
 
 # The Fig. S5 caption, restored. Every figure here is cross-checked against
 # result6() in paper/manuscript_numbers.py; only spacing and the dollar signs

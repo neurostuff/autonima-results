@@ -65,7 +65,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 MANUAL_BASE = REPO_ROOT.parent / "neurometabench" / "analysis"
 MAP_NAME = "z_corr-FDR_method-indep.nii.gz"
 POOLED = REPO_ROOT / "reports" / "cross_project_best_baseline.csv"
-DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
+DEFAULT_OUT = REPO_ROOT / "paper" / "figures"
 
 SINGLE_COL, DOUBLE_COL = 89 / 25.4, 183 / 25.4
 INK, MUTED, RULE = "#1a1a1a", "#5a5a5a", "#c8c8c8"
