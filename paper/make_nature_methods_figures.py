@@ -67,7 +67,7 @@ from make_brain_map_figure import pretty_column  # noqa: E402
 from benchmark_exclusions import filter_rows  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
+DEFAULT_OUT = REPO_ROOT / "paper" / "figures"
 DECK_OUT = REPO_ROOT / "reports" / "deck_figures"
 
 # Nature: single column 89mm, double column 183mm, max height 247mm.
@@ -407,7 +407,7 @@ def figure_gold_retention_raw_fig(out_dir: Path) -> None:
     ax.set_xticklabels(stage_ticks(labels))
     ax.set_xlim(-0.25, len(stages) - 0.45)
     ax.set_ylim(0, 100)
-    ax.set_ylabel("Gold-standard studies retained (%)")
+    ax.set_ylabel("Expert-included articles retained (%)")
     ax.grid(axis="y", alpha=0.6)
     ax.set_axisbelow(True)
     # in-panel result text removed 2026-09-18; the caption carries it.
@@ -430,7 +430,7 @@ def figure_gold_retention_raw_fig(out_dir: Path) -> None:
     ax.set_xticklabels(stage_ticks(["Search", "Abstract\nscreening",
                                     "Full-text\nscreening"]))
     ax.set_ylim(0, 1.02)
-    ax.set_ylabel("Precision vs gold standard")
+    ax.set_ylabel("Precision vs expert inclusion list")
     ax.grid(axis="y", alpha=0.6)
     ax.set_axisbelow(True)
     panel_label(ax, "b", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
@@ -438,7 +438,7 @@ def figure_gold_retention_raw_fig(out_dir: Path) -> None:
     handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
                       label=DISPLAY[p]) for p in projects]
     handles.append(Line2D([], [], ls="-", color=MEAN_COLOR, lw=1.9, marker="o", markersize=3.2,
-                          label="mean across projects"))
+                          label="mean across review articles"))
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
@@ -562,7 +562,7 @@ def figure2(out_dir: Path) -> None:
     ax.set_xticklabels(stage_ticks(labels))
     ax.set_xlim(-0.25, len(stages) - 0.42)
     ax.set_ylim(0, 1.02)
-    ax.set_ylabel("Precision vs gold standard")
+    ax.set_ylabel("Precision vs expert inclusion list")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     panel_label(ax, "a", dx=-0.20 - 0.06 * (FONT_SCALE - 1.0))
 
@@ -599,7 +599,7 @@ def figure2(out_dir: Path) -> None:
     ax.set_xticklabels(stage_ticks(labels))
     ax.set_xlim(-0.25, len(stages) - 0.42)
     ax.set_ylim(0, 1.04)
-    ax.set_ylabel("Recall vs attainable gold")
+    ax.set_ylabel("Availability-adjusted recall")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     # The grey in-panel note was removed 2026-09-18. It carried three things: the denominator
     # rule, the corpus ceiling (search returned a mean 86% of gold, 60-96%) and the raw-
@@ -615,7 +615,7 @@ def figure2(out_dir: Path) -> None:
     handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
                       label=DISPLAY[p]) for p in projects]
     handles.append(Line2D([], [], ls="-", color=MEAN_COLOR, lw=1.9, marker="o", markersize=3.2,
-                          label="mean across projects"))
+                          label="mean across review articles"))
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.20),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.2)
     fig.subplots_adjust(wspace=0.34)
@@ -963,7 +963,7 @@ def figure4(out_dir: Path) -> None:
              read(REPO_ROOT / "reports" / "cross_project_best_baseline_stats.csv")}
     s = stats.get("best_available")
     metric = (rows[0].get("metric") if rows else None) or "dice"
-    axis = {"dice": "Dice", "r2": "$R^2$", "pearson_r": "Pearson $r$"}.get(metric, metric)
+    axis = {"dice": "Dice", "r2": "$r^2$", "pearson_r": "Pearson $r$"}.get(metric, metric)
 
     # Analyses per column, keyed the same way as the baseline table so the join is exact.
     counts_path = REPO_ROOT / "reports" / "analysis_counts.csv"
@@ -992,7 +992,7 @@ def figure4(out_dir: Path) -> None:
                    color=COLORS.get(proj, "#7F7F7F"),
                    edgecolors="white", linewidths=0.35, zorder=3)
     ax.set_xlim(0, 1); ax.set_ylim(0, 1)
-    ax.set_xlabel(f"Best baseline {axis}"); ax.set_ylabel(f"Pipeline {axis}")
+    ax.set_xlabel(f"Search-only baseline {axis}"); ax.set_ylabel(f"AutoNIMA {axis}")
     ax.set_aspect("equal")
     # in-panel explainer removed 2026-09-18; the caption defines it.
     ax.grid(alpha=0.6); ax.set_axisbelow(True)
@@ -1011,23 +1011,26 @@ def figure4(out_dir: Path) -> None:
             t.set_color(MUTED)
     panel_label(ax, "a", dx=-0.20)
 
-    # b: per-column delta, sorted, with the pooled cluster-bootstrap CI behind it
+    # b: per-meta-analysis delta, sorted. The pooled mean and its cluster-bootstrap CI are
+    # reported in the inset only. Drawn as a line and band behind the bars they read as a
+    # threshold each bar does or does not clear, an inference the CI of the mean does not
+    # support (comparing one result with the rest needs x_i - mean_{-i}(x), whose interval is
+    # far wider). Dropped 2026-11-23 on co-author review.
     ax = axes[1]
+    dlab = f"$\\Delta {axis.strip('$')}$" if axis.startswith("$") else f"$\\Delta$ {axis}"
     if s:
         lo, hi, mean = float(s["ci_low"]), float(s["ci_high"]), float(s["mean_delta"])
-        ax.axhspan(lo, hi, color="#0072B2", alpha=0.10, lw=0, zorder=0)
-        ax.axhline(mean, color="#0072B2", lw=0.8, zorder=2)
     ax.axhline(0, color=INK, lw=0.6, zorder=2)
     for i, (proj, _, _, dl, _n) in enumerate(pts):
         ax.bar(i, dl, width=0.78, color=COLORS.get(proj, "#7F7F7F"), lw=0, zorder=3)
     ax.set_xlim(-1, len(pts))
     ax.set_xticks([])
-    ax.set_xlabel(f"{len(pts)} benchmark columns, ordered by advantage")
-    ax.set_ylabel(f"$\\Delta$ {axis} vs best baseline")
+    ax.set_xlabel(f"{len(pts)} meta-analyses, ordered by {dlab}")
+    ax.set_ylabel(f"{dlab} (AutoNIMA $-$ search-only)")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     if s:
         ax.text(0.03, 0.96,
-                f"$\\Delta$ = {mean:+.3f}\n95% CI [{lo:+.3f}, {hi:+.3f}]\n"
+                f"mean {dlab} = {mean:+.3f}\n95% CI [{lo:+.3f}, {hi:+.3f}]\n"
                 f"sign test $P$ = {float(s['sign_test_p']):.1e}",
                 transform=ax.transAxes, va="top", fontsize=fs(5.5), color=INK, linespacing=1.5)
     panel_label(ax, "b", dx=-0.18)
@@ -1111,11 +1114,11 @@ def figure5(out_dir: Path) -> None:
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, fh(3.05)))
     panels = (
-        ("a", "r2_baseline", "r2_screening_only", "Search-only baseline $R^2$",
-         "Article screening only $R^2$", "gain_paper_selection",
+        ("a", "r2_baseline", "r2_screening_only", "Search-only baseline $r^2$",
+         "Article screening only $r^2$", "gain_paper_selection",
          "Article selection only"),
-        ("b", "r2_all_analyses", "r2_annotated", "All analyses, fixed pool $R^2$",
-         "Analysis selection only $R^2$", "gain_analysis_only",
+        ("b", "r2_all_analyses", "r2_annotated", "Expert-article pooling baseline $r^2$",
+         "Analysis selection only $r^2$", "gain_analysis_only",
          "Analysis selection only"),
     )
     for ax, (letter, xk, yk, xl, yl, gk, what) in zip(axes, panels):
@@ -1131,7 +1134,7 @@ def figure5(out_dir: Path) -> None:
         ax.set_title(what, fontsize=fs(7.0), color=INK, pad=4)
         # in-panel explainer removed 2026-09-18; the caption defines the geometry.
         ax.text(0.97, 0.05,
-                f"mean $\\Delta$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}",
+                f"mean $\\Delta r^2$ {st.mean(g):+.3f}\nmedian {st.median(g):+.3f}",
                 transform=ax.transAxes, va="bottom", ha="right", fontsize=fs(5.6),
                 color=INK, linespacing=1.5)
         panel_label(ax, letter, dx=-0.24)
@@ -1205,7 +1208,7 @@ def figureS4(out_dir: Path) -> None:
     n_boot = min(int(r["n_boot"]) for r in rows)
     # In the axis label rather than floated inside the panel: at 35 rows the bottom rows reach the
     # lower right, which is the only corner an in-panel note fits, and it collided with them.
-    ax.set_xlabel("$R^2$ against the expert map\n"
+    ax.set_xlabel("$r^2$ against the expert reference map\n"
                   f"grey bar = 5-95% of {n_boot} size-matched draws; tick = median")
     ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
 
@@ -1215,8 +1218,8 @@ def figureS4(out_dir: Path) -> None:
     # Above the axes rather than inside: the bottom-right corner is where the strongest columns
     # put their dots, and the summary was grazing them.
     ax.text(0.995, 1.012,
-            f"median $\\Delta R^2$ {st.median(gains):+.3f}   \u00b7   {beat}/{len(rows)} "
-            f"columns $P$ < 0.05   \u00b7   {floor} outside all {n_boot} draws",
+            f"median $\\Delta r^2$ {st.median(gains):+.3f}   \u00b7   {beat}/{len(rows)} "
+            f"meta-analyses $P$ < 0.05   \u00b7   {floor} outside all {n_boot} draws",
             transform=ax.transAxes, ha="right", va="bottom", fontsize=fs(5.6), color=INK,
             linespacing=1.5)
     save(fig, out_dir, "figureS4_size_matched_null")
@@ -1349,7 +1352,7 @@ def figureS1(out_dir: Path) -> None:
     ax.set_xlim(-0.35, len(TIER_ORDER) - 0.22)
     lo, hi = min(all_y), max(all_y)
     ax.set_ylim(lo - 0.10 * (hi - lo), hi + 0.46 * (hi - lo))   # headroom for three arrows
-    ax.set_ylabel("Mean $R^2$ against the expert map")
+    ax.set_ylabel("Mean $r^2$ against the expert reference map")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
 
     # The two segments carry different meanings, so label them separately rather than quoting one
@@ -1464,7 +1467,7 @@ def figureS2(out_dir: Path) -> None:
     ax.text(0.02, 0.98,
             f"shaded = pool contribution\nat {LABELS[-1].replace(chr(10), ' ').lower()}: "
             f"{m_f[-1] - m_s[-1]:+.3f} precision\n"
-            f"({m_s[-1]:.3f} search pool \u2192 {m_f[-1]:.3f} fixed)",
+            f"({m_s[-1]:.3f} PubMed search \u2192 {m_f[-1]:.3f} author-provided)",
             transform=ax.transAxes, ha="left", va="top", fontsize=fs(5.2), color=INK,
             linespacing=1.5)
     ax.set_xticks(list(xs)); ax.set_xticklabels(stage_ticks(LABELS))
@@ -1496,7 +1499,7 @@ def figureS2(out_dir: Path) -> None:
     # Headroom above the tallest precision point so the six-line note clears it.
     lo, hi = ax.get_ylim()
     ax.set_ylim(lo, hi + 0.72 * (hi - lo))
-    ax.set_ylabel("Fixed pool \u2212 search pool")
+    ax.set_ylabel("Author-provided \u2212 PubMed search")
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     ax.legend(loc="lower right", fontsize=fs(5.2), handlelength=1.0, handletextpad=0.4,
               borderaxespad=0.4)
@@ -1505,8 +1508,8 @@ def figureS2(out_dir: Path) -> None:
 
     handles = [Line2D([], [], marker="o", ls="-", color=COLORS[p], markersize=2.8,
                       label=DISPLAY[p]) for p in projects]
-    handles += [Line2D([], [], ls="-", color=MEAN_COLOR, lw=1.9, label="mean, search pool"),
-                Line2D([], [], ls=":", color=MEAN_COLOR, lw=1.9, label="mean, fixed pool")]
+    handles += [Line2D([], [], ls="-", color=MEAN_COLOR, lw=1.9, label="mean, PubMed search pool"),
+                Line2D([], [], ls=":", color=MEAN_COLOR, lw=1.9, label="mean, author-provided pool")]
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.17),
                handletextpad=0.3, columnspacing=1.1, handlelength=1.3)
     fig.subplots_adjust(wspace=0.30)

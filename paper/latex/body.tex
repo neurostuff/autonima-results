@@ -39,7 +39,7 @@ To distinguish screening performance from data availability, we evaluated recall
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{../../reports/nature_methods_figures/figure2_precision_and_attainable_recall.pdf}
+\includegraphics[width=\linewidth]{../figures/figure2_precision_and_attainable_recall.pdf}
 \caption{\textbf{Screening improves precision while retaining most available expert-included articles.} \textbf{a}, Precision of included studies, relatively to the benchmark, increases monotonically across stages of the pipeline. \textbf{b}, Availability-adjusted recall across the same stages decreases moderately across pipeline stages, with an average of 82\% of candidate benchmark studies retained in the final stage. Articles not retrieved by the search, no available full text or yielding no coordinate tables in the main text are excluded from the denominator at the corresponding stage. Search-stage recall is therefore 100\% by construction and does not indicate complete retrieval of the benchmark literature. In both panels, colored lines represent individual projects (\emph{n} = 9), and the mean metrics are represented in black.}
 \label{fig:screening}
 \end{figure}
@@ -47,7 +47,7 @@ To distinguish screening performance from data availability, we evaluated recall
 \textbf{Automated coordinate parsing and analysis-level selection\\
 }\begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{../../reports/nature_methods_figures/figure3_recover_and_select_analyses.pdf}
+\includegraphics[width=\linewidth]{../figures/figure3_recover_and_select_analyses.pdf}
 \caption{\textbf{LLMs extract expert curated analyses and identify relevant contrast assignments.} \textbf{a}, LLM-based parsing recovered a mean of 91.4\% of expert-curated analyses (filled markers), compared with 33.3\% when each heuristically extracted coordinate table was treated as a single analysis (open markers). Automatically extracted and expert-curated analyses were matched using optimal one-to-one assignment based on coordinate and label similarity (Methods). Articles yielding no automatically extracted analyses were excluded; post-hoc review identified the absence of coordinate data from the main text as a cause of extraction failure. \textbf{b}, True-positive rate (recall) and false-positive rate for analysis-to-contrast assignments. Filled markers represent individual projects, all of which performed above the chance diagonal (mean TPR $-$ FPR 0.68). The diagonal indicates equal true-positive and false-positive rates under random selection. Open markers show the expected performance of uniformly selecting the same number of candidate assignments as AutoNIMA, which lies on the diagonal at that project\textquotesingle s prevalence. Note that the unit is the analysis-to-contrast assignment rather than the analysis, since one analysis may be eligible for more than one contrast.}
 \label{fig:parsing}
 \end{figure}
@@ -63,14 +63,14 @@ We then assessed whether the parsed analyses were assigned to the same target co
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{../../reports/nature_methods_figures/figure4_pipeline_vs_baseline.pdf}
+\includegraphics[width=\linewidth]{../figures/figure4_pipeline_vs_baseline.pdf}
 \caption{\textbf{AutoNIMA improves spatial correspondence with expert-curated reference maps.} \textbf{a}, Correspondence of AutoNIMA and search-only baseline synthesis with reference maps for 28 target contrasts across eight projects, measured as squared voxelwise correlation between unthresholded maps (\emph{r}\textsuperscript{2}). Search-only baselines pooled all available analyses from PubMed searches, targeted to individual contrasts where possible, without subsequent screening or analysis selection. Points above the identity line indicate AutoNIMA maps were more similar to the reference maps than the search-only baseline. Marker area indicates the number of pooled analyses. \textbf{b}, Differences in correspondence ($\Delta$\emph{r}\textsuperscript{2}), ordered by magnitude, with the cross-contrast mean and 95\% confidence interval estimated by bootstrapping across projects (Methods). All maps were generated using multilevel kernel density analysis (MKDA). AutoNIMA achieved higher correspondence in 26 of 28 contrasts (mean r\textsuperscript{2}, 0.557 versus 0.428; mean $\Delta$r\textsuperscript{2}, +0.129).}
 \label{fig:correspondence}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{../../reports/nature_methods_figures/figure5_er_surface_contrasts.pdf}
+\includegraphics[width=\linewidth]{../figures/figure5_er_surface_contrasts.pdf}
 \caption{\textbf{Analysis-level selection distinguishes emotion-regulation targets within articles.} Expert reference, search-only and AutoNIMA maps for three target contrasts: `increase', `maintain' and `reappraisal'. Maps are displayed on inflated cortical surfaces at \emph{z} \textgreater{} 1.96. A common emotion-regulation search-only baseline is shown for all three contrasts; contrast-specific searches produced similar maps. Dice coefficients quantify the spatial overlap of the expert reference and AutoNIMA maps with the search-only baseline.}
 \label{fig:er-surface}
 \end{figure}
@@ -83,7 +83,7 @@ Improvements varied across projects, with smaller gains in decision-making and e
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{../../reports/nature_methods_figures/figure6_selection_decomposition.pdf}
+\includegraphics[width=\linewidth]{../figures/figure6_selection_decomposition.pdf}
 \caption{\textbf{Analysis-level selection improves spatial correspondence more than article screening.} a, Correspondence of article-screening-only and search-only synthesis with reference maps for 28 target contrasts across eight projects, measured as squared voxelwise correlation between unthresholded maps (\emph{r}\textsuperscript{2}). Both conditions pooled all available analyses from their respective article sets. b, Correspondence of analysis-selection-only synthesis and its baseline with reference maps. Both conditions used the same expert-included articles from NeuroMetaBench; analysis selection retained results satisfying contrast-specific criteria, whereas the baseline pooled all parsed analyses. In both panels, points above the identity line indicate improved correspondence after screening or selection. Marker area indicates the number of pooled analyses. All maps were generated using multilevel kernel density analysis (MKDA).}
 \label{fig:decomposition}
 \end{figure}

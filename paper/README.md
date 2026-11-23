@@ -16,7 +16,10 @@ items were written this run, so a silent half-rebuild is not possible.
 
 **The expert reference maps.** Every map-level comparison is against reference
 maps curated in neurometabench, which is a separate repository and a separate
-artifact with its own manuscript and DOI. The scripts default to finding it as a
+artifact with its own manuscript and DOI
+([10.5281/zenodo.24409323](https://doi.org/10.5281/zenodo.24409323); the v1.0
+archive includes the maps under `analysis/`, built with NiMARE 0.21.0 like the
+maps here). The scripts default to finding it as a
 sibling directory (`../neurometabench/analysis`), overridable with
 `--manual-analysis-base`. Without it, Figures 4, 5, 6 and S4 cannot be computed.
 
@@ -37,7 +40,12 @@ tools/bundle_maps.py verify                # check them against reports/maps_man
 ```
 
 `reports/maps_manifest.json` is tracked, so the sha256 of every map the paper was
-built from can be checked without downloading the archive.
+built from can be checked without downloading the archive. The bundle holds the
+444 map directories the paper reads -- each refit with autonima v0.1.1 on NiMARE
+0.21.0 and checked by `scripts/refit_maps.py` (`reports/refit_maps_autonima_v011.csv`).
+Other `meta_analysis_results/` directories in a working tree (NeuroStore arms,
+archived runs) are not part of the paper and are left out; `bundle --all` includes
+them.
 
 ## What it does not do
 
@@ -48,15 +56,11 @@ wall time, paid API calls, and a corpus that has moved on since. The screening
 results, coordinate parsing and NiMADS studysets are tracked precisely so the
 evaluation is reproducible without them.
 
-**The meta-analytic maps are not yet among them.** `.gitignore` excludes
-`meta_analysis_results/`, so a fresh clone has the studysets but none of the maps
-that every map-level figure reads, and `reproduce.sh` cannot run there. On this
-machine they are present as ignored files left by earlier runs, which is why it
-works here. The planned fix is to convert the repository to DataLad and hold the
-maps in git-annex against an S3 remote; after that `datalad get` supplies them and
-the `meta_analysis_results/` ignore rule comes out. Until then, treat
-`reproduce.sh` as reproducible on a machine that has already run the pipeline,
-not from a clone.
+**The meta-analytic maps are not tracked**, since `.gitignore` excludes
+`meta_analysis_results/`. From a fresh clone, restore them from the Zenodo bundle
+(`tools/bundle_maps.py restore maps.tar.gz`) and put neurometabench beside the
+repository; `reproduce.sh` then runs end to end. `scripts/refit_maps.py`
+regenerates every map from the tracked studysets with `autonima meta` instead.
 
 ## The manuscript
 
@@ -114,7 +118,7 @@ conversion: `figure_er_surface_contrasts` was Figure 5 and
 from the numbers for everything after Figure 4. Both were renamed; the
 generating scripts and `reproduce.sh` were updated with them.
 
-| Manuscript | File in `reports/nature_methods_figures/` |
+| Manuscript | File in `paper/figures/` |
 |---|---|
 | Figure 1 | *(schematic, drawn by hand -- not generated)* |
 | Figure 2 | `figure2_precision_and_attainable_recall` |
@@ -127,6 +131,8 @@ generating scripts and `reproduce.sh` were updated with them.
 | Supplementary S3 | `figureS3_brain_maps_all` |
 | Supplementary S4 | `figureS4_size_matched_null` |
 | Supplementary S5 | `figureS5_measured_cost` |
+| Supplementary S6 | `figureS6_skills_comparison` (from `scripts/plot_cbma_three_arm.py`) |
+| Supplementary Table 1 | `paper/tables/table_s1_configurations.{csv,md,tex}` (from `scripts/compile_table_s1.py`) |
 
 Two further items are built but not cited:
 `figure_annotation_precision_recall` and `figure_brain_maps_contrast`.
@@ -176,7 +182,7 @@ Each stage writes what the next one reads; the order is not arbitrary.
    first; four other scripts read its output.
 4. **Size-matched null** → `reports/annotation_bootstrap_null.csv`. The slow step:
    32 contrasts × 500 MKDA refits.
-5. **Figures** → `reports/nature_methods_figures/`
+5. **Figures** → `paper/figures/`
 6. **Numbers** → `manuscript_numbers.py`, which re-derives every value the
    manuscript quotes so the text can be checked against the tables.
 

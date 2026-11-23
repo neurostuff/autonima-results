@@ -69,7 +69,7 @@ CORRECTED_MAP = "z_corr-FDR_method-indep.nii.gz"
 UNCORRECTED_MAP = "z.nii.gz"
 MAP_NAME = CORRECTED_MAP  # what gets rendered
 PROJECT = "emotion_regulation_2022"
-DEFAULT_OUT = REPO_ROOT / "reports" / "nature_methods_figures"
+DEFAULT_OUT = REPO_ROOT / "paper" / "figures"
 
 SINGLE_COL, DOUBLE_COL = 89 / 25.4, 183 / 25.4
 INK, MUTED, RULE = "#1a1a1a", "#5a5a5a", "#c8c8c8"

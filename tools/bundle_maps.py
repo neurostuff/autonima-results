@@ -42,6 +42,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = REPO_ROOT / "reports" / "maps_manifest.json"
 DIR_NAME = "meta_analysis_results"
+# The paper's maps: every map directory refit with autonima v0.1.1 / NiMARE 0.21.0 and verified
+# by scripts/refit_maps.py (status "ok"). The tree holds other meta_analysis_results/ directories
+# -- NeuroStore arms, archived and exploratory runs -- that the paper does not read and that were
+# fitted under other versions; bundling them would put maps of mixed provenance in the deposit.
+PAPER_MAPS_LOG = REPO_ROOT / "reports" / "refit_maps_autonima_v011.csv"
 
 
 def sha256(path: Path, chunk: int = 1 << 20) -> str:
@@ -52,15 +57,28 @@ def sha256(path: Path, chunk: int = 1 << 20) -> str:
     return h.hexdigest()
 
 
-def map_files() -> list[Path]:
-    """Every file under a meta_analysis_results directory, repo-relative, sorted."""
+def paper_map_dirs(log: Path = PAPER_MAPS_LOG) -> set[str]:
+    """Map directories listed with status "ok" in the refit log (repo-relative)."""
+    import csv
+    with open(log, newline="", encoding="utf-8") as fh:
+        return {r["map_dir"] for r in csv.DictReader(fh) if r["status"] == "ok"}
+
+
+def map_files(only_dirs: set[str] | None = None) -> list[Path]:
+    """Files under meta_analysis_results/<column>/ directories, repo-relative, sorted.
+
+    With `only_dirs`, only those <column> directories (repo-relative paths) are included."""
     out: list[Path] = []
     for d in (REPO_ROOT / "projects").rglob(DIR_NAME):
         if not d.is_dir():
             continue
         for f in d.rglob("*"):
-            if f.is_file():
-                out.append(f.relative_to(REPO_ROOT))
+            if not f.is_file():
+                continue
+            rel = f.relative_to(REPO_ROOT)
+            if only_dirs is not None and str(rel.parent) not in only_dirs:
+                continue
+            out.append(rel)
     return sorted(out)
 
 
@@ -75,8 +93,10 @@ def build_manifest(files: list[Path]) -> dict:
         if i % 200 == 0:
             print(f"    hashed {i}/{len(files)}", file=sys.stderr)
     return {
-        "description": "Meta-analytic maps for the AutoNIMA evaluation. Derived data, "
-                       "regenerable from the tracked NiMADS studysets with `autonima meta`.",
+        "description": "Meta-analytic maps for the AutoNIMA evaluation: every map the paper "
+                       "reads, fitted with autonima v0.1.1 (`autonima meta`) on NiMARE 0.21.0. "
+                       "Derived data, regenerable from the tracked NiMADS studysets.",
+        "n_dirs": len({str(Path(e["path"]).parent) for e in entries}),
         "n_files": len(entries),
         "total_bytes": total,
         "files": entries,
@@ -84,7 +104,14 @@ def build_manifest(files: list[Path]) -> dict:
 
 
 def cmd_bundle(args: argparse.Namespace) -> int:
-    files = map_files()
+    only = None if args.all else paper_map_dirs()
+    files = map_files(only)
+    if only is not None:
+        missing = only - {str(f.parent) for f in files}
+        if missing:
+            print(f"{len(missing)} paper map directories are absent from the tree, e.g. "
+                  f"{sorted(missing)[0]}", file=sys.stderr)
+            return 1
     if not files:
         print(f"no {DIR_NAME}/ files found -- nothing to bundle", file=sys.stderr)
         return 1
@@ -187,6 +214,9 @@ def main(argv: list[str] | None = None) -> int:
 
     b = sub.add_parser("bundle", help="write maps.tar.gz and the manifest")
     b.add_argument("--output", default=str(REPO_ROOT / "maps.tar.gz"))
+    b.add_argument("--all", action="store_true",
+                   help="bundle every meta_analysis_results/ directory, not only the paper's maps "
+                        f"(those listed ok in {PAPER_MAPS_LOG.relative_to(REPO_ROOT)})")
     b.set_defaults(func=cmd_bundle)
 
     r = sub.add_parser("restore", help="put a bundle back into the tree")

@@ -143,7 +143,7 @@ run cp paper/make_nature_methods_figures.py paper/make_brain_map_figure.py \
 # keeps reading the shared run_categories.yaml instead of needing a copy of the registry.
 run ln -sfn "$PWD/scripts" "$ROOT/scripts"
 
-step "5/5  figures  ->  $RR/nature_methods_figures/"
+step "5/5  figures  ->  $ROOT/paper/figures/"
 run "${PY[@]}" "$ROOT/paper/make_nature_methods_figures.py" || echo "   !! figures failed"
 
 printf '\n\033[1mdone\033[0m  tier=%s  root=%s\n' "$TIER" "$ROOT"
