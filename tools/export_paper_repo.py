@@ -138,7 +138,7 @@ def main() -> int:
         n_files=len(files), n_runs=len({"/".join(f.split("/")[:4]) if "/baselines/" in f
                                         else "/".join(f.split("/")[:3])
                                         for f in files if f.startswith("projects/")
-                                        and f.count("/") >= 3}),
+                                        and f.count("/") >= 3 and f.split("/")[2] != "reports"}),
         n_maps=len(keep))
     (target / "PROVENANCE.md").write_text(prov)
     print(f"exported {len(files)} files from autonima-results {commit[:8]} into {target}")

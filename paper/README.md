@@ -26,7 +26,7 @@ sibling directory (`../neurometabench/analysis`), overridable with
 **The article full texts.** Third-party full texts cannot be redistributed. They
 are needed only for the upstream stages -- screening and coordinate parsing --
 which therefore cannot be reproduced from a clone. Everything downstream can: the
-NiMADS studysets and annotations for all 94 runs are tracked, and
+NiMADS studysets and annotations of every run are tracked, and
 `autonima meta` regenerates the meta-analytic maps from those alone.
 
 **The meta-analytic maps**, for that reason. They are derived data, regenerable
@@ -41,11 +41,10 @@ tools/bundle_maps.py verify                # check them against reports/maps_man
 
 `reports/maps_manifest.json` is tracked, so the sha256 of every map the paper was
 built from can be checked without downloading the archive. The bundle holds the
-444 map directories the paper reads -- each refit with autonima v0.1.1 on NiMARE
-0.21.0 and checked by `scripts/refit_maps.py` (`reports/refit_maps_autonima_v011.csv`).
-Other `meta_analysis_results/` directories in a working tree (NeuroStore arms,
-archived runs) are not part of the paper and are left out; `bundle --all` includes
-them.
+map directories listed as refit in `reports/refit_maps_autonima_v011.csv` -- each
+fitted with autonima v0.1.1 on NiMARE 0.21.0 by `scripts/refit_maps.py`. Other
+`meta_analysis_results/` directories in a working tree (NeuroStore arms, archived
+runs) are not part of the paper and are left out; `bundle --all` includes them.
 
 ## What it does not do
 
