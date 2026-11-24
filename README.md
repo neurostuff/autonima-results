@@ -2,6 +2,12 @@
 
 Evaluation code, configurations and results accompanying the AutoNIMA paper.
 
+**For the manuscript's figures, tables and numbers, use
+[neurostuff/autonima-paper](https://github.com/neurostuff/autonima-paper)**: a frozen,
+self-contained subset of this repository (exported by `tools/export_paper_repo.py`) that
+rebuilds everything from a clone. This repository is the working tree: it also holds archived
+configurations, exploratory arms (NeuroStore, document arms, pilots) and the full history.
+
 AutoNIMA itself lives in a separate repository:
 **[neurostuff/autonima](https://github.com/neurostuff/autonima)**
 ([docs](https://neurostuff.github.io/autonima/), [PyPI](https://pypi.org/project/autonima/)).

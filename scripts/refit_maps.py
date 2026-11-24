@@ -34,9 +34,16 @@ FIELDS = ["map_dir", "column", "n_selected", "n_fitted", "r_old_new", "max_abs_d
           "supra_old", "supra_new", "seconds", "status"]
 
 
-def map_dirs() -> list[str]:
+def map_dirs(runs: list[str] | None = None) -> list[str]:
+    """Map directories in the manifest, plus every column of each run in `runs`."""
     files = json.loads((REPO_ROOT / "reports" / "maps_manifest.json").read_text())["files"]
-    return sorted({os.path.dirname(f["path"]) for f in files if f["path"].endswith("/z.nii.gz")})
+    dirs = {os.path.dirname(f["path"]) for f in files if f["path"].endswith("/z.nii.gz")}
+    for run in runs or []:
+        root = REPO_ROOT / run / "outputs" / "meta_analysis_results"
+        if not root.is_dir():
+            raise SystemExit(f"{run}: no outputs/meta_analysis_results/")
+        dirs |= {str(d.relative_to(REPO_ROOT)) for d in root.iterdir() if (d / "z.nii.gz").exists()}
+    return sorted(dirs)
 
 
 def refit(rel: str, staging_root: str) -> dict:
@@ -92,6 +99,9 @@ def main() -> int:
     ap.add_argument("--log", type=Path, default=REPO_ROOT / "reports" / "refit_maps_autonima_v011.csv")
     ap.add_argument("--staging", type=Path, default=None, help="scratch dir for fits (default: system temp)")
     ap.add_argument("--only", nargs="*", default=None, help="substring filters on map_dir")
+    ap.add_argument("--runs", nargs="*", default=None,
+                    help="also refit every column of these runs (repo-relative run dirs), e.g. a "
+                         "tier run whose maps were never in the manifest")
     args = ap.parse_args()
 
     from mkda_fit import _check_versions
@@ -100,7 +110,7 @@ def main() -> int:
     done = set()
     if args.log.exists():
         done = {r["map_dir"] for r in csv.DictReader(open(args.log)) if r["status"] == "ok"}
-    todo = [d for d in map_dirs() if d not in done and (not args.only or any(o in d for o in args.only))]
+    todo = [d for d in map_dirs(args.runs) if d not in done and (not args.only or any(o in d for o in args.only))]
     print(f"{len(todo)} map directories to refit ({len(done)} already done)", flush=True)
     staging = str(args.staging or tempfile.gettempdir())
     new_log = not args.log.exists()

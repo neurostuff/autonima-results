@@ -19,12 +19,12 @@
 #   paper/reproduce.sh --figures-only   # redraw from existing reports/*.csv (~3 min)
 #   paper/reproduce.sh --skip-slow      # everything except the size-matched null
 #
-# TWO INTERPRETERS, ON PURPOSE
+# ONE INTERPRETER
 #
-# Three figure scripts run under the system python3, for nilearn >= 0.13 surface and
-# glass-brain rendering. That split dates from the NiMARE 0.2.1 environment, which pinned
-# nilearn 0.10.1. Since the move to NiMARE 0.21.0 the pixi environment has nilearn 0.13 too,
-# so the split is no longer required, only kept -- see paper/README.md.
+# Every step runs in the pixi environment. Three figure scripts (brain maps, Figure 5 surface)
+# used to run under the system python3 because the NiMARE 0.2.1 environment pinned nilearn
+# 0.10.1 and they need nilearn >= 0.13; the NiMARE 0.21.0 environment ships nilearn 0.13, so
+# the split is gone and a clean machine needs nothing beyond `pixi install`.
 
 set -euo pipefail
 
@@ -32,7 +32,6 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO"
 
 PY=(pixi run python)
-SYSPY=/usr/bin/python3
 JOBS="${JOBS:-$(nproc)}"
 
 DO_EVIDENCE=1 DO_SLOW=1
@@ -115,9 +114,9 @@ fi
 
 step "5/6  figures  ->  paper/figures/"
 run "${PY[@]}" paper/make_nature_methods_figures.py          # all but S3
-run "$SYSPY" paper/make_brain_map_figure.py --mode all --top 8   # figureS3: 8 largest + 8 smallest changes
-run "$SYSPY" paper/make_brain_map_figure.py --mode contrast
-run "$SYSPY" paper/make_er_surface_figure.py                 # paper Figure 5
+run "${PY[@]}" paper/make_brain_map_figure.py --mode all --top 8   # figureS3: 8 largest + 8 smallest changes
+run "${PY[@]}" paper/make_brain_map_figure.py --mode contrast
+run "${PY[@]}" paper/make_er_surface_figure.py                 # paper Figure 5 (rows layout)
 
 step "6/6  manuscript numbers"
 run "${PY[@]}" paper/manuscript_numbers.py
