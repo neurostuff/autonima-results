@@ -774,6 +774,14 @@ def resolve_retrieval_pubget_dir(project_output_dir: Path) -> Path | None:
     if is_valid_retrieval_dir(direct):
         return direct
 
+    # retrieval/ is not tracked (it holds article full texts). Where a reported run's table-only
+    # baseline comes from pubget's table coordinates, tools/snapshot_table_baseline.py keeps a
+    # tracked, text-free copy of exactly what this baseline reads (PMCID->PMID, table IDs and
+    # labels, coordinates), so the baseline reproduces from a checkout without the articles.
+    snapshot = project_output_dir / "outputs" / "table_only_baseline"
+    if is_valid_retrieval_dir(snapshot):
+        return snapshot
+
     run_name = project_output_dir.name
     project_dir = project_output_dir.parent
     sibling_names: list[str] = []
