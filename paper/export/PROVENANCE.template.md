@@ -15,12 +15,6 @@ under `strace` in a clean checkout of autonima-results, and every tracked file i
 A short whitelist adds each run's configuration and screening outputs (promised in the
 manuscript's Data availability statement) and the licence and environment files.
 
-**Table-only baseline.** For two runs (decision_making `v2-annotation-only`,
-emotion_regulation_2022 `v4-annotation-only`) the parsing baseline of Fig. 3a reads pubget's table
-coordinates, which sit beside the article texts in the untracked `retrieval/` folder. Those runs'
-`outputs/table_only_baseline/` holds a text-free copy of exactly the fields the baseline reads:
-PMIDs, table IDs and labels, and coordinates.
-
 **Re-running.** `paper/reproduce.sh` in this tree rewrites the evaluation tables the figures are
 drawn from, Supplementary Table 1 and the manuscript numbers with values identical to the committed
 copies. Some outputs it also rewrites will differ, as expected:

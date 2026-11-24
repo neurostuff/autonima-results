@@ -126,11 +126,7 @@ def main() -> int:
                      "fulltext_retrieval_results.json", "fulltext_screening_results.json",
                      "missing_fulltexts.csv", "coordinate_parsing_results.json",
                      "annotation_results.json", "nimads_studyset.json", "nimads_annotation.json",
-                     "criteria_mapping.json", "execution_progress.json",
-                     # text-free pubget table coordinates for the table-only baseline, where a
-                     # run has them (tools/snapshot_table_baseline.py)
-                     "table_only_baseline/metadata.csv", "table_only_baseline/tables.csv",
-                     "table_only_baseline/coordinates.csv")
+                     "criteria_mapping.json", "execution_progress.json")
     extra = set()
     for run in kept_runs:
         extra |= {f"{run}/outputs/{name}" for name in stage_outputs}

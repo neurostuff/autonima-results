@@ -774,14 +774,6 @@ def resolve_retrieval_pubget_dir(project_output_dir: Path) -> Path | None:
     if is_valid_retrieval_dir(direct):
         return direct
 
-    # retrieval/ is not tracked (it holds article full texts). Where a reported run's table-only
-    # baseline comes from pubget's table coordinates, tools/snapshot_table_baseline.py keeps a
-    # tracked, text-free copy of exactly what this baseline reads (PMCID->PMID, table IDs and
-    # labels, coordinates), so the baseline reproduces from a checkout without the articles.
-    snapshot = project_output_dir / "outputs" / "table_only_baseline"
-    if is_valid_retrieval_dir(snapshot):
-        return snapshot
-
     run_name = project_output_dir.name
     project_dir = project_output_dir.parent
     sibling_names: list[str] = []
@@ -995,26 +987,27 @@ def load_raw_retrieval_table_only_auto_data(
 
 
 def load_table_only_auto_data(project_output_dir: Path) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
-    raw_by_pmid, raw_info = load_raw_retrieval_table_only_auto_data(project_output_dir)
+    """Table-only baseline: the run's own parsed coordinates, pooled into one unit per table.
+
+    Every coordinate the parser extracted from a table is kept, but the table is not split into
+    analyses, so comparing it with the parsed analyses isolates the analysis-splitting step with
+    the coordinates held fixed. Raw retrieval coordinates (pubget's table extraction) are used
+    only when a run has no coordinate parses at all.
+
+    The raw coordinates used to win whenever they held more coordinate rows, which mixed the two
+    sources across projects: decision_making and emotion_regulation_2022 took pubget's, scored
+    on only the papers pubget covered (25 of 112 expert analyses for decision_making), while the
+    other seven took the parses. The manuscript's 34.8% was that mixture; the parses for all
+    nine give 33.2%.
+    """
     parsed_by_pmid, parsed_info = load_table_only_auto_data_from_coordinate_parsing(
         project_output_dir / "outputs" / "coordinate_parsing_results.json"
     )
-    raw_coord_count = int(raw_info.get("coordinate_rows", 0) or 0)
-    parsed_coord_count = int(parsed_info.get("coordinate_rows", 0) or 0)
-    raw_pmid_count = int(raw_info.get("pmids_with_table_coordinates", 0) or 0)
-    parsed_pmid_count = int(parsed_info.get("pmids_with_table_coordinates", 0) or 0)
-
-    if parsed_by_pmid and (parsed_coord_count > raw_coord_count or parsed_pmid_count > raw_pmid_count):
-        parsed_info["preferred_over_raw_retrieval"] = bool(raw_by_pmid)
-        parsed_info["raw_retrieval_source"] = raw_info.get("source", "")
-        parsed_info["raw_retrieval_coordinate_rows"] = raw_coord_count
-        parsed_info["raw_retrieval_pmids_with_table_coordinates"] = raw_pmid_count
+    if parsed_by_pmid:
         return parsed_by_pmid, parsed_info
+    raw_by_pmid, raw_info = load_raw_retrieval_table_only_auto_data(project_output_dir)
     if raw_by_pmid:
-        raw_info["preferred_over_coordinate_parsing_results"] = bool(parsed_by_pmid)
         raw_info["coordinate_parsing_results_source"] = parsed_info.get("source", "")
-        raw_info["coordinate_parsing_results_coordinate_rows"] = parsed_coord_count
-        raw_info["coordinate_parsing_results_pmids_with_table_coordinates"] = parsed_pmid_count
         return raw_by_pmid, raw_info
     return parsed_by_pmid, parsed_info
 
