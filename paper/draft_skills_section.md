@@ -1,6 +1,6 @@
 # Draft: skills-based agent comparison (Fig. S6)
 
-Plain text for pasting into the Google Doc. The same text is in latex/body.tex and latex/supplementary.tex.
+Plain text for pasting into the Google Doc.
 
 ## Results
 

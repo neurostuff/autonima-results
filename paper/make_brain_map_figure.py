@@ -75,6 +75,7 @@ INK, MUTED, RULE = "#1a1a1a", "#5a5a5a", "#c8c8c8"
 # row more space to absorb them. Publication output is the default (both 1.0) and is untouched.
 FONT_SCALE = 1.0
 ROW_HEIGHT = 0.62
+FIG_WIDTH = DOUBLE_COL   # inches; --width-mm overrides (Fig. S3 is set landscape)
 
 
 def fs(size: float) -> float:
@@ -173,7 +174,7 @@ def suprathreshold(path: Path, threshold: float) -> int:
     """Voxels surviving the display threshold. A row where nothing survives shows an empty brain."""
     import nibabel as nib
     d = np.nan_to_num(nib.load(str(path)).get_fdata())
-    return int((np.abs(d) > threshold).sum())
+    return int((d > threshold).sum())   # maps are non-negative; one-sided, as in the text
 
 
 def one_per_project(rows: list[dict]) -> list[dict]:
@@ -273,14 +274,17 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
     from nilearn import plotting
 
     arms = [("baseline", "Search-only baseline"), ("autonima", "AutoNIMA"),
-            ("gold", "Expert reference")]
+            ("gold", "Expert-reference maps")]
     n = len(rows)
     # nilearn leaves generous margins inside each axes, so rows need to be pulled together
     # explicitly or the figure is mostly whitespace.
-    fig, axes = plt.subplots(n, 3, figsize=(DOUBLE_COL, ROW_HEIGHT * n),
+    fig, axes = plt.subplots(n, 3, figsize=(FIG_WIDTH, ROW_HEIGHT * n),
                              squeeze=False, facecolor="white")
-    left = min(0.34, 0.19 + 0.085 * (FONT_SCALE - 1.0))
-    fig.subplots_adjust(hspace=0.02, wspace=0.02, left=left, right=0.93,
+    # Margins in inches (row labels left, the delta right), so a wider figure gives the extra
+    # width to the brains rather than to empty margin.
+    left = min(0.34, 0.19 + 0.085 * (FONT_SCALE - 1.0)) * DOUBLE_COL / FIG_WIDTH
+    right = 1 - 0.07 * DOUBLE_COL / FIG_WIDTH
+    fig.subplots_adjust(hspace=0.02, wspace=0.02, left=left, right=right,
                         top=0.94, bottom=0.06)
     for i, row in enumerate(rows):
         for j, (arm, arm_label) in enumerate(arms):
@@ -300,7 +304,7 @@ def render(rows: list[dict], out_dir: Path, name: str, cut_coords, threshold: fl
                         transform=axes[i][2].transAxes, ha="left", va="center",
                         fontsize=fs(5.6), color=MUTED, linespacing=1.4)
     fig.text(0.5, 0.005, f"axial slices at z = {list(cut_coords)}, "
-             f"FDR-corrected z thresholded at |z| > {threshold}",
+             f"FDR-corrected z thresholded at z > {threshold}",
              ha="center", fontsize=fs(5.2), color=MUTED)
 
     # Mark the discontinuity, before saving. Without it six rows read as a ranked run of six, and
@@ -358,7 +362,7 @@ def main() -> int:
     ap.add_argument("--metric", default="dice",
                     help="metric for ranking and labelling exemplars. Defaults to dice HERE even "
                          "though Figures 4 and 5 report r2, and the difference is deliberate: "
-                         "this figure renders maps THRESHOLDED at |z| > threshold, and dice "
+                         "this figure renders maps THRESHOLDED at z > threshold, and dice "
                          "measures overlap of thresholded maps, so it is the metric describing "
                          "what the reader can actually see. r2 measures unthresholded "
                          "correlation, which the rendered panels do not show.")
@@ -370,17 +374,19 @@ def main() -> int:
                     help="draw the group divider after this many rows (with --columns)")
     ap.add_argument("--top", type=int, default=None,
                     help="with --mode all: show only the N largest and N smallest changes, with a "
-                         "break between them (Fig S3 uses 10 of the 28 at each end)")
+                         "break between them (Fig. S3 uses 6 of the 27 at each end)")
     ap.add_argument("--font-scale", type=float, default=1.0,
                     help="scale all label sizes; use ~1.5 for slides")
+    ap.add_argument("--width-mm", type=float, default=183,
+                    help="figure width; Fig. S3 uses 250 (landscape page) with six slices")
     ap.add_argument("--row-height", type=float, default=0.62,
                     help="inches per row; raise it alongside --font-scale")
     ap.add_argument("--group-labels", nargs="*", default=None,
                     help="rotated labels for the two groups either side of --break-after")
     args = ap.parse_args()
 
-    global FONT_SCALE, ROW_HEIGHT
-    FONT_SCALE, ROW_HEIGHT = args.font_scale, args.row_height
+    global FONT_SCALE, ROW_HEIGHT, FIG_WIDTH
+    FONT_SCALE, ROW_HEIGHT, FIG_WIDTH = args.font_scale, args.row_height, args.width_mm / 25.4
 
     rows = candidates(args.tier, args.metric)
     print(f"columns with all three maps present: {len(rows)}/35")
@@ -437,7 +443,7 @@ def main() -> int:
                   f"(omitted: {len(rows) - 2 * args.top})")
             render(picked, args.output_dir, "figureS3_brain_maps_all", args.cut_coords, args.threshold,
                    break_after=args.top,
-                   break_text=f"⋯   {len(rows) - 2 * args.top} meta-analyses with intermediate changes not shown   ⋯")
+                   break_text=f"⋯   {len(rows) - 2 * args.top} meta-analyses with intermediate changes omitted   ⋯")
         else:
             render(rows, args.output_dir, "figureS3_brain_maps_all", args.cut_coords, args.threshold)
         return 0
@@ -460,7 +466,7 @@ def main() -> int:
     showable = [r for r in rows if showable_row(r)]
     dropped = len(rows) - len(showable)
     if dropped:
-        print(f"  {dropped} columns would render as empty brains at |z| > {args.threshold} "
+        print(f"  {dropped} columns would render as empty brains at z > {args.threshold} "
               f"(<{args.min_voxels} voxels); excluded from selection")
 
     # One row per project, so each row shows a different target rather than repeating one.

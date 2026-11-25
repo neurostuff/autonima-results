@@ -63,51 +63,8 @@ regenerates every map from the tracked studysets with `autonima meta` instead.
 
 ## The manuscript
 
-`latex/` holds the manuscript. Build it with:
-
-```
-paper/latex/build.sh
-```
-
-`manuscript.tex` is the document -- preamble, front matter, and the order in
-which the pieces are assembled. It `\input`s two generated files:
-
-| | |
-|---|---|
-| `body.tex` | Abstract through the end of the Methods |
-| `supplementary.tex` | the supplementary figure captions |
-
-Both are written by `latex/convert.py` from `Autonima - Manuscript.docx`, the
-Google Docs export, against `references.bib`, the Paperpile export. **While the
-Google Doc is still the source of truth, edit there and re-run `convert.py`;
-edits made directly to those two files are overwritten.** Once the Doc is
-retired, stop running the script and edit them as ordinary LaTeX.
-
-Four things in the export do not survive a plain `pandoc docx -o tex`, and the
-script's module docstring explains each: Paperpile writes hyperlinks rather than
-Word field codes, so the only link from a superscript number to a BibTeX entry
-is the citation URL; pandoc's markdown writer reads `$` as math and welds the
-Fig. S5 cost figures into single words; that caption is separately corrupt in
-the Doc itself; and every display equation appears twice, once as the Docs
-rendering and once as the LaTeX the author typed beside it.
-
-The script refuses to write anything it cannot verify. It checks that the
-Paperpile-id-to-BibTeX-key mapping is a bijection over all 28 references, that
-the in-text citations and the reference list name the same set, and -- because
-BibTeX renumbers by order of first citation -- that every marker keeps the
-number the Doc gave it.
-
-Known defects in the Google Doc, corrected during conversion and worth fixing
-upstream if the Doc is ever used again:
-
-- The **Fig. S5 caption**. Docs' equation autoformat consumed the `$...$` spans
-  and re-emitted them as Mathematical-Alphanumeric italics with the spaces
-  gone, which is visible in the exported PDF too. All seven figures match
-  `manuscript_numbers.py`, so the caption is restored from that verified text.
-- **No subscripts anywhere** (zero `w:vertAlign` runs), so the similarity and
-  count variables set as `scoord`, `slabel`, `nexpert`, `nauto`.
-- **`?utm_source=chatgpt.com`** on the GitHub URLs in Data and Code
-  availability.
+The manuscript lives in Google Docs and is not kept in this repository. The
+figures, tables and numbers it quotes are all built here (see below).
 
 ## Figure files and figure numbers
 
