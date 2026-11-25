@@ -1030,8 +1030,7 @@ def figure4(out_dir: Path) -> None:
     ax.grid(axis="y", alpha=0.6); ax.set_axisbelow(True)
     if s:
         ax.text(0.03, 0.96,
-                f"mean {dlab} = {mean:+.3f}\n95% CI [{lo:+.3f}, {hi:+.3f}]\n"
-                f"sign test $P$ = {float(s['sign_test_p']):.1e}",
+                f"mean {dlab} = {mean:+.3f}\n95% CI [{lo:+.3f}, {hi:+.3f}]",
                 transform=ax.transAxes, va="top", fontsize=fs(5.5), color=INK, linespacing=1.5)
     panel_label(ax, "b", dx=-0.18)
 
