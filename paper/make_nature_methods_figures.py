@@ -1542,7 +1542,9 @@ def figureS3(out_dir: Path) -> None:
     # columns before anyone noticed). reproduce_at_tier.sh exports AUTONIMA_TIER; honour it, and
     # fall back to "best" only when nothing set it, which is the plain in-place run.
     tier = os.environ.get("AUTONIMA_TIER", "best")
-    cmd = [sys.executable, str(BRAIN_MAP_SCRIPT), "--mode", "all", "--tier", tier,
+    # Same arguments as reproduce.sh (landscape, 6 largest + 6 smallest changes, six slices);
+    # without them this path drew all 27 rows at portrait width, a different figure.
+    cmd = [sys.executable, str(BRAIN_MAP_SCRIPT), *"--mode all --top 6 --width-mm 250 --row-height 0.52 --cut-coords -18 -4 10 24 38 52".split(), "--tier", tier,
            "--output-dir", str(out_dir), "--name", "figureS3_brain_maps_all"]
     if FONT_SCALE != 1.0:
         cmd += ["--font-scale", f"{FONT_SCALE}"]

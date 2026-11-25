@@ -114,7 +114,7 @@ fi
 
 step "5/6  figures  ->  paper/figures/"
 run "${PY[@]}" paper/make_nature_methods_figures.py          # all but S3
-run "${PY[@]}" paper/make_brain_map_figure.py --mode all --top 8   # figureS3: 8 largest + 8 smallest changes
+run "${PY[@]}" paper/make_brain_map_figure.py --mode all --top 6 --width-mm 250 --row-height 0.52 --cut-coords -18 -4 10 24 38 52   # figureS3 (landscape): 6 largest + 6 smallest changes
 run "${PY[@]}" paper/make_brain_map_figure.py --mode contrast
 run "${PY[@]}" paper/make_er_surface_figure.py                 # paper Figure 5 (rows layout)
 
