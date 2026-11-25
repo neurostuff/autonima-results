@@ -710,24 +710,26 @@ def figure3(out_dir: Path) -> None:
     ax.set_yticklabels([DISPLAY.get(p, p) for p, _, _ in rows])
     ax.set_ylim(-0.7, len(rows) - 0.3)
     ax.set_xlim(0, 105)
-    ax.set_xlabel("Expert analyses recovered (%)")
+    ax.set_xlabel("Expert-curated analyses matched (%)")
     ax.grid(axis="x", alpha=0.6); ax.set_axisbelow(True)
     pooled_llm = st.mean([llm for _, llm, _ in rows])
     pooled_tab = st.mean([tab for _, _, tab in rows])
     ax.legend(handles=[Line2D([], [], marker="o", ls="", markerfacecolor="white",
                               markeredgecolor=INK, markeredgewidth=1.1,
                               color=INK, markersize=3.4,
-                              label=f"Tables only ({pooled_tab:.0f}%)"),
+                              label=f"Pooled coordinates per table ({pooled_tab:.1f}%)"),
                        Line2D([], [], marker="o", ls="", color=INK, markersize=3.4,
-                              label=f"LLM parsing ({pooled_llm:.0f}%)")],
+                              label=f"LLM parsing ({pooled_llm:.1f}%)")],
               # Above the axes, not inside them: every row's dumbbell spans most of the x
               # range, so there is no in-panel corner that does not sit on data. At lower right
               # it covered the Executive function and Emotion regulation rows.
               # Two columns at publication scale; stacked at deck scale, where 1.55x type makes
               # the pair wider than panel a and it ran into panel b's label.
-              loc="lower left", bbox_to_anchor=(0.0, 1.0),
+              # Anchored left of the axes, over the row labels: "Pooled coordinates per table"
+              # is long enough that a pair starting at the axes edge reached panel b's label.
+              loc="lower left", bbox_to_anchor=(-0.28, 1.0),
               ncol=2 if FONT_SCALE <= 1.2 else 1, frameon=False,
-              handletextpad=0.3, columnspacing=1.4, borderaxespad=0.25, fontsize=fs(5.6))
+              handletextpad=0.3, columnspacing=1.2, borderaxespad=0.25, fontsize=fs(5.6))
     panel_label(ax, "a", dx=-0.40)
 
     # b: annotation in ROC space, each project against its own size-matched null
